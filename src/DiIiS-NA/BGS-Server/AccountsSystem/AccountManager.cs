@@ -109,10 +109,8 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public static Account GetAccountByEmail(string email)
 		{
-			//Logger.Debug("trying GetAccountByEmail {0}", email);
-			email = email.ToLower();
-			if (LoadedAccounts.Any(a => a.Value.Email == email))
-				return LoadedAccounts[LoadedAccounts.Single(a => a.Value.Email == email).Key];
+			if (LoadedAccounts.Any(a => a.Value.Email.ToLower() == email.ToLower()))
+				return LoadedAccounts[LoadedAccounts.Single(a => a.Value.Email.ToLower() == email.ToLower()).Key];
 			else
 			{
 				List<DBAccount> dbAcc = DBSessions.SessionQueryWhere<DBAccount>(dba => dba.Email == email);
