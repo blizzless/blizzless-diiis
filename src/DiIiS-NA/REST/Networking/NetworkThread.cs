@@ -1,0 +1,119 @@
+﻿//Blizzless Project 2022 
+using System;
+//Blizzless Project 2022 
+using System.Collections.Generic;
+//Blizzless Project 2022 
+using System.Linq;
+//Blizzless Project 2022 
+using System.Text;
+//Blizzless Project 2022 
+using System.Threading;
+//Blizzless Project 2022 
+using System.Threading.Tasks;
+
+namespace DiIiS_NA.REST.Networking
+{
+    public class NetworkThread<TSocketType> where TSocketType : ISocket
+    {
+        public void Stop()
+        {
+            _stopped = true;
+        }
+
+        public bool Start()
+        {
+            if (_thread != null)
+                return false;
+
+            _thread = new Thread(Run);
+            _thread.Start();
+            return true;
+        }
+
+        public void Wait()
+        {
+            _thread.Join();
+            _thread = null;
+        }
+
+        public int GetConnectionCount()
+        {
+            return _connections;
+        }
+
+        public virtual void AddSocket(TSocketType sock)
+        {
+            Interlocked.Increment(ref _connections);
+            _newSockets.Add(sock);
+            SocketAdded(sock);
+        }
+
+        protected virtual void SocketAdded(TSocketType sock) { }
+        protected virtual void SocketRemoved(TSocketType sock) { }
+
+        void AddNewSockets()
+        {
+            //if (_newSockets.Empty())
+            //    return;
+
+            foreach (var socket in _newSockets.ToArray())
+            {
+                if (!socket.IsOpen())
+                {
+                    SocketRemoved(socket);
+
+                    Interlocked.Decrement(ref _connections);
+                }
+                else
+                    _Sockets.Add(socket);
+            }
+
+            _newSockets.Clear();
+        }
+
+        void Run()
+        {
+            //Log.outDebug(LogFilter.Network, "Network Thread Starting");
+
+            int sleepTime = 10;
+            while (!_stopped)
+            {
+                Thread.Sleep(sleepTime);
+
+                uint tickStart = 0;//Time.GetMSTime();
+
+                AddNewSockets();
+
+                for (var i = 0; i < _Sockets.Count; ++i)
+                {
+                    TSocketType socket = _Sockets[i];
+                    if (!socket.Update())
+                    {
+                        if (socket.IsOpen())
+                            socket.CloseSocket();
+
+                        SocketRemoved(socket);
+
+                        --_connections;
+                        _Sockets.Remove(socket);
+                    }
+                }
+
+                uint diff = 0;//Time.GetMSTimeDiffToNow(tickStart);
+                sleepTime = (int)(diff > 10 ? 0 : 10 - diff);
+            }
+
+            //Log.outDebug(LogFilter.Misc, "Network Thread exits");
+            _newSockets.Clear();
+            _Sockets.Clear();
+        }
+
+        int _connections;
+        volatile bool _stopped;
+
+        Thread _thread;
+
+        List<TSocketType> _Sockets = new List<TSocketType>();
+        List<TSocketType> _newSockets = new List<TSocketType>();
+    }
+}

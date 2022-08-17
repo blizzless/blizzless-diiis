@@ -1,0 +1,50 @@
+﻿//Blizzless Project 2022 
+using System;
+//Blizzless Project 2022 
+using System.Collections.Generic;
+//Blizzless Project 2022 
+using System.Linq;
+//Blizzless Project 2022 
+using System.Text;
+//Blizzless Project 2022 
+using System.Threading.Tasks;
+
+namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD
+{
+    [Message(Opcodes.ACDCreateActorMessage)]
+    public class ACDCreateActorMessage : GameMessage
+    {
+        public uint ActorId; // Actor's DynamicID
+
+        public ACDCreateActorMessage(uint actorID)
+            : base(Opcodes.ACDCreateActorMessage)
+        {
+            this.ActorId = actorID;
+        }
+
+        public ACDCreateActorMessage()
+            : base(Opcodes.ACDCreateActorMessage)
+        { }
+
+        public override void Parse(GameBitBuffer buffer)
+        {
+            ActorId = buffer.ReadUInt(32);
+        }
+
+        public override void Encode(GameBitBuffer buffer)
+        {
+            buffer.WriteUInt(32, ActorId);
+        }
+
+        public override void AsText(StringBuilder b, int pad)
+        {
+            b.Append(' ', pad);
+            b.AppendLine("ACDCreateActorMessage:");
+            b.Append(' ', pad++);
+            b.AppendLine("{");
+            b.Append(' ', pad); b.AppendLine("ActorID: 0x" + ActorId.ToString("X8") + " (" + ActorId + ")");
+            b.Append(' ', --pad);
+            b.AppendLine("}");
+        }
+    }
+}

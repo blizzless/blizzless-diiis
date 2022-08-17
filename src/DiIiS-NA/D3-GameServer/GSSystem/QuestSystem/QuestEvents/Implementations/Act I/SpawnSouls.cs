@@ -1,0 +1,78 @@
+﻿//Blizzless Project 2022 
+using DiIiS_NA.Core.Logging;
+//Blizzless Project 2022 
+using DiIiS_NA.GameServer.GSSystem.ActorSystem;
+//Blizzless Project 2022 
+using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
+//Blizzless Project 2022 
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
+//Blizzless Project 2022 
+using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+//Blizzless Project 2022 
+using DiIiS_NA.GameServer.MessageSystem;
+//Blizzless Project 2022 
+using System.Linq;
+//Blizzless Project 2022 
+using System;
+//Blizzless Project 2022 
+using System.Collections.Generic;
+//Blizzless Project 2022 
+using DiIiS_NA.LoginServer.AccountsSystem;
+//Blizzless Project 2022 
+using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
+//Blizzless Project 2022 
+using DiIiS_NA.GameServer.Core.Types.Math;
+//Blizzless Project 2022 
+using DiIiS_NA.Core.Helpers.Math;
+
+namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
+{
+	class SpawnSouls : QuestEvent
+	{
+
+		private static readonly Logger Logger = LogManager.CreateLogger();
+
+		public SpawnSouls()
+			: base(151125)
+		{
+		}
+
+		List<Vector3D> ActorsVector3D = new List<Vector3D> { }; //We fill this with the vectors of the actors that transform, so we spwan zombies in the same location.
+		List<uint> monstersAlive = new List<uint> { }; //We use this for the killeventlistener.
+
+		public override void Execute(MapSystem.World world)
+		{
+			//if (world.Game.Empty) return;
+			//Logger.Debug("SpawnSouls event started");
+			var spot1 = world.GetActorBySNO(104104);
+			while (spot1 != null)
+			{
+				ActorsVector3D.Add(spot1.Position);
+				spot1.Destroy();
+				spot1 = world.GetActorBySNO(104104);
+			}
+			var spot2 = world.GetActorBySNO(104106);
+			while (spot2 != null)
+			{
+				ActorsVector3D.Add(spot2.Position);
+				spot2.Destroy();
+				spot2 = world.GetActorBySNO(104106);
+			}
+			var spot3 = world.GetActorBySNO(104108);
+			while (spot3 != null)
+			{
+				ActorsVector3D.Add(spot3.Position);
+				spot3.Destroy();
+				spot3 = world.GetActorBySNO(104108);
+			}
+
+			for (int i = 0; i < 6; i++)
+			{
+				var rand_pos = ActorsVector3D[FastRandom.Instance.Next(ActorsVector3D.Count())];
+				world.SpawnMonster(102927, rand_pos);
+				ActorsVector3D.Remove(rand_pos);
+			}
+		}
+
+	}
+}
