@@ -4,7 +4,7 @@
 
 # DiIiS Project
 
-DiIiS is a fully-functional open-source server for [Diablo III: Reaper of Souls](https://eu.diablo3.blizzard.com)
+DiIiS is a fully-functional open-source local server for [Diablo III: Reaper of Souls](https://eu.diablo3.blizzard.com)
 
 ## Features
 
@@ -23,6 +23,7 @@ DiIiS is a fully-functional open-source server for [Diablo III: Reaper of Souls]
 - Implemented personal artificial intelligence for 40% of all monsters.
 - Implemented personal artificial intelligence for half of the Bosses.
 - Implemented LAN
+- NAT support is hidden, but possible ;)
 
 ## Installation
 
@@ -32,12 +33,14 @@ DiIiS is a fully-functional open-source server for [Diablo III: Reaper of Souls]
 4. Restore `worlds.backup` to `worlds` database
 5. Compile by [VS 2019/2022](https://visualstudio.microsoft.com/)
 6. Launch wait until server start, it creates a hierarchy.
-7. Install certificate `bnetserver.p12`, password - `123` (the game verifies the CA root certificates).
-8. Use Client Diablo 3 `2.7.3.82785`.
-9. And add redirects to the `hosts` file (`%WinDir%\System32\drivers\etc\hosts`):
-`127.0.0.1 us.actual.battle.net`
-`127.0.0.1 eu.actual.battle.net`
-10. Enter to Game =)
+7. Create account using console: `!account add Login Password Tag`
+8. Install certificate `bnetserver.p12`, password - `123` (the game verifies the CA root certificates).
+9. Use Client Diablo 3 `2.7.3.82785`.
+9. Add redirects to the `hosts` file (`%WinDir%\System32\drivers\etc\hosts`):
+    `127.0.0.1 us.actual.battle.net`
+    `127.0.0.1 eu.actual.battle.net`
+11. Launch client (`x64` or `x86`) with arguments `"Diablo III64.exe" -launch -uid diablo3_engb`
+10. Login to the game using your credentials =)
 
 ## Playing with friends
 
@@ -46,11 +49,11 @@ DiIiS is a fully-functional open-source server for [Diablo III: Reaper of Souls]
 2. Copy the [config.ini](configs/config.ini) file to the server folder (It overwrites the default settings)
 3. In the IP fields - write your IP within the network. Update the parameter entries: `BindIP` and `PublicIP`.
 4. Other players must specify your IP address in the `hosts` file (`%WinDir%\System32\drivers\etc\hosts`).
-    Example:
     `192.168.1.1 us.actual.battle.net`
     `192.168.1.1 eu.actual.battle.net`
-5. After that, when creating a game (in client), indicate the creation of a public game.
-6. "Starting the game"
+5. Launch client (`x64` or `x86`) with arguments `"Diablo III64.exe" -launch -uid diablo3_engb`
+6. Login to the game using your credentials
+7. After that, when creating a game (in client), indicate the creation of a public game.
 7. Other players, when connecting, must also indicate a public game, and at the start they will connect to you.
 
 ## Flexible configuration
