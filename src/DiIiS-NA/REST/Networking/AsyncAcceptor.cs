@@ -24,7 +24,6 @@ namespace DiIiS_NA.REST.Networking
             IPAddress bindIP;
             if (!IPAddress.TryParse(ip, out bindIP))
             {
-                //Log.outError(LogFilter.Network, "Server can't be started: Invalid IP-Address ({0})", ip);
                 return false;
             }
 
@@ -35,7 +34,6 @@ namespace DiIiS_NA.REST.Networking
             }
             catch (SocketException ex)
             {
-                //Log.outException(ex);
                 return false;
             }
 

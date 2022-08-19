@@ -19,10 +19,7 @@ namespace DiIiS_NA.REST.Manager
         {
             if (!value)
             {
-               // if (!message.IsEmpty())
-                //    Log.outFatal(LogFilter.Server, message);
-
-                throw new Exception(memberName);
+                 throw new Exception(memberName);
             }
         }
     }

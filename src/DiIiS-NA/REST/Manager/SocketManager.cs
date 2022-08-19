@@ -16,7 +16,6 @@ namespace DiIiS_NA.REST.Manager
             Acceptor = new AsyncAcceptor();
             if (!Acceptor.Start(bindIp, port))
             {
-                //Log.outError(LogFilter.Network, "StartNetwork failed to Start AsyncAcceptor");
                 return false;
             }
 
@@ -67,7 +66,7 @@ namespace DiIiS_NA.REST.Manager
             }
             catch (Exception err)
             {
-                //Log.outException(err);
+      
             }
         }
 

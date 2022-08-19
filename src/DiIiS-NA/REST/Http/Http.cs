@@ -41,76 +41,17 @@ namespace DiIiS_NA.REST.Http
 
     public class HttpHelper
     {
-        public static byte[] CreateResponse2(HttpCode httpCode, bool closeConnection = false)
-        {
-            var sb = new StringBuilder();
-
-            //Blizzless Project 2022 
-using (var sw = new StringWriter(sb))
-            {
-                sw.WriteLine($"HTTP/1.1 {(int)httpCode} {httpCode}");
-
-                sw.WriteLine($"Date: {DateTime.Now.ToUniversalTime():r}");
-                sw.WriteLine("Server: Apache");
-                //sw.WriteLine("Retry-After: 600");
-                sw.WriteLine($"Content-Length: 0");
-                //sw.WriteLine("Vary: Accept-Encoding");
-                sw.WriteLine("[Request URI: https://cdn.discordapp.com/attachments/826902540460490753/830193471871647804/bgs-key-fingerprint");
-                if (closeConnection)
-                    sw.WriteLine("Connection: close");
-
-                sw.WriteLine("Content-Type: text/plain;charset=UTF-8");
-                //sw.WriteLine("[Request URI: http://eu.depot.battle.net:1119/adff75d57de90974f8e383c2a54ebd3d83838899d938fe33369a4e305f224fa9.bpk]");
-                //System.IO.File.WriteAllLines(@"C:\WriteLines.txt", lines);
-
-                //sw.WriteLine(System.IO.File.ReadAllText("bgs-key-fingerprint"));
-            }
-
-            return Encoding.UTF8.GetBytes(sb.ToString());
-        }
-
-        public static byte[] CreateResponse1(HttpCode httpCode, byte[] content, bool closeConnection = false)
-        {
-            var sb = new StringBuilder();
-
-            //Blizzless Project 2022 
-using (var sw = new StringWriter(sb))
-            {
-                sw.WriteLine($"HTTP/1.1 {(int)httpCode} {httpCode}");
-
-                //sw.WriteLine($"Date: {DateTime.Now.ToUniversalTime():r}");
-                sw.WriteLine("Server: Apache/2.2.15 (CentOS)");
-                //sw.WriteLine("Retry-After: 600");
-                sw.WriteLine($"Content-Length: {content.Length}");
-                //sw.WriteLine("Vary: Accept-Encoding");
-
-                if (closeConnection)
-                    sw.WriteLine("Connection: close");
-
-                sw.WriteLine("Content-Type: text/plain;charset=UTF-8");
-                //sw.WriteLine("[Request URI: http://eu.depot.battle.net:1119/adff75d57de90974f8e383c2a54ebd3d83838899d938fe33369a4e305f224fa9.bpk]");
-
-                sw.WriteLine(content);
-            }
-
-            return Encoding.UTF8.GetBytes(sb.ToString() + content);
-        }
 
         public static byte[] CreateResponseAlt(HttpCode httpCode, string content, bool closeConnection = false)
         {
             var sb = new StringBuilder();
 
             //Blizzless Project 2022 
-using (var sw = new StringWriter(sb))
+            using (var sw = new StringWriter(sb))
             {
-                //sw.WriteLine($"HTTP/1.1 404 Not Found");
-                //sw.WriteLine("Connection: close");
-                //*
                 sw.WriteLine($"HTTP/1.1 {(int)httpCode} {httpCode}");
                 sw.WriteLine("Connection: close"); ;
                 sw.WriteLine($"Content-Length: 0\r\n");
-                //*/
-                //sw.WriteLine();
             }
 
             return Encoding.UTF8.GetBytes(sb.ToString());
@@ -121,16 +62,10 @@ using (var sw = new StringWriter(sb))
             var sb = new StringBuilder();
 
             //Blizzless Project 2022 
-using (var sw = new StringWriter(sb))
+            using (var sw = new StringWriter(sb))
             {
                 sw.WriteLine($"HTTP/1.1 {(int)httpCode} {httpCode}");
-
-                //sw.WriteLine($"Date: {DateTime.Now.ToUniversalTime():r}");
-                //sw.WriteLine("Server: Arctium-Emulation");
-                //sw.WriteLine("Retry-After: 600");
                 sw.WriteLine($"Content-Length: {content.Length}");
-                //sw.WriteLine("Vary: Accept-Encoding");
-
                 if (closeConnection)
                     sw.WriteLine("Connection: close");
 
@@ -149,7 +84,7 @@ using (var sw = new StringWriter(sb))
             var header = new HttpHeader();
 
             //Blizzless Project 2022 
-using (var sr = new StreamReader(new MemoryStream(data, 0, length)))
+            using (var sr = new StreamReader(new MemoryStream(data, 0, length)))
             {
                 var info = sr.ReadLine().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 

@@ -51,7 +51,7 @@ namespace DiIiS_NA.REST
             try
             {
                 //Blizzless Project 2022 
-using (var socketEventargs = new SocketAsyncEventArgs())
+                using (var socketEventargs = new SocketAsyncEventArgs())
                 {
                     socketEventargs.SetBuffer(_receiveBuffer, 0, _receiveBuffer.Length);
                     socketEventargs.Completed += (sender, args) => ReadHandlerInternal(args);
@@ -77,7 +77,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
             try
             {
                 //Blizzless Project 2022 
-using (var socketEventargs = new SocketAsyncEventArgs())
+                using (var socketEventargs = new SocketAsyncEventArgs())
                 {
                     socketEventargs.SetBuffer(_receiveBuffer, 0, _receiveBuffer.Length);
                     socketEventargs.Completed += (sender, args) => callback(args);
@@ -124,7 +124,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
             if (!IsOpen())
                 return;
             //Blizzless Project 2022 
-using (var socketEventargs = new SocketAsyncEventArgs())
+            using (var socketEventargs = new SocketAsyncEventArgs())
             {
                 socketEventargs.SetBuffer(data, 0, data.Length);
                 socketEventargs.Completed += WriteHandlerInternal;
@@ -154,7 +154,6 @@ using (var socketEventargs = new SocketAsyncEventArgs())
             catch (Exception ex)
             {
                 Logger.ErrorException(ex, GetRemoteIpAddress().ToString());
-                // Log.outDebug(LogFilter.Network, "WorldSocket.CloseSocket: {0} errored when shutting down socket: {1}", GetRemoteIpAddress().ToString(), ex.Message);
             }
 
             OnClose();
