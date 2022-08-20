@@ -77,7 +77,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
             Init.SetChatRestrictionContentLicenseId(0);
 
-            Init.SetAchievementsContentHandle(D3.OnlineService.ContentHandle.CreateBuilder().SetHash("d143e14d7d59897bd8bedb040ab40738bbfcb3d234fd52338d90e67fe43c573e").SetRegion("EU").SetUsage(".achu"));
+            Init.SetAchievementsContentHandle(D3.OnlineService.ContentHandle.CreateBuilder().SetHash("20375546335DA13E31554A104FE036B5BCC878D715108F1FCEB50AB85BD87478").SetRegion("EU").SetUsage(".achu"));
             HeroDigestListResponse.Builder d = HeroDigestListResponse.CreateBuilder();
             foreach (Toon t in Client.Account.GameAccount.Toons)
             {

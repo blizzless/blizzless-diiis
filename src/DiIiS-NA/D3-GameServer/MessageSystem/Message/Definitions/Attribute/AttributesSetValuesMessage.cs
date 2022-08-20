@@ -34,10 +34,13 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Attribute
 
         public override void Encode(GameBitBuffer buffer)
         {
-            buffer.WriteUInt(32, ActorID);
-            buffer.WriteInt(4, atKeyVals.Length);
-            for (int i = 0; i < atKeyVals.Length; i++) { atKeyVals[i].Encode(buffer); }
-            for (int i = 0; i < atKeyVals.Length; i++) { atKeyVals[i].EncodeValue(buffer); }
+            //if (ActorID != 0)
+            {
+                buffer.WriteUInt(32, ActorID);
+                buffer.WriteInt(4, atKeyVals.Length);
+                for (int i = 0; i < atKeyVals.Length; i++) { atKeyVals[i].Encode(buffer); }
+                for (int i = 0; i < atKeyVals.Length; i++) { atKeyVals[i].EncodeValue(buffer); }
+            }
         }
 
         public override void AsText(StringBuilder b, int pad)

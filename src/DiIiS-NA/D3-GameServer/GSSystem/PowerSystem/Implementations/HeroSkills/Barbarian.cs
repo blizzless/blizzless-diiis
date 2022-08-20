@@ -1,4 +1,4 @@
-﻿//Blizzless Project 2022 
+﻿//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -24,9 +24,7 @@ using System;
 using System.Collections.Generic;
 //Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
@@ -42,7 +40,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			var ShockWavePos = PowerMath.TranslateDirection2D(User.Position, TargetPosition,
 															  User.Position,
 															  ScriptFormula(23));
-			var maxHits = 2;
+			var maxHits = 1;
 			for (int i = 0; i < maxHits; ++i)
 			{
 				AttackPayload attack = new AttackPayload(this);
@@ -76,7 +74,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					else
 					{
 						if (Rand.NextDouble() < ScriptFormula(0))
-							Knockback(hitPayload.Target, ScriptFormula(5), ScriptFormula(6), ScriptFormula(7));
+							Knockback(hitPayload.Target, 0.8f, 2, -0.03f);
 					}
 				};
 				attack.Apply();
@@ -704,7 +702,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Rune_B > 0)
 			{
 				AttackPayload attack = new AttackPayload(this);
-				attack.Targets = GetEnemiesInArcDirection(User.Position, TargetPosition, ScriptFormula(14), ScriptFormula(15));
+				attack.Targets = GetEnemiesInArcDirection(User.Position, TargetPosition, 22, 1);
 				attack.AddWeaponDamage(ScriptFormula(23), DamageType.Physical);
 				attack.Apply();
 				yield break;

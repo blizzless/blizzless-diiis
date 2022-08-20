@@ -31,9 +31,12 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Attribute
 
         public override void Encode(GameBitBuffer buffer)
         {
-            buffer.WriteUInt(32, ActorID);
-            Attribute.Encode(buffer);
-            Attribute.EncodeValue(buffer);
+            //if (ActorID != 0)
+            {
+                buffer.WriteUInt(32, ActorID);
+                Attribute.Encode(buffer);
+                Attribute.EncodeValue(buffer);
+            }
         }
 
         public override void AsText(StringBuilder b, int pad)
