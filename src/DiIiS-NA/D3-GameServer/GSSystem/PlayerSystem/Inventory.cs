@@ -254,6 +254,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				_owner.GrantCriteria(74987243308421);
 			if (item.ItemType.Name.Contains("ScoundrelSpecial"))
 				_owner.GrantCriteria(74987243308422);
+
+			_owner.PlayEffect(Effect.Sound, 196576);
 			return success;
 		}
 

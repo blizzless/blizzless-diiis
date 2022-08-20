@@ -60,14 +60,14 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             var GAS = D3.Client.GameAccountSettings.CreateBuilder()
                 .SetShowDifficultySelector(false)
                 .SetUseGameHandicapDeprecated(true)
-                //.SetSeasonJourneySeasonNumber(2)
-                //.SetViewedAnniversaryScreenYear(1)
+                .SetSeasonJourneySeasonNumber(10)
+                .SetViewedAnniversaryScreenYear(1)
                 .SetAccountFlags(0)
-                //.SetAccountFlags((uint)D3.Account.Digest.Types.Flags.MASTER_DIFFICULTY_UNLOCKED)
-                //.SetAchievementsTimeLastViewed(DateTimeExtensions.ToUnixTime(DateTime.UtcNow))
+                .SetAccountFlags((uint)D3.Account.Digest.Types.Flags.MASTER_DIFFICULTY_UNLOCKED)
+                .SetAchievementsTimeLastViewed(DateTimeExtensions.ToUnixTime(DateTime.UtcNow))
                 //.SetViewedAnniversaryScreenYear(1)
-                //.SetViewedWhatsNewVersion(Client.Account.GameAccount.DBGameAccount.ViewedNewVersion)
-                //.SetViewedWhatsNewSeason(Client.Account.GameAccount.DBGameAccount.ViewedNewSeason)
+                .SetViewedWhatsNewVersion(20)
+                .SetViewedWhatsNewSeason(20)
                 .SetRmtLastUsedCurrency("PLATINUM")
                 .SetRmtPreferredCurrency("PLATINUM")
 
@@ -101,9 +101,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 " OnlineService.Region.Id=5");*/
             Init.SetSyncedVars(
                 " OnlineService.Season.Num=1" + //Номер сезона
-                " OnlineService.Season.State=0" + //Статус сезона, 1 - Активирован, 0 - Деактивирован
+                " OnlineService.Season.State=1" + //Статус сезона, 1 - Активирован, 0 - Деактивирован
                 " OnlineService.Leaderboard.Era=1" +
-                " OnlineService.AnniversaryEvent.Status=0" + //Событие юбилея, 1-Старый Тристам
+                " OnlineService.AnniversaryEvent.Status=1" + //Событие юбилея, 1-Старый Тристам
                 " ChallengeRift.ChallengeNumber=1" + //Номер портала дерзаний.
                 " OnlineService.FreeToPlay=true" + //Магазин за платину
                 " OnlineService.Store.Status=0" + //Статус Магазина, 0 - Включен, 1 - Отключен

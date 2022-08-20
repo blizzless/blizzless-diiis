@@ -62,7 +62,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             //Error 52 - Данная учетная запись была заблокирована в связи с многочисленными нарушениями условий использования службы Battle.net
             //Error 53 - Действие данной учетной записи было приостановлено в связи с нарушениями условий использования службы Batle.net.
 
-            int VersionRetail = 82785; //74291 - 2.7.0, 76761 - 2.7.1, 79575 - 2.7.2;
+            int VersionRetail = 81850; //74291 - 2.7.0, 76761 - 2.7.1, 79575 - 2.7.2;
             int VersionPTR = 79151;
             string version = "";
             int a = request.ApplicationVersion;
@@ -94,7 +94,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 {
                     Logger.Error("Подключение не правильной версии клиента!");
                     var ercomplete = LogonResult.CreateBuilder().SetErrorCode(28);
-                    (controller as HandlerController).Client.MakeRPC((lid) => AuthenticationListener.CreateStub((controller as HandlerController).Client).OnLogonComplete(controller, ercomplete.Build(), callback => { }));
+                    //(controller as HandlerController).Client.MakeRPC((lid) => AuthenticationListener.CreateStub((controller as HandlerController).Client).OnLogonComplete(controller, ercomplete.Build(), callback => { }));
                 }
             switch (request.Locale)
             {
