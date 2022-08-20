@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game
         {
             this.SNOPackHash = snoPacketHash;
             this.ProtocolHash = protocol;
-            this.Version = "DiIiS Server - 2.7.1.78185";
+            this.Version = "DiIiS Server - 2.7.3.82753";
         }
 
         public VersionsMessage() : base(Opcodes.VersionsMessage) { }

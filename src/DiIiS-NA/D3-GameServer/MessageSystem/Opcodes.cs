@@ -967,7 +967,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
         PingMessage = 390, // //SIZE12
         PongMessage = 391, // //SIZE12
         SpingMessage = 392, // //SIZE8SimpleMessage62
-        SpongMessagge = 393, // //SIZE8SimpleMessage63
+        SpongMessage = 393, // //SIZE8SimpleMessage63
         ServerNotificationDataMessage = 394, // //SIZE16
         BroadcastTextMessage = 395, // //SIZE1032
         LoadCompleteMessage = 396, // //SIZE8SimpleMessage63

@@ -64,4 +64,53 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Connection
 
 		}
 	}
+
+	[Message(Opcodes.SpingMessage)]
+	public class SPingMessage : GameMessage, ISelfHandler
+	{
+		public void Handle(GameClient client)
+		{
+			client.SendMessage(new SpongMessage()
+			{
+				
+			});
+		}
+
+		public override void Parse(GameBitBuffer buffer)
+		{
+
+		}
+
+		public override void Encode(GameBitBuffer buffer)
+		{
+
+		}
+
+		public override void AsText(StringBuilder b, int pad)
+		{
+
+		}
+	}
+
+	[Message(Opcodes.SpongMessage)]
+	public class SpongMessage : GameMessage
+	{
+
+		public SpongMessage() : base(Opcodes.PongMessage) { }
+
+		public override void Parse(GameBitBuffer buffer)
+		{
+
+		}
+
+		public override void Encode(GameBitBuffer buffer)
+		{
+
+		}
+
+		public override void AsText(StringBuilder b, int pad)
+		{
+
+		}
+	}
 }

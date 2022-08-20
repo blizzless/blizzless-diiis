@@ -21,7 +21,6 @@ namespace DiIiS_NA.REST.Manager
             int _port = Config.Instance.PORT;
             if (_port < 0 || _port > 0xFFFF)
             {
-                //Log.outError(LogFilter.Network, "Specified login service port ({0}) out of allowed range (1-65535), defaulting to 8081", _port);
                 _port = 8081;
             }
 
@@ -29,7 +28,6 @@ namespace DiIiS_NA.REST.Manager
             IPAddress address;
             if (!IPAddress.TryParse(configuredAddress, out address))
             {
-                //Log.outError(LogFilter.Network, "Could not resolve LoginREST.ExternalAddress {0}", configuredAddress);
                 return false;
             }
             _externalAddress = new IPEndPoint(address, _port);
@@ -37,13 +35,11 @@ namespace DiIiS_NA.REST.Manager
             configuredAddress = Config.Instance.IP;
             if (!IPAddress.TryParse(configuredAddress, out address))
             {
-                //Log.outError(LogFilter.Network, "Could not resolve LoginREST.ExternalAddress {0}", configuredAddress);
                 return false;
             }
 
             _localAddress = new IPEndPoint(address, _port);
 
-            // set up form inputs 
             _formInputs.Type = "LOGIN_FORM";
 
             var input = new FormInput();

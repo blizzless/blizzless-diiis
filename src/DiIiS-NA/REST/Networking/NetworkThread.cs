@@ -53,9 +53,6 @@ namespace DiIiS_NA.REST.Networking
 
         void AddNewSockets()
         {
-            //if (_newSockets.Empty())
-            //    return;
-
             foreach (var socket in _newSockets.ToArray())
             {
                 if (!socket.IsOpen())
@@ -73,14 +70,13 @@ namespace DiIiS_NA.REST.Networking
 
         void Run()
         {
-            //Log.outDebug(LogFilter.Network, "Network Thread Starting");
-
+       
             int sleepTime = 10;
             while (!_stopped)
             {
                 Thread.Sleep(sleepTime);
 
-                uint tickStart = 0;//Time.GetMSTime();
+                uint tickStart = 0;
 
                 AddNewSockets();
 
@@ -99,11 +95,9 @@ namespace DiIiS_NA.REST.Networking
                     }
                 }
 
-                uint diff = 0;//Time.GetMSTimeDiffToNow(tickStart);
+                uint diff = 0;
                 sleepTime = (int)(diff > 10 ? 0 : 10 - diff);
             }
-
-            //Log.outDebug(LogFilter.Misc, "Network Thread exits");
             _newSockets.Clear();
             _Sockets.Clear();
         }

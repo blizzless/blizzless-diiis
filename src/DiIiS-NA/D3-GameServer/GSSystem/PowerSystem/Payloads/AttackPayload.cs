@@ -90,8 +90,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		public void Apply()
 		{
-			Task.Delay(1).ContinueWith((a) => {
-			
 			if (this.Targets == null) this.Targets = new TargetList();
 			if (this.Target.World != null)
 			{
@@ -104,7 +102,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			{
 				return;
 			}
-
 			if (this.Target is Player && this.DamageEntries.Count > 0)
 			{
 				Player player = (Player)this.Target;
@@ -113,14 +110,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						extra.OnTargeted(player, null);
 
 			}
-
             if (this.Context.User is Player && this.Context.Target is Monster && this.Context.Target.GBHandle.Type == 1)
             {
                 (this.Context.User as Player).ExpBonusData.MonsterAttacked((this.Context.User as Player).InGameClient.Game.TickCounter);
                 ((this.Context.Target as Monster).Brain as AISystem.Brains.MonsterBrain).AttackedBy = this.Context.User;
             }
-            // main targets
-            foreach (Actor target in this.Targets.Actors)
+            
+			foreach (Actor target in this.Targets.Actors)
 			{
 				if (target == null || target.World == null || target.World != null && target.World.PowerManager.IsDeletingActor(target))
 					continue;
@@ -143,9 +139,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					payload.Apply();
 				}
 			}
-
-			});
-
 		}
 
 		private bool _DoCriticalHit(Actor user, Actor target, float chcBonus = 0f)

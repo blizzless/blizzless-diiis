@@ -470,6 +470,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Attributes[GameAttribute.Currencies_Discovered] = 0x0011FFF8;
 			Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5;
 
+			this.Attributes[GameAttribute.Skill, 30592] = 1;
+			this.Attributes[GameAttribute.Resource_Degeneration_Prevented] = false;
+			this.Attributes[GameAttribute.Resource_Degeneration_Stop_Point] = 0;
 			//scripted //this.Attributes[GameAttribute.Skill_Total, 0x7545] = 1; //Axe Operate Gizmo
 			//scripted //this.Attributes[GameAttribute.Skill_Total, 0x76B7] = 1; //Punch!
 			//scripted //this.Attributes[GameAttribute.Skill_Total, 0x6DF] = 1; //Use Item
@@ -5299,7 +5302,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						Amount = item.Attributes[GameAttribute.Gold],
 						Type = FloatingAmountMessage.FloatType.Gold,
 					});
-
+					this.InGameClient.SendMessage(new PlayEffectMessage()
+					{
+						ActorId = this.DynamicID(this),
+						Effect = Effect.GoldPickup,
+						PlayerId = 0
+					});
+					PlayEffect(Effect.Sound, 36726);
 					this.Inventory.PickUpGold(item);
 					this.GroundItems.Remove(item.GlobalID);
 					item.Destroy();
@@ -5340,6 +5349,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						Amount = item.Attributes[GameAttribute.ItemStackQuantityLo],
 						Type = FloatingAmountMessage.FloatType.Platinum,
 					});
+					PlayEffect(Effect.Sound, 433266);
 
 					this.Inventory.PickUpPlatinum(item);
 					this.GroundItems.Remove(item.GlobalID);

@@ -95,6 +95,8 @@ namespace DiIiS_NA.GameServer.ClientSystem
 							while ((end - _incomingBuffer.Position) >= 9 && this.Connection.IsOpen())
 							{
 								var message = _incomingBuffer.ParseMessage();
+								//217
+								//
 								if (message == null) continue;
 								try
 								{

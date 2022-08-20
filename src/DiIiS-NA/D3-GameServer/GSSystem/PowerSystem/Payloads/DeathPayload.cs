@@ -100,7 +100,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					plr.World.BuffManager.AddBuff(plr, plr, new SpiritVesselCooldownBuff());
 					return;
 				}
-
 				if (plr.SkillSet.HasPassive(156484) && plr.World.BuffManager.GetFirstBuff<NearDeathExperienceCooldownBuff>(plr) == null) //NearDeathExperience (monk)
 				{
 					plr.Attributes[GameAttribute.Hitpoints_Cur] = plr.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.35f;
@@ -114,14 +113,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			{
 				Hireling mon = (Hireling)this.Target;
 				mon.Dead = true;
-				Task.Delay(10000).ContinueWith(a => {
-					if (mon.Dead)
-					{
-						mon.Attributes[GameAttribute.Hitpoints_Cur] = mon.Attributes[GameAttribute.Hitpoints_Max_Total];
-						mon.Attributes.BroadcastChangedIfRevealed();
-						mon.Dead = false;
-					}
-				});
+
+				if (mon.Dead)
+				{
+					mon.Attributes[GameAttribute.Hitpoints_Cur] = mon.Attributes[GameAttribute.Hitpoints_Max_Total];
+					mon.Attributes.BroadcastChangedIfRevealed();
+					mon.Dead = false;
+				}
+
 				return;
 			}
 			this.Successful = true;
@@ -153,18 +152,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				});
 				((this.Target as NecromancerSkeleton_A).Master as Player).NecroSkeletons.Remove(this.Target);
 			}
-			if (this is BaseGolem ||
-					this is IceGolem ||
-					this is BoneGolem ||
-					this is DecayGolem ||
-					this is ConsumeFleshGolem ||
-					this is BloodGolem)
+			if (this.Target is BaseGolem ||
+					this.Target is IceGolem ||
+					this.Target is BoneGolem ||
+					this.Target is DecayGolem ||
+					this.Target is ConsumeFleshGolem ||
+					this.Target is BloodGolem)
             {
-				((this.Target as NecromancerSkeleton_A).Master as Player).InGameClient.SendMessage(new MessageSystem.Message.Definitions.Pet.PetDetachMessage()
+				((this.Target as Minion).Master as Player).InGameClient.SendMessage(new MessageSystem.Message.Definitions.Pet.PetDetachMessage()
 				{
 					PetId = this.Target.DynamicID(((this.Target as Minion).Master as Player))
 				});
-				((this.Target as NecromancerSkeleton_A).Master as Player).ActiveGolem = null;
+				((this.Target as Minion).Master as Player).ActiveGolem = null;
 			}
 			if (this.Target is Player)
 			{
