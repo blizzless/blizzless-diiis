@@ -98,7 +98,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     {
                         WeaponDamage(Targets, 1.50f, DamageType.Cold);
                         EffectActor Explosion1 = SpawnEffect(defaultEff, TargetPosition, 0, WaitSeconds(2f));
-                        Explosion.PlayEffect(Effect.PlayEffectGroup, 471410);
+                        Explosion1.PlayEffect(Effect.PlayEffectGroup, 471410);
                         foreach (var Target in Targets.Actors)
                             AddBuff(Target, new DebuffChilled(0.4f, WaitSeconds(0.5f)));
                     }

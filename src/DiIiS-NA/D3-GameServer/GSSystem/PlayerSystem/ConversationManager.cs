@@ -728,7 +728,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						foreach (var ghost in cryptwrld.GetActorsBySNO(5360))
 							ghost.Destroy();
 						break;
-						break;
 					#endregion
 					#region A1-Q4 Event_DoK
 					case 139823: //Event_DoK_Kill.cnv
