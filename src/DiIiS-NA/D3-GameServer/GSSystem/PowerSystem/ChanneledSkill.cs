@@ -18,7 +18,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		public bool IsChannelOpen = false;
 		public float EffectsPerSecond = 1.0f;
 		public bool WaitForSpawn = false;
-		public float WaitSeconds = 1.0f;
+		public new float WaitSeconds = 1.0f;
 
 		public virtual void OnChannelOpen() { }
 		public virtual void OnChannelClose() { }

@@ -304,7 +304,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         {
             var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
 
-            bool hitAnything = false;
             TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 7f);
             DamageType DType = DamageType.Physical;
             if (Rune_E > 0) DType = DamageType.Poison;
@@ -573,8 +572,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 attack.AddWeaponDamage(3f, DType);
                 attack.OnHit = hit =>
                 {
-                    int baseEffectSkill = 467461;
-                    
                     Effect = SpawnProxy(hit.Target.Position);
                     Effect.AddComplexEffect(RuneSelect(467461, 467557, 467500, 467643, 469460, 469275), _beamEnd);
                     //Effect.AddComplexEffect(baseEffectSkill, _beamEnd); 
@@ -805,8 +802,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                 projectile.OnUpdate = () =>
                 {
-                    if (!User.World.CheckLocationForFlag(projectile.Position, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowProjectile))
-                        ;// projectile.Destroy();
+                    //if (!User.World.CheckLocationForFlag(projectile.Position, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowProjectile))
+                        // projectile.Destroy();
                 };
 
                 yield return WaitSeconds(5f);
@@ -1886,8 +1883,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             if (Rune_B > 0)
                 (User as PlayerSystem.Player).AddPercentageHP(-3);
 
-            int Count = 0;
-            
             Proxy.PlayEffectGroup(RuneSelect(465009, 465021, 465016, 465027, 465011, 465026));
             foreach (var act in Flesh)
             {

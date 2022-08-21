@@ -150,8 +150,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
 			base.OnTargeted(player, message);
-			player.InGameClient.SendMessage(new OpenTradeWindowMessage((int)this.DynamicID(player)));
+			//player.RefreshReveal();
 			_vendorGrid.Reveal(player);
+			player.InGameClient.SendMessage(new OpenTradeWindowMessage((int)this.DynamicID(player)));
 		}
 
 		public virtual void OnRequestBuyItem(PlayerSystem.Player player, uint itemId)

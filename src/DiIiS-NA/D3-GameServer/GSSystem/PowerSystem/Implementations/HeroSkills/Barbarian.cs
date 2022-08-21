@@ -39,7 +39,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			bool hitAnything = false;
 			var ShockWavePos = PowerMath.TranslateDirection2D(User.Position, TargetPosition,
 															  User.Position,
-															  ScriptFormula(23));
+															  10.0f);
 			var maxHits = 1;
 			for (int i = 0; i < maxHits; ++i)
 			{
@@ -56,7 +56,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					hitAnything = true;
 					if (Rune_D > 0)
 					{
-						GeneratePrimaryResource(ScriptFormula(10));
+						GeneratePrimaryResource(6.0f);
 					}
 					if (Rune_B > 0)
 					{
@@ -68,18 +68,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					}
 					else if (Rune_C > 0)
 					{
-						if (Rand.NextDouble() < ScriptFormula(14))
-							AddBuff(hitPayload.Target, new DebuffStunned(WaitSeconds(ScriptFormula(15))));
+						if (Rand.NextDouble() < 0.5)
+							AddBuff(hitPayload.Target, new DebuffStunned(WaitSeconds(1.5f)));
 					}
 					else
 					{
-						if (Rand.NextDouble() < ScriptFormula(0))
+						if (Rand.NextDouble() < 0.1)
 							Knockback(hitPayload.Target, 0.8f, 2, -0.03f);
 					}
 				};
 				attack.Apply();
-				yield return WaitSeconds(0.5f);
-
 				if (hitAnything)
 					GeneratePrimaryResource(EvalTag(PowerKeys.ResourceGainedOnFirstHit));
 			}

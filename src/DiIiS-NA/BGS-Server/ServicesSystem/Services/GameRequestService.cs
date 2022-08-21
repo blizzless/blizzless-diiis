@@ -51,7 +51,6 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             int CurrentAct = 0;
             int CurrentQuest = 0;
             int CurrentStep = 0;
-            string GameTag = "";
             foreach (var attr in request.Options.CreationProperties.AttributeList)
             {
                 switch (attr.Name)

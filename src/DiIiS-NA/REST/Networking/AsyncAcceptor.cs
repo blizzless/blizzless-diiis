@@ -32,7 +32,7 @@ namespace DiIiS_NA.REST.Networking
                 _listener = new TcpListener(bindIP, port);
                 _listener.Start();
             }
-            catch (SocketException ex)
+            catch
             {
                 return false;
             }

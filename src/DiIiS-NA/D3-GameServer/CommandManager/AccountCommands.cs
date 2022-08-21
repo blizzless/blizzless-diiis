@@ -133,25 +133,6 @@ namespace DiIiS_NA.GameServer.CommandManager
 			return string.Format("Updated battle tag for account {0}.", email);
 		}
 
-		[Command("sendmail", "Allows you to send the collection edition's mail for toon\nUsage: account sendmail <toonId> <setId>", Account.UserLevels.GM)]
-		public string SendMail(string[] @params, BattleClient invokerClient)
-		{
-			if (@params.Count() < 2)
-				return "Invalid arguments. Type 'help account sendmail' to get help.";
-
-			var toonId = 0;
-			Int32.TryParse(@params[0], out toonId);
-			int setid = 0;
-			Int32.TryParse(@params[1], out setid);
-
-			var toon = ToonManager.GetToonByLowID((ulong)toonId);
-
-			if (toon == null)
-				return string.Format("No toon with id '{0}' exists.", toonId);
-
-			return string.Format("Sent item in mail {0} for toon {1}.", setid, toonId);
-		}
-
 		[Command("setuserlevel", "Allows you to set a new user level for account\nUsage: account setuserlevel <email> <user level>.\nAvailable user levels: owner, admin, gm, user.", Account.UserLevels.GM)]
 		public string SetLevel(string[] @params, BattleClient invokerClient)
 		{

@@ -47,7 +47,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			this.Position = position;
 
 			// copy in important effect params from user
-			if (context.PowerSNO != null)
+			if (context != null)
 				if (context.PowerSNO != 0)
 				{
 					this.Attributes[GameAttribute.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_A, context.PowerSNO];

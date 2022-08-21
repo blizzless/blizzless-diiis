@@ -92,7 +92,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             if (request.Program.ToLower() == "d3")
                 if (request.ApplicationVersion != VersionRetail & request.ApplicationVersion != VersionPTR)
                 {
-                    Logger.Error("Подключение не правильной версии клиента!");
+                    //Logger.Error("Подключение не правильной версии клиента!");
                     var ercomplete = LogonResult.CreateBuilder().SetErrorCode(28);
                     //(controller as HandlerController).Client.MakeRPC((lid) => AuthenticationListener.CreateStub((controller as HandlerController).Client).OnLogonComplete(controller, ercomplete.Build(), callback => { }));
                 }
