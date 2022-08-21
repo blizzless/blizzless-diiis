@@ -37,8 +37,6 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect
 
         public override void Encode(GameBitBuffer buffer)
         {
-			if (Effect == Effect.ParagonLevelUp)
-				;
             buffer.WriteUInt(32, ActorId);
             buffer.WriteInt(7, (int)Effect - (-1));
             buffer.WriteBool(OptionalParameter.HasValue);

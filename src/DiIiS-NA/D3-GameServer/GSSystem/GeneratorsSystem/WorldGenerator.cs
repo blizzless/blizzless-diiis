@@ -687,7 +687,6 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			if (waypoints.Count > 1)
 			{
 				int RandomPoint = RandomHelper.Next(0, waypoints.Count - 1);
-				int pos = 0;
 				for (int i = 0; i < waypoints.Count; i++)
 				{
 					if (i != RandomPoint)

@@ -33,8 +33,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
             if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 3f * this.Scale && !_collapsed)
             {
                 _collapsed = true;
-                int duration = 500; // ticks
-
                 this.PlayAnimation(5, 116098); //- Разлом
                 this.World.SpawnMonster(76953, this.Position);
             }

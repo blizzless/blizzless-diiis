@@ -246,29 +246,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					PetId = this.DynamicID(player),
 				});
 			}
-			else
-			{
-				int TypeID = 7;
-				int PlusIndex = 0;
-				bool isGolem = false;
-				if (this is BaseGolem ||
-					this is IceGolem ||
-					this is BoneGolem ||
-					this is DecayGolem ||
-					this is ConsumeFleshGolem ||
-					this is BloodGolem)
-				{
-					TypeID = 27;
-					isGolem = false;
-				}
-				if (this is SkeletalMage)
-				{
-					PlusIndex += 10;
-					TypeID = 9;
-				}
-				if (this is NecromancerSkeleton_A)
-					TypeID = 28;
-			}
 
 			return true;
 		}

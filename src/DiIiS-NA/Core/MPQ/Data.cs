@@ -68,7 +68,7 @@ namespace DiIiS_NA.Core.MPQ
         #endregion
 
 
-        private static readonly Logger Logger = LogManager.CreateLogger("DataBaseWorker");
+        private static new readonly Logger Logger = LogManager.CreateLogger("DataBaseWorker");
 
         public Data()
             //: base(0, new List<string> { "CoreData.mpq", "ClientData.mpq" }, "/base/d3-update-base-(?<version>.*?).mpq")
@@ -230,29 +230,24 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             var timerStart = DateTime.Now;
 
-            // read all assets from the catalog first and process them (ie. find the parser if any available).
             while (stream.Position < stream.Length)
             {
                 stream.Position += 8;
                 var group = (SNOGroup)stream.ReadValueS32();
                 var snoId = stream.ReadValueS32();
                 var name = stream.ReadString(128, true);
-                if (group == SNOGroup.SkillKit)
-                    ;
-                if (groupsToLoad != null && !groupsToLoad.Contains(group)) // if we're handled groups to load, just ignore the ones not in the list.
+                if (groupsToLoad != null && !groupsToLoad.Contains(group))
                     continue;
 
                 var asset = new MPQAsset(group, snoId, name);
-                asset.MpqFile = this.GetFile(asset.FileName, PatchExceptions.Contains(asset.Group)); // get the file. note: if file is in any of the groups in PatchExceptions it'll from load the original version - the reason is that assets in those groups got patched to 0 bytes. /raist.
+                asset.MpqFile = this.GetFile(asset.FileName, PatchExceptions.Contains(asset.Group)); 
                 
                 if (asset.MpqFile != null)
                     this.ProcessAsset(asset); // process the asset.
             }
 
             stream.Close();
-
-            // Run the parsers for assets (that have a parser).
-
+                       
             if (this._tasks.Count > 0) // if we're running in tasked mode, run the parser tasks.
             {
                 foreach (var task in this._tasks)

@@ -10,8 +10,7 @@ namespace DiIiS_NA.Core.Extensions
 	{
 		public static T DeepClone<T>(T obj)
 		{
-			//Blizzless Project 2022 
-using (var ms = new MemoryStream())
+			using (var ms = new MemoryStream())
 			{
 				var formatter = new BinaryFormatter();
 				formatter.Serialize(ms, obj);

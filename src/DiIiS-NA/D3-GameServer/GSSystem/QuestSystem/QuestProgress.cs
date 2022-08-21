@@ -386,8 +386,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						NPC.ForceConversationSNO = conversation;
 					}
 			}
-			else
-				;// Logger.Warn("Не удалось присвоить диалог для NPC.");
 		}
 
 

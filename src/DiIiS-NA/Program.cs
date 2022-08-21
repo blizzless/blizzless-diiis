@@ -189,7 +189,6 @@ namespace DiIiS_NA
                     var line = Console.ReadLine();
                     CommandManager.Parse(line);
                 }
-                await boundChannel.CloseAsync();
             }
             catch (Exception e)
             {

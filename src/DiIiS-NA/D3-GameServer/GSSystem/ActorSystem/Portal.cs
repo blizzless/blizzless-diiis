@@ -99,6 +99,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				this.Destination = SmartExitGenerate();
 			}
 			
+
 			else if (this.World.WorldSNO.Id == 62751) //portal Adria's Hut
 				this.Destination = new ResolvedPortalDestination
 				{
@@ -1290,6 +1291,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (this.Destination.DestLevelAreaSNO == 81178) return false;
 				if (this.Destination.DestLevelAreaSNO == 210451 && !(this.World.Game.CurrentQuest == 121792 || this.World.Game.CurrentQuest == 57339)) return false;
 				if (this.Destination.DestLevelAreaSNO == 19789 && this.World.WorldSNO.Id == 50585) return false;
+				if (this.Destination.WorldSNO == 332336 && this.Destination.StartingPointActorTag == 483 && this.World.WorldSNO.Id == 71150)
+				{
+					this.Destination.WorldSNO = 71150; this.Destination.StartingPointActorTag = 338;
+				}
 			}
 
 			if (this.World.WorldSNO.Id == 80763 && this.Destination.WorldSNO == 85201) //Tower of the Damned lvl2

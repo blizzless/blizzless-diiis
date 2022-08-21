@@ -112,9 +112,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 		public override bool Reveal(Player player)
 		{
 			return false;
-
-
-			return base.Reveal(player);
+			//return base.Reveal(player);
 		}
 	}
 }

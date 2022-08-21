@@ -935,12 +935,10 @@ namespace bgs.protocol
         public const int InvitationMessageFieldNumber = 1;
         private bool hasInvitationMessage;
         private string invitationMessage_ = "";
-        [global::System.ObsoleteAttribute()]
         public bool HasInvitationMessage
         {
             get { return hasInvitationMessage; }
         }
-        [global::System.ObsoleteAttribute()]
         public string InvitationMessage
         {
             get { return invitationMessage_; }

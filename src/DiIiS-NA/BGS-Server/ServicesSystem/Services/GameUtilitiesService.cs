@@ -585,7 +585,6 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 foreach (var item in Hero.Profile.Equipment.ItemsList)
                 {
                     int pos = 0;
-                    int a = 8;
                     switch ((item.ItemSlot - 272) / 16)
                     {
                         case 1: pos = 0; break; //0 - Шлем
@@ -1354,188 +1353,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 uint countofTravels = 0;
                 if (criteria.CriteriaId32AndFlags8 == 3367569)
                     countofTravels++;
-                //else
-
                 snapshot.AddCriteriaSnapshot(criteria);
             }
 
-            
-
-            foreach (var Achievement in AchievementManager.GetAllAchievements)
-            {
-                //ToonClass.Wizard: GrantAchievement(client, 74987243307581);
-                //Четвертая глава
-                if (Achievement.Id == 74987248297399)
-                {
-                    var criterias = AchievementManager.GetCriterias(Achievement.Id);
-                    //snapshot.AddCriteriaSnapshot(D3.Achievements.CriteriaUpdateRecord.CreateBuilder().SetCriteriaId32AndFlags8(unchecked((uint)74987244572493)).SetQuantity32(1));
-                    //
-                    //{criteria_id: 74987244038688 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987250791778 } necessary_quantity: 1 order_hint: 12 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:Learn_5_Jewelcrafting_Recipies_Title_Tag" } }
-                    //
-                    //{criteria_id: 74987244572493 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987244692586 } necessary_quantity: 1 order_hint: 5 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourney_XahRithKeywardenT1_Title_Tag_4" } }
-                    //
-                    //{criteria_id: 74987245130342 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987247265988 } necessary_quantity: 1 evalutation_class: 1144211309 flags: 1536 attributes { key: ":title:" value: "Achievements:SeasonJourneyMainPartII_Title_Tag_28" } }
-                    //
-                    //{criteria_id: 74987245723942 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987243712360 } necessary_quantity: 1 order_hint: 1 evalutation_class: 1144211309 flags: 1024 attributes {key: ":title:" value: "Achievements:MaxLevelNephalemRift_T12Minutes_Title_Tag"} }
-                    //
-                    //{criteria_id: 74987245863958 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987246565133 } necessary_quantity: 1 order_hint: 10 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement274_Title_Tag" }}
-                    //
-                    //{criteria_id: 74987247667055 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987258323927 } necessary_quantity: 1 order_hint: 11 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:Learn_5_Blacksmith_Recipies_Title_Tag" }}
-                    //
-                    //{criteria_id: 74987247674914 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987243333398 } necessary_quantity: 1 order_hint: 4 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourney_SokahrKeywardenT1_Title_Tag_4" }}
-                    //
-                    //{criteria_id: 74987250762680 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987247015305 } necessary_quantity: 1 order_hint: 6 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourney_NekaratKeywardenT1_Title_Tag_4" }}
-                    //
-                    //{criteria_id: 74987252164114 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987254930175 } necessary_quantity: 1 order_hint: 7 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesKillBelialT2_Title_Tag" }}
-                    //
-                    //{criteria_id: 74987253329205 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987256362609 } necessary_quantity: 1 order_hint: 3 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourney_OdegKeywardenT1omplete4Bounties_Title_Tag_4" }}
-                    //
-                    //{criteria_id: 74987255999493 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987252937364 } necessary_quantity: 1 order_hint: 8 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesKillGhomT4_Title_Tag" }}
-                    //
-                    //{criteria_id: 74987256952350 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987258699516 } necessary_quantity: 1 order_hint: 2 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement273_Title_Tag" }}
-                    //
-                    //{criteria_id: 74987257331078 parent_achievement_id: 74987248297399 advance_event { id: 200 comparand: 74987245627492 } necessary_quantity: 1 order_hint: 9 evalutation_class: 1144211309 flags: 1024 attributes {key: ":title:" value: "Achievements:SeasonGreaterRifts10Solo_Title_Tag" }}
-                }
-                if (Achievement.Id == 74987247265988)
-                {
-                    var criterias = AchievementManager.GetCriterias(Achievement.Id);
-                    //snapshot.AddCriteriaSnapshot(D3.Achievements.CriteriaUpdateRecord.CreateBuilder().SetCriteriaId32AndFlags8(unchecked((uint)74987258962046)).SetQuantity32(1));
-                    //Мастер
-                    //{criteria_id: 74987248395427 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987255801934 } necessary_quantity: 1 order_hint: 1 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:MASTER_Title_Tag" }}
-                    //Камень
-                    //{criteria_id: 74987245885431 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987243963733 } necessary_quantity: 1 order_hint: 2 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourney_ImperialGem_Title_Tag" }}
-                    //Привет Кадала
-                    //{criteria_id: 74987248526596 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987254870297 } necessary_quantity: 1 order_hint: 3 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesKadala_Title_Tag" }}
-                    //Я становлюсь Звездой
-                    //{criteria_id: 74987252384014 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987249059532 } necessary_quantity: 1 order_hint: 4 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesKillAdriaMaster_Title_Tag" }}
-                    //Сделай свой выбор
-                    //{criteria_id: 74987246511881 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987251648219 } necessary_quantity: 1 order_hint: 5 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesKillSiegebreakerMaster_Title_Tag" }}
-                    //Разыскивается в Тристраме
-                    //{criteria_id: 74987258781748 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987255156784 } necessary_quantity: 1 order_hint: 6 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement280_Title_Tag" }}
-                    //Разыскивается в Калдее
-                    //{criteria_id: 74987247833299 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987259347561 } necessary_quantity: 1 order_hint: 7 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement280_Title_Tag_1" }}
-                    //Разыскивается на Арреате
-                    //{criteria_id: 74987248811185 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987255614468 } necessary_quantity: 1 order_hint: 8 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement280_Title_Tag_2" }}
-                    //Разыскивается на Небесах
-                    //{criteria_id: 74987256262166 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987254301166 } necessary_quantity: 1 order_hint: 9 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement280_Title_Tag_3" }}
-                    //Разыскивается в Вестмарше
-                    //{criteria_id: 74987249495955 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987248936002 } necessary_quantity: 1 order_hint: 10 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement280_Title_Tag_4" }}
-                    //Сезонный кубист
-                    //{criteria_id: 74987245494264 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987254169957 } necessary_quantity: 1 order_hint: 11 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:CraftingKanaisCubeExtractPower1_Title_Tag_2" }}
-
-
-                    //
-                    //{criteria_id: 74987258962046 parent_achievement_id: 74987247265988 advance_event { id: 200 comparand: 74987254626662 } necessary_quantity: 1 evalutation_class: 1144211309 flags: 1536 attributes { key: ":title:" value: "Achievements:SeasonJourneyMainPartII_Title_Tag_27" }}
-                }
-                //Вторая глава
-                if (Achievement.Id == 74987254626662)
-                {
-                    var criterias = AchievementManager.GetCriterias(Achievement.Id);
-
-                    //Эксперт
-                    //{ criteria_id: 74987250579270 advance_event { id: 200 comparand: 74987259480511 } necessary_quantity: 1 order_hint: 1 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement267_Title_Tag" } }
-                    //Как закалять сталь
-                    //{ criteria_id: 74987254004798 advance_event { id: 200 comparand: 74987256755434 } necessary_quantity: 1 order_hint: 2 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement264_Title_Tag" } }
-                    //Лучшие друзья
-                    //{ criteria_id: 74987246031286 advance_event { id: 200 comparand: 74987252641760 } necessary_quantity: 1 order_hint: 3 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourney_EquipFollower_Title_Tag" }
-                    //Максимальная эффективность
-                    //{ criteria_id: 74987249993545 advance_event { id: 200 comparand: 74987244456174 } necessary_quantity: 1 order_hint: 4 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement263_Title_Tag" } }
-                    //Невероятные приключения Канаи
-                    //{ criteria_id: 74987252674266 advance_event { id: 200 comparand: 74987243457910 } necessary_quantity: 1 order_hint: 5 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:CraftingKanaisCubeExtractPower1_Title_Tag_1" } }
-                    //Все выше и выше
-                    //{ criteria_id: 74987254853541 advance_event { id: 200 comparand: 74987257058411 } necessary_quantity: 1 order_hint: 6 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:Level_10_Title_Tag_6" } }
-                    //Оставь надежду
-                    //{ criteria_id: 74987254022737 advance_event { id: 200 comparand: 74987253273237 } necessary_quantity: 1 order_hint: 7 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesKillRakanothHard_Title_Tag" } }
-                    //Сущий ад
-                    //{ criteria_id: 74987252582955 advance_event { id: 200 comparand: 74987259900862 } necessary_quantity: 1 order_hint: 8 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesKillSKHard_Title_Tag" } }
-                    //Приятные мелочи
-                    //{ criteria_id: 74987254245219 advance_event { id: 200 comparand: 74987243791733 } necessary_quantity: 1 order_hint: 9 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesAchievement265_Title_Tag" } }
-                    //Очаровательные чары
-                    //{ criteria_id: 74987255495718 advance_event { id: 200 comparand: 74987243946801 } necessary_quantity: 1 order_hint: 10 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourney_EnchantAnItem_Title_Tag" } }
-                    //Новый гардероб
-                    //{ criteria_id: 74987253143400 advance_event { id: 200 comparand: 74987255480628 } necessary_quantity: 1 order_hint: 11 evalutation_class: 1144211309 flags: 1024 attributes { key: ":title:" value: "Achievements:SeasonJourney_TransmogrifyAnItem_Title_Tag" } }
-                }
-                //Первая глава
-                if (Achievement.Id == 74987254816831)
-                {
-                    var criterias = AchievementManager.GetCriterias(Achievement.Id);
-                    //3367569 - Количество приключений
-//                    snapshot.AddCriteriaSnapshot(D3.Achievements.CriteriaUpdateRecord.CreateBuilder().SetCriteriaId32AndFlags8(3367569).SetQuantity32(5));
-                    //snapshot.AddCriteriaSnapshot(D3.Achievements.CriteriaUpdateRecord.CreateBuilder().SetCriteriaId32AndFlags8(unchecked((uint)74987254401623)).SetQuantity32(1));
-                    //snapshot.AddCriteriaSnapshot(D3.Achievements.CriteriaUpdateRecord.CreateBuilder().SetCriteriaId32AndFlags8(unchecked((uint)74987246353740)).SetQuantity32(0));
-                    //{id: 200
-                    //comparand: 74987256867455
-
-                    /*
-                    Глава Первая
-                    TODO: Критерии первой главы
-                    {criteria_id: 74987243379080 advance_event { id: 200 comparand: 74987247751174 } necessary_quantity: 1 attributes { key: ":title:" value: "Achievements:Complete4Bounties_Title_Tag_2" } } 
-                    {criteria_id: 74987246353740 advance_event { id: 200 comparand: 74987256867455 } necessary_quantity: 1 order_hint: 1 attributes { key: ":title:" value: "Achievements:Complete4Bounties_Title_Tag_1" } }
-                    //{id: 200 comparand: 74987256867455}
-                    ---{criteria_id: 74987254401623 advance_event { id: 200 comparand: 74987259370936 } necessary_quantity: 1 order_hint: 2 attributes { key: ":title:" value: "Achievements:Socket_5_Gems_Title_Tag" } }
-                    
-                    Готово:
-                    {criteria_id: 74987249071497 advance_event { id: 200 comparand: 74987250124925 } necessary_quantity: 1 order_hint: 3 attributes { key: ":title:" value: "Achievements:Level_10_Blacksmith_Title_Tag_2" } }
-                    {criteria_id: 74987245845978 advance_event { id: 200 comparand: 74987255697859 } necessary_quantity: 1 order_hint: 4 attributes { key: ":title:" value: "Achievements:Level_10_Jeweler_Title_Tag_2" } }
-                    {criteria_id: 74987259424359 advance_event { id: 200 comparand: 74987255324210 } necessary_quantity: 1 order_hint: 5 attributes { key: ":title:" value: "Achievements:Level_10_Mystic_Title_Tag_1" } }
-                    {criteria_id: 74987250915380 advance_event { id: 200 comparand: 74987258964574 } necessary_quantity: 1 order_hint: 6 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesKillDiabloNormal_Title_Tag" } }
-                    {criteria_id: 74987249642121 advance_event { id: 200 comparand: 74987247606809 } necessary_quantity: 1 order_hint: 7 attributes { key: ":title:" value: "Achievements:SeasonJourneyObjectivesKillIzualNormal_Title_Tag" } }
-                    {criteria_id: 74987250038929 advance_event { id: 200 comparand: 74987251848215 } necessary_quantity: 1 order_hint: 8 attributes { key: ":title:" value: "Achievements:Level_50_Title_Tag_1" } }
-                    */
-                }
-                if (Achievement.AttributesList[0].Value.Contains("Kanai"))
-                {
-                    //Logger.Info(Achievement.AttributesList[0].Value);
-                }
-                if (Achievement.AttributesList[0].Value.Contains("Season"))
-                {
-                        //Logger.Info(Achievement.AttributesList[0].Value);
-                }
-                if (Achievement.AttributesList[0].Value.Contains("SeasonJourney"))
-                {
-                    //"Achievements:SeasonJourney_SokahrKeywardenT1_Title_Tag_4"
-                    //"Achievements:Level_10_Blacksmith_Title_Tag_2"
-                    //"Achievements:SeasonJourney_SokahrKeywardenT1_Title_Tag_4"
-                    //"Achievements:Kill_AncientBeasts_ActV_SeasonOnly_Title_Tag"
-                    //"Achievements:SeasonJourneyObjectivesFollowerLegendary_Title_Tag"
-                    string Name = "";
-                    foreach (var attr in Achievement.AttributesList)
-                    {
-                        switch (attr.Key)
-                        {
-                            case ":title:": Name = attr.Value; break;
-                            case "Partition":
-                                if (attr.Value == "1") //Сезон
-                                {
-                                    //Logger.Warn("Name: {0}, Partition: {1}", Name, attr.Value);
-                                    if (Achievement.CategoryId == 5548889
-                                        ||
-                                        Achievement.CategoryId == 5519843 //> 4 главы
-                                                                          //||
-                                                                          //Achievement.CategoryId == 5518623
-                                        ) ;
-                                    //snapshot.AddAchievementSnapshot(D3.Achievements.AchievementUpdateRecord.CreateBuilder().SetAchievementId(Achievement.Id).SetCompletion(1));
-                                    else
-                                    {
-                                        //snapshot.AddAchievementSnapshot(D3.Achievements.AchievementUpdateRecord.CreateBuilder().SetAchievementId(Achievement.Id).SetCompletion(1));
-                                        //Logger.Warn("Name: {0}, Partition: {1}, ID: {2}", Name, attr.Value, Achievement.Id);
-                                    }
-                                }
-                                //Logger.Warn("Partition: {0}", attr.Value); 
-                                break;
-                        }
-                        //    if(attr)
-                    }
-                    //Achievements:SeasonJourneyObjectivesFollowerLegendary_Description_Tag
-                }
-                //snapshot.AddAchievementSnapshot(D3.Achievements.AchievementUpdateRecord.CreateBuilder().SetAchievementId(Achievement.Id).SetCompletion(1));
-            }
-
-            //Name: Achievements: SeasonJourneyMainPartII_Title_Tag_29, Partition: 1, ID: 74987248297399 - Четвертая глава
-            //Name: Achievements: SeasonJourneyMainPartII_Title_Tag_28, Partition: 1, ID: 74987247265988 - Третья глава
-            //Name: Achievements: SeasonJourneyMainPartII_Title_Tag_27, Partition: 1, ID: 74987254626662 - Вторая глава
-            //Name: Achievements: SeasonJourneyMainPartI_Title_Tag_9,   Partition: 1, ID: 74987254816831 - Первая глава
-            
 
             return AchievementsSnapshot.CreateBuilder().SetErrorCode(0).SetGameAccountId(request.GameAccountId).SetSnapshot(snapshot).Build().ToByteString();
         }
@@ -2402,7 +2222,6 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
             var response = MatchmakingGetStatsResponse.CreateBuilder().AddStatsBucket(back);
             return response.Build().ToByteString();
-            return ByteString.Empty;
         }
         #endregion
 

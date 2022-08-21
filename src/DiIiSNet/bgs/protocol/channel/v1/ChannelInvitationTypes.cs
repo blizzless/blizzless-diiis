@@ -373,7 +373,6 @@ namespace bgs.protocol.channel.v1 {
         get { return result.ServiceType; }
         set { SetServiceType(value); }
       }
-      [global::System.ObsoleteAttribute()]
       public Builder SetServiceType(uint value) {
         PrepareBuilder();
         result.hasServiceType = true;

@@ -33,7 +33,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 				if (ActorSNO != -1)
 					plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)world.GetActorBySNO(ActorSNO).DynamicID(plr), Duration = 1f, Snap = false });
 				foreach (var actor in world.Actors.Values)
-					if (actor !is ActorSystem.Gizmo)
+					if (actor is not ActorSystem.Gizmo)
 						actor.Reveal(plr);
 			}
 		}

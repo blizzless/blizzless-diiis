@@ -2097,8 +2097,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						WeaponDamage(hit, ScriptFormula(0), RuneSelect(DamageType.Physical, DamageType.Fire, DamageType.Lightning, DamageType.Poison, DamageType.Physical, DamageType.Physical));
 					};
 				}
-				var a = 0;
-
 			}
 			yield break;
 		}

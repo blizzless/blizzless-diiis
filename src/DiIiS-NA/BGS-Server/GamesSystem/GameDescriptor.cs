@@ -73,9 +73,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 
 			foreach (bgs.protocol.v2.Attribute attribute in request.MatchmakerFilter.AttributeList)
 			{
-				if (attribute.Name != "version")
-					;
-				else
+				if (attribute.Name == "version")
 					this.Version = attribute.Value.StringValue;
 			}
 		}
