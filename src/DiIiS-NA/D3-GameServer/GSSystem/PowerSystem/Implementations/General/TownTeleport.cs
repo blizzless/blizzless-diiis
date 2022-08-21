@@ -35,7 +35,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			var scenes = World.QuadTree.Query<Scene>(proximity);
 			var scene = scenes[0]; // Parent scene /fasbat
 			int levelArea = scene.Specification.SNOLevelAreas[0];
-			(World.Game.GetHearthPortal() as HearthPortal).ReturnWorld = World.WorldSNO.Id;
+			(World.Game.GetHearthPortal() as HearthPortal).ReturnWorld = World.SNO;
 			(World.Game.GetHearthPortal() as HearthPortal).ReturnPosition = User.Position;
 
 			Vector3D exCheckpoint = User.CheckPointPosition;

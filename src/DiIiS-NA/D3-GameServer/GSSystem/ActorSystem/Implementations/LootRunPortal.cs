@@ -8,6 +8,7 @@ using System.Linq;
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -42,7 +43,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			this.Destination = new ResolvedPortalDestination
 			{
-				WorldSNO = 338944,
+				WorldSNO = (int)WorldSno.x1_westm_graveyard_deathorb,
 				DestLevelAreaSNO = 338946,
 				StartingPointActorTag = 171
 			};
@@ -80,7 +81,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			Logger.Debug("(OnTargeted) Portal has been activated, Id: {0}, LevelArea: {1}, World: {2}", this.ActorSNO.Id, this.Destination.DestLevelAreaSNO, this.Destination.WorldSNO);
 
-			var world = this.World.Game.GetWorld(this.Destination.WorldSNO);
+			var world = this.World.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
 
 			if (world == null)
 			{

@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
@@ -27,9 +28,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 		public override void Execute(MapSystem.World world)
 		{
-			var encWorld = world.Game.GetWorld(194933);
-
-			var AttackedTown = world.Game.GetWorld(72882);
+            var AttackedTown = world.Game.GetWorld(WorldSno.trout_townattack);
 			var Maghda = AttackedTown.GetActorBySNO(129345);
 			if (Maghda == null)
 				Maghda = AttackedTown.SpawnMonster(129345, new Core.Types.Math.Vector3D(580f,563f,70f));

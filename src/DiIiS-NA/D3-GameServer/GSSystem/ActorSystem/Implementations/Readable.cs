@@ -41,9 +41,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (ActorData.TagMap.ContainsKey(ActorKeys.Lore))
 				Logger.Debug("Lore detected: {0}", ActorData.TagMap[ActorKeys.Lore].Id);
 
-			if (LoreRegistry.Lore.ContainsKey(this.World.WorldSNO.Id) && LoreRegistry.Lore[this.World.WorldSNO.Id].chests_lore.ContainsKey(this.ActorSNO.Id))
+			if (LoreRegistry.Lore.ContainsKey(this.World.SNO) && LoreRegistry.Lore[this.World.SNO].chests_lore.ContainsKey(this.ActorSNO.Id))
 				foreach (var p in this.GetPlayersInRange(30))
-					foreach (int loreId in LoreRegistry.Lore[this.World.WorldSNO.Id].chests_lore[this.ActorSNO.Id])
+					foreach (int loreId in LoreRegistry.Lore[this.World.SNO].chests_lore[this.ActorSNO.Id])
 						if (!p.HasLore(loreId))
 						{
 							World.DropItem(this, null, ItemGenerator.CreateLore(p, loreId));

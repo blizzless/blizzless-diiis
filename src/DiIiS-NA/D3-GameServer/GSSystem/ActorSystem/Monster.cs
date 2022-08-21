@@ -31,6 +31,7 @@ using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -195,14 +196,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				return;
 			this.Brain.Update(tickCounter);
 			
-			if (this.World.WorldSNO.Id == 109561)
+			if (this.World.SNO == WorldSno.a4dun_diablo_arena)
 				if (this.ActorSNO.Id == 114917)
 					if (this.Attributes[GameAttribute.Hitpoints_Cur] < (this.Attributes[GameAttribute.Hitpoints_Max_Total] / 2))
 					{
 						this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
 						this.World.Game.QuestManager.Advance();//advancing United Evil quest
+						var nextWorld = this.World.Game.GetWorld(WorldSno.a4dun_diablo_shadowrealm_01);
 						foreach (var plr in this.World.Players.Values)
-							plr.ChangeWorld(this.World.Game.GetWorld(153670), this.World.Game.GetWorld(153670).GetStartingPointById(172).Position);
+							plr.ChangeWorld(nextWorld, nextWorld.GetStartingPointById(172).Position);
 					}
 
 			if (this is Boss)

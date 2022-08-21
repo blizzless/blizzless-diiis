@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 {
@@ -18,10 +19,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			public List<List<int>> map;
 		};
 
-		public static readonly Dictionary<int, List<DRLGLayout>> Templates = new Dictionary<int, List<DRLGLayout>>
+		public static readonly Dictionary<WorldSno, List<DRLGLayout>> Templates = new Dictionary<WorldSno, List<DRLGLayout>>
 		{
 		#region Cathedral
-			{50579, //cath, 1st level
+			{WorldSno.a1trdun_level01, //cath, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -65,7 +66,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 				}
 			},
-			{50582, //cath, 2nd level
+			{WorldSno.a1trdun_level04, //cath, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -83,7 +84,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{50584, //cath, 4th level
+			{WorldSno.a1trdun_level06, //cath, 4th level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 5,
@@ -118,7 +119,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			},
 		#endregion
 		#region Araneae	
-			{180550, //Caverns of Araneae
+			{WorldSno.a1dun_spidercave_01, //Caverns of Araneae
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -140,7 +141,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			},
 		#endregion	
 		#region Fields of Misery	
-			{82370, //Lost Mine, 1st level
+			{WorldSno.a1_cave_fields_minecavea_level01, //Lost Mine, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 4,
@@ -158,7 +159,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{82371, //Lost Mine, 2nd level
+			{WorldSno.a1_cave_fields_minecavea_level02, //Lost Mine, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 4,
@@ -175,7 +176,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{102299, //Decaying Crypt, 1st level
+			{WorldSno.trdun_crypt_fields_flooded_memories_level01, //Decaying Crypt, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -194,7 +195,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{165797, //Decaying Crypt, 2nd level
+			{WorldSno.trdun_crypt_fields_flooded_memories_level02, //Decaying Crypt, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -211,7 +212,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{119888, //Khazra Den
+			{WorldSno.fields_cave_swordofjustice_level01, //Khazra Den
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -228,7 +229,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{81163, //Scavenger's Den 1st level
+			{WorldSno.a1_cave_fields_scavengerden_level01, //Scavenger's Den 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -245,7 +246,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{81164, //Scavenger's Den 2nd level
+			{WorldSno.a1_cave_fields_scavengerden_level02, //Scavenger's Den 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -263,7 +264,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			},
 		#endregion	
 		#region Defiled crypts
-			{154587, //Defiled crypts, true
+			{WorldSno.trdun_crypt_skeletonkingcrown_00, //Defiled crypts, true
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -280,7 +281,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{72638, //Defiled crypts, falseOne
+			{WorldSno.trdun_crypt_falsepassage_01, //Defiled crypts, falseOne
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -297,7 +298,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{72637, //Defiled crypts, falseTwo
+			{WorldSno.trdun_crypt_falsepassage_02, //Defiled crypts, falseTwo
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -316,7 +317,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			},
 		#endregion
 		#region 4th Act
-			{121579, //The Silver Spire, 1st level
+			{WorldSno.a4dun_spire_level_01, //The Silver Spire, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -334,7 +335,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{129305, //The Silver Spire, 2nd level
+			{WorldSno.a4dun_spire_level_02, //The Silver Spire, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -352,7 +353,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{129306, //The Silver Spire, 4th level
+			{WorldSno.a4dun_spire_level_03, //The Silver Spire, 4th level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -378,7 +379,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 				}
 			},
-			{210725, //The Silver Spire, 5th level
+			{WorldSno.a4dun_spire_level_04, //The Silver Spire, 5th level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -398,7 +399,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			},
 		#endregion
 		#region 3rd Act
-			{93104, //The Keep Depths, 1st level
+			{WorldSno.a3dun_keep_level03, //The Keep Depths, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -415,7 +416,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{75434, //The Keep Depths, 2nd level
+			{WorldSno.a3dun_keep_level04, //The Keep Depths, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 4,
@@ -434,7 +435,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{136415, //The Keep Depths, 3rd level
+			{WorldSno.a3dun_keep_level05, //The Keep Depths, 3rd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -453,7 +454,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{189910, //Icefall Caves, 1st level
+			{WorldSno.a3dun_icecaves_timed_01, //Icefall Caves, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -470,7 +471,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{221689, //Icefall Caves, 2nd level
+			{WorldSno.a3dun_icecaves_timed_01_level_02, //Icefall Caves, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -486,7 +487,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{189259, //Caverns of Frost, 1st level
+			{WorldSno.a3dun_icecaves_random_01, //Caverns of Frost, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -503,7 +504,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{221688, //Caverns of Frost, 2nd level
+			{WorldSno.a3dun_icecaves_random_01_level_02, //Caverns of Frost, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -520,7 +521,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{174516, //Fortified Bunker, 1st level
+			{WorldSno.a3dun_keep_random_01, //Fortified Bunker, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -538,7 +539,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{221748, //Fortified Bunker, 2nd level
+			{WorldSno.a3dun_keep_random_01_level_02, //Fortified Bunker, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -556,7 +557,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{174555, //The Barracks, 1st level
+			{WorldSno.a3dun_keep_random_02, //The Barracks, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -574,7 +575,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{221749, //The Barracks, 2nd level
+			{WorldSno.a3dun_keep_random_02_level_02, //The Barracks, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -592,7 +593,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{174560, //Battlefield Stores, 1st level
+			{WorldSno.a3dun_keep_random_03, //Battlefield Stores, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -610,7 +611,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{221750, //Battlefield Stores, 2nd level
+			{WorldSno.a3dun_keep_random_03_level_02, //Battlefield Stores, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -628,7 +629,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{174665, //The Foundry, 1st level
+			{WorldSno.a3dun_keep_random_04, //The Foundry, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -646,7 +647,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{221751, //The Foundry, 2nd level
+			{WorldSno.a3dun_keep_random_04_level_02, //The Foundry, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -665,7 +666,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			},
 		#endregion
 		#region 2nd Act
-			{50588, //Sewers of Caldeum
+			{WorldSno.a2c1dun_swr_caldeum_01, //Sewers of Caldeum
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -684,7 +685,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{50589, //Sirocco Caverns, 1st level
+			{WorldSno.a2c2dun_cave_random01, //Sirocco Caverns, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 4,
@@ -701,7 +702,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{220804, //Sirocco Caverns, 2nd level
+			{WorldSno.a2c2dun_cave_random01_level02, //Sirocco Caverns, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -717,7 +718,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{2812, //Chamber of the Lost Idol
+			{WorldSno.a2c2dun_zolt_treasurehunter, //Chamber of the Lost Idol
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -735,7 +736,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{62776, //Western Channel
+			{WorldSno.a2dun_aqd_special_a, //Western Channel
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -754,7 +755,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{62779, //Eastern Channel
+			{WorldSno.a2dun_aqd_special_b, //Eastern Channel
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 4,
@@ -772,7 +773,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{157882, //Tomb of Sardar
+			{WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small, //Tomb of Sardar
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -790,7 +791,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{158593, //Tomb of Khan Dakab
+			{WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large, //Tomb of Khan Dakab
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -809,7 +810,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{111666, //Cave of Burrowing Horror, 1st level
+			{WorldSno.a2dun_boneyard_worm_cave_01, //Cave of Burrowing Horror, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -827,7 +828,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{218970, //Cave of Burrowing Horror, 2nd level
+			{WorldSno.a2dun_boneyard_worm_cave_02, //Cave of Burrowing Horror, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -844,7 +845,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{204628, //Cave of the Betrayer, 1st level
+			{WorldSno.a2dun_cave_bloodvial_01, //Cave of the Betrayer, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -861,7 +862,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{204674, //Cave of the Betrayer, 2nd level
+			{WorldSno.a2dun_cave_bloodvial_02, //Cave of the Betrayer, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -878,7 +879,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{169477, //Mysterious Cave, 1st level
+			{WorldSno.a2dun_cave_mapdungeon_level01, //Mysterious Cave, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -895,7 +896,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{194238, //Mysterious Cave, 2nd level
+			{WorldSno.a2dun_cave_mapdungeon_level02, //Mysterious Cave, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -911,7 +912,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{146619, //Ruined Cistern
+			{WorldSno.a2dun_swr_swr_to_oasis_level01, //Ruined Cistern
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -928,7 +929,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{80589, //Realm of Shadow
+			{WorldSno.a2dun_zolt_shadowrealm_level01, //Realm of Shadow
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -945,7 +946,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{61631, //The Forgotten Ruins
+			{WorldSno.a2dun_zolt_head_random01, //The Forgotten Ruins
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -962,7 +963,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{50594, //The Ruins, 1st level
+			{WorldSno.a2dun_zolt_sw_random01, //The Ruins, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -979,7 +980,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{222575, //The Ruins, 2nd level
+			{WorldSno.a2dun_zolt_sw_random01_level02, //The Ruins, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -996,7 +997,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{123183, //Vault of the Assassin
+			{WorldSno.a2dun_zolt_blood02, //Vault of the Assassin
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1013,7 +1014,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{50596, //The Crumbling Vault
+			{WorldSno.a2dun_zolt_timed01_level01, //The Crumbling Vault
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -1043,7 +1044,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{50610, //The Unknown Depths
+			{WorldSno.a2dun_zolt_level01, //The Unknown Depths
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1060,7 +1061,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{50611, //The Storm Halls
+			{WorldSno.a2dun_zolt_level02, //The Storm Halls
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1077,7 +1078,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{50612, //Halls of Dusk
+			{WorldSno.a2dun_zolt_level03, //Halls of Dusk
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1094,7 +1095,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{168196, //Vault Treasure Room
+			{WorldSno.a2dun_zolt_timed01_level02, //Vault Treasure Room
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -1110,7 +1111,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{62568, //Ancient Cave, 1st level
+			{WorldSno.a2trdun_cave_oasis_random01, //Ancient Cave, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1127,7 +1128,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{194240, //Ancient Cave, 2nd level
+			{WorldSno.a2trdun_cave_oasis_random01_level02, //Ancient Cave, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1144,7 +1145,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{62569, //Flooded Cave, 1st level
+			{WorldSno.a2trdun_cave_oasis_random02, //Flooded Cave, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1161,7 +1162,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{161011, //Flooded Cave, 2nd level
+			{WorldSno.a2trdun_cave_oasis_random02_level02, //Flooded Cave, 2nd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1178,7 +1179,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{111670, //Vile Cavern, 1st level
+			{WorldSno.a2trdun_boneyard_spider_cave_01, //Vile Cavern, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1195,7 +1196,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{218967, //Vile Cavern, 2st level
+			{WorldSno.a2trdun_boneyard_spider_cave_02, //Vile Cavern, 2st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1214,7 +1215,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			},
 		#endregion
 		#region Halls of Agony
-			{2826, //Halls of Agony, 1st level
+			{WorldSno.trdun_leoric_level01, //Halls of Agony, 1st level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -1232,7 +1233,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{58983, //Halls of Agony, 3rd level
+			{WorldSno.trdun_leoric_level03, //Halls of Agony, 3rd level
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -1252,7 +1253,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			},
 		#endregion
 		#region Westmarch
-			{261712, //Westmarch commons
+			{WorldSno.x1_westm_zone_01, //Westmarch commons
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1272,7 +1273,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{338944, //Briarthorn Cemetery
+			{WorldSno.x1_westm_graveyard_deathorb, //Briarthorn Cemetery
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 2,
@@ -1293,7 +1294,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{263494, //Westmarch heights
+			{WorldSno.x1_westm_zone_03, //Westmarch heights
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 1,
@@ -1328,7 +1329,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{338600, //Battlefields of Eternity
+			{WorldSno.x1_pand_ext_2_battlefields, //Battlefields of Eternity
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 5,
@@ -1424,7 +1425,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{271233, //Pandemonius fortress lv. 1
+			{WorldSno.x1_fortress_level_01, //Pandemonius fortress lv. 1
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -1442,7 +1443,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{271235, //Pandemonius fortress lv. 2
+			{WorldSno.x1_fortress_level_02, //Pandemonius fortress lv. 2
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 4,
@@ -1462,7 +1463,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{283566, //Ruins of Corvus
+			{WorldSno.x1_catacombs_level02, //Ruins of Corvus
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 8,
@@ -1480,7 +1481,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{283552, //Path to Corvus
+			{WorldSno.x1_catacombs_level01, //Path to Corvus
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -1498,7 +1499,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{341037, //Path to Corvus (fake)
+			{WorldSno.x1_catacombs_fakeentrance_02, //Path to Corvus (fake)
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -1516,7 +1517,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{341038, //Path to Corvus (fake)
+			{WorldSno.x1_catacombs_fakeentrance_03, //Path to Corvus (fake)
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -1534,7 +1535,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{341040, //Path to Corvus (fake)
+			{WorldSno.x1_catacombs_fakeentrance_04, //Path to Corvus (fake)
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 3,
@@ -1552,7 +1553,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					},
 				}
 			},
-			{267412, //Bog (the whole)
+			{WorldSno.x1_bog_01, //Bog (the whole)
 				new List<DRLGLayout>{
 					new DRLGLayout{
 						enterPositionX = 8,

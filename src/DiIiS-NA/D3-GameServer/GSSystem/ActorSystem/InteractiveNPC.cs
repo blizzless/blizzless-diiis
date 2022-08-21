@@ -46,6 +46,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -100,7 +101,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public override bool Reveal(Player player)
 		{
 			if (this.ActorSNO.Id == 81609) return false;
-			if (this.ActorSNO.Id == 114622 && this.World.WorldSNO.Id == 71150 && this.World.Game.CurrentAct != 3000) return false;
+			if (this.ActorSNO.Id == 114622 && this.World.SNO == WorldSno.trout_town && this.World.Game.CurrentAct != 3000) return false;
 			return base.Reveal(player);
 		}
 

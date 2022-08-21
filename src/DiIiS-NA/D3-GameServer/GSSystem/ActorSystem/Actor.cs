@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -849,25 +850,24 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			lock (player.RevealedObjects)
 			{
 				if (this.Hidden || this.Dead || !this.Visible || this.World == null) return false;
-				
+
+                var mysticHiddenWorlds = new WorldSno[] {
+                    WorldSno.trdun_crypt_falsepassage_01,
+					WorldSno.trdun_crypt_falsepassage_02,
+					WorldSno.trdun_crypt_fields_flooded_memories_level01,
+					WorldSno.trdun_crypt_fields_flooded_memories_level02,
+					WorldSno.trdun_crypt_skeletonkingcrown_00,
+					WorldSno.trdun_crypt_skeletonkingcrown_01,
+					WorldSno.trdun_crypt_skeletonkingcrown_02,
+				};
 				//Leave Miriam in Crypt
-				if (this.ActorSNO.Id == 175310)
-					if (this.World.WorldSNO.Id == 72636 ||
-						this.World.WorldSNO.Id == 72637 ||
-						this.World.WorldSNO.Id == 102299 ||
-						this.World.WorldSNO.Id == 165797 ||
-						this.World.WorldSNO.Id == 154587 ||
-						this.World.WorldSNO.Id == 60600 ||
-						this.World.WorldSNO.Id == 92126
-						)
-						return false;
+				if (this.ActorSNO.Id == 175310 && mysticHiddenWorlds.Contains(World.SNO)) return false;
 
 
 				//Destroy Bonewall and Jondar if Exit_S on Second Level of Cathedral
-				if (World.WorldSNO.Id == 50582 && this.ActorSNO.Id == 109209) return false;
-				if (World.WorldSNO.Id == 50582 && this.ActorSNO.Id == 86624) return false;
+				if (World.SNO == WorldSno.a1trdun_level04 && (this.ActorSNO.Id == 109209 ||  this.ActorSNO.Id == 86624)) return false;
 
-				if (this.ActorSNO.Name.Contains("Uber") && !this.World.WorldSNO.Name.Contains("Uber")) return false;
+				if (this.ActorSNO.Name.Contains("Uber") && !this.World.SNO.IsUberWorld()) return false;
 				if (this.ActorSNO.Name.Contains("AdventureMode") && this.World.Game.CurrentAct != 3000) return false;
 				if (this.ActorSNO.Name.Contains("ScriptedSequenceOnly")) return false;
 
@@ -876,7 +876,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (player.World == null) return false;
 
 				if (this.ActorSNO.Id == 218339)
-					if (this.World.WorldSNO.Id == 71150)
+					if (this.World.SNO == WorldSno.trout_town)
 						if (this.CurrentScene.SceneSNO.Id == 33348)
 							if (this.Position.X < 2896)
 								return false;
@@ -884,7 +884,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				if (!(this is Item) && player.World.GlobalID != this.World.GlobalID) return false;
 
-				if (!(this is Item) && this.GetScenesInRange().Count() > 0 && !this.GetScenesInRange().OrderBy(scene => PowerMath.Distance2D(scene.Position, this.Position)).First().IsRevealedToPlayer(player)) return false;
+				if (!(this is Item) && this.GetScenesInRange().Count > 0 && !this.GetScenesInRange().OrderBy(scene => PowerMath.Distance2D(scene.Position, this.Position)).First().IsRevealedToPlayer(player)) return false;
 
 				uint objId = player.NewDynamicID(this.GlobalID, (this is Player && (!(this as Player).IsInPvPWorld || this == player)) ? (int)(this as Player).PlayerIndex : -1);
 
@@ -974,7 +974,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				#region Особенные случаи
 				//Задаём идл для зомбей в тристраме - ЖРАТ
-				if (this.World.WorldSNO.Id == 71150)
+				if (this.World.SNO == WorldSno.trout_town)
 				{
 					if (this.Tags != null)
 						if (this.Tags.ContainsKey(MarkerKeys.Group1Hash))
@@ -982,7 +982,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 								this.PlayActionAnimation(11514);
 				}
 				//Задаём идл для работяг
-				else if (this.World.WorldSNO.Id == 109362 & this.ActorSNO.Id == 84529)
+				else if (this.World.SNO == WorldSno.trout_tristram_inn & this.ActorSNO.Id == 84529)
 					this.PlayActionAnimation(102329);
 				else if (this.ActorSNO.Id == 4580)
 					player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Inventory.VisualInventoryMessage()

@@ -43,7 +43,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					snoLevelArea = SNOLevelArea,//102362,
 				});
 
-				player.SavePointData = new SavePointData() { snoWorld = World.WorldSNO.Id, SavepointId = SavepointId };
+				player.SavePointData = new SavePointData() { snoWorld = (int)World.SNO, SavepointId = SavepointId };
 				player.UpdateHeroState();
 				player.CheckPointPosition = this._position; // This seemed easier than having on Death find the SavePoint based on ID, then getting its location. - DarkLotus
 			}

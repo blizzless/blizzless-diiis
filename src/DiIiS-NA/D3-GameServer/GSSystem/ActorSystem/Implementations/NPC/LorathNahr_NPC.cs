@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.MPQ;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
@@ -37,7 +38,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
 			this.Attributes[GameAttribute.Invulnerable] = true;
 			this.Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-			if (world.WorldSNO.Id == 308705)
+			if (world.SNO == WorldSno.x1_westmarch_overlook_d)
 			{
 				this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = 0f;
 				this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 0f;

@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -33,7 +34,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 		public override void Execute(MapSystem.World world)
 		{
-			var DrownedTempleWorld = world.Game.GetWorld(60395);
+			var DrownedTempleWorld = world.Game.GetWorld(WorldSno.trdun_cave_nephalem_03);
             
             List<uint> SkeletonsList = new List<uint> { };
             List<uint> Skeletons2List = new List<uint> { };
@@ -175,7 +176,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
         public override void Execute(MapSystem.World world)
         {
-            var DrownedTempleWorld = world.Game.GetWorld(60395);
+            var DrownedTempleWorld = world.Game.GetWorld(WorldSno.trdun_cave_nephalem_03);
 
             List<uint> SkeletonsList = new List<uint> { };
             List<uint> Skeletons2List = new List<uint> { };

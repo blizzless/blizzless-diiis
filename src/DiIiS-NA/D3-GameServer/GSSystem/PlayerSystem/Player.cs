@@ -117,6 +117,7 @@ using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.UI;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 {
@@ -1603,18 +1604,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			World NephalemPWorld = null;
 			Actor NStone = null;
 			Portal portal = null;
-			int map = -1;
-			int[] Maps = new int[]
+			var map = WorldSno.__NONE;
+            WorldSno[] Maps = new WorldSno[]
 					{
 
-						331263, //x1_lr_tileset_Westmarch
-                        360797, //_x1_lr_tileset_fortress_large
-						288823, //x1_lr_tileset_zoltruins
-						331389, //x1_lr_tileset_hexmaze
-						275960, //x1_lr_tileset_icecave
+						WorldSno.x1_lr_tileset_westmarch, //x1_lr_tileset_Westmarch
+                        WorldSno.x1_lr_tileset_fortress_large, //_x1_lr_tileset_fortress_large
+						WorldSno.x1_lr_tileset_zoltruins, //x1_lr_tileset_zoltruins
+						WorldSno.x1_lr_tileset_hexmaze, //x1_lr_tileset_hexmaze
+						WorldSno.x1_lr_tileset_icecave, //x1_lr_tileset_icecave
 
-						275946, //x1_lr_tileset_crypt
-						275926, //x1_lr_tileset_corruptspire
+						WorldSno.x1_lr_tileset_crypt, //x1_lr_tileset_crypt
+						WorldSno.x1_lr_tileset_corruptspire, //x1_lr_tileset_corruptspire
 
 						//288843, //x1_lr_tileset_sewers
 			};
@@ -1631,7 +1632,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
 					//map = 288823;
-					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, map, 0)); //Мир
+					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //Мир
 					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
 					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Точка входа
 					this.InGameClient.Game.WorldOfPortalNephalem = map;
@@ -1653,14 +1654,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					foreach (var actor in NephalemPWorld.Actors.Values)
 						if (actor is Portal)
 						{
+							var p = actor as Portal;
 							if (!actor.CurrentScene.SceneSNO.Name.ToLower().Contains("entrance"))
 							{
 								if (!actor.CurrentScene.SceneSNO.Name.ToLower().Contains("exit"))
 									actor.Destroy();
 								else if (!ExitSetted)
 								{
-									(actor as Portal).Destination.DestLevelAreaSNO = 288684;
-									(actor as Portal).Destination.WorldSNO = this.InGameClient.Game.WorldOfPortalNephalemSec;
+									p.Destination.DestLevelAreaSNO = 288684;
+									p.Destination.WorldSNO = (int)this.InGameClient.Game.WorldOfPortalNephalemSec;
 									ExitSetted = true;
 
 									var NephalemPWorldS2 = this.InGameClient.Game.GetWorld(this.InGameClient.Game.WorldOfPortalNephalemSec);
@@ -1672,7 +1674,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 											else
 											{
 												(atr as Portal).Destination.DestLevelAreaSNO = 332339;
-												(atr as Portal).Destination.WorldSNO = 332336;
+												(atr as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
 												(atr as Portal).Destination.StartingPointActorTag = 172;
 											}
 										}
@@ -1684,9 +1686,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							}
 							else
 							{
-								(actor as Portal).Destination.DestLevelAreaSNO = 332339;
-								(actor as Portal).Destination.WorldSNO = 332336;
-								(actor as Portal).Destination.StartingPointActorTag = 24;
+								p.Destination.DestLevelAreaSNO = 332339;
+								p.Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
+								p.Destination.StartingPointActorTag = 24;
 							}
 						}
 						else if (actor is Waypoint)
@@ -1809,7 +1811,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					this.InGameClient.Game.NephalemGreater = true;
 
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
-					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, map, 0)); //Мир
+					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //Мир
 					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
 					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Точка входа
 					this.InGameClient.Game.WorldOfPortalNephalem = map;
@@ -1823,7 +1825,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							else
 							{
 								(actor as Portal).Destination.DestLevelAreaSNO = 332339;
-								(actor as Portal).Destination.WorldSNO = 332336;
+								(actor as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
 								(actor as Portal).Destination.StartingPointActorTag = 24;
 							}
 						}
@@ -2409,36 +2411,36 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				actor.OnPlayerApproaching(this);
 
 			this.VacuumPickup();
-			if (this.World.Game.OnLoadWorldActions.ContainsKey(this.World.WorldSNO.Id))
+			if (this.World.Game.OnLoadWorldActions.ContainsKey(this.World.SNO))
 			{
-				Logger.Trace("OnLoadWorldActions: {0}", this.World.WorldSNO.Id);
-				lock (this.World.Game.OnLoadWorldActions[this.World.WorldSNO.Id])
+				Logger.Trace("OnLoadWorldActions: {0}", this.World.SNO);
+				lock (this.World.Game.OnLoadWorldActions[this.World.SNO])
 				{
 					try
 					{
-						foreach (var action in this.World.Game.OnLoadWorldActions[this.World.WorldSNO.Id])
+						foreach (var action in this.World.Game.OnLoadWorldActions[this.World.SNO])
 						{
 							action.Invoke();
 						}
 					}
 					catch { }
-					this.World.Game.OnLoadWorldActions[this.World.WorldSNO.Id].Clear();
+					this.World.Game.OnLoadWorldActions[this.World.SNO].Clear();
 				}
 			}
-			if (this.World.Game.OnLoadWorldActions.ContainsKey(this.CurrentScene.SceneSNO.Id))
+			if (this.World.Game.OnLoadSceneActions.ContainsKey(this.CurrentScene.SceneSNO.Id))
 			{
 				Logger.Trace("OnLoadSceneActions: {0}", this.CurrentScene.SceneSNO.Id);
-				lock (this.World.Game.OnLoadWorldActions[this.CurrentScene.SceneSNO.Id])
+				lock (this.World.Game.OnLoadSceneActions[this.CurrentScene.SceneSNO.Id])
 				{
 					try
 					{
-						foreach (var action in this.World.Game.OnLoadWorldActions[this.CurrentScene.SceneSNO.Id])
+						foreach (var action in this.World.Game.OnLoadSceneActions[this.CurrentScene.SceneSNO.Id])
 						{
 							action.Invoke();
 						}
 					}
 					catch { }
-					this.World.Game.OnLoadWorldActions[this.CurrentScene.SceneSNO.Id].Clear();
+					this.World.Game.OnLoadSceneActions[this.CurrentScene.SceneSNO.Id].Clear();
 				}
 			}
 
@@ -2519,7 +2521,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 
 			var levelArea = scene.Specification.SNOLevelAreas[0];
-			Logger.Warn($"OnTryWaypoint: Id: {tryWaypointMessage.nWaypoint}, WorldId: {wpWorld.WorldSNO.Id}, levelArea: {levelArea}");
+			Logger.Warn($"OnTryWaypoint: Id: {tryWaypointMessage.nWaypoint}, WorldId: {wpWorld.SNO}, levelArea: {levelArea}");
 			if (wayPoint == null) return;
 			Logger.Warn($"WpWorld: {wpWorld}, wayPoint: {wayPoint}");
 			InGameClient.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
@@ -3348,30 +3350,30 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			float Range = 200f;
 			if (this.InGameClient.Game.CurrentEncounter.activated)
 				Range = 360f;
-			
-			List<Actor> actors_around = this.GetActorsInRange(Range);
 
-			if (this.World.WorldSNO.Id == 295225 ||
-				this.World.WorldSNO.Id == 103209 ||
-				this.World.WorldSNO.Id == 186552 ||
-				this.World.WorldSNO.Id == 328484 ||
-				this.World.WorldSNO.Id == 105406)
+			var specialWorlds = new WorldSno[]
 			{
-				actors_around = this.World.Actors.Values.ToList();
-			}
+				WorldSno.x1_pand_batteringram,
+				WorldSno.gluttony_boss,
+				WorldSno.a3dun_hub_adria_tower,
+				WorldSno.x1_malthael_boss_arena,
+				WorldSno.a1trdun_level05_templar,
+			};
+
+			var actors_around = specialWorlds.Contains(this.World.SNO) ? this.World.Actors.Values.ToList() : this.GetActorsInRange(Range);
 
 			foreach (var actor in actors_around) // reveal actors in player's proximity.
 			{
 				if (actor is Player) // if the actors is already revealed, skip it.
 					continue;
 
-				if (this.World.WorldSNO.Id == 332336 && actor is Portal)
-					if ((actor as Portal).Destination.WorldSNO == 332336)
+				if (this.World.SNO == WorldSno.x1_tristram_adventure_mode_hub && actor is Portal)
+					if ((actor as Portal).Destination.WorldSNO == (int)WorldSno.x1_tristram_adventure_mode_hub)
 						continue;
-				if (this.World.WorldSNO.Id == 71150 && actor is Portal)
-					if ((actor as Portal).Destination.WorldSNO == 71150 && (actor as Portal).Destination.DestLevelAreaSNO == 19947)
+				if (this.World.SNO == WorldSno.trout_town && actor is Portal)
+					if ((actor as Portal).Destination.WorldSNO == (int)WorldSno.trout_town && (actor as Portal).Destination.DestLevelAreaSNO == 19947)
 					{
-						(actor as Portal).Destination.WorldSNO = 332336;
+						(actor as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
 						(actor as Portal).Destination.StartingPointActorTag = 483;
 					}
 					
@@ -3460,22 +3462,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				EnterPosition = this.Position,
 				WorldID = world.GlobalID,
-				WorldSNO = world.WorldSNO.Id,
+				WorldSNO = (int)world.SNO,
 				PlayerIndex = this.PlayerIndex,
 				EnterLookUsed = true,
 				EnterKnownLookOverrides = new EnterKnownLookOverrides { Field0 = new int[] { -1, -1, -1, -1, -1, -1 } }
 			});
 
-			switch (world.WorldSNO.Id)
+			switch (world.SNO)
 			{
-				case 308705:
+				case WorldSno.x1_westmarch_overlook_d:
 					this.InGameClient.SendMessage(new PlayerSetCameraObserverMessage()
 					{
 						Field0 = 309026,
 						Field1 = new WorldPlace() { Position = new Vector3D(), WorldID = 0 }
 					});
 					break;
-				case 306549:
+				case WorldSno.x1_westm_intro:
 					this.InGameClient.SendMessage(new PlayerSetCameraObserverMessage()
 					{
 						Field0 = 1541,

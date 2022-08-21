@@ -36,6 +36,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -79,7 +80,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {
-                    this.Game.AddOnLoadAction(71150, () =>
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
                         if (Game.CurrentQuest == 87700 & Game.CurrentStep == -1)
                         {
@@ -87,11 +89,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             //ActiveArrow(this.Game.GetWorld(71150), 3739);
 
                             //Убираем лишнюю Лею
-                            var Leah = this.Game.GetWorld(71150).GetActorBySNO(4580, true);
+                            var Leah = world.GetActorBySNO(4580, true);
                             if (Leah != null) Leah.Hidden = true;
                         }
                     });
-                    setActorOperable(this.Game.GetWorld(71150), 90419, false);
+                    setActorOperable(world, 90419, false);
                     ListenConversation(151087, new Advance());
                 })
             });
@@ -103,10 +105,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 42,
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
-                { 
+                {
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     script = new SurviveTheWaves();
-                    script.Execute(this.Game.GetWorld(71150));
-                    var Leah = this.Game.GetWorld(71150).GetActorBySNO(4580, true);
+                    script.Execute(world);
+                    var Leah = world.GetActorBySNO(4580, true);
                     if (Leah != null) Leah.Hidden = true;
                     ListenKill(6644, 6, new SecondWave());
                     ListenKill(6632, 7, new Advance());
@@ -123,21 +126,22 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go and talk to Leah
-                    StartConversation(this.Game.GetWorld(71150), 151102);
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    StartConversation(world, 151102);
                     
                     try
                     {
-                        setActorOperable(this.Game.GetWorld(71150), 3739, true);
-                        if (this.Game.GetWorld(71150).GetActorBySNO(141508, true) != null)
-                            this.Game.GetWorld(71150).GetActorBySNO(141508, true).Hidden = true;
-                        if (this.Game.GetWorld(71150).GetActorBySNO(112131, true) != null)
-                            this.Game.GetWorld(71150).GetActorBySNO(112131, true).Hidden = true;
+                        setActorOperable(world, 3739, true);
+                        if (world.GetActorBySNO(141508, true) != null)
+                            world.GetActorBySNO(141508, true).Hidden = true;
+                        if (world.GetActorBySNO(112131, true) != null)
+                            world.GetActorBySNO(112131, true).Hidden = true;
                     }
                     catch { }
                     UnlockTeleport(0);
-                    if (this.Game.GetWorld(71150).GetActorsBySNO(90419).Where(d => d.Visible).FirstOrDefault() != null)
-                        Open(this.Game.GetWorld(71150), 90419);
-                    ActiveArrow(this.Game.GetWorld(71150), 178293, 109362);
+                    if (world.GetActorsBySNO(90419).Where(d => d.Visible).FirstOrDefault() != null)
+                        Open(world, 90419);
+                    ActiveArrow(world, 178293, WorldSno.trout_tristram_inn);
                     ListenConversation(151123, new Advance());
                 })
             });
@@ -151,7 +155,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //fighting zombies
                     script = new LeahInn();
-                    script.Execute(this.Game.GetWorld(109362));
+                    script.Execute(this.Game.GetWorld(WorldSno.trout_tristram_inn));
 
                     ListenKill(203121, 5, new LaunchConversation(151156));
                     ListenConversation(151156, new Advance());
@@ -167,10 +171,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //talk to Leah again
                     ListenConversation(151167, new Advance());
-                    this.Game.AddOnLoadAction(71150, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
                         if (Game.CurrentQuest == 87700)
-                            ActiveArrow(this.Game.GetWorld(71150), 3739);
+                            ActiveArrow(this.Game.GetWorld(WorldSno.trout_town), 3739);
                     });
                 })
             });
@@ -197,17 +201,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //kill wretched mother
-                    Break(this.Game.GetWorld(71150), 81699);
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    Break(world, 81699);
 
-                    foreach (var sp in this.Game.GetWorld(71150).GetActorsBySNO(89957))
+                    foreach (var sp in world.GetActorsBySNO(89957))
                     {
                         if (sp.CurrentScene.SceneSNO.Id == 33348)
                             if (sp is ActorSystem.Spawner)
                                 //(sp as ActorSystem.Spawner).Spawn();
-                                this.Game.GetWorld(71150).SpawnMonster(6644, sp.Position);
+                                world.SpawnMonster(6644, sp.Position);
                     }
 
-                    ActivateQuestMonsters(this.Game.GetWorld(71150), 219725);
+                    ActivateQuestMonsters(world, 219725);
                     ListenKill(219725, 1, new Advance());
                 })
             });
@@ -220,7 +225,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //MOAR wretched mothers
-                    StartConversation(this.Game.GetWorld(71150), 156223);
+                    StartConversation(this.Game.GetWorld(WorldSno.trout_town), 156223);
                     ListenKill(176889, 1, new Advance());
                     ListenKillBonus(219725, 3, new SideTarget());
                 })
@@ -234,7 +239,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 }, new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //return to New Tristram and talk to Rumford
-                    DeactivateQuestMonsters(this.Game.GetWorld(71150), 219725);
+                    DeactivateQuestMonsters(this.Game.GetWorld(WorldSno.trout_town), 219725);
                     ListenInteract(192164, 1, new CompleteObjective(0));
                     ListenConversation(198521, new Advance());
                 })
@@ -262,7 +267,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { 
-                    StartConversation(this.Game.GetWorld(71150), 198541);
+                    StartConversation(this.Game.GetWorld(WorldSno.trout_town), 198541);
                 })
             });
 
@@ -277,14 +282,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     UnlockTeleport(1);
                     ListenTeleport(101351, new Advance());
                     //AddFollower(this.Game.GetWorld(71150), 4580);
-                    this.Game.AddOnLoadAction(71150, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
-                        this.Game.AddOnLoadAction(71150, () =>
+                        // TODO: CHeck for possible removing outer adding
+                        this.Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                         {
                             if (Game.CurrentQuest == 72095)
                                 if (Game.CurrentStep == -1 || Game.CurrentStep == 7)
                                 {
-                                    AddFollower(this.Game.GetWorld(71150), 4580);
+                                    AddFollower(this.Game.GetWorld(WorldSno.trout_town), 4580);
                                 }
                         });
                         
@@ -300,13 +306,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to gates
-                    StartConversation(this.Game.GetWorld(71150), 166678);
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    StartConversation(world, 166678);
                     ListenProximity(108466, new Advance());
-                    this.Game.AddOnLoadAction(71150, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
                         if (Game.CurrentQuest == 72095)
                             if (Game.CurrentStep == 28 || Game.CurrentStep == 7 || Game.CurrentStep == -1)
-                                ActiveArrow(this.Game.GetWorld(71150), 108466);
+                                ActiveArrow(world, 108466);
                       
                     });
                 })
@@ -320,13 +327,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to Adria house
-                    if (this.Game.GetWorld(71150).GetActorsBySNO(108466).Where(d => d.Visible).FirstOrDefault() != null)
-                        Open(this.Game.GetWorld(71150), 108466);
-                    this.Game.AddOnLoadAction(71150, () =>
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    if (world.GetActorsBySNO(108466).Where(d => d.Visible).FirstOrDefault() != null)
+                        Open(world, 108466);
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
                         if (Game.CurrentQuest == 72095)
                             if (Game.CurrentStep == 49 || Game.CurrentStep == 39)
-                                ActiveArrow(this.Game.GetWorld(71150), 191886, 62751);
+                                ActiveArrow(world, 191886, WorldSno.trout_adriascellar);
                     });
                     ListenProximity(191886, new Advance());
                 })
@@ -355,16 +363,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 { //go to cave
                     //DestroyFollower(4580);
                     ListenTeleport(62968, new Advance());
-                    this.Game.AddOnLoadAction(62751, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_adriascellar, () =>
                     {
-                        foreach (var lh in this.Game.GetWorld(62751).GetActorsBySNO(203030))
+                        var world = this.Game.GetWorld(WorldSno.trout_adriascellar);
+                        foreach (var lh in world.GetActorsBySNO(203030))
                         {
                             lh.SetVisible(false);
                             lh.Hidden = true;
                         }
 
                         if (Game.CurrentQuest == 72095)
-                            ActiveArrow(this.Game.GetWorld(71150), 131123);
+                            ActiveArrow(world, 131123);
                     });
                 })
             });
@@ -399,14 +408,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 
 
-                    this.Game.AddOnLoadAction(62751, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_adriascellar, () =>
                     {
-                        CapitanDaltyn = this.Game.GetWorld(62751).SpawnMonster(156801, new Vector3D { X = 52.587f, Y = 103.368f, Z = 0.1f });
+                        var world = this.Game.GetWorld(WorldSno.trout_adriascellar);
+                        CapitanDaltyn = world.SpawnMonster(156801, new Vector3D { X = 52.587f, Y = 103.368f, Z = 0.1f });
                         CapitanDaltyn.Attributes[GameAttribute.Quest_Monster] = true;
                         CapitanDaltyn.PlayAnimation(5, 11523);
                         foreach (Vector3D point in Zombies)
                         {
-                            var Zombie = this.Game.GetWorld(62751).SpawnMonster(6644, point);
+                            var Zombie = world.SpawnMonster(6644, point);
                             Zombie.Attributes[GameAttribute.Quest_Monster] = true;
                             Zombie.PlayAnimation(5, 11523);
                         }
@@ -423,9 +433,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //talk to Leah in cave
-                    foreach (var host in this.Game.GetWorld(62751).GetActorsBySNO(4580))
+                    var world = this.Game.GetWorld(WorldSno.trout_adriascellar);
+                    foreach (var host in world.GetActorsBySNO(4580))
                     {
-                        foreach (var lh in this.Game.GetWorld(62751).GetActorsBySNO(203030))
+                        foreach (var lh in world.GetActorsBySNO(203030))
                         {
                             lh.SetVisible(true);
                             lh.Hidden = false;
@@ -447,12 +458,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to church				
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     ListenProximity(167289, new Advance());
-                    if (this.Game.GetWorld(71150).GetActorByGlobalId(LeahTempId) != null)
-                        this.Game.GetWorld(71150).GetActorByGlobalId(LeahTempId).Hidden = false;
-                    setActorVisible(this.Game.GetWorld(71150), 141508, false);
-                    if (this.Game.GetWorld(71150).GetActorBySNO(112131, true) != null)
-                        this.Game.GetWorld(71150).GetActorBySNO(112131, true).Hidden = true;
+                    if (world.GetActorByGlobalId(LeahTempId) != null)
+                        world.GetActorByGlobalId(LeahTempId).Hidden = false;
+                    setActorVisible(world, 141508, false);
+                    if (world.GetActorBySNO(112131, true) != null)
+                        world.GetActorBySNO(112131, true).Hidden = true;
                     //this.Game.GetWorld(71150).GetActorBySNO(196224, true).Hidden = true;
                 })
             });
@@ -490,9 +502,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //kill skeletons //115403 elite
                   //this.Game.GetWorld(60713).SpawnMonster(115403, new Vector3D{X = 99.131f, Y = 211.501f, Z = 0.1f});
-                    this.Game.AddOnLoadAction(60713, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_cain_intro, () =>
                     {
-                        setActorOperable(this.Game.GetWorld(60713), 156058, false);
+                        setActorOperable(this.Game.GetWorld(WorldSno.trdun_cain_intro), 156058, false);
                     });
                     ListenKill(115403, 1, new Advance());
                 })
@@ -507,7 +519,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //talk to Cain
                   //this.Game.GetWorld(60713).GetActorBySNO(5723, true).Hidden = true;
-                    setActorOperable(this.Game.GetWorld(71150), 121241, false);
+                    setActorOperable(this.Game.GetWorld(WorldSno.trout_town), 121241, false);
                     ListenConversation(17667, new Advance());
                 })
             });
@@ -521,7 +533,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //go with Cain
                     this.Game.CurrentEncounter.activated = false;
-                    StartConversation(this.Game.GetWorld(60713), 72496);
+                    StartConversation(this.Game.GetWorld(WorldSno.trdun_cain_intro), 72496);
                     ListenTeleport(19938, new Advance());
                 })
             });
@@ -534,19 +546,20 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //talk to Leah in New Tristram
-                    this.Game.AddOnLoadAction(60713, () =>
+                    var tristramWorld = this.Game.GetWorld(WorldSno.trout_town);
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_cain_intro, () =>
                     {
-                        Open(this.Game.GetWorld(60713), 5723);
+                        Open(this.Game.GetWorld(WorldSno.trdun_cain_intro), 5723);
                     });
-                    this.Game.AddOnLoadAction(71150, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
-                        StartConversation(this.Game.GetWorld(71150), 72498);
+                        StartConversation(tristramWorld, 72498);
                     });
                     //StartConversation(this.Game.GetWorld(71150), 72496);
-                    var CheckLeah = this.Game.GetWorld(71150).GetActorBySNO(4580, true);
+                    var CheckLeah = tristramWorld.GetActorBySNO(4580, true);
                     if (CheckLeah == null)
                     {
-                        var Leah = this.Game.GetWorld(71150).GetActorBySNO(4580, false);
+                        var Leah = tristramWorld.GetActorBySNO(4580, false);
                         if (Leah != null)
                         {
                             Leah.Hidden = false;
@@ -582,7 +595,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {
-                    this.Game.AddOnLoadAction(71150, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
                         if (Game.CurrentQuest == 72221)
                             if (Game.CurrentStep == -1 || Game.CurrentStep == 41)
@@ -596,7 +609,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                                 Cain.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
                                 Cain.Attributes.BroadcastChangedIfRevealed();
                                 //*/
-                                StartConversation(this.Game.GetWorld(71150), 198691);
+                                StartConversation(this.Game.GetWorld(WorldSno.trout_town), 198691);
                             }
                     });
                     //ListenConversation(198691, new Advance());
@@ -611,8 +624,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //talk to Hedric
-                    ActiveArrow(this.Game.GetWorld(71150), 65036);
-                    ActorSystem.InteractiveNPC Cain = this.Game.GetWorld(71150).GetActorBySNO(3533, true) as ActorSystem.InteractiveNPC;
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    ActiveArrow(world, 65036);
+                    var Cain = world.GetActorBySNO(3533, true) as ActorSystem.InteractiveNPC;
                     Cain.Conversations.Clear();
                     Cain.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
                     Cain.Attributes.BroadcastChangedIfRevealed();
@@ -630,20 +644,23 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to cellar and kill zombies
-                    DisableArrow(this.Game.GetWorld(71150), this.Game.GetWorld(71150).GetActorBySNO(65036));
+                    var tristramWorld = this.Game.GetWorld(WorldSno.trout_town);
+                    DisableArrow(tristramWorld, tristramWorld.GetActorBySNO(65036));
                     //136441
                     //*
-                    this.Game.AddOnLoadAction(136441, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_oldtristram_cellar_f, () =>
                     {
                         //ТОЧНО ПРЯЧЕМ КУЗНЕЦА
-                        this.Game.GetWorld(136441).GetActorBySNO(65036).Hidden = true;
-                        this.Game.GetWorld(136441).GetActorBySNO(65036).SetVisible(false);
-                        foreach (var plr in this.Game.GetWorld(136441).Players.Values)
-                            this.Game.GetWorld(136441).GetActorBySNO(65036).Unreveal(plr);
+                        var questWorld = this.Game.GetWorld(WorldSno.trout_oldtristram_cellar_f);
+                        var questActor = questWorld.GetActorBySNO(65036);
+                        questActor.Hidden = true;
+                        questActor.SetVisible(false);
+                        foreach (var plr in questWorld.Players.Values)
+                            questActor.Unreveal(plr);
                         //Добавляем
-                        AddFollower(this.Game.GetWorld(136441), 65036);
+                        AddFollower(questWorld, 65036);
                         //Даём мощ
-                        foreach (var Smith in this.Game.GetWorld(136441).GetActorsBySNO(65036))
+                        foreach (var Smith in questWorld.GetActorsBySNO(65036))
                         {
                             var monsterLevels = (DiIiS_NA.Core.MPQ.FileFormats.GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.GameBalance][19760].Data;
                             float DamageMin = monsterLevels.MonsterLevel[this.Game.MonsterLevel].Dmg * 0.5f;
@@ -683,16 +700,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //talk to Hedric
-                    var Hedric = this.Game.GetWorld(136441).GetActorBySNO(65036, true);
+                    var world = this.Game.GetWorld(WorldSno.trout_oldtristram_cellar_f);
+                    var Hedric = world.GetActorBySNO(65036, true);
                     if (Hedric != null)
                     {
                         Vector3D PositionToSpawn = Hedric.Position;
                         DestroyFollower(65036);
-                        this.Game.GetWorld(136441).GetActorBySNO(65036).Teleport(PositionToSpawn);
+                        world.GetActorBySNO(65036).Teleport(PositionToSpawn);
                     }
-                    this.Game.GetWorld(136441).GetActorBySNO(65036).Hidden = false;
-                    this.Game.GetWorld(136441).GetActorBySNO(65036).SetVisible(true);
-                    foreach (var plr in this.Game.GetWorld(136441).Players.Values) this.Game.GetWorld(136441).GetActorBySNO(65036).Reveal(plr);
+                    world.GetActorBySNO(65036).Hidden = false;
+                    world.GetActorBySNO(65036).SetVisible(true);
+                    foreach (var plr in world.Players.Values) world.GetActorBySNO(65036).Reveal(plr);
                     ListenConversation(198312, new Advance());
                 })
             });
@@ -717,7 +735,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                                 plr.LoadCrafterData();
                             }
                         }
-                    setActorOperable(this.Game.GetWorld(71150), 121241, true);
+                    setActorOperable(this.Game.GetWorld(WorldSno.trout_town), 121241, true);
                 })
             });
 
@@ -741,11 +759,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //find crown holder
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     script = new CryptPortals();
-                    script.Execute(this.Game.GetWorld(71150));
+                    script.Execute(world);
                     if (this.Game.Players.Count == 0) UnlockTeleport(6);
-                    if (this.Game.GetWorld(71150).GetActorsBySNO(230324).Where(d => d.Visible).FirstOrDefault() != null)
-                        Open(this.Game.GetWorld(71150), 230324);
+                    if (world.GetActorsBySNO(230324).Where(d => d.Visible).FirstOrDefault() != null)
+                        Open(world, 230324);
                     ListenInteract(159446, 1, new Advance());
                     //199642 - holder
                 })
@@ -759,10 +778,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //kill Imon advisor
-                    if (this.Game.Players.Count > 0) UnlockTeleport(6);
-                    this.Game.AddOnLoadAction(92126, () =>
+                    if (!Game.Players.IsEmpty) UnlockTeleport(6);
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_crypt_skeletonkingcrown_02, () =>
                     {
-                        this.Game.GetWorld(92126).SpawnMonster(156353, this.Game.GetWorld(92126).GetActorBySNO(156381).Position);// or 156381
+                        var world = this.Game.GetWorld(WorldSno.trdun_crypt_skeletonkingcrown_02);
+                        world.SpawnMonster(156353, world.GetActorBySNO(156381).Position);// or 156381
                     });
                     ListenKill(156353, 1, new Advance());
                 })
@@ -814,7 +834,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {
-                    StartConversation(this.Game.GetWorld(71150), 80681);
+                    StartConversation(this.Game.GetWorld(WorldSno.trout_town), 80681);
                 })
             });
 
@@ -838,9 +858,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //enter Hall of Leoric
-                    this.Game.AddOnLoadAction(60713, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_cain_intro, () =>
                     {
-                        setActorOperable(this.Game.GetWorld(60713), 156058, true);
+                        setActorOperable(this.Game.GetWorld(WorldSno.trdun_cain_intro), 156058, true);
                     });
                     ListenTeleport(60714, new Advance());
                 })
@@ -879,7 +899,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //help Cormac(kill cultists)
-                    var Kormak_Imprisoned = this.Game.GetWorld(105406).GetActorBySNO(104813);
+                    var Kormak_Imprisoned = this.Game.GetWorld(WorldSno.a1trdun_level05_templar).GetActorBySNO(104813);
                     foreach (var act in Kormak_Imprisoned.GetActorsInRange(80)) 
                         if (act.ActorSNO.Id == 145745)
                         {
@@ -888,7 +908,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             act.SetFacingRotation(ActorSystem.Movement.MovementHelpers.GetFacingAngle(act, Kormak_Imprisoned));
                         }
 
-                    this.Game.AddOnLoadAction(105406, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1trdun_level05_templar, () =>
                     {
                         try
                         {
@@ -902,7 +922,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         }
                         catch { }
                     });
-                    if (this.Game.Players.Count == 0) UnlockTeleport(3);
+                    if (Game.Players.IsEmpty) UnlockTeleport(3);
                     //if (this.Game.Players.Count > 0) this.Game.GetWorld(105406).GetActorBySNO(104813, true).Hidden = true;
                     ListenKill(145745, 7, new Advance());
                 })
@@ -916,16 +936,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //find Kormac's stuff 178657
-                    this.Game.AddOnLoadAction(105406, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1trdun_level05_templar, () =>
                     {
                         if (this.Game.CurrentQuest == 72061 && this.Game.CurrentStep == 40)
                         {
+                            var world = this.Game.GetWorld(WorldSno.a1trdun_level05_templar);
                             foreach (var act in Prisoners)
                                 act.Brain.Activate();
                             if (ProxyObject != null)
                                 ProxyObject.Destroy();
-                            AddFollower(this.Game.GetWorld(105406), 104813);
-                            StartConversation(this.Game.GetWorld(105406), 104782);
+                            AddFollower(world, 104813);
+                            StartConversation(world, 104782);
                         }
                     });
                     ListenInteract(178657, 1, new Advance());
@@ -940,16 +961,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //find and kill Jondar
-                    this.Game.AddOnLoadAction(105406, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1trdun_level05_templar, () =>
                     {
                         if (this.Game.CurrentQuest == 72061 && this.Game.CurrentStep == 42)
                         {
+                            var world = this.Game.GetWorld(WorldSno.a1trdun_level05_templar);
                             DestroyFollower(104813);
-                            AddFollower(this.Game.GetWorld(105406), 104813);
-                            StartConversation(this.Game.GetWorld(105406), 168278);
-                            this.Game.AddOnLoadAction(32993, () =>
+                            AddFollower(world, 104813);
+                            StartConversation(world, 168278);
+                            this.Game.AddOnLoadSceneAction(32993, () =>
                             {
-                                StartConversation(this.Game.GetWorld(105406), 168282);
+                                StartConversation(world, 168282);
                             });
                         }
                     });
@@ -966,15 +988,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //join templar(wtf?)
-                    
-                    this.Game.AddOnLoadAction(105406, () =>
+                    var world = this.Game.GetWorld(WorldSno.a1trdun_level05_templar);
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1trdun_level05_templar, () =>
                     {
                         if (this.Game.CurrentQuest == 72061 && this.Game.CurrentStep == 56)
                         {
                             DestroyFollower(104813);
                             //AddFollower(this.Game.GetWorld(105406), 104813);
                         }
-                        foreach (var Wall in this.Game.GetWorld(105406).GetActorsBySNO(109209))
+                        foreach (var Wall in world.GetActorsBySNO(109209))
                         {
                             Wall.PlayAnimation(11, 108568);
                             Wall.Attributes[GameAttribute.Deleted_On_Server] = true;
@@ -986,7 +1008,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     });
                     UnlockTeleport(3);
                     script = new Advance();
-                    script.Execute(this.Game.GetWorld(105406));
+                    script.Execute(world);
                     if (!this.Game.Empty)
                         foreach (var plr in this.Game.Players.Values)
                         {
@@ -1009,7 +1031,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //enter king's crypt
-                    this.Game.AddOnLoadAction(105406, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1trdun_level05_templar, () =>
                     {
                         if (this.Game.CurrentQuest == 72061 && this.Game.CurrentStep == 44)
                         {
@@ -1040,9 +1062,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //enter crypt
-                    this.Game.AddOnLoadAction(73261, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
-                        this.Game.GetWorld(73261).GetActorBySNO(461, true).Hidden = true;
+                        this.Game.GetWorld(WorldSno.a1trdun_king_level08).GetActorBySNO(461, true).Hidden = true;
                     });
                     UnlockTeleport(4);
                     ListenTeleport(19789, new Advance());
@@ -1058,10 +1080,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //kill skeletons
-                    this.Game.AddOnLoadAction(73261, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
                         script = new SpawnSkeletons();
-                        script.Execute(this.Game.GetWorld(73261));
+                        script.Execute(this.Game.GetWorld(WorldSno.a1trdun_king_level08));
 
                     });
 
@@ -1077,9 +1099,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //take crown on Leoric's head
-                    this.Game.AddOnLoadAction(73261, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
-                        Open(this.Game.GetWorld(73261), 5765);
+                        Open(this.Game.GetWorld(WorldSno.a1trdun_king_level08), 5765);
                     });
                     //Open(this.Game.GetWorld(73261), 172645);
                     ListenInteract(5354, 1, new Advance());
@@ -1108,9 +1130,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 { //go to fallen star room
                     this.Game.CurrentEncounter.activated = false;
                     ListenTeleport(117411, new Advance());
-                    this.Game.AddOnLoadAction(73261, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
-                        Open(this.Game.GetWorld(73261), 175181);
+                        Open(this.Game.GetWorld(WorldSno.a1trdun_king_level08), 175181);
                     });
                 })
             });
@@ -1177,8 +1199,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {
-                    StartConversation(this.Game.GetWorld(71150), 198706);
-                    this.Game.GetWorld(71150).GetActorBySNO(216574).Hidden = true;
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    StartConversation(world, 198706);
+                    world.GetActorBySNO(216574).Hidden = true;
                 })
             });
 
@@ -1190,12 +1213,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to Wild Fields
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     ListenTeleport(19952, new Advance());
                     ListenProximity(60665, new Advance()); //if going through graveyard
-                    var Gate = this.Game.GetWorld(71150).GetActorBySNO(230324);
+                    var Gate = world.GetActorBySNO(230324);
                     Gate.Field2 = 16;
                     Gate.PlayAnimation(5, Gate.AnimationSet.TagMapAnimDefault[DiIiS_NA.GameServer.Core.Types.TagMap.AnimationSetKeys.Opening]);
-                    this.Game.GetWorld(71150).BroadcastIfRevealed(plr => new DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD.ACDCollFlagsMessage
+                    world.BroadcastIfRevealed(plr => new DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD.ACDCollFlagsMessage
                     {
                         ActorID = Gate.DynamicID(plr),
                         CollFlags = 0
@@ -1224,11 +1248,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //find piece of sword
-                    this.Game.AddOnLoadAction(119888, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.fields_cave_swordofjustice_level01, () =>
                     {
                         if (this.Game.CurrentQuest == 117779 && this.Game.CurrentStep == 3)
                         {
-                            StartConversation(this.Game.GetWorld(119888), 130225);
+                            StartConversation(this.Game.GetWorld(WorldSno.fields_cave_swordofjustice_level01), 130225);
                         }
                     });
                     //if (!this.Game.Empty) StartConversation(this.Game.GetWorld(119888), 130225);
@@ -1284,7 +1308,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //complete
-                    StartConversation(this.Game.GetWorld(71150), 198713);
+                    StartConversation(this.Game.GetWorld(WorldSno.trout_town), 198713);
                 })
             });
             #endregion
@@ -1299,9 +1323,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {
-                    LeahTempId = this.Game.GetWorld(71150).GetActorBySNO(4580, true).GlobalID;
-                    this.Game.GetWorld(71150).GetActorBySNO(4580, true).Hidden = true;
-                    StartConversation(this.Game.GetWorld(71150), 198713);
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    LeahTempId = world.GetActorBySNO(4580, true).GlobalID;
+                    world.GetActorBySNO(4580, true).Hidden = true;
+                    StartConversation(world, 198713);
                 })
             });
 
@@ -1313,7 +1338,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to Sunken Temple
-                    AddFollower(this.Game.GetWorld(71150), 4580);
+                    AddFollower(this.Game.GetWorld(WorldSno.trout_town), 4580);
                     ListenProximity(80812, new LaunchConversation(111893));
                     ListenConversation(111893, new Advance());
                 })
@@ -1327,11 +1352,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //follow Scoundrel NPC
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
-                    AddFollower(this.Game.GetWorld(71150), 80812);
+                    AddFollower(world, 4580);
+                    AddFollower(world, 80812);
                     //Open(this.Game.GetWorld(71150), 170913);
-                    StartConversation(this.Game.GetWorld(71150), 167656);
+                    StartConversation(world, 167656);
                     ListenConversation(167656, new Advance());
                 })
             });
@@ -1344,11 +1370,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //talk with bandits
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
-                    try { (this.Game.GetWorld(71150).FindAt(170913, new Vector3D { X = 1523.13f, Y = 857.71f, Z = 39.26f }, 5.0f) as Door).Open(); } catch { }
-                    try { (this.Game.GetWorld(71150).FindAt(170913, new Vector3D { X = 1523.13f, Y = 857.71f, Z = 39.26f }, 5.0f) as Door).Open(); } catch { }
-                    StartConversation(this.Game.GetWorld(71150), 167677);
+                    AddFollower(world, 4580);
+                    try { (world.FindAt(170913, new Vector3D { X = 1523.13f, Y = 857.71f, Z = 39.26f }, 5.0f) as Door).Open(); } catch { }
+                    StartConversation(world, 167677);
                     ListenConversation(167677, new Advance());
                 })
             });
@@ -1361,9 +1387,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //kill the bandits
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
-                    this.Game.GetWorld(71150).SpawnMonster(174013, new Vector3D { X = 1471.473f, Y = 747.4875f, Z = 40.1f });
+                    AddFollower(world, 4580);
+                    world.SpawnMonster(174013, new Vector3D { X = 1471.473f, Y = 747.4875f, Z = 40.1f });
                     ListenKill(174013, 1, new Advance());
                 })
             });
@@ -1377,7 +1404,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //talk with Scoundrel
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
+                    AddFollower(this.Game.GetWorld(WorldSno.trout_town), 4580);
                     ListenProximity(80812, new LaunchConversation(111899));
                     ListenConversation(111899, new Advance());
                 })
@@ -1391,11 +1418,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //lead Scoundrel to waypoint
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
-                    try { (this.Game.GetWorld(71150).FindAt(170913, new Vector3D { X = 1444.1f, Y = 786.64f, Z = 39.7f }, 4.0f) as Door).Open(); } catch { }
-                    setActorOperable(this.Game.GetWorld(71150), 63114, false);
-                    setActorOperable(this.Game.GetWorld(71150), 61459, false);
+                    AddFollower(world, 4580);
+                    try { (world.FindAt(170913, new Vector3D { X = 1444.1f, Y = 786.64f, Z = 39.7f }, 4.0f) as Door).Open(); } catch { }
+                    setActorOperable(world, 63114, false);
+                    setActorOperable(world, 61459, false);
                     ListenProximity(6442, new Advance());
                     if (!this.Game.Empty)
                         foreach (var plr in this.Game.Players.Values)
@@ -1422,9 +1450,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to Sunken Temple
-                    StartConversation(this.Game.GetWorld(71150), 223934);
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    StartConversation(world, 223934);
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
+                    AddFollower(world, 4580);
                     DestroyFollower(80812);
                     ListenProximity(108882, new Advance());
                 })
@@ -1439,7 +1468,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //talk with Alaric
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
+                    AddFollower(this.Game.GetWorld(WorldSno.trout_town), 4580);
                     UnlockTeleport(8);
                     ListenConversation(81576, new Advance());
                 })
@@ -1453,9 +1482,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to Rotten forest
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
-                    Open(this.Game.GetWorld(71150), 100849); //bridge
+                    AddFollower(world, 4580);
+                    Open(world, 100849); //bridge
                     ListenProximity(100849, new Advance());
                 })
             });
@@ -1469,7 +1499,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //find 2 Orbs
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
+                    AddFollower(this.Game.GetWorld(WorldSno.trout_town), 4580);
                     ListenInteract(215434, 1, new CompleteObjective(0));
                     ListenInteract(215512, 1, new CompleteObjective(1));
                 })
@@ -1483,11 +1513,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 2, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //use 2 stones
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
+                    AddFollower(world, 4580);
                     UnlockTeleport(9);
-                    setActorOperable(this.Game.GetWorld(71150), 63114, true);
-                    setActorOperable(this.Game.GetWorld(71150), 61459, true);
+                    setActorOperable(world, 63114, true);
+                    setActorOperable(world, 61459, true);
                     ListenInteract(63114, 1, new CompleteObjective(0));
                     ListenInteract(61459, 1, new CompleteObjective(0));
                 })
@@ -1501,10 +1532,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //enter the temple
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
-                    Open(this.Game.GetWorld(71150), 144149); //bridge
-                    Open(this.Game.GetWorld(71150), 100967);
+                    AddFollower(world, 4580);
+                    Open(world, 144149); //bridge
+                    Open(world, 100967);
                     ListenTeleport(60398, new Advance());
                 })
             });
@@ -1518,9 +1550,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //explore the temple
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
+                    AddFollower(this.Game.GetWorld(WorldSno.trout_town), 4580);
                     //60395 - trdun_cave_nephalem_03
-                    var DTWorld = this.Game.GetWorld(60395);
 
                     ListenProximity(98799, new DrownedTemple1());
                     ListenKill(5395, 14, new LaunchConversation(108256));
@@ -1538,10 +1569,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //kill prophet Ezek and skeletons
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
+                    AddFollower(this.Game.GetWorld(WorldSno.trout_town), 4580);
 
-                    foreach (var act in this.Game.GetWorld(60395).GetActorsBySNO(139757)) act.Destroy();
-                    this.Game.GetWorld(60395).SpawnMonster(139757, new Vector3D(292f, 275f, -76f));
+                    var world = this.Game.GetWorld(WorldSno.trdun_cave_nephalem_03);
+                    foreach (var act in world.GetActorsBySNO(139757)) act.Destroy();
+                    world.SpawnMonster(139757, new Vector3D(292f, 275f, -76f));
 
                     ListenKill(139757, 1, new Advance());
                 })
@@ -1556,8 +1588,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //talk with Alaric in temple
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
-                    StartConversation(this.Game.GetWorld(60395), 133372);
+                    AddFollower(this.Game.GetWorld(WorldSno.trout_town), 4580);
+                    StartConversation(this.Game.GetWorld(WorldSno.trdun_cave_nephalem_03), 133372);
                     ListenConversation(133372, new Advance());
                 })
             });
@@ -1571,13 +1603,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //defend the sword piece
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
-                    this.Game.AddOnLoadAction(60395, () =>
+                    AddFollower(this.Game.GetWorld(WorldSno.trout_town), 4580);
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_cave_nephalem_03, () =>
                     {
-                        Open(this.Game.GetWorld(60395), 177439);
+                        var world = this.Game.GetWorld(WorldSno.trdun_cave_nephalem_03);
+                        Open(world, 177439);
                         if (this.Game.CurrentQuest == 72738 && this.Game.CurrentStep == 103)
                         {
-                            StartConversation(this.Game.GetWorld(60395), 108256);
+                            StartConversation(world, 108256);
                         }
                     });
                     ListenProximity(206461, new Advance());
@@ -1592,12 +1625,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //use the piece of sword
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(4580);
-                    AddFollower(this.Game.GetWorld(71150), 4580);
+                    AddFollower(world, 4580);
                     ListenInteract(206461, 1, new LaunchConversation(198925));
                     ListenConversation(198925, new LaunchConversation(133487));
                     ListenConversation(133487, new Advance());
-                    this.Game.GetWorld(71150).GetActorByGlobalId(LeahTempId).Hidden = false;
+                    world.GetActorByGlobalId(LeahTempId).Hidden = false;
                 })
             });
 
@@ -1609,11 +1643,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //return to Tristram
-                    this.Game.AddOnLoadAction(60395, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_cave_nephalem_03, () =>
                     {
                         if (this.Game.CurrentQuest == 72738 && this.Game.CurrentStep == 56)
                         {
-                            StartConversation(this.Game.GetWorld(60395), 202967);
+                            StartConversation(this.Game.GetWorld(WorldSno.trdun_cave_nephalem_03), 202967);
                         }
                     });
                     DestroyFollower(4580);
@@ -1643,7 +1677,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {
-                    StartConversation(this.Game.GetWorld(71150), 120357);
+                    StartConversation(this.Game.GetWorld(WorldSno.trout_town), 120357);
                 })
             });
 
@@ -1667,7 +1701,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {  //go to Vortem square
-                    var AttackedTown = this.Game.GetWorld(72882);
+                    var AttackedTown = this.Game.GetWorld(WorldSno.trout_townattack);
                     var Maghda = AttackedTown.GetActorBySNO(129345);
                     AttackedTown.Leave(Maghda);
 
@@ -1684,7 +1718,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 {  //kill all cultists
                     int Count = 0;
-                    foreach (var cultist in this.Game.GetWorld(72882).GetActorsBySNO(90008))
+                    foreach (var cultist in this.Game.GetWorld(WorldSno.trout_townattack).GetActorsBySNO(90008))
                         if (cultist.CurrentScene.SceneSNO.Id == 76000)
                         {
                             cultist.Attributes[GameAttribute.Quest_Monster] = true;
@@ -1707,11 +1741,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {  
-                    this.Game.AddOnLoadAction(72882, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_townattack, () =>
                     {
                         if (this.Game.CurrentQuest == 73236 && this.Game.CurrentStep == 11)
                         {
-                            this.Game.GetWorld(72882).SpawnMonster(178619, new Vector3D { X = 581.237f, Y = 584.346f, Z = 70.1f });
+                            this.Game.GetWorld(WorldSno.trout_townattack).SpawnMonster(178619, new Vector3D { X = 581.237f, Y = 584.346f, Z = 70.1f });
                         }
                         ListenKill(178619, 1, new Advance());
                     });
@@ -1726,13 +1760,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {  //kill 3 berserkers
-                    this.Game.AddOnLoadAction(72882, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_townattack, () =>
                     {
                         if (this.Game.CurrentQuest == 73236 && this.Game.CurrentStep == 16)
                         {
-                            this.Game.GetWorld(72882).SpawnMonster(178300, new Vector3D { X = 577.724f, Y = 562.869f, Z = 70.1f });
-                            this.Game.GetWorld(72882).SpawnMonster(178300, new Vector3D { X = 565.886f, Y = 577.66f, Z = 70.1f });
-                            this.Game.GetWorld(72882).SpawnMonster(178300, new Vector3D { X = 581.308f, Y = 581.079f, Z = 70.1f });
+                            var world = this.Game.GetWorld(WorldSno.trout_townattack);
+                            world.SpawnMonster(178300, new Vector3D { X = 577.724f, Y = 562.869f, Z = 70.1f });
+                            world.SpawnMonster(178300, new Vector3D { X = 565.886f, Y = 577.66f, Z = 70.1f });
+                            world.SpawnMonster(178300, new Vector3D { X = 581.308f, Y = 581.079f, Z = 70.1f });
                         }
                     });
                     ListenKill(178300, 3, new Advance());
@@ -1747,11 +1782,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {  //talk with priest
-                    this.Game.AddOnLoadAction(72882, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_townattack, () =>
                     {
                         if (this.Game.CurrentQuest == 73236 && this.Game.CurrentStep == 63)
                         {
-                           StartConversation(this.Game.GetWorld(72882), 120372);
+                           StartConversation(this.Game.GetWorld(WorldSno.trout_townattack), 120372);
                         }
                     });
                     ListenConversation(120372, new Advance());
@@ -1797,7 +1832,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 {  //go to Cain's house
                      
-                    if (!this.Game.Empty) StartConversation(this.Game.GetWorld(119888), 130225);
+                    if (!this.Game.Empty) StartConversation(this.Game.GetWorld(WorldSno.fields_cave_swordofjustice_level01), 130225);
                     ListenTeleport(130163, new StartSceneinHome());
                     //ListenTeleport(130163, new LaunchConversation(165125));
                     ListenConversation(165125, new LaunchConversation(190199));
@@ -1852,13 +1887,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 {
-                    this.Game.AddOnLoadAction(167721, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trout_townattack_chapelcellar_a, () =>
                     {
-                        foreach (var Table in this.Game.GetWorld(167721).GetActorsBySNO(153260)) { Table.SetUsable(false); Table.SetIdleAnimation(Table.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]); }
-                        foreach (var Maghda in this.Game.GetWorld(167721).GetActorsBySNO(129345)) Maghda.Destroy();
+                        var world = this.Game.GetWorld(WorldSno.trout_townattack_chapelcellar_a);
+                        foreach (var Table in world.GetActorsBySNO(153260)) { Table.SetUsable(false); Table.SetIdleAnimation(Table.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]); }
+                        foreach (var Maghda in world.GetActorsBySNO(129345)) Maghda.Destroy();
                     });
-                    var Leah = this.Game.GetWorld(71150).GetActorBySNO(4580);
-                    var LeahAfterEvent = this.Game.GetWorld(71150).SpawnMonster(138271, Leah.Position);
+                    var tristramWorld = this.Game.GetWorld(WorldSno.trout_town);
+                    var Leah = tristramWorld.GetActorBySNO(4580);
+                    var LeahAfterEvent = tristramWorld.SpawnMonster(138271, Leah.Position);
                     
                     //ListenProximity(4580, new LaunchConversation(93337)); //cork
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Conversations.Clear();
@@ -1878,7 +1915,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to Aranea Cave
-                    var LeahAfterEvent = this.Game.GetWorld(71150).GetActorBySNO(138271);
+                    var LeahAfterEvent = this.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(138271);
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 1;
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
                     ListenTeleport(78572, new Advance());
@@ -1893,7 +1930,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //find Aranea Queen lair
-                    this.Game.GetWorld(71150).GetActorBySNO(138271, true).Hidden = true;
+                    this.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(138271, true).Hidden = true;
                     //this.Game.GetWorld(71150).GetActorBySNO(138271,true).SetVisible(false);
                     ListenTeleport(62726, new Advance());
                 })
@@ -1907,8 +1944,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //talk with woman in web
-                    setActorOperable(this.Game.GetWorld(182976), 213490, false);
-                    setActorOperable(this.Game.GetWorld(182976), 104545, false);
+                    var world = this.Game.GetWorld(WorldSno.a1dun_spidercave_02);
+                    setActorOperable(world, 213490, false);
+                    setActorOperable(world, 104545, false);
                     ListenProximity(104545, new Advance());
                 })
             });
@@ -1921,7 +1959,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //kill Aranea Queen
-                    this.Game.GetWorld(182976).SpawnMonster(51341, new Vector3D { X = 149.439f, Y = 121.452f, Z = 13.794f });
+                    this.Game.GetWorld(WorldSno.a1dun_spidercave_02).SpawnMonster(51341, new Vector3D { X = 149.439f, Y = 121.452f, Z = 13.794f });
                     ListenKill(51341, 1, new Advance());
                 })
             });
@@ -1934,7 +1972,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //grab Aranea acid
-                    setActorOperable(this.Game.GetWorld(182976), 213490, true);
+                    setActorOperable(this.Game.GetWorld(WorldSno.a1dun_spidercave_02), 213490, true);
                     ListenInteract(213490, 1, new Advance());
                 })
             });
@@ -1947,7 +1985,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //use acid on Karina
-                    setActorOperable(this.Game.GetWorld(182976), 104545, true);
+                    setActorOperable(this.Game.GetWorld(WorldSno.a1dun_spidercave_02), 104545, true);
                     ListenInteract(104545, 1, new Advance());
                 })
             });
@@ -1972,7 +2010,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //talk with Karina
-                    setActorOperable(this.Game.GetWorld(71150), 167311, false);
+                    setActorOperable(this.Game.GetWorld(WorldSno.trout_town), 167311, false);
                     ListenProximity(194263, new LaunchConversation(191511)); //cork
                     ListenConversation(191511, new Advance());
                 })
@@ -1999,7 +2037,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //go to Hazra wall
-                    setActorOperable(this.Game.GetWorld(71150), 167311, true);
+                    setActorOperable(this.Game.GetWorld(WorldSno.trout_town), 167311, true);
                     UnlockTeleport(11);
                     ListenInteract(167311, 1, new Advance());
                 })
@@ -2050,10 +2088,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //kill cultists
-                    if (!this.Game.Empty) StartConversation(this.Game.GetWorld(75049), 134968);
+                    if (!this.Game.Empty) StartConversation(this.Game.GetWorld(WorldSno.a1dun_leor_manor), 134968);
                     ListenConversation(134968, new LaunchConversation(134565));
-                    this.Game.GetWorld(71150).GetActorBySNO(4580).Hidden = false;
-                    this.Game.GetWorld(71150).GetActorBySNO(4580).SetVisible(true);
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    world.GetActorBySNO(4580).Hidden = false;
+                    world.GetActorBySNO(4580).SetVisible(true);
                     ListenKill(6024, 7, new Advance());
                 })
             });
@@ -2142,9 +2181,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //talk with Asilla Queen (npc 103381)
-                    this.Game.AddOnLoadAction(94676, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_jail_level01, () =>
                     {
-                        setActorOperable(this.Game.GetWorld(94676), 95571, false);
+                        setActorOperable(this.Game.GetWorld(WorldSno.trdun_jail_level01), 95571, false);
                     });
                     ListenConversation(103388, new Advance());
                 })
@@ -2159,11 +2198,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //free 6 souls
                   //spawn souls on 104104, 104106, 104108
-                    this.Game.AddOnLoadAction(94676, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_jail_level01, () =>
                     {
-                        setActorOperable(this.Game.GetWorld(94676), 95571, true);
+                        var world = this.Game.GetWorld(WorldSno.trdun_jail_level01);
+                        setActorOperable(world, 95571, true);
                         script = new SpawnSouls();
-                        script.Execute(this.Game.GetWorld(94676));
+                        script.Execute(world);
                      });
                     ListenInteract(102927, 6, new Advance());
                 })
@@ -2177,9 +2217,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //kill Overseer
-                    this.Game.AddOnLoadAction(94676, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_jail_level01, () =>
                     {
-                        this.Game.GetWorld(94676).SpawnMonster(98879, new Vector3D { X = 360.236f, Y = 840.47f, Z = 0.1f });
+                        this.Game.GetWorld(WorldSno.trdun_jail_level01).SpawnMonster(98879, new Vector3D { X = 360.236f, Y = 840.47f, Z = 0.1f });
                     });
                     ListenKill(98879, 1, new Advance());
                 })
@@ -2194,9 +2234,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //find Butcher's Room		
                     if (this.Game.Empty) UnlockTeleport(15);
-                    this.Game.AddOnLoadAction(94676, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_jail_level01, () =>
                     {
-                        Open(this.Game.GetWorld(94676), 100862);
+                        Open(this.Game.GetWorld(WorldSno.trdun_jail_level01), 100862);
                     });
                     ListenTeleport(90881, new Advance());
                 })
@@ -2210,11 +2250,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
                 OnAdvance = new Action(() =>
                 { //kill Butcher
-                    this.Game.AddOnLoadAction(78839, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_butcherslair_02, () =>
                     {
-                        setActorOperable(this.Game.GetWorld(78839), 105361, false);
-                        if (this.Game.GetWorld(78839).GetActorBySNO(3526) == null)
-                            this.Game.GetWorld(78839).SpawnMonster(3526, new Vector3D { X = 93.022f, Y = 89.86f, Z = 0.1f });
+                        var world = this.Game.GetWorld(WorldSno.trdun_butcherslair_02);
+                        setActorOperable(world, 105361, false);
+                        if (world.GetActorBySNO(3526) == null)
+                            world.SpawnMonster(3526, new Vector3D { X = 93.022f, Y = 89.86f, Z = 0.1f });
 
                     });
                     UnlockTeleport(15);
@@ -2231,9 +2272,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = new Action(() =>
                 { //find Tyrael
                     this.Game.CurrentEncounter.activated = false;
-                    this.Game.AddOnLoadAction(78839, () =>
+                    this.Game.AddOnLoadWorldAction(WorldSno.trdun_butcherslair_02, () =>
                     {
-                        setActorOperable(this.Game.GetWorld(78839), 105361, true);
+                        setActorOperable(this.Game.GetWorld(WorldSno.trdun_butcherslair_02), 105361, true);
                     });
                     ListenTeleport(148551, new Advance());
                 })

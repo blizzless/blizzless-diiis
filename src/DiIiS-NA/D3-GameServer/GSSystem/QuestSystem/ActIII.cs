@@ -30,6 +30,7 @@ using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -53,7 +54,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 8,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					this.Game.GetWorld(204707).GetActorBySNO(170038, true).NotifyConversation(1);
+					this.Game.GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetActorBySNO(170038, true).NotifyConversation(1);
 					ListenInteract(170038, 1, new LaunchConversation(204905));
 					ListenConversation(204905, new Advance());
 				})
@@ -66,9 +67,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 26,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //use fire torches
+					var world = this.Game.GetWorld(WorldSno.a3dun_hub_adria_tower_intro);
 					ListenInteract(196211, 5, new Advance());
-					StartConversation(this.Game.GetWorld(204707), 204915);
-					this.Game.GetWorld(204707).GetActorBySNO(170038, true).NotifyConversation(0);
+					StartConversation(world, 204915);
+					world.GetActorBySNO(170038, true).NotifyConversation(0);
 				})
 			});
 
@@ -117,15 +119,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 20,
 				Objectives = new List<Objective> { new Objective { Limit = 3, Counter = 0 } },
 				OnAdvance = new Action(() => { //use 3 catapults
-					this.Game.AddOnLoadAction(93099, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_rmpt_level02, () =>
 					{
+						var world = this.Game.GetWorld(WorldSno.a3dun_rmpt_level02);
 						if (this.Game.CurrentQuest == 93684 && this.Game.CurrentStep == 18)
 						{
 							//StartConversation(this.Game.GetWorld(81019), 106160);
 						}
-						this.Game.GetWorld(93099).GetActorBySNO(154137).NotifyConversation(2);
-						this.Game.GetWorld(93099).GetActorBySNO(162406).NotifyConversation(2);
-						this.Game.GetWorld(93099).GetActorBySNO(149810).NotifyConversation(2);
+						world.GetActorBySNO(154137).NotifyConversation(2);
+						world.GetActorBySNO(162406).NotifyConversation(2);
+						world.GetActorBySNO(149810).NotifyConversation(2);
 					});
 					ListenInteract(154137, 1, new FirstCatapult()); //followers
 					ListenInteract(162406, 1, new SecondCatapult());
@@ -188,9 +191,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find breach on 2nd level
 					if (this.Game.Empty)
-						while (this.Game.GetWorld(172909).GetActorBySNO(77796, true) != null)
-							this.Game.GetWorld(172909).GetActorBySNO(77796, true).Destroy();
-					UnlockTeleport(2);
+                    {
+						var world = this.Game.GetWorld(WorldSno.a3dun_hub_keep);
+						while (world.GetActorBySNO(77796, true) != null)
+							world.GetActorBySNO(77796, true).Destroy();
+                    }
+
+                    UnlockTeleport(2);
 					ListenTeleport(136448, new Advance());
 				})
 			});
@@ -214,17 +221,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill gluttony
 					UnlockTeleport(3);
-					this.Game.AddOnLoadAction(103209, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.gluttony_boss, () =>
 					{
 						if (this.Game.CurrentQuest == 93697)
 						{
-							ActII.DisableEveryone(this.Game.GetWorld(103209), true);
+							var world = this.Game.GetWorld(WorldSno.gluttony_boss);
+							// TODO: extract this static method as extension
+							ActII.DisableEveryone(world, true);
 							//Старт катсцены
-							foreach (var plr in this.Game.GetWorld(103209).Players.Values)
+							foreach (var plr in world.Players.Values)
 								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
-							foreach (var plr in this.Game.GetWorld(103209).Players.Values)
-								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)this.Game.GetWorld(103209).GetActorBySNO(87642).DynamicID(plr), Duration = 1f, Snap = false });
-							StartConversation(this.Game.GetWorld(103209), 137018);
+							foreach (var plr in world.Players.Values)
+								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)world.GetActorBySNO(87642).DynamicID(plr), Duration = 1f, Snap = false });
+							StartConversation(world, 137018);
 						}
 					});
 					ListenConversation(137018, new EndCutScene());
@@ -264,7 +273,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					var Tyrael = this.Game.GetWorld(172909).GetActorBySNO(170038);
+					var Tyrael = this.Game.GetWorld(WorldSno.a3dun_hub_keep).GetActorBySNO(170038);
 					(Tyrael as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(183792));
 					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
@@ -279,7 +288,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 4,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //go to Armory
-					var Tyrael = this.Game.GetWorld(172909).GetActorBySNO(170038);
+					var Tyrael = this.Game.GetWorld(WorldSno.a3dun_hub_keep).GetActorBySNO(170038);
 					(Tyrael as InteractiveNPC).Conversations.Clear();     
 					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
@@ -294,10 +303,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 6,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill shadows
-					this.Game.AddOnLoadAction(182875, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_keep_hub_inn, () =>
 					{
+						var world = this.Game.GetWorld(WorldSno.a3dun_keep_hub_inn);
 						bool Activated = false;
-						var NStone = this.Game.GetWorld(182875).GetActorBySNO(156328);//156328
+						var NStone = world.GetActorBySNO(156328);//156328
 						NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 						NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 						NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -307,7 +317,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						NStone.Attributes[GameAttribute.Immunity] = !Activated;
 						NStone.Attributes.BroadcastChangedIfRevealed();
 						NStone.PlayEffectGroup(205460);
-						foreach (var atr in this.Game.GetWorld(182875).GetActorsBySNO(4580))
+						foreach (var atr in world.GetActorsBySNO(4580))
 						{
 							float facingAngle = MovementHelpers.GetFacingAngle(atr, NStone);
 
@@ -318,13 +328,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						}
 						if (this.Game.CurrentQuest == 203595)
 						{
-							ActII.DisableEveryone(this.Game.GetWorld(182875), true);
+							ActII.DisableEveryone(world, true);
 							//Старт катсцены
-							foreach (var plr in this.Game.GetWorld(182875).Players.Values)
+							foreach (var plr in world.Players.Values)
 								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
-							foreach (var plr in this.Game.GetWorld(182875).Players.Values)
-								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)this.Game.GetWorld(182875).GetActorBySNO(156328).DynamicID(plr), Duration = 1f, Snap = false });
-							StartConversation(this.Game.GetWorld(182875), 134282);
+							foreach (var plr in world.Players.Values)
+								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)world.GetActorBySNO(156328).DynamicID(plr), Duration = 1f, Snap = false });
+							StartConversation(world, 134282);
 						}
 					});
 					ListenConversation(134282, new SpawnShadows());
@@ -343,9 +353,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					ListenConversation(134266, new Advance());
 					try
 					{
-						this.Game.GetWorld(172909).FindAt(206188, new Vector3D { X = 127.121f, Y = 353.211f, Z = 0.22f }, 25f).Hidden = true;
-						var NStone = this.Game.GetWorld(182875).GetActorBySNO(156328);//156328
-						foreach (var atr in this.Game.GetWorld(182875).GetActorsBySNO(4580))
+						this.Game.GetWorld(WorldSno.a3dun_hub_keep).FindAt(206188, new Vector3D { X = 127.121f, Y = 353.211f, Z = 0.22f }, 25f).Hidden = true;
+						var world = this.Game.GetWorld(WorldSno.a3dun_keep_hub_inn);
+						var NStone = world.GetActorBySNO(156328);//156328
+						foreach (var atr in world.GetActorsBySNO(4580))
 						{
 							float facingAngle = MovementHelpers.GetFacingAngle(atr, NStone);
 							atr.SetFacingRotation(facingAngle);
@@ -398,7 +409,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 9,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with sergeant Pale
-					var Serge = this.Game.GetWorld(95804).GetActorBySNO(170482);
+					var Serge = this.Game.GetWorld(WorldSno.a3_battlefields_02).GetActorBySNO(170482);
 					(Serge as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(170486));
 					Serge.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 					//this.Game.GetWorld(95804).SpawnMonster(202730, new Vector3D(4394.2188f, 396.80215f, -2.293509f));
@@ -414,11 +425,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //go through Korsikk bridge
-					this.Game.AddOnLoadAction(95804, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_02, () =>
 					{
 						if (this.Game.CurrentQuest == 101756 && this.Game.CurrentStep == 9)
 						{
-							StartConversation(this.Game.GetWorld(95804), 187146);
+							StartConversation(this.Game.GetWorld(WorldSno.a3_battlefields_02), 187146);
 						}
 					});
 					ListenProximity(6442, new Advance());
@@ -433,9 +444,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 }, new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill 3 ballistas/destroy trebuchet
 					if (this.Game.Empty) UnlockTeleport(4);
-					this.Game.AddOnLoadAction(95804, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_02, () =>
 					{
-						Open(this.Game.GetWorld(95804), 182443);
+						Open(this.Game.GetWorld(WorldSno.a3_battlefields_02), 182443);
 					});
 					ListenKill(176988, 2, new CompleteObjective(0));
 					ListenKill(177041, 1, new CompleteObjective(1));
@@ -463,11 +474,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
-					this.Game.AddOnLoadAction(95804, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_02, () =>
 					{
 						if (this.Game.CurrentQuest == 101756 && this.Game.CurrentStep == 21)
 						{
-							var Tyrael = this.Game.GetWorld(95804).GetActorBySNO(170038);
+							var Tyrael = this.Game.GetWorld(WorldSno.a3_battlefields_02).GetActorBySNO(170038);
 							(Tyrael as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(209125));
 							//StartConversation(this.Game.GetWorld(95804), 209125);
 						}
@@ -521,10 +532,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Siegebreaker
 					if (!this.Game.Empty) UnlockTeleport(5);
-					this.Game.AddOnLoadAction(226713, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_03, () =>
 					{
-						try { this.Game.GetWorld(226713).GetActorBySNO(96192).Destroy(); } catch { }
-						this.Game.GetWorld(226713).SpawnMonster(96192, this.Game.GetWorld(226713).GetActorBySNO(3095, true).Position);
+						var world = this.Game.GetWorld(WorldSno.a3_battlefields_03);
+						try { world.GetActorBySNO(96192).Destroy(); } catch { }
+						world.SpawnMonster(96192, world.GetActorBySNO(3095, true).Position);
 					});
 					ListenKill(96192, 1, new Advance());
 				})
@@ -576,13 +588,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 41,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Tower of the Doomed lv. 1
-					this.Game.AddOnLoadAction(226713, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_03, () =>
 					{
-						Open(this.Game.GetWorld(226713), 155128);
+						Open(this.Game.GetWorld(WorldSno.a3_battlefields_03), 155128);
 					});
-					this.Game.AddOnLoadAction(95804, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_02, () =>
 					{
-						Open(this.Game.GetWorld(95804), 155128);
+						Open(this.Game.GetWorld(WorldSno.a3_battlefields_02), 155128);
 					});
 					ListenTeleport(80791, new Advance());
 				})
@@ -622,9 +634,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Tower of Damned lv. 1
 					if (this.Game.Empty) UnlockTeleport(8);
-					this.Game.AddOnLoadAction(85201, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_crater_st_level04, () =>
 					{
-						Open(this.Game.GetWorld(85201), 177040);
+						Open(this.Game.GetWorld(WorldSno.a3dun_crater_st_level04), 177040);
 					});
 					ListenTeleport(119653, new Advance());
 				})
@@ -652,13 +664,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //kill Cydaea
 					if (!this.Game.Empty) UnlockTeleport(9);
 					ListenKill(95250, 1, new Advance());
-					this.Game.AddOnLoadAction(119650, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_crater_st_level04b, () =>
 					{
 						try
 						{
-							(this.Game.GetWorld(119650).FindAt(201680, new Vector3D { X = 457.04f, Y = 359.03f, Z = 0.39f }, 20f) as Door).Open();
-							(this.Game.GetWorld(119650).FindAt(201680, new Vector3D { X = 356.04f, Y = 267.03f, Z = 0.28f }, 20f) as Door).Open();
-							setActorOperable(this.Game.GetWorld(119650), 193077, false);
+							var world = this.Game.GetWorld(WorldSno.a3dun_crater_st_level04b);
+							(world.FindAt(201680, new Vector3D { X = 457.04f, Y = 359.03f, Z = 0.39f }, 20f) as Door).Open();
+							(world.FindAt(201680, new Vector3D { X = 356.04f, Y = 267.03f, Z = 0.28f }, 20f) as Door).Open();
+							setActorOperable(world, 193077, false);
 						}
 						catch { }
 					});
@@ -674,11 +687,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //Destroy Heart of Sin
 					this.Game.CurrentEncounter.activated = false;
 					ListenKill(193077, 1, new Advance());
-					this.Game.AddOnLoadAction(119650, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_crater_st_level04b, () =>
 					{
 						try
 						{
-							setActorOperable(this.Game.GetWorld(119650), 193077, true);
+							setActorOperable(this.Game.GetWorld(WorldSno.a3dun_crater_st_level04b), 193077, true);
 						}
 						catch { }
 					});
@@ -694,11 +707,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //kill Azmodan, finally
 					if (this.Game.Empty) UnlockTeleport(10);
 					ListenKill(89690, 1, new Advance());
-					this.Game.AddOnLoadAction(121214, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_azmodan_arena, () =>
 					{
-						OpenAll(this.Game.GetWorld(121214), 198977);
-						try { this.Game.GetWorld(121214).GetActorBySNO(89690).Destroy(); } catch { };
-						this.Game.GetWorld(121214).SpawnMonster(89690, new Vector3D { X = 395.553f, Y = 394.966f, Z = 0.1f });
+						var world = this.Game.GetWorld(WorldSno.a3dun_azmodan_arena);
+						OpenAll(world, 198977);
+						try { world.GetActorBySNO(89690).Destroy(); } catch { };
+						world.SpawnMonster(89690, new Vector3D { X = 395.553f, Y = 394.966f, Z = 0.1f });
 					});
 				})
 			});
@@ -712,9 +726,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //get Azmodan's soul
 					this.Game.CurrentEncounter.activated = false;
 					ListenProximity(204992, new Advance());
-					this.Game.AddOnLoadAction(121214, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_azmodan_arena, () =>
 					{
-						this.Game.GetWorld(121214).SpawnMonster(204992, new Vector3D { X = 395.553f, Y = 394.966f, Z = 0.1f });
+						this.Game.GetWorld(WorldSno.a3dun_azmodan_arena).SpawnMonster(204992, new Vector3D { X = 395.553f, Y = 394.966f, Z = 0.1f });
 					});
 				})
 			});
@@ -727,9 +741,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //return to base
 					ListenProximity(170038, new Advance());
-					this.Game.AddOnLoadAction(121214, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_azmodan_arena, () =>
 					{
-						this.Game.GetWorld(121214).GetActorBySNO(204992).Destroy();
+						this.Game.GetWorld(WorldSno.a3dun_azmodan_arena).GetActorBySNO(204992).Destroy();
 					});
 				})
 			});
@@ -765,7 +779,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() =>
 				{ //go to Adria tower event
-					var World = this.Game.GetWorld(186552);
+					var World = this.Game.GetWorld(WorldSno.a3dun_hub_adria_tower);
 					//Удаляем дубликаты 
 					var Guardian = World.GetActorBySNO(196244, true);
 					var Leah = World.GetActorBySNO(195376, true);
@@ -775,7 +789,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					foreach (var actor in World.GetActorsBySNO(195377)) if (actor.GlobalID != Tyrael.GlobalID) actor.Destroy(); //Тираэль
 					foreach (var actor in World.GetActorsBySNO(195376)) if (actor.GlobalID != Leah.GlobalID) actor.Destroy(); //Лея
 					
-					this.Game.AddOnLoadAction(186552, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_hub_adria_tower, () =>
 					{
 						var portal = World.GetActorBySNO(5660);
 						var Bportal = World.GetActorBySNO(188441);
@@ -813,7 +827,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 								if (World.Players.Values.First().Position.Y < 140)
 									break;
 							}
-								script.Execute(this.Game.GetWorld(186552));
+								script.Execute(World);
 						});
 						#region Описание скрипта
 						//Понеслась

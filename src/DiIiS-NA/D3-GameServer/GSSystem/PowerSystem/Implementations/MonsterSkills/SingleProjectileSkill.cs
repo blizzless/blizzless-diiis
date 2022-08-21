@@ -31,6 +31,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 		protected void SetProjectile(PowerContext context, int actorSNO, Vector3D position, float speed = 1f, Action<Actor> OnCollision = null)
 		{
 			if (User is Monster)
+				// FIXME: Non-exist world id
 				if (User.World.WorldSNO.Id == 1 ||
 					User.World.WorldSNO.Id == 1)
 						position.Z = (User as Monster).CorrectedPosition.Z;

@@ -48,6 +48,7 @@ using DiIiS_NA.GameServer.Core.Types.Scene;
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Interactions;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 {
@@ -98,30 +99,30 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				}
 		}
 
-		public World Generate(int worldSNO)
+		public World Generate(WorldSno worldSNO)
 		{
-			if (!MPQStorage.Data.Assets[SNOGroup.Worlds].ContainsKey(worldSNO))
+			if (!MPQStorage.Data.Assets[SNOGroup.Worlds].ContainsKey((int)worldSNO))
 			{
 				Logger.Error("Can't find a valid world definition for sno: {0}", worldSNO);
 				return null;
 			}
 
-			var worldAsset = MPQStorage.Data.Assets[SNOGroup.Worlds][worldSNO];
+			var worldAsset = MPQStorage.Data.Assets[SNOGroup.Worlds][(int)worldSNO];
 			Dictionary<int, List<Scene>> levelAreas = new Dictionary<int, List<Scene>>();
 			World world = new World(this.Game, worldSNO);
 			bool DRLGEmuActive = false;
 			world.worldData = (DiIiS_NA.Core.MPQ.FileFormats.World)worldAsset.Data;
-			if (worldSNO == 146619)
+			if (worldSNO == WorldSno.a2dun_swr_swr_to_oasis_level01)
 				world.worldData.DynamicWorld = true;
-			
+
 			//445736 - p4_forest_snow_icecave_01
-			if (world.worldData.DynamicWorld && worldSNO != 161961 && worldSNO != 230288 && worldSNO != 430335 && worldSNO != 445736 && worldSNO != 444305 && worldSNO != 109530 && worldSNO != 109525 && worldSNO != 85201 && worldSNO != 119650 && worldSNO != 119641 && worldSNO != 139272 && worldSNO != 80763 && worldSNO != 79401 && worldSNO != 80791 && worldSNO != 81934 && worldSNO != 81049 && worldSNO != 61631 && worldSNO != 50588 && worldSNO != 428493 && worldSNO != 219659 && worldSNO != 58982 && worldSNO != 58983 && worldSNO != 105406 && worldSNO != 204674 && !world.WorldSNO.Name.Contains("Crater") && !world.WorldSNO.Name.Contains("Hell_Portal")) //Gardens of Hope - 2 lvl is NOT random
+			if (world.worldData.DynamicWorld && !worldSNO.IsNotDynamicWorld()) //Gardens of Hope - 2 lvl is NOT random
 			{
 				if (!GameServer.Config.Instance.DRLGemu)
 					Logger.Warn("DRLG-Emu деактивирован.");
 				string DRLGVersion = "1.8";
-				var WorldContainer = DBSessions.WorldSession.Query<DRLG_Container>().Where(dbt => dbt.WorldSNO == worldSNO).ToList();
-				if (WorldContainer.Count > 0 && worldSNO != 105406 && GameServer.Config.Instance.DRLGemu)
+				var WorldContainer = DBSessions.WorldSession.Query<DRLG_Container>().Where(dbt => dbt.WorldSNO == (int)worldSNO).ToList();
+				if (WorldContainer.Count > 0 && worldSNO != WorldSno.a1trdun_level05_templar && GameServer.Config.Instance.DRLGemu)
 				{
 					DRLGEmuActive = true;
 					Logger.Warn("Мир - {0} [{1}] динамический! Найден контейнер, DRLG-Emu v{2} Активирован!", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
@@ -160,9 +161,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			}
 			else
 			{
-				world.PrevLocation = new DiIiS_NA.GameServer.MessageSystem.Message.Fields.ResolvedPortalDestination
+				world.PrevLocation = new MessageSystem.Message.Fields.ResolvedPortalDestination
 				{
-					WorldSNO = -1,
+					WorldSNO = (int)WorldSno.__NONE,
 					DestLevelAreaSNO = -1,
 					StartingPointActorTag = -1
 				};
@@ -177,7 +178,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				List<DRLGEmuScene> EndChuncks = new List<DRLGEmuScene> { };
 				List<DRLGEmuScene> FillerChuncks = new List<DRLGEmuScene> { };
 
-				var WorldContainer = DBSessions.WorldSession.Query<DRLG_Container>().Where(dbt => dbt.WorldSNO == world.WorldSNO.Id).First();
+				var WorldContainer = DBSessions.WorldSession.Query<DRLG_Container>().Where(dbt => dbt.WorldSNO == (int)world.SNO).First();
 				var DRLGTiles = DBSessions.WorldSession.Query<DRLG_Tile>().Where(dbt => dbt.Head_Container == (int)WorldContainer.Id).ToList();
 
 			REP:
@@ -210,7 +211,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				DRLGContainers.Add(EndChuncks);
 				DRLGContainers.Add(FillerChuncks);
 
-				if (world.WorldSNO.Name.ToLower().Contains("x1_lr"))
+				if (world.SNO.IsGenerated())
 					while (true)
 					{
 
@@ -376,7 +377,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 			//world.LevelAreasData = levelAreas;
 
-			if (worldSNO == 105406)
+			if (worldSNO == WorldSno.a1trdun_level05_templar)
 				world.SpawnMonster(6442, new Vector3D { X = 700.67f, Y = 580.128f, Z = 0.1f });
 
 			try
@@ -392,29 +393,29 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			#region Патчи 
 			switch (worldSNO)
 			{
-				case 338600: //x1_pand_ext_2_battlefields
+				case WorldSno.x1_pand_ext_2_battlefields: //x1_pand_ext_2_battlefields
 					RandomSpawnInWorldWithLevelArea(world, 361364);
 					RandomSpawnInWorldWithLevelArea(world, 361364);
 					break;
-				case 263494:
+				case WorldSno.x1_westm_zone_03:
 					RandomSpawnInWorldWithLevelArea(world, 355667);
 					RandomSpawnInWorldWithLevelArea(world, 355667);
 					RandomSpawnInWorldWithLevelArea(world, 355667);
 					break;
-				case 58983: //Установка портала на третий этаж Залов Агонии рядом с входом к Мяснику.
+				case WorldSno.trdun_leoric_level03: //Установка портала на третий этаж Залов Агонии рядом с входом к Мяснику.
 					Vector3D Scene0Pos = world.GetSceneBySnoId(78824).Position;
 					world.SpawnMonster(6442, new Vector3D(Scene0Pos.X + 149.0907f, Scene0Pos.Y + 106.7075f, Scene0Pos.Z));
 					break;
-				case 338944:
+				case WorldSno.x1_westm_graveyard_deathorb:
 					FilterWaypoints(world);
 					break;
-				case 331389:
+				case WorldSno.x1_lr_tileset_hexmaze:
 					foreach (var actor in world.GetActorsBySNO(310965)) actor.Destroy(); //X1_Pand_HexMaze_EN_Lore_Sister1_Chest
 					foreach (var actor in world.GetActorsBySNO(310967)) actor.Destroy(); //X1_Pand_HexMaze_EN_Lore_Sister2_Chest
 					foreach (var actor in world.GetActorsBySNO(310970)) actor.Destroy(); //X1_Pand_HexMaze_EN_Lore_Sister3_Chest
 					foreach (var actor in world.GetActorsBySNO(307480)) actor.Destroy(); //X1_Pand_HexMaze_EN_Enchantress
 					break;
-				case 71150: //Упоротый наёмник =)
+				case WorldSno.trout_town: //Упоротый наёмник =)
 					var Templar = world.GetActorBySNO(4538);
 					var hasmalth = world.GetActorBySNO(274457);
 
@@ -441,21 +442,21 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						TownDoor.Attributes.BroadcastChangedIfRevealed();
 					}
 					break;
-				case 50582: //2 уровень собора
+				case WorldSno.a1trdun_level04: //2 уровень собора
 					foreach (var actor in world.GetActorsBySNO(256728))
 					{
 						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case 50584: //4 уровень собора
+				case WorldSno.a1trdun_level06: //4 уровень собора
 					foreach (var actor in world.GetActorsBySNO(256728))
 					{
 						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case 105406: //Лишние NPC в соборе (3 уровень)
+				case WorldSno.a1trdun_level05_templar: //Лишние NPC в соборе (3 уровень)
 					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_NPC_
 					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
 					foreach (var actor in world.GetActorsBySNO(84542)) actor.Destroy(); //OmniNPC_Tristram_Male_E
@@ -468,34 +469,34 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					break;
 
-				case 146619: //Убиваем ненужный портал в локации если игра не в режиме приключений
+				case WorldSno.a2dun_swr_swr_to_oasis_level01: //Убиваем ненужный портал в локации если игра не в режиме приключений
 					if (this.Game.CurrentAct != 3000)
 						foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy();
 					break;
-				case 61631: //Убираем кровь кула
+				case WorldSno.a2dun_zolt_head_random01: //Убираем кровь кула
 					foreach (var act in world.GetActorsBySNO(213859)) act.Destroy();
 					break;
-				case 59486: //Главный водосток. Убираем лишние порталы.
+				case WorldSno.a2dun_aqd_special_01: //Главный водосток. Убираем лишние порталы.
 					foreach (var port in world.Actors.Values)
 						if (port is Portal)
-							if ((port as Portal).Destination.WorldSNO == 432997)
+							if ((port as Portal).Destination.WorldSNO == (int)WorldSno.a2dun_aqd_special_b_level01)
 								port.Destroy();
 					break;
-				case 75434: //Убиваем ненужный портал в локации если игра не в режиме приключений
+				case WorldSno.a3dun_keep_level04: //Убиваем ненужный портал в локации если игра не в режиме приключений
 					if (this.Game.CurrentAct != 3000)
 						foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy();
 					break;
 				#region Убиваем все порталы в демонические разломы на первом этаже садов(теперь и на втором этаже), а то чет дохера их), создавать будет скрипт уничтожения скверны. Добалвяем голос Дьябло на несколько участков
-				case 109513: //1 Этаж садов
+				case WorldSno.a4dun_garden_of_hope_01: //1 Этаж садов
 					foreach (var HellPortal in world.GetActorsBySNO(224890))
 						HellPortal.Destroy();
 					break;
-				case 219659: //2 Этаж садов
+				case WorldSno.a4dun_garden_of_hope_random: //2 Этаж садов
 					foreach (var HellPortal in world.GetActorsBySNO(224890))
 						HellPortal.Destroy();
 					break;
                 #endregion
-				case 198281:
+				case WorldSno.a4dun_spire_level_00:
 					var LeahGhost = world.SpawnMonster(196905, new Vector3D(570f, 570f, 0.1f)) as InteractiveNPC;
 					LeahGhost.Conversations.Clear();
 					LeahGhost.Conversations.Add(new ConversationInteraction(198600));
@@ -503,20 +504,20 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					LeahGhost.Attributes.BroadcastChangedIfRevealed();
 					break;
 					//428f, 836f, -20.3f
-				case 121579:
+				case WorldSno.a4dun_spire_level_01:
 					var ZoltunGhost = world.SpawnMonster(196900, new Vector3D(428f, 836f, -2f)) as InteractiveNPC;
 					ZoltunGhost.Conversations.Clear();
 					ZoltunGhost.Conversations.Add(new ConversationInteraction(198402));
 					ZoltunGhost.Attributes[GameAttribute.Conversation_Icon, 0] = 6;
 					ZoltunGhost.Attributes.BroadcastChangedIfRevealed();
 					break;
-				case 430335:
+				case WorldSno.a3dun_ruins_frost_city_a_02:
 					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy();
 					break;
-				case 455282:
+				case WorldSno.p43_ad_oldtristram:
 					foreach (var wayp in world.GetActorsBySNO(108466)) wayp.Destroy();
 					break;
-				case 332336:
+				case WorldSno.x1_tristram_adventure_mode_hub:
 					
 					//Отображаем только одного продавца
 					world.ShowOnlyNumNPC(178396, 0);
@@ -532,7 +533,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					Door.Attributes[GameAttribute.Immunity] = true;
 					Door.Attributes.BroadcastChangedIfRevealed();
 					break;
-				case 452721: //1 этаж собора (Режим D1)
+				case WorldSno.p43_ad_cathedral_level_01: //1 этаж собора (Режим D1)
 					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
 					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
 					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
@@ -547,7 +548,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 
 					break;
-				case 452922: //2 этаж собора (Режим D1)
+				case WorldSno.p43_ad_cathedral_level_02: //2 этаж собора (Режим D1)
 					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
 					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
 					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
@@ -561,7 +562,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case 452984: //3 этаж собора (Режим D1)
+				case WorldSno.p43_ad_cathedral_level_03: //3 этаж собора (Режим D1)
 					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
 					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
 					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
@@ -575,7 +576,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case 452985: //4 этаж собора (Режим D1)
+				case WorldSno.p43_ad_cathedral_level_04: //4 этаж собора (Режим D1)
 					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
 					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
 					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
@@ -590,7 +591,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case 452991: //5 этаж собора (Режим D1)
+				case WorldSno.p43_ad_catacombs_level_05: //5 этаж собора (Режим D1)
 					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
 					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
 					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
@@ -604,7 +605,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case 452996: //6 этаж собора (Режим D1)
+				case WorldSno.p43_ad_catacombs_level_06: //6 этаж собора (Режим D1)
 					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
 					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
 					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
@@ -618,7 +619,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case 452997: //7 этаж собора (Режим D1)
+				case WorldSno.p43_ad_catacombs_level_07: //7 этаж собора (Режим D1)
 					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
 					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
 					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
@@ -632,7 +633,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case 452998: //8 этаж собора (Режим D1)
+				case WorldSno.p43_ad_catacombs_level_08: //8 этаж собора (Режим D1)
 					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
 					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
 					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
@@ -655,7 +656,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			foreach (var oldp in world.GetActorsBySNO(166389)) { foreach(var plr in world.Game.Players.Values) world.SpawnGold(oldp, plr); oldp.Destroy(); }
 			foreach (var oldp in world.GetActorsBySNO(404043)) { oldp.Destroy(); }//сломанные мосты
 																				  
-			if(world.WorldSNO.Id != 105406 ) foreach (var oldp in world.GetActorsBySNO(408511)) { oldp.Destroy(); }//109209 - Костяные стены из собора
+			if(world.SNO != WorldSno.a1trdun_level05_templar) foreach (var oldp in world.GetActorsBySNO(408511)) { oldp.Destroy(); }//109209 - Костяные стены из собора
 			#endregion
 
 			return world;
@@ -672,7 +673,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 			while (true)
 			{
-				SP = new Vector3D(SSV.X + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 240), SSV.Y + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 240), SSV.Z);
+				SP = new Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
 				if (world.CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 					break;
 			}
@@ -735,16 +736,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					{
 						Logger.Error("Scene {0}, not added on DRLG", Scene.SnoID);
 					}
-			bool Rift = false;
-			if (world.WorldSNO.Name.ToLower().Contains("x1_lr"))
-				Rift = true;
+			bool Rift = world.SNO.IsGenerated();
 			//Getting Enter
 			var loadedscene = new SceneChunk();
 			CurrentScene = DRLGContainers[0][RandomHelper.Next(0, DRLGContainers[0].Count)];
 			loadedscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 			loadedscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), new Vector3D(0, 0, 0));
 			loadedscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
@@ -801,7 +800,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 					nextscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
@@ -840,7 +839,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 					nextscene.SceneSpecification = new SceneSpecification(
-							   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+							   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 							   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 							   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 							   new int[4] { 0, 0, 0, 0 }, 0));
@@ -879,7 +878,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 					nextscene.SceneSpecification = new SceneSpecification(
-							   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+							   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 							   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 							   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 							   new int[4] { 0, 0, 0, 0 }, 0));
@@ -919,7 +918,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 					nextscene.SceneSpecification = new SceneSpecification(
-							   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+							   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 							   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 							   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 							   new int[4] { 0, 0, 0, 0 }, 0));
@@ -959,7 +958,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					nextscene1.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 					nextscene1.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 					nextscene1.SceneSpecification = new SceneSpecification(
-								0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+								0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 								-1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 								new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 								new int[4] { 0, 0, 0, 0 }, 0));
@@ -993,7 +992,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 					nextscene.SceneSpecification = new SceneSpecification(
-								0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+								0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 								-1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 								new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 								new int[4] { 0, 0, 0, 0 }, 0));
@@ -1157,7 +1156,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 							newscene.SceneSpecification = new SceneSpecification(
-								   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+								   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 								   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 								   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 								   new int[4] { 0, 0, 0, 0 }, 0));
@@ -1306,7 +1305,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 							newscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
@@ -1454,7 +1453,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 							newscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
@@ -1602,7 +1601,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
 							newscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
@@ -1667,7 +1666,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 							newscene.PRTransform = Chunck.PRTransform;
 							newscene.SceneSpecification = new SceneSpecification(
-								   0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+								   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 								   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 								   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 								   new int[4] { 0, 0, 0, 0 }, 0));
@@ -1720,7 +1719,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							var newscene = new SceneChunk();
 							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
 							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), new Vector3D(X, Y, 0));
-							newscene.SceneSpecification = new SceneSpecification(0, new Vector2D(0, 0), new int[4] { Rift ? world.WorldSNO.Id != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
+							newscene.SceneSpecification = new SceneSpecification(0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
 								-1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1, new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new int[4] { 0, 0, 0, 0 }, 0));
 							FillerChunks.Add(newscene);
 						}
@@ -1741,7 +1740,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			world.DRLGEmuActive = true;
 		}
 
-		private bool GenerateRandomDungeon(int worldSNO, DiIiS_NA.Core.MPQ.FileFormats.World worldData)
+		private bool GenerateRandomDungeon(WorldSno worldSNO, DiIiS_NA.Core.MPQ.FileFormats.World worldData)
 		{
 			//if ((worldData.DRLGParams == null)||(worldData.DRLGParams.Count == 0))
 			//return false;
@@ -1776,7 +1775,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					TileInfo entrance = new TileInfo();
 					//HACK for Defiled Crypt as there is no tile yet with type 200. Maybe changing in DB would make more sense than putting this hack in
 					//	[11]: {[161961, Mooege.Common.MPQ.MPQAsset]}Worlds\\a1trDun_Cave_Old_Ruins_Random01.wrl
-					if (worldSNO == 161961)
+					if (worldSNO == WorldSno.a1trdun_cave_old_ruins_random01)
 					{
 						entrance = tiles[131902];
 						tiles.Remove(131902);
@@ -1788,7 +1787,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 					if (DRLGTemplate.Templates.ContainsKey(worldSNO))
 					{
-						DRLGTemplate.DRLGLayout world_layout = DRLGTemplate.Templates[worldSNO][DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(DRLGTemplate.Templates[worldSNO].Count)];
+						DRLGTemplate.DRLGLayout world_layout = DRLGTemplate.Templates[worldSNO][FastRandom.Instance.Next(DRLGTemplate.Templates[worldSNO].Count)];
 						int coordY = 0;
 
 						foreach (List<int> row in world_layout.map)
@@ -1851,7 +1850,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							chunk.SceneSpecification.SNOLevelAreas[0] = drlgparam.LevelArea;
 							chunk.SceneSpecification.SNOWeather = drlgparam.Weather;
 						}
-						if (worldSNO == 267412) //A5 marsh
+						if (worldSNO == WorldSno.x1_bog_01) //A5 marsh
 						{
 							if (chunk.PRTransform.Vector3D.Y < 960 || chunk.PRTransform.Vector3D.X < 720)
 								chunk.SceneSpecification.SNOLevelAreas[0] = 258142;
@@ -2374,19 +2373,19 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 				gizmoLocations = finalLocationsList; //sorting with no duplications
 
-				if (world.WorldSNO.Id == 169477) //Mysterious Cave lv 1
+				if (world.SNO == WorldSno.a2dun_cave_mapdungeon_level01) //Mysterious Cave lv 1
 				{
 					var handle = new SNOHandle(207706);
-					if (handle == null || gizmoLocations.Count() == 0) continue;
-					LazyLoadActor(handle, gizmoLocations[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(gizmoLocations.Count())], world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle.Target).TagMap);
+					if (handle == null || gizmoLocations.Count == 0) continue;
+					LazyLoadActor(handle, gizmoLocations[FastRandom.Instance.Next(gizmoLocations.Count)], world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle.Target).TagMap);
 				}
 				else
 					foreach (var location in gizmoLocations)
 					{
-						if (DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 1)
+						if (FastRandom.Instance.Next(100) < 1)
 						{
 							SNOHandle gizmoHandle = null;
-							float seed = (float)DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble();
+							float seed = (float)FastRandom.Instance.NextDouble();
 							foreach (var pair in GizmosToSpawn)
 							{
 								if (seed < pair.Value)
@@ -2402,18 +2401,18 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						}
 					}
 
-				if (gizmoLocations.Count() > 0 && world.Game.MonsterLevel >= Program.MaxLevel && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 30)
+				if (gizmoLocations.Count > 0 && world.Game.MonsterLevel >= Program.MaxLevel && FastRandom.Instance.Next(100) < 30)
 				{
 					var handle_chest = new SNOHandle(96993); //leg chest
 					if (handle_chest == null) continue;
-					var golden_chest = loadActor(handle_chest, gizmoLocations[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, gizmoLocations.Count() - 1)], world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle_chest.Target).TagMap);
+					var golden_chest = loadActor(handle_chest, gizmoLocations[FastRandom.Instance.Next(0, gizmoLocations.Count - 1)], world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle_chest.Target).TagMap);
 					if (golden_chest > 0)
 						(world.GetActorByGlobalId(golden_chest) as LegendaryChest).ChestActive = true;
 				}
 
 				if (world.DRLGEmuActive)
 				{
-					int wid = world.WorldSNO.Id;
+					int wid = (int)world.SNO;
 					// Load monsters for level area
 					foreach (var scene in levelAreas.First().Value)
 					{
@@ -2428,12 +2427,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					#region unique spawn
 					//unique spawn
-					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].dangerous.Count() > 0 && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.5)
+					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].dangerous.Count > 0 && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[wid].dangerous[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(SpawnGenerator.Spawns[wid].dangerous.Count())]);
-						var scene = levelAreas.First().Value[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(levelAreas.First().Value.Count())];
-						int x = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
-						int y = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
+						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[wid].dangerous[FastRandom.Instance.Next(SpawnGenerator.Spawns[wid].dangerous.Count)]);
+						var scene = levelAreas.First().Value[FastRandom.Instance.Next(levelAreas.First().Value.Count)];
+						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
+						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						int threshold = 0;
 						while ((scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Flags & DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoSpawn) != 0)
 						{
@@ -2443,8 +2442,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								break;
 								//continue;
 							}
-							x = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
-							y = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
+							x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
+							y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						}
 
 						var uniq = loadActor(
@@ -2453,11 +2452,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							{
 								Vector3D = new Vector3D
 								{
-									X = (float)(x * 2.4 + scene.Position.X) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
-									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
+									X = (float)(x * 2.4 + scene.Position.X) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
+									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2470,13 +2469,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					#endregion
 					#region goblin spawn
 					//goblin spawn
-					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].can_spawn_goblin && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.5)
+					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].can_spawn_goblin && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomGoblin = new SNOHandle(Goblins[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(Goblins.Count())]);
+						var randomGoblin = new SNOHandle(Goblins[FastRandom.Instance.Next(Goblins.Count)]);
 						if (world.Game.IsHardcore) randomGoblin = new SNOHandle(3852);
-						var scene = levelAreas.First().Value[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(levelAreas.First().Value.Count())];
-						int x = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
-						int y = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
+						var scene = levelAreas.First().Value[FastRandom.Instance.Next(levelAreas.First().Value.Count)];
+						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
+						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						int threshold = 0;
 						while ((scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Flags & DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoSpawn) != 0)
 						{
@@ -2486,8 +2485,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								break;
 								//continue;
 							}
-							x = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
-							y = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
+							x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
+							y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						}
 
 						LazyLoadActor(
@@ -2496,11 +2495,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							{
 								Vector3D = new Vector3D
 								{
-									X = (float)(x * 2.4 + scene.Position.X) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
-									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
+									X = (float)(x * 2.4 + scene.Position.X) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
+									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2525,12 +2524,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					#region unique spawn
 					//unique spawn
-					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].dangerous.Count() > 0 && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.5)
+					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].dangerous.Count > 0 && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[la].dangerous[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(SpawnGenerator.Spawns[la].dangerous.Count())]);
-						var scene = levelAreas[la][DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(levelAreas[la].Count())];
-						int x = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
-						int y = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
+						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[la].dangerous[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].dangerous.Count)]);
+						var scene = levelAreas[la][FastRandom.Instance.Next(levelAreas[la].Count)];
+						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
+						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						int threshold = 0;
 						while ((scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Flags & DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoSpawn) != 0)
 						{
@@ -2540,8 +2539,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								break;
 								//continue;
 							}
-							x = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
-							y = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
+							x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
+							y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						}
 
 						var uniq = loadActor(
@@ -2550,11 +2549,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							{
 								Vector3D = new Vector3D
 								{
-									X = (float)(x * 2.4 + scene.Position.X) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
-									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
+									X = (float)(x * 2.4 + scene.Position.X) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
+									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2567,13 +2566,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					#endregion
 					#region goblin spawn
 					//goblin spawn
-					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].can_spawn_goblin && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.5)
+					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].can_spawn_goblin && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomGoblin = new SNOHandle(Goblins[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(Goblins.Count())]);
+						var randomGoblin = new SNOHandle(Goblins[FastRandom.Instance.Next(Goblins.Count)]);
 						if (world.Game.IsHardcore) randomGoblin = new SNOHandle(3852);
-						var scene = levelAreas[la][DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(levelAreas[la].Count())];
-						int x = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
-						int y = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
+						var scene = levelAreas[la][FastRandom.Instance.Next(levelAreas[la].Count)];
+						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
+						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						int threshold = 0;
 						while ((scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Flags & DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoSpawn) != 0)
 						{
@@ -2583,8 +2582,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								break;
 								//continue;
 							}
-							x = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
-							y = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
+							x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
+							y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						}
 
 						LazyLoadActor(
@@ -2593,11 +2592,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							{
 								Vector3D = new Vector3D
 								{
-									X = (float)(x * 2.4 + scene.Position.X) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
-									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
+									X = (float)(x * 2.4 + scene.Position.X) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
+									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2635,20 +2634,20 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 			for (int i = 0; i < packs_count; i++)
 			{
-				int x = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
-				int y = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
-				groupId = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next();
+				int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
+				int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
+				groupId = FastRandom.Instance.Next();
 
 				if ((scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Flags & DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoSpawn) == 0)
 				{
-					bool isElite = (DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.03);
+					bool isElite = (FastRandom.Instance.NextDouble() < 0.03);
 					if (isElite)
 					{
 						#region elite spawn
 						int randomMeleeMonsterId = -1;
 						int randomRangedMonsterId = -1;
-						if (SpawnGenerator.Spawns[la].melee.Count() > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(SpawnGenerator.Spawns[la].melee.Count())];
-						if (SpawnGenerator.Spawns[la].range.Count() > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(SpawnGenerator.Spawns[la].range.Count())];
+						if (SpawnGenerator.Spawns[la].melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].melee.Count)];
+						if (SpawnGenerator.Spawns[la].range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].range.Count)];
 						SNOHandle meleeMonsterHandle = (randomMeleeMonsterId == -1 ? null : new SNOHandle(randomMeleeMonsterId));
 						SNOHandle rangedMonsterHandle = (randomRangedMonsterId == -1 ? null : new SNOHandle(randomRangedMonsterId));
 						if (rangedMonsterHandle == null) rangedMonsterHandle = meleeMonsterHandle;
@@ -2656,19 +2655,19 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							if (meleeMonsterHandle == null) meleeMonsterHandle = rangedMonsterHandle;
 						for (int n = 0; n < 5; n++)
 						{
-							if (n == 0 || DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.85)
+							if (n == 0 || FastRandom.Instance.NextDouble() < 0.85)
 							{
 								uint actor = loadActor(
-								(n == 0 ? (DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.5 ? meleeMonsterHandle : rangedMonsterHandle) : meleeMonsterHandle),
+								(n == 0 ? (FastRandom.Instance.NextDouble() < 0.5 ? meleeMonsterHandle : rangedMonsterHandle) : meleeMonsterHandle),
 									new PRTransform
 									{
 										Vector3D = new Vector3D
 										{
-											X = (float)(x * 2.4 + scene.Position.X) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
-											Y = (float)(y * 2.4 + scene.Position.Y) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
+											X = (float)(x * 2.4 + scene.Position.X) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
+											Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 											Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 										},
-										Quaternion = Quaternion.FacingRotation((float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+										Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
 									},
 									world,
 									new TagMap(),
@@ -2686,32 +2685,32 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					#endregion
 					else
 					{
-						bool isChampion = (DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.07);
+						bool isChampion = (FastRandom.Instance.NextDouble() < 0.07);
 						if (!isChampion)
 						#region default spawn
 						{
 							int randomMeleeMonsterId = -1;
 							int randomRangedMonsterId = -1;
-							if (SpawnGenerator.Spawns[la].melee.Count() > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(SpawnGenerator.Spawns[la].melee.Count())];
-							if (SpawnGenerator.Spawns[la].range.Count() > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(SpawnGenerator.Spawns[la].range.Count())];
+							if (SpawnGenerator.Spawns[la].melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].melee.Count)];
+							if (SpawnGenerator.Spawns[la].range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].range.Count)];
 							SNOHandle meleeMonsterHandle = (randomMeleeMonsterId == -1 ? null : new SNOHandle(randomMeleeMonsterId));
 							SNOHandle rangedMonsterHandle = (randomRangedMonsterId == -1 ? null : new SNOHandle(randomRangedMonsterId));
 							//int maxMobsInStack = (SpawnGenerator.IsMelee(la, randomMonsterId) ? 6 : (SpawnGenerator.IsDangerous(la, randomMonsterId) ? 1 : 3));
 							for (int n = 0; n < 6; n++)
 							{
-								if (n == 0 || DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.6)
+								if (n == 0 || FastRandom.Instance.NextDouble() < 0.6)
 								{
 									LazyLoadActor(
-										(meleeMonsterHandle == null ? rangedMonsterHandle : (rangedMonsterHandle == null ? meleeMonsterHandle : (DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.65 ? meleeMonsterHandle : rangedMonsterHandle))),
+										(meleeMonsterHandle == null ? rangedMonsterHandle : (rangedMonsterHandle == null ? meleeMonsterHandle : (FastRandom.Instance.NextDouble() < 0.65 ? meleeMonsterHandle : rangedMonsterHandle))),
 										new PRTransform
 										{
 											Vector3D = new Vector3D
 											{
-												X = (float)(x * 2.4 + scene.Position.X) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
-												Y = (float)(y * 2.4 + scene.Position.Y) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
+												X = (float)(x * 2.4 + scene.Position.X) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
+												Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 												Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 											},
-											Quaternion = Quaternion.FacingRotation((float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+											Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
 										},
 										world,
 										new TagMap(),
@@ -2724,11 +2723,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						else //spawn champions
 						#region champion spawn
 						{
-							SNOHandle championHandle = new SNOHandle(SpawnGenerator.Spawns[la].melee[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(SpawnGenerator.Spawns[la].melee.Count())]);
-							groupId = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next();
+							SNOHandle championHandle = new SNOHandle(SpawnGenerator.Spawns[la].melee[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].melee.Count)]);
+							groupId = FastRandom.Instance.Next();
 							for (int n = 0; n < 4; n++)
 							{
-								if (n == 0 || DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.85)
+								if (n == 0 || FastRandom.Instance.NextDouble() < 0.85)
 								{
 									uint actor = loadActor(
 										championHandle,
@@ -2736,11 +2735,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 										{
 											Vector3D = new Vector3D
 											{
-												X = (float)(x * 2.4 + scene.Position.X) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
-												Y = (float)(y * 2.4 + scene.Position.Y) + (float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * 20 - 10),
+												X = (float)(x * 2.4 + scene.Position.X) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
+												Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 												Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 											},
-											Quaternion = Quaternion.FacingRotation((float)(DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+											Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 										},
 										world,
 										new TagMap(),

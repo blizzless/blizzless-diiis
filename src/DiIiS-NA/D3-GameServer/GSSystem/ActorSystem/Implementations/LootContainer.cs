@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -58,8 +59,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override bool Reveal(PlayerSystem.Player player)
 		{
-			if (this.ActorSNO.Id == 190524 && this.World.WorldSNO.Id != 158593) return false; //dakab chest
-			if (this.ActorSNO.Id == 190708 && this.World.WorldSNO.Id == 158593) return false; //not dakab chest
+			if (this.ActorSNO.Id == 190524 && this.World.SNO != WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //dakab chest
+			if (this.ActorSNO.Id == 190708 && this.World.SNO == WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //not dakab chest
 
 			if (!rewardChestAvailable) return false; //event reward chest
 
@@ -142,9 +143,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						}
 				}
 
-				if (GeneratorsSystem.LoreRegistry.Lore.ContainsKey(this.World.WorldSNO.Id) && GeneratorsSystem.LoreRegistry.Lore[this.World.WorldSNO.Id].chests_lore.ContainsKey(this.ActorSNO.Id))
+				if (GeneratorsSystem.LoreRegistry.Lore.ContainsKey(this.World.SNO) && GeneratorsSystem.LoreRegistry.Lore[this.World.SNO].chests_lore.ContainsKey(this.ActorSNO.Id))
 					foreach (var p in this.GetPlayersInRange(30))
-						foreach (int loreId in GeneratorsSystem.LoreRegistry.Lore[this.World.WorldSNO.Id].chests_lore[this.ActorSNO.Id])
+						foreach (int loreId in GeneratorsSystem.LoreRegistry.Lore[this.World.SNO].chests_lore[this.ActorSNO.Id])
 							if (!p.HasLore(loreId))
 							{
 								World.DropItem(this, null, ItemGenerator.CreateLore(p, loreId));
@@ -192,7 +193,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				if (this.ActorSNO.Id == 2975)
 				{
-					if (this.World.WorldSNO.Id == 50610)
+					if (this.World.SNO == WorldSno.a2dun_zolt_level01)
 						foreach (var plr in this.World.Game.Players.Values)
 							plr.InGameClient.SendMessage(new QuestCounterMessage()
 							{
