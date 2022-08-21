@@ -27,6 +27,7 @@ DiIiS is a fully-functional open-source local server for [Diablo III: Reaper of 
 
 ## Installation
 
+### General steps
 1. Install [PostgreSQL 9.5.25](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads).
 2. Create databases in PostgreSQL: `diiis` and `worlds`
 3. Change you account and password in `database.Account.config` and `database.Worlds.conifg`
@@ -36,11 +37,14 @@ DiIiS is a fully-functional open-source local server for [Diablo III: Reaper of 
 7. Create account using console: `!account add Login Password Tag`
 8. Install certificate `bnetserver.p12`, password - `123` (the game verifies the CA root certificates).
 9. Use Client Diablo 3 `2.7.3.82785`.
-9. Add redirects to the `hosts` file (`%WinDir%\System32\drivers\etc\hosts`):
-    `127.0.0.1 us.actual.battle.net`
+9. Add redirects to the `hosts` file (`%WinDir%\System32\drivers\etc\hosts`):  
+    `127.0.0.1 us.actual.battle.net`  
     `127.0.0.1 eu.actual.battle.net`
 11. Launch client (`x64` or `x86`) with arguments `"Diablo III64.exe" -launch -uid diablo3_engb`
 10. Login to the game using your credentials =)
+
+### Using Docker
+Run `docker-compose up` inside `db` folder and continue from the 5th step in section above
 
 ## Playing with friends
 
