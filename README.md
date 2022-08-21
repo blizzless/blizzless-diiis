@@ -59,23 +59,23 @@ Do this for each client connecting to the server.
 
 3. Setting up redirects client to your server:
 
-  **Method #1 - Hosts**
+	**Method #1 - Hosts**
 
-  Add redirects to the `hosts` file (`%WinDir%\System32\drivers\etc\hosts`):  
-  `127.0.0.1 us.actual.battle.net`
-  `127.0.0.1 eu.actual.battle.net`
+	  Add redirects to the `hosts` file (`%WinDir%\System32\drivers\etc\hosts`):  
+	  `127.0.0.1 us.actual.battle.net`  
+	  `127.0.0.1 eu.actual.battle.net`
 
-  !After the modification the official Battle.Net application will not be able to connect to the server!
+	  !After the modification the official Battle.Net application will not be able to connect to the server!
 
-  **Method #2 - Modify main executable file**
+	  **Method #2 - Modify main executable file**
 
-  ```c
-  // Find null-terminated string enum and rewrite with HexEditor to your IP server.
-  eu.actual.battle.net/
-  us.actual.battle.net/
-  cn.actual.battle.net/
-  kr.actual.battle.net/
-  ```
+	  ```c
+	  // Find null-terminated string enum and rewrite with HexEditor to your IP server.
+	  eu.actual.battle.net/
+	  us.actual.battle.net/
+	  cn.actual.battle.net/
+	  kr.actual.battle.net/
+	  ```
 
 4. Launch client (`x64` or `x86`) with arguments `"Diablo III64.exe" -launch`
 
