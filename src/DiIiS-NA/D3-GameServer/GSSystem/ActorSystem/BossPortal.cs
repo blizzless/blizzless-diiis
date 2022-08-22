@@ -52,7 +52,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			this.Attributes[GameAttribute.Untargetable] = false;
-			switch (((this.ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter).Worlds[0])
+            var bossEncounter = ((this.ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter);
+			DestWorld = bossEncounter.Worlds[0];
+			switch (DestWorld)
 			{
 				case 60713:
 					DestArea = 60714; break;
@@ -99,8 +101,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 
 			}
-			DestWorld = ((this.ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter).Worlds[0];
-			DestPoint = ((this.ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter).I11;
+            DestPoint = bossEncounter.I11;
 			//get EncounterSNO
 			switch (this.ActorSNO.Id)
 			{
@@ -178,8 +179,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					break;
 			}
 
-			this.Destination = new DiIiS_NA.GameServer.MessageSystem.Message.Fields.ResolvedPortalDestination
-			{
+			this.Destination = new ResolvedPortalDestination
+            {
 				WorldSNO = DestWorld,
 				DestLevelAreaSNO = DestArea,
 				StartingPointActorTag = DestPoint

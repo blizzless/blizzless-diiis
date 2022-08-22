@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
@@ -31,7 +32,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		{
 			//{[Actor] [Type: ServerProp] SNOId:176900 GlobalId: 1013202487 Position: x:107.497185 y:138.07204 z:7.088848 Name: camera_cainsHouse_leahCloseUp}
 			//{[Actor] [Type: ServerProp] SNOId:175759 GlobalId: 1013202485 Position: x:122.59496 y:131.74234 z:-0.6 Name: emitter_camera}
-			var encWorld = world.Game.GetWorld(174449);
+			var encWorld = world.Game.GetWorld(WorldSno.trout_tristram_cainshouse_event);
 
 			var Maghda = encWorld.GetActorBySNO(211014);
 			Maghda.Attributes[GameAttribute.Hitpoints_Max] = 9000000f;

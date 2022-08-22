@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -76,7 +77,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Boss(MapSystem.World world, int snoId, TagMap tags)
 			: base(world, snoId, tags)
 		{
-			if (snoId == 80509 && world.WorldSNO.Id == 50613) this.SetVisible(false);
+			if (snoId == 80509 && world.SNO == WorldSno.a2dun_zolt_lobby) this.SetVisible(false);
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
 			this.Attributes[GameAttribute.//Blizzless Project 2022 

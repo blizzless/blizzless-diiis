@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -30,7 +31,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
         public override void OnPlayerApproaching(Player player)
         {
             if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 1.5 * this.Scale * this.Scale && !_collapsed)
-                if (this.World.WorldSNO.Id == 50585)
+                if (this.World.SNO == WorldSno.a1trdun_level07)
                 {
                     _collapsed = true;
 

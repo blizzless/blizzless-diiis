@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -49,8 +50,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public override bool Reveal(Player player)
 		{
 			if (this.ActorSNO.Id == 167185) return false;
-			if (this.ActorSNO.Id == 207615 && this.World.WorldSNO.Id != 158593) return false; //dakab door
-			if (this.ActorSNO.Id == 153836 && this.World.WorldSNO.Id == 158593) return false; //not dakab door
+			if (this.ActorSNO.Id == 207615 && this.World.SNO != WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //dakab door
+			if (this.ActorSNO.Id == 153836 && this.World.SNO == WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //not dakab door
 
 			if (this.ActorSNO.Id == 220337) //Treasure Room door
 				this.isOpened = true;

@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.Helpers.Hash;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 //Blizzless Project 2022 
@@ -115,13 +116,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster, count = monsterCount, counter = 0, questEvent = qevent });
 		}
 
-		public void ActiveArrow(MapSystem.World world, int snoId, int destworld = -1)
+		public void ActiveArrow(World world, int snoId, WorldSno destworld = WorldSno.__NONE)
 		{
 			Actor target = null;
-			if (destworld != -1)
+			if (destworld != WorldSno.__NONE)
 			{
 				foreach (Portal tar in world.GetActorsBySNO(snoId))
-					if (tar.Destination.WorldSNO == destworld)
+					if (tar.Destination.WorldSNO == (int)destworld)
 						target = tar;
 			}
 			else

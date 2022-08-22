@@ -30,6 +30,7 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -50,9 +51,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		};*/
 
 		private static readonly List<ResolvedPortalDestination> PortalDests = new List<ResolvedPortalDestination> {
-			new ResolvedPortalDestination{ WorldSNO = 72636, DestLevelAreaSNO = 145182, StartingPointActorTag = 172 },
-			new ResolvedPortalDestination{ WorldSNO = 72637, DestLevelAreaSNO = 145182, StartingPointActorTag = 172 },
-			new ResolvedPortalDestination{ WorldSNO = 154587, DestLevelAreaSNO = 145182, StartingPointActorTag = 172 }
+			new ResolvedPortalDestination{ WorldSNO = (int)WorldSno.trdun_crypt_falsepassage_01, DestLevelAreaSNO = 145182, StartingPointActorTag = 172 },
+			new ResolvedPortalDestination{ WorldSNO = (int)WorldSno.trdun_crypt_falsepassage_02, DestLevelAreaSNO = 145182, StartingPointActorTag = 172 },
+			new ResolvedPortalDestination{ WorldSNO = (int)WorldSno.trdun_crypt_skeletonkingcrown_00, DestLevelAreaSNO = 145182, StartingPointActorTag = 172 }
 		};
 
 		public override void Execute(MapSystem.World world)

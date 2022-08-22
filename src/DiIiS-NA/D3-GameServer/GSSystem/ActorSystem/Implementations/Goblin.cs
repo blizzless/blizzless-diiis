@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -44,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override bool Reveal(Player player)
 		{
-			if (this.World.WorldSNO.Id == 180550 || this.World.WorldSNO.Id == 107050)
+			if (this.World.SNO == WorldSno.a1dun_spidercave_01 || this.World.SNO == WorldSno.trout_oldtistram_cellar_3)
 			{
 				this.Destroy();
 				return false;

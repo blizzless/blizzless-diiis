@@ -4,6 +4,7 @@ using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.MPQ;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -461,7 +462,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 if (!MPQStorage.Data.Assets[SNOGroup.Worlds].ContainsKey(worldId))
                     return "There exist no world with SNOId: " + worldId;
 
-                var world = invokerClient.InGameClient.Game.GetWorld(worldId);
+                var world = invokerClient.InGameClient.Game.GetWorld((WorldSno)worldId);
 
                 if (world == null)
                     return "Can't teleport you to world with snoId " + worldId;

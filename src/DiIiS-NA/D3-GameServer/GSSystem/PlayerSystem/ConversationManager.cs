@@ -56,6 +56,7 @@ using System.Collections.Concurrent;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Platinum;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 {
@@ -341,13 +342,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			if (this.SNOId == 72817) //Tristram parom man
 			{
-				var world = this.player.World.Game.GetWorld(72882);
+				var world = this.player.World.Game.GetWorld(WorldSno.trout_townattack);
 				this.player.ChangeWorld(world, world.GetStartingPointById(116).Position);
 			}
 
 			else if (this.SNOId == 208400) //Cow king
 			{
-				var portal = this.player.World.Game.GetWorld(71150).GetActorBySNO(209083);
+				var portal = this.player.World.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(209083);
 				(portal as ActorSystem.Implementations.WhimsyshirePortal).Open();
 			}
 
@@ -355,7 +356,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				this.player.ShowConfirmation(this.player.DynamicID(this.player), (() =>
 				{
-					var world = this.player.World.Game.GetWorld(279626);
+					var world = this.player.World.Game.GetWorld(WorldSno.pvp_duel_small_multi);
 					this.player.ChangeWorld(world, world.GetStartingPointById(288).Position);
 				}));
 			}
@@ -494,7 +495,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.player.InGameClient.Game.ActiveNephalemTimer = false;
 				this.player.InGameClient.Game.ActiveNephalemProgress = 0;
 
-				var HubWorld = this.player.InGameClient.Game.GetWorld(332336);
+				var HubWorld = this.player.InGameClient.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
 				var NStone = HubWorld.GetActorBySNO(364715);
 				bool Activated = true;
 				NStone.SetIdleAnimation(NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.IdleDefault]);
@@ -671,13 +672,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						#region A1-Q2
 					case 17667:
 						//var BlacksmithQuest = player.InGameClient.Game.GetWorld(71150).GetActorBySNO(65036,true);
-						var CainBrains = player.InGameClient.Game.GetWorld(60713).GetActorBySNO(102386, true);
+						var world = player.InGameClient.Game.GetWorld(WorldSno.trdun_cain_intro);
+						var CainBrains = world.GetActorBySNO(102386, true);
 						Vector3D CainPath = new Vector3D(76.99389f, 155.145f, 0.0997252f);
 						var facingAngle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(CainBrains, CainPath);
 						CainBrains.Move(CainPath, facingAngle);
 						var A1Q2Wait1 = System.Threading.Tasks.Task.Delay(7000).ContinueWith(delegate
 						{
-							var actor = player.InGameClient.Game.GetWorld(60713).GetActorsBySNO(5723).Where(d => d.Visible).FirstOrDefault();
+							var actor = world.GetActorsBySNO(5723).Where(d => d.Visible).FirstOrDefault();
 							(actor as ActorSystem.Implementations.Door).Open();
 
 							var A1Q2Wait2 = System.Threading.Tasks.Task.Delay(2000).ContinueWith(delegate
@@ -691,7 +693,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						#endregion
 						#region A1-Q3
 						case 198292:
-							var BlacksmithQuest = player.InGameClient.Game.GetWorld(71150).GetActorBySNO(65036, true);
+							var BlacksmithQuest = player.InGameClient.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(65036, true);
 							BlacksmithQuest.WalkSpeed = 0.33f;
 							Vector3D FirstPoint = new Vector3D(2905.856f, 2584.807f, 0.5997877f);
 							Vector3D SecondPoint = new Vector3D(2790.396f, 2611.313f, 0.5997864f);
@@ -712,7 +714,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					//168282
 					#region A1-Q4
 					case 168282:
-						var wrld = player.InGameClient.Game.GetWorld(105406);
+						var wrld = player.InGameClient.Game.GetWorld(WorldSno.a1trdun_level05_templar);
 						foreach (var Wall in wrld.GetActorsBySNO(109209))
 							if (Wall.Position.Z > -23f)
 							{
@@ -724,7 +726,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							}
 						break;
 					case 17921:
-						var cryptwrld = player.InGameClient.Game.GetWorld(50585);
+						var cryptwrld = player.InGameClient.Game.GetWorld(WorldSno.a1trdun_level07);
 						foreach (var ghost in cryptwrld.GetActorsBySNO(5360))
 							ghost.Destroy();
 						break;

@@ -94,7 +94,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				if (scene.Specification == null) continue;
 				foreach (var area in scene.Specification.SNOLevelAreas)
 				{
-					if (wayPointInfo[i].SNOWorld != this.World.WorldSNO.Id || wayPointInfo[i].SNOLevelArea != area)
+					if (wayPointInfo[i].SNOWorld != (int)this.World.SNO || wayPointInfo[i].SNOLevelArea != area)
 						continue;
 
 					this.SNOLevelArea = wayPointInfo[i].SNOLevelArea;

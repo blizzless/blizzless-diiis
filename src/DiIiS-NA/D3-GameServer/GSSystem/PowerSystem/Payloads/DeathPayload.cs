@@ -56,6 +56,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 {
@@ -306,7 +307,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					this.Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] == 1 ||
 					this.Context.User.Attributes[GameAttribute.Item_Power_Passive, 249954] == 1 ||
 					(float)FastRandom.Instance.NextDouble() < 0.1f ||
-					this.Target.World.WorldSNO.Id == 211471)
+					this.Target.World.SNO == WorldSno.a1dun_random_level01)
 					switch ((int)this.DeathDamageType.HitEffect)
 					{
 						case 0: this.Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage() { ActorId = this.Target.DynamicID(plr), Effect = Effect.Gore }, this.Target); break;
@@ -336,7 +337,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (this.Target.ActorSNO.Id == 210120) //Сады надежды
 			{
 				//Первый этаж садов надежды
-				if (Target.World.WorldSNO.Id == 109513)
+				if (Target.World.SNO == WorldSno.a4dun_garden_of_hope_01)
 				{
 					//Проверяем есть ли порталы
 					var PortalToHell = Target.World.GetActorsBySNO(224890); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
@@ -363,7 +364,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					}
 				}
 				//Второй этаж садов надежды
-				else if (Target.World.WorldSNO.Id == 219659)
+				else if (Target.World.SNO == WorldSno.a4dun_garden_of_hope_random)
 				{ //Проверяем есть ли порталы
 					var PortalToHell = Target.World.GetActorsBySNO(224890); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
 					if (PortalToHell.Count == 0)
@@ -480,8 +481,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 				if (this.Target is Unique)
 				{
-					if (LoreRegistry.Lore.ContainsKey(this.Target.World.WorldSNO.Id) && LoreRegistry.Lore[this.Target.World.WorldSNO.Id].chests_lore.ContainsKey(this.Target.ActorSNO.Id))
-						foreach (int loreId in LoreRegistry.Lore[this.Target.World.WorldSNO.Id].chests_lore[this.Target.ActorSNO.Id])
+					if (LoreRegistry.Lore.ContainsKey(this.Target.World.SNO) && LoreRegistry.Lore[this.Target.World.SNO].chests_lore.ContainsKey(this.Target.ActorSNO.Id))
+						foreach (int loreId in LoreRegistry.Lore[this.Target.World.SNO].chests_lore[this.Target.ActorSNO.Id])
 							if (!plr.HasLore(loreId))
 							{
 								this.Target.World.DropItem(this.Target, null, ItemGenerator.CreateLore(plr, loreId));
@@ -598,7 +599,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			foreach (var bounty in this.Target.World.Game.QuestManager.Bounties)
 			{	if (this.Target.OriginalLevelArea == -1)
 					this.Target.OriginalLevelArea = this.Target.CurrentScene.Specification.SNOLevelAreas[0];
-				bounty.CheckKill(this.Target.ActorSNO.Id, this.Target.OriginalLevelArea, this.Target.World.WorldSNO.Id);
+				bounty.CheckKill(this.Target.ActorSNO.Id, this.Target.OriginalLevelArea, this.Target.World.SNO);
 			}
 
 			//Nephalem Rift
@@ -796,7 +797,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						}
 					});
 					//StartConversation(this.Target.World, 340878);
-					var HubWorld = this.Target.World.Game.GetWorld(332336);
+					var HubWorld = this.Target.World.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
 					var Orek = (HubWorld.GetActorBySNO(363744) as InteractiveNPC);
 					Orek.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(340878));
 					Orek.ForceConversationSNO = 340878;

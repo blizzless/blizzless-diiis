@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -70,6 +71,10 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// SNOHandle for the world.
 		/// </summary>
 		public SNOHandle WorldSNO { get; private set; }
+        public WorldSno SNO
+        {
+			get { return (WorldSno)WorldSNO.Id; } 
+		}
 
 		/// <summary>
 		/// QuadTree that contains scenes & actors.
@@ -133,7 +138,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			set { }
 		}
 
-		public Dictionary<int, int> PortalOverrides = new Dictionary<int, int>();
+		public Dictionary<int, WorldSno> PortalOverrides = new Dictionary<int, WorldSno>();
 
 		/// <summary>
 		/// List of players contained in the world.
@@ -161,7 +166,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		public uint NewSceneID { get { return this.IsPvP ? World.NewPvPSceneID : this.Game.NewSceneID; } }
 
-		public bool IsPvP { get { return this.WorldSNO.Id == 279626; } } //PvP_Duel_Small
+		public bool IsPvP { get { return this.SNO == WorldSno.pvp_duel_small_multi; } } //PvP_Duel_Small
 
 		public static bool PvPMapLoaded = false;
 
@@ -245,11 +250,11 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// Creates a new world for the given game with given snoId.
 		/// </summary>
 		/// <param name="game">The parent game.</param>
-		/// <param name="snoId">The snoId for the world.</param>
-		public World(Game game, int snoId)
-			: base(snoId == 279626 ? 99999 : game.NewWorldID)
+		/// <param name="sno">The sno for the world.</param>
+		public World(Game game, WorldSno sno)
+			: base(sno == WorldSno.pvp_duel_small_multi ? 99999 : game.NewWorldID)
 		{
-			this.WorldSNO = new SNOHandle(SNOGroup.Worlds, snoId);
+			this.WorldSNO = new SNOHandle(SNOGroup.Worlds, (int)sno);
 
 			this.Game = game;
 
@@ -259,7 +264,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			this._quadTree = new QuadTree(new Size(60, 60), 0);
 			this.NextLocation = this.PrevLocation = new ResolvedPortalDestination
 			{
-				WorldSNO = -1,
+				WorldSNO = (int)WorldSno.__NONE,
 				DestLevelAreaSNO = -1,
 				StartingPointActorTag = -1
 			};
@@ -269,13 +274,13 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			this.Game.AddWorld(this);
 			//this.Game.StartTracking(this); // start tracking the dynamicId for the world.
 
-			if (this.WorldSNO.Id == 267412) //Blood Marsh
+			if (this.SNO == WorldSno.x1_bog_01) //Blood Marsh
 			{
-				var worlds = new List<int>() { 283552, 341037, 341038, 341040 };
+				var worlds = new List<WorldSno>() { WorldSno.x1_catacombs_level01, WorldSno.x1_catacombs_fakeentrance_02, WorldSno.x1_catacombs_fakeentrance_03, WorldSno.x1_catacombs_fakeentrance_04 };
 				var scenes = new List<int>() { 265624, 265655, 265678, 265693 };
 				foreach (var scene in scenes)
 				{
-					var wld = worlds[FastRandom.Instance.Next(worlds.Count())];
+					var wld = worlds[FastRandom.Instance.Next(worlds.Count)];
 					this.PortalOverrides.Add(scene, wld);
 					worlds.Remove(wld);
 				}
@@ -404,7 +409,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				if (player.RevealedObjects.ContainsKey(this.GlobalID))
 					return false;
 
-				int sceneGridSize = this.WorldSNO.Name.ToLower().Contains("zolt") ? 100 : 60;
+				int sceneGridSize = this.SNO.IsUsingZoltCustomGrid() ? 100 : 60;
 				
 				player.InGameClient.SendMessage(new RevealWorldMessage() // Reveal world to player
 				{
@@ -477,7 +482,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			}
 
 			//Убираем балки с проходов
-			if (this.WorldSNO.Id == 71150)
+			if (this.SNO == WorldSno.trout_town)
 			{
 				foreach (var boarded in this.GetActorsBySNO(111888))
 					boarded.Destroy();

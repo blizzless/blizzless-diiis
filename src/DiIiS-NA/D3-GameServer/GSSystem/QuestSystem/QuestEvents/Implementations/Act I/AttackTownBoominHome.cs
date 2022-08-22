@@ -27,8 +27,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations.A
 
 		public override void Execute(MapSystem.World world)
 		{
-			var encWorld = world.Game.GetWorld(194933);
-
 			var Leah = world.GetActorBySNO(121208);
 			
 			Leah.Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;

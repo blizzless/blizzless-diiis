@@ -30,6 +30,7 @@ using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 {
@@ -104,7 +105,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					Act = b.BountyData0.ActData,
 					Type = b.BountyData0.Type,
 					LevelArea = b.BountyData0.LeveAreaSNO0,
-					World = -1,
+					World = WorldSno.__NONE,
 					Target = b.QuestSteps
 								.SelectMany(s => s.StepObjectiveSets)
 								.SelectMany(s => s.StepObjectives)
@@ -146,7 +147,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								.SelectMany(s => s.StepObjectiveSets)
 								.SelectMany(s => s.StepObjectives)
 								.Single(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillAny).SNOName1.Id,
-					World = -1,
+					World = WorldSno.__NONE,
 					Target = b.QuestSteps
 								.SelectMany(s => s.StepObjectiveSets)
 								.SelectMany(s => s.StepObjectives)
@@ -393,8 +394,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			{
 				foreach (var plr in this.Game.Players.Values)
 				{
-					if (plr.World.WorldSNO.Id == 50596)
-						plr.ChangeWorld(plr.World.Game.GetWorld(70885), plr.World.Game.GetWorld(70885).GetStartingPointById(63));
+					if (plr.World.SNO == WorldSno.a2dun_zolt_timed01_level01)
+					{
+						var world = plr.World.Game.GetWorld(WorldSno.caout_town);
+						plr.ChangeWorld(world, world.GetStartingPointById(63));
+					}
 				}
 			}
 
@@ -844,7 +848,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT Act { get; set; }
 		public DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType Type { get; set; }
 		public int LevelArea { get; set; }
-		public int World { get; set; }
+		public WorldSno World { get; set; }
 		public bool PortalSpawned = false;
 		public bool SubsceneSpawned = false;
 		public int Target { get; set; }
@@ -894,7 +898,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					});
 			}
 		}
-		public void CheckKill(int snoId, int levelArea, int world)
+		public void CheckKill(int snoId, int levelArea, WorldSno world)
 		{
 			//435868
 			//220789

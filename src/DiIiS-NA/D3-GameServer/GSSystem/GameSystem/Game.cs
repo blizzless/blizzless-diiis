@@ -66,6 +66,7 @@ using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 //Blizzless Project 2022 
 using System.Diagnostics;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 {
@@ -95,8 +96,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public TickTimer GlobalPvPTimer;
 		public TickTimer QuestTimer;
 
-		public int WorldOfPortalNephalem = -1;
-		public int WorldOfPortalNephalemSec = -1;
+		public WorldSno WorldOfPortalNephalem = WorldSno.__NONE;
+		public WorldSno WorldOfPortalNephalemSec = WorldSno.__NONE;
 		public int NephalemGreaterLevel = -1;
 		public bool NephalemGreater = false;
 		public bool NephalemBuff = false;
@@ -138,7 +139,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Dictionary that tracks world.
 		/// NOTE: This tracks by WorldSNO rather than by DynamicID; this.Objects _does_ still contain the world since it is a DynamicObject
 		/// </summary>
-		private readonly ConcurrentDictionary<int, World> _worlds;
+		private readonly ConcurrentDictionary<WorldSno, World> _worlds;
 
 		public List<World> Worlds
 		{
@@ -162,14 +163,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			public int acceptedPlayers;
 		};
 
-		public Dictionary<int, List<Action>> OnLoadWorldActions = new Dictionary<int, List<Action>>();
+		public Dictionary<WorldSno, List<Action>> OnLoadWorldActions = new Dictionary<WorldSno, List<Action>>();
+		public Dictionary<int, List<Action>> OnLoadSceneActions = new Dictionary<int, List<Action>>();
 
 		public BossEncounter CurrentEncounter = new BossEncounter { SnoId = -1, activated = false, acceptedPlayers = 0 };
 
 		/// <summary>
-		/// Starting world's sno id.
+		/// Starting world's sno.
 		/// </summary>
-		public int StartingWorldSNOId { get; private set; }
+		public WorldSno StartingWorldSNO { get; private set; }
 
 		/// <summary>
 		/// Starting world's monster level
@@ -196,7 +198,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			get
 			{
-				return GetWorld(this.StartingWorldSNOId);
+				return GetWorld(this.StartingWorldSNO);
 			}
 		}
 
@@ -422,8 +424,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			this._lastObjectID = (uint)gameId * 100000;
 			this.Empty = true;
 			this.Players = new ConcurrentDictionary<GameClient, Player>();
-			this._worlds = new ConcurrentDictionary<int, World>();
-			this.StartingWorldSNOId = 79100;// FIXME: track the player's save point and toss this stuff. 
+			this._worlds = new ConcurrentDictionary<WorldSno, World>();
+			this.StartingWorldSNO = WorldSno.pvp_caout_arena_01;// FIXME: track the player's save point and toss this stuff. 
 			this.InitialMonsterLevel = initalLevel;
 			this.MonsterLevel = initalLevel;
 			this.QuestManager = new QuestManager(this);
@@ -443,7 +445,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			this.GameDBSession = new GameDBSession();
 			this.LockdownTimer = TickTimer.WaitSeconds(this, 60f, new Action<int>((q) =>
 			{
-				if (this.Empty || this.Players.Count == 0)
+				if (this.Empty || Players.IsEmpty)
 				{
 					Logger.Info("All players disconnected, closing game session.");
 					this.Dispose();
@@ -688,13 +690,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 									joinedPlayer.EnterWorld(this.StartingWorld.GetStartingPointById(130).Position);
 									break;
 								case 200:
-									joinedPlayer.ChangeWorld(this.GetWorld(204707), this.GetWorld(204707).GetStartingPointById(206).Position);
+									joinedPlayer.ChangeWorld(this.GetWorld(WorldSno.a3dun_hub_adria_tower_intro), this.GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206).Position);
 									break;
 								case 300:
-									joinedPlayer.ChangeWorld(this.GetWorld(182944), this.GetWorld(182944).StartingPoints.First().Position);
+									joinedPlayer.ChangeWorld(this.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance), this.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints.First().Position);
 									break;
 								case 400:
-									joinedPlayer.ChangeWorld(this.GetWorld(308705), this.GetWorld(308705).StartingPoints.First().Position);
+									joinedPlayer.ChangeWorld(this.GetWorld(WorldSno.x1_westmarch_overlook_d), this.GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
 									break;
 								default:
 									break;
@@ -960,7 +962,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			{
 				case Game.Mode.Portals:
 					this.QuestsOrder = new int[] { -1 };
-					this.StartingWorldSNOId = 459976;
+					this.StartingWorldSNO = WorldSno.weekly_challenge_hub;
 					this.QuestProgress = new QuestRegistry(this);
 					break;
 			}
@@ -972,7 +974,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				this.CurrentAct = 0;
 				this.QuestsOrder = questsOrder_a1;
 				this.QuestProgress = new QuestRegistry(this);
-				this.StartingWorldSNOId = 79100;
+				this.StartingWorldSNO = WorldSno.pvp_caout_arena_01;
 				return;
 			}
 			if (CurrentAct != act)
@@ -983,38 +985,38 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				{
 					case 0:
 						this.QuestsOrder = questsOrder_a1;
-						this.StartingWorldSNOId = 71150;
+						this.StartingWorldSNO = WorldSno.trout_town;
 						this.QuestProgress = new ActI(this);
 						break;
 					case 100:
 						this.QuestsOrder = questsOrder_a2;
-						this.StartingWorldSNOId = 161472;
+						this.StartingWorldSNO = WorldSno.caout_refugeecamp;
 						this.QuestProgress = new ActII(this);
 						break;
 					case 200:
 						this.QuestsOrder = questsOrder_a3;
-						this.StartingWorldSNOId = 172909;
+						this.StartingWorldSNO = WorldSno.a3dun_hub_keep;
 						this.QuestProgress = new ActIII(this);
 						break;
 					case 300:
 						this.QuestsOrder = questsOrder_a4;
-						this.StartingWorldSNOId = 178152;
+						this.StartingWorldSNO = WorldSno.a4dun_heaven_hub_keep;
 						this.QuestProgress = new ActIV(this);
 						break;
 					case 400:
 						this.QuestsOrder = questsOrder_a5;
-						this.StartingWorldSNOId = 304235;
+						this.StartingWorldSNO = WorldSno.x1_westmarch_hub;
 						this.QuestProgress = new ActV(this);
 						break;
 					case 3000:
 						this.QuestsOrder = questsOrder_openWorld;
-						this.StartingWorldSNOId = 332336;
+						this.StartingWorldSNO = WorldSno.x1_tristram_adventure_mode_hub;
 						this.QuestProgress = new OpenWorld(this);
 						this.QuestManager.SetBounties();
 						break;
 					default:
 						this.QuestsOrder = questsOrder_a1;
-						this.StartingWorldSNOId = 71150;
+						this.StartingWorldSNO = WorldSno.trout_town;
 						this.QuestProgress = new QuestRegistry(this);
 						break;
 				}
@@ -1107,13 +1109,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						plr.Value.ChangeWorld(this.StartingWorld, this.StartingWorld.GetStartingPointById(130).Position);
 						break;
 					case 200:
-						plr.Value.ChangeWorld(this.GetWorld(204707), this.GetWorld(204707).GetStartingPointById(206).Position);
+						plr.Value.ChangeWorld(this.GetWorld(WorldSno.a3dun_hub_adria_tower_intro), this.GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206).Position);
 						break;
 					case 300:
-						plr.Value.ChangeWorld(this.GetWorld(182944), this.GetWorld(182944).StartingPoints.First().Position);
+						plr.Value.ChangeWorld(this.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance), this.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints.First().Position);
 						break;
 					case 400:
-						plr.Value.ChangeWorld(this.GetWorld(308705), this.GetWorld(308705).StartingPoints.First().Position);
+						plr.Value.ChangeWorld(this.GetWorld(WorldSno.x1_westmarch_overlook_d), this.GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
 						break;
 					default:
 						break;
@@ -1375,7 +1377,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}*/
 
 			var encAsset = (DiIiS_NA.Core.MPQ.FileFormats.BossEncounter)MPQStorage.Data.Assets[SNOGroup.BossEncounter][snoId].Data;
-			World encWorld = this.GetWorld(encAsset.Worlds[0]);
+			World encWorld = this.GetWorld((WorldSno)encAsset.Worlds[0]);
 			Logger.Debug("TeleportToBossEncounter, worldId: {0}", encAsset.Worlds[0]);
 			Vector3D startPoint = null;
 			switch (snoId)
@@ -1651,10 +1653,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			this.CurrentEncounter.acceptedPlayers = 0;
 		}
 
-		public void AddOnLoadAction(int worldSNO, Action action)
+		public void AddOnLoadWorldAction(WorldSno worldSNO, Action action)
 		{
-			Logger.Trace("AddOnLoadAction: {0}", worldSNO);
-			if (this.Players.Values.Where(p => p.World != null && p.World.WorldSNO.Id == worldSNO).Count() > 0)
+			Logger.Trace("AddOnLoadWorldAction: {0}", worldSNO);
+			if (Players.Values.Any(p => p.World != null && p.World.SNO == worldSNO))
 			{
 				action.Invoke();
 			}
@@ -1667,33 +1669,45 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 		}
 
+		public void AddOnLoadSceneAction(int sceneSNO, Action action)
+        {
+			Logger.Trace("AddOnLoadSceneAction: {0}", sceneSNO);
+			if (!this.OnLoadSceneActions.ContainsKey(sceneSNO))
+					this.OnLoadSceneActions.Add(sceneSNO, new List<Action>());
+
+				this.OnLoadSceneActions[sceneSNO].Add(action);
+		}
+
 #endregion
 
 		#region world collection
 
 		public void AddWorld(World world)
 		{
-			if (world.WorldSNO.Id == -1 || WorldExists(world.WorldSNO.Id))
-				Logger.Error(String.Format("World has an invalid SNO or was already being tracked (ID = {0}, SNO = {1})", world.GlobalID, world.WorldSNO.Id));
+			if (world.SNO == WorldSno.__NONE || WorldExists(world.SNO))
+				Logger.Error(String.Format("World has an invalid SNO or was already being tracked (ID = {0}, SNO = {1})", world.GlobalID, world.SNO));
 			else
-				this._worlds.TryAdd(world.WorldSNO.Id, world);
+				this._worlds.TryAdd(world.SNO, world);
 		}
 
 		public void RemoveWorld(World world)
 		{
 			World removed;
-			if (world.WorldSNO.Id == -1 || !WorldExists(world.WorldSNO.Id))
-				Logger.Error(String.Format("World has an invalid SNO or was not being tracked (ID = {0}, SNO = {1})", world.GlobalID, world.WorldSNO.Id));
+			if (world.SNO == WorldSno.__NONE || !WorldExists(world.SNO))
+				Logger.Error(String.Format("World has an invalid SNO or was not being tracked (ID = {0}, SNO = {1})", world.GlobalID, world.SNO));
 			else
-				this._worlds.TryRemove(world.WorldSNO.Id, out removed);
+				this._worlds.TryRemove(world.SNO, out removed);
 		}
 
-		public World GetWorld(int worldSNO)
+		public World GetWorld(WorldSno worldSNO)
 		{
+			if (worldSNO == WorldSno.__NONE)
+				return null;
+
 			World world;
 
-			if (this.CurrentAct != 3000 && worldSNO == 332336) //fix for a1 Tristram
-				worldSNO = 71150;
+			if (this.CurrentAct != 3000 && worldSNO == WorldSno.x1_tristram_adventure_mode_hub) //fix for a1 Tristram
+				worldSNO = WorldSno.trout_town;
 
 			if (!WorldExists(worldSNO)) // If it doesn't exist, try to load it
 			{
@@ -1721,12 +1735,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			return world;
 		}
 
-		public bool WorldExists(int worldSNO)
+		public bool WorldExists(WorldSno worldSNO)
 		{
 			return this._worlds.ContainsKey(worldSNO);
 		}
 
-		public bool WorldCleared(int worldSNO)
+		public bool WorldCleared(WorldSno worldSNO)
 		{
 			return this._worlds[worldSNO].Actors.Values.OfType<Monster>().Where(m => m.OriginalLevelArea != -1 && !m.Dead).Count() < 5;
 		}
@@ -1749,7 +1763,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							.Where(w => w.SNOWorld != -1).ToList();
 			var wayPointInfo = actData.Where(w => w.Flags == 3 || (isOpenWorld ? (w.Flags == 2) : (w.Flags == 1))).ToList();
 			//Logger.Debug("GetWayPointWorldById: world id {0}", wayPointInfo[id].SNOWorld);
-			return GetWorld(wayPointInfo[id].SNOWorld);
+			return GetWorld((WorldSno)wayPointInfo[id].SNOWorld);
 		}
 
 #endregion
