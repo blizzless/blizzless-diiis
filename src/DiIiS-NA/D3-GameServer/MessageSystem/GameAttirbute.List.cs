@@ -1514,6 +1514,8 @@ namespace DiIiS_NA.GameServer.MessageSystem
         public static readonly GameAttributeB FourthKanaisCubeSlotunlocked = new GameAttributeB(1476, 0, -1, 0, 0, "", "", "Fourth Kanai's Cube Slot unlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
         public static readonly GameAttributeB Seasononlyitemsunlocked = new GameAttributeB(1477, 0, -1, 0, 0, "", "", "Season-onlyitemsunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
         public static readonly GameAttributeB Soul_shards_unlocked = new GameAttributeB(1478, 0, -1, 0, 0, "", "", "Soul shards unlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB Item_was_sanctified = new GameAttributeB(1479, 0, -1, 0, 0, "", "", "Item was sanctified", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB Sanctified_items_unlocked = new GameAttributeB(1480, 0, -1, 0, 0, "", "", "Sanctified items unlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
 
         public static readonly GameAttributeF Fiil1 = new GameAttributeF(1223, -1, -1, 0, 0, "", "", "Fiil1", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Fiil2 = new GameAttributeF(1224, -1, -1, 0, 0, "", "", "Fiil2", GameAttributeEncoding.Float32, 0, 0, 0, 32);
