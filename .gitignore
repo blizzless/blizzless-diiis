@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Dockerized database
+db/data/pgdata/
+db/pgadmin/*
+!db/pgadmin/pgpass

@@ -288,23 +288,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 			foreach (var attr in attributes.Where(a => GameAttribute.Attributes[a.Id].Id == 408).ToList())
 				if (_parent is Item)
 					attributes.Remove(attr);
-
-			foreach (var attr in attributes.Where(a => !this.Replicateable(GameAttribute.Attributes[a.Id])).ToList())
-				if (_parent is Item)
-					;//	attributes.Remove(attr);
-
-			if (this._parent.World != null && this._parent.World.IsPvP)
-			{
-				if (this._parent == client.Player || (this._parent is Minion && (this._parent as Minion).Master == client.Player))
-					;// attributes.RemoveWhere(a => a.Id == 104);
-			}
-
-			if (!(this._parent is Living && !(this._parent is NPC)) && !(this._parent is Player && (this._parent as Player) == client.Player))
-			{
-				foreach (var attr in attributes.Where(a => ((_attributeValues[a].Value == GameAttribute.Attributes[a.Id]._DefaultValue.Value) && (_attributeValues[a].ValueF == GameAttribute.Attributes[a.Id]._DefaultValue.ValueF))).ToList())
-					;// attributes.Remove(attr);
-			}
-			//*/ 
+			
 			var ids = attributes.GetEnumerator();
 
 			bool level = attributes.Contains(new KeyId() { Id = GameAttribute.Level.Id });

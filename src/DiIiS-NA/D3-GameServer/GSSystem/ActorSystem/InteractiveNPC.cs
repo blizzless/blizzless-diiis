@@ -299,7 +299,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			NPCInteraction[] npcInters = new NPCInteraction[count];
 
-			bool HaveWithTitles = false;
+			//bool HaveWithTitles = false;
 			var it = 0;
 			foreach (var conv in Conversations)
 			{
@@ -311,7 +311,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					npcInters[it] = conv.AsNPCInteraction(this, player);
 					it++;
-					HaveWithTitles = true;
+					//HaveWithTitles = true;
 				}
 			}
 			

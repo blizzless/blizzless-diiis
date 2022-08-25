@@ -1604,7 +1604,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Actor NStone = null;
 			Portal portal = null;
 			int map = -1;
-			int x = 0;
 			int[] Maps = new int[]
 					{
 
@@ -2293,32 +2292,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			this.Attributes.BroadcastChangedIfRevealed();
 			var a = this.GetActorsInRange(15f);
-			;
-			//2896 2968
-
-			//this.World.SpawnRandomLegOrSetEquip(this, this);
-			//this.World.SpawnRandomEquip(this, this
-			//	, RandomHelper.Next(3, 8));
-			//this.GrantCriteria(74987249495955);
-			//			foreach (var actor in World.GetActorsInGroup(-1248096796))
-			//actor.PlayActionAnimation(11514);
-			//for (int i = 0; i < 20; i++)
-			//0 - хз
-			//1 - Инвентарь
-			//2 - Скиллы
-			//3 - Парагон скиллы
-			//4,5,6 - краш
-			//7 - пустая карта
-			//8 - Задания
-			//9 - Тайник
-			//10 - Соратник
-			//11,12,15 - ?
-			//13 - Админка
-			//14 - Мини карта
-			//16 - Почта
-			//17,18,19,20,21,22,23 - разрыв соединения
-			// this.InGameClient.SendMessage(new UIElementMessage() { Element = 13, Action = true });
-
+			
 			#region 
 			//UpdateExp(5000000);
 			/*
@@ -2529,10 +2503,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnTryWaypoint(GameClient client, TryWaypointMessage tryWaypointMessage)
 		{
-			//{[World] SNOId: 460587 GlobalId: 117440518 Name: lost_souls_prototype_v5}
 			var wpWorld = this.World.Game.GetWayPointWorldById(tryWaypointMessage.nWaypoint);
 			var wayPoint = wpWorld.GetWayPointById(tryWaypointMessage.nWaypoint);
-
+			Logger.Warn("---Waypoint Debug---");
 			var proximity = new RectangleF(wayPoint.Position.X - 1f, wayPoint.Position.Y - 1f, 2f, 2f);
 			var scenes = wpWorld.QuadTree.Query<Scene>(proximity);
 			if (scenes.Count == 0) return; // cork (is it real?)
@@ -2546,20 +2519,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 
 			var levelArea = scene.Specification.SNOLevelAreas[0];
-			Logger.Trace("OnTryWaypoint: Id: {0}, WorldId: {1}, levelArea: {2}", tryWaypointMessage.nWaypoint, wpWorld.WorldSNO.Id, levelArea);
+			Logger.Warn($"OnTryWaypoint: Id: {tryWaypointMessage.nWaypoint}, WorldId: {wpWorld.WorldSNO.Id}, levelArea: {levelArea}");
 			if (wayPoint == null) return;
-
+			Logger.Warn($"WpWorld: {wpWorld}, wayPoint: {wayPoint}");
 			InGameClient.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
 			if (wpWorld == this.World)
 				this.Teleport(wayPoint.Position);
 			else
 				this.ChangeWorld(wpWorld, wayPoint.Position);
-
-			/*this.Attributes[GameAttribute.Hidden] = false;
-			this.Attributes[GameAttribute.Loading] = false;
-			this.Attributes[GameAttribute.Disabled] = false;
-			this.Attributes[GameAttribute.CantStartDisplayedPowers] = false;
-			this.Attributes.BroadcastChangedIfRevealed();*/
 
 			//handling quest triggers
 			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
@@ -2585,8 +2552,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				PlayerIndex = this.PlayerIndex,
 				LevelAreaSNO = levelArea
 			});
+			Logger.Warn("---Waypoint Debug End---");
 		}
+		public void RefreshReveal()
+		{
+			float Range = 200f;
+			if (this.InGameClient.Game.CurrentEncounter.activated)
+				Range = 360f;
 
+			List<Actor> actors_around = this.GetActorsInRange(Range);
+
+			foreach (var actor in actors_around)
+				if (actor is not Player)
+					actor.Unreveal(this);
+			RevealActorsToPlayer();
+		}
 		private void OnRequestBuyItem(GameClient client, RequestBuyItemMessage requestBuyItemMessage)
 		{
 			var vendor = this.SelectedNPC as Vendor;
@@ -2722,7 +2702,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					if (!this.Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
 				}
 
-				//if (!haveEnoughIngredients) return;
+				if (!haveEnoughIngredients) return;
 				this.Inventory.RemoveGoldAmount(recipeDefinition.Gold);
 
 				foreach (var ingr in recipeDefinition.Ingredients) //second loop (getting)
@@ -2790,7 +2770,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					if (!this.Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
 				}
 
-				//if (!haveEnoughIngredients) return;
+				if (!haveEnoughIngredients) return;
 				this.Inventory.RemoveGoldAmount(recipeDefinition.Gold);
 
 				foreach (var ingr in recipeDefinition.Ingredients) //second loop (getting)
@@ -2855,7 +2835,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					if (!this.Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
 				}
 
-				//if (!haveEnoughIngredients) return;
+				if (!haveEnoughIngredients) return;
 				this.Inventory.RemoveGoldAmount(recipeDefinition.Gold);
 
 				foreach (var ingr in recipeDefinition.Ingredients) //second loop (getting)
@@ -3399,8 +3379,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				{
 					actor.Reveal(this);
 				}
-				else
-					;
 			}
 
 			foreach (var actor in this.World.Actors.Values) // unreveal far actors
@@ -3606,12 +3584,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			if (this == player) // only send this when player's own actor being is revealed. /raist.
 			{
-				player.InGameClient.SendMessage(new PlayerWarpedMessage()
-				{
-					WarpReason = 9,
-					WarpFadeInSecods = 0f,
-				});
-			}
+                player.InGameClient.SendMessage(new PlayerWarpedMessage()
+                {
+                    WarpReason = 9,
+                    WarpFadeInSecods = 0f,
+                });
+            }
 
 			if (this.SkillSet.HasSkill(460757))
 				foreach (var skill in this.SkillSet.ActiveSkills)

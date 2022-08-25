@@ -39,7 +39,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 			set
 			{
 				_position = value;
-				if (_position == null || this.Size == null) return;
+				if (_position == null) return;
 				this.Bounds = new RectangleF(this.Position.X, this.Position.Y, this.Size.Width, this.Size.Height);
 				var handler = PositionChanged;
 				if (handler != null) handler(this, EventArgs.Empty);

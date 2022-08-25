@@ -2439,7 +2439,6 @@ namespace bgs.protocol.channel.v1 {
         get { return result.MemberId; }
         set { SetMemberId(value); }
       }
-      [global::System.ObsoleteAttribute()]
       public Builder SetMemberId(global::bgs.protocol.EntityId value) {
         pb::ThrowHelper.ThrowIfNull(value, "value");
         PrepareBuilder();
@@ -2447,7 +2446,6 @@ namespace bgs.protocol.channel.v1 {
         result.memberId_ = value;
         return this;
       }
-      [global::System.ObsoleteAttribute()]
       public Builder SetMemberId(global::bgs.protocol.EntityId.Builder builderForValue) {
         pb::ThrowHelper.ThrowIfNull(builderForValue, "builderForValue");
         PrepareBuilder();
@@ -2455,7 +2453,6 @@ namespace bgs.protocol.channel.v1 {
         result.memberId_ = builderForValue.Build();
         return this;
       }
-      [global::System.ObsoleteAttribute()]
       public Builder MergeMemberId(global::bgs.protocol.EntityId value) {
         pb::ThrowHelper.ThrowIfNull(value, "value");
         PrepareBuilder();

@@ -435,8 +435,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 				if (IsWeapon(this.ItemType))
 				{
-					if (Attributes[GameAttribute.Attacks_Per_Second_Item] == 0)
-						;
 					if (Attributes[GameAttribute.Damage_Weapon_Min, 0] == 0)
 						Attributes[GameAttribute.Damage_Weapon_Min, 0] = 34;
 					if (Attributes[GameAttribute.Damage_Weapon_Delta, 0] == 0)

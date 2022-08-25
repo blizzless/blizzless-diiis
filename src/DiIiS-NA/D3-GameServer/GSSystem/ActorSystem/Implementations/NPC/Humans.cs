@@ -46,9 +46,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                         switch (this.ActorSNO.Id)
                         {
                             case 308474:
-                                //[311433][Conversation] X1_westm_Intro_FirstRunnerFromDeath -
-                                //{[Actor] [Type: Monster] SNOId:308474 GlobalId: 1017300800 Position: x:1443.9391 y:439.9689 z:14.999992 Name: X1_WestM_Intro_Human_Male}		
-                                Actor IntroMan = null;
                                 if (this.Position.X > 1440) 
                                     StartConversation(this.World, 311433);
                                 else

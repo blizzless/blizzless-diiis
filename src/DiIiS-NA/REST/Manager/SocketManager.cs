@@ -64,7 +64,7 @@ namespace DiIiS_NA.REST.Manager
 
                 _threads[SelectThreadWithMinConnections()].AddSocket(newSocket);
             }
-            catch (Exception err)
+            catch
             {
       
             }

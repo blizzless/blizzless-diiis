@@ -120,9 +120,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// <param name="facingAngle">The angle in radians.</param>
 		public void SetFacingRotation(float facingAngle)
 		{
-			if (this.Spawner)
-				;
-			else
+			if (!this.Spawner)
 			{
 				Quaternion q = Quaternion.FacingRotation(facingAngle);
 				this.RotationW = q.W;
@@ -450,10 +448,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (this is Player)
 			{
 				(this as Player).BetweenWorlds = true;
-				/*(this as Player).InGameClient.SendMessage(new FreezeGameMessage
-				{
-					Field0 = true
-				});*/
 				(this as Player).InGameClient.SendMessage(new ACDTranslateSyncMessage()
 				{
 					ActorId = this.DynamicID(this as Player),
@@ -476,10 +470,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (this is Player)
 			{
 				(this as Player).BetweenWorlds = false;
-				/*(this as Player).InGameClient.SendMessage(new FreezeGameMessage
-				{
-					Field0 = false
-				});*/
 			}
 
 			if (this is Player)
@@ -490,7 +480,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					(hireling as Hireling).Brain.DeActivate();
 					hireling.Position = position;
 					(hireling as Hireling).Brain.Activate();
-					//(this as Player).ActiveHireling = hireling;
 				}
 				var questhireling = (this as Player).SetQuestHireling;
 				if (questhireling != null)
@@ -498,7 +487,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					(questhireling as Hireling).Brain.DeActivate();
 					questhireling.Position = position;
 					(questhireling as Hireling).Brain.Activate();
-					//(this as Player).ActiveHireling = hireling;
 				}
 				foreach (var fol in (this as Player).Followers)
 				{
@@ -517,6 +505,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				this.Attributes[GameAttribute.Looping_Animation_End_Time] = -1;
 				this.Attributes.BroadcastChangedIfRevealed();
 				//Refresh Inventory
+				(this as Player).Inventory.RefreshInventoryToClient();
 			}
 		}
 
@@ -530,9 +519,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			this.SetFacingRotation(facingAngle);
 
 			if (this.World == null) return;
-			if (Spawner)
-				;
-			else
+			if (!Spawner)
 				this.World.BroadcastIfRevealed(plr => new ACDTranslateFacingMessage
 				{
 					ActorId = DynamicID(plr),
@@ -861,10 +848,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			lock (player.RevealedObjects)
 			{
-				if (this.ActorSNO.Id == 3205) 
-					;
 				if (this.Hidden || this.Dead || !this.Visible || this.World == null) return false;
-
 				
 				//Leave Miriam in Crypt
 				if (this.ActorSNO.Id == 175310)

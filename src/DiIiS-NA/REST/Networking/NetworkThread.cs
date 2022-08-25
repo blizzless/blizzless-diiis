@@ -76,8 +76,6 @@ namespace DiIiS_NA.REST.Networking
             {
                 Thread.Sleep(sleepTime);
 
-                uint tickStart = 0;
-
                 AddNewSockets();
 
                 for (var i = 0; i < _Sockets.Count; ++i)
