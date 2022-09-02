@@ -572,7 +572,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
         PlayerIndexMessage16 = 550,//SIZE 12 
         //*/
         #endregion
-        #region 2.7.3
+        #region 2.7.4
         ClientTryConsoleCommand = 1,//SIZE 1060 - Client
         ServerTryConsoleCommand = 2,//SIZE 1060 - Server
         QuitGameMessage = 3,//SIZE 12 
@@ -1111,10 +1111,10 @@ namespace DiIiS_NA.GameServer.MessageSystem
         PlayerLoadoutTabIconMessage = 534, // //SIZE16
         PlayerLoadoutSaveMessage1 = 535, // //SIZE68
         ANNDataMessage45 = 536, // //SIZE12
-        PlayerLoadoutDataMessage = 537, // //SIZE592
-        PlayerLoadoutDataMessage1 = 538, // //SIZE592
+        PlayerLoadoutDataMessage = 537, // //SIZE 808 - 2.7.4
+        PlayerLoadoutDataMessage1 = 538, // //SIZE 808 - 2.7.4
         PlayerLoadoutTabIconMessage1 = 539, // //SIZE16
-        PlayerLoadoutEquipmentUpdateMessage = 540, // //SIZE48
+        PlayerLoadoutEquipmentUpdateMessage = 540, // //SIZE 64 - - 2.7.4
         PlayerLoadoutEquipResultsMessage = 541, // //SIZE156
         SwapSkillsMessage = 542, // //SIZE16
         GBIDDataMessage5 = 543, // //SIZE12
@@ -1124,7 +1124,11 @@ namespace DiIiS_NA.GameServer.MessageSystem
         DWordDataMessage18 = 547, // //SIZE12
         ANNDataMessage46 = 548, // //SIZE12
         DungeonFinderCompletionTimeMessage = 549, // //SIZE16
-        IntDataMessage26 = 550, // //SIZE12
+        IntDataMessage26 = 550, // //SIZE 12
+        IntDataMessage27 = 551, // //SIZE 12 - 2.7.4
+        UberBossClosingMessage = 552, // //SIZE 16 - 2.7.4
+        PlayerIndexMessage16 = 551, // //SIZE 12 - 2.7.4
+        UnlockableRandomAffixMessage = 553, // //SIZE124 - 2.7.4
         #endregion
     }
 }

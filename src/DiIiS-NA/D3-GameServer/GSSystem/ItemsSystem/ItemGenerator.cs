@@ -1013,7 +1013,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				var legaDefinition = GetRandom(AllowedItems.Values
 					.Where(def =>
 						def.ItemLevel <= Math.Min(level + 2, 73)
-						&& !ObsoleteItems.Contains(def.Hash) //obsolete 1.0.3 items
+						&& !ObsoleteItems.Contains(def.Hash)
 						&& UniqueItems.UniqueItemStats.ContainsKey(def.Hash)
 						&& def.Quality != ItemTable.ItemQuality.Special
 						&& (type == null ? true : ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash))

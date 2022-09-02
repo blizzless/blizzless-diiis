@@ -83,7 +83,7 @@ namespace DiIiS_NA
         public static string RESTSERVERIP = DiIiS_NA.REST.Config.Instance.IP;
         public static string PUBLICGAMESERVERIP = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
 
-        public static int Build = 11;
+        public static int Build = 29;
         public static int Stage = 4;
         public static string TypeBuild = "Beta";
         public static bool D3CoreEnabled = DiIiS_NA.GameServer.Config.Instance.CoreActive;
@@ -99,7 +99,7 @@ namespace DiIiS_NA
             
             string Name = $"Blizzless: Build {Build}, Stage: {Stage} - {TypeBuild}";
             Console.WriteLine("                 " + Name);
-            Console.WriteLine("Connected Module: 0x00 - Diablo 3 RoS 2.7.3.82785");
+            Console.WriteLine("Connected Module: 0x00 - Diablo 3 RoS 2.7.4.84161");
             Console.WriteLine("------------------------------------------------------------------------");
             Console.ResetColor();
             Console.Title = Name;

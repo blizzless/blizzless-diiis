@@ -29,7 +29,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
 
             ScriptedAttributeInitializer.ProcessAttributes(Attributes);
         }
-        #region 2.7.1
+        #region 2.7.4
         //*
         public static readonly GameAttributeF Axe_Bad_Data = new GameAttributeF(0, 0, -1, 0, 0, "", "", "Axe_Bad_Data", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Attribute_Timer = new GameAttributeF(1, 0, -1, 0, 0, "", "", "Attribute_Timer", GameAttributeEncoding.Float32, 0, 0, 0, 32);
@@ -1511,9 +1511,11 @@ namespace DiIiS_NA.GameServer.MessageSystem
         public static readonly GameAttributeB ForcedMove = new GameAttributeB(1401, 0, -1, 0, 0, "", "", "ForcedMove", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
         public static readonly GameAttributeB ReceivedPrimalWhenUnlocking = new GameAttributeB(1474, 0, -1, 0, 0, "", "", "ReceivedPrimalWhenUnlocking", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
         public static readonly GameAttributeB KanaiPowersunlocked = new GameAttributeB(1475, 0, -1, 0, 0, "", "", "KanaiPowersunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
-        public static readonly GameAttributeB FourthKanaisCubeSlotunlocked = new GameAttributeB(1476, 0, -1, 0, 0, "", "", "Fourth Kanai's Cube Slot unlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB FourthKanaisCubeSlotunlocked = new GameAttributeB(1476, 0, -1, 0, 0, "", "", "FourthKanai'sCubeSlotunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
         public static readonly GameAttributeB Seasononlyitemsunlocked = new GameAttributeB(1477, 0, -1, 0, 0, "", "", "Season-onlyitemsunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
-        public static readonly GameAttributeB Soul_shards_unlocked = new GameAttributeB(1478, 0, -1, 0, 0, "", "", "Soul shards unlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB Soul_shards_unlocked = new GameAttributeB(1478, 0, -1, 0, 0, "", "", "Soulshardsunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB Item_was_sanctified = new GameAttributeB(1479, 0, -1, 0, 0, "", "", "Itemwassanctified", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB Sanctified_items_unlocked = new GameAttributeB(1480, 0, -1, 0, 0, "", "", "Sanctifieditemsunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
 
         public static readonly GameAttributeF Fiil1 = new GameAttributeF(1223, -1, -1, 0, 0, "", "", "Fiil1", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Fiil2 = new GameAttributeF(1224, -1, -1, 0, 0, "", "", "Fiil2", GameAttributeEncoding.Float32, 0, 0, 0, 32);

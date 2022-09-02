@@ -31,7 +31,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 
 		public D3.OnlineService.GameCreateParams GameCreateParams { get; private set; }
 
-		public string Version = "2.7.3";
+		public string Version = "2.7.4";
 		public ulong FactoryID { get; private set; }
 		public KeyValuePair<string, BattleBackend.ServerDescriptor> GServer { get; private set; }
 		public ulong RequestId { get; private set; }

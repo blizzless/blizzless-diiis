@@ -87,18 +87,6 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             Init.SetGameAccountSettings(GAS);
             Init.SetHeroDigests(d);
             Init.SetAccountDigest(Client.Account.GameAccount.Digest);
-            /*Init.SetSyncedVars("OnlineService.Season.EarliestSeasonNum=4" +
-                " OnlineService.Season.Num=1" +
-                " OnlineService.Season.State=1" +
-                " OnlineService.FreeToPlay=true" +
-                " OnlineService.Leaderboard.Era=10" +
-                " OnlineService.AnniversaryEvent.Status=2" +
-                " ChallengeRift.ChallengeNumber=140" +
-                " OnlineService.Store.Status=0" +
-                " OnlineService.Store.ProductCatalogDigest=C42DC6117A7008EDA2006542D6C07EAD096DAD90" +
-                " OnlineService.Store.ProductCatalogVersion=633565800390338000" +
-                " OnlineService.Store.NewestProductTime=516240000000000000" +
-                " OnlineService.Region.Id=5");*/
             Init.SetSyncedVars(
                 " OnlineService.Season.Num=1" + //Номер сезона
                 " OnlineService.Season.State=1" + //Статус сезона, 1 - Активирован, 0 - Деактивирован
@@ -3791,7 +3779,7 @@ challenge_end_time_unix_seconds: 1583200800
             var gameAccount = client.Account.GameAccount;
             return gameAccount.Settings.ToByteString();
         }
-        private ByteString SetGameAccountSettings(D3.GameMessage.SetGameAccountSettings settings, BattleClient client)
+        private ByteString SetGameAccountSettings(SetGameAccountSettings settings, BattleClient client)
         {
             Logger.Trace("SetGameAccountSettings()");
 
@@ -3832,14 +3820,5 @@ challenge_end_time_unix_seconds: 1583200800
         }
         #endregion
 
-        #region Heroes of The Storm
-        private ByteString FirstRequest(BattleClient Client, ClientRequest request)
-        {
-
-
-            return null;//  res.Build().ToByteString();
-        }
-
-        #endregion
     }
 }
