@@ -64,6 +64,7 @@
 
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.4.1" />
+    <PackageReference Include="Discord.Net" Version="3.8.0" />
     <PackageReference Include="DotNetty.Buffers" Version="0.6.0" />
     <PackageReference Include="DotNetty.Codecs" Version="0.6.0" />
     <PackageReference Include="DotNetty.Codecs.Http" Version="0.6.0" />
@@ -85,6 +86,7 @@
     <PackageReference Include="Skater.exe" Version="7.5.0" />
     <PackageReference Include="SoapCore" Version="0.9.9.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+    <PackageReference Include="System.ServiceModel.Web" Version="1.0.0" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -95,7 +97,7 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="config.ini">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="database.Account.config">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

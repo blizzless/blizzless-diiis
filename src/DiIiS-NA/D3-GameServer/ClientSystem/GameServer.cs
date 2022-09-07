@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.Core.Discord;
 using DiIiS_NA.Core.Logging;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.ClientSystem.Base;
@@ -24,7 +25,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 		public static GSBackend GSBackend { get; set; }
 
 		public static int MaintenanceTime = -1;
-
+		public Bot DiscordBot { get; set; }
 		public GameServer()
 		{
 			this.OnConnect += ClientManager.Instance.OnConnect;

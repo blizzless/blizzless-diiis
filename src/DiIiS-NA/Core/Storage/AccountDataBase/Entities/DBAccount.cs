@@ -23,5 +23,7 @@ namespace DiIiS_NA.Core.Storage.AccountDataBase.Entities
 		public virtual ulong LastOnline { get; set; }
 		public virtual bool HasRename { get; set; }
 		public virtual ulong RenameCooldown { get; set; }
-	}
+        public virtual ulong DiscordId { get;  set; }
+        public virtual string DiscordTag { get; set; }
+    }
 }
