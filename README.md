@@ -35,7 +35,7 @@ DiIiS is a fully-functional open-source local server for [Diablo III: Reaper of 
 
 Each version of the client includes changes to structures, opcodes and attributes.
 
-The currently supported version of the client: **2.7.3.82785**
+The currently supported version of the client: **2.7.4.84161**
 
 ## Server Deploying
 
