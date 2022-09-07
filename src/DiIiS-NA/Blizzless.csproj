@@ -10,6 +10,7 @@
     <FileVersion>3.0.0.0</FileVersion>
     <StartupObject>DiIiS_NA.Program</StartupObject>
     <DebugType>full</DebugType>
+    <Configurations>Debug;Release;github</Configurations>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,6 +26,10 @@
 	<RootAllApplicationAssemblies>true</RootAllApplicationAssemblies>
 	<IlcGenerateCompleteTypeMetadata>true</IlcGenerateCompleteTypeMetadata>
 	<IlcGenerateStackTraceData>true</IlcGenerateStackTraceData>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='github|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
 	<ItemGroup>
