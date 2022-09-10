@@ -24,6 +24,7 @@ using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 {
@@ -60,7 +61,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		private bool _onArrivalCalled;
 		private bool _spawned;  
 
-		public Projectile(PowerContext context, int actorSNO, Vector3D position)
+		public Projectile(PowerContext context, ActorSno actorSNO, Vector3D position)
 			: base(context.World, actorSNO)
 		{
 			//this.Field2 = 0x0;
@@ -274,7 +275,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 					return;
 				}
 
-				var nextProj = new Projectile(this.Context, this.ActorSNO.Id, this.ChainCurrent.Position);
+				var nextProj = new Projectile(this.Context, this.SNO, this.ChainCurrent.Position);
 				nextProj.Position.Z += 5f;
 
 				nextProj.ChainCurrent = this.ChainCurrent;

@@ -28,6 +28,7 @@ using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -44,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		public override void Execute(MapSystem.World world)
 		{
 			if (world.Game.Empty) return;
-			setActorOperable(world, 3739, false);
+			SetActorOperable(world, ActorSno._captainrumfoord, false);
 			StartConversation(world, 198199);
 
 			//System.Threading.Tasks.Task.Delay(1000).Wait();
@@ -54,7 +55,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			{
 				foreach (var actor in wave1Actors)
 				{
-					var monster = world.SpawnMonster(6644, new Vector3D(actor.Position.X, actor.Position.Y, actor.Position.Z));
+					var monster = world.SpawnMonster(ActorSno._zombieskinny_a, new Vector3D(actor.Position.X, actor.Position.Y, actor.Position.Z));
 					monster.Attributes[GameAttribute.God] = true;
 					monster.Attributes.BroadcastChangedIfRevealed();
 					(monster as Monster).Brain.DeActivate();
@@ -74,7 +75,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 					{
 						foreach (var actor in wave1Actors)
 						{
-							var monster = world.SpawnMonster(6644, new Vector3D(actor.Position.X, actor.Position.Y, actor.Position.Z));
+							var monster = world.SpawnMonster(ActorSno._zombieskinny_a, new Vector3D(actor.Position.X, actor.Position.Y, actor.Position.Z));
 							monster.Attributes[GameAttribute.God] = true;
 							monster.Attributes.BroadcastChangedIfRevealed();
 							(monster as Monster).Brain.DeActivate();
@@ -110,9 +111,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		}
 
 		//Not Operable Rumford (To disable giving u the same quest while ur in the event)
-		public static bool setActorOperable(MapSystem.World world, Int32 snoId, bool status)
+		public static bool SetActorOperable(MapSystem.World world, ActorSno sno, bool status)
 		{
-			var actor = world.GetActorBySNO(snoId);
+			var actor = world.GetActorBySNO(sno);
 			foreach (var player in world.Players)
 			{
 				actor.Attributes[GameAttribute.NPC_Is_Operatable] = status;

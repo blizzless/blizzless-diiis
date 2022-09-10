@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -21,13 +22,13 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(86624, 60583)]
+	[HandledSNO(ActorSno._adventurer_d_templarintrounique, ActorSno._khamsin_mine_unique)]
 	public class Jondar : Monster
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger();
 
-		public Jondar(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Jondar(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x8;
 			this.Attributes[GameAttribute.MinimapActive] = true;

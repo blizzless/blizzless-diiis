@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
@@ -1180,7 +1181,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SpawnEffect(154044, User.Position); //big grenade blow
+			SpawnEffect(ActorSno._grenadeproxy_obsidian, User.Position); //big grenade blow
 
 			AttackPayload attack = new AttackPayload(this);
 			attack.Targets = GetEnemiesInRadius(User.Position, 10f);

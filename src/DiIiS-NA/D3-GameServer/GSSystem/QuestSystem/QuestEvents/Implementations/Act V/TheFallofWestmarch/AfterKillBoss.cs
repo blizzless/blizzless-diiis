@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
@@ -12,9 +13,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 
 		public override void Execute(MapSystem.World world)
 		{
-			var Tyrael = world.ShowOnlyNumNPC(289293, 0) as ActorSystem.InteractiveNPC;
+			var Tyrael = world.ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as ActorSystem.InteractiveNPC;
 
-			foreach (var Tyr in world.GetActorsBySNO(289293))
+			foreach (var Tyr in world.GetActorsBySNO(ActorSno._x1_tyrael_hurt))
 			{
 				(Tyr as ActorSystem.InteractiveNPC).Conversations.Clear();
 				Tyr.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
@@ -22,13 +23,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 				AddQuestConversation(Tyr, 252100);
 			}
 
-			foreach (var act in world.GetActorsBySNO(316008)) act.Destroy(); //x1_Death_Orb_Little
-			foreach (var act in world.GetActorsBySNO(315665)) act.Destroy(); //x1_westmarch_cath_int_debrisCenter
-			foreach (var act in world.GetActorsBySNO(315891)) act.Destroy(); //x1_westmarch_cath_debrisSheets_02
-			foreach (var act in world.GetActorsBySNO(315966)) act.Destroy(); //x1_westmarch_cath_debrisSheets_03
-			foreach (var act in world.GetActorsBySNO(316266)) act.Destroy(); //x1_westmarch_cath_debrisSheets_04
-			foreach (var act in world.GetActorsBySNO(319475)) act.Destroy(); //x1_westmarch_cath_debrisSheets_05
-			foreach (var act in world.GetActorsBySNO(324731)) act.Destroy(); //x1_westmarch_cath_debrisSheets_06
+			foreach (var act in world.GetActorsBySNO(
+				ActorSno._x1_death_orb_little,
+				ActorSno._x1_westmarch_cath_int_debriscenter,
+				ActorSno._x1_westm_cath_debrissheets_02,
+				ActorSno._x1_westm_cath_debrissheets_03,
+				ActorSno._x1_westm_cath_debrissheets_04,
+				ActorSno._x1_westm_cath_debrissheets_05,
+				ActorSno.__x1_westm_cath_debrissheets_06
+				))
+            {
+                act.Destroy();
+            }
 
 			world.Game.QuestManager.Advance();
 

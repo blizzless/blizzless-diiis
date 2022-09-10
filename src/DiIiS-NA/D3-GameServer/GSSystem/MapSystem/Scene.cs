@@ -262,8 +262,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			{
 				switch (marker.Type)
 				{
-					case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Actor:
-						var actor = ActorFactory.Create(this.World, marker.SNOHandle.Id, marker.TagMap); // try to create it.
+					case MarkerType.Actor:
+						var actor = ActorFactory.Create(this.World, (ActorSno)marker.SNOHandle.Id, marker.TagMap); // try to create it.
 																										 //Logger.Debug("not-lazy spawned {0}", actor.GetType().Name);
 						if (actor == null) continue;
 						if (this.World.SNO == WorldSno.a3_battlefields_02 && this.SceneSNO.Id == 145392 && actor is StartingPoint) continue; //arreat crater hack
@@ -277,17 +277,17 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 						//System.Threading.Thread.Sleep(3);
 						break;
 
-					case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Encounter:
+					case MarkerType.Encounter:
 						try
 						{
 							//Logger.Warn("load Encounter marker {0} in {1} ({2})", marker.Name, markerSetData.FileName, marker.SNOHandle.Id);
-							var encounter = marker.SNOHandle.Target as DiIiS_NA.Core.MPQ.FileFormats.Encounter;
+							var encounter = marker.SNOHandle.Target as Encounter;
 							var actorsno = RandomHelper.RandomItem(encounter.Spawnoptions, x => x.Probability);
 							/*foreach (var option in encounter.Spawnoptions)
 							{
 								Logger.Trace("Encounter option {0} - {1} - {2} - {3}", option.SNOSpawn, option.Probability, option.I1, option.I2);
 							}*/ //only for debugging purposes
-							var actor2 = ActorFactory.Create(this.World, actorsno.SNOSpawn, marker.TagMap); // try to create it.
+							var actor2 = ActorFactory.Create(this.World, (ActorSno)actorsno.SNOSpawn, marker.TagMap); // try to create it.
 							if (actor2 == null) continue;
 
 							var position2 = marker.PRTransform.Vector3D + this.Position; // calculate the position for the actor.
@@ -336,7 +336,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 				foreach (var markerSet in data.MarkerSets)
 				{
-					var markerSetData = MPQStorage.Data.Assets[SNOGroup.MarkerSet][markerSet].Data as DiIiS_NA.Core.MPQ.FileFormats.MarkerSet;
+					var markerSetData = MPQStorage.Data.Assets[SNOGroup.MarkerSet][markerSet].Data as MarkerSet;
 					if (markerSetData == null) return;
 					/*Logger.Info("-------------------------------------");
 					Logger.Info("Marker set name {0}", markerSet);
@@ -346,14 +346,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 					{
 						switch (marker.Type)
 						{
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.AmbientSound:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Light:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Particle:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.SubScenePosition:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.AudioVolume:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.MinimapMarker:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Script:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Event:
+							case MarkerType.AmbientSound:
+							case MarkerType.Light:
+							case MarkerType.Particle:
+							case MarkerType.SubScenePosition:
+							case MarkerType.AudioVolume:
+							case MarkerType.MinimapMarker:
+							case MarkerType.Script:
+							case MarkerType.Event:
 								break;
 							default:
 								PreCachedMarkers[data.Header.SNOId].Add(marker);

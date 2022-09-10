@@ -14,6 +14,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -24,10 +25,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 
 		public new int SummonLimit = 1;
 
-		public static List<int> Companions = new List<int>() { 133741, 173827, 181748, 159098, 159102, 178664 };
+		private static readonly List<ActorSno> Companions = new List<ActorSno>() {
+			ActorSno._dh_companion,
+			ActorSno._dh_companion_spider, 
+			ActorSno._dh_companion_boar, 
+			ActorSno._dh_companion_runec, 
+			ActorSno._dh_companion_runed,
+			ActorSno._dh_companion_ferret
+		};
 
-		public CompanionMinion(World world, PowerContext context, int CompanionSNOId)
-			: base(world, CompanionSNOId, context.User, null)
+		public CompanionMinion(World world, PowerContext context, ActorSno CompanionSNO)
+			: base(world, CompanionSNO, context.User, null)
 		{
 			Scale = 1.2f;
 			if (context.User.Attributes[GameAttribute.Rune_B, 0x000592ff] > 0) Scale = 2f;  //Boar
@@ -38,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			this.Attributes[GameAttribute.Invulnerable] = true;
 			this.Attributes[GameAttribute.Is_Helper] = true;
 			this.Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
-			if (CompanionSNOId == 178664)
+			if (CompanionSNO == ActorSno._dh_companion_ferret)
 				SetBrain(new LooterBrain(this, false));
 			else
 			{

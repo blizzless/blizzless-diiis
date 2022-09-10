@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
@@ -22,8 +23,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 		public override void Execute(MapSystem.World world)
 		{
-			var Leah = world.GetActorBySNO(195376);
-			var BPortal = world.GetActorBySNO(188441);//event47_BigPortal - 188441
+			var Leah = world.GetActorBySNO(ActorSno._leah_event47);
+			var BPortal = world.GetActorBySNO(ActorSno._event47_bigportal);//event47_BigPortal - 188441
 			StartConversation(world, 195776);
 			float facingAngle = MovementHelpers.GetFacingAngle(Leah, BPortal);
 			Leah.Move(BPortal.Position, facingAngle);
@@ -43,7 +44,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 					{
 						
 						world.Game.QuestManager.Advance();
-						foreach (var actor in world.GetActorsBySNO(195376)) actor.Destroy(); //Лея
+						foreach (var actor in world.GetActorsBySNO(ActorSno._leah_event47)) actor.Destroy(); //Лея
 						foreach (var plr in world.Players.Values)
 						{
 							plr.InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });

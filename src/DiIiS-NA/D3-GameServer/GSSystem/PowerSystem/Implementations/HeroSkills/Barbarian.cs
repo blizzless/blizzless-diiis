@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -370,7 +371,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					{
 						_tornadoSpawnTimer = WaitSeconds(0.75f);
 
-						var tornado = new Projectile(this, 162386, User.Position);
+						var tornado = new Projectile(this, ActorSno._barbarian_whirlwindrune_tornado_projectile, User.Position);
 						tornado.Timeout = WaitSeconds(3f);
 						tornado.OnCollision = (hit) =>
 						{
@@ -419,7 +420,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				for (int i = 0; i < projDestinations.Length; i++)
 				{
-					var proj = new Projectile(this, 161891, User.Position);
+					// TODO: check projectile actor
+					var proj = new Projectile(this, ActorSno._barbarian_ancientspear_projectile, User.Position);
 					proj.Scale = 3f;
 					proj.Timeout = WaitSeconds(0.5f);
 					proj.OnCollision = (hit) =>
@@ -435,7 +437,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							hitPayload.Target.PlayEffectGroup(79420);
 							Knockback(hitPayload.Target, -25f, ScriptFormula(3), ScriptFormula(4));
 							if ((User as Player).SkillSet.HasPassive(204725) && hitPayload.IsCriticalHit)
-								foreach (var cdBuff in User.World.BuffManager.GetBuffs<PowerSystem.Implementations.CooldownBuff>(User))
+								foreach (var cdBuff in User.World.BuffManager.GetBuffs<CooldownBuff>(User))
 									if (cdBuff.TargetPowerSNO == 69979)
 										cdBuff.Remove();
 						};
@@ -458,7 +460,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				for (int i = 0; i < projDestinations.Length; i++)
 				{
-					var proj = new Projectile(this, 161894, User.Position);
+					var proj = new Projectile(this, ActorSno._barbarian_ancientspearrune_explode_projectile, User.Position);
 					proj.Scale = 3f;
 					proj.Timeout = WaitSeconds(0.5f);
 					proj.OnCollision = (hit) =>
@@ -490,7 +492,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			else if (Rune_A > 0)
 			{
-				var projectile = new Projectile(this, 161890, User.Position);
+				var projectile = new Projectile(this, ActorSno._barbarian_ancientspearrune_pierce_projectile, User.Position);
 				projectile.Scale = 3f;
 				projectile.Timeout = WaitSeconds(0.5f);
 				projectile.OnCollision = (hit) =>
@@ -523,7 +525,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			else
 			{
-				var projectile = new Projectile(this, RuneSelect(74636, -1, -1, 161892, 161893, -1), User.Position);
+				var projectile = new Projectile(
+					this,
+					RuneSelect(
+						ActorSno._barbarian_ancientspear_projectile,
+						ActorSno.__NONE,
+						ActorSno.__NONE,
+						ActorSno._barbarian_ancientspearrune_health_projectile, 
+						ActorSno._barbarian_ancientspearrune_regen_projectile, 
+						ActorSno.__NONE
+					),
+					User.Position
+				);
 				projectile.Scale = 3f;
 				projectile.Timeout = WaitSeconds(0.5f);
 				projectile.OnCollision = (hit) =>
@@ -573,7 +586,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			Vector3D inFrontOfUser = PowerMath.TranslateDirection2D(User.Position, spawnPosition, User.Position, 5f);
 
-			var return_proj = new Projectile(this, 79400, new Vector3D(spawnPosition.X, spawnPosition.Y, User.Position.Z));
+			var return_proj = new Projectile(this, ActorSno._barbarian_ancientspear_projectilereturn, new Vector3D(spawnPosition.X, spawnPosition.Y, User.Position.Z));
 			return_proj.Scale = 3f;
 			return_proj.DestroyOnArrival = true;
 			return_proj.LaunchArc(inFrontOfUser, 1f, -0.03f);
@@ -751,7 +764,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				if (Rune_C > 0)
 				{
-					var QuakeHammer = SpawnEffect(159030, User.Position, 0, WaitSeconds(ScriptFormula(10)));
+					var QuakeHammer = SpawnEffect(ActorSno._barbarian_hammeroftheancients_quake_mace_boxtrail, User.Position, 0, WaitSeconds(ScriptFormula(10)));
 					QuakeHammer.UpdateDelay = 1f;
 					QuakeHammer.OnUpdate = () =>
 					{
@@ -1065,7 +1078,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			float _resourcePool = User.Attributes[GameAttribute.Resource_Cur, 2];
 
-			var proj = new Projectile(this, RuneSelect(100800, 100839, 166438, 100832, 101057, 100934), User.Position);
+			var proj = new Projectile(
+				this, 
+				RuneSelect(
+					ActorSno._barbarian_weaponthrow_axe_base,
+					ActorSno._barbarian_weaponthrow_axe_crimsonrune,
+					ActorSno._barbarian_weaponthrow_thorhammer,
+					ActorSno._barbarian_weaponthrow_hammer_obsidianrune,
+					ActorSno._barbarian_weaponthrow_confuse,
+					ActorSno._barbarian_weaponthrow_axe_fury
+				),
+				User.Position
+			);
 			proj.Position.Z += 5f;  // fix height
 			proj.OnCollision = (hit) =>
 			{
@@ -1377,7 +1401,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					{
 						Actor target = GetEnemiesInRadius(User.Position, 15f).GetClosestTo(User.Position);
 
-						var proj = new Projectile(this, RuneSelect(6515, 130073, 215555, -1, 216040, 75650), User.Position);
+						// FIXME: possible copy-paste from wizard
+						var proj = new Projectile(
+							this,
+							RuneSelect(
+								ActorSno._wizard_arcaneorb_projectile,
+								ActorSno._wizard_arcaneorbrune_damage_projectile,
+								ActorSno._barbarian_frenzy_indigo_axe_projectile,
+								ActorSno.__NONE,
+								ActorSno._wizard_arcaneorbrune_golden_projectile,
+								ActorSno.__NONE // was 75650
+							),
+							User.Position
+						);
 						proj.Position.Z += 5f;  // fix height
 						proj.OnCollision = (hit) =>
 						{
@@ -1875,7 +1911,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				foreach (Vector3D position in targetDirs)
 				{
-					var proj = new Projectile(this, 3276, User.Position);
+					var proj = new Projectile(this, ActorSno._barbarianaxe, User.Position);
 					proj.Position.Z += 5f;  // fix height
 					proj.OnCollision = (hit) =>
 					{
@@ -1961,7 +1997,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
 			yield return WaitSeconds(0.5f);
-			var proj1 = new Projectile(this, RuneSelect(164708, 164709, 164712, 164710, 164714, 164713), User.Position);
+			var proj1 = new Projectile(
+				this,
+				RuneSelect(
+					ActorSno._barbarian_seismicslam_unruned_projectile,
+					ActorSno._barbarian_seismicslam_crimson_projectile,
+					ActorSno._barbarian_seismicslam_obsidian_projectile,
+					ActorSno._barbarian_seismicslam_golden_projectile,
+					ActorSno._barbarian_seismicslam_indigo_projectile,
+					ActorSno._barbarian_seismicslam_alabaster_projectile
+				),
+				User.Position
+			);
 			proj1.Launch(TargetPosition, 1f);
 			foreach (Actor target in GetEnemiesInArcDirection(User.Position, TargetPosition, 45f, ScriptFormula(14)).Actors)
 			{
@@ -1985,7 +2032,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_B > 0)
 			{
-				var aShockproj = new Projectile(this, 164788, User.Position);
+				var aShockproj = new Projectile(this, ActorSno._barbarian_seismicslamrune_aftershocks_wave, User.Position);
 				aShockproj.Launch(TargetPosition, 1f);
 
 				foreach (Actor target in GetEnemiesInArcDirection(User.Position, TargetPosition, 45f, ScriptFormula(14)).Actors)
@@ -2015,7 +2062,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			User.PlayEffectGroup(RuneSelect(168303, 168470, 55689, 168506, 55689, 55689));
 			WeaponDamage(GetEnemiesInRadius(User.Position, ScriptFormula(0)), ScriptFormula(19), (Rune_C > 0 ? DamageType.Cold : (Rune_D > 0 ? DamageType.Lightning : DamageType.Fire)));
 			Vector3D quakepos = new Vector3D(User.Position);
-			var Quake = SpawnEffect(168440, quakepos, 0, WaitSeconds(ScriptFormula(1)));
+			var Quake = SpawnEffect(ActorSno._barbarian_earthquakerune_damage_actor, quakepos, 0, WaitSeconds(ScriptFormula(1)));
 			Quake.UpdateDelay = 0.5f;
 			Quake.OnUpdate = () =>
 			{
@@ -2105,7 +2152,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					_whirlwindTimer = WaitSeconds(_whirlwindRate);
 					if (Rune_C > 0)
 					{
-						var whirlwind = new EffectActor(this, 108868, Target.Position);
+						var whirlwind = new EffectActor(this, ActorSno._barbarian_sprintrune_whirlwind, Target.Position);
 						whirlwind.Timeout = WaitSeconds(ScriptFormula(6));
 						whirlwind.Scale = 1f;
 						whirlwind.Spawn();

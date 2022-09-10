@@ -12,14 +12,15 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(3533)] //Cain
+	[HandledSNO(ActorSno._cain)] //Cain
 	public class Cain : InteractiveNPC
 	{
-		public Cain(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Cain(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Invulnerable] = true;
 		}

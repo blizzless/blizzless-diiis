@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -16,12 +17,12 @@ using System.Threading.Tasks;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
 	[HandledSNO(
-	172208 //caOut_Oasis_Bonepile_A
+	ActorSno._caout_oasis_bonepile_a //caOut_Oasis_Bonepile_A
 	)]
 	class CowBones : DesctructibleLootContainer
 	{
 		public CowBones(World world, TagMap tags)
-			: base(world, 172208, false, tags)
+			: base(world, ActorSno._caout_oasis_bonepile_a, false, tags)
 		{
 			this.Scale *= 1.5f;
 			this.Hidden = true;

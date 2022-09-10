@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -45,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 											 User.Position.Z);
 		}
 
-		public void SummonMonster(int actorSNO)
+		public void SummonMonster(ActorSno actorSNO)
 		{
 			if (User.GetActorsInRange(80f).Count > 100) return;
 			var monster = ActorFactory.Create(User.World, actorSNO, new TagMap());
@@ -206,7 +207,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			RandomPostion();
-			SummonMonster(5482);  // HACK: we don't have this in mpq
+			SummonMonster(ActorSno._spore);  // HACK: we don't have this in mpq
 			yield break;
 		}
 	}

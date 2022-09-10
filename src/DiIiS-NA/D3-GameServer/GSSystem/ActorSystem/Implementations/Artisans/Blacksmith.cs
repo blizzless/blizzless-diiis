@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -21,11 +22,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
-	[HandledSNO(56947 /* PT_Blacksmith.acr */)]
+	[HandledSNO(ActorSno._pt_blacksmith /* PT_Blacksmith.acr */)]
 	public class Blacksmith : Artisan
 	{
-		public Blacksmith(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Blacksmith(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			// TODO add all blacksmith functionality? /fasbat
 			//this.Attributes[GameAttribute.TeamID] = 0;

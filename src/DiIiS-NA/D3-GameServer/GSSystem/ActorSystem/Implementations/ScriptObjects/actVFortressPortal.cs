@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -31,16 +32,16 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(328830)]
-	public class actVFortressPortal : Gizmo
+	[HandledSNO(ActorSno._x1_fortress_portal_switch)]
+	public class ActVFortressPortal : Gizmo
 	{
-		public actVFortressPortal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ActVFortressPortal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.MinimapActive] = true;
 		}
 
-		public override void OnTargeted(PlayerSystem.Player player, TargetMessage message)
+		public override void OnTargeted(Player player, TargetMessage message)
 		{
 			base.OnTargeted(player, message);
 
@@ -76,12 +77,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 				return false;
 			player.InGameClient.SendMessage(new MapMarkerInfoMessage
 			{
-				HashedName = StringHashHelper.HashItemName(string.Format("{0}-{1}", this.ActorSNO.Name, this.GlobalID)),
+				HashedName = StringHashHelper.HashItemName(string.Format("{0}-{1}", this.Name, this.GlobalID)),
 				Place = new WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
 				ImageInfo = 377766,
 				Label = -1,
 				snoStringList = -1,
-				snoKnownActorOverride = this.ActorSNO.Id,
+				snoKnownActorOverride = (int)this.SNO,
 				snoQuestSource = -1,
 				Image = -1,
 				Active = true,

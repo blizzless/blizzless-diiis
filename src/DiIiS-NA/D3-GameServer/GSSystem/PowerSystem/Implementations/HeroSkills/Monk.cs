@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -481,7 +482,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			foreach (var target in targets)
 			{
 				if (target == null) continue;
-				SpawnEffect(99063, target.Position, -1);
+				SpawnEffect(ActorSno._monk_7sidedstrike, target.Position, -1);
 				_enemiesDamaged++;
 
 				yield return WaitSeconds(0.1f);
@@ -996,7 +997,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						{
 							_cycloneTimer = WaitSeconds(_cycloneRate);
 
-							var tornado = new EffectActor(this, 197887, Target.Position);
+							var tornado = new EffectActor(this, ActorSno._monk_sweepingwind_tornado, Target.Position);
 							tornado.Timeout = WaitSeconds(ScriptFormula(21));
 							tornado.Scale = 1f;
 							tornado.Spawn();
@@ -1169,7 +1170,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (Rune_E > 0)     //Windforce Flurry
 				{
 					var startPosition = User.Position;
-					var proj = new Projectile(this, 136022, startPosition);
+					var proj = new Projectile(this, ActorSno._monk_wayofthehundredfists_alabaster_projectile, startPosition);
 					proj.Position.Z += 5f;
 					proj.OnUpdate = () =>
 					{
@@ -2100,7 +2101,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Rune_B > 0)     //Spinning Flame Kick
 			{
 				var startPosition = User.Position;
-				var proj = new Projectile(this, 136893, User.Position);
+				var proj = new Projectile(this, ActorSno._monk_lashingtailkick_indigo_projectile, User.Position);
 				proj.OnUpdate = () =>
 				{
 					if (PowerMath.Distance2D(proj.Position, startPosition + new Vector3D(0, 0, 5f)) > 25f)
@@ -2124,7 +2125,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Rune_C > 0)     //Hand of Ytar
 			{
 				TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, Math.Min(PowerMath.Distance2D(User.Position, TargetPosition), 40f));
-				SpawnEffect(136925, TargetPosition);
+				SpawnEffect(ActorSno._monk_lashingtailkick_bigfoot, TargetPosition);
 			}
 
 			AttackPayload attack = new AttackPayload(this);
@@ -2278,7 +2279,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				foreach (var projTarget in projDestinations)
 				{
-					var proj = new Projectile(this, 145443, User.Position);
+					var proj = new Projectile(this, ActorSno._waveoflight_projectile_bells, User.Position);
 					proj.Launch(projTarget, 1.5f);
 
 					explosion.Targets.Actors.AddRange(GetEnemiesInBeamDirection(User.Position, projTarget, 35f, 3f).Actors);
@@ -2296,7 +2297,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				Vector3D pillarPos = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 7f);
 				//yield return WaitSeconds(0.1f);
 
-				var Column = new EffectActor(this, 182697, pillarPos);
+				// TODO: check actor sno
+				var Column = new EffectActor(this, ActorSno._p1_monk_waveoflight_pillar, pillarPos);
 				Column.Timeout = WaitSeconds(2f);
 				Column.Scale = 1f;
 				Column.Spawn();
@@ -2319,7 +2321,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			Vector3D inFrontOfUser = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 7f);
 
-			var bell = new EffectActor(this, RuneSelect(172193, 145010, -1, -1, 172193, 172489), inFrontOfUser);
+			var bell = new EffectActor(this, RuneSelect(ActorSno._monk_waveoflight_proxy_spirit, ActorSno._monk_waveoflight_proxy_damage, ActorSno.__NONE, ActorSno.__NONE, ActorSno._monk_waveoflight_proxy_spirit, ActorSno._monk_waveoflight_proxy_aoe), inFrontOfUser);
 			bell.Timeout = WaitSeconds(0.4f);
 			bell.Scale = 1f;
 			bell.Spawn(MovementHelpers.GetFacingAngle(User.Position, inFrontOfUser));
@@ -3483,7 +3485,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 
 			//var Sanctuary = SpawnEffect(RuneSelect(98557, 98823, 149848, 142312, 98559, 142305), GroundSpot.Position, 0, WaitSeconds(ScriptFormula(0)));
-			var Sanctuary = new EffectActor(this, RuneSelect(319337, 319337, 149848, 319776, 320135, 149851), User.Position);
+			var Sanctuary = new EffectActor(
+				this,
+				RuneSelect(
+					ActorSno._x1_monk_innersanctuary_proxy,
+					ActorSno._x1_monk_innersanctuary_proxy,
+					ActorSno._monk_innersanctuaryrune_duration_proxy,
+					ActorSno._x1_monk_innersanctuaryrune_protect_proxy,
+					ActorSno._x1_monk_innersanctuaryrune_healing_proxy,
+					ActorSno._monk_innersanctuaryrune_presanctified_proxy
+				),
+				User.Position
+			);
 			Sanctuary.Timeout = WaitSeconds(ScriptFormula(0));
 			Sanctuary.Scale = 1f;
 			Sanctuary.Spawn();
@@ -3679,7 +3692,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (boulderTarget == null) yield break;
 
 				var startPosition = petAlly.Position;
-				var boulder = new Projectile(this, 363935, petAlly.Position);
+				var boulder = new Projectile(this, ActorSno._x1_projectile_mystically_runec_boulder, petAlly.Position);
 				boulder.OnUpdate = () =>
 				{
 					if (PowerMath.Distance2D(boulder.Position, startPosition + new Vector3D(0, 0, 5f)) > 30f)
@@ -3738,8 +3751,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		[ImplementsPowerBuff(1)]
 		public class MysticAllyBuff : PowerBuff
 		{
+			private static readonly ActorSno[] maleAllys = new ActorSno[]
+			{
+				ActorSno._monk_male_mystically,
+				ActorSno._monk_male_mystically_crimson,
+				ActorSno._monk_male_mystically_alabaster,
+				ActorSno._monk_male_mystically_obsidian,
+				ActorSno._monk_male_mystically_golden,
+				ActorSno._monk_male_mystically_indigo
+			};
+			private static readonly ActorSno[] femaleAllys = new ActorSno[]
+			{
+				ActorSno._monk_female_mystically,
+				ActorSno._monk_female_mystically_crimson,
+				ActorSno._monk_female_mystically_alabaster,
+				ActorSno._monk_female_mystically_obsidian,
+				ActorSno._monk_female_mystically_golden,
+				ActorSno._monk_female_mystically_indigo
+			};
 			public MysticAllyMinion ally = null;
-			public int AllyId = 0;
+			private ActorSno AllyId = ActorSno.__NONE;
 			public bool WaterAlly = false;
 			float RegenValue = 0f;
 
@@ -3762,17 +3793,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				int gender = (User as Player).Toon.Gender;
 
-				AllyId = gender == 2 ? 123885 : 169904;
+				var allys = gender == 2 ? femaleAllys : maleAllys;
+				AllyId = allys[0];
 				if (User.Attributes[GameAttribute.Rune_A, 0x00058676] > 0)  //Crimson
-					AllyId = gender == 2 ? 168878 : 169906;
+					AllyId = allys[1];
 				if (User.Attributes[GameAttribute.Rune_B, 0x00058676] > 0)  //Alabaster
-					AllyId = gender == 2 ? 169891 : 169905;
+					AllyId = allys[2];
 				if (User.Attributes[GameAttribute.Rune_C, 0x00058676] > 0)  //Obsidian
-					AllyId = gender == 2 ? 169077 : 169909;
+					AllyId = allys[3];
 				if (User.Attributes[GameAttribute.Rune_D, 0x00058676] > 0)  //Golden
-					AllyId = gender == 2 ? 169123 : 169908;
+					AllyId = allys[4];
 				if (User.Attributes[GameAttribute.Rune_E, 0x00058676] > 0)  //Indigo
-					AllyId = gender == 2 ? 169890 : 169907;
+					AllyId = allys[5];
 
 				this.ally = new MysticAllyMinion(this.World, this, AllyId);
 				this.ally.Brain.DeActivate();

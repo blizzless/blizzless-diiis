@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 //Blizzless Project 2022 
 using System;
@@ -17,8 +18,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		public override void Execute(MapSystem.World world)
 		{
 			StartConversation(world, 195721);
-			var Tyrael = world.GetActorBySNO(195377);
-			var Adria = world.GetActorBySNO(195378);
+			var Tyrael = world.GetActorBySNO(ActorSno._tyrael_event47);
+			var Adria = world.GetActorBySNO(ActorSno._adria_event47);
 			float facingAngle = MovementHelpers.GetFacingAngle(Adria, Tyrael);
 			Adria.Move(new Core.Types.Math.Vector3D(Tyrael.Position.X, Tyrael.Position.Y - 5f, Tyrael.Position.Z), facingAngle);
 		}

@@ -62,6 +62,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// ActorSNO.
 		/// </summary>
 		public SNOHandle ActorSNO { get; private set; }
+		
+		public ActorSno SNO
+		{
+			get { return (ActorSno)ActorSNO.Id; }
+		}
+
+		public string Name
+        {
+			get { return ActorSNO.Name; }
+        }
 
 		/// <summary>
 		/// Gets or sets the sno of the actor used to identify the actor to the player
@@ -69,7 +79,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// There are few exceptions though like the Inn_Zombies that have both.
 		/// Used by ACDEnterKnown to name the actor.
 		/// </summary>
-		public int NameSNOId { get; set; }
+		public ActorSno NameSNO { get; set; }
 
 		public bool Disable = false;
 
@@ -191,7 +201,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			get
 			{
-				return (DiIiS_NA.Core.MPQ.FileFormats.Actor)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Actor][this.ActorSNO.Id].Data;
+				return (DiIiS_NA.Core.MPQ.FileFormats.Actor)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Actor][(int)this.SNO].Data;
 			}
 		}
 
@@ -236,9 +246,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// Creates a new actor.
 		/// </summary>
 		/// <param name="world">The world that initially belongs to.</param>
-		/// <param name="snoId">SNOId of the actor.</param>
+		/// <param name="sno">SNOId of the actor.</param>
 		/// <param name="tags">TagMapEntry dictionary read for the actor from MPQ's..</param>		   
-		protected Actor(World world, int snoId, TagMap tags, bool isMarker = false)
+		protected Actor(World world, ActorSno sno, TagMap tags, bool isMarker = false)
 			: base(world, world.IsPvP ? World.NewActorPvPID : world.Game.NewActorGameID)
 		{
 			this.Tags = tags;
@@ -255,8 +265,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			//	if (this.ActorData.AnimSetSNO != -1)
 			//		this.AnimationSet = (Mooege.Common.MPQ.FileFormats.AnimSet)Mooege.Common.MPQ.MPQStorage.Data.Assets[SNOGroup.AnimSet][this.ActorData.AnimSetSNO].Data;
 
-			this.ActorSNO = new SNOHandle(SNOGroup.Actor, snoId);
-			this.NameSNOId = snoId;
+			this.ActorSNO = new SNOHandle(SNOGroup.Actor, (int)sno);
+			this.NameSNO = sno;
 			//Logger.Info("Loaded actor {0}, id {1}, type {2}", this.ActorSNO.Name, this.DynamicID, this.ActorData.Type);
 			this.Quality = 0;
 			this.HasLoot = true;
@@ -283,9 +293,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// Creates a new actor.
 		/// </summary>
 		/// <param name="world">The world that initially belongs to.</param>
-		/// <param name="snoId">SNOId of the actor.</param>
-		protected Actor(World world, int snoId)
-			: this(world, snoId, null)
+		/// <param name="sno">SNOId of the actor.</param>
+		protected Actor(World world, ActorSno sno)
+			: this(world, sno, null)
 		{ }
 
 		protected virtual void quest_OnQuestProgress() // erekose changed from protected to public
@@ -306,7 +316,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// </summary>
 		public override void Destroy()
 		{
-			if (this.ActorSNO.Id == 454066)
+			if (this.SNO == ActorSno._p6_necro_corpse_flesh)
 				if (World != null)
 					foreach (var plr in World.Game.Players.Values)
 						if (plr.SkillSet.HasPassive(208594) && DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0,100) > 45)
@@ -328,15 +338,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public virtual void EnterWorld(Vector3D position)
 		{
-			var Quest = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Quest][74128];
+			var Quest = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Quest][74128];
 
 			if (this.World != null)
-				if (this.World.GetActorsBySNO(this.ActorSNO.Id).Count > 0)
-				{
-					int count = this.World.GetActorsBySNO(this.ActorSNO.Id).Count;
+			{
+				int count = this.World.GetActorsBySNO(this.SNO).Count;
+				if (count > 0)
 					NumberInWorld = count;
-				}
-			 if (this.Spawned)
+            }
+
+            if (this.Spawned)
 				return;
 
 			this.Position = position;
@@ -423,7 +434,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 						(minion as Minion).Brain.DeActivate();
 						(this as Player).Followers.Remove(fol);
 						minion.ChangeWorld(world, position);
-						(this as Player).Followers.Add(minion.GlobalID, minion.ActorSNO.Id);
+						(this as Player).Followers.Add(minion.GlobalID, minion.SNO);
 						(minion as Minion).Brain.Activate();
 					}
 				}
@@ -823,14 +834,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			return new ACDEnterKnownMessage
 			{
 				ActorID = this.DynamicID(plr),
-				ActorSNOId = this.ActorSNO.Id,
+				ActorSNOId = (int)this.SNO,
 				Flags = this.Field2,
 				LocationType = this.HasWorldLocation ? 0 : 1,
 				WorldLocation = this.HasWorldLocation ? this.WorldLocationMessage() : null,
 				InventoryLocation = this.HasWorldLocation ? null : this.InventoryLocationMessage(plr),
 				GBHandle = this.GBHandle,
 				snoGroup = this.Field7,
-				snoHandle = this.NameSNOId,
+				snoHandle = (int)this.NameSNO,
 				Quality = this.Quality,
 				LookLinkIndex = this.Field10,
 				snoAmbientOcclusionOverrideTex = null,
@@ -861,25 +872,21 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					WorldSno.trdun_crypt_skeletonkingcrown_02,
 				};
 				//Leave Miriam in Crypt
-				if (this.ActorSNO.Id == 175310 && mysticHiddenWorlds.Contains(World.SNO)) return false;
+				if (this.SNO == ActorSno._pt_mystic_novendor_nonglobalfollower && mysticHiddenWorlds.Contains(World.SNO)) return false;
 
 
 				//Destroy Bonewall and Jondar if Exit_S on Second Level of Cathedral
-				if (World.SNO == WorldSno.a1trdun_level04 && (this.ActorSNO.Id == 109209 ||  this.ActorSNO.Id == 86624)) return false;
+				if (World.SNO == WorldSno.a1trdun_level04 && (this.SNO == ActorSno._trdun_cath_bonewall_a_door ||  this.SNO == ActorSno._adventurer_d_templarintrounique)) return false;
 
-				if (this.ActorSNO.Name.Contains("Uber") && !this.World.SNO.IsUberWorld()) return false;
-				if (this.ActorSNO.Name.Contains("AdventureMode") && this.World.Game.CurrentAct != 3000) return false;
-				if (this.ActorSNO.Name.Contains("ScriptedSequenceOnly")) return false;
+				if (this.SNO.IsUberWorldActor() && !this.World.SNO.IsUberWorld()) return false;
+				if (this.SNO.IsAdventureModeActor() && this.World.Game.CurrentAct != 3000) return false;
+				if (this.SNO == ActorSno._x1_adria_boss_scriptedsequenceonly) return false;
 
 				if (player.RevealedObjects.ContainsKey(this.GlobalID)) return false; // already revealed
 
 				if (player.World == null) return false;
 
-				if (this.ActorSNO.Id == 218339)
-					if (this.World.SNO == WorldSno.trout_town)
-						if (this.CurrentScene.SceneSNO.Id == 33348)
-							if (this.Position.X < 2896)
-								return false;
+				if (this.SNO == ActorSno._zombieskinny_custom_a && this.World.SNO == WorldSno.trout_town && this.CurrentScene.SceneSNO.Id == 33348 && this.Position.X < 2896) return false;
 
 
 				if (!(this is Item) && player.World.GlobalID != this.World.GlobalID) return false;
@@ -946,7 +953,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				TrickleMessage Trickle = new TrickleMessage()
 				{
 					ActorId = this.DynamicID(player),
-					ActorSNO = this.ActorSNO.Id,
+					ActorSNO = (int)this.SNO,
 					WorldLocation = new WorldPlace()
 					{
 						WorldID = this.World.GlobalID,
@@ -982,66 +989,66 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 								this.PlayActionAnimation(11514);
 				}
 				//Задаём идл для работяг
-				else if (this.World.SNO == WorldSno.trout_tristram_inn & this.ActorSNO.Id == 84529)
+				else if (this.World.SNO == WorldSno.trout_tristram_inn && this.SNO == ActorSno._omninpc_tristram_male_a)
 					this.PlayActionAnimation(102329);
-				else if (this.ActorSNO.Id == 4580)
+				else if (this.SNO == ActorSno._leah)
 					player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Inventory.VisualInventoryMessage()
 					{
 						ActorID = this.DynamicID(player),
-						EquipmentList = new MessageSystem.Message.Fields.VisualEquipment()
+						EquipmentList = new VisualEquipment()
 						{
-							Equipment = new MessageSystem.Message.Fields.VisualItem[]
+							Equipment = new VisualItem[]
 							{
-								new MessageSystem.Message.Fields.VisualItem()
+                                new VisualItem()
 								{
 									GbId = -1,
 									DyeType = 0,
 									ItemEffectType = 0,
 									EffectLevel = -1,
 								},
-								new MessageSystem.Message.Fields.VisualItem()
+								new VisualItem()
 								{
 									GbId = -1,
 									DyeType = 0,
 									ItemEffectType = 0,
 									EffectLevel = -1,
 								},
-								new MessageSystem.Message.Fields.VisualItem()
+								new VisualItem()
 								{
 									GbId = -1,
 									DyeType = 0,
 									ItemEffectType = 0,
 									EffectLevel = -1,
 								},
-								new MessageSystem.Message.Fields.VisualItem()
+								new VisualItem()
 								{
 									GbId = -1,
 									DyeType = 0,
 									ItemEffectType = 0,
 									EffectLevel = -1,
 								},
-								new MessageSystem.Message.Fields.VisualItem()
+								new VisualItem()
 								{
 									GbId = unchecked((int)-2091504072),
 									DyeType = 0,
 									ItemEffectType = 0,
 									EffectLevel = -1,
 								},
-								new MessageSystem.Message.Fields.VisualItem()
+								new VisualItem()
 								{
 									GbId = -1,//0x6C3B0389,
 									DyeType = 0,
 									ItemEffectType = 0,
 									EffectLevel = -1,
 								},
-								new MessageSystem.Message.Fields.VisualItem()
+								new VisualItem()
 								{
 									GbId = -1,
 									DyeType = 0,
 									ItemEffectType = 0,
 									EffectLevel = -1,
 								},
-								new MessageSystem.Message.Fields.VisualItem()
+								new VisualItem()
 								{
 									GbId = -1,
 									DyeType = 0,
@@ -1329,20 +1336,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				int snoQuestRange = Tags[MarkerKeys.QuestRange].Id;
 				if (DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.QuestRange].ContainsKey(snoQuestRange))
 					_questRange = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.QuestRange][snoQuestRange].Data as DiIiS_NA.Core.MPQ.FileFormats.QuestRange;
-				else Logger.Debug("Actor {0}  GlobalID {1} is tagged with unknown QuestRange {2}", NameSNOId, GlobalID, snoQuestRange);
+				else Logger.Debug("Actor {0}  GlobalID {1} is tagged with unknown QuestRange {2}", NameSNO, GlobalID, snoQuestRange);
 			}
 
-			if (Tags.ContainsKey(MarkerKeys.ConversationList) && WorldGenerator.DefaultConversationLists.ContainsKey(this.ActorSNO.Id))
+			if (Tags.ContainsKey(MarkerKeys.ConversationList) && WorldGenerator.DefaultConversationLists.ContainsKey((int)this.SNO))
 			{
-				int snoConversationList = WorldGenerator.DefaultConversationLists[this.ActorSNO.Id];//Tags[MarkerKeys.ConversationList].Id;
+				int snoConversationList = WorldGenerator.DefaultConversationLists[(int)this.SNO];//Tags[MarkerKeys.ConversationList].Id;
 
-				Logger.Trace(" (ReadTags) actor {0} GlobalID {2} has a conversation list {1}", NameSNOId, snoConversationList, GlobalID);
+				Logger.Trace(" (ReadTags) actor {0} GlobalID {2} has a conversation list {1}", NameSNO, snoConversationList, GlobalID);
 
 				if (DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.ConversationList].ContainsKey(snoConversationList))
 					ConversationList = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.ConversationList][snoConversationList].Data as DiIiS_NA.Core.MPQ.FileFormats.ConversationList;
 				else
 					if (snoConversationList != -1)
-					Logger.Warn("Actor {0} - Conversation list {1} not found!", NameSNOId, snoConversationList);
+					Logger.Warn("Actor {0} - Conversation list {1} not found!", NameSNO, snoConversationList);
 			}
 
 
@@ -1402,7 +1409,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override string ToString()
 		{
-			return string.Format("[Actor] [Type: {0}] SNOId:{1} GlobalId: {2} Position: {3} Name: {4}", this.ActorType, this.ActorSNO.Id, this.GlobalID, this.Position, this.ActorSNO.Name);
+			return string.Format("[Actor] [Type: {0}] SNOId:{1} GlobalId: {2} Position: {3} Name: {4}", this.ActorType, this.SNO, this.GlobalID, this.Position, this.Name);
 		}
 	}
 

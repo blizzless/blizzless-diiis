@@ -18,11 +18,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(316567)]
+	[HandledSNO(ActorSno._x1_westm_barricade_solid_debries)]
 	public class ActVBarricade : Gizmo
 	{
-		public ActVBarricade(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ActVBarricade(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 

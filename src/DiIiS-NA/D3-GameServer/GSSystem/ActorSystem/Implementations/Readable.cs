@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -29,8 +30,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 	{
 		private bool used = false;
 
-		public Readable(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Readable(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.TeamID] = 1;
 		}
@@ -41,9 +42,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (ActorData.TagMap.ContainsKey(ActorKeys.Lore))
 				Logger.Debug("Lore detected: {0}", ActorData.TagMap[ActorKeys.Lore].Id);
 
-			if (LoreRegistry.Lore.ContainsKey(this.World.SNO) && LoreRegistry.Lore[this.World.SNO].chests_lore.ContainsKey(this.ActorSNO.Id))
+			if (LoreRegistry.Lore.ContainsKey(this.World.SNO) && LoreRegistry.Lore[this.World.SNO].chests_lore.ContainsKey(this.SNO))
 				foreach (var p in this.GetPlayersInRange(30))
-					foreach (int loreId in LoreRegistry.Lore[this.World.SNO].chests_lore[this.ActorSNO.Id])
+					foreach (int loreId in LoreRegistry.Lore[this.World.SNO].chests_lore[this.SNO])
 						if (!p.HasLore(loreId))
 						{
 							World.DropItem(this, null, ItemGenerator.CreateLore(p, loreId));

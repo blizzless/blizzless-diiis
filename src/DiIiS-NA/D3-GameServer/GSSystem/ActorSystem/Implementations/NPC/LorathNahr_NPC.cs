@@ -21,11 +21,11 @@ using MonsterFF = DiIiS_NA.Core.MPQ.FileFormats.Monster;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	//{[Actor] [Type: Monster] SNOId:284530 GlobalId: 1017400498 Position: x:593.36835 y:489.5003 z:-4.8999996 Name: x1_NPC_LorathNahr}
-	[HandledSNO(284530)]
+	[HandledSNO(ActorSno._x1_npc_lorathnahr)]
 	class LorathNahr_NPC : InteractiveNPC, IUpdateable
 	{
-		public LorathNahr_NPC(MapSystem.World world, int snoID, TagMap tags)
-			: base(world, snoID, tags)
+		public LorathNahr_NPC(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			Brain = new AggressiveNPCBrain(this); // erekose			 
 
@@ -59,9 +59,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			}
 
 			base.ReadTags();
-
-			if (this.ActorSNO.Id == 256248)
-				this.Attributes[GameAttribute.TeamID] = 0;
 		}
 
 		public void Update(int tickCounter)

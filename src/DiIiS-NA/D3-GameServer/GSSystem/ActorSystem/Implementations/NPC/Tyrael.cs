@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.MPQ;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
@@ -19,11 +20,11 @@ using MonsterFF = DiIiS_NA.Core.MPQ.FileFormats.Monster;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(6353)]
+	[HandledSNO(ActorSno._tyrael)]
 	class Tyrael : InteractiveNPC, IUpdateable
 	{
-		public Tyrael(MapSystem.World world, int snoID, TagMap tags)
-			: base(world, snoID, tags)
+		public Tyrael(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			Brain = new AggressiveNPCBrain(this); // erekose			 
 
@@ -48,9 +49,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			}
 
 			base.ReadTags();
-
-			if (this.ActorSNO.Id == 256248)
-				this.Attributes[GameAttribute.TeamID] = 0;
 		}
 
 		public void Update(int tickCounter)

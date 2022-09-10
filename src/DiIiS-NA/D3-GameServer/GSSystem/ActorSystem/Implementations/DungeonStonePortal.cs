@@ -30,8 +30,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		private ResolvedPortalDestination Destination { get; set; }
 
-		public DungeonStonePortal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DungeonStonePortal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 
 			//this.Field2 = 0x9;//16;
@@ -79,7 +79,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			{
 				StartingPoint NeededStartingPoint = world.GetStartingPointById(this.Destination.StartingPointActorTag);
 				var DestWorld = world.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
-				var StartingPoints = DestWorld.GetActorsBySNO(5502);
+				var StartingPoints = DestWorld.GetActorsBySNO(ActorSno._start_location_0);
 				foreach (var ST in StartingPoints)
 				{
 					if (ST.CurrentScene.SceneSNO.Id == this.Destination.StartingPointActorTag)

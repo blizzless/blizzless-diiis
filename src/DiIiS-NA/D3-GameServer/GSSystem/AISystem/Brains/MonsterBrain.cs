@@ -8,6 +8,7 @@ using System.Linq;
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
@@ -85,9 +86,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		public override void Think(int tickCounter)
 		{
-			if (this.Body.ActorSNO.Id == 255623 ||
-				this.Body.ActorSNO.Id == 210120 ||
-				this.Body.ActorSNO.Id == 208561)
+			if (this.Body.SNO == ActorSno._uber_siegebreakerdemon ||
+				this.Body.SNO == ActorSno._a4dun_garden_corruption_monster ||
+				this.Body.SNO == ActorSno._a4dun_garden_hellportal_pillar)
 				return;
 			//if(AttackedBy != null && TimeoutAttacked == null)
 			//	TimeoutAttacked = new SecondsTickTimer(this.Body.World.Game, 3.0f);
@@ -97,8 +98,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			//		TimeoutAttacked = null;
 			//		AttackedBy = null;
 			//	}
-			if (this.Body.ActorSNO.Id == 114527 //BelialVoiceover
-				)
+			if (this.Body.SNO == ActorSno._belialvoiceover) //BelialVoiceover
 				return;
 			if (this.Body.Hidden == true)
 				return;
@@ -128,8 +128,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			this.Body.Attributes[GameAttribute.Blind] ||
 			this.Body.Attributes[GameAttribute.Webbed] ||
 			this.Body.Disable ||
-			this.Body.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.KnockbackBuff>(this.Body) != null ||
-			this.Body.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.SummonedBuff>(this.Body) != null)
+			this.Body.World.BuffManager.GetFirstBuff<KnockbackBuff>(this.Body) != null ||
+			this.Body.World.BuffManager.GetFirstBuff<SummonedBuff>(this.Body) != null)
 			{
 				if (this.CurrentAction != null)
 				{
@@ -195,9 +195,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 									.ToList();
 							else
 								targets = this.Body.GetActorsInRange(50f)
-									.Where(p => ((p is Player) && !p.Dead && p.Attributes[GameAttribute.Loading] == false && p.Attributes[GameAttribute.Is_Helper] == false && p.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.ActorGhostedBuff>(p) == null)
+									.Where(p => ((p is Player) && !p.Dead && p.Attributes[GameAttribute.Loading] == false && p.Attributes[GameAttribute.Is_Helper] == false && p.World.BuffManager.GetFirstBuff<ActorGhostedBuff>(p) == null)
 										|| ((p is Minion) && !p.Dead && p.Attributes[GameAttribute.Is_Helper] == false)
-										|| (p is DesctructibleLootContainer && (p.ActorSNO.Name.ToLower().Contains("door") || p.ActorSNO.Name.ToLower().Contains("barricade")))
+										|| (p is DesctructibleLootContainer && p.SNO.IsDoorOrBarricade())
 										|| ((p is Hireling) && !p.Dead)
 										)
 									.OrderBy((actor) => PowerMath.Distance2D(actor.Position, this.Body.Position))
@@ -241,7 +241,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							}
 							else if (this.Body.WalkSpeed != 0)
 							{
-								if (this.Body.ActorSNO.Name.ToLower().Contains("woodwraith") || this.Body.ActorSNO.Name.ToLower().Contains("wasp"))
+								if (this.Body.SNO.IsWoodwraithOrWasp())
 								{
 									Logger.Trace("MoveToPointAction to target");
 									this.CurrentAction = new MoveToPointAction(
@@ -268,9 +268,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							}
 							else
 							{
-								switch (this.Body.ActorSNO.Id)
+								switch (this.Body.SNO)
 								{
-									case 89579:
+									case ActorSno._a1dun_leor_firewall2:
 										powerToUse = 223284;
 										break;
 								}
@@ -309,7 +309,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							targets = this.Body.GetActorsInRange(50f)
 							.Where(p => ((p is LorathNahr_NPC) && !p.Dead)
 								|| ((p is CaptainRumford) && !p.Dead)
-								|| (p is DesctructibleLootContainer && (p.ActorSNO.Name.ToLower().Contains("door") || p.ActorSNO.Name.ToLower().Contains("barricade")))
+								|| (p is DesctructibleLootContainer && p.SNO.IsDoorOrBarricade())
 								|| ((p is Cain) && !p.Dead))
 							.OrderBy((actor) => PowerMath.Distance2D(actor.Position, this.Body.Position))
 							.Cast<Actor>()
@@ -340,7 +340,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 								_target = targets.First();
 							}
 							foreach (var tar in targets)
-								if (tar is DesctructibleLootContainer && (tar.ActorSNO.Name.ToLower().Contains("door") || tar.ActorSNO.Name.ToLower().Contains("barricade")) && tar.ActorSNO.Id != 81699)
+								if (tar is DesctructibleLootContainer && tar.SNO.IsDoorOrBarricade() && tar.SNO != ActorSno._trout_wagon_barricade)
 								{ _target = tar; break; }
 						}
 						else
@@ -386,7 +386,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							}
 							else if (this.Body.WalkSpeed != 0)
 							{
-								if (this.Body.ActorSNO.Name.ToLower().Contains("woodwraith") || this.Body.ActorSNO.Name.ToLower().Contains("wasp"))
+								if (this.Body.SNO.IsWoodwraithOrWasp())
 								{
 									Logger.Trace("MoveToPointAction to target");
 									this.CurrentAction = new MoveToPointAction(
@@ -466,8 +466,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			if (!_warnedNoPowers && this.PresetPowers.Count == 0)
 			{
-				Logger.Info("Monster \"{0}\" has no usable powers. {1} are defined in mpq data.",
-				this.Body.ActorSNO.Name, _mpqPowerCount);
+				Logger.Info("Monster \"{0}\" has no usable powers. {1} are defined in mpq data.", this.Body.Name, _mpqPowerCount);
 				_warnedNoPowers = true;
 			}
 

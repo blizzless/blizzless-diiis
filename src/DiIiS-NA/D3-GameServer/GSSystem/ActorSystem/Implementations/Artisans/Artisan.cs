@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Interactions;
@@ -25,8 +26,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
 	public class Artisan : InteractiveNPC
 	{
-		public Artisan(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Artisan(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			Interactions.Add(new CraftInteraction());

@@ -32,14 +32,14 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(345935)]
+	[HandledSNO(ActorSno._x1_openworld_lootrunportal)]
 	public class LootRunPortal : Portal
 	{
 		static readonly Logger Logger = LogManager.CreateLogger();
 		private int MinimapIcon;
 
-		public LootRunPortal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public LootRunPortal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Destination = new ResolvedPortalDestination
 			{
@@ -79,7 +79,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			Logger.Debug("(OnTargeted) Portal has been activated, Id: {0}, LevelArea: {1}, World: {2}", this.ActorSNO.Id, this.Destination.DestLevelAreaSNO, this.Destination.WorldSNO);
+			Logger.Debug("(OnTargeted) Portal has been activated, Id: {0}, LevelArea: {1}, World: {2}", (int)this.SNO, this.Destination.DestLevelAreaSNO, this.Destination.WorldSNO);
 
 			var world = this.World.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
 
@@ -93,7 +93,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			if (startingPoint != null)
 			{
-				if (this.ActorSNO.Id == 230751) //a2 timed event
+				if (this.SNO == ActorSno._a2dun_zolt_portal_timedevent) //a2 timed event
 				{
 					if (!this.World.Game.QuestManager.SideQuests[120396].Completed)
 						player.ShowConfirmation(this.DynamicID(player), (() => {

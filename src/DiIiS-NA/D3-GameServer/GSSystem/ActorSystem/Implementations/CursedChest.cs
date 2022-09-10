@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
@@ -15,11 +16,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(364559, 365097)]
+	[HandledSNO(ActorSno._x1_global_chest_cursedchest, ActorSno._x1_global_chest_cursedchest_b)]
 	class CursedChest : Gizmo
 	{
-		public CursedChest(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CursedChest(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			Attributes[GameAttribute.MinimapActive] = true;
 		}

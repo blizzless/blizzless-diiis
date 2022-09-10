@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -22,13 +23,21 @@ using System.Threading.Tasks;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
 	//{[Actor] [Type: Monster] SNOId:201426 GlobalId: 1015903034 Position: x:121.353 y:121.402 z:-0.107267 Name: ButcherLair_FloorPanel_MidMiddle_Base}
-	[HandledSNO(201464, 201454, 201438, 201426, 201423, 201242, 200969)]
+	[HandledSNO(
+		ActorSno._butcherlair_floorpanel_lowerright_base,
+		ActorSno._butcherlair_floorpanel_upperright_base,
+		ActorSno._butcherlair_floorpanel_uppermid_base,
+		ActorSno._butcherlair_floorpanel_midmiddle_base,
+		ActorSno._butcherlair_floorpanel_upperleft_base,
+		ActorSno._butcherlair_floorpanel_lowerleft_base,
+		ActorSno._butcherlair_floorpanel_lowermid_base
+	)]
 	public class ButcherFloorPanel : Monster
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger();
 
-		public ButcherFloorPanel(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ButcherFloorPanel(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x8;
 			this.CollFlags = 0;
@@ -40,13 +49,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 	}
 
-	[HandledSNO(108012)]
+	[HandledSNO(ActorSno._a1dun_leor_bigfiregrate)]
 	public class LeorFireGrate : Monster
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger();
 
-		public LeorFireGrate(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public LeorFireGrate(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x8;
 			this.CollFlags = 0;

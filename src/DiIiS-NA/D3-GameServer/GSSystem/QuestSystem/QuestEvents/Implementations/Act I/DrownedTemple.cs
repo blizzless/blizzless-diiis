@@ -39,11 +39,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
             List<uint> SkeletonsList = new List<uint> { };
             List<uint> Skeletons2List = new List<uint> { };
 
-            var AllSkeletons1 = DrownedTempleWorld.GetActorsBySNO(5347);
-			var AllSkeletons2 = DrownedTempleWorld.GetActorsBySNO(5276);
-			var AllSkeletons3 = DrownedTempleWorld.GetActorsBySNO(5395);
-			var AllSkeletons4 = DrownedTempleWorld.GetActorsBySNO(5388);
-			var AllSkeletons5 = DrownedTempleWorld.GetActorsBySNO(139757);
+            var AllSkeletons1 = DrownedTempleWorld.GetActorsBySNO(ActorSno._skeletonarcher_b, ActorSno._shield_skeleton_b, ActorSno._skeletonsummoner_b);
+			var AllSkeletons3 = DrownedTempleWorld.GetActorsBySNO(ActorSno._skeleton_b);
+			var AllSkeletons5 = DrownedTempleWorld.GetActorsBySNO(ActorSno._nephalem_ghost_a_drownedtemple_martyr_skeleton);
             Vector3D PositionBoss = null;
 
             #region Варим солянку
@@ -51,25 +49,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
             foreach (var Skelet in AllSkeletons1)
             {
                 //SkeletonsList.Add(Skelet.GlobalID);
-                DrownedTempleWorld.SpawnMonster(5395, Skelet.Position);
-                Skelet.Destroy();
-            }
-            foreach (var Skelet in AllSkeletons2)
-            {
-                //SkeletonsList.Add(Skelet.GlobalID);
-                DrownedTempleWorld.SpawnMonster(5395, Skelet.Position);
+                DrownedTempleWorld.SpawnMonster(ActorSno._skeleton_b, Skelet.Position);
                 Skelet.Destroy();
             }
             foreach (var Skelet in AllSkeletons3)
             {
                 //SkeletonsList.Add(Skelet.GlobalID);
                 
-            }
-            foreach (var Skelet in AllSkeletons4)
-            {
-                //SkeletonsList.Add(Skelet.GlobalID);
-                DrownedTempleWorld.SpawnMonster(5395, Skelet.Position);
-                Skelet.Destroy();
             }
             //PositionBoss = AllSkeletons5[0].Position;
             foreach (var Skelet in AllSkeletons5)
@@ -183,7 +169,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
             
             var PositionBoss = new Vector3D(292f, 275f, -76f);
 
-            var AllTablets = DrownedTempleWorld.GetActorsBySNO(92387);
+            var AllTablets = DrownedTempleWorld.GetActorsBySNO(ActorSno._a1dun_caves_nephalem_altar_tablet_a);
             foreach (var Tablet in AllTablets)
             {
                 Tablet.PlayAnimation(5, Tablet.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
@@ -194,17 +180,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
                 }, Tablet);
             }
 
-            DrownedTempleWorld.SpawnMonster(139713, AllTablets[0].Position);
-            Skeletons2List.Add(DrownedTempleWorld.GetActorBySNO(139713).GlobalID);
-            DrownedTempleWorld.GetActorBySNO(139713).Attributes[GameAttribute.Quest_Monster] = true;
+            var actorSnos = new ActorSno[]
+            {
+                ActorSno._nephalem_ghost_a_drownedtemple_martyr1_skeleton,
+                ActorSno._nephalem_ghost_a_drownedtemple_martyr2_skeleton,
+                ActorSno._nephalem_ghost_a_drownedtemple_martyr3_skeleton
+            };
 
-            DrownedTempleWorld.SpawnMonster(139715, AllTablets[1].Position);
-            Skeletons2List.Add(DrownedTempleWorld.GetActorBySNO(139715).GlobalID);
-            DrownedTempleWorld.GetActorBySNO(139715).Attributes[GameAttribute.Quest_Monster] = true;
-
-            DrownedTempleWorld.SpawnMonster(139756, AllTablets[2].Position);
-            Skeletons2List.Add(DrownedTempleWorld.GetActorBySNO(139756).GlobalID);
-            DrownedTempleWorld.GetActorBySNO(139756).Attributes[GameAttribute.Quest_Monster] = true;
+            for (var i = 0; i < actorSnos.Length; i++)
+            {
+                var sno = actorSnos[i];
+                DrownedTempleWorld.SpawnMonster(sno, AllTablets[i].Position);
+                var actor = DrownedTempleWorld.GetActorBySNO(sno);
+                actor.Attributes[GameAttribute.Quest_Monster] = true;
+                Skeletons2List.Add(actor.GlobalID);
+            }
 
             StartConversation(DrownedTempleWorld, 133356);
 

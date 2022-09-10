@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -21,11 +22,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(175603)]
-	public class actIITombLever : Gizmo
+	[HandledSNO(ActorSno._a2dun_aqd_act_waterwheel_lever_a_01_waterpuzzle)]
+	public class ActIITombLever : Gizmo
 	{
-		public actIITombLever(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ActIITombLever(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//this.Attributes[GameAttribute.MinimapActive] = true;
 		}
@@ -52,12 +53,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			if (this.Attributes[GameAttribute.Disabled] == true) return;
 			try
 			{
-				Door waterfall = this.World.FindAt(115373, this.Position, 80.0f) as Door;
+				Door waterfall = this.World.FindAt(ActorSno._caout_oasis_door_aqueduct_a_top, this.Position, 80.0f) as Door;
 				if (waterfall == null)
 				{
-					Door gate = this.World.FindAt(112310, this.Position, 80.0f) as Door;
+					Door gate = this.World.FindAt(ActorSno._caout_oasis_door_aqueduct_a, this.Position, 80.0f) as Door;
 					if (gate == null)
-						(this.World.FindAt(158627, this.Position, 80.0f) as Door).Open();
+						(this.World.FindAt(ActorSno._caout_oasis_cenote_door, this.Position, 80.0f) as Door).Open();
 					else
 						gate.Open();
 				}

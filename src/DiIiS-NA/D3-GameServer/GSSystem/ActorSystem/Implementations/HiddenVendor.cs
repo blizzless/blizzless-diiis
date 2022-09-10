@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -23,13 +24,34 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(81610, 105372, 81609, 107419, 106354, 115928, 144328, 176826)]
+	[HandledSNO(
+		ActorSno._a1_genericvendor_tinker,
+		ActorSno._a1_uniquevendor_alchemist,
+		ActorSno._a1_uniquevendor_armorer,
+		ActorSno._a1_uniquevendor_curios,
+		ActorSno._a1_uniquevendor_weaponsmith,
+		ActorSno._a2_uniquevendor_event_mapvendor,
+		ActorSno._a2_uniquevendor_tinker,
+		ActorSno._a3_uniquevendor_alchemist
+	)]
 	public class HiddenVendor : Vendor
 	{
+		// TODO: extract
+		private static readonly Dictionary<ActorSno, ulong> criteria = new Dictionary<ActorSno, ulong>
+		{
+			[ActorSno._a1_genericvendor_tinker] = 74987243309911,
+			[ActorSno._a1_uniquevendor_alchemist] = 74987243309912,
+			[ActorSno._a1_uniquevendor_armorer] = 74987243309913,
+			[ActorSno._a1_uniquevendor_curios] = 74987243309914,
+			[ActorSno._a1_uniquevendor_weaponsmith] = 74987243309915,
+			[ActorSno._a2_uniquevendor_event_mapvendor] = 74987243309918,
+			[ActorSno._a2_uniquevendor_tinker] = 74987243309920,
+			[ActorSno._a3_uniquevendor_alchemist] = 74987243309922
+		};
 		private bool Enabled = false;
 
-		public HiddenVendor(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public HiddenVendor(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Enabled = (FastRandom.Instance.Next(100) < 40);
 		}
@@ -57,33 +79,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public override void OnTargeted(PlayerSystem.Player player, TargetMessage message)
 		{
 			base.OnTargeted(player, message);
-			switch (this.ActorSNO.Id)
-			{
-				case 81610:
-					player.GrantCriteria(74987243309911);
-					break;
-				case 105372:
-					player.GrantCriteria(74987243309912);
-					break;
-				case 81609:
-					player.GrantCriteria(74987243309913);
-					break;
-				case 107419:
-					player.GrantCriteria(74987243309914);
-					break;
-				case 106354:
-					player.GrantCriteria(74987243309915);
-					break;
-				case 115928:
-					player.GrantCriteria(74987243309918);
-					break;
-				case 144328:
-					player.GrantCriteria(74987243309920);
-					break;
-				case 176826:
-					player.GrantCriteria(74987243309922);
-					break;
-			}
+			if (criteria.ContainsKey(SNO))
+				player.GrantCriteria(criteria[SNO]);
 		}
 	}
 }

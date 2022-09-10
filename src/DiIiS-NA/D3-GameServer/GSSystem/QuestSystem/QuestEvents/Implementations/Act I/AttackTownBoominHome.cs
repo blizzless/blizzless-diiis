@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
@@ -27,14 +28,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations.A
 
 		public override void Execute(MapSystem.World world)
 		{
-			var Leah = world.GetActorBySNO(121208);
+			var Leah = world.GetActorBySNO(ActorSno._leahritual);
 			
 			Leah.Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
 			Leah.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
 			world.PowerManager.RunPower(Leah, 190230);
 			//130848
 			Leah.PlayEffectGroup(130848);
-			var Summoners = world.GetActorsBySNO(186039);
+			var Summoners = world.GetActorsBySNO(ActorSno._triunesummoner_a_cainevent);
 
 
 			StartConversation(world, 165428);

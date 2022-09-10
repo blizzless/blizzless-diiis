@@ -38,6 +38,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 {
@@ -163,8 +164,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public List<int> AffixFamilies = new List<int>();
 
-		public Item(MapSystem.World world, ItemTable definition, IEnumerable<Affix> affixList, string serializedGameAttributeMap, int count = 1)
-			: base(world, definition.SNOActor)
+		public Item(World world, ItemTable definition, IEnumerable<Affix> affixList, string serializedGameAttributeMap, int count = 1)
+			: base(world, (ActorSno)definition.SNOActor)
 		{
 			this.GBHandle.GBID = definition.Hash; 
 			SetInitialValues(definition);
@@ -236,14 +237,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			this.Field2 = 0x1f;
 			this.Field7 = -1;
 			this.CollFlags = 0;
-			this.NameSNOId = -1;
+			this.NameSNO = ActorSno.__NONE;
 			this.Field10 = 0x00;
 
 			this.Attributes[GameAttribute.TeamID] = 0;
 		}
 
 		public Item(MapSystem.World world, ItemTable definition, int ForceQualityLevel = -1, bool crafted = false, int seed = -1)
-			: base(world, definition.SNOActor)
+			: base(world, (ActorSno)definition.SNOActor)
 		{
 			this.GBHandle.GBID = definition.Hash;
 			SetInitialValues(definition);
@@ -872,9 +873,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			player.Inventory.RefreshInventoryToClient();
 
-			switch (this.ActorSNO.Id)
+			switch (this.SNO)
 			{
-				case 408416:
+				case ActorSno._tieredlootrunkey_0:
 					player.Toon.BigPortalKey++;
 					this.Destroy();
 					break;

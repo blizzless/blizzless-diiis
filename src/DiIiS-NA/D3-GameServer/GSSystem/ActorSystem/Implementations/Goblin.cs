@@ -19,15 +19,14 @@ using System;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	[HandledSNO(
-	5984, //treasureGoblin_A
-	5985, //treasureGoblin_B
-	5987, //treasureGoblin_C
-	5988 //treasureGoblin_D
+		ActorSno._treasuregoblin_a, //treasureGoblin_A
+		ActorSno._treasuregoblin_b, //treasureGoblin_B
+		ActorSno._treasuregoblin_c //treasureGoblin_C
 	)]
 	public class Goblin : Monster
 	{
-		public Goblin(World world, int snoId, TagMap tags)//, int level = 1)
-			: base(world, snoId, tags)
+		public Goblin(World world, ActorSno sno, TagMap tags)//, int level = 1)
+			: base(world, sno, tags)
 		{
 			// Override minimap icon in markerset tags
 			this.WalkSpeed = 0;

@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -24,7 +25,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// <summary>
 		/// What actor this gizmo will spawn
 		/// </summary>
-		public SNOHandle ActorToSpawnSNO { get; private set; }
+		private SNOHandle ActorToSpawnSNO { get; set; }
 
 		private bool triggered = false;
 
@@ -33,8 +34,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			get { return ActorType.Gizmo; }
 		}
 
-		public Spawner(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags, false)
+		public Spawner(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags, false)
 		{
 			this.Field2 = 8;
 			this.Field7 = 0x00000000;
@@ -45,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (Tags.ContainsKey(MarkerKeys.SpawnActor))
 				this.ActorToSpawnSNO = Tags[MarkerKeys.SpawnActor];
 
-			if (this.ActorSNO.Id == 74187) this.ActorToSpawnSNO = new SNOHandle(SNOGroup.Actor, 2975);
+			if (this.SNO == ActorSno._spawner_zolt_centerpiece) this.ActorToSpawnSNO = new SNOHandle(SNOGroup.Actor, (int)ActorSno._a2dun_zolt_centerpiece_a);
 		}
 
 		/// <summary>
@@ -54,7 +55,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// <param name="quest"></param>
 		protected override void quest_OnQuestProgress()
 		{
-			if (this.ActorSNO.Id == 74187) return;
+			if (this.SNO == ActorSno._spawner_zolt_centerpiece) return;
 			//Spawn if this is spawner
 			try
 			{
@@ -103,7 +104,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			};
 
 			//this.World.Game.WorldGenerator.Actions.Enqueue(() =>
-			this.World.Game.WorldGenerator.loadActor(ActorToSpawnSNO, location, this.World, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
+			this.World.Game.WorldGenerator.LoadActor(ActorToSpawnSNO, location, this.World, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
 			//Mooege.Core.GS.Generators.WorldGenerator.loadActor(ActorToSpawnSNO, location, this.World, ((Mooege.Common.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
 		}
 

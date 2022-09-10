@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -45,11 +46,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         {
             var Targets = User.GetActorsInRange(20f);
             TickTimer waitForImpact = WaitSeconds(1.3f - 0.1f);
-            SpawnEffect(161822, this.User.Position, 0, WaitSeconds(5f)); //[161822] [Actor] Belial_GroundBomb_Pending
+            SpawnEffect(ActorSno._belial_groundbomb_pending, this.User.Position, 0, WaitSeconds(5f)); //[161822] [Actor] Belial_GroundBomb_Pending
             yield return waitForImpact;
-            SpawnEffect(185108, this.User.Position, 0, WaitSeconds(3f)); //[185108] [Actor] Belial_GroundMeteor
+            SpawnEffect(ActorSno._belial_groundmeteor, this.User.Position, 0, WaitSeconds(3f)); //[185108] [Actor] Belial_GroundMeteor
             yield return waitForImpact;
-            var Fire = SpawnEffect(161833, this.User.Position, 0, WaitSeconds(3f));
+            var Fire = SpawnEffect(ActorSno._belial_groundbomb_impact, this.User.Position, 0, WaitSeconds(3f));
             Fire.UpdateDelay = 1f;
             Fire.OnUpdate = () =>
             {
@@ -124,7 +125,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         {
             yield return WaitSeconds(8f);
             bool inCombat = false;
-            if (this.World.GetActorBySNO(3526) != null)
+            if (this.World.GetActorBySNO(ActorSno._butcher) != null)
                 inCombat = true;
 
             if (inCombat == false)
@@ -336,7 +337,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         {
             yield return WaitSeconds(8f);
             bool inCombat = false;
-            if(this.World.GetActorBySNO(3526) != null)
+            if(this.World.GetActorBySNO(ActorSno._butcher) != null)
                 inCombat = true;
             
             if (inCombat == false)
@@ -365,17 +366,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 proxy = SpawnProxy(User.Position, WaitSeconds(8.5f));
                 #region Выборка анимации
                 int EffectOfActivate = 0;
-                switch (this.User.ActorSNO.Id)
+                switch (this.User.SNO)
                 {
-                    case 201423: EffectOfActivate = 201257; break;//[201423] [Actor] ButcherLair_FloorPanel_UpperLeft_Base
-                    case 201438: EffectOfActivate = 201444; break;//[201438][Actor] ButcherLair_FloorPanel_UpperMid_Base
-                    case 201454: EffectOfActivate = 201459; break;//[201454][Actor] ButcherLair_FloorPanel_UpperRight_Base
+                    case ActorSno._butcherlair_floorpanel_upperleft_base: EffectOfActivate = 201257; break;//[201423] [Actor] ButcherLair_FloorPanel_UpperLeft_Base
+                    case ActorSno._butcherlair_floorpanel_uppermid_base: EffectOfActivate = 201444; break;//[201438][Actor] ButcherLair_FloorPanel_UpperMid_Base
+                    case ActorSno._butcherlair_floorpanel_upperright_base: EffectOfActivate = 201459; break;//[201454][Actor] ButcherLair_FloorPanel_UpperRight_Base
 
-                    case 201426: EffectOfActivate = 201432; break;//[201426][Actor] ButcherLair_FloorPanel_MidMiddle_Base
+                    case ActorSno._butcherlair_floorpanel_midmiddle_base: EffectOfActivate = 201432; break;//[201426][Actor] ButcherLair_FloorPanel_MidMiddle_Base
 
-                    case 201242: EffectOfActivate = 201247; break;//[201242][Actor] ButcherLair_FloorPanel_LowerLeft_Base
-                    case 200969: EffectOfActivate = 201011; break;//[200969][Actor] ButcherLair_FloorPanel_LowerMid_Base
-                    case 201464: EffectOfActivate = 201471; break;//[201464][Actor] ButcherLair_FloorPanel_LowerRight_Base
+                    case ActorSno._butcherlair_floorpanel_lowerleft_base: EffectOfActivate = 201247; break;//[201242][Actor] ButcherLair_FloorPanel_LowerLeft_Base
+                    case ActorSno._butcherlair_floorpanel_lowermid_base: EffectOfActivate = 201011; break;//[200969][Actor] ButcherLair_FloorPanel_LowerMid_Base
+                    case ActorSno._butcherlair_floorpanel_lowerright_base: EffectOfActivate = 201471; break;//[201464][Actor] ButcherLair_FloorPanel_LowerRight_Base
                 }
                 #endregion
                 proxy.PlayEffectGroup(EffectOfActivate);

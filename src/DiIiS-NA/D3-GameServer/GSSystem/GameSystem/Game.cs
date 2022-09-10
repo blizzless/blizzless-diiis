@@ -714,9 +714,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					}
 					this.Empty = false;
 
-					foreach (var portal in this.StartingWorld.GetActorsBySNO(345935)) portal.Destroy(); // X1_OpenWorld_LootRunPortal
-					foreach (var portal in this.StartingWorld.GetActorsBySNO(396751)) portal.Destroy(); // X1_OpenWorld_Tiered_Rifts_Portal
-					foreach (var portal in this.StartingWorld.GetActorsBySNO(408511)) portal.Destroy(); // X1_OpenWorld_Tiered_Rifts_Challenge_Portal
+					foreach (var portal in this.StartingWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal, ActorSno._x1_openworld_tiered_rifts_challenge_portal))
+					{
+						portal.Destroy();
+					}
 
 					ClientSystem.GameServer.GSBackend.PlayerJoined(this.GameId);
 
@@ -1198,7 +1199,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public Actor GetHearthPortal()
 		{
-			return this.StartingWorld.Actors.Values.Where(x => x.ActorSNO.Name == "hearthPortal").First();
+			return this.StartingWorld.Actors.Values.Where(x => x.SNO == ActorSno._hearthportal).First();
 		}
 
 		private void OnPause(GameClient client, PauseGameMessage message)
@@ -1475,12 +1476,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							Task.Delay(1000).ContinueWith(delegate
 							{
 								foreach (var plr in this.Players.Values)
-									plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)encWorld.GetActorBySNO(78439).DynamicID(plr), Duration = 1f, Snap = false });
+									plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage()
+									{
+										ActorID = (int)encWorld.GetActorBySNO(ActorSno._test_cainintro_greybox_bridge_trout_tempworking).DynamicID(plr), Duration = 1f, Snap = false
+									});
 
 								Actor CainRun = null;
 								Actor CainQuest = null;
 								//Убираем лишнего каина.
-								foreach (var Cain in encWorld.GetActorsBySNO(102386))
+								foreach (var Cain in encWorld.GetActorsBySNO(ActorSno._cain_intro))
 									if (Cain.Position.Y > 140)
 									{
 										Cain.SetVisible(false);
@@ -1496,12 +1500,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 
 								//Скелеты
-								var Skeletons = encWorld.GetActorsBySNO(80652);
+								var Skeletons = encWorld.GetActorsBySNO(ActorSno._skeleton_cain);
 								//Камни
-								var Rocks = encWorld.GetActorsBySNO(176);
+								//var Rocks = encWorld.GetActorsBySNO(176);
 								//Берем позицию для леорика, а самого на мороз
 								Vector3D FakeLeoricPosition = new Vector3D(0f, 0f, 0f);
-								foreach (var fake in encWorld.GetActorsBySNO(5360))
+								foreach (var fake in encWorld.GetActorsBySNO(ActorSno._skeletonking_ghost))
 								{
 									FakeLeoricPosition = fake.Position;
 									fake.Destroy();
@@ -1530,12 +1534,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 												Task.Delay(7000).ContinueWith(delegate
 												{
-													foreach (var rock in Rocks)
-													{
+													//foreach (var rock in Rocks)
+													//{
 													//{[1013103213, {[Actor] [Type: Gizmo] SNOId:78439 GlobalId: 1013103213 Position: x:119.54008 y:140.65799 z:-4.535186 Name: Test_CainIntro_greybox_bridge_trOut_TempWorking}]}
 													//Обрушиваем мостик //EffectGroup "CainIntro_shake", 81546
-													encWorld.GetActorBySNO(78439).PlayAnimation(5, encWorld.GetActorBySNO(78439).AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault]);
-													}
+													var bridge = encWorld.GetActorBySNO(ActorSno._test_cainintro_greybox_bridge_trout_tempworking);
+													bridge.PlayAnimation(5, bridge.AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault]);
+													//}
 													foreach (var skeleton in Skeletons)
 													{
 													//Убиваем скелетов
@@ -1547,7 +1552,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 													CainRun.Move(SecondPoint, ThirdfacingAngle);
 
 												//(Должен быть диалог Король скилет.)
-												var Leoric = encWorld.SpawnMonster(5360, FakeLeoricPosition);
+												var Leoric = encWorld.SpawnMonster(ActorSno._skeletonking_ghost, FakeLeoricPosition);
 													Leoric.PlayActionAnimation(668);
 													Task.Delay(1000).ContinueWith(delegate
 													{
@@ -1568,7 +1573,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 																		CainQuest.SetVisible(true);
 																		CainRun.SetVisible(false);
 
-																		foreach (var fake in encWorld.GetActorsBySNO(5360))
+																		foreach (var fake in encWorld.GetActorsBySNO(ActorSno._skeletonking_ghost))
 																		{
 																			FakeLeoricPosition = fake.Position;
 																			fake.Destroy();
@@ -1589,12 +1594,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					case 158915: //ButcherLair
 								 //if (this.CurrentAct == 0)
 
-						var Butcher = encWorld.GetActorBySNO(3526);
+						var Butcher = encWorld.GetActorBySNO(ActorSno._butcher);
 						if (Butcher != null)
 							(Butcher as Monster).Brain.DeActivate();
 						else
 						{
-							Butcher = encWorld.SpawnMonster(3526, new Vector3D { X = 93.022f, Y = 89.86f, Z = 0.1f });
+							Butcher = encWorld.SpawnMonster(ActorSno._butcher, new Vector3D { X = 93.022f, Y = 89.86f, Z = 0.1f });
 							(Butcher as Monster).Brain.DeActivate();
 						}
 						Task.Delay(1000).ContinueWith(delegate
