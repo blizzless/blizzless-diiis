@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -32,36 +33,61 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 	[HandledSNO(
 		//act 1
 		// Miner_InTown + variations
-		177320, 178396, 178401, 178403, 229372, 229373, 229374, 229375, 229376,
+		ActorSno._a1_uniquevendor_miner_intown,
+		ActorSno._a1_uniquevendor_miner_intown_01,
+		//178401, 178403, 229372, 229373, 229374, 229375, 229376,
 		// Fence_InTown + variations
-		177319, 178388, 178390, 178392, 229367, 229368, 229369, 229370, 229371,
+		ActorSno._a1_uniquevendor_fence_intown,
+		ActorSno._a1_uniquevendor_fence_intown_01,
+		//178390, 178392, 229367, 229368, 229369, 229370, 229371,
 		// Collector_InTown + variations
-		107535, 178362, 178383, 178385, 229362, 229363, 229364, 229365, 229366,
+		ActorSno._a1_uniquevendor_collector,
+		ActorSno._a1_uniquevendor_collector_intown_01,
+		ActorSno._a1_uniquevendor_collector_intown_02,
+		//178385, 229362, 229363, 229364, 229365, 229366,
 		//act 2
 		//the Peddler
-		180593, 180783, 180784, 180785, 230573, 230574, 230575, 230576, 230577,
+		ActorSno._a2_uniquevendor_peddler_intown,
+		ActorSno._a2_uniquevendor_peddler_intown_01,
+		//180784, 180785, 230573, 230574, 230575, 230576, 230577,
 		// Miner_InTown + variations
-		180275, 180800, 180801, 180802, 230476, 230477, 230478, 230479, 230480,
+		ActorSno._a2_uniquevendor_miner_intown,
+		ActorSno._a2_uniquevendor_miner_intown_01,
+		//180801, 180802, 230476, 230477, 230478, 230479, 230480,
 		// Fence_InTown + variations
-		180274, 180817, 180818, 180819, 230471, 230472, 230473, 230474, 230475,
+		ActorSno._a2_uniquevendor_fence_intown,
+		ActorSno._a2_uniquevendor_fence_intown_01,
+		//180818, 180819, 230471, 230472, 230473, 230474, 230475,
 		// Collector_InTown + variations
-		180272, 180807, 180808, 180809, 230466, 230467, 230468, 230469, 230470,
+		ActorSno._a2_uniquevendor_collector_intown,
+		ActorSno._a2_uniquevendor_collector_intown_01,
+		//180808, 180809, 230466, 230467, 230468, 230469, 230470,
 		//act 3
 		// Collector_InTown + variations
-		230481, 230482, 230483, 230484, 230485, 181466, 181583, 181584,
+		//230481, 230482, 230483, 230484, 230485, 
+		ActorSno._a3_uniquevendor_collector_intown_01, 
+		//181583, 181584,
 		// Fence_InTown + variations
-		230486, 230487, 230488, 230489, 230490, 181468, 181585, 181586,
+		//230486, 230487, 230488, 230489, 230490, 181468, 181585, 181586,
 		// Miner_InTown + variations
-		230491, 230492, 230493, 230494, 230495, 181467, 181588, 181590,
+		//230491, 230492, 230493, 230494, 230495, 
+		ActorSno._a3_uniquevendor_miner_intown_01, 
+		//181588, 181590,
 		//act 4
 		// Collector_InTown + variations
-		182388, 230496, 230497, 230498, 230499, 230500, 230501, 230502,
+		ActorSno._a4_uniquevendor_collector_intown_01,
+		//230496, 230497, 230498, 230499, 230500, 230501, 230502,
 		// Fence_InTown + variations
-		182389, 230503, 230504, 230505, 230506, 230507, 230508, 230509,
+		ActorSno._a4_uniquevendor_fence_intown_01,
+		//230503, 230504, 230505, 230506, 230507, 230508, 230509,
 		// Miner_InTown + variations
-		182390, 230510, 230511, 230512, 230513, 230514, 230515, 230516,
+		ActorSno._a4_uniquevendor_miner_intown_01,
+		//230510, 230511, 230512, 230513, 230514, 230515, 230516,
 		//act 5
-		309796, 309831, 309836, 337417
+		ActorSno._x1_a5_uniquevendor_collector,
+		ActorSno._x1_a5_uniquevendor_fence,
+		ActorSno._x1_a5_uniquevendor_miner,
+		ActorSno._x1_a5_uniquevendor_warehouseminer
 		)]
 	public class Vendor : InteractiveNPC
 	{
@@ -69,8 +95,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		protected int level = 1;
 		private bool _collapsed = false;
-		public Vendor(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Vendor(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.TeamID] = 0;
 			this.Attributes[GameAttribute.MinimapActive] = true;
@@ -79,11 +105,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			PopulateItems();
 		}
 
-		private static List<int> _peddlers = new List<int> { 180593, 180783, 180784, 180785, 230573, 230574, 230575, 230576, 230577 };
+		private static readonly List<ActorSno> _peddlers = new List<ActorSno> 
+		{
+			ActorSno._a2_uniquevendor_peddler_intown,
+			ActorSno._a2_uniquevendor_peddler_intown_01
+		};
 
 		protected virtual List<Item> GetVendorItems()
 		{
-			var list = new List<Item>
+            if (_peddlers.Contains(this.SNO))
+			{
+				return new List<Item>
+				{
+					ItemGenerator.CreateItem(this, ItemGenerator.GetItemDefinition(-799868536))
+				};
+			}
+
+			return new List<Item>
 			{
 				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 7),
 				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 7),
@@ -105,14 +143,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				ItemGenerator.GenerateRandomDye(this),
 				ItemGenerator.GenerateRandomDye(this)
 			};
-
-			if (_peddlers.Contains(this.ActorSNO.Id))
-			{
-				list.Clear();
-				list.Add(ItemGenerator.CreateItem(this, ItemGenerator.GetItemDefinition(-799868536)));
-			}
-
-			return list;
 		}
 
 		private void PopulateItems()
@@ -155,7 +185,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			player.InGameClient.SendMessage(new OpenTradeWindowMessage((int)this.DynamicID(player)));
 		}
 
-		public virtual void OnRequestBuyItem(PlayerSystem.Player player, uint itemId)
+		public virtual void OnRequestBuyItem(Player player, uint itemId)
 		{
 			bool buyback = false;
 			int currentGold = player.Inventory.GetGoldAmount();
@@ -287,7 +317,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			}
 		}
 
-		public virtual void OnRequestSellItem(PlayerSystem.Player player, int itemId)
+		public virtual void OnRequestSellItem(Player player, int itemId)
 		{
 			player.Inventory.SellItem(this, itemId);
 		}
@@ -327,7 +357,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			_vendorGrid.DeleteItem(item);
 		}
 
-		public override void OnPlayerApproaching(PlayerSystem.Player player)
+		public override void OnPlayerApproaching(Player player)
 		{
 			try
 			{
@@ -338,33 +368,36 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 						int convId = -1;
 
-						switch (this.ActorSNO.Id)
+						switch (this.SNO)
 						{
 							//A1
 							//Miner
-							case 177320: case 178396: case 178401: case 178403: case 229372: case 229373: case 229374: case 229375: case 229376:
+							case ActorSno._a1_uniquevendor_miner_intown:
+							case ActorSno._a1_uniquevendor_miner_intown_01:
 								convId = 210879; break;
 							
 							//A2
 							//Miner
-							case 180275: case 180800: case 180801: case 180802: case 230476: case 230477: case 230478: case 230479: case 230480:
+							case ActorSno._a2_uniquevendor_miner_intown:
+							case ActorSno._a2_uniquevendor_miner_intown_01:
 								convId = 211399; break;
 
 							//A3
 							//Miner
-							case 230491: case 230492: case 230493: case 230494: case 230495:
-								convId = 211432; break;
-							case 181467: case 181588: case 181590:
+							//case 230491: case 230492: case 230493: case 230494: case 230495:
+							//	convId = 211432; break;
+							case ActorSno._a3_uniquevendor_miner_intown_01:
 								convId = 211267; break;
 
 							//A4
 							//Miner
-							case 182390: case 230510: case 230511: case 230512: case 230513: case 230514: case 230515: case 230516:
+							case ActorSno._a4_uniquevendor_miner_intown_01:
 								convId = 211447; break;
 
 							//A5 
 							//Miner
-							case 309836: case 337417:
+							case ActorSno._x1_a5_uniquevendor_miner:
+							case ActorSno._x1_a5_uniquevendor_warehouseminer:
 								convId = 309840; break;
 
 						}

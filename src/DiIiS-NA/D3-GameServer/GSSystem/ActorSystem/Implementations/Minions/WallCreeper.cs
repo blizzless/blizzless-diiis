@@ -14,6 +14,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -22,7 +23,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		public new int SummonLimit = 10;
 
 		public WallCreeper(World world, PowerContext context, int creeperID)
-			: base(world, 146534, context.User, null)
+			: base(world, ActorSno._wd_wallofzombiesrune_spawn, context.User, null)
 		{
 			Scale = 1.2f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.

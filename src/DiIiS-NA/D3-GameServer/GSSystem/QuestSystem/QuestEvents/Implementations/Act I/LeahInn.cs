@@ -28,6 +28,7 @@ using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -49,24 +50,24 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 		public override void Execute(MapSystem.World world)
 		{
-			List<ActorSystem.Actor> actorstotarget = new List<ActorSystem.Actor> { };
+			List<Actor> actorstotarget = new List<Actor> { };
 			if (world.Game.Empty) return;
 			StartConversation(world, 204113);
 
-			var spawner = world.GetActorBySNO(204605);
-			actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
+			var spawner = world.GetActorBySNO(ActorSno._omninpc_tristram_male_b_blacksmith);
+			actorstotarget.Add(world.SpawnMonster(ActorSno._zombieskinny_a_leahinn, spawner.Position));
 			spawner.Destroy();
-			spawner = world.GetActorBySNO(204606);
-			actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
+			spawner = world.GetActorBySNO(ActorSno._omninpc_tristram_male_e_blacksmith);
+			actorstotarget.Add(world.SpawnMonster(ActorSno._zombieskinny_a_leahinn, spawner.Position));
 			spawner.Destroy();
-			spawner = world.GetActorBySNO(204607);
-			actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
+			spawner = world.GetActorBySNO(ActorSno._omninpc_tristram_male_d_blacksmith);
+			actorstotarget.Add(world.SpawnMonster(ActorSno._zombieskinny_a_leahinn, spawner.Position));
 			spawner.Destroy();
-			spawner = world.GetActorBySNO(204608);
-			actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
+			spawner = world.GetActorBySNO(ActorSno._omninpc_tristram_male_c_blacksmith);
+			actorstotarget.Add(world.SpawnMonster(ActorSno._zombieskinny_a_leahinn, spawner.Position));
 			spawner.Destroy();
-			spawner = world.GetActorBySNO(174023);
-			actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
+			spawner = world.GetActorBySNO(ActorSno._omninpc_tristram_male_a_blacksmith);
+			actorstotarget.Add(world.SpawnMonster(ActorSno._zombieskinny_a_leahinn, spawner.Position));
 			spawner.Destroy();
 
 			foreach (var actor in actorstotarget)

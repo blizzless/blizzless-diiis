@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using System;
@@ -17,10 +18,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 	{
 		public float Radius;
 		public Vector3D Center;
-		public List<int> Monsters;
-		public int LastMob;
+		public List<ActorSno> Monsters;
+		public ActorSno LastMob;
 
-		public WavedInvasion(Vector3D center, float radius, List<int> mobs, int lastMob)
+		public WavedInvasion(Vector3D center, float radius, List<ActorSno> mobs, ActorSno lastMob)
 			: base(0)
 		{
 			this.Radius = radius;
@@ -31,7 +32,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 
 		public override void Execute(MapSystem.World world)
 		{
-			var marker = world.SpawnMonster(187359, this.Center);
+			var marker = world.SpawnMonster(ActorSno._generic_proxy_normal, this.Center);
 			world.BuffManager.AddBuff(marker, marker, new PowerSystem.Implementations.WavedInvasionBuff(this.Monsters, this.Radius, this.LastMob));
 		}
 	}

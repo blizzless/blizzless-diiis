@@ -14,6 +14,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -21,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 	{
 		//Melee - 87189, 89933 - ranged, 90320 - shaman, skeleton? - 89934
 		public FetishHunter(World world, PowerContext context, int FetishID)
-			: base(world, 89933, context.User, null)
+			: base(world, ActorSno._fetish_ranged_a, context.User, null)
 		{
 			Scale = 1.2f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.

@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -22,11 +23,11 @@ using System.Threading.Tasks;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
     //SNOId:404663 GlobalId: 1018503124 Position: x:302.6683 y:457.36 z:0 Name: P4_Ruins_Frost_Trap_Swinging_Blade
-    [HandledSNO(404663)]
+    [HandledSNO(ActorSno._p4_ruins_frost_trap_swinging_blade)]
     public class FrostTrapSwingingBlade : Monster
     {
-		public FrostTrapSwingingBlade(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public FrostTrapSwingingBlade(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x8;
 			this.CollFlags = 0;

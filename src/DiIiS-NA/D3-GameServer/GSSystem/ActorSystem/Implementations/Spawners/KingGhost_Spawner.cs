@@ -18,13 +18,13 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
 {
-    [HandledSNO(327)]
+    [HandledSNO(ActorSno._blizzcon_kingghost_spawner)]
     class KingGhost_Spawner : Gizmo
     {
         private bool _collapsed = false;
 
-        public KingGhost_Spawner(World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public KingGhost_Spawner(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
 
         }
@@ -35,7 +35,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
                 {
                     _collapsed = true;
 
-                    var KingGhost = World.SpawnMonster(5360, this.Position);
+                    var KingGhost = World.SpawnMonster(ActorSno._skeletonking_ghost, this.Position);
                     KingGhost.Attributes[MessageSystem.GameAttribute.Untargetable] = true;
                     KingGhost.Attributes.BroadcastChangedIfRevealed();
                     StartConversation(World, 17921);

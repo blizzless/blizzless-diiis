@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 //Blizzless Project 2022 
 using System;
@@ -16,8 +17,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 		public override void Execute(MapSystem.World world)
 		{
-			var NStone = world.GetActorBySNO(156328);//156328
-			var Adria = world.GetActorBySNO(195378);
+			var NStone = world.GetActorBySNO(ActorSno._a2dun_zolt_black_soulstone);//156328
+			var Adria = world.GetActorBySNO(ActorSno._adria_event47);
 
 			StartConversation(world, 195743);
 			//Камера переходит к камню

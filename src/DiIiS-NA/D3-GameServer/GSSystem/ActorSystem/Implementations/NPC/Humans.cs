@@ -8,18 +8,19 @@ using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-    [HandledSNO(308474, //X1_WestM_Intro_Human_Male
-               309191,  //X1_WestM_Intro_Human_Male2
-               181563,  //vizjereiMale_A_Town
-               210087,  //Zakarum_Female_Wealthy_Gates
-               190390,  //A3_Hub_SacrificeLadyNew
-               378376   //x1_WestmHub_Guard_NoLoS_KnownWithScene
-               )]
+    [HandledSNO(
+        ActorSno._x1_westm_intro_human_male, //X1_WestM_Intro_Human_Male
+        ActorSno._x1_westm_intro_human_male2,  //X1_WestM_Intro_Human_Male2
+        ActorSno._vizjereimale_a_town,  //vizjereiMale_A_Town
+        ActorSno._zakarum_female_wealthy_gates,  //Zakarum_Female_Wealthy_Gates
+        ActorSno._a3_hub_sacrificeladynew,  //A3_Hub_SacrificeLadyNew
+        ActorSno._x1_westmhub_guard_nolos_knownwithscene   //x1_WestmHub_Guard_NoLoS_KnownWithScene
+    )]
     class Humans : NPC
     {
         private bool _collapsed = false;
-        public Humans(World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public Humans(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             this.Field7 = 1;
             this.Attributes[GameAttribute.TeamID] = 2;
@@ -44,20 +45,25 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                     _collapsed = true;
 
                     if (this.World.SNO == WorldSno.x1_westm_intro)
-                        switch (this.ActorSNO.Id)
+                        switch (this.SNO)
                         {
-                            case 308474:
+                            case ActorSno._x1_westm_intro_human_male:
                                 if (this.Position.X > 1440) 
                                     StartConversation(this.World, 311433);
                                 else
                                 {
-                                    foreach (var man in this.World.GetActorsBySNO(308474)) if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
-                                    foreach (var man in this.World.GetActorsBySNO(309191)) if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
-                                    foreach (var man in this.World.GetActorsBySNO(310653)) if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
-                                    foreach (var man in this.World.GetActorsBySNO(310631)) if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                    foreach (var man in this.World.GetActorsBySNO(
+                                        ActorSno._x1_westm_intro_human_male,
+                                        ActorSno._x1_westm_intro_human_male2,
+                                        ActorSno._x1_westm_intro_human_female,
+                                        ActorSno._x1_westmarchfemale_deathmaidenkill
+                                        ))
+                                    {
+                                        if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                    }
                                 }
                                 break;
-                            case 309191:
+                            case ActorSno._x1_westm_intro_human_male2:
                                 if (this.Position.X > 1300 & this.Position.Y > 440)
                                 {
                                     StartConversation(this.World, 311435);
@@ -73,9 +79,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                                     +		[5]	{70976 = 328782}	DiIiS_NA.GameServer.Core.Types.TagMap.TagMapEntry
                                     +		[6]	{98304 = 330015}	DiIiS_NA.GameServer.Core.Types.TagMap.TagMapEntry
                                     */
-                                    foreach (var man in this.World.GetActorsBySNO(308474)) if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
-                                    foreach (var man in this.World.GetActorsBySNO(309191)) if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
-                                    foreach (var man in this.World.GetActorsBySNO(310653)) if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                    foreach (var man in this.World.GetActorsBySNO(
+                                        ActorSno._x1_westm_intro_human_male,
+                                        ActorSno._x1_westm_intro_human_male2,
+                                        ActorSno._x1_westm_intro_human_female
+                                        ))
+                                    {
+                                        if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                    }
                                     
                                     
                                 }

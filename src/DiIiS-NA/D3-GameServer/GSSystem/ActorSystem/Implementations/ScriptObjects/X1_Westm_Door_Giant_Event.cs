@@ -20,26 +20,30 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-    [HandledSNO(312441)]
+    [HandledSNO(ActorSno._x1_westm_door_giant_opening_event)]
     class X1_Westm_Door_Giant_Event : Gizmo
     {
         private bool _collapsed = false;
         public List<Core.Types.Math.Vector3D> positions = new List<Core.Types.Math.Vector3D>() { };
         public List<Core.Types.Math.Vector3D> shieldpositions = new List<Core.Types.Math.Vector3D>() { };
-        public X1_Westm_Door_Giant_Event(World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public X1_Westm_Door_Giant_Event(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             Field2 = 0;
 
             //Прячем скелетов.
             foreach (var skeleton in this.GetActorsInRegion<Monster>(120))
             {
-                switch (skeleton.ActorSNO.Id)
+                switch (skeleton.SNO)
                 {
-                    case 310894: //x1_Shield_Skeleton_Westmarch_Ghost_A
-                        shieldpositions.Add(skeleton.Position); skeleton.Destroy(); break;
-                    case 310893: //x1_Skeleton_Westmarch_Ghost_A
-                        positions.Add(skeleton.Position); skeleton.Destroy(); break;
+                    case ActorSno._x1_shield_skeleton_westmarch_ghost_a: //x1_Shield_Skeleton_Westmarch_Ghost_A
+                        shieldpositions.Add(skeleton.Position);
+                        skeleton.Destroy();
+                        break;
+                    case ActorSno._x1_skeleton_westmarch_ghost_a: //x1_Skeleton_Westmarch_Ghost_A
+                        positions.Add(skeleton.Position);
+                        skeleton.Destroy();
+                        break;
                 }
             }
         }
@@ -59,12 +63,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
             {
                 foreach (var skeleton in this.GetActorsInRegion<Monster>(120))
                 {
-                    switch (skeleton.ActorSNO.Id)
+                    switch (skeleton.SNO)
                     {
-                        case 310894: //x1_Shield_Skeleton_Westmarch_Ghost_A
-                            shieldpositions.Add(skeleton.Position); skeleton.Destroy(); break;
-                        case 310893: //x1_Skeleton_Westmarch_Ghost_A
-                            positions.Add(skeleton.Position); skeleton.Destroy(); break;
+                        case ActorSno._x1_shield_skeleton_westmarch_ghost_a: //x1_Shield_Skeleton_Westmarch_Ghost_A
+                            shieldpositions.Add(skeleton.Position);
+                            skeleton.Destroy();
+                            break;
+                        case ActorSno._x1_skeleton_westmarch_ghost_a: //x1_Skeleton_Westmarch_Ghost_A
+                            positions.Add(skeleton.Position);
+                            skeleton.Destroy();
+                            break;
                     }
                 }
             }
@@ -86,8 +94,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
                 #endregion
 
                 #region Возвращаем скелетов
-                foreach (var skeleton in positions) this.World.SpawnMonster(310893,skeleton);
-                foreach (var skeleton in shieldpositions) this.World.SpawnMonster(310894, skeleton);
+                foreach (var skeleton in positions) this.World.SpawnMonster(ActorSno._x1_skeleton_westmarch_ghost_a, skeleton);
+                foreach (var skeleton in shieldpositions) this.World.SpawnMonster(ActorSno._x1_shield_skeleton_westmarch_ghost_a, skeleton);
                 #endregion
             }
         }

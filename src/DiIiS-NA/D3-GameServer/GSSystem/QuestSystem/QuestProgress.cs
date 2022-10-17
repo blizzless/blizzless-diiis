@@ -69,6 +69,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			public int Counter;
 		};
 
+		// key can be ActorSno (also multiplied), DestLevelAreaSno, ConversationSno
 		public Dictionary<int, QuestTrigger> QuestTriggers { get; set; }
 		public Dictionary<int, QuestTrigger> GlobalQuestTriggers { get; set; }
 
@@ -110,23 +111,23 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, count = 1, counter = 0, questEvent = qevent });
 		}
 
-		protected void ListenKill(int monsterId, int monsterCount, QuestEvent qevent)
+		protected void ListenKill(ActorSno monsterSno, int monsterCount, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd(monsterId,
+			this.QuestTriggers.TryAdd((int)monsterSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster, count = monsterCount, counter = 0, questEvent = qevent });
 		}
 
-		public void ActiveArrow(World world, int snoId, WorldSno destworld = WorldSno.__NONE)
+		public void ActiveArrow(World world, ActorSno sno, WorldSno destworld = WorldSno.__NONE)
 		{
 			Actor target = null;
 			if (destworld != WorldSno.__NONE)
 			{
-				foreach (Portal tar in world.GetActorsBySNO(snoId))
+				foreach (Portal tar in world.GetActorsBySNO(sno))
 					if (tar.Destination.WorldSNO == (int)destworld)
 						target = tar;
 			}
 			else
-				target = world.GetActorBySNO(snoId, true);
+				target = world.GetActorBySNO(sno, true);
 
 			world.BroadcastGlobal(plr => new MapMarkerInfoMessage()
 			{
@@ -165,46 +166,44 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 		}
 
-		public void ActivateQuestMonsters(World world, int snoId)
+		public void ActivateQuestMonsters(World world, ActorSno sno)
 		{
-			foreach (var actr in world.Actors.Values)
-				if (actr.ActorSNO.Id == snoId)
-				{
-					actr.Attributes[GameAttribute.Quest_Monster] = true;
-					actr.Attributes.BroadcastChangedIfRevealed();
-				}
+            foreach (var actr in world.Actors.Values.Where(x => x.SNO == sno))
+			{
+				actr.Attributes[GameAttribute.Quest_Monster] = true;
+				actr.Attributes.BroadcastChangedIfRevealed();
+			}
 		}
-		public void DeactivateQuestMonsters(World world, int snoId)
+		public void DeactivateQuestMonsters(World world, ActorSno sno)
 		{
-			foreach (var actr in world.Actors.Values)
-				if (actr.ActorSNO.Id == snoId)
-				{
-					actr.Attributes[GameAttribute.Quest_Monster] = false;
-					actr.Attributes.BroadcastChangedIfRevealed();
-				}
-		}
+			foreach (var actr in world.Actors.Values.Where(x => x.SNO == sno))
+            {
+				actr.Attributes[GameAttribute.Quest_Monster] = false;
+				actr.Attributes.BroadcastChangedIfRevealed();
+            }
+        }
 
 		//opening gates or door(for getting pass)
-		protected bool Open(MapSystem.World world, Int32 snoId)
+		protected bool Open(World world, ActorSno sno)
 		{
-			var actor = world.GetActorsBySNO(snoId).Where(d => d.Visible).FirstOrDefault();
-			if (actor != null)
+			var actor = world.GetActorsBySNO(sno).Where(d => d.Visible).FirstOrDefault();
+            if (actor == null)
+                return false;
+            
+            (actor as Door).Open();
+            return true;
+		}
+
+		protected bool OpenAll(World world, ActorSno sno)
+		{
+			foreach (var actor in world.GetActorsBySNO(sno).Where(d => d.Visible).ToList())
 				(actor as Door).Open();
-			else
-				return false;
 			return true;
 		}
 
-		protected bool OpenAll(MapSystem.World world, Int32 snoId)
+		protected void ListenKillBonus(ActorSno monsterSno, int monsterCount, QuestEvent qevent)
 		{
-			foreach (var actor in world.GetActorsBySNO(snoId).Where(d => d.Visible).ToList())
-				(actor as Door).Open();
-			return true;
-		}
-
-		protected void ListenKillBonus(int monsterId, int monsterCount, QuestEvent qevent)
-		{
-			this.QuestTriggers.TryAdd(monsterId,
+			this.QuestTriggers.TryAdd((int)monsterSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup, count = monsterCount, counter = 0, questEvent = qevent });
 		}
 
@@ -219,25 +218,25 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, count = 1, counter = 0, questEvent = qevent });
 		}
 
-		protected void ListenProximity(int actorId, QuestEvent qevent)
+		protected void ListenProximity(ActorSno actorSno, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd(actorId,
+			this.QuestTriggers.TryAdd((int)actorSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, count = 1, counter = 0, questEvent = qevent });
 		}
 
-		protected void ListenInteract(int actorId, int actorCount, QuestEvent qevent)
+		protected void ListenInteract(ActorSno actorSno, int actorCount, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd(actorId,
+			this.QuestTriggers.TryAdd((int)actorSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = 0, questEvent = qevent });
 		}
-		protected void ListenInteractBonus(int actorId, int actorCount, int counter, QuestEvent qevent)
+		protected void ListenInteractBonus(ActorSno actorSno, int actorCount, int counter, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd(actorId,
+			this.QuestTriggers.TryAdd((int)actorSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = counter, questEvent = qevent });
 		}
-		protected void GlobalListenInteract(int actorId, int actorCount, QuestEvent qevent)
+		protected void GlobalListenInteract(ActorSno actorSno, int actorCount, QuestEvent qevent)
 		{
-			this.GlobalQuestTriggers.TryAdd(actorId,
+			this.GlobalQuestTriggers.TryAdd((int)actorSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = 0, questEvent = qevent });
 		}
 
@@ -284,16 +283,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			return true;
 		}
 
-		public void AddFollower(World world, Int32 snoId)
+		public void AddFollower(World world, ActorSno sno)
 		{
 			if (this.Game.Players.Count > 0)
-				this.Game.Players.Values.First().AddFollower(world.GetActorBySNO(snoId));
+				this.Game.Players.Values.First().AddFollower(world.GetActorBySNO(sno));
 		}
 
-		public void DestroyFollower(Int32 snoId)
+		public void DestroyFollower(ActorSno sno)
 		{
 			if (this.Game.Players.Count > 0)
-				this.Game.Players.Values.First().DestroyFollower(snoId);
+				this.Game.Players.Values.First().DestroyFollower(sno);
 		}
 
 		protected void PlayCutscene(Int32 cutsceneId)
@@ -306,9 +305,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		}
 
 		//Not Operable Rumford (To disable giving u the same quest while ur in the event)
-		public static bool setActorOperable(World world, Int32 snoId, bool status)
+		public static bool SetActorOperable(World world, ActorSno sno, bool status)
 		{
-			var actor = world.GetActorBySNO(snoId);
+			var actor = world.GetActorBySNO(sno);
 
 			if (actor == null)
 				return false;
@@ -324,9 +323,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			return true;
 		}
 
-		public static bool setActorVisible(World world, Int32 snoId, bool status)
+		public static bool SetActorVisible(World world, ActorSno sno, bool status)
 		{
-			var actor = world.GetActorBySNO(snoId, true);
+			var actor = world.GetActorBySNO(sno, true);
 
 			if (actor == null)
 				return false;
@@ -376,7 +375,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			}
 			else if (actor != null)
 			{
-				foreach (var N in actor.World.GetActorsBySNO(actor.ActorSNO.Id))
+				foreach (var N in actor.World.GetActorsBySNO(actor.SNO))
 					if (N is InteractiveNPC)
 					{
 						NPC = N as InteractiveNPC;

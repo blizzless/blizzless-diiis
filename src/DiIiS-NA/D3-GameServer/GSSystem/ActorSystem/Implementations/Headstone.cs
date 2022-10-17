@@ -1,6 +1,7 @@
 ﻿
 //Blizzless Project 2022 
 using System.Linq;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -12,13 +13,13 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(4860 /* PlayerHeadstone.acr */)]
+	[HandledSNO(ActorSno._playerheadstone /* PlayerHeadstone.acr */)]
 	class Headstone : Gizmo
 	{
 		public int playerIndex { get; set; }
 
-		public Headstone(World world, int snoId, TagMap tags, int playerIndex = -1)
-			: base(world, snoId, tags)
+		public Headstone(World world, ActorSno sno, TagMap tags, int playerIndex = -1)
+			: base(world, sno, tags)
 		{
 			this.playerIndex = playerIndex;
 			this.Attributes[GameAttribute.MinimapActive] = true;

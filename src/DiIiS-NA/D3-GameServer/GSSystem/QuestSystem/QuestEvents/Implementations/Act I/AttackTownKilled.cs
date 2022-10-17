@@ -29,9 +29,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		public override void Execute(MapSystem.World world)
 		{
             var AttackedTown = world.Game.GetWorld(WorldSno.trout_townattack);
-			var Maghda = AttackedTown.GetActorBySNO(129345);
+			var Maghda = AttackedTown.GetActorBySNO(ActorSno._maghda_a_tempprojection);
 			if (Maghda == null)
-				Maghda = AttackedTown.SpawnMonster(129345, new Core.Types.Math.Vector3D(580f,563f,70f));
+				Maghda = AttackedTown.SpawnMonster(ActorSno._maghda_a_tempprojection, new Core.Types.Math.Vector3D(580f,563f,70f));
 			Maghda.EnterWorld(Maghda.Position);
 			Maghda.Attributes[GameAttribute.Untargetable] = true;
 			Maghda.Attributes.BroadcastChangedIfRevealed();

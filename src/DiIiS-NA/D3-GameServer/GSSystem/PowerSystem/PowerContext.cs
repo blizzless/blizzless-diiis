@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -192,7 +193,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			payload.Apply();
 		}
 
-		public EffectActor SpawnEffect(int actorSNO, Vector3D position, float angle = 0, TickTimer timeout = null)
+		public EffectActor SpawnEffect(ActorSno actorSNO, Vector3D position, float angle = 0, TickTimer timeout = null)
 		{
 			if (angle == -1)
 				angle = (float)(Rand.NextDouble() * (Math.PI * 2));
@@ -211,13 +212,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			return actor;
 		}
 
-		public EffectActor SpawnEffect(int actorSNO, Vector3D position, Actor facingTarget, TickTimer timeout = null)
+		public EffectActor SpawnEffect(ActorSno actorSNO, Vector3D position, Actor facingTarget, TickTimer timeout = null)
 		{
 			float angle = (facingTarget != null) ? MovementHelpers.GetFacingAngle(User.Position, facingTarget.Position) : -1f;
 			return SpawnEffect(actorSNO, position, angle, timeout);
 		}
 
-		public EffectActor SpawnEffect(int actorSNO, Vector3D position, Vector3D facingTarget, TickTimer timeout = null)
+		public EffectActor SpawnEffect(ActorSno actorSNO, Vector3D position, Vector3D facingTarget, TickTimer timeout = null)
 		{
 			float angle = MovementHelpers.GetFacingAngle(User.Position, facingTarget);
 			return SpawnEffect(actorSNO, position, angle, timeout);
@@ -225,7 +226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public EffectActor SpawnProxy(Vector3D position, TickTimer timeout = null)
 		{
-			return SpawnEffect(187359, position, 0, timeout);
+			return SpawnEffect(ActorSno._generic_proxy_normal, position, 0, timeout);
 		}
 
 		public TargetList GetEnemiesInRadius(Vector3D center, float radius, int maxCount = -1)
@@ -298,7 +299,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 					return (actor) => ((actor is Player && actor.GlobalID != User.GlobalID) || (actor is Minion && actor.GlobalID != User.GlobalID && (actor as Minion).Master.GlobalID != User.GlobalID));
 				else
 				{
-					if (User is Player || User is Minion || User is Hireling || (User is Monster && User.Attributes[GameAttribute.Team_Override] == 1) || User.ActorSNO.Id == 65036 || (User is Monster && User.Attributes[GameAttribute.Team_Override] == 1))
+					if (User is Player || User is Minion || User is Hireling || (User is Monster && User.Attributes[GameAttribute.Team_Override] == 1) || User.SNO == ActorSno._pt_blacksmith_nonvendor || (User is Monster && User.Attributes[GameAttribute.Team_Override] == 1))
 						return (actor) => (actor is Monster || actor is DesctructibleLootContainer) && actor.Visible && !(actor is ActorSystem.Implementations.ScriptObjects.ButcherFloorPanel) && !(actor is ActorSystem.Implementations.ScriptObjects.LeorFireGrate);
 					else if (User is TownLeah || User is CaptainRumford || User is ArrowGuardian || User is LorathNahr_NPC)
 						return (actor) => actor is Monster && actor.Visible;

@@ -90,7 +90,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                                             player.Position.Y + (float)RandomHelper.NextDouble() * 20f,
                                             player.Position.Z);
 
-                var monster = player.World.SpawnMonster(actorSNO, position);
+                var monster = player.World.SpawnMonster((ActorSno)actorSNO, position);
 
             }
             return string.Format("Spawned {0} mobs with ActorSNO: {1}", amount, actorSNO);
@@ -889,7 +889,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             var matches = invokerClient.InGameClient.Player.World.StartingPoints;
 
             return matches.Aggregate(matches.Count >= 1 ? "Starting Points:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.GlobalID.ToString("D6"), match.ActorSNO.Name, match.TargetId));
+                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.GlobalID.ToString("D6"), match.Name, match.TargetId));
         }
 
         [Command("weather", "Allows you to search for a Weather.\nUsage: lookup weather <pattern>")]

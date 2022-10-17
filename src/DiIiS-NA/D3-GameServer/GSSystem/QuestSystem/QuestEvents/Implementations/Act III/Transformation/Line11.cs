@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 //Blizzless Project 2022 
 using System;
@@ -17,7 +18,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		public override void Execute(MapSystem.World world)
 		{
 			StartConversation(world, 195767);
-			var Leah = world.GetActorBySNO(195376);
+			var Leah = world.GetActorBySNO(ActorSno._leah_event47);
 			Leah.PlayActionAnimation(201990);
 		}
 

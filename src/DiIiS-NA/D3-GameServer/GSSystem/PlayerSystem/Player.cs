@@ -266,7 +266,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				_spiritGenHit = value;
 				if (this.SkillSet.HasPassive(315271) && _spiritGenHit >= 3) //Mythic Rhythm
 				{
-					this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.MythicRhythmBuff());
+					this.World.BuffManager.AddBuff(this, this, new MythicRhythmBuff());
 					_spiritGenHit = 0;
 				}
 			}
@@ -276,7 +276,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// NPC currently interaced with
 		/// </summary>
 		public InteractiveNPC SelectedNPC { get; set; }
-		public Dictionary<uint, int> Followers { get; private set; }
+		public Dictionary<uint, ActorSno> Followers { get; private set; }
 		private Hireling _activeHireling = null;
 		private Hireling _questHireling = null;
 		public Hireling ActiveHireling
@@ -351,7 +351,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// <param name="client">The gameclient for the player.</param>
 		/// <param name="bnetToon">Toon of the player.</param>
 		public Player(World world, GameClient client, Toon bnetToon)
-			: base(world, bnetToon.Gender == 0 ? bnetToon.HeroTable.SNOMaleActor : bnetToon.HeroTable.SNOFemaleActor)
+			: base(world, bnetToon.Gender == 0 ? (ActorSno)bnetToon.HeroTable.SNOMaleActor : (ActorSno)bnetToon.HeroTable.SNOFemaleActor)
 		{
 			this.InGameClient = client;
 			this.PlayerIndex = Interlocked.Increment(ref this.InGameClient.Game.PlayerIndexCounter);
@@ -373,7 +373,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.RotationW = 0.05940768f;
 			this.RotationAxis = new Vector3D(0f, 0f, 0.9982339f);
 			this.Field7 = -1;
-			this.NameSNOId = -1;
+			this.NameSNO = ActorSno.__NONE;
 			this.Field10 = 0x0;
 			this.Dead = false;
 			this.EventWeatherEnabled = false;
@@ -398,7 +398,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.HirelingEnchantressUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307145).Count() > 0;
 			this.SkillSet = new SkillSet(this, this.Toon.Class, this.Toon);
 			this.GroundItems = new Dictionary<uint, Item>();
-			this.Followers = new Dictionary<uint, int>();
+			this.Followers = new Dictionary<uint, ActorSno>();
 			this.Conversations = new ConversationManager(this);
 			this.ExpBonusData = new ExpBonusData(this);
 			this.SelectedNPC = null;
@@ -1459,20 +1459,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				case 72061:
 					//Templar
 					Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][52693].Data;
-					hireling = new Templar(this.World, 52693, Data.TagMap);
+					hireling = new Templar(this.World, ActorSno._hireling_templar, Data.TagMap);
 					hireling.GBHandle.GBID = StringHashHelper.HashItemName("Templar");
 
 					break;
 				case 72738:
 					//Scoundrel
 					Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][52694].Data;
-					hireling = new Templar(this.World, 52694, Data.TagMap);
+					hireling = new Templar(this.World, ActorSno._hireling_scoundrel, Data.TagMap);
 					hireling.GBHandle.GBID = StringHashHelper.HashItemName("Scoundrel");
 					break;
 				case 0:
 					//Enchantress
 					Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][4482].Data;
-					hireling = new Templar(this.World, 4482, Data.TagMap);
+					hireling = new Templar(this.World, ActorSno._hireling_enchantress, Data.TagMap);
 					hireling.GBHandle.GBID = StringHashHelper.HashItemName("Enchantress");
 					break;
 
@@ -1546,7 +1546,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			for (int i = 0; i < message.ItemsCount; i++)
 			{
 				Items.Add(Inventory.GetItemByDynId(this, (uint)message.annItems[i]));
-				if (Items[i].ActorSNO.Id == 272056)
+				if (Items[i].SNO == ActorSno._x1_polearm_norm_unique_05)
 					ItemPortalToCows = Items[i];
 			}
 
@@ -1566,7 +1566,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				});
 
 				this.Inventory.DestroyInventoryItem(ItemPortalToCows);
-				this.World.SpawnMonster(434659, new Vector3D(this.Position.X + 5, this.Position.Y + 5, this.Position.Z));
+				this.World.SpawnMonster(ActorSno._p2_totallynotacowlevel_portal, new Vector3D(this.Position.X + 5, this.Position.Y + 5, this.Position.Z));
 			}
 			else
 			{
@@ -1627,8 +1627,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					Logger.Debug("Вызов нефалемского портала (Обычный)");
 					Activated = false;
 
-					foreach (var oldp in this.World.GetActorsBySNO(345935)) { oldp.Destroy(); }
-					foreach (var oldp in this.World.GetActorsBySNO(396751)) { oldp.Destroy(); }
+					foreach (var oldp in this.World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }
 
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
 					//map = 288823;
@@ -1695,7 +1694,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							actor.Destroy();
 
 					#region Активация
-					NStone = World.GetActorBySNO(364715);
+					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 					NStone.PlayAnimation(5, NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
@@ -1712,7 +1711,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						ActorID = NStone.DynamicID(plr),
 						CollFlags = 0
 					}, NStone);
-					portal = new Portal(this.World, 345935, NewTagMap);
+					portal = new Portal(this.World, ActorSno._x1_openworld_lootrunportal, NewTagMap);
 
 					TickTimer Timeout = new SecondsTickTimer(this.World.Game, 3.5f);
 					var Boom = System.Threading.Tasks.Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
@@ -1804,8 +1803,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					Logger.Debug("Вызов нефалемского портала (Уровень: {0})", message.Field0);
 					Activated = false;
-					foreach (var oldp in this.World.GetActorsBySNO(345935)) { oldp.Destroy(); }
-					foreach (var oldp in this.World.GetActorsBySNO(396751)) { oldp.Destroy(); }
+					foreach (var oldp in this.World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }
 
 					this.InGameClient.Game.ActiveNephalemPortal = true;
 					this.InGameClient.Game.NephalemGreater = true;
@@ -1832,7 +1830,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						else if (actor is Waypoint)
 							actor.Destroy();
 					#region Активация
-					NStone = World.GetActorBySNO(364715);
+					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 					NStone.PlayAnimation(5, NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
@@ -1849,7 +1847,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						ActorID = NStone.DynamicID(plr),
 						CollFlags = 0
 					}, NStone);
-					portal = new Portal(this.World, 396751, NewTagMap);
+					portal = new Portal(this.World, ActorSno._x1_openworld_tiered_rifts_portal, NewTagMap);
 
 					TickTimer AltTimeout = new SecondsTickTimer(this.World.Game, 3.5f);
 					var AltBoom = System.Threading.Tasks.Task<bool>.Factory.StartNew(() => WaitToSpawn(AltTimeout));
@@ -2261,7 +2259,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 
 #if DEBUG
-				Logger.Warn("OnTargetedActor ID: {0}, Name: {1}, NumInWorld: {2}", actor.ActorSNO.Id, actor.ActorSNO.Name, actor.NumberInWorld);
+				Logger.Warn("OnTargetedActor ID: {0}, Name: {1}, NumInWorld: {2}", actor.SNO, actor.Name, actor.NumberInWorld);
 #else
 				
 #endif
@@ -2616,7 +2614,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (pet is Hireling)
 				ActiveHireling = null;
 			else
-				this.DestroyFollowersBySnoId(pet.ActorSNO.Id);
+				this.DestroyFollowersBySnoId(pet.SNO);
 		}
 		private void OnHirelingRequestLearnSkill(GameClient client, MessageSystem.Message.Definitions.Hireling.HirelingRequestLearnSkillMessage message)
 		{
@@ -3011,10 +3009,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			foreach (Actor proximityGizmo in this.GetObjectsInRange<Actor>(20f, true))
 			{
-				if (proximityGizmo == null || proximityGizmo.ActorSNO == null) continue;
-				if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey(proximityGizmo.ActorSNO.Id) && proximityGizmo.Visible) //EnterTrigger
+				if (proximityGizmo == null || proximityGizmo.SNO == ActorSno.__NONE) continue;
+				if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO) && proximityGizmo.Visible) //EnterTrigger
 				{
-					var trigger = this.World.Game.QuestProgress.QuestTriggers[proximityGizmo.ActorSNO.Id];
+					var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
 					{
 						//this.World.Game.Quests.NotifyQuest(this.World.Game.CurrentQuest, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, proximityGizmo.ActorSNO.Id);
@@ -3028,26 +3026,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 					}
 				}
-				else if (this.World.Game.SideQuestProgress.QuestTriggers.ContainsKey(proximityGizmo.ActorSNO.Id))
+				else if (this.World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO))
 				{
-					var trigger = this.World.Game.SideQuestProgress.QuestTriggers[proximityGizmo.ActorSNO.Id];
+					var trigger = this.World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
 					{
-						this.World.Game.SideQuestProgress.UpdateSideCounter(proximityGizmo.ActorSNO.Id);
-						if (trigger.count == this.World.Game.SideQuestProgress.QuestTriggers[proximityGizmo.ActorSNO.Id].counter)
+						this.World.Game.SideQuestProgress.UpdateSideCounter((int)proximityGizmo.SNO);
+						if (trigger.count == this.World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO].counter)
 							trigger.questEvent.Execute(this.World); // launch a questEvent
 					}
 				}
-				if (this.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(proximityGizmo.ActorSNO.Id) && proximityGizmo.Visible) //EnterTrigger
+				if (this.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey((int)proximityGizmo.SNO) && proximityGizmo.Visible) //EnterTrigger
 				{
-					var trigger = this.World.Game.SideQuestProgress.GlobalQuestTriggers[proximityGizmo.ActorSNO.Id];
+					var trigger = this.World.Game.SideQuestProgress.GlobalQuestTriggers[(int)proximityGizmo.SNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
 					{
 						//this.World.Game.Quests.NotifyQuest(this.World.Game.CurrentQuest, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, proximityGizmo.ActorSNO.Id);
 						try
 						{
 							trigger.questEvent.Execute(this.World); // launch a questEvent
-							this.World.Game.SideQuestProgress.GlobalQuestTriggers.Remove(proximityGizmo.ActorSNO.Id);
+							this.World.Game.SideQuestProgress.GlobalQuestTriggers.Remove((int)proximityGizmo.SNO);
 						}
 						catch (Exception e)
 						{
@@ -3131,7 +3129,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				while (NecroSkeletons.Count < 7)
 				{
-					NecromancerSkeleton_A Skeleton = new NecromancerSkeleton_A(this.World, 473147, this);
+					var Skeleton = new NecromancerSkeleton_A(this.World, ActorSno._p6_necro_commandskeletons_a, this);
 					Skeleton.Brain.DeActivate();
 					Skeleton.Scale = 1.2f;
 
@@ -3162,11 +3160,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 			if (EnableGolem || ActiveGolem != null)
 			{
+				var runeActorSno = RuneSelect(451537, ActorSno._p6_necro_revive_golem, ActorSno._p6_bonegolem, ActorSno._p6_bloodgolem, ActorSno._p6_consumefleshgolem, ActorSno._p6_decaygolem, ActorSno._p6_icegolem);
 				if (ActiveGolem != null)
 				{
-
-					if (ActiveGolem.ActorSNO.Id != RuneSelect(451537, 471947, 465239, 460042, 471619, 471646, 471647) ||
-						!this.SkillSet.HasSkill(451537))
+                    if (ActiveGolem.SNO != runeActorSno || !this.SkillSet.HasSkill(451537))
 					{
 						if (ActiveGolem.World != null)
 						{
@@ -3189,9 +3186,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					}
 					else
 					{
-						switch (RuneSelect(451537, 471947, 465239, 460042, 471619, 471646, 471647))
+						switch (runeActorSno)
 						{
-							case 471947:
+							case ActorSno._p6_necro_revive_golem:
 								var NGolem = new BaseGolem(this.World, this);
 								NGolem.Brain.DeActivate();
 								NGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3204,7 +3201,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								NGolem.Attributes.BroadcastChangedIfRevealed();
 								ActiveGolem = NGolem;
 								break;
-							case 471646:
+							case ActorSno._p6_consumefleshgolem:
 								var CFGolem = new ConsumeFleshGolem(this.World, this);
 								CFGolem.Brain.DeActivate();
 								CFGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3218,7 +3215,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								ActiveGolem = CFGolem;
 
 								break;
-							case 471647:
+							case ActorSno._p6_icegolem:
 								var IGolem = new IceGolem(this.World, this);
 								IGolem.Brain.DeActivate();
 								IGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3231,7 +3228,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								IGolem.Attributes.BroadcastChangedIfRevealed();
 								ActiveGolem = IGolem;
 								break;
-							case 465239:
+							case ActorSno._p6_bonegolem:
 								var BGolem = new BoneGolem(this.World, this);
 								BGolem.Brain.DeActivate();
 								BGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3244,7 +3241,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								BGolem.Attributes.BroadcastChangedIfRevealed();
 								ActiveGolem = BGolem;
 								break;
-							case 471619:
+							case ActorSno._p6_decaygolem:
 								var DGolem = new DecayGolem(this.World, this);
 								DGolem.Brain.DeActivate();
 								DGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3257,7 +3254,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								DGolem.Attributes.BroadcastChangedIfRevealed();
 								ActiveGolem = DGolem;
 								break;
-							case 460042:
+							case ActorSno._p6_bloodgolem:
 								var BlGolem = new BloodGolem(this.World, this);
 								BlGolem.Brain.DeActivate();
 								BlGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -4613,11 +4610,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public void CheckKillMonsterCriteria(int actorId, int type)
+		public void CheckKillMonsterCriteria(ActorSno actorSno, int type)
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.CheckKillMonsterCriteria(this.Toon.GameAccount.PersistentID, actorId, type, this.World.Game.IsHardcore);
+				ClientSystem.GameServer.GSBackend.CheckKillMonsterCriteria(this.Toon.GameAccount.PersistentID, (int)actorSno, type, this.World.Game.IsHardcore);
 			}
 			catch (Exception e)
 			{
@@ -5525,45 +5522,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public Actor SpawnNephalemBoss(World world)
 		{
-			#region Боссы
-			int[] BossSNOs = new int[]
-			{
-				358429, //X1_LR_Boss_MistressofPain 
-				358489, //X1_LR_Boss_Angel_Corrupt_A 
-				358614, //X1_LR_Boss_creepMob_A 
-				359094, //X1_LR_Boss_SkeletonSummoner_C 
-				359688, //X1_LR_Boss_Succubus_A 
-				360281, //X1_LR_Boss_Snakeman_Melee_Belial 
-				360636, //X1_LR_Boss_TerrorDemon_A 
-				434201, //P4_LR_Boss_Sandmonster_Turret 
-				343743, //x1_LR_Boss_SkeletonKing 
-				343751, //x1_LR_Boss_Gluttony 
-				343759, //x1_LR_Boss_Despair 
-				343767, //x1_LR_Boss_MalletDemon 
-				344119, //X1_LR_Boss_morluSpellcaster_Ice 
-				344389, //X1_LR_Boss_SandMonster 
-				345004, //X1_LR_Boss_morluSpellcaster_Fire 
-				346563, //X1_LR_Boss_DeathMaiden 
-				353517, //X1_LR_Boss_Secret_Cow 
-				353535, //X1_LR_Boss_Squigglet 
-				353823, //X1_LR_Boss_sniperAngel 
-				353874, //X1_LR_Boss_westmarchBrute 
-				354050, //X1_LR_Boss_Dark_Angel 
-				354144, //X1_LR_Boss_BigRed_Izual 
-				354652, //X1_LR_Boss_demonFlyerMega 
-				426943, //X1_LR_Boss_RatKing_A 
-				428323, //X1_LR_Boss_RatKing_A_UI 
-				429010, //X1_LR_Boss_TerrorDemon_A_BreathMinion 
-				357917, //x1_LR_Boss_Butcher 
-				358208, //X1_LR_Boss_ZoltunKulle 
-				360766, //X1_LR_Boss_Minion_shadowVermin_A 
-				360794, //X1_LR_Boss_Minion_TerrorDemon_Clone_C 
-				360327, //X1_LR_Boss_Minion_Swarm_A 
-				360329, //X1_LR_Boss_Minion_electricEel_B 
-			};
-			#endregion
-
-			Actor Boss = world.SpawnMonster(BossSNOs[RandomHelper.Next(0, BossSNOs.Length - 1)], this.Position);
+			var Boss = world.SpawnMonster(ActorSnoExtensions.nephalemPortalBosses[RandomHelper.Next(0, ActorSnoExtensions.nephalemPortalBosses.Length - 1)], this.Position);
 			Boss.Attributes[GameAttribute.Bounty_Objective] = true;
 			Boss.Attributes[GameAttribute.Is_Loot_Run_Boss] = true;
 			Boss.Attributes.BroadcastChangedIfRevealed();
@@ -5927,7 +5886,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			//Rangged Power - 30599
 			if (source == null) return;
 
-			var minion = new Minion(this.World, source.ActorSNO.Id, this, source.Tags, true);
+			var minion = new Minion(this.World, source.SNO, this, source.Tags, true);
 			minion.SetBrain(new MinionBrain(minion));
 			minion.Brain.DeActivate();
 			minion.WalkSpeed *= 4;
@@ -5953,7 +5912,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			minion.SetVisible(true);
 			minion.Hidden = false;
 
-			if (minion.ActorSNO.Id == 4580)
+			if (minion.SNO == ActorSno._leah)
 			{
 				(minion.Brain as MinionBrain).PresetPowers.Clear();
  				(minion.Brain as MinionBrain).AddPresetPower(30599);
@@ -5968,16 +5927,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public bool HaveFollower(int id)
+		public bool HaveFollower(ActorSno sno)
 		{
-			return this.Followers.ContainsValue(id);
+			return this.Followers.ContainsValue(sno);
 		}
 
-		public void DestroyFollower(int id)
+		public void DestroyFollower(ActorSno sno)
 		{
-			if (this.Followers.ContainsValue(id))
+			if (this.Followers.ContainsValue(sno))
 			{
-				var dynId = this.Followers.Where(x => x.Value == id).First().Key;
+				var dynId = this.Followers.Where(x => x.Value == sno).First().Key;
 				var actor = this.World.GetActorByGlobalId(dynId);
 				if (actor != null)
 					actor.Destroy();
@@ -5985,41 +5944,41 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public void SetFollowerIndex(int snoId)
+		public void SetFollowerIndex(ActorSno sno)
 		{
-			if (!this.HaveFollower(snoId))
+			if (!this.HaveFollower(sno))
 			{
 				for (int i = 1; i < 8; i++)
 					if (!_followerIndexes.ContainsKey(i))
 					{
-						_followerIndexes.Add(i, snoId);
+						_followerIndexes.Add(i, sno);
 						return;
 					}
 			}
 		}
 
-		public void FreeFollowerIndex(int snoId)
+		public void FreeFollowerIndex(ActorSno sno)
 		{
-			if (!this.HaveFollower(snoId))
+			if (!this.HaveFollower(sno))
 			{
-				_followerIndexes.Remove(this.FindFollowerIndex(snoId));
+				_followerIndexes.Remove(this.FindFollowerIndex(sno));
 			}
 		}
 
-		private Dictionary<int, int> _followerIndexes = new Dictionary<int, int>();
+		private Dictionary<int, ActorSno> _followerIndexes = new Dictionary<int, ActorSno>();
 
-		public int FindFollowerIndex(int snoId)
+		public int FindFollowerIndex(ActorSno sno)
 		{
-			if (this.HaveFollower(snoId))
+			if (this.HaveFollower(sno))
 			{
-				return _followerIndexes.Where(i => i.Value == snoId).FirstOrDefault().Key;
+				return _followerIndexes.Where(i => i.Value == sno).FirstOrDefault().Key;
 			}
 			else return 0;
 		}
 
-		public int CountFollowers(int snoId)
+		public int CountFollowers(ActorSno sno)
 		{
-			return this.Followers.Values.Where(f => f == snoId).Count();
+			return this.Followers.Values.Where(f => f == sno).Count();
 		}
 
 		public int CountAllFollowers()
@@ -6035,15 +5994,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.Followers.Remove(dynId);
 				if (actor != null)
 				{
-					this.FreeFollowerIndex(actor.ActorSNO.Id);
+					this.FreeFollowerIndex(actor.SNO);
 					actor.Destroy();
 				}
 			}
 		}
 
-		public void DestroyFollowersBySnoId(int snoId)
+		public void DestroyFollowersBySnoId(ActorSno sno)
 		{
-			var fol_list = this.Followers.Where(f => f.Value == snoId).Select(f => f.Key).ToList();
+			var fol_list = this.Followers.Where(f => f.Value == sno).Select(f => f.Key).ToList();
 			foreach (var fol in fol_list)
 				this.DestroyFollowerById(fol);
 		}

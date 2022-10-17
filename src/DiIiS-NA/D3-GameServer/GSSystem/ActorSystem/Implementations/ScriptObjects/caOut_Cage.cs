@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -29,17 +30,17 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-    [HandledSNO(3628)]
-    class caOut_Cage : LootContainer
+    [HandledSNO(ActorSno._caout_cage)]
+    class CaOut_Cage : LootContainer
 	{
 		
-		public caOut_Cage(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CaOut_Cage(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		
 		}
 
-		public override void OnTargeted(PlayerSystem.Player player, TargetMessage message)
+		public override void OnTargeted(Player player, TargetMessage message)
 		{
 
 			if (this.Attributes[GameAttribute.Disabled]) return;

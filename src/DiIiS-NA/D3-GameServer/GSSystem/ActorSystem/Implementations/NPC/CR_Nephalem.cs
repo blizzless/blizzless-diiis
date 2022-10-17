@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
@@ -19,11 +20,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-    [HandledSNO(470782)] //SNO - 470782, Name - P6_ChallengeRift_Nephalem
+    [HandledSNO(ActorSno._p6_challengerift_nephalem)] //SNO - 470782, Name - P6_ChallengeRift_Nephalem
     class CR_Nephalem : InteractiveNPC
     {
-        public CR_Nephalem(MapSystem.World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public CR_Nephalem(MapSystem.World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             Conversations.Clear();
             Conversations.Add(new Interactions.ConversationInteraction(471065));

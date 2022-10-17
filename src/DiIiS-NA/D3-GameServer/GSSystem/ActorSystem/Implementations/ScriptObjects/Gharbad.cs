@@ -8,14 +8,15 @@ using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(81068)]
+	[HandledSNO(ActorSno._gharbad_the_weak_ghost)]
 	public class Gharbad : InteractiveNPC
 	{
-		public Gharbad(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Gharbad(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.CollFlags = 0;
 			this.WalkSpeed = 0;
@@ -44,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void Resurrect()
 		{
-			this.World.SpawnMonster(81342, this.Position);
+			this.World.SpawnMonster(ActorSno._goatmutant_melee_a_unique_gharbad, this.Position);
 			this.Destroy();
 		}
 	}

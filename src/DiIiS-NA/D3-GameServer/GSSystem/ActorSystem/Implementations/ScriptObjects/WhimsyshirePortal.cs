@@ -8,16 +8,17 @@ using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(209083)]
+	[HandledSNO(ActorSno._g_portal_tentacle_trist)]
 	public class WhimsyshirePortal : Portal
 	{
 		private bool Opened = false;
 
-		public WhimsyshirePortal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public WhimsyshirePortal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 
 		}
@@ -37,7 +38,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			this.Opened = true;
 			foreach (var plr in this.World.Players.Values)
 				this.Reveal(plr);
-			this.World.GetActorBySNO(209133).Destroy();
+			this.World.GetActorBySNO(ActorSno._tentaclelord).Destroy();
 		}
 	}
 }

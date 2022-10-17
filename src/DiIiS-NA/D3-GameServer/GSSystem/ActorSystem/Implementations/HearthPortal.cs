@@ -32,8 +32,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public Player Owner = null;
 
-		public HearthPortal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public HearthPortal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			this.SetVisible(false);

@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -33,8 +34,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
     //[460042] [Actor] p6_BloodGolem
     public class BaseGolem : Minion
     {
-        public BaseGolem(MapSystem.World world, ActorSystem.Actor master)
-            : base(world, 471947, master, null)
+        public BaseGolem(World world, Actor master)
+            : base(world, ActorSno._p6_necro_revive_golem, master, null)
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
@@ -53,8 +54,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
     }
     public class ConsumeFleshGolem : Minion
     {
-        public ConsumeFleshGolem(MapSystem.World world, ActorSystem.Actor master)
-            : base(world, 471646, master, null)
+        public ConsumeFleshGolem(World world, Actor master)
+            : base(world, ActorSno._p6_consumefleshgolem, master, null)
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
@@ -73,7 +74,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
     }
     public class IceGolem : Minion
     {
-        public IceGolem(MapSystem.World world, ActorSystem.Actor master) : base(world, 471647, master, null)
+        public IceGolem(World world, Actor master)
+            : base(world, ActorSno._p6_icegolem, master, null)
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
@@ -92,7 +94,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
     }
     public class BoneGolem : Minion
     {
-        public BoneGolem(MapSystem.World world, ActorSystem.Actor master) : base(world, 465239, master, null)
+        public BoneGolem(World world, Actor master)
+            : base(world, ActorSno._p6_bonegolem, master, null)
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
@@ -110,7 +113,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
     }
     public class DecayGolem : Minion
     {
-        public DecayGolem(MapSystem.World world, ActorSystem.Actor master) : base(world, 471619, master, null)
+        public DecayGolem(World world, Actor master)
+            : base(world, ActorSno._p6_decaygolem, master, null)
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
@@ -129,7 +133,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
     }
     public class BloodGolem : Minion
     {
-        public BloodGolem(MapSystem.World world, ActorSystem.Actor master) : base(world, 460042, master, null)
+        public BloodGolem(World world, Actor master)
+            : base(world, ActorSno._p6_bloodgolem, master, null)
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.

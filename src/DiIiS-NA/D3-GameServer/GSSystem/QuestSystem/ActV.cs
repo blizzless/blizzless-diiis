@@ -60,7 +60,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			}
 			else if (actor != null)
 			{
-				foreach (var N in actor.World.GetActorsBySNO(actor.ActorSNO.Id))
+				foreach (var N in actor.World.GetActorsBySNO(actor.SNO))
 					if (N is InteractiveNPC)
 					{
 						NPC = N as InteractiveNPC;
@@ -99,7 +99,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk with Lorath Nahr
-					ListenKill(319442, 1, new LaunchConversation(320130));
+					ListenKill(ActorSno._x1_ghost_dark_introoverlook, 1, new LaunchConversation(320130));
 					ListenConversation(320130, new Advance());
 				})
 			});
@@ -126,13 +126,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         StartConversation(world, 311433);
 
 						//Delete fake giant door
-						if (world.GetActorBySNO(328008) != null)
-							world.Leave(world.GetActorBySNO(328008));
+						if (world.GetActorBySNO(ActorSno._x1_westm_door_giant_closed) != null)
+							world.Leave(world.GetActorBySNO(ActorSno._x1_westm_door_giant_closed));
 						//Delete Cadala from this location TODO: нужно найти анимации Кадалы с убийственной волной на монстров)
-						foreach (var cadal in world.GetActorsBySNO(311858))
+						foreach (var cadal in world.GetActorsBySNO(ActorSno._x1_westm_intro_deathangel))
 							world.Leave(cadal);
 					});
-                    var npc = world.GetActorBySNO(308377);
+                    var npc = world.GetActorBySNO(ActorSno._x1_npc_westmarch_introguy);
                     if (npc != null)
 					{
 						var introGuy = npc as InteractiveNPC;
@@ -155,7 +155,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find a5 hub
-					var npc = this.Game.GetWorld(WorldSno.x1_westm_intro).GetActorBySNO(308377);
+					var npc = this.Game.GetWorld(WorldSno.x1_westm_intro).GetActorBySNO(ActorSno._x1_npc_westmarch_introguy);
 					if (npc != null)
 					{
 						var introGuy = npc as InteractiveNPC;
@@ -164,7 +164,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						introGuy.Attributes.BroadcastChangedIfRevealed();
 
 					}
-					ListenInteract(309812, 1, new Advance());
+					ListenInteract(ActorSno._x1_westm_door_giant_iron, 1, new Advance());
 				})
 			});
 
@@ -181,17 +181,23 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					{
 						if (this.Game.CurrentQuest == 251355 && this.Game.CurrentStep == 14)
 						{
-							try { world.FindAt(316495, new Vector3D { X = 555.9f, Y = 403.47f, Z = 10.2f }, 5.0f).Destroy(); } catch { }
+							try { world.FindAt(ActorSno._x1_westm_door_cloister_locked, new Vector3D { X = 555.9f, Y = 403.47f, Z = 10.2f }, 5.0f).Destroy(); } catch { }
 						}
 					});
-					ListenKill(276309, 10, new Advance());
-					var Tyrael = world.ShowOnlyNumNPC(289293, 0) as ActorSystem.InteractiveNPC;
-					foreach (var general in world.GetActorsBySNO(303828)) { general.SetVisible(false); general.Hidden = true; } //x1_WestmHub_General
-					foreach (var general in world.GetActorsBySNO(364173)) { general.SetVisible(false); general.Hidden = true; } //x1_WestmHub_BSS_postChange
-					foreach (var general in world.GetActorsBySNO(175310)) { general.SetVisible(false); general.Hidden = true; } //PT_Mystic_NoVendor_NonGlobalFollower
-					foreach (var general in world.GetActorsBySNO(259252)) { general.SetVisible(false); general.Hidden = true; } // X1_WestmHub_angryman_Temp
-					foreach (var general in world.GetActorsBySNO(259256)) { general.SetVisible(false); general.Hidden = true; } //X1_WestmHub_grieving_Temp
-					var Lorath = world.ShowOnlyNumNPC(284530, 0) as ActorSystem.InteractiveNPC;
+					ListenKill(ActorSno._x1_skeleton_westmarch_a, 10, new Advance());
+					var Tyrael = world.ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as InteractiveNPC;
+					foreach (var general in world.GetActorsBySNO(
+						ActorSno._x1_westmhub_general,
+						ActorSno._x1_westmhub_bss_postchange,
+						ActorSno._pt_mystic_novendor_nonglobalfollower,
+						ActorSno._x1_westmhub_angryman_temp,
+						ActorSno._x1_westmhub_grieving_temp
+					)) 
+					{
+						general.SetVisible(false);
+						general.Hidden = true;
+					}
+					var Lorath = world.ShowOnlyNumNPC(ActorSno._x1_npc_lorathnahr, 0) as InteractiveNPC;
 
 
 				})
@@ -206,13 +212,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					var world = this.Game.GetWorld(WorldSno.x1_westm_intro);
 					//Delete Monsters
-					foreach (var skeleton in world.GetActorsBySNO(276309)) skeleton.Destroy(); //x1_Skeleton_Westmarch_A
-					foreach (var skeleton in world.GetActorsBySNO(309114)) skeleton.Destroy(); //x1_Ghost_Dark_A
-					foreach (var skeleton in world.GetActorsBySNO(282027)) skeleton.Destroy(); //x1_Shield_Skeleton_Westmarch_A
+					foreach (var skeleton in world.GetActorsBySNO(ActorSno._x1_skeleton_westmarch_a, ActorSno._x1_ghost_dark_a, ActorSno._x1_shield_skeleton_westmarch_a))
+						skeleton.Destroy();
 
 					//Talk to Tyrael
-					var Tyrael = world.ShowOnlyNumNPC(289293, 0) as ActorSystem.InteractiveNPC;
-					var Lorath = world.ShowOnlyNumNPC(284530, 0) as ActorSystem.InteractiveNPC;
+					var Tyrael = world.ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as InteractiveNPC;
+					var Lorath = world.ShowOnlyNumNPC(ActorSno._x1_npc_lorathnahr, 0) as InteractiveNPC;
 
 					AddQuestConversation(Tyrael, 252089);
 
@@ -222,7 +227,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 
 			this.Game.QuestManager.Quests[251355].Steps.Add(57, new QuestStep
-			{
+            {
 				Completed = false,
 				Saveable = false,
 				NextStep = 18,
@@ -230,18 +235,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//enter the church
 					var world = this.Game.GetWorld(WorldSno.x1_westm_intro);
-					var Tyrael = world.ShowOnlyNumNPC(289293, 0) as ActorSystem.InteractiveNPC;
+					var Tyrael = world.ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as InteractiveNPC;
 					Tyrael.Conversations.Clear();
 					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
 
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_intro, () =>
 					{
-						Open(world, 316548);
+                        Open(world, ActorSno._x1_westm_church_ext_door_a);
 					});
-					if (world.GetActorBySNO(316548) != null)
-						world.GetActorBySNO(316548).Destroy();
-					ListenTeleport(309413, new Advance());
+                    var door = world.GetActorBySNO(ActorSno._x1_westm_church_ext_door_a);
+                    if (door != null)
+                        door.Destroy();
+                    ListenTeleport(309413, new Advance());
 				})
 			});
 
@@ -253,7 +259,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Kill unique 273419
-					ListenKill(273419, 1, new AfterKillBoss());
+					ListenKill(ActorSno._x1_deathmaiden_unique_b, 1, new AfterKillBoss());
 				})
 			});
 
@@ -266,7 +272,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
 					UnlockTeleport(0);
-					var Tyrael = this.Game.GetWorld(WorldSno.x1_westmarch_hub).ShowOnlyNumNPC(289293, 0) as ActorSystem.InteractiveNPC;
+					var Tyrael = this.Game.GetWorld(WorldSno.x1_westmarch_hub).ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as ActorSystem.InteractiveNPC;
 					AddQuestConversation(Tyrael, 252100);
 					//ListenInteract(289293, 1, new LaunchConversation(252100));
 					ListenConversation(252100, new Advance());
@@ -281,7 +287,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//leave the church
-					var Tyrael = this.Game.GetWorld(WorldSno.x1_westmarch_hub).ShowOnlyNumNPC(289293, 0) as ActorSystem.InteractiveNPC;
+					var Tyrael = this.Game.GetWorld(WorldSno.x1_westmarch_hub).ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as ActorSystem.InteractiveNPC;
 					if (Tyrael != null)
 					{
 						Tyrael.Conversations.Clear();
@@ -329,18 +335,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_westmarch_hub, () =>
 					{
 						if (Game.CurrentQuest == 284683 && Game.CurrentStep == -1 || Game.CurrentQuest == 284683 && Game.CurrentStep == 47)
-                            ActiveArrow(this.Game.GetWorld(WorldSno.x1_westmarch_hub), 315793);
+                            ActiveArrow(this.Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_westm_door_cloister);
 					});
                     //Enter Westmarch Commons
                     ListenTeleport(261758, new BackToCath());
                     var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
 					// FIXME: incorrect snoId or possible code duplicate
-                    foreach (var Myst in world.GetActorsBySNO(339463)) //Mystic
+                    foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_enhanceevent)) //Mystic
 					{
 						Myst.Hidden = true;
 						Myst.SetVisible(false);
 					}
-					foreach (var Myst in world.GetActorsBySNO(339463)) //Mystic_EnchanceEvent
+					foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_enhanceevent)) //Mystic_EnchanceEvent
 					{
 						Myst.Hidden = true;
 						Myst.SetVisible(false);
@@ -357,7 +363,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
                     //find orbs
                     var world = this.Game.GetWorld(WorldSno.x1_westmarch_hub);
-                    var target = world.GetActorBySNO(315793, true);
+                    var target = world.GetActorBySNO(ActorSno._x1_westm_door_cloister, true);
                     DisableArrow(world, target);
                     ListenTeleport(338956, new BackToCath());
 
@@ -374,24 +380,24 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//destroy bodies
 					var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
 					UnlockTeleport(1);
-					foreach (var Myst in world.GetActorsBySNO(175310)) //Mystic_NonGlobalFollower
+					foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_novendor_nonglobalfollower)) //Mystic_NonGlobalFollower
 					{
 						Myst.Hidden = true;
 						Myst.SetVisible(false);
 					}
-					foreach (var Myst in world.GetActorsBySNO(339463)) //Mystic_EnchanceEvent
+					foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_enhanceevent)) //Mystic_EnchanceEvent
 					{
 						Myst.Hidden = true;
 						Myst.SetVisible(false);
 					}
-					ListenKill(316839, 4, new Advance());
+					ListenKill(ActorSno._x1_deathorb_bodypile, 4, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
 					{
 						
 						if (this.Game.CurrentQuest == 284683 && this.Game.CurrentStep == 57)
 						{
-							setActorOperable(world, 319396, false);
-							setActorOperable(world, 375106, false);
+							SetActorOperable(world, ActorSno._x1_deathmaiden_unique_deathorb_b, false);
+							SetActorOperable(world, ActorSno._x1_death_orb_monster, false);
 						}
 					});
 				})
@@ -407,9 +413,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//slay Drygha
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
 					{
-						setActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), 319396, true);
+						SetActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._x1_deathmaiden_unique_deathorb_b, true);
 					});
-					ListenKill(319396, 1, new Advance());
+					ListenKill(ActorSno._x1_deathmaiden_unique_deathorb_b, 1, new Advance());
 				})
 			});
 
@@ -423,9 +429,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//destroy orb
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
 					{
-						setActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), 375106, true);
+						SetActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._x1_death_orb_monster, true);
 					});
-					ListenKill(375106, 1, new Advance());
+					ListenKill(ActorSno._x1_death_orb_monster, 1, new Advance());
 				})
 			});
 
@@ -438,14 +444,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
 					//destroy effects
-					foreach (var act in world.GetActorsBySNO(316810)) act.Destroy();
-					foreach (var act in world.GetActorsBySNO(324508)) act.Destroy();
-					foreach (var Myst in world.GetActorsBySNO(175310)) //Mystic_NonGlobalFollower
-					{
-						Myst.Hidden = true;
-						Myst.SetVisible(false);
-					}
-					foreach (var Myst in world.GetActorsBySNO(339463)) //Mystic_EnchanceEvent
+					foreach (var act in world.GetActorsBySNO(ActorSno._x1_westmarch_cath_int_debriscenter_orbscenes, ActorSno._x1_death_orb_hp_proxy)) act.Destroy();
+					foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_novendor_nonglobalfollower, ActorSno._pt_mystic_enhanceevent))
 					{
 						Myst.Hidden = true;
 						Myst.SetVisible(false);
@@ -453,7 +453,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 
 					//check out pile
-					ListenInteract(360303, 1, new Advance());
+					ListenInteract(ActorSno._x1_westm_mysticcorpsepile, 1, new Advance());
 				})
 			});
 
@@ -470,9 +470,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						if (this.Game.CurrentQuest == 284683 && this.Game.CurrentStep == 30)
 						{
 							var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
-							var Mysts = world.GetActorsBySNO(61524);
+							var Mysts = world.GetActorsBySNO(ActorSno._pt_mystic_novendor);
 							if (Mysts.Count < 1)
-								Mysts.Add(world.SpawnMonster(61524, new Vector3D(385.6301f,289.3048f,-18.602905f)));
+								Mysts.Add(world.SpawnMonster(ActorSno._pt_mystic_novendor, new Vector3D(385.6301f,289.3048f,-18.602905f)));
 							//foreach (var Myst in World.GetActorsBySNO(175310))
 								;//175310
 								//StartConversation(this.Game.GetWorld(338891), 305750);
@@ -510,22 +510,22 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
 					{
 						var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
-						foreach (var Myst in world.GetActorsBySNO(175310)) //Mystic_NonGlobalFollower
+						foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_novendor_nonglobalfollower)) //Mystic_NonGlobalFollower
 						{
 							Myst.Hidden = true;
 							Myst.SetVisible(false);
 						} 
-						foreach (var Myst in world.GetActorsBySNO(339463)) //Mystic_EnchanceEvent
+						foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_enhanceevent)) //Mystic_EnchanceEvent
 						{
 							Myst.Hidden = true;
 							Myst.SetVisible(false);
 						}
-						foreach (var Myst in world.GetActorsBySNO(61524)) //PT_Mystic_NoVendor
+						foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_novendor)) //PT_Mystic_NoVendor
 						{
 							Myst.Hidden = true;
 							Myst.SetVisible(false);
 						}
-						foreach (var Malt in world.GetActorsBySNO(373456))
+						foreach (var Malt in world.GetActorsBySNO(ActorSno._x1_malthael_deathorbevent))
 						{
 							bool Activated = false;
 
@@ -537,8 +537,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 							Malt.Attributes[GameAttribute.Disabled] = !Activated;
 							Malt.Attributes[GameAttribute.Immunity] = !Activated;
 						}
-						Open(world, 319830);
-						AddFollower(world, 175310);
+						Open(world, ActorSno._x1_westm_door_gate);
+						AddFollower(world, ActorSno._pt_mystic_novendor_nonglobalfollower);
 					});
 					ListenTeleport(338946, new AdvanceWithNotify());
 				})
@@ -555,8 +555,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					ListenTeleport(339158, new AdvanceWithNotify());
 					if (!this.Game.Empty)
 					{
-						DestroyFollower(175310);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), 175310);
+						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
@@ -575,15 +575,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						if (this.Game.CurrentQuest == 284683 && this.Game.CurrentStep == 49)
 						{
 							var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow);
-							setActorOperable(world, 336383, false);
-							setActorOperable(world, 375111, false);
+							SetActorOperable(world, ActorSno._x1_deathmaiden_unique_deathorb_c, false);
+							SetActorOperable(world, ActorSno._x1_death_orb_master_monster, false);
 						}
 					});
-					ListenKill(316839, 6, new Advance());
+					ListenKill(ActorSno._x1_deathorb_bodypile, 6, new Advance());
 					if (!this.Game.Empty)
 					{
-						DestroyFollower(175310);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), 175310);
+						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
@@ -598,13 +598,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//slay guardian
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
 					{
-						setActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow), 336383, true);
+						SetActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow), ActorSno._x1_deathmaiden_unique_deathorb_c, true);
 					});
-					ListenKill(336383, 1, new Advance());
+					ListenKill(ActorSno._x1_deathmaiden_unique_deathorb_c, 1, new Advance());
 					if (!this.Game.Empty)
 					{
-						DestroyFollower(175310);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), 175310);
+						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
@@ -619,13 +619,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//destroy final orb
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
 					{
-						setActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow), 375111, true);
+						SetActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow), ActorSno._x1_death_orb_master_monster, true);
 					});
-					ListenKill(375111, 1, new Advance());
+					ListenKill(ActorSno._x1_death_orb_master_monster, 1, new Advance());
 					if (!this.Game.Empty)
 					{
-						DestroyFollower(175310);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), 175310);
+						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
@@ -638,12 +638,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Mystic
-					ListenProximity(175310, new LaunchConversation(305871));
+					ListenProximity(ActorSno._pt_mystic_novendor_nonglobalfollower, new LaunchConversation(305871));
 					ListenConversation(305871, new AdvanceWithNotify());
 					if (!this.Game.Empty)
 					{
-						DestroyFollower(175310);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), 175310);
+						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
@@ -667,7 +667,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 								plr.LoadCrafterData();
 							}
 						}
-					DestroyFollower(175310);
+					DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
 				})
 			});
 
@@ -720,7 +720,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					ListenTeleport(308487, new AdvanceWithNotify());
 					var Quest3Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][285098].Data;
 
-					ListenKillBonus(355667, 3, new SideTarget());
+					ListenKillBonus(ActorSno._x1_deathmaiden_unique_fire_a, 3, new SideTarget());
 				})
 			});
 
@@ -733,7 +733,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//kill Urzael
 					UnlockTeleport(3);
-					ListenKill(291368, 1, new Advance());
+					ListenKill(ActorSno._x1_urzael_boss, 1, new Advance());
 				})
 			});
 
@@ -747,11 +747,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//talk to Malthael spirit
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_urzael_arena, () =>
 					{
-						var malthael = this.Game.GetWorld(WorldSno.x1_urzael_arena).SpawnMonster(256248, new Vector3D { X = 97.65f, Y = 350.23f, Z = 0.1f });
+						var malthael = this.Game.GetWorld(WorldSno.x1_urzael_arena).SpawnMonster(ActorSno._x1_malthael, new Vector3D { X = 97.65f, Y = 350.23f, Z = 0.1f });
 						malthael.NotifyConversation(1);
 					});
 					this.Game.CurrentEncounter.activated = false;
-					ListenInteract(256248, 1, new LaunchConversation(274423));
+					ListenInteract(ActorSno._x1_malthael, 1, new LaunchConversation(274423));
 					ListenConversation(274423, new Advance());
 				})
 			});
@@ -776,7 +776,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
-					ListenInteract(289293, 1, new LaunchConversation(283403));
+					ListenInteract(ActorSno._x1_tyrael_hurt, 1, new LaunchConversation(283403));
 					ListenConversation(283403, new AdvanceWithNotify());
 				})
 			});
@@ -838,9 +838,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						});
 					});
 
-                    ListenProximity(341337, new LaunchConversation(345820));
+                    ListenProximity(ActorSno._x1_spawner_bogmelee_adriaritual_burrow, new LaunchConversation(345820));
                     ListenConversation(345820, new AdvanceWithNotify());
-                    AddFollower(westmarchWorld, 284530);
+                    AddFollower(westmarchWorld, ActorSno._x1_npc_lorathnahr);
                     StartConversation(westmarchWorld, 305750);
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
 					{
@@ -861,7 +861,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 							IsPing = false,
 							PlayerUseFlags = 0
 						});
-                        setActorOperable(world, 340914, false);
+                        SetActorOperable(world, ActorSno._x1_catacombs_door_b, false);
 					});
 				})
 			});
@@ -876,12 +876,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//kill mobs
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
 					{
-						script = new WavedInvasion(new Vector3D { X = 101.62f, Y = 105.97f, Z = 0.1f }, 30f, new List<int> { 356157, 356160 }, 356380);
+						script = new WavedInvasion(
+							new Vector3D { X = 101.62f, Y = 105.97f, Z = 0.1f }, 
+							30f,
+							new List<ActorSno> { ActorSno._x1_bogfamily_melee_bogmonsterevent, ActorSno._x1_bogfamily_ranged_bogmonsterevent },
+							ActorSno._x1_bogfamily_brute_bogmonsterevent_unique
+						);
 						script.Execute(this.Game.GetWorld(WorldSno.x1_bog_adriaritual));
 					});
-					ListenKill(356380, 1, new Advance());
-					DestroyFollower(284530);
-					AddFollower(this.Game.GetWorld(WorldSno.x1_westmarch_hub), 284530);
+					ListenKill(ActorSno._x1_bogfamily_brute_bogmonsterevent_unique, 1, new Advance());
+					DestroyFollower(ActorSno._x1_npc_lorathnahr);
+					AddFollower(this.Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_npc_lorathnahr);
 				})
 			});
 
@@ -895,11 +900,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//find Nephalem Guidestone
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
 					{
-						Open(this.Game.GetWorld(WorldSno.x1_bog_adriaritual), 340914);
+						Open(this.Game.GetWorld(WorldSno.x1_bog_adriaritual), ActorSno._x1_catacombs_door_b);
 					});
-					ListenProximity(346878, new AdvanceWithNotify());
-					DestroyFollower(284530);
-					AddFollower(this.Game.GetWorld(WorldSno.x1_westmarch_hub), 284530);
+					ListenProximity(ActorSno._x1_bog_catacombsportal_beaconloc_first, new AdvanceWithNotify());
+					DestroyFollower(ActorSno._x1_npc_lorathnahr);
+					AddFollower(this.Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_npc_lorathnahr);
 				})
 			});
 
@@ -912,9 +917,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//use waystone
 					UnlockTeleport(4);
-					ListenInteract(346878, 1, new Advance());
-					DestroyFollower(284530);
-					AddFollower(this.Game.GetWorld(WorldSno.x1_westmarch_hub), 284530);
+					ListenInteract(ActorSno._x1_bog_catacombsportal_beaconloc_first, 1, new Advance());
+					DestroyFollower(ActorSno._x1_npc_lorathnahr);
+					AddFollower(this.Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_npc_lorathnahr);
 				})
 			});
 
@@ -929,7 +934,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					var world = this.Game.GetWorld(WorldSno.x1_bog_adriaritual);
 
 					Portal Dest = null;
-					foreach (Portal prtl in world.GetActorsBySNO(176007))
+					foreach (Portal prtl in world.GetActorsBySNO(ActorSno._g_portal_square_blue))
 						if (prtl.Destination.WorldSNO == (int)WorldSno.x1_catacombs_level01) Dest = prtl;
 
 					if (Dest != null)
@@ -965,7 +970,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					var world = this.Game.GetWorld(WorldSno.x1_bog_adriaritual);
 
 					Portal Dest = null;
-					foreach (Portal prtl in world.GetActorsBySNO(176007))
+					foreach (Portal prtl in world.GetActorsBySNO(ActorSno._g_portal_square_blue))
 						if (prtl.Destination.WorldSNO == (int)WorldSno.x1_catacombs_level01) Dest = prtl;
 
 					if (Dest != null)
@@ -1014,7 +1019,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//kill Adria
 					//UnlockTeleport(7); //hacky
-					ListenKill(279394, 1, new Advance());
+					ListenKill(ActorSno._x1_adria_boss, 1, new Advance());
 				})
 			});
 
@@ -1029,7 +1034,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					this.Game.CurrentEncounter.activated = false;
 					var world = this.Game.GetWorld(WorldSno.x1_adria_boss_arena_02);
 
-					foreach (var Myst in world.GetActorsBySNO(284530)) //284530
+					foreach (var Myst in world.GetActorsBySNO(ActorSno._x1_npc_lorathnahr)) //284530
 					{
 						AddQuestConversation(Myst, 260191);
 						(Myst as InteractiveNPC).Conversations.Clear();
@@ -1041,7 +1046,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_adria_boss_arena_02, () =>
 					{
-						world.GetActorBySNO(284530).NotifyConversation(1);
+						world.GetActorBySNO(ActorSno._x1_npc_lorathnahr).NotifyConversation(1);
 					});
 					this.Game.CurrentEncounter.activated = false;
 
@@ -1058,13 +1063,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
-					foreach (var Myst in this.Game.GetWorld(WorldSno.x1_adria_boss_arena_02).GetActorsBySNO(284530)) //284530
+					foreach (var Myst in this.Game.GetWorld(WorldSno.x1_adria_boss_arena_02).GetActorsBySNO(ActorSno._x1_npc_lorathnahr)) //284530
 					{
 						(Myst as InteractiveNPC).Conversations.Clear();
 						(Myst as InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 						(Myst as InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
 					}
-					ListenInteract(289293, 1, new LaunchConversation(274440));
+					ListenInteract(ActorSno._x1_tyrael_hurt, 1, new LaunchConversation(274440));
 					ListenConversation(274440, new Advance());
 				})
 			});
@@ -1116,7 +1121,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill reapers and Lamiel
-					ListenKill(348771, 1, new Advance());
+					ListenKill(ActorSno._x1_deathmaiden_unique_heaven, 1, new Advance());
 				})
 			});
 
@@ -1130,9 +1135,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//talk to Imperius
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_heaven_pandemonium_portal, () =>
 					{
-						this.Game.GetWorld(WorldSno.x1_heaven_pandemonium_portal).GetActorBySNO(368315).NotifyConversation(1);
+						this.Game.GetWorld(WorldSno.x1_heaven_pandemonium_portal).GetActorBySNO(ActorSno._x1_imperius_heaventopandgate).NotifyConversation(1);
 					});
-					ListenInteract(368315, 1, new LaunchConversation(361192));
+					ListenInteract(ActorSno._x1_imperius_heaventopandgate, 1, new LaunchConversation(361192));
 					ListenConversation(361192, new Advance());
 				})
 			});
@@ -1202,13 +1207,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
                     //reach Imperius
-                    ListenInteract(275409, 1, new LaunchConversation(361245));
+                    ListenInteract(ActorSno._x1_imperius, 1, new LaunchConversation(361245));
                     ListenConversation(361245, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_gateoverlook, () =>
 					{
                         var world = this.Game.GetWorld(WorldSno.x1_pand_ext_gateoverlook);
-                        if (world.GetActorBySNO(275409, true) != null)
-                            world.GetActorBySNO(275409, true).NotifyConversation(1);
+                        if (world.GetActorBySNO(ActorSno._x1_imperius, true) != null)
+                            world.GetActorBySNO(ActorSno._x1_imperius, true).NotifyConversation(1);
 					});
 				})
 			});
@@ -1221,7 +1226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//get to Siege Camp
-					ListenProximity(364231, new Advance());
+					ListenProximity(ActorSno._x1_pand_ext_imperiuscharge_towers_chain, new Advance());
 				})
 			});
 
@@ -1233,7 +1238,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//gather siege rune
-					ListenInteract(361364, 1, new Advance());
+					ListenInteract(ActorSno._x1_pandext_siegerune, 1, new Advance());
 				})
 			});
 
@@ -1245,14 +1250,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
                     //talk to Imperius
-                    ListenInteract(275409, 1, new LaunchConversation(361252));
+                    ListenInteract(ActorSno._x1_imperius, 1, new LaunchConversation(361252));
                     ListenConversation(361252, new LaunchConversation(361275));
                     ListenConversation(361275, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_gateoverlook, () =>
 					{
                         var world = this.Game.GetWorld(WorldSno.x1_pand_ext_gateoverlook);
-                        if (world.GetActorBySNO(275409, true) != null)
-                            world.GetActorBySNO(275409, true).NotifyConversation(1);
+                        if (world.GetActorBySNO(ActorSno._x1_imperius, true) != null)
+                            world.GetActorBySNO(ActorSno._x1_imperius, true).NotifyConversation(1);
 					});
 				})
 			});
@@ -1266,7 +1271,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//hunt for Siege Runes
 					UnlockTeleport(8);
-					ListenInteract(361364, 2, new Advance());
+					ListenInteract(ActorSno._x1_pandext_siegerune, 2, new Advance());
 				})
 			});
 
@@ -1290,7 +1295,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Kill Ram Defense Captain (Thilor)
-					ListenKill(338681, 1, new Advance());
+					ListenKill(ActorSno._x1_bigred_chronodemon_burned_ramguard, 1, new Advance());
 				})
 			});
 
@@ -1302,11 +1307,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
-					ListenInteract(290323, 1, new LaunchConversation(346540));
+					ListenInteract(ActorSno._x1_tyrael_pandext, 1, new LaunchConversation(346540));
 					ListenConversation(346540, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_batteringram_entrance_a, () =>
 					{
-						this.Game.GetWorld(WorldSno.x1_pand_ext_batteringram_entrance_a).GetActorBySNO(290323).NotifyConversation(1);
+						this.Game.GetWorld(WorldSno.x1_pand_ext_batteringram_entrance_a).GetActorBySNO(ActorSno._x1_tyrael_pandext).NotifyConversation(1);
 					});
 				})
 			});
@@ -1338,34 +1343,38 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 
 			this.Game.QuestManager.Quests[269552].Steps.Add(32, new QuestStep
-			{
+            {
 				Completed = false,
 				Saveable = true,
 				NextStep = 25,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					//Board Ram
-					UnlockTeleport(9);
-					ListenTeleport(295228, new Advance());
+                    //Board Ram
+                    UnlockTeleport(9);
+                    ListenTeleport(295228, new Advance());
 					var RamWorld = this.Game.GetWorld(WorldSno.x1_pand_batteringram);
-					RamWorld.GetActorBySNO(376686).Hidden = true;
-					RamWorld.GetActorBySNO(376686).SetVisible(false);
-					RamWorld.GetActorBySNO(345259).Hidden = true;
-					RamWorld.GetActorBySNO(345259).SetVisible(false);
-					RamWorld.GetActorBySNO(323353).Hidden = true;
-					RamWorld.GetActorBySNO(323353).SetVisible(false);
+                    var backgroundActor = RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background_static);
+                    backgroundActor.Hidden = true;
+                    backgroundActor.SetVisible(false);
+                    var activationActor = RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_activation);
+                    activationActor.Hidden = true;
+                    activationActor.SetVisible(false);
+                    var knockbackActor = RamWorld.GetActorBySNO(ActorSno._x1_pand_ext_ram_knockback);
+                    knockbackActor.Hidden = true;
+                    knockbackActor.SetVisible(false);
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
-						RamWorld.GetActorBySNO(176002).SetVisible(false);
+                        var portal = RamWorld.GetActorBySNO(ActorSno._g_portal_archtall_blue);
+                        portal.SetVisible(false);
 						foreach (var plr in this.Game.Players.Values)
 						{
-							RamWorld.GetActorBySNO(323353).Unreveal(plr);
-							RamWorld.GetActorBySNO(345259).Unreveal(plr);
-							RamWorld.GetActorBySNO(376686).Unreveal(plr);
-							RamWorld.GetActorBySNO(176002).Unreveal(plr);
+                            knockbackActor.Unreveal(plr);
+                            activationActor.Unreveal(plr);
+                            backgroundActor.Unreveal(plr);
+                            portal.Unreveal(plr);
 						}
 						if (this.Game.CurrentQuest == 269552)
-							RamWorld.GetActorBySNO(295438).PlayActionAnimation(299978);
+							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).PlayActionAnimation(299978);
 					});
 					
 					
@@ -1381,10 +1390,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//breach phase
-					ListenKill(340920, 2, new Advance());
+					ListenKill(ActorSno._x1_westmarchranged_b, 2, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
-						setActorVisible(this.Game.GetWorld(WorldSno.x1_pand_batteringram), 358946, false);
+						SetActorVisible(this.Game.GetWorld(WorldSno.x1_pand_batteringram), ActorSno._x1_westmarchbrute_batteringramboss, false);
 					});
 				})
 			});
@@ -1397,11 +1406,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Fight Ram Boss
-					ListenKill(358946, 1, new Advance());
+					ListenKill(ActorSno._x1_westmarchbrute_batteringramboss, 1, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
 						if (this.Game.CurrentQuest == 269552)
-							setActorVisible(this.Game.GetWorld(WorldSno.x1_pand_batteringram), 358946, true);
+							SetActorVisible(this.Game.GetWorld(WorldSno.x1_pand_batteringram), ActorSno._x1_westmarchbrute_batteringramboss, true);
 					});
 				})
 			});
@@ -1427,13 +1436,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					});
 					//После волны - Удар 2!
 					//{ 70192 = 334747} //Удар 2 (есть обломки)
-					ListenKill(360242, 1, new SecondWaveRam());
+					ListenKill(ActorSno._x1_leaperangel_a_fortressunique, 1, new SecondWaveRam());
 					//После волны - Удар 2!
 					//{ 70192 = 334747} //Удар 2 (есть обломки)
-					ListenKill(360243, 1, new ThirdWaveRam());
+					ListenKill(ActorSno._x1_sniperangel_a_fortressunique, 1, new ThirdWaveRam());
 					//Последняя война - Удар 3, пробиваем дыру.
 					//{ 70208 = 334748} //Удар 3 (с пробитием)
-					ListenKill(360245, 1, new Babah());
+					ListenKill(ActorSno._x1_westmarchbrute_c_fortressunique, 1, new Babah());
 				})
 			});
 
@@ -1451,16 +1460,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					ListenTeleport(271234, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
-						RamWorld.GetActorBySNO(176002).SetVisible(true);
+						RamWorld.GetActorBySNO(ActorSno._g_portal_archtall_blue).SetVisible(true);
 						foreach (var plr in this.Game.Players.Values)
 						{
-							RamWorld.GetActorBySNO(176002).Reveal(plr);
+							RamWorld.GetActorBySNO(ActorSno._g_portal_archtall_blue).Reveal(plr);
 						}
 						if (this.Game.CurrentQuest != 269552)
-							RamWorld.GetActorBySNO(295438).SetIdleAnimation(360069);
+							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).SetIdleAnimation(360069);
 						//RamWorld.GetActorBySNO(295438).PlayActionAnimation(299978); 
 						//Open(this.Game.GetWorld(295225), 345259);
-						Open(RamWorld, 295438);
+						Open(RamWorld, ActorSno._x1_pand_batteringram_background);
 					});
 				})
 			});
@@ -1502,14 +1511,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//FortressIntroTyrael
 					var world = this.Game.GetWorld(WorldSno.x1_fortress_level_01);
 
-					AddQuestConversation(world.GetActorBySNO(6353), 302646);
+					AddQuestConversation(world.GetActorBySNO(ActorSno._tyrael), 302646);
                     //ListenProximity(6353, new LaunchConversation(302646));
                     ListenConversation(302646, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_fortress_level_01, () =>
 					{
 						if (this.Game.CurrentQuest == 273408 && this.Game.CurrentStep == 30)
                         {
-                            world.GetActorBySNO(6353).NotifyConversation(1);
+                            world.GetActorBySNO(ActorSno._tyrael).NotifyConversation(1);
                         }
                     });
 				})
@@ -1523,16 +1532,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Spirit Well 1
-					RemoveConversations(this.Game.GetWorld(WorldSno.x1_fortress_level_01).GetActorBySNO(6353));
+					RemoveConversations(this.Game.GetWorld(WorldSno.x1_fortress_level_01).GetActorBySNO(ActorSno._tyrael));
 					UnlockTeleport(10);
-					ListenInteract(308737, 1, new LaunchConversation(335174));
-					ListenInteract(314802, 1, new LaunchConversation(336672));
-					ListenInteract(319402, 1, new LaunchConversation(336674));
-					ListenInteract(314804, 1, new LaunchConversation(336676));
-					ListenInteract(314806, 1, new LaunchConversation(336678));
-					ListenInteract(314817, 1, new LaunchConversation(336680));
-					ListenInteract(314792, 1, new LaunchConversation(336682));
-					ListenInteract(473887, 1, new LaunchConversation(469534)); //x1_fortress_SpiritLevel1_Necromancer
+					ListenInteract(ActorSno._x1_fortress_spiritbarbarian, 1, new LaunchConversation(335174));
+					ListenInteract(ActorSno._x1_fortress_spiritcrusadermmaster, 1, new LaunchConversation(336672));
+					ListenInteract(ActorSno._x1_fortress_spiritcrusaderfmaster, 1, new LaunchConversation(336674));
+					ListenInteract(ActorSno._x1_fortress_spiritdemonhunter, 1, new LaunchConversation(336676));
+					ListenInteract(ActorSno._x1_fortress_spiritmonkpatriarch, 1, new LaunchConversation(336678));
+					ListenInteract(ActorSno._x1_fortress_spiritwitchdoctor, 1, new LaunchConversation(336680));
+					ListenInteract(ActorSno._x1_fortress_spiritwizard, 1, new LaunchConversation(336682));
+					ListenInteract(ActorSno._x1_fortress_spiritnecromancerordan, 1, new LaunchConversation(469534)); //x1_fortress_SpiritLevel1_Necromancer
 
 					ListenConversation(335174, new LaunchConversation(308752));
 					ListenConversation(336672, new LaunchConversation(314906));
@@ -1574,10 +1583,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Kill Death Maiden
-					ListenKill(360241, 1, new Advance());
+					ListenKill(ActorSno._x1_deathmaiden_pand_a_fortressunique, 1, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_fortress_level_02, () =>
 					{
-						setActorOperable(this.Game.GetWorld(WorldSno.x1_fortress_level_02), 347276, false);
+						SetActorOperable(this.Game.GetWorld(WorldSno.x1_fortress_level_02), ActorSno._x1_fortress_soul_grinder_a, false);
 					});
 				})
 			});
@@ -1591,10 +1600,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//Destroy Soul Prison
 					UnlockTeleport(11);
-					ListenKill(347276, 1, new Advance());
+					ListenKill(ActorSno._x1_fortress_soul_grinder_a, 1, new Advance());
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_fortress_level_02, () =>
 					{
-						setActorOperable(this.Game.GetWorld(WorldSno.x1_fortress_level_02), 347276, true);
+						SetActorOperable(this.Game.GetWorld(WorldSno.x1_fortress_level_02), ActorSno._x1_fortress_soul_grinder_a, true);
 					});
 				})
 			});
@@ -1619,7 +1628,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill Malthael
-					ListenKill(297730, 1, new Advance());
+					ListenKill(ActorSno._x1_malthael_boss, 1, new Advance());
 				})
 			});
 
@@ -1632,7 +1641,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//Success
 					this.Game.CurrentEncounter.activated = false;
-					ListenProximity(6353, new LaunchConversation(351334));
+					ListenProximity(ActorSno._tyrael, new LaunchConversation(351334));
 					ListenConversation(351334, new Advance());
 					if (this.Game.IsHardcore)
 					{
@@ -1654,7 +1663,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					}
 					this.Game.AddOnLoadWorldAction(WorldSno.x1_malthael_boss_arena, () =>
 					{
-						this.Game.GetWorld(WorldSno.x1_malthael_boss_arena).GetActorBySNO(6353).NotifyConversation(1);
+						this.Game.GetWorld(WorldSno.x1_malthael_boss_arena).GetActorBySNO(ActorSno._tyrael).NotifyConversation(1);
 					});
 				})
 			});

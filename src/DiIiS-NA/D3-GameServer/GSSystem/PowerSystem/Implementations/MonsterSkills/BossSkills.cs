@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
@@ -27,7 +28,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (User.GetActorsInRange(80f).Count < 100)
 				for (int i = 0; i < 3; i++)
 				{
-					var monster = ActorFactory.Create(User.World, (this.User as Monster).SNOSummons[0], new TagMap());
+					var monster = ActorFactory.Create(User.World, (ActorSno)(this.User as Monster).SNOSummons[0], new TagMap());
 					monster.Scale = 1.35f;
 					monster.EnterWorld(RandomDirection(Target.Position, 3, 10));
 					this.World.BuffManager.AddBuff(User, monster, new Implementations.SummonedBuff());
@@ -149,7 +150,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			var projectile = new Projectile(this, 3528, User.Position);
+			var projectile = new Projectile(this, ActorSno._butcher_hook, User.Position);
 			projectile.Scale = 3f;
 			projectile.Timeout = WaitSeconds(0.5f);
 			projectile.OnCollision = (hit) =>
@@ -184,7 +185,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			Vector3D inFrontOfUser = PowerMath.TranslateDirection2D(User.Position, spawnPosition, User.Position, 5f);
 
-			var return_proj = new Projectile(this, 3528, new Vector3D(spawnPosition.X, spawnPosition.Y, User.Position.Z));
+			var return_proj = new Projectile(this, ActorSno._butcher_hook, new Vector3D(spawnPosition.X, spawnPosition.Y, User.Position.Z));
 			return_proj.Scale = 3f;
 			return_proj.DestroyOnArrival = true;
 			return_proj.LaunchArc(inFrontOfUser, 1f, -0.03f);
@@ -220,7 +221,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (User.GetActorsInRange(80f).Count < 20)
 				for (int i = 0; i < 2; i++)
 				{
-					var monster = ActorFactory.Create(User.World, 178512, new TagMap());
+					var monster = ActorFactory.Create(User.World, ActorSno._triune_berserker_maghdapet, new TagMap());
 					monster.Scale = 1.35f;
 					monster.EnterWorld(RandomDirection(User.Position, 3, 10));
 					monster.Unstuck();
@@ -289,7 +290,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			var GroundSpot = SpawnProxy(User.Position);
-			var cloud = SpawnEffect(93837, User.Position, 0, WaitSeconds(30f));
+			var cloud = SpawnEffect(ActorSno._gluttony_gascloud_proxy, User.Position, 0, WaitSeconds(30f));
 			cloud.UpdateDelay = 1f;
 			cloud.OnUpdate = () =>
 			{
@@ -308,7 +309,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (User.GetActorsInRange(80f).Count < 20)
 				for (int i = 0; i < 2; i++)
 				{
-					var monster = ActorFactory.Create(User.World, 211303, new TagMap());
+					var monster = ActorFactory.Create(User.World, ActorSno._gluttony_slime, new TagMap());
 					monster.Scale = 1.35f;
 					monster.EnterWorld(RandomDirection(Target.Position, 3, 10));
 					monster.Unstuck();
@@ -331,7 +332,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			User.PlayActionAnimation(128843);
 			yield return WaitSeconds(0.5f);
 			//User.PlayEffectGroup(196518);
-			var Point = SpawnEffect(226350, TargetPosition, 0, WaitSeconds(1.5f));
+			var Point = SpawnEffect(ActorSno._diablo_ringoffire_damagearea, TargetPosition, 0, WaitSeconds(1.5f));
 			Point.PlayEffectGroup(226351);
 			yield return WaitSeconds(0.5f);
 			AttackPayload attack = new AttackPayload(this);
@@ -373,7 +374,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			EffectActor eff = null;
 			public override void Init()
 			{
-				eff = SpawnEffect(220210, Target.Position, 0, WaitSeconds(4.5f));
+				eff = SpawnEffect(ActorSno._a4dun_diablo_bone_prison_untargetable, Target.Position, 0, WaitSeconds(4.5f));
 				Timeout = WaitSeconds(3f);
 			}
 			public override bool Apply()

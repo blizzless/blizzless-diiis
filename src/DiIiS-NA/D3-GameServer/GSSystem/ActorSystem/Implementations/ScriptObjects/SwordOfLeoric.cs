@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
@@ -27,11 +28,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(163449)]
+	[HandledSNO(ActorSno._trdun_crypt_deathoftheking_sword_clickable)]
 	public class SwordOfLeoric : Gizmo
 	{
-		public SwordOfLeoric(World world, int snoId, TagMap tags) :
-			base(world, snoId, tags)
+		public SwordOfLeoric(World world, ActorSno sno, TagMap tags) :
+			base(world, sno, tags)
 		{
 			//163449 - Sword Leoric
 			//220219 - Point to Spawn Ghost Leoric 
@@ -47,16 +48,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			var GhostLeoricPoint = player.World.GetActorBySNO(220219).Position;
-			var GhostKingtsSpawners = player.World.GetActorsBySNO(220218);
+			var GhostLeoricPoint = player.World.GetActorBySNO(ActorSno._spawner_leoric_dokevent).Position;
+			var GhostKingtsSpawners = player.World.GetActorsBySNO(ActorSno._spawner_ghostknight_dokevent);
 			//Спауним Дух Леорика
 			List<Actor> GhostKnights = new List<Actor>() { };
 			//Спауним Духов Рыцарей
 			for (int i = 0; i < 4; i++)
-				GhostKnights.Add(player.World.SpawnMonster(4182, GhostKingtsSpawners[i].Position));
+				GhostKnights.Add(player.World.SpawnMonster(ActorSno._ghostknight2, GhostKingtsSpawners[i].Position));
 
-			var LeoricGhost = player.World.SpawnMonster(5365, GhostLeoricPoint);
-			var LachdananGhost = player.World.SpawnMonster(4183, GhostKingtsSpawners[4].Position);
+			var LeoricGhost = player.World.SpawnMonster(ActorSno._skeletonking_leoricghost, GhostLeoricPoint);
+			var LachdananGhost = player.World.SpawnMonster(ActorSno._ghostknight3, GhostKingtsSpawners[4].Position);
 
 			LachdananGhost.Move(this.Position, MovementHelpers.GetFacingAngle(LeoricGhost, LachdananGhost));
 			LachdananGhost.Move(this.Position, MovementHelpers.GetFacingAngle(LachdananGhost, this.Position));
@@ -107,7 +108,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			Attributes[GameAttribute.Immunity] = !status;
 			Attributes.BroadcastChangedIfRevealed();
 		}
-		private bool StartConversation(MapSystem.World world, Int32 conversationId)
+		private bool StartConversation(World world, Int32 conversationId)
 		{
 			foreach (var player in world.Players)
 				player.Value.Conversations.StartConversation(conversationId);

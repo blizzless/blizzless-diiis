@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -8,11 +9,11 @@ using DiIiS_NA.GameServer.MessageSystem;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
     
-    [HandledSNO(454066)]
+    [HandledSNO(ActorSno._p6_necro_corpse_flesh)]
     class NecromancerFlesh : Gizmo
     {
-        public NecromancerFlesh(MapSystem.World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public NecromancerFlesh(MapSystem.World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             this.Field2 = 16;//16;
             this.Field7 = 0x00000001;

@@ -62,8 +62,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public int ImportantConversationSNO = -1;
 		public int SideQuestSNOConv = -1;
 		public int ForceConversationSNO = -1;
-		public InteractiveNPC(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public InteractiveNPC(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = true; //second param - playerIndex
 			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 1] = true;
@@ -100,8 +100,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override bool Reveal(Player player)
 		{
-			if (this.ActorSNO.Id == 81609) return false;
-			if (this.ActorSNO.Id == 114622 && this.World.SNO == WorldSno.trout_town && this.World.Game.CurrentAct != 3000) return false;
+			if (this.SNO == ActorSno._a1_uniquevendor_armorer) return false;
+			if (this.SNO == ActorSno._tyrael_heaven && this.World.SNO == WorldSno.trout_town && this.World.Game.CurrentAct != 3000) return false;
 			return base.Reveal(player);
 		}
 
@@ -185,7 +185,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				Attributes.BroadcastChangedIfRevealed();
 			}
-			if (this.ActorSNO.Id == 114622 && this.Tags.ContainsKey(MarkerKeys.QuestRange) && this.Tags[MarkerKeys.QuestRange].Id == 312431) //TyraelBountyTurnin
+			if (this.SNO == ActorSno._tyrael_heaven && this.Tags.ContainsKey(MarkerKeys.QuestRange) && this.Tags[MarkerKeys.QuestRange].Id == 312431) //TyraelBountyTurnin
 			{
 				bool active =
 					this.World.Game.CurrentSideQuest == 356988 ||
@@ -249,21 +249,21 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
 			if (ConversationList != null)
-				Logger.Trace(" (OnTargeted) the npc has dynID {0} and Actor snoId {1}, ConversationList - {2} ", DynamicID(player), ActorSNO.Id, Tags[MarkerKeys.ConversationList].Id);
+				Logger.Trace(" (OnTargeted) the npc has dynID {0} and Actor snoId {1}, ConversationList - {2} ", DynamicID(player), SNO, Tags[MarkerKeys.ConversationList].Id);
 			else
-				Logger.Trace(" (OnTargeted) the npc has dynID {0} and Actor snoId {1}, ", DynamicID(player), ActorSNO.Id);
+				Logger.Trace(" (OnTargeted) the npc has dynID {0} and Actor snoId {1}, ", DynamicID(player), SNO);
 
 			player.SelectedNPC = this;
 			if (!OverridedConv)
 				UpdateConversationList();
 
-			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey(this.ActorSNO.Id))
+			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)this.SNO))
 			{
-				var trigger = this.World.Game.QuestProgress.QuestTriggers[this.ActorSNO.Id];
+				var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 				{
-					this.World.Game.QuestProgress.UpdateCounter(this.ActorSNO.Id);
-					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[this.ActorSNO.Id].counter)
+					this.World.Game.QuestProgress.UpdateCounter((int)this.SNO);
+					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO].counter)
 						try
 						{
 							trigger.questEvent.Execute(this.World); // launch a questEvent

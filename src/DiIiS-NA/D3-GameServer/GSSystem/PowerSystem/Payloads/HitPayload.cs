@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -455,7 +456,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						if (mstr.SkillSet.HasPassive(209041) && (mn is CorpseSpider || mn is CorpseSpiderQueen))
 							mstr.World.BuffManager.AddBuff(mstr, mstr, new VisionQuestBuff());
 
-						if (mn.ActorSNO.Id == 173827)
+						if (mn.SNO == ActorSno._dh_companion_spider)
 							if (!this.Context.Target.World.BuffManager.HasBuff<Companion.SpiderWebbedDebuff>(this.Context.Target))
 								this.Context.Target.World.BuffManager.AddBuff(this.Context.Target, this.Context.Target, new Companion.SpiderWebbedDebuff());
 

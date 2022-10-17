@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -17,11 +18,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(275752)] //HighScoringZone
+	[HandledSNO(ActorSno._pvp_murderball_highscoringzone)] //HighScoringZone
 	public class PVPSafeZone : Monster
 	{
-		public PVPSafeZone(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public PVPSafeZone(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Scale = 1.5f;
 			this.Field2 = 0x8;

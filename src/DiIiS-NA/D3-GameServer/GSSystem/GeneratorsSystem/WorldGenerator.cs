@@ -72,6 +72,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 	public class WorldGenerator
 	{
 		static readonly Logger Logger = LogManager.CreateLogger();
+		private static readonly ActorSno[] d1ModeHiddenActors = new ActorSno[]
+		{
+			ActorSno._x1_mysticintro_npc,
+			ActorSno._tristramfemale,
+			ActorSno._a1_uniquevendor_armorer,
+			ActorSno._x1_lore_mysticnotes,
+			ActorSno._templarnpc_imprisoned,
+			ActorSno._adventurer_d_templarintrounique,
+			ActorSno._x1_catacombs_jeweler,
+			ActorSno._waypoint,
+		};
 
 		public Game Game { get; set; }
 
@@ -378,7 +389,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			//world.LevelAreasData = levelAreas;
 
 			if (worldSNO == WorldSno.a1trdun_level05_templar)
-				world.SpawnMonster(6442, new Vector3D { X = 700.67f, Y = 580.128f, Z = 0.1f });
+				world.SpawnMonster(ActorSno._waypoint, new Vector3D { X = 700.67f, Y = 580.128f, Z = 0.1f });
 
 			try
 			{
@@ -394,44 +405,46 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			switch (worldSNO)
 			{
 				case WorldSno.x1_pand_ext_2_battlefields: //x1_pand_ext_2_battlefields
-					RandomSpawnInWorldWithLevelArea(world, 361364);
-					RandomSpawnInWorldWithLevelArea(world, 361364);
+					RandomSpawnInWorldWithLevelArea(world, ActorSno._x1_pandext_siegerune);
+					RandomSpawnInWorldWithLevelArea(world, ActorSno._x1_pandext_siegerune);
 					break;
 				case WorldSno.x1_westm_zone_03:
-					RandomSpawnInWorldWithLevelArea(world, 355667);
-					RandomSpawnInWorldWithLevelArea(world, 355667);
-					RandomSpawnInWorldWithLevelArea(world, 355667);
+					RandomSpawnInWorldWithLevelArea(world, ActorSno._x1_deathmaiden_unique_fire_a);
+					RandomSpawnInWorldWithLevelArea(world, ActorSno._x1_deathmaiden_unique_fire_a);
+					RandomSpawnInWorldWithLevelArea(world, ActorSno._x1_deathmaiden_unique_fire_a);
 					break;
 				case WorldSno.trdun_leoric_level03: //Установка портала на третий этаж Залов Агонии рядом с входом к Мяснику.
 					Vector3D Scene0Pos = world.GetSceneBySnoId(78824).Position;
-					world.SpawnMonster(6442, new Vector3D(Scene0Pos.X + 149.0907f, Scene0Pos.Y + 106.7075f, Scene0Pos.Z));
+					world.SpawnMonster(ActorSno._waypoint, new Vector3D(Scene0Pos.X + 149.0907f, Scene0Pos.Y + 106.7075f, Scene0Pos.Z));
 					break;
 				case WorldSno.x1_westm_graveyard_deathorb:
 					FilterWaypoints(world);
 					break;
 				case WorldSno.x1_lr_tileset_hexmaze:
-					foreach (var actor in world.GetActorsBySNO(310965)) actor.Destroy(); //X1_Pand_HexMaze_EN_Lore_Sister1_Chest
-					foreach (var actor in world.GetActorsBySNO(310967)) actor.Destroy(); //X1_Pand_HexMaze_EN_Lore_Sister2_Chest
-					foreach (var actor in world.GetActorsBySNO(310970)) actor.Destroy(); //X1_Pand_HexMaze_EN_Lore_Sister3_Chest
-					foreach (var actor in world.GetActorsBySNO(307480)) actor.Destroy(); //X1_Pand_HexMaze_EN_Enchantress
+					foreach (var actor in world.GetActorsBySNO(
+						ActorSno._x1_pand_hexmaze_en_lore_sister1_chest,
+						ActorSno._x1_pand_hexmaze_en_lore_sister2_chest,
+						ActorSno._x1_pand_hexmaze_en_lore_sister3_chest,
+						ActorSno._x1_pand_hexmaze_en_enchantress
+						)) actor.Destroy();
 					break;
 				case WorldSno.trout_town: //Упоротый наёмник =)
-					var Templar = world.GetActorBySNO(4538);
-					var hasmalth = world.GetActorBySNO(274457);
+					var Templar = world.GetActorBySNO(ActorSno._templar);
+					var hasmalth = world.GetActorBySNO(ActorSno._x1_malthael_npc);
 
 					if (hasmalth == null)
 					{
-						ActorSystem.Implementations.Hirelings.MalthaelHireling malthaelHire = new ActorSystem.Implementations.Hirelings.MalthaelHireling(world, 365908, Templar.Tags);
+						ActorSystem.Implementations.Hirelings.MalthaelHireling malthaelHire = new ActorSystem.Implementations.Hirelings.MalthaelHireling(world, ActorSno._x1_malthael_npc_nocollision, Templar.Tags);
 						malthaelHire.RotationAxis = new Vector3D(0f, 0f, 0.4313562f);
 						malthaelHire.RotationW = 0.9021817f;
 						malthaelHire.Attributes[GameAttribute.Team_Override] = 2;
 						malthaelHire.EnterWorld(new Vector3D(3017.266f, 2851.986f, 24.04533f));
 					}
-					foreach (var door in world.GetActorsBySNO(136291))
+					foreach (var door in world.GetActorsBySNO(ActorSno._house_door_trout_newtristram))
 						door.Destroy();
 					if (this.Game.CurrentAct == 3000)
 					{
-						var TownDoor = world.GetActorBySNO(90419);
+						var TownDoor = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
 						TownDoor.Attributes[GameAttribute.Team_Override] = 2;
 						TownDoor.Attributes[GameAttribute.Untargetable] = true;
 						TownDoor.Attributes[GameAttribute.NPC_Is_Operatable] = false;
@@ -443,26 +456,28 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					break;
 				case WorldSno.a1trdun_level04: //2 уровень собора
-					foreach (var actor in world.GetActorsBySNO(256728))
+					foreach (var actor in world.GetActorsBySNO(ActorSno._g_portal_townportal_red))
 					{
 						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
 				case WorldSno.a1trdun_level06: //4 уровень собора
-					foreach (var actor in world.GetActorsBySNO(256728))
+					foreach (var actor in world.GetActorsBySNO(ActorSno._g_portal_townportal_red))
 					{
 						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
 				case WorldSno.a1trdun_level05_templar: //Лишние NPC в соборе (3 уровень)
-					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_NPC_
-					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
-					foreach (var actor in world.GetActorsBySNO(84542)) actor.Destroy(); //OmniNPC_Tristram_Male_E
-					foreach (var actor in world.GetActorsBySNO(249262)) actor.Destroy(); //x1_Lore_MysticNotes
-					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
-					foreach (var actor in world.GetActorsBySNO(256728))
+					foreach (var actor in world.GetActorsBySNO(
+						ActorSno._x1_mysticintro_npc,
+						ActorSno._tristramfemale,
+						ActorSno._omninpc_tristram_male_e,
+						ActorSno._x1_lore_mysticnotes,
+						ActorSno._a1_uniquevendor_armorer
+						)) actor.Destroy();
+					foreach (var actor in world.GetActorsBySNO(ActorSno._g_portal_townportal_red))
 					{
 						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
 						actor.Destroy(); //g_Portal_TownPortal_Red
@@ -471,10 +486,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 				case WorldSno.a2dun_swr_swr_to_oasis_level01: //Убиваем ненужный портал в локации если игра не в режиме приключений
 					if (this.Game.CurrentAct != 3000)
-						foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy();
+						foreach (var wayp in world.GetActorsBySNO(ActorSno._waypoint)) wayp.Destroy();
 					break;
 				case WorldSno.a2dun_zolt_head_random01: //Убираем кровь кула
-					foreach (var act in world.GetActorsBySNO(213859)) act.Destroy();
+					foreach (var act in world.GetActorsBySNO(ActorSno._a2dun_zolt_blood_container_02)) act.Destroy();
 					break;
 				case WorldSno.a2dun_aqd_special_01: //Главный водосток. Убираем лишние порталы.
 					foreach (var port in world.Actors.Values)
@@ -484,20 +499,20 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					break;
 				case WorldSno.a3dun_keep_level04: //Убиваем ненужный портал в локации если игра не в режиме приключений
 					if (this.Game.CurrentAct != 3000)
-						foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy();
+						foreach (var wayp in world.GetActorsBySNO(ActorSno._waypoint)) wayp.Destroy();
 					break;
 				#region Убиваем все порталы в демонические разломы на первом этаже садов(теперь и на втором этаже), а то чет дохера их), создавать будет скрипт уничтожения скверны. Добалвяем голос Дьябло на несколько участков
 				case WorldSno.a4dun_garden_of_hope_01: //1 Этаж садов
-					foreach (var HellPortal in world.GetActorsBySNO(224890))
+					foreach (var HellPortal in world.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal))
 						HellPortal.Destroy();
 					break;
 				case WorldSno.a4dun_garden_of_hope_random: //2 Этаж садов
-					foreach (var HellPortal in world.GetActorsBySNO(224890))
+					foreach (var HellPortal in world.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal))
 						HellPortal.Destroy();
 					break;
                 #endregion
 				case WorldSno.a4dun_spire_level_00:
-					var LeahGhost = world.SpawnMonster(196905, new Vector3D(570f, 570f, 0.1f)) as InteractiveNPC;
+					var LeahGhost = world.SpawnMonster(ActorSno._a4dun_aspect_ghost_07, new Vector3D(570f, 570f, 0.1f)) as InteractiveNPC;
 					LeahGhost.Conversations.Clear();
 					LeahGhost.Conversations.Add(new ConversationInteraction(198600));
 					LeahGhost.Attributes[GameAttribute.Conversation_Icon, 0] = 6;
@@ -505,25 +520,25 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					break;
 					//428f, 836f, -20.3f
 				case WorldSno.a4dun_spire_level_01:
-					var ZoltunGhost = world.SpawnMonster(196900, new Vector3D(428f, 836f, -2f)) as InteractiveNPC;
+					var ZoltunGhost = world.SpawnMonster(ActorSno._a4dun_aspect_ghost_02, new Vector3D(428f, 836f, -2f)) as InteractiveNPC;
 					ZoltunGhost.Conversations.Clear();
 					ZoltunGhost.Conversations.Add(new ConversationInteraction(198402));
 					ZoltunGhost.Attributes[GameAttribute.Conversation_Icon, 0] = 6;
 					ZoltunGhost.Attributes.BroadcastChangedIfRevealed();
 					break;
 				case WorldSno.a3dun_ruins_frost_city_a_02:
-					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy();
+					foreach (var wayp in world.GetActorsBySNO(ActorSno._waypoint)) wayp.Destroy();
 					break;
 				case WorldSno.p43_ad_oldtristram:
-					foreach (var wayp in world.GetActorsBySNO(108466)) wayp.Destroy();
+					foreach (var wayp in world.GetActorsBySNO(ActorSno._trout_oldtristram_exit_gate)) wayp.Destroy();
 					break;
 				case WorldSno.x1_tristram_adventure_mode_hub:
 					
 					//Отображаем только одного продавца
-					world.ShowOnlyNumNPC(178396, 0);
+					world.ShowOnlyNumNPC(ActorSno._a1_uniquevendor_miner_intown_01, 0);
 					//Отображаем только одного мистика
-					world.ShowOnlyNumNPC(56948, 1);
-					var Door = world.GetActorBySNO(90419);
+					world.ShowOnlyNumNPC(ActorSno._pt_mystic, 1);
+					var Door = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
 					Door.Attributes[GameAttribute.Team_Override] = 2;
 					Door.Attributes[GameAttribute.Untargetable] = true;
 					Door.Attributes[GameAttribute.NPC_Is_Operatable] = false;
@@ -534,114 +549,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					Door.Attributes.BroadcastChangedIfRevealed();
 					break;
 				case WorldSno.p43_ad_cathedral_level_01: //1 этаж собора (Режим D1)
-					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
-					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
-					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
-					foreach (var actor in world.GetActorsBySNO(249262)) actor.Destroy(); //x1_lore_MysticNotes
-					foreach (var actor in world.GetActorsBySNO(104813)) actor.Destroy(); //TemplarNPC_Imprisoned
-					foreach (var actor in world.GetActorsBySNO(86624)) actor.Destroy(); //Adventurer_D_TemplarIntroUnique
-					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy(); //Waypoint
-					foreach (var actor in world.GetActorsBySNO(256728))
-					{
-						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
-						actor.Destroy(); //g_Portal_TownPortal_Red
-					}
-
-					break;
 				case WorldSno.p43_ad_cathedral_level_02: //2 этаж собора (Режим D1)
-					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
-					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
-					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
-					foreach (var actor in world.GetActorsBySNO(249262)) actor.Destroy(); //x1_lore_MysticNotes
-					foreach (var actor in world.GetActorsBySNO(104813)) actor.Destroy(); //TemplarNPC_Imprisoned
-					foreach (var actor in world.GetActorsBySNO(86624)) actor.Destroy(); //Adventurer_D_TemplarIntroUnique
-					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy(); //Waypoint
-					foreach (var actor in world.GetActorsBySNO(256728))
-					{
-						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
-						actor.Destroy(); //g_Portal_TownPortal_Red
-					}
-					break;
 				case WorldSno.p43_ad_cathedral_level_03: //3 этаж собора (Режим D1)
-					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
-					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
-					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
-					foreach (var actor in world.GetActorsBySNO(249262)) actor.Destroy(); //x1_lore_MysticNotes
-					foreach (var actor in world.GetActorsBySNO(104813)) actor.Destroy(); //TemplarNPC_Imprisoned
-					foreach (var actor in world.GetActorsBySNO(86624)) actor.Destroy(); //Adventurer_D_TemplarIntroUnique
-					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy(); //Waypoint
-					foreach (var actor in world.GetActorsBySNO(256728))
-					{
-						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
-						actor.Destroy(); //g_Portal_TownPortal_Red
-					}
-					break;
 				case WorldSno.p43_ad_cathedral_level_04: //4 этаж собора (Режим D1)
-					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
-					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
-					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
-					foreach (var actor in world.GetActorsBySNO(249262)) actor.Destroy(); //x1_lore_MysticNotes
-					foreach (var actor in world.GetActorsBySNO(104813)) actor.Destroy(); //TemplarNPC_Imprisoned
-					foreach (var actor in world.GetActorsBySNO(86624)) actor.Destroy(); //Adventurer_D_TemplarIntroUnique
-					foreach (var actor in world.GetActorsBySNO(362478)) actor.Destroy(); //x1_Catacombs_Jeweler
-					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy(); //Waypoint
-					foreach (var actor in world.GetActorsBySNO(256728))
-					{
-						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
-						actor.Destroy(); //g_Portal_TownPortal_Red
-					}
-					break;
 				case WorldSno.p43_ad_catacombs_level_05: //5 этаж собора (Режим D1)
-					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
-					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
-					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
-					foreach (var actor in world.GetActorsBySNO(249262)) actor.Destroy(); //x1_lore_MysticNotes
-					foreach (var actor in world.GetActorsBySNO(104813)) actor.Destroy(); //TemplarNPC_Imprisoned
-					foreach (var actor in world.GetActorsBySNO(362478)) actor.Destroy(); //x1_Catacombs_Jeweler
-					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy(); //Waypoint
-					foreach (var actor in world.GetActorsBySNO(256728))
-					{
-						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
-						actor.Destroy(); //g_Portal_TownPortal_Red
-					}
-					break;
 				case WorldSno.p43_ad_catacombs_level_06: //6 этаж собора (Режим D1)
-					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
-					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
-					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
-					foreach (var actor in world.GetActorsBySNO(249262)) actor.Destroy(); //x1_lore_MysticNotes
-					foreach (var actor in world.GetActorsBySNO(104813)) actor.Destroy(); //TemplarNPC_Imprisoned
-					foreach (var actor in world.GetActorsBySNO(362478)) actor.Destroy(); //x1_Catacombs_Jeweler
-					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy(); //Waypoint
-					foreach (var actor in world.GetActorsBySNO(256728))
-					{
-						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
-						actor.Destroy(); //g_Portal_TownPortal_Red
-					}
-					break;
 				case WorldSno.p43_ad_catacombs_level_07: //7 этаж собора (Режим D1)
-					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
-					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
-					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
-					foreach (var actor in world.GetActorsBySNO(249262)) actor.Destroy(); //x1_lore_MysticNotes
-					foreach (var actor in world.GetActorsBySNO(104813)) actor.Destroy(); //TemplarNPC_Imprisoned
-					foreach (var actor in world.GetActorsBySNO(362478)) actor.Destroy(); //x1_Catacombs_Jeweler
-					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy(); //Waypoint
-					foreach (var actor in world.GetActorsBySNO(256728))
-					{
-						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
-						actor.Destroy(); //g_Portal_TownPortal_Red
-					}
-					break;
 				case WorldSno.p43_ad_catacombs_level_08: //8 этаж собора (Режим D1)
-					foreach (var actor in world.GetActorsBySNO(249214)) actor.Destroy(); //x1_mysticIntro_NPC
-					foreach (var actor in world.GetActorsBySNO(51346)) actor.Destroy(); //TristramFemale
-					foreach (var actor in world.GetActorsBySNO(81609)) actor.Destroy(); //{[Actor] [Type: Monster] SNOId:81609 GlobalId: 1014803624 Position: x:807.75 y:996.75 z:0 Name: A1_UniqueVendor_Armorer}
-					foreach (var actor in world.GetActorsBySNO(249262)) actor.Destroy(); //x1_lore_MysticNotes
-					foreach (var actor in world.GetActorsBySNO(104813)) actor.Destroy(); //TemplarNPC_Imprisoned
-					foreach (var actor in world.GetActorsBySNO(362478)) actor.Destroy(); //x1_Catacombs_Jeweler
-					foreach (var wayp in world.GetActorsBySNO(6442)) wayp.Destroy(); //Waypoint
-					foreach (var actor in world.GetActorsBySNO(256728))
+					foreach (var actor in world.GetActorsBySNO(d1ModeHiddenActors)) actor.Destroy();
+					foreach (var actor in world.GetActorsBySNO(ActorSno._g_portal_townportal_red))
 					{
 						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
 						actor.Destroy(); //g_Portal_TownPortal_Red
@@ -650,19 +566,25 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			}
 			#endregion
 			#region Глобал патч при генерации
-			foreach (var oldp in world.GetActorsBySNO(345935)) { oldp.Destroy(); }
-			foreach (var oldp in world.GetActorsBySNO(396751)) { oldp.Destroy(); }
-			foreach (var oldp in world.GetActorsBySNO(408511)) { oldp.Destroy(); }
-			foreach (var oldp in world.GetActorsBySNO(166389)) { foreach(var plr in world.Game.Players.Values) world.SpawnGold(oldp, plr); oldp.Destroy(); }
-			foreach (var oldp in world.GetActorsBySNO(404043)) { oldp.Destroy(); }//сломанные мосты
+			foreach (var oldp in world.GetActorsBySNO(
+				ActorSno._x1_openworld_lootrunportal,
+				ActorSno._x1_openworld_tiered_rifts_portal,
+				ActorSno._x1_openworld_tiered_rifts_challenge_portal,
+				ActorSno._x1_westm_bridge_scoundrel
+				)) 
+			{ 
+				oldp.Destroy();
+			}
+			foreach (var oldp in world.GetActorsBySNO(ActorSno._placedgold)) { foreach(var plr in world.Game.Players.Values) world.SpawnGold(oldp, plr); oldp.Destroy(); }
 																				  
-			if(world.SNO != WorldSno.a1trdun_level05_templar) foreach (var oldp in world.GetActorsBySNO(408511)) { oldp.Destroy(); }//109209 - Костяные стены из собора
+			if(world.SNO != WorldSno.a1trdun_level05_templar) 
+				foreach (var oldp in world.GetActorsBySNO(ActorSno._x1_openworld_tiered_rifts_challenge_portal)) { oldp.Destroy(); }//109209 - Костяные стены из собора
 			#endregion
 
 			return world;
 		}
 
-		public void RandomSpawnInWorldWithLevelArea(World world, int MonsterID, int LevelArea = -1)
+		public void RandomSpawnInWorldWithLevelArea(World world, ActorSno monsterSno, int LevelArea = -1)
 		{
 			List<Scene> Scenes = world.Scenes.Values.ToList();
 			if (LevelArea != -1) Scenes = Scenes.Where(sc => sc.Specification.SNOLevelAreas[0] == LevelArea && !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
@@ -677,12 +599,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				if (world.CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 					break;
 			}
-			world.SpawnMonster(MonsterID, SP);
+			world.SpawnMonster(monsterSno, SP);
 		}
 
 		public void FilterWaypoints(World world, int SceneSNO = -1)
 		{
-			var waypoints = world.GetActorsBySNO(6442);
+			var waypoints = world.GetActorsBySNO(ActorSno._waypoint);
 			if (SceneSNO != -1) waypoints = waypoints.Where(wp => wp.CurrentScene.SceneSNO.Id == SceneSNO).ToList();
 
 			if (waypoints.Count > 1)
@@ -2405,7 +2327,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				{
 					var handle_chest = new SNOHandle(96993); //leg chest
 					if (handle_chest == null) continue;
-					var golden_chest = loadActor(handle_chest, gizmoLocations[FastRandom.Instance.Next(0, gizmoLocations.Count - 1)], world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle_chest.Target).TagMap);
+					var golden_chest = LoadActor(handle_chest, gizmoLocations[FastRandom.Instance.Next(0, gizmoLocations.Count - 1)], world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle_chest.Target).TagMap);
 					if (golden_chest > 0)
 						(world.GetActorByGlobalId(golden_chest) as LegendaryChest).ChestActive = true;
 				}
@@ -2446,7 +2368,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						}
 
-						var uniq = loadActor(
+						var uniq = LoadActor(
 							randomUnique,
 							new PRTransform
 							{
@@ -2543,7 +2465,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						}
 
-						var uniq = loadActor(
+						var uniq = LoadActor(
 							randomUnique,
 							new PRTransform
 							{
@@ -2657,7 +2579,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						{
 							if (n == 0 || FastRandom.Instance.NextDouble() < 0.85)
 							{
-								uint actor = loadActor(
+								uint actor = LoadActor(
 								(n == 0 ? (FastRandom.Instance.NextDouble() < 0.5 ? meleeMonsterHandle : rangedMonsterHandle) : meleeMonsterHandle),
 									new PRTransform
 									{
@@ -2729,7 +2651,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							{
 								if (n == 0 || FastRandom.Instance.NextDouble() < 0.85)
 								{
-									uint actor = loadActor(
+									uint actor = LoadActor(
 										championHandle,
 										new PRTransform
 										{
@@ -2762,38 +2684,37 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		}
 
 		//TODO: Move this out as loading actors can happen even after world was generated
-		public uint loadActor(SNOHandle actorHandle, PRTransform location, World world, TagMap tagMap, MonsterType monsterType = MonsterType.Default, int groupId = 0)
+		public uint LoadActor(SNOHandle actorHandle, PRTransform location, World world, TagMap tagMap, MonsterType monsterType = MonsterType.Default, int groupId = 0)
 		{
-			if (world.QuadTree.Query<Waypoint>(new DiIiS_NA.GameServer.Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 60f)).Count > 0 ||
-				world.QuadTree.Query<Portal>(new DiIiS_NA.GameServer.Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 5f)).Count > 0)
+			var actorSno = (ActorSno)actorHandle.Id; // TODO: maybe we can replace SNOHandle
+			if (world.QuadTree.Query<Waypoint>(new Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 60f)).Count > 0 ||
+				world.QuadTree.Query<Portal>(new Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 5f)).Count > 0)
 			{
-				Logger.Trace("Load actor {0} ignored - waypoint nearby.", actorHandle);
+				Logger.Trace("Load actor {0} ignored - waypoint nearby.", actorSno);
 				return 0;
 			}
 
-			var actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.ActorFactory.Create(world, actorHandle.Id, tagMap);
+			var actor = ActorFactory.Create(world, actorSno, tagMap);
 
-			if (monsterType == MonsterType.Champion)
-			{
-				actor = new Champion(world, actorHandle.Id, tagMap);
-				actor.GroupId = groupId;
-			}
-			else
-				if (monsterType == MonsterType.Elite)
-			{
-				actor = new Rare(world, actorHandle.Id, tagMap);
-				actor.GroupId = groupId;
-			}
-			else
-					if (monsterType == MonsterType.EliteMinion)
-			{
-				actor = new RareMinion(world, actorHandle.Id, tagMap);
-				actor.GroupId = groupId;
-			}
+            switch (monsterType)
+            {
+                case MonsterType.Champion:
+                    actor = new Champion(world, actorSno, tagMap);
+                    actor.GroupId = groupId;
+                    break;
+                case MonsterType.Elite:
+                    actor = new Rare(world, actorSno, tagMap);
+                    actor.GroupId = groupId;
+                    break;
+                case MonsterType.EliteMinion:
+                    actor = new RareMinion(world, actorSno, tagMap);
+                    actor.GroupId = groupId;
+                    break;
+            }
 
-			if (actor == null)
+            if (actor == null)
 			{
-				if (actorHandle.Id != -1)
+				if (actorSno != ActorSno.__NONE)
 					Logger.Warn("ActorFactory did not load actor {0}", actorHandle);
 				return 0;
 			}
@@ -2806,28 +2727,33 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 		public void LazyLoadActor(SNOHandle actorHandle, PRTransform location, World world, TagMap tagMap, MonsterType monsterType = MonsterType.Default)
 		{
+			var actorSno = (ActorSno)actorHandle.Id; // TODO: maybe we can replace SNOHandle
 			if (world.QuadTree.Query<Waypoint>(new DiIiS_NA.GameServer.Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 60f)).Count > 0 ||
 				world.QuadTree.Query<Portal>(new DiIiS_NA.GameServer.Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 40f)).Count > 0)
 			{
-				Logger.Trace("Load actor {0} ignored - waypoint nearby.", actorHandle);
+				Logger.Trace("Load actor {0} ignored - waypoint nearby.", actorSno);
 				return;
 			}
 
-			ActorFactory.LazyCreate(world, actorHandle.Id, tagMap, location.Vector3D, ((actor, spawn_pos) =>
+			ActorFactory.LazyCreate(world, actorSno, tagMap, location.Vector3D, ((actor, spawn_pos) =>
 			{
-				if (monsterType == MonsterType.Champion)
-					actor = new Champion(world, actorHandle.Id, tagMap);
-				else
-					if (monsterType == MonsterType.Elite)
-					actor = new Rare(world, actorHandle.Id, tagMap);
-				else
-						if (monsterType == MonsterType.EliteMinion)
-					actor = new RareMinion(world, actorHandle.Id, tagMap);
+                switch (monsterType)
+                {
+                    case MonsterType.Champion:
+                        actor = new Champion(world, actorSno, tagMap);
+                        break;
+                    case MonsterType.Elite:
+                        actor = new Rare(world, actorSno, tagMap);
+                        break;
+                    case MonsterType.EliteMinion:
+                        actor = new RareMinion(world, actorSno, tagMap);
+                        break;
+                }
 
-				if (actor == null)
+                if (actor == null)
 				{
-					if (actorHandle.Id != -1)
-						Logger.Warn("ActorFactory did not load actor {0}", actorHandle);
+					if (actorSno != ActorSno.__NONE)
+						Logger.Warn("ActorFactory did not load actor {0}", actorSno);
 				}
 				else
 				{

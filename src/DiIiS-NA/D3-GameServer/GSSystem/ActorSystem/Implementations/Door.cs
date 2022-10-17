@@ -28,13 +28,13 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(175810)]
+	[HandledSNO(ActorSno._caout_stingingwinds_khamsin_gate)]
 	class Door : Gizmo
 	{
 		public bool isOpened = false;
 		public Portal NearestPortal = null;
-		public Door(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Door(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			var Portals = GetObjectsInRange<Portal>(10f);
 			if (Portals.Count > 0)
@@ -49,14 +49,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override bool Reveal(Player player)
 		{
-			if (this.ActorSNO.Id == 167185) return false;
-			if (this.ActorSNO.Id == 207615 && this.World.SNO != WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //dakab door
-			if (this.ActorSNO.Id == 153836 && this.World.SNO == WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //not dakab door
+			if (this.SNO == ActorSno._trout_cultists_summoning_portal_b) return false;
+			if (this.SNO == ActorSno._a2dun_aqd_godhead_door_largepuzzle && this.World.SNO != WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //dakab door
+			if (this.SNO == ActorSno._a2dun_aqd_godhead_door && this.World.SNO == WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //not dakab door
 
-			if (this.ActorSNO.Id == 220337) //Treasure Room door
+			if (this.SNO == ActorSno._a2dun_zolt_random_portal_timed) //Treasure Room door
 				this.isOpened = true;
 
-			if (this.ActorSNO.Id == 178161 && (float)DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.3f) //Mysterious Cave door
+			if (this.SNO == ActorSno._caout_oasis_mine_entrance_a && (float)DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.3f) //Mysterious Cave door
 				this.isOpened = true;
 
 			if (!base.Reveal(player))

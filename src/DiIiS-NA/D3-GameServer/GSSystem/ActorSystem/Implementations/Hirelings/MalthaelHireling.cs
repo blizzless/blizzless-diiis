@@ -10,18 +10,19 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 {
     public class MalthaelHireling : Hireling
     {
-        public MalthaelHireling(MapSystem.World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public MalthaelHireling(MapSystem.World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             //Brain = new AISystem.Brains.HirelingBrain(this);
-            mainSNO = 365908;
-            hirelingSNO = 274457;
-            proxySNO = 0x0002F1AC;
+            mainSNO = ActorSno._x1_malthael_npc_nocollision;
+            hirelingSNO = ActorSno._x1_malthael_npc;
+            proxySNO = ActorSno._hireling_templar_proxy;
             skillKit = 484941;
             hirelingGBID = StringHashHelper.HashItemName("Templar");
             this.Attributes[GameAttribute.Hireling_Class] = 0;
@@ -29,9 +30,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
             this.Attributes[GameAttribute.Team_Override] = 2;
         }
 
-		public override Hireling CreateHireling(MapSystem.World world, int snoId, TagMap tags)
+		public override Hireling CreateHireling(MapSystem.World world, ActorSno sno, TagMap tags)
 		{
-			return new MalthaelHireling(world, snoId, tags);
+			return new MalthaelHireling(world, sno, tags);
 		}
 
 		public void SetSkill(Player player, int SkillSNOId)

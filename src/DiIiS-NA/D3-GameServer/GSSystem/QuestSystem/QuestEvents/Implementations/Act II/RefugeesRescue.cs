@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 //Blizzless Project 2022 
 using System.Linq;
@@ -22,10 +23,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
             System.Threading.Tasks.Task.Run(() => 
 			{
 				while ((world.Game.QuestProgress as ActII).refugees < 8)//plr.HaveFollower(201583))
-					if (plr.HaveFollower(201583))
+					if (plr.HaveFollower(ActorSno._caldeumpoor_male_f_ambient))
 					{
 
-						plr.DestroyFollower(201583);
+						plr.DestroyFollower(ActorSno._caldeumpoor_male_f_ambient);
 						(world.Game.QuestProgress as ActII).refugees++;
 
 						foreach (var player in world.Game.Players.Values)
@@ -43,10 +44,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 				while (!Active)
 					foreach (var act in plr.GetActorsInRange(10f))
-						if (act.ActorSNO.Id == 217709)
+						if (act.SNO == ActorSno._g_portal_circle_blue_evacuation)
 							Active = true;
 				
-				foreach (var fol in world.GetActorsBySNO(201583))
+				foreach (var fol in world.GetActorsBySNO(ActorSno._caldeumpoor_male_f_ambient))
 					fol.Destroy();
 				world.Game.QuestManager.Advance();
 			}

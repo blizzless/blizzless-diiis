@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -25,11 +26,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(169025)]
+	[HandledSNO(ActorSno._a2dun_cald_belial_room_a_breakable_main)]
 	public class BelialRoom : Gizmo
 	{
-		public BelialRoom(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public BelialRoom(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			bool Activated = false;
 			this.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);

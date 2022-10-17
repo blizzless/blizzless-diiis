@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -13,13 +14,13 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(346878)]
+	[HandledSNO(ActorSno._x1_bog_catacombsportal_beaconloc_first)]
 	class A5BogBeacon : Gizmo
 	{
 		public bool isOpened = false;
 
-		public A5BogBeacon(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public A5BogBeacon(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 

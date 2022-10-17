@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
@@ -32,7 +33,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			var GroundSpot = SpawnProxy(User.Position);
-			var plague = SpawnEffect(108869, User.Position, 0, WaitSeconds(15f));
+			var plague = SpawnEffect(ActorSno._monsteraffix_plagued_endcloud, User.Position, 0, WaitSeconds(15f));
 			plague.UpdateDelay = 1f;
 			plague.OnUpdate = () =>
 			{
@@ -52,7 +53,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Target != null)
 			{
 				var GroundSpot = SpawnProxy(Target.Position);
-				var frostCluster = SpawnEffect(223675, GroundSpot.Position, 0, WaitSeconds(4f));
+				var frostCluster = SpawnEffect(ActorSno._monsteraffix_frozen_iceclusters, GroundSpot.Position, 0, WaitSeconds(4f));
 				frostCluster.UpdateDelay = 1f;
 				frostCluster.OnUpdate = () =>
 				{
@@ -60,7 +61,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				};
 				frostCluster.OnTimeout = () =>
 				{
-					SpawnEffect(402, GroundSpot.Position);
+					SpawnEffect(ActorSno._monsteraffix_frozen_deathexplosion_proxy, GroundSpot.Position);
 					WeaponDamage(GetEnemiesInRadius(GroundSpot.Position, 7f), 1.5f, DamageType.Cold);
 				};
 			}
@@ -114,7 +115,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Target != null)
 			{
 				var GroundSpot = SpawnProxy(Target.Position);
-				var aoe = SpawnEffect(84608, Target.Position, 0, WaitSeconds(12f));
+				var aoe = SpawnEffect(ActorSno._monsteraffix_desecrator_damage_aoe, Target.Position, 0, WaitSeconds(12f));
 				aoe.UpdateDelay = 1f;
 				aoe.OnUpdate = () =>
 				{
@@ -134,7 +135,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (Target != null)
 			{
-				SpawnEffect(226808, RandomDirection(Target.Position, 5f, 15f), -1, WaitSeconds(10f));
+				SpawnEffect(ActorSno._monsteraffix_waller_model, RandomDirection(Target.Position, 5f, 15f), -1, WaitSeconds(10f));
 			}
 			yield break;
 		}
@@ -340,10 +341,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					_damageTimer = WaitSeconds(_damageRate);
 					for (int n = 0; n < 5; ++n)
 					{
-						var proj = new Projectile(this, 176247, User.Position);
+						var proj = new Projectile(this, ActorSno._wizard_chargedbolt_projectile, User.Position);
 						proj.OnCollision = (hit) =>
 						{
-							SpawnEffect(176247, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 5f));
+							SpawnEffect(ActorSno._wizard_chargedbolt_projectile, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 5f));
 							WeaponDamage(hit, 0.2f, DamageType.Lightning);
 							proj.Destroy();
 						};

@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -19,8 +20,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	public class RareMinion : Monster
 	{
-		public RareMinion(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public RareMinion(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Hitpoints_Max] *= 3.0f;
 			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max];

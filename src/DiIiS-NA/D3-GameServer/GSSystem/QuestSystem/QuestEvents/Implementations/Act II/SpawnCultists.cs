@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using System;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -18,12 +19,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			if (world.Game.Empty) return;
 			//Logger.Trace("SpawnCultists event started");
 			StartConversation(world, 169360);
-			var spawner = world.GetActorBySNO(134797);
+			var spawner = world.GetActorBySNO(ActorSno._spawner_triune_cultist_c_immediately);
 			while (spawner != null)
 			{
-				world.SpawnMonster(6027, spawner.Position);
+				world.SpawnMonster(ActorSno._triunecultist_c, spawner.Position);
 				spawner.Destroy();
-				spawner = world.GetActorBySNO(134797);
+				spawner = world.GetActorBySNO(ActorSno._spawner_triune_cultist_c_immediately);
 			}
 		}
 

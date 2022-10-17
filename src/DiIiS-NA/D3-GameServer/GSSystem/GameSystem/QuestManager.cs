@@ -551,7 +551,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				if (trigger.Value.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 					foreach (var world in this.Game.Worlds)
 					{
-						var actors = world.GetActorsBySNO(trigger.Key).Where(d => d.Visible);
+						var actors = world.GetActorsBySNO((ActorSno)trigger.Key).Where(d => d.Visible);
 						Actor actor = null;
 						if (actors.Count() == 1) actor = actors.First();
 						if (actor != null)
@@ -606,7 +606,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			foreach (var bounty in this.Bounties.Where(b => !b.Finished && b.Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique))
 			{
-				var unique = player.World.GetActorsBySNO(bounty.Target).Where(u => !u.Dead).FirstOrDefault();
+				var unique = player.World.GetActorsBySNO((ActorSno)bounty.Target).Where(u => !u.Dead).FirstOrDefault();
 				if (unique == null) continue;
 				player.InGameClient.SendMessage(new MapMarkerInfoMessage
 				{
@@ -947,7 +947,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								if (this.QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 									break;
 							}
-							this.QuestManager.Game.GetWorld(world).SpawnMonster(GeneratorsSystem.SpawnGenerator.Spawns[this.LevelArea].melee[FastRandom.Instance.Next(GeneratorsSystem.SpawnGenerator.Spawns[this.LevelArea].melee.Count())], SP);
+							this.QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GeneratorsSystem.SpawnGenerator.Spawns[this.LevelArea].melee[FastRandom.Instance.Next(GeneratorsSystem.SpawnGenerator.Spawns[this.LevelArea].melee.Count())], SP);
 							MonsterCount++;
 						}
 					} //Нужен дополнительный спаун монстров, их мало
@@ -967,7 +967,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						});
 				}
 				if (!TargetSpawned)
-					if (this.QuestManager.Game.GetWorld(world).GetActorBySNO(this.Target) == null)
+					if (this.QuestManager.Game.GetWorld(world).GetActorBySNO((ActorSno)this.Target) == null)
 					{
 						List<MapSystem.Scene> Scenes = new List<MapSystem.Scene>();
 						foreach (var scene in this.QuestManager.Game.GetWorld(world).Scenes.Values)
@@ -977,15 +977,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 									Scenes.Add(scene);
 						}
 
-						Core.Types.Math.Vector3D SSV = Scenes[DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, Scenes.Count - 1)].Position;
+						Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count - 1)].Position;
 						Core.Types.Math.Vector3D SP = null;
 						while (true)
 						{
-							SP = new Core.Types.Math.Vector3D(SSV.X + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 240), SSV.Y + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 240), SSV.Z);
+							SP = new Core.Types.Math.Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
 							if (this.QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 								break;
 						}
-						this.QuestManager.Game.GetWorld(world).SpawnMonster(this.Target, SP);
+						this.QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)this.Target, SP);
 						TargetSpawned = true;
 					}
 

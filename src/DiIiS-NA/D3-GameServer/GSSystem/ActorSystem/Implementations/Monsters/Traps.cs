@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -20,11 +21,11 @@ using System.Threading.Tasks;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 {
 	//89578 GlobalId: 1015703058 Position: x:338 y:320.78137 z:-11.422008 Name: a1dun_leor_firewall1
-	[HandledSNO(89578)]
-	public class a1dun_firewall : Monster
+	[HandledSNO(ActorSno._a1dun_leor_firewall1, ActorSno._a1dun_leor_firewall2)]
+	public class A1dun_firewall : Monster
 	{
-		public a1dun_firewall(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public A1dun_firewall(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x8;
 			this.CollFlags = 0;

@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
@@ -20,23 +21,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		public override void Execute(MapSystem.World world)
 		{
 			//Убираем магду
-			world.GetActorBySNO(129345).Destroy();
+			world.GetActorBySNO(ActorSno._maghda_a_tempprojection).Destroy();
 
 			//Вызвать змеев
 			int count = 0;
 
-			foreach (var ActorToSpawn in world.GetActorsBySNO(81857))
+			foreach (var ActorToSpawn in world.GetActorsBySNO(ActorSno._caldeumguard_spear_imperial, ActorSno._caldeumguard_captain_b_khamsin, ActorSno._khamsin_mine_unique))
 			{
-				world.SpawnMonster(5434, ActorToSpawn.Position);
+				world.SpawnMonster(ActorSno._snakeman_melee_c, ActorToSpawn.Position);
 				ActorToSpawn.Destroy();
 				count++;
 			}
-			world.SpawnMonster(5434, world.GetActorBySNO(138428).Position);
-			world.GetActorBySNO(138428).Destroy();
-			count++;
-			world.SpawnMonster(5434, world.GetActorBySNO(60583).Position);
-			world.GetActorBySNO(60583).Destroy();
-			count++;
 
 			foreach (var actor in world.Actors.Values.Where(a => a is Monster || a is Player || a is Minion || a is Hireling))
 			{

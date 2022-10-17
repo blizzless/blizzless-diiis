@@ -484,9 +484,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			//Убираем балки с проходов
 			if (this.SNO == WorldSno.trout_town)
 			{
-				foreach (var boarded in this.GetActorsBySNO(111888))
+				foreach (var boarded in this.GetActorsBySNO(ActorSno._trout_oldtristram_cellardoor_boarded))
 					boarded.Destroy();
-				foreach (var boarded in this.GetActorsBySNO(111856))
+				foreach (var boarded in this.GetActorsBySNO(ActorSno._trout_oldtristram_cellardoor_rubble))
 					boarded.Destroy();
 			}
 		}
@@ -527,28 +527,22 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		#endregion
 
 		#region Отображение только конкретной итерации NPC
-		public Actor ShowOnlyNumNPC(int SNO, int Num)
+		public Actor ShowOnlyNumNPC(ActorSno SNO, int Num)
 		{
 			Actor Setted = null;
-			var list = this.GetActorsBySNO(SNO);
 			foreach (var actor in this.GetActorsBySNO(SNO))
 			{
-				if (actor.NumberInWorld == Num)
-				{
+				var isVisible = actor.NumberInWorld == Num;
+				if (isVisible)
 					Setted = actor;
-					actor.Hidden = false;
-					actor.SetVisible(true);
-					foreach (var plr in this.Players.Values)
-						actor.Reveal(plr);
+
+				actor.Hidden = !isVisible;
+				actor.SetVisible(isVisible);
+				foreach (var plr in this.Players.Values)
+                {
+                    if (isVisible) actor.Reveal(plr); else actor.Unreveal(plr);
 				}
-				else
-				{
-					actor.Hidden = true;
-					actor.SetVisible(false);
-					foreach (var plr in this.Players.Values)
-						actor.Unreveal(plr);
-				}
-			}
+            }
 			return Setted;
 		}
 
@@ -559,63 +553,63 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
         /// <summary>
         /// Spawns a monster with given SNOId in given position.
         /// </summary>
-        /// <param name="monsterSNOId">The SNOId of the monster.</param>
+        /// <param name="monsterSno">The SNOId of the monster.</param>
         /// <param name="position">The position to spawn it.</param>
 		
-        public Actor SpawnMonster(int monsterSNOId, Vector3D position)
-		{
-			if (monsterSNOId != 1)
-			{
-				var monster = ActorFactory.Create(this, monsterSNOId, new TagMap());
-				if (monster != null)
-				{
-					monster.EnterWorld(position);
-					if (monster.AnimationSet != null)
-					{
-						if (monster.AnimationSet.TagMapAnimDefault.ContainsKey(70097))
-							monster.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.Animation.PlayAnimationMessage
-							{
-								ActorID = monster.DynamicID(plr),
-								AnimReason = 5,
-								UnitAniimStartTime = 0,
-								tAnim = new PlayAnimationMessageSpec[]
-								{
-								new PlayAnimationMessageSpec()
-								{
-									Duration = 150,
-									AnimationSNO = monster.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Spawn],
-									PermutationIndex = 0,
-									Speed = 1
-								}
-								}
+        public Actor SpawnMonster(ActorSno monsterSno, Vector3D position)
+        {
+            if (monsterSno == ActorSno.__NONE)
+            {
+                return null;
+            }
+            var monster = ActorFactory.Create(this, monsterSno, new TagMap());
+            if (monster != null)
+            {
+                monster.EnterWorld(position);
+                if (monster.AnimationSet != null)
+                {
+                    if (monster.AnimationSet.TagMapAnimDefault.ContainsKey(70097))
+                        monster.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.Animation.PlayAnimationMessage
+                        {
+                            ActorID = monster.DynamicID(plr),
+                            AnimReason = 5,
+                            UnitAniimStartTime = 0,
+                            tAnim = new PlayAnimationMessageSpec[]
+                            {
+                                new PlayAnimationMessageSpec()
+                                {
+                                    Duration = 150,
+                                    AnimationSNO = monster.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Spawn],
+                                    PermutationIndex = 0,
+                                    Speed = 1
+                                }
+                            }
 
-							}, monster);
-						else if (monster.AnimationSet.TagMapAnimDefault.ContainsKey(291072))
-							monster.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.Animation.PlayAnimationMessage
-							{
-								ActorID = monster.DynamicID(plr),
-								AnimReason = 5,
-								UnitAniimStartTime = 0,
-								tAnim = new PlayAnimationMessageSpec[]
-								{
-								new PlayAnimationMessageSpec()
-								{
-									Duration = 150,
-									AnimationSNO = monster.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Spawn2],
-									PermutationIndex = 0,
-									Speed = 1
-								}
-								}
+                        }, monster);
+                    else if (monster.AnimationSet.TagMapAnimDefault.ContainsKey(291072))
+                        monster.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.Animation.PlayAnimationMessage
+                        {
+                            ActorID = monster.DynamicID(plr),
+                            AnimReason = 5,
+                            UnitAniimStartTime = 0,
+                            tAnim = new PlayAnimationMessageSpec[]
+                            {
+                                new PlayAnimationMessageSpec()
+                                {
+                                    Duration = 150,
+                                    AnimationSNO = monster.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Spawn2],
+                                    PermutationIndex = 0,
+                                    Speed = 1
+                                }
+                            }
 
-							}, monster);
-					}	
-					return monster;
-				}
-			}
-			return null;
-		}
+                        }, monster);
+                }
+            }
+			return monster;
+        }
 
-		private Queue<Queue<Action>> _flippyTimers = new Queue<Queue<Action>>();
+        private Queue<Queue<Action>> _flippyTimers = new Queue<Queue<Action>>();
 
 		private const int FlippyDurationInTicks = 10;
 		private const int FlippyMaxDistanceManhattan = 10;  // length of one side of the square around the player where the item will appear
@@ -931,14 +925,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		/// <param name="sno"></param>
 		/// <returns></returns>
-		public Actor GetActorBySNO(int sno, bool onlyVisible = false)
+		public Actor GetActorBySNO(ActorSno sno, bool onlyVisible = false)
 		{
-			foreach (var actor in this.Actors.Values)
-			{
-				if (actor.ActorSNO.Id == sno && (!onlyVisible || (onlyVisible && actor.Visible && !actor.Hidden)))
-					return actor;
-			}
-			return null;
+			return Actors.Values.FirstOrDefault(x => x.SNO == sno && (!onlyVisible || (onlyVisible && x.Visible && !x.Hidden)));
 		}
 		public List<Portal> GetPortalsByLevelArea(int la)
 		{
@@ -959,20 +948,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			return portals;
 		}
 		/// <summary>
-		/// Returns all actors matching a SNO id
+		/// Returns all actors matching one of SNOs
 		/// </summary>
-		/// <param name="group"></param>
+		/// <param name="sno"></param>
 		/// <returns></returns>
-		public List<Actor> GetActorsBySNO(int sno)
-		{
-			List<Actor> matchingActors = new List<Actor>();
-			foreach (var actor in this.Actors.Values)
-			{
-				if (actor.ActorSNO.Id == sno)
-					matchingActors.Add(actor);
-			}
-			return matchingActors;
-		}
+		public List<Actor> GetActorsBySNO(params ActorSno[] sno)
+        {
+			return Actors.Values.Where(x => sno.Contains(x.SNO)).ToList();
+        }
 		/// <summary>
 		/// Returns true if any actors exist under a well defined group
 		/// </summary>
@@ -1369,12 +1352,12 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			return Actors.Values.OfType<StartingPoint>().Where(sp => sp.TargetId == id).ToList().FirstOrDefault();
 		}
 
-		public Actor FindAt(int actorId, Vector3D position, float radius = 3.0f)
+		public Actor FindAt(ActorSno actorSno, Vector3D position, float radius = 3.0f)
 		{
 			var proximityCircle = new Circle(position.X, position.Y, radius);
 			var actors = this.QuadTree.Query<Actor>(proximityCircle);
 			foreach (var actr in actors)
-				if (actr.Attributes[GameAttribute.Disabled] == false && actr.Attributes[GameAttribute.Gizmo_Has_Been_Operated] == false && actr.ActorSNO.Id == actorId) return actr;
+				if (actr.Attributes[GameAttribute.Disabled] == false && actr.Attributes[GameAttribute.Gizmo_Has_Been_Operated] == false && actr.SNO == actorSno) return actr;
 			return null;
 		}
 
