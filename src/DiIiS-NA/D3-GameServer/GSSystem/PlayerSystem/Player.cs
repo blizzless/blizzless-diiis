@@ -468,7 +468,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Attributes[GameAttribute.Buff_Icon_Count0, 0x00033C40] = 1;
 			
 			Attributes[GameAttribute.Currencies_Discovered] = 0x0011FFF8;
-			Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5;
 
 			this.Attributes[GameAttribute.Skill, 30592] = 1;
 			this.Attributes[GameAttribute.Resource_Degeneration_Prevented] = false;
@@ -622,7 +621,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.Attributes[GameAttribute.Cannot_Dodge] = false;
 			this.Attributes[GameAttribute.Trait, 0x0000CE11] = 1;
 			this.Attributes[GameAttribute.TeamID] = 2;
-			this.Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 1;
+			this.Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5;			// what do these do?
+			this.Attributes[GameAttribute.Stash_Tabs_Rewarded_By_Achievements] = 5;
 			this.Attributes[GameAttribute.Backpack_Slots] = 60;
 			this.Attributes[GameAttribute.General_Cooldown] = 0;
 		}
