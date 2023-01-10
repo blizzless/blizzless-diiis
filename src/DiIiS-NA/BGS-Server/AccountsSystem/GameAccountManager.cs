@@ -76,9 +76,9 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				ParagonLevelHardcore = 0,
 				Experience = 7200000,
 				ExperienceHardcore = 7200000,
-				StashSize = 70,
-				HardcoreStashSize = 70,
-				SeasonStashSize = 70,
+				StashSize = 700,			// Default stash sizes should be 70 with purchasable upgrades
+				HardcoreStashSize = 700,
+				SeasonStashSize = 700,
 				BloodShards = 0,
 				HardcoreBloodShards = 0,
 				BossProgress = new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff },

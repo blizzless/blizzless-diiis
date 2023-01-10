@@ -2418,8 +2418,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				_owner.World.Game.GameDBSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).StashSize;
 			if (slots > 0)
 			{
-				//_owner.Attributes[GameAttribute.Shared_Stash_Slots] = slots;
-				_owner.Attributes[GameAttribute.Shared_Stash_Slots] = 700;	// HACK: Give player 10 stash tabs. Remove this when tab purchasing gets fixed.
+				_owner.Attributes[GameAttribute.Shared_Stash_Slots] = slots;
 				_owner.Attributes.BroadcastChangedIfRevealed();
 				// To be applied before loading items, to have all the space needed
 				_stashGrid.ResizeGrid(_owner.Attributes[GameAttribute.Shared_Stash_Slots] / 7, 7);
