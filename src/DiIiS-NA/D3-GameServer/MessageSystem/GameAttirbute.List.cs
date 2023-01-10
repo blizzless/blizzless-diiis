@@ -380,7 +380,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
         public static readonly GameAttributeF Corpse_Resurrection_Allowed_Game_Time = new GameAttributeF(807, 0, -1, 0, 0, "", "", "Corpse_Resurrection_Allowed_Game_Time", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Controlling_TimedEvent_SNO = new GameAttributeF(810, -1, -1, 0, 0, "", "", "Controlling_TimedEvent_SNO", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Spawner_Concurrent_Count_ID = new GameAttributeF(855, -1, -1, 0, 0, "", "", "Spawner_Concurrent_Count_ID", GameAttributeEncoding.Float32, 0, 0, 0, 32);
-        public static readonly GameAttributeF Skill_Override = new GameAttributeF(857, -1, -1, 0, 0, "", "", "Skill_Override", GameAttributeEncoding.Float32, 136, 0, 0, 32);
+        public static readonly GameAttributeI Skill_Override = new GameAttributeI(857, -1, -1, 0, 0, "", "", "Skill_Override", GameAttributeEncoding.Int, 136, 0, 0, 32);
         public static readonly GameAttributeF Walk_Passability_Power_SNO = new GameAttributeF(1057, -1, -1, 0, 0, "", "", "Walk_Passability_Power_SNO", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Passability_Power_SNO = new GameAttributeF(1058, -1, -1, 0, 0, "", "", "Passability_Power_SNO", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Flippy_ID = new GameAttributeF(1059, -1, -1, 0, 0, "", "", "Flippy_ID", GameAttributeEncoding.Float32, 0, 0, 0, 32);
