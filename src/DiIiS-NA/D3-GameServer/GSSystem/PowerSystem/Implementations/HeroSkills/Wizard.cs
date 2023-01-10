@@ -2102,8 +2102,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			else
 			{
 				_beamEnd = SpawnEffect(6535, User.Position, 0, WaitInfinite());
-				User.AddComplexEffect(RuneSelect(19327, 149835, -1, 149836, 149869, 149879), _beamEnd);
-				if (Rune_A > 0) User.AddComplexEffect(19327, _beamEnd);
+				User.AddComplexEffect((Rune_E > 0) ? 149879 : 19327, _beamEnd);						// Rune E uses a special beam
+				User.AddComplexEffect(RuneSelect(-1, 149835, -1, 149836, 149869, -1), _beamEnd);	// Runes A, C and D add effects on top of the standard beam
 			}
 		}
 
