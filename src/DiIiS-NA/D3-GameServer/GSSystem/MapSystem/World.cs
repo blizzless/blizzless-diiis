@@ -875,7 +875,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		}
 		public void SpawnRandomPotion(Actor source, Player player)
 		{
-			if (player != null && !player.Inventory.HaveEnough(DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("HealthPotionBottomless"), 100))
+			if (player != null && !player.Inventory.HaveEnough(DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("HealthPotionBottomless"), 1))
 			{
 				var item = ItemGenerator.GenerateRandomPotion(player);
 				if (item == null) return;
