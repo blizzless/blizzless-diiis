@@ -2461,8 +2461,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 					}
 				}
+
+				this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
+
 #if DEBUG
-				Logger.Warn("Местополежение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
+				Logger.Warn("Местоположение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
 #else
 
 #endif
@@ -2653,7 +2656,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					this.Revive(this.CheckPointPosition);
 					break;
 				case 2:
-					//this.Revive(this.Position);
+					if (this.Attributes[GameAttribute.Corpse_Resurrection_Charges] > 0)
+					{
+						this.Revive(this.Position);
+						this.Attributes[GameAttribute.Corpse_Resurrection_Charges]--;
+					}
 					break;
 			}
 		}
@@ -3811,8 +3818,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.Attributes[GameAttribute.Resurrect_As_Observer] = state;
 				//this.Attributes[GameAttribute.Observer] = !state;
 			}
-			//this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 1;	//enable that to allow resurrecting at corpse
-			//this.Attributes[GameAttribute.Corpse_Resurrection_Allowed_Game_Time] = this.World.Game.TickCounter + 300; //timer for auto-revive
+			//this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 1;	// Enable this to allow unlimited resurrection at corpse
+			//this.Attributes[GameAttribute.Corpse_Resurrection_Allowed_Game_Time] = this.World.Game.TickCounter + 300; // Timer for auto-revive (seems to be broken?)
 			this.Attributes.BroadcastChangedIfRevealed();
 		}
 
