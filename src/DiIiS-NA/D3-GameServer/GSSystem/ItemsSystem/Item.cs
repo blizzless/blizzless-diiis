@@ -927,8 +927,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				if (player.Attributes[GameAttribute.Hitpoints_Cur] == player.Attributes[GameAttribute.Hitpoints_Max])
 					return;
 
-				player.AddPercentageHP(60);
-				player.World.BuffManager.AddBuff(this, player, new PowerSystem.Implementations.CooldownBuff(30211, TickTimer.WaitSeconds(player.World.Game, 30f)));
+				player.World.PowerManager.RunPower(player, 30211);
 
 				if (this.Attributes[GameAttribute.ItemStackQuantityLo] <= 1)
 					player.Inventory.DestroyInventoryItem(this); // No more potions!
