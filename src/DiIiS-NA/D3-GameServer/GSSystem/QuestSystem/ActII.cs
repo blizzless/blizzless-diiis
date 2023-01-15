@@ -137,7 +137,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//ListenProximity(85843, new SpawnCultists());
 					script = new SpawnCultists();
 					script.Execute(world);
-					ListenKill(ActorSno._triunecultist_c, 7, new Advance());
+					//ListenKill(ActorSno._triunecultist_c, 7, new Advance());
+					ListenProximity(ActorSno._enchantressnpc, new Advance());		// HACK: Skip ambush
 				})
 			});
 

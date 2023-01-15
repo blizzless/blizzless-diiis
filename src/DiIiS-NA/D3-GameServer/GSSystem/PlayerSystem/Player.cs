@@ -469,7 +469,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Attributes[GameAttribute.Buff_Icon_Count0, 0x00033C40] = 1;
 			
 			Attributes[GameAttribute.Currencies_Discovered] = 0x0011FFF8;
-			Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5;
 
 			this.Attributes[GameAttribute.Skill, 30592] = 1;
 			this.Attributes[GameAttribute.Resource_Degeneration_Prevented] = false;
@@ -623,7 +622,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.Attributes[GameAttribute.Cannot_Dodge] = false;
 			this.Attributes[GameAttribute.Trait, 0x0000CE11] = 1;
 			this.Attributes[GameAttribute.TeamID] = 2;
-			this.Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 1;
+			this.Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5;			// what do these do?
+			this.Attributes[GameAttribute.Stash_Tabs_Rewarded_By_Achievements] = 5;
 			this.Attributes[GameAttribute.Backpack_Slots] = 60;
 			this.Attributes[GameAttribute.General_Cooldown] = 0;
 		}
@@ -1336,6 +1336,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.Attributes[GameAttribute.Hitpoints_Max] = (int)Toon.HeroTable.HitpointsMax;
 
 			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
+
+			this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;
 
 			//TestOutPutItemAttributes(); //Activate this only for finding item stats.
 			this.Attributes.BroadcastChangedIfRevealed();
@@ -2461,8 +2463,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 					}
 				}
+
 #if DEBUG
-				Logger.Warn("Местополежение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
+				Logger.Warn("Местоположение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
 #else
 
 #endif
@@ -2653,7 +2656,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					this.Revive(this.CheckPointPosition);
 					break;
 				case 2:
-					//this.Revive(this.Position);
+					if (this.Attributes[GameAttribute.Corpse_Resurrection_Charges] > 0)
+					{
+						this.Revive(this.Position);
+						this.Attributes[GameAttribute.Corpse_Resurrection_Charges]--;
+					}
 					break;
 			}
 		}
@@ -3810,8 +3817,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.Attributes[GameAttribute.Resurrect_As_Observer] = state;
 				//this.Attributes[GameAttribute.Observer] = !state;
 			}
-			//this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 1;	//enable that to allow resurrecting at corpse
-			//this.Attributes[GameAttribute.Corpse_Resurrection_Allowed_Game_Time] = this.World.Game.TickCounter + 300; //timer for auto-revive
+			//this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 1;	// Enable this to allow unlimited resurrection at corpse
+			//this.Attributes[GameAttribute.Corpse_Resurrection_Allowed_Game_Time] = this.World.Game.TickCounter + 300; // Timer for auto-revive (seems to be broken?)
 			this.Attributes.BroadcastChangedIfRevealed();
 		}
 
@@ -5912,7 +5919,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			minion.SetVisible(true);
 			minion.Hidden = false;
 
-			if (minion.SNO == ActorSno._leah)
+			if (minion.SNO == ActorSno._leah)		// Act I Leah
 			{
 				(minion.Brain as MinionBrain).PresetPowers.Clear();
  				(minion.Brain as MinionBrain).AddPresetPower(30599);

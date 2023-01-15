@@ -29,7 +29,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
 
             ScriptedAttributeInitializer.ProcessAttributes(Attributes);
         }
-        #region 2.7.1
+        #region 2.7.4
         //*
         public static readonly GameAttributeF Axe_Bad_Data = new GameAttributeF(0, 0, -1, 0, 0, "", "", "Axe_Bad_Data", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Attribute_Timer = new GameAttributeF(1, 0, -1, 0, 0, "", "", "Attribute_Timer", GameAttributeEncoding.Float32, 0, 0, 0, 32);
@@ -375,12 +375,12 @@ namespace DiIiS_NA.GameServer.MessageSystem
         public static readonly GameAttributeF World_Seed = new GameAttributeF(758, 0, -1, 0, 0, "", "", "World_Seed", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Combo_Time_Last_Move = new GameAttributeF(802, 0, -1, 0, 0, "", "", "Combo_Time_Last_Move", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Death_Replacement_Effect_Group_SNO = new GameAttributeF(804, -1, -1, 0, 0, "", "", "Death_Replacement_Effect_Group_SNO", GameAttributeEncoding.Float32, 0, 0, 0, 32);
-        public static readonly GameAttributeF Checkpoint_Resurrection_Allowed_Game_Time = new GameAttributeF(805, 0, -1, 0, 0, "", "", "Checkpoint_Resurrection_Allowed_Game_Time", GameAttributeEncoding.Float32, 0, 0, 0, 32);
-        public static readonly GameAttributeF Checkpoint_Resurrection_Forced_Game_Time = new GameAttributeF(806, 0, -1, 0, 0, "", "", "Checkpoint_Resurrection_Forced_Game_Time", GameAttributeEncoding.Float32, 0, 0, 0, 32);
-        public static readonly GameAttributeF Corpse_Resurrection_Allowed_Game_Time = new GameAttributeF(807, 0, -1, 0, 0, "", "", "Corpse_Resurrection_Allowed_Game_Time", GameAttributeEncoding.Float32, 0, 0, 0, 32);
+        public static readonly GameAttributeI Checkpoint_Resurrection_Allowed_Game_Time = new GameAttributeI(805, 0, -1, 0, 0, "", "", "Checkpoint_Resurrection_Allowed_Game_Time", GameAttributeEncoding.Int, 0, 0, 0, 32);
+        public static readonly GameAttributeI Checkpoint_Resurrection_Forced_Game_Time = new GameAttributeI(806, 0, -1, 0, 0, "", "", "Checkpoint_Resurrection_Forced_Game_Time", GameAttributeEncoding.Int, 0, 0, 0, 32);
+        public static readonly GameAttributeI Corpse_Resurrection_Allowed_Game_Time = new GameAttributeI(807, 0, -1, 0, 0, "", "", "Corpse_Resurrection_Allowed_Game_Time", GameAttributeEncoding.Int, 0, 0, 0, 32);
         public static readonly GameAttributeF Controlling_TimedEvent_SNO = new GameAttributeF(810, -1, -1, 0, 0, "", "", "Controlling_TimedEvent_SNO", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Spawner_Concurrent_Count_ID = new GameAttributeF(855, -1, -1, 0, 0, "", "", "Spawner_Concurrent_Count_ID", GameAttributeEncoding.Float32, 0, 0, 0, 32);
-        public static readonly GameAttributeF Skill_Override = new GameAttributeF(857, -1, -1, 0, 0, "", "", "Skill_Override", GameAttributeEncoding.Float32, 136, 0, 0, 32);
+        public static readonly GameAttributeI Skill_Override = new GameAttributeI(857, -1, -1, 0, 0, "", "", "Skill_Override", GameAttributeEncoding.Int, 136, 0, 0, 32);
         public static readonly GameAttributeF Walk_Passability_Power_SNO = new GameAttributeF(1057, -1, -1, 0, 0, "", "", "Walk_Passability_Power_SNO", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Passability_Power_SNO = new GameAttributeF(1058, -1, -1, 0, 0, "", "", "Passability_Power_SNO", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Flippy_ID = new GameAttributeF(1059, -1, -1, 0, 0, "", "", "Flippy_ID", GameAttributeEncoding.Float32, 0, 0, 0, 32);
@@ -1511,9 +1511,11 @@ namespace DiIiS_NA.GameServer.MessageSystem
         public static readonly GameAttributeB ForcedMove = new GameAttributeB(1401, 0, -1, 0, 0, "", "", "ForcedMove", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
         public static readonly GameAttributeB ReceivedPrimalWhenUnlocking = new GameAttributeB(1474, 0, -1, 0, 0, "", "", "ReceivedPrimalWhenUnlocking", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
         public static readonly GameAttributeB KanaiPowersunlocked = new GameAttributeB(1475, 0, -1, 0, 0, "", "", "KanaiPowersunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
-        public static readonly GameAttributeB FourthKanaisCubeSlotunlocked = new GameAttributeB(1476, 0, -1, 0, 0, "", "", "Fourth Kanai's Cube Slot unlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB FourthKanaisCubeSlotunlocked = new GameAttributeB(1476, 0, -1, 0, 0, "", "", "FourthKanai'sCubeSlotunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
         public static readonly GameAttributeB Seasononlyitemsunlocked = new GameAttributeB(1477, 0, -1, 0, 0, "", "", "Season-onlyitemsunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
-        public static readonly GameAttributeB Soul_shards_unlocked = new GameAttributeB(1478, 0, -1, 0, 0, "", "", "Soul shards unlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB Soul_shards_unlocked = new GameAttributeB(1478, 0, -1, 0, 0, "", "", "Soulshardsunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB Item_was_sanctified = new GameAttributeB(1479, 0, -1, 0, 0, "", "", "Itemwassanctified", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
+        public static readonly GameAttributeB Sanctified_items_unlocked = new GameAttributeB(1480, 0, -1, 0, 0, "", "", "Sanctifieditemsunlocked", GameAttributeEncoding.IntMinMax, 0, 0, 1, 1);
 
         public static readonly GameAttributeF Fiil1 = new GameAttributeF(1223, -1, -1, 0, 0, "", "", "Fiil1", GameAttributeEncoding.Float32, 0, 0, 0, 32);
         public static readonly GameAttributeF Fiil2 = new GameAttributeF(1224, -1, -1, 0, 0, "", "", "Fiil2", GameAttributeEncoding.Float32, 0, 0, 0, 32);

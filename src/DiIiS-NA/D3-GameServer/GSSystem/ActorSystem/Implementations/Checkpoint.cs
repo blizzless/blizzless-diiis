@@ -34,6 +34,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				});
 
 				player.CheckPointPosition = this.Position;
+				player.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;     // Reset corpse resurrection charges
 			}
 		}
 

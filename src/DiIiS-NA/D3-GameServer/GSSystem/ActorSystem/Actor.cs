@@ -847,7 +847,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				snoAmbientOcclusionOverrideTex = null,
 				MarkerSetSNO = null,
 				MarkerSetIndex = null,
-				TimeActorCreated = null,
 				EnterKnownLookOverrides = null
 			};
 		}
