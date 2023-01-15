@@ -5958,7 +5958,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			minion.SetVisible(true);
 			minion.Hidden = false;
 
-			if (minion.ActorSNO.Id == 4580)
+			if (minion.ActorSNO.Id == 4580)		// Act I Leah
 			{
 				(minion.Brain as MinionBrain).PresetPowers.Clear();
  				(minion.Brain as MinionBrain).AddPresetPower(30599);
