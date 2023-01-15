@@ -629,15 +629,27 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void SetAttributesByParagon()
 		{
+
+			// Set Paragon max 50.0000
+			int level = Math.Min(this.Toon.ParagonLevel, 50000);
+
 			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 0] = 0;
 			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 1] = 0;
 			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 2] = 0;
 			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 3] = 0;
-			int level = Math.Min(this.Toon.ParagonLevel, 800);
+
 			for (int i = 0; i < level; i++)
 			{
-				this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, (i % 4)]++;
+				// If paragon is lower than 800 divide for 4.
+				if (i <= 800)
+				{
+					this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, (i % 4)]++;
+					continue;
+				}
+				// If paragon greather than 800 divide for 1 (main).
+				this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, (i % 1)]++;
 			}
+
 			var assigned_bonuses = this.ParagonBonuses;
 			var bonus_ids = ItemGenerator.GetParagonBonusTable(this.Toon.Class);
 			foreach (var bonus in bonus_ids)
