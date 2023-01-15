@@ -1336,6 +1336,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
 
+			this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;
+
 			//TestOutPutItemAttributes(); //Activate this only for finding item stats.
 			this.Attributes.BroadcastChangedIfRevealed();
 
@@ -2461,8 +2463,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 					}
 				}
-
-				this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
 
 #if DEBUG
 				Logger.Warn("Местоположение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
