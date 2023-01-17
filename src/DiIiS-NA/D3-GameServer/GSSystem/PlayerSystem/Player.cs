@@ -338,7 +338,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public int KilledSeasonalTempCount = 0;
 		public int KilledElitesTempCount = 0;
 		public int BuffStreakKill = 0;
-		private byte[] ParagonBonuses;
+		private ushort[] ParagonBonuses;
 		public int? HirelingId = null;
 		public bool IsCasting = false;
 		private Action CastResult = null;
@@ -630,21 +630,32 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void SetAttributesByParagon()
 		{
-			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 0] = 0;
-			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 1] = 0;
-			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 2] = 0;
-			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 3] = 0;
-			int level = Math.Min(this.Toon.ParagonLevel, 800);
-			for (int i = 0; i < level; i++)
+			// Until the Paragon 800 should be distributed on the 4 tabs,
+			// after that only in the first Core tab.
+			var baseParagonPoints = Math.Min(this.Toon.ParagonLevel, 800);
+			var extraParagonPoints = Math.Max(0, this.Toon.ParagonLevel - 800);
+			for (int i = 0; i < 4; i++)
 			{
-				this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, (i % 4)]++;
+				this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, i] = baseParagonPoints / 4;
+				// Process remainder only for base points.
+				if (i < baseParagonPoints % 4)
+				{
+					this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, i]++;
+				}
 			}
+			// First tab of Paragon (Core) - pos 0.
+			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 0] += extraParagonPoints;
+
 			var assigned_bonuses = this.ParagonBonuses;
+
 			var bonus_ids = ItemGenerator.GetParagonBonusTable(this.Toon.Class);
+
 			foreach (var bonus in bonus_ids)
 			{
 				int slot_index = (bonus.Category * 4) + bonus.Index - 1;
-				this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category] -= assigned_bonuses[slot_index];
+
+                this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category] -= assigned_bonuses[slot_index];
+
 				this.Attributes[GameAttribute.Paragon_Bonus, bonus.Hash] = assigned_bonuses[slot_index];
 
 				float result;
@@ -660,7 +671,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					else
 					{
 						if (bonus.AttributeSpecifiers[0].AttributeId == 133) result = 33f; //Hitpoints_Regen_Per_Second
+
 						if (bonus.AttributeSpecifiers[0].AttributeId == 342) result = 16.5f; //Hitpoints_On_Hit
+
 						if (GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] is GameAttributeF)
 						{
 							var attr = GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeF;
@@ -671,6 +684,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 						else if (GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] is GameAttributeI)
 						{
+
 							var attr = GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeI;
 							if (bonus.AttributeSpecifiers[0].SNOParam != -1)
 								this.Attributes[attr, bonus.AttributeSpecifiers[0].SNOParam] += (int)(result * assigned_bonuses[slot_index]);
@@ -1338,7 +1352,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
 
 			this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;
-
 			//TestOutPutItemAttributes(); //Activate this only for finding item stats.
 			this.Attributes.BroadcastChangedIfRevealed();
 
@@ -1990,11 +2003,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			var bonus = ItemGenerator.GetParagonBonusTable(this.Toon.Class).Where(b => b.Hash == message.BonusGBID).FirstOrDefault();
 
-			if (bonus == null) return;
+            if (bonus == null) return;
 			if (message.Amount > this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category]) return;
 			//if (this.ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] + (byte)message.Amount > bonus.Limit) return;
 
-			this.ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] += (byte)message.Amount;
+			// message.Amount have the value send to add on attr of Paragon tabs.
+			this.ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] += (ushort)message.Amount;
 
 			var dbToon = this.Toon.DBToon;
 			dbToon.ParagonBonuses = this.ParagonBonuses;
@@ -2012,7 +2026,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 		private void OnResetParagonPointsMessage(GameClient client, ResetParagonPointsMessage message)
 		{
-			this.ParagonBonuses = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			this.ParagonBonuses = new ushort[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 			var dbToon = this.Toon.DBToon;
 			dbToon.ParagonBonuses = this.ParagonBonuses;
 			this.World.Game.GameDBSession.SessionUpdate(dbToon);
@@ -2463,6 +2477,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 					}
 				}
+
+				this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
 
 #if DEBUG
 				Logger.Warn("Местоположение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
@@ -5919,7 +5935,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			minion.SetVisible(true);
 			minion.Hidden = false;
 
-			if (minion.SNO == ActorSno._leah)		// Act I Leah
+			if (minion.SNO == ActorSno._leah)	// (4580) Act I Leah
 			{
 				(minion.Brain as MinionBrain).PresetPowers.Clear();
  				(minion.Brain as MinionBrain).AddPresetPower(30599);
