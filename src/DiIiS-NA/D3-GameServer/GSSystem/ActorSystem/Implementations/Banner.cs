@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using System;
+using System.Collections.Generic;
 //Blizzless Project 2022 
 using System.Linq;
 //Blizzless Project 2022 
@@ -10,32 +11,54 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	class Banner : Gizmo
 	{
-		public Banner(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		private static readonly Dictionary<int, ActorSno[]> bannerActors = new Dictionary<int, ActorSno[]>()
 		{
-			if (this.ActorSNO.Name.Contains("Player_2"))
-				this.BannerPlayerIndex = 1;
-			else if (this.ActorSNO.Name.Contains("Player_3"))
-				this.BannerPlayerIndex = 2;
-			else if (this.ActorSNO.Name.Contains("Player_4"))
-				this.BannerPlayerIndex = 3;
+			[0] = new ActorSno[] {
+				ActorSno._banner_player_1,
+				ActorSno._emotebanner_player_1,
+				ActorSno._banner_player_1_act2,
+				ActorSno._emotebanner_player_1_lit,
+				ActorSno._banner_player_1_act5,
+			},
+			[1] = new ActorSno[] {
+				ActorSno._banner_player_2,
+				ActorSno._emotebanner_player_2,
+				ActorSno._banner_player_2_act2,
+				ActorSno._banner_player_2_act5,
+			},
+			[2] = new ActorSno[] {
+				ActorSno._banner_player_3,
+				ActorSno._emotebanner_player_3,
+				ActorSno._banner_player_3_act2,
+				ActorSno._banner_player_3_act5,
+			},
+			[3] = new ActorSno[] {
+				ActorSno._banner_player_4,
+				ActorSno._emotebanner_player_4,
+				ActorSno._banner_player_4_act2,
+				ActorSno._banner_player_4_act5,
+			},
+		};
+		public Banner(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
+		{
+			this.BannerPlayerIndex = bannerActors.FirstOrDefault(x => x.Value.Contains(this.SNO)).Key;
 		}
 
 		public int BannerPlayerIndex = 0;
 
 		public override bool Reveal(Player player)
 		{
-			if (!base.Reveal(player))
-				return false;
-			return true;
-		}
+            return base.Reveal(player);
+        }
 
-		public override void OnTargeted(Player player, TargetMessage message)
+        public override void OnTargeted(Player player, TargetMessage message)
 		{
 			Logger.Trace("(OnTargeted) Banner has been activated ");
 

@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using System.Linq;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -11,11 +12,16 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(141246, 226343, 226345, 309879)]
+	[HandledSNO(
+		ActorSno._priest_male_b_nolook,
+		ActorSno._priest_caldeum,
+		ActorSno._priest_bastionskeep_healer,
+		ActorSno._x1_a5_westmhub_healer
+	)]
 	public sealed class Healer : InteractiveNPC
 	{
-		public Healer(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Healer(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.TeamID] = 0;
 			this.Attributes[GameAttribute.MinimapActive] = true;

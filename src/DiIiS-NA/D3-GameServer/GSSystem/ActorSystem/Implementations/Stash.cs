@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -23,11 +24,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(130400 /* Player_Shared_Stash.acr */)]
+	[HandledSNO(ActorSno._player_shared_stash /* Player_Shared_Stash.acr */)]
 	public sealed class Stash : Gizmo
 	{
-		public Stash(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Stash(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 202226;

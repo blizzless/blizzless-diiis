@@ -1,5 +1,7 @@
 ﻿//Blizzless Project 2022 
+using System.Collections.Generic;
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -13,6 +15,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
 	public class ServerProp : Actor
 	{
+		private static readonly HashSet<ActorSno> hidden = new HashSet<ActorSno>
+		{
+			ActorSno._mouthofazmodan,
+			ActorSno._a1_sk_throne_gate,
+			ActorSno._gluttony_fading_block_collision,
+			ActorSno._caout_militarywallb,
+			ActorSno._caout_militarywallb_invisible_teleportblocker,
+			ActorSno._a3_battlefield_barricade_solid,
+			ActorSno._a3dun_crater_st_giantdemonheart_shield,
+			ActorSno._temp_zknavblocker,
+			ActorSno._adriacover,
+			ActorSno._caout_militarywallb_invisible_cemeterygate,
+			ActorSno._townattack_chapelloc,
+			ActorSno._caoutstingingwinds_stingingwinds_mine_blocker,
+			ActorSno._invisboxcollision_flippy,
+			ActorSno.__x1_westm_urzael_fire_event_flash,
+		};
 		public override ActorType ActorType
 		{
 			get { return ActorType.ServerProp; }
@@ -20,8 +39,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		//a2dun_Zolt_Hall_NS_480_02 - 1784
 		//a2dun_Zolt_Portalroom_A - 31076
 
-		public ServerProp(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ServerProp(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x9;
 			this.Field7 = 0x00000001;
@@ -34,30 +53,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override bool Reveal(Player player)
 		{
-			if (this.ActorSNO.Id == 197138 ||   //MouthOfAzmodan
-				this.ActorSNO.Id == 172645 ||   //Leoric Throne_Gate
-				this.ActorSNO.Id == 220260 ||   //Gluttony_Block_Collision
-				this.ActorSNO.Id == 3660 ||     //MilitaryWallB (wtf is that thing?)
-				this.ActorSNO.Id == 225300 ||       //a2 caldeum MilitaryWallB
-				this.ActorSNO.Id == 122346 ||       //a3_barricade_solid
-				this.ActorSNO.Id == 210419 ||       //demonHeart_shield
-				this.ActorSNO.Id == 1168333 ||      //ZKNavBlocker
-				this.ActorSNO.Id == 167272 ||       //AdriaCover
-				this.ActorSNO.Id == 209103 ||   //MilitaryWallB again
-				this.ActorSNO.Id == 91162 ||    //TownAttack_ChapelLoc
-				this.ActorSNO.Id == 185443 ||   //caOutStingingWinds_StingingWinds_mine_blocker
-				this.ActorSNO.Id == 375094 ||       //invisBoxCollision_flippy
-				this.ActorSNO.Id == 365472 ||       //_x1_westm_Urzael_Fire_Event_Flash
-				(this.ActorSNO.Id == 316495 && this.World.Game.CurrentQuest != 251355) ||   //A5_closedDoor
-				((this.ActorSNO.Id == 112131 || this.ActorSNO.Id == 196224) && this.World.Game.CurrentQuest != 87700))          //Tristram invis wall
+			if (hidden.Contains(this.SNO) ||
+				(this.SNO == ActorSno._x1_westm_door_cloister_locked && this.World.Game.CurrentQuest != 251355) ||   //A5_closedDoor
+				((this.SNO == ActorSno._trout_newtristram_blocking_cart || this.SNO == ActorSno._cain_intro_bridge_invisi_wall) && this.World.Game.CurrentQuest != 87700))          //Tristram invis wall
 				return false;
 
 			if (!this.triggered)
 			{
 				this.triggered = true;
-				if (this.ActorSNO.Id == 229290 && FastRandom.Instance.Next(100) < 30) //invisBoxCollision_LeorLogs
+				if (this.SNO == ActorSno._invisboxcollision_leorlogs && FastRandom.Instance.Next(100) < 30) //invisBoxCollision_LeorLogs
 				{
-					this.World.SpawnMonster(213905, this.Position);
+					this.World.SpawnMonster(ActorSno._trout_highlands_manor_firewood, this.Position);
 				}
 			}
 

@@ -14,6 +14,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -24,7 +25,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		public new int SummonLimit = 1;
 
 		public CorpseSpiderQueen(World world, PowerContext context, int SpiderID)
-			: base(world, 106749, context.User, null)
+			: base(world, ActorSno._witchdoctor_corpsespider_indigorune, context.User, null)
 		{
 			Scale = 0.7f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.
@@ -54,7 +55,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 				{
 					var rem = new List<uint>();
 					foreach (var fol in (this.Master as Player).Followers)
-						if (fol.Value == 106749 && fol.Key != this.GlobalID)
+						if (fol.Value == SNO && fol.Key != this.GlobalID)
 							rem.Add(fol.Key);
 					foreach (var rm in rem)
 						(this.Master as Player).DestroyFollowerById(rm);

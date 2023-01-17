@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -25,7 +26,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 	{
 		public bool Rune_Flesh = false;
 		//Melee - 87189, 89933 - ranged, 90320 - shaman, skeleton? - 89934
-		public SkeletalMage(World world, PowerContext context, int FetishID, int SNO)
+		public SkeletalMage(World world, PowerContext context, int FetishID, ActorSno SNO)
 			: base(world, SNO, context.User, null)
 		{
 			Scale = 1.2f; 

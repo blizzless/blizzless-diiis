@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -115,13 +116,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			int animationSNO = GetActionAnimationSNO();
 			#region Патч анимаций
 			if(animationSNO == -1)
-			switch (this.User.ActorSNO.Id)
+			switch (this.User.SNO)
 			{
-					case 282789: //x1_SkeletonArcher_Westmarch_A
+					case ActorSno._x1_skeletonarcher_westmarch_a: //x1_SkeletonArcher_Westmarch_A
 						if (this.PowerSNO == 30334)
 							animationSNO = 303905;
 						break;
-					case 472801: //p6_necro_skeletonMage_F_archer
+					case ActorSno._p6_necro_skeletonmage_f_archer: //p6_necro_skeletonMage_F_archer
 						animationSNO = 303905;
 						speed = 2f;
 						break;
@@ -158,7 +159,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 					User.World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 					{
 						ActorID = User.DynamicID(plr),
-						AnimReason = User.ActorSNO.Id == 65036 ? 3 : 3,
+						AnimReason = User.SNO == ActorSno._pt_blacksmith_nonvendor ? 3 : 3,
 						UnitAniimStartTime = 0,
 						tAnim = new PlayAnimationMessageSpec[]
 					{
@@ -168,7 +169,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 							AnimationSNO = animationSNO,
 							PermutationIndex = 0x0,
 							AnimationTag = 0,
-							Speed = User.ActorSNO.Id == 65036 || User.ActorSNO.Id == 4580 ? 1 : speed,
+							Speed = User.SNO == ActorSno._pt_blacksmith_nonvendor || User.SNO == ActorSno._leah ? 1 : speed,
 						}
 					}
 					}, User);

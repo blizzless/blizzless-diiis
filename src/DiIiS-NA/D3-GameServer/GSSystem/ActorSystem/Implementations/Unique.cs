@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -18,40 +19,39 @@ using System;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	[HandledSNO(
-	341760, //Sartor
-	342355, //Balata	
-	290453, //Lurk	
-	353443, //Trejiak
-	156738, //Moontooth Dreadshark	
-	156763, //Raziel	
-	219583, //Flesh of Nar Gulle	
-	218947, //Shaitan the Broodmother	
-	219832, //Ernutet	
-	140424, //Mundunogo	
-	140947, //Dervish Lord
-	144400, //Graveljaw the Devourer	
-	147155, //Hurax
-	105959, //Cultist Grand Inquisitor
-	111580, //Cadhul the Deathcaller
-	218362, //Firestarter
-	4340, //Dataminer
-	156801, //captain Daltyn
-	115403, //Cain Intro Skeleton
-	85900,  //Mira Imon
-	156353, //Imon advisor
-	131131, //prophet Urik
-	174013, //graverobber Nigel
-	178619, //Wortham cultist leader
-	188400, //a2_swr_Adria snakeman
-	338681, //Thilor
-	358946 //Mordrath
+		ActorSno._x1_armorscavenger_asteroidrain, //Sartor
+		ActorSno._x1_monstrosity_scorpionbug_a_gardenevent1, //Balata	
+		ActorSno._x1_bog_hillbilly_evil, //Lurk	
+		ActorSno._x1_shield_skeleton_westmarch_fireambush_captain, //Trejiak
+		ActorSno._sandshark_b_sewersharkevent, //Moontooth Dreadshark	
+		ActorSno._ghost_d_ghosthuntersevent, //Raziel	
+		ActorSno._fastmummy_a_shadeofradament, //Flesh of Nar Gulle	
+		ActorSno._rockworm_stationary_queenworm, //Shaitan the Broodmother	
+		ActorSno._sandmonster_a_portalroulette, //Ernutet	
+		ActorSno._fallenshaman_b_water_money, //Mundunogo	
+		ActorSno._dunedervish_a_dyingmanmine, //Dervish Lord
+		ActorSno._rockworm_stationary_kingworm, //Graveljaw the Devourer	
+		ActorSno._triunevesselactivated_b_corpseeaterevent, //Hurax
+		ActorSno._triunecultist_c_tortureleader, //Cultist Grand Inquisitor
+		ActorSno._triunesummoner_b_rabbitholeevent, //Cadhul the Deathcaller
+		ActorSno._fleshpitflyer_a_unique_02, //Firestarter
+		ActorSno._gravedigger_b, //Dataminer
+		ActorSno._skeleton_a_cain_unique, //Cain Intro Skeleton
+		ActorSno._zombiefemale_a_blacksmitha,  //Mira Imon
+		ActorSno._ghost_a_unique_chancellor, //Imon advisor
+		ActorSno._triunesummoner_a_unique_swordofjustice, //prophet Urik
+		ActorSno._graverobber_c_nigel, //graverobber Nigel
+		ActorSno._townattack_summoner_unique, //Wortham cultist leader
+		ActorSno._snakeman_caster_a_adriatorturer, //a2_swr_Adria snakeman
+		ActorSno._x1_bigred_chronodemon_burned_ramguard, //Thilor
+		ActorSno._x1_westmarchbrute_batteringramboss //Mordrath
 	)]
 	public class Unique : Monster
 	{
 		public bool CanDropKey = false;
 
-		public Unique(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Unique(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//this.Attributes[GameAttribute.Hitpoints_Max] *= 6.0f;
 			//this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max];

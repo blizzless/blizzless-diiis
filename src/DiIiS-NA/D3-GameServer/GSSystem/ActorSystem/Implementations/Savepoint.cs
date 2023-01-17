@@ -8,6 +8,7 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -19,8 +20,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public int SNOLevelArea = -1;
 
-		public Savepoint(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags, false)
+		public Savepoint(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags, false)
 		{
 			SavepointId = tags[MarkerKeys.SavepointId];
 			var proximity = new RectangleF(this.Position.X - 1f, this.Position.Y - 1f, 2f, 2f);
@@ -43,7 +44,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					snoLevelArea = SNOLevelArea,//102362,
 				});
 
-				player.SavePointData = new SavePointData() { snoWorld = World.WorldSNO.Id, SavepointId = SavepointId };
+				player.SavePointData = new SavePointData() { snoWorld = (int)World.SNO, SavepointId = SavepointId };
 				player.UpdateHeroState();
 				player.CheckPointPosition = this._position; // This seemed easier than having on Death find the SavePoint based on ID, then getting its location. - DarkLotus
 			}

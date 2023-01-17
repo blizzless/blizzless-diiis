@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -21,13 +22,13 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(209133)]
+	[HandledSNO(ActorSno._tentaclelord)]
 	public class CowKing : InteractiveNPC
 	{
 		private bool Available = false;
 
-		public CowKing(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CowKing(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.CollFlags = 0;
 			this.WalkSpeed = 0;

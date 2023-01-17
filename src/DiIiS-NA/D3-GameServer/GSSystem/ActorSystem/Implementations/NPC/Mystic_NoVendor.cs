@@ -12,14 +12,15 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(61524)] //PT_Mystic_NoVendor
+	[HandledSNO(ActorSno._pt_mystic_novendor)] //PT_Mystic_NoVendor
 	public class MysticNoVendor : InteractiveNPC
 	{
-		public MysticNoVendor(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public MysticNoVendor(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Invulnerable] = true;
 		}
@@ -30,11 +31,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			base.ReadTags();
 		}
 	}
-	[HandledSNO(87037)] //PT_Mystic_NoVendor
+	[HandledSNO(ActorSno._templarnpc)]
 	public class TemplarNPC : InteractiveNPC
 	{
-		public TemplarNPC(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public TemplarNPC(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Invulnerable] = true;
 		}

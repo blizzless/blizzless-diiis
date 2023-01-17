@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -9,8 +10,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 	{
 		public override ActorType ActorType { get { return ActorType.Environment; } }
 
-		public Environment(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Environment(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x10;//16;
 			this.Field7 = 0x00000000;

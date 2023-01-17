@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.Helpers.Hash;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -37,6 +38,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 	{
 		static readonly Logger Logger = LogManager.CreateLogger();
 
+		// "EventPortal" actors
+		private static readonly ActorSno[] eventPortals = new ActorSno[]
+		{
+			ActorSno._x1_westmhub_scoundreleventportal,
+			ActorSno._x1_westmhub_templareventportal,
+			ActorSno._x1_westmhub_enchantresseventportal,
+			ActorSno._x1_westmhub_jewelereventportal,
+		};
+
 		public override ActorType ActorType { get { return ActorType.Gizmo; } }
 
 		private int Encounter;
@@ -45,14 +55,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		private int DestPoint;
 		private ResolvedPortalDestination Destination { get; set; }
 
-		public BossPortal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public BossPortal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x9;//16;
 
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			this.Attributes[GameAttribute.Untargetable] = false;
-			switch (((this.ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter).Worlds[0])
+            var bossEncounter = ((this.ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter);
+			DestWorld = bossEncounter.Worlds[0];
+			switch (DestWorld)
 			{
 				case 60713:
 					DestArea = 60714; break;
@@ -99,78 +111,77 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 
 			}
-			DestWorld = ((this.ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter).Worlds[0];
-			DestPoint = ((this.ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter).I11;
+            DestPoint = bossEncounter.I11;
 			//get EncounterSNO
-			switch (this.ActorSNO.Id)
+			switch (this.SNO)
 			{
-				case 168932: //CainIntro
+				case ActorSno._boss_portal_cainintro: //CainIntro
 					this.Encounter = 168925;
 					break;
-				case 159573: //Leoric
+				case ActorSno._boss_portal_skeletonking: //Leoric
 					this.Encounter = 159592;
 					break;
-				case 183032: //SpiderQueen
+				case ActorSno._boss_portal_spiderqueen: //SpiderQueen
 					this.Encounter = 181436;
 					break;
-				case 158944: //Butcher
+				case ActorSno._boss_portal_butcher: //Butcher
 					this.Encounter = 158915;
 					break;
-				case 195234: //Maghda
+				case ActorSno._boss_portal_maghda: //Maghda
 					this.Encounter = 195226;
 					break;
-				case 159578: //Cain Death
+				case ActorSno._boss_portal_binkleshulkout: //Cain Death
 					this.Encounter = 159591;
 					break;
 				//case 159578: //Belial Audience
 				//this.Encounter = 162231;
 				//break;
-				case 159580: //Adria Rescue
+				case ActorSno._boss_portal_adriasewer: //Adria Rescue
 					this.Encounter = 159584;
 					break;
-				case 159581: //Zoltun Kulle
+				case ActorSno._boss_portal_blacksoulstone: //Zoltun Kulle
 					this.Encounter = 159586;
 					break;
-				case 159574: //Belial
+				case ActorSno._boss_portal_belial: //Belial
 					this.Encounter = 159585;
 					break;
-				case 226784: //SiegeBreaker
+				case ActorSno._boss_portal_siegebreaker: //SiegeBreaker
 					this.Encounter = 226716;
 					break;
-				case 161278: //Cydaea
+				case ActorSno._boss_portal_mistressofpain: //Cydaea
 					this.Encounter = 161246;
 					break;
-				case 159575: //Azmodan
+				case ActorSno._boss_portal_azmodan: //Azmodan
 					this.Encounter = 159582;
 					break;
-				case 159576: //Adria_Betrayal
+				case ActorSno._boss_portal_adriabetrayal: //Adria_Betrayal
 					this.Encounter = 159583;
 					break;
-				case 182963: //Iskatu
+				case ActorSno._boss_portal_1000monsterfight: //Iskatu
 					this.Encounter = 182960;
 				    break;
-				case 161276: //Rakanoth
+				case ActorSno._boss_portal_despair: //Rakanoth
 					this.Encounter = 161247;
 					break;
-				case 220551: //Imperius_Spire
+				case ActorSno._bossportal_imperius_spirebase: //Imperius_Spire
 					this.Encounter = 220541;
 					break;
-				case 161279: //Diablo
+				case ActorSno._boss_portal_diablo: //Diablo
 					this.Encounter = 161280;
 					break;
-				case 309883: //Urzael
+				case ActorSno._x1_urzael_bossportal: //Urzael
 					this.Encounter = 298128;
 					break;
-				case 293005: //Adria
+				case ActorSno._x1_boss_portal_adria: //Adria
 					this.Encounter = 293007;
 					break;
-				case 296314: //BatteringRam
+				case ActorSno._x1_boss_portal_batteringram: //BatteringRam
 					this.Encounter = 296315;
 					break;
-				case 374257: //Malthael
+				case ActorSno._x1_fortress_malthael_boss_portal: //Malthael
 					this.Encounter = 278965;
 					break;
-				case 380766:
+				case ActorSno._boss_portal_greed:
 					this.Encounter = 380760;
 					break;
 				default:
@@ -178,16 +189,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					break;
 			}
 
-			this.Destination = new DiIiS_NA.GameServer.MessageSystem.Message.Fields.ResolvedPortalDestination
-			{
+			this.Destination = new ResolvedPortalDestination
+            {
 				WorldSNO = DestWorld,
 				DestLevelAreaSNO = DestArea,
 				StartingPointActorTag = DestPoint
 			};
 		}
-		public static bool setActorOperable(World world, Int32 snoId, bool status)
+		public static bool SetActorOperable(World world, ActorSno sno, bool status)
 		{
-			var actor = world.GetActorBySNO(snoId);
+			var actor = world.GetActorBySNO(sno);
 
 			if (actor == null)
 				return false;
@@ -204,7 +215,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		}
 		public override bool Reveal(Player player)
 		{
-			if (this.ActorSNO.Name.EndsWith("EventPortal")) return false;
+			if (eventPortals.Contains(this.SNO)) return false;
 			if (!base.Reveal(player))
 				return false;
 			/*
@@ -219,7 +230,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				}
 			});
 			//*/
-			player.InGameClient.SendMessage(new DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal.PortalSpecifierMessage()
+			player.InGameClient.SendMessage(new PortalSpecifierMessage()
 			{
 				ActorID = this.DynamicID(player),
 				Destination = this.Destination
@@ -234,7 +245,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			Logger.Trace("(OnTargeted) BossPortal has been activated, Id: {0}", this.ActorSNO.Id);
+			Logger.Trace("(OnTargeted) BossPortal has been activated, Id: {0}", this.SNO);
 			if (this.Encounter == 0) return;
 			//if (this.World.Game.CurrentEncounter.activated) return;
 

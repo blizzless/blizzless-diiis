@@ -24,6 +24,7 @@ using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -48,13 +49,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					UnlockTeleport(0); //{[World] SNOId: 182944 GlobalId: 117440513 Name: a4dun_heaven_1000_monsters_fight_entrance}
-					var Tyrael = this.Game.GetWorld(182944).GetActorBySNO(6353) as InteractiveNPC;
+					var Tyrael = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).GetActorBySNO(ActorSno._tyrael) as InteractiveNPC;
 					Tyrael.Conversations.Clear();
 					Tyrael.OverridedConv = true;
 					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
 					Tyrael.SetUsable(false);
-					ListenProximity(6353, new LaunchConversation(195607));
+					ListenProximity(ActorSno._tyrael, new LaunchConversation(195607));
 					ListenConversation(195607, new Advance());
 				})
 			});
@@ -67,11 +68,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
 					UnlockTeleport(1);
-					this.Game.AddOnLoadAction(182944, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_heaven_1000_monsters_fight_entrance, () =>
 					{
 						if (this.Game.CurrentQuest == 112498 && this.Game.CurrentStep == 2)
 						{
-							var Tyrael = this.Game.GetWorld(182944).GetActorBySNO(6353) as InteractiveNPC;
+							var Tyrael = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).GetActorBySNO(ActorSno._tyrael) as InteractiveNPC;
 							Tyrael.Conversations.Clear();
 							Tyrael.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(112449));
 							Tyrael.OverridedConv = true;
@@ -107,9 +108,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //kill Iskatu
 					if (!this.Game.Empty)
 					{
-						script = new Invasion(this.Game.GetWorld(109143).Players.First().Value.Position, 50f, new List<int> { 60049 }, 30f, 196102, true);
-						script.Execute(this.Game.GetWorld(109143));
-						ListenKill(196102, 1, new Advance());
+						var world = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight);
+						script = new Invasion(world.Players.First().Value.Position, 50f, new List<ActorSno> { ActorSno._shadowvermin_a }, 30f, ActorSno._terrordemon_a_unique_1000monster, true);
+						script.Execute(world);
+						ListenKill(ActorSno._terrordemon_a_unique_1000monster, 1, new Advance());
 					}
 				})
 			});
@@ -146,20 +148,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 58,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Iterael
+					var world = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight);
 					if (this.Game.Empty) UnlockTeleport(2);
 					try
 					{
-						if (this.Game.GetWorld(109143).GetActorBySNO(201603, true) != null)
-							Open(this.Game.GetWorld(109143), 201603);
+						if (world.GetActorBySNO(ActorSno._a4dungarden_corruption_gate, true) != null)
+							Open(world, ActorSno._a4dungarden_corruption_gate);
 					}
 					catch { }
 					try
 					{
-						if (this.Game.GetWorld(109143).GetActorBySNO(195687, true) != null)
-							this.Game.GetWorld(109143).SpawnMonster(112768, this.Game.GetWorld(109143).GetActorBySNO(195687, true).Position);
+						if (world.GetActorBySNO(ActorSno._spawner_itherael, true) != null)
+							world.SpawnMonster(ActorSno._fate, world.GetActorBySNO(ActorSno._spawner_itherael, true).Position);
 					}
 					catch { }
-					ListenProximity(112768, new Advance());
+					ListenProximity(ActorSno._fate, new Advance());
 				})
 			});
 
@@ -171,7 +174,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Iterael
 
-					var Ityrael = this.Game.GetWorld(109143).GetActorBySNO(112768) as InteractiveNPC;
+					var Ityrael = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight).GetActorBySNO(ActorSno._fate) as InteractiveNPC;
 					Ityrael.Conversations.Clear();
 					Ityrael.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(112763));
 					Ityrael.OverridedConv = true;
@@ -192,7 +195,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //find Library of Fate
 					if (!this.Game.Empty) UnlockTeleport(2); 
 					if (this.Game.Empty) UnlockTeleport(3);
-					var Ityrael = this.Game.GetWorld(109143).GetActorBySNO(112768) as InteractiveNPC;
+					var Ityrael = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight).GetActorBySNO(ActorSno._fate) as InteractiveNPC;
 					Ityrael.Conversations.Clear();
 					Ityrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 					Ityrael.Attributes.BroadcastChangedIfRevealed();
@@ -221,15 +224,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Rakanoth
 					if (!this.Game.Empty) UnlockTeleport(3);
-					var Library = this.Game.GetWorld(166640);
+					var Library = this.Game.GetWorld(WorldSno.a4dun_libraryoffate);
 
-					ListenKill(4630, 1, new Advance());
-					this.Game.AddOnLoadAction(166640, () =>
+					ListenKill(ActorSno._despair, 1, new Advance());
+					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_libraryoffate, () =>
 					{
-						var Fate = Library.GetActorBySNO(112768); Vector3D Fate_Dist = Fate.Position; Library.Leave(Fate);
-						var Hope = Library.GetActorBySNO(114074); Vector3D Hope_Dist = Hope.Position; Library.Leave(Hope);
-						var Hope_Bound = Library.GetActorBySNO(182826);
-						var ExitPortal = Library.GetActorBySNO(204901);
+						var Fate = Library.GetActorBySNO(ActorSno._fate); Vector3D Fate_Dist = Fate.Position; Library.Leave(Fate);
+						var Hope = Library.GetActorBySNO(ActorSno._hope); Vector3D Hope_Dist = Hope.Position; Library.Leave(Hope);
+						var Hope_Bound = Library.GetActorBySNO(ActorSno._a4dunspire_interactives_hope_bound);
+						var ExitPortal = Library.GetActorBySNO(ActorSno._g_portal_heaventeal);
 						ExitPortal.Hidden = true;
 						ExitPortal.SetVisible(false);
 
@@ -254,16 +257,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //destroy Auriel's jail
 					this.Game.CurrentEncounter.activated = false;
 					
-					var Library = this.Game.GetWorld(166640);
+					var Library = this.Game.GetWorld(WorldSno.a4dun_libraryoffate);
 					StartConversation(Library, 217223); // Голос дъябло после битвы
 
-					var Hope_Bound = Library.GetActorBySNO(182826);
+					var Hope_Bound = Library.GetActorBySNO(ActorSno._a4dunspire_interactives_hope_bound);
 					Hope_Bound.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = false;
 					Hope_Bound.Attributes[GameAttribute.Gizmo_State] = 0;
 					Hope_Bound.Attributes[GameAttribute.Untargetable] = false;
 					Hope_Bound.Attributes.BroadcastChangedIfRevealed();
 
-					ListenInteract(182826, 1, new Advance());
+					ListenInteract(ActorSno._a4dunspire_interactives_hope_bound, 1, new Advance());
 				})
 			});
 
@@ -275,10 +278,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Auriel
 
-					var Library = this.Game.GetWorld(166640);
-					var Hope_Bound = Library.GetActorBySNO(182826);
-					var Hope = Library.SpawnMonster(114074, new Vector3D(Hope_Bound.Position.X - 0.3854f, Hope_Bound.Position.Y + 0.44201f, Hope_Bound.Position.Z));
-                    var Fate = Library.SpawnMonster(112768, new Vector3D(Hope_Bound.Position.X - 18.6041f, Hope_Bound.Position.Y + 2.35458f, Hope_Bound.Position.Z));
+					var Library = this.Game.GetWorld(WorldSno.a4dun_libraryoffate);
+					var Hope_Bound = Library.GetActorBySNO(ActorSno._a4dunspire_interactives_hope_bound);
+					var Hope = Library.SpawnMonster(ActorSno._hope, new Vector3D(Hope_Bound.Position.X - 0.3854f, Hope_Bound.Position.Y + 0.44201f, Hope_Bound.Position.Z));
+                    var Fate = Library.SpawnMonster(ActorSno._fate, new Vector3D(Hope_Bound.Position.X - 18.6041f, Hope_Bound.Position.Y + 2.35458f, Hope_Bound.Position.Z));
                     
                     Hope.PlayAnimation(11,201931,1);
                     Fate.PlayAnimation(11, 204712, 1);
@@ -303,13 +306,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //return to Gardens of Hope lv. 1
 					PlayCutscene(1);
-					var Library = this.Game.GetWorld(166640);
-					var Hope = Library.GetActorBySNO(114074, true);
+					var Library = this.Game.GetWorld(WorldSno.a4dun_libraryoffate);
+					var Hope = Library.GetActorBySNO(ActorSno._hope, true);
 					(Hope as InteractiveNPC).Conversations.Clear();
 					Hope.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 					(Hope as InteractiveNPC).OverridedConv = true;
 					Hope.Attributes.BroadcastChangedIfRevealed();
-					var ExitPortal = Library.GetActorBySNO(204901);
+					var ExitPortal = Library.GetActorBySNO(ActorSno._g_portal_heaventeal);
 					ExitPortal.Hidden = false;
 					ExitPortal.SetVisible(true);
 					foreach (var plr in Library.Players.Values)
@@ -326,7 +329,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 44,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find demonic rift
-					ListenProximity(224890, new Advance());
+					ListenProximity(ActorSno._a4_heaven_gardens_hellportal, new Advance());
 				})
 			});
 
@@ -337,7 +340,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 62,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //destroy Eye of Hell
-					ListenKill(208561, 1, new Advance());
+					ListenKill(ActorSno._a4dun_garden_hellportal_pillar, 1, new Advance());
 					
 				})
 			});
@@ -349,8 +352,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 50,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //leave demonic rift
-					var World = this.Game.GetWorld(109525);
-					World.SpawnMonster(215103, World.Players.Values.First().Position);
+					var World = this.Game.GetWorld(WorldSno.a4dun_hell_portal_01);
+					World.SpawnMonster(ActorSno._diablo_vo, World.Players.Values.First().Position);
 					StartConversation(World, 217230);
 					ListenTeleport(109514, new Advance());
 				})
@@ -375,7 +378,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find another demonic rift
 					if (this.Game.Empty) UnlockTeleport(4);
-					ListenProximity(224890, new Advance());
+					ListenProximity(ActorSno._a4_heaven_gardens_hellportal, new Advance());
 				})
 			});
 
@@ -386,7 +389,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 60,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //destroy Eye of Hell
-					ListenKill(208561, 1, new Advance());
+					ListenKill(ActorSno._a4dun_garden_hellportal_pillar, 1, new Advance());
 				})
 			});
 
@@ -397,8 +400,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 56,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //leave demonic rift
-					var World = this.Game.GetWorld(109530);
-					World.SpawnMonster(215103, World.Players.Values.First().Position);
+					var World = this.Game.GetWorld(WorldSno.a4dun_hell_portal_02);
+					World.SpawnMonster(ActorSno._diablo_vo, World.Players.Values.First().Position);
 					StartConversation(World, 217232);
 					ListenTeleport(109516, new Advance());
 				})
@@ -411,7 +414,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 54,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find portal to Crystal Collonade
-					ListenProximity(207838, new Advance());
+					ListenProximity(ActorSno._coreelitedemon_a_nopod_unique, new Advance());
 				})
 			});
 
@@ -424,8 +427,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //talk with Tyrael
 					if (!this.Game.Empty) UnlockTeleport(4);
 					
-					var Garden = this.Game.GetWorld(219659);
-					var Tyrael = Garden.GetActorBySNO(122552);
+					var Garden = this.Game.GetWorld(WorldSno.a4dun_garden_of_hope_random);
+					var Tyrael = Garden.GetActorBySNO(ActorSno._tyrael_heaven_spire);
 					Tyrael.Attributes[GameAttribute.MinimapActive] = true;
 					(Tyrael as InteractiveNPC).Conversations.Clear();
 					(Tyrael as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(114131));
@@ -480,17 +483,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 18,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Imperius
-					var CrystalWorld = this.Game.GetWorld(103910);
+					var CrystalWorld = this.Game.GetWorld(WorldSno.a4dun_garden3_spireentrance);
 					
-					this.Game.AddOnLoadAction(103910, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_garden3_spireentrance, () =>
 					{
-						foreach (var mob in CrystalWorld.GetActorsBySNO(106708))
+						foreach (var mob in CrystalWorld.GetActorsBySNO(ActorSno._bigred_a))
 						{
 							(mob as ActorSystem.Monster).Brain.DeActivate();
 							mob.Attributes[GameAttribute.Untargetable] = true;
 						}
 						script = new ImperiumScene();
-						script.Execute(this.Game.GetWorld(103910));
+						script.Execute(CrystalWorld);
 					});
 
 				})
@@ -515,9 +518,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 12,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //go to road to Spire
-					this.Game.AddOnLoadAction(103910, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_garden3_spireentrance, () =>
 					{
-						var CrystalWorld = this.Game.GetWorld(103910);
+						var CrystalWorld = this.Game.GetWorld(WorldSno.a4dun_garden3_spireentrance);
 						foreach (var plr in CrystalWorld.Players.Values)
 						{
 							plr.InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });
@@ -526,7 +529,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 						if (this.Game.CurrentQuest == 114795 && this.Game.CurrentStep == 16)
 						{
-							StartConversation(this.Game.GetWorld(103910), 196566);
+							StartConversation(CrystalWorld, 196566);
 						}
 					});
 					ListenTeleport(198564, new Advance());
@@ -577,17 +580,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Izual
 					if (!this.Game.Empty) UnlockTeleport(5);
-					this.Game.AddOnLoadAction(214956, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_spire_exterior, () =>
 					{
-						this.Game.GetWorld(214956).SpawnMonster(148449, new Vector3D { X = 585.439f, Y = 560.823f, Z = 0.1f });
-						var iceBarrier = this.Game.GetWorld(214956).GetActorBySNO(182526);
+						var world = this.Game.GetWorld(WorldSno.a4dun_spire_exterior);
+						world.SpawnMonster(ActorSno._bigred_izual, new Vector3D { X = 585.439f, Y = 560.823f, Z = 0.1f });
+						var iceBarrier = world.GetActorBySNO(ActorSno._a4dunspire_interactives_izual_ice_barrier_a);
 						while (iceBarrier != null)
 						{
 							iceBarrier.Destroy();
-							iceBarrier = this.Game.GetWorld(214956).GetActorBySNO(182526);
+							iceBarrier = world.GetActorBySNO(ActorSno._a4dunspire_interactives_izual_ice_barrier_a);
 						}
 					});
-					ListenKill(148449, 1, new Advance());
+					ListenKill(ActorSno._bigred_izual, 1, new Advance());
 				})
 			});
 
@@ -612,7 +616,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //talk with Tyrael
 					if (!this.Game.Empty) UnlockTeleport(6);
 					if (this.Game.Empty) UnlockTeleport(7);
-					ListenProximity(122552, new LaunchConversation(199698));
+					ListenProximity(ActorSno._tyrael_heaven_spire, new LaunchConversation(199698));
 					ListenConversation(199698, new Advance());
 				})
 			});
@@ -636,11 +640,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Diablo
 					if (!this.Game.Empty) UnlockTeleport(7);
-					this.Game.AddOnLoadAction(109561, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_diablo_arena, () =>
 					{
-						Open(this.Game.GetWorld(109561), 178052);
+						Open(this.Game.GetWorld(WorldSno.a4dun_diablo_arena), ActorSno._a4dun_diablo_bone_gate);
 					});
-					ListenProximity(178052, new Advance());
+					ListenProximity(ActorSno._a4dun_diablo_bone_gate, new Advance());
 				})
 			});
 
@@ -651,11 +655,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 6,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Diablo (1st phase, to 50% hp)		
-					this.Game.AddOnLoadAction(109561, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_diablo_arena, () =>
 					{
 						if (this.Game.CurrentQuest == 114901 && this.Game.CurrentStep == 1)
 						{
-							StartConversation(this.Game.GetWorld(109561), 132632);
+							StartConversation(this.Game.GetWorld(WorldSno.a4dun_diablo_arena), 132632);
 						}
 					});
 					//seems hacky but works
@@ -670,7 +674,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 12,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Diablo Shadow (2nd phase)
-					ListenKill(133562, 1, new Advance());
+					ListenKill(ActorSno._terrordiablo, 1, new Advance());
 				})
 			});
 
@@ -681,9 +685,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Diablo (3rd phase)
-					TeleportToWorld(this.Game.GetWorld(153670), this.Game.GetWorld(196292), 172);
-					StartConversation(this.Game.GetWorld(196292), 132640);
-					ListenKill(114917, 1, new Advance());
+					var targetWorld = this.Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3);
+					TeleportToWorld(this.Game.GetWorld(WorldSno.a4dun_diablo_shadowrealm_01), targetWorld, 172);
+					StartConversation(targetWorld, 132640);
+					ListenKill(ActorSno._diablo, 1, new Advance());
 				})
 			});
 
@@ -694,7 +699,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 17,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //destroy Diablo
-					StartConversation(this.Game.GetWorld(196292), 205783);
+					StartConversation(this.Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3), 205783);
 					ListenConversation(205783, new Advance());
 				})
 			});
@@ -706,7 +711,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 5,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Auriel
-					this.Game.GetWorld(196292).GetActorBySNO(114074).NotifyConversation(1);
+					this.Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3).GetActorBySNO(ActorSno._hope).NotifyConversation(1);
 					if (this.Game.IsHardcore)
 					{
 						foreach (var plr in this.Game.Players.Values)
@@ -719,7 +724,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 							if (!plr.Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.MasterUnlocked))
 								plr.Toon.GameAccount.Flags = plr.Toon.GameAccount.Flags | GameAccount.GameAccountFlags.MasterUnlocked;
 					}
-					ListenInteract(114074, 1, new LaunchConversation(199726));
+					ListenInteract(ActorSno._hope, 1, new LaunchConversation(199726));
 					ListenConversation(199726, new Advance());
 				})
 			});

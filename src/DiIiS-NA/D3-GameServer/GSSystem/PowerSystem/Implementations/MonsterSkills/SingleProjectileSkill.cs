@@ -20,6 +20,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 {
@@ -28,9 +29,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 		protected Projectile projectile;
 		protected float speed;
 
-		protected void SetProjectile(PowerContext context, int actorSNO, Vector3D position, float speed = 1f, Action<Actor> OnCollision = null)
+		protected void SetProjectile(PowerContext context, ActorSno actorSNO, Vector3D position, float speed = 1f, Action<Actor> OnCollision = null)
 		{
 			if (User is Monster)
+				// FIXME: Non-exist world id
 				if (User.World.WorldSNO.Id == 1 ||
 					User.World.WorldSNO.Id == 1)
 						position.Z = (User as Monster).CorrectedPosition.Z;
@@ -54,12 +56,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			int projectileId = 3901;//default
+			var projectileId = ActorSno._d3arrow;//default
 			
-			switch (this.User.ActorSNO.Id)
+			switch (this.User.SNO)
 			{
-				case 4157: projectileId = 5385; break;
-				case 218951: projectileId = 182154; break;//demonFlyer_bomb_projectile
+				case ActorSno._fleshpitflyer_b: projectileId = ActorSno._skeletonmage_poison_projectile; break;
+				case ActorSno._demonflyer_c_bomber: projectileId = ActorSno._demonflyer_bomb_projectile; break;//demonFlyer_bomb_projectile
 			}
 			//*/
 			SetProjectile(this, projectileId, User.Position, 1f, (hit) =>
@@ -76,7 +78,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 3901, User.Position, 1f, (hit) =>
+			SetProjectile(this, ActorSno._d3arrow, User.Position, 1f, (hit) =>
 			{
 				WeaponDamage(hit, 1.00f, DamageType.Physical);
 				projectile.Destroy();
@@ -90,7 +92,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 472884, User.Position, 1f, (hit) =>
+			SetProjectile(this, ActorSno._p6_necro_skeletonmage_f_archer_projectile, User.Position, 1f, (hit) =>
 			{
 				WeaponDamage(hit, 4.00f, DamageType.Physical);
 				projectile.Destroy();
@@ -110,11 +112,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	}
 
 	[ImplementsPowerSNO(30258)] // graveRobber_Projectile.pow
-	public class graveRobberProjectile : SingleProjectileSkill
+	public class GraveRobberProjectile : SingleProjectileSkill
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 4365, User.Position, 1f, (hit) =>
+			SetProjectile(this, ActorSno._graverobber_knife, User.Position, 1f, (hit) =>
 			{
 				WeaponDamage(hit, 1.00f, DamageType.Physical);
 				projectile.Destroy();
@@ -128,7 +130,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 5392, User.Position, 0.9f, (hit) =>
+			SetProjectile(this, ActorSno._skeletonsummoner_projectile, User.Position, 0.9f, (hit) =>
 			{
 				hit.PlayEffectGroup(19052);
 				WeaponDamage(hit, 1.00f, DamageType.Arcane);
@@ -144,7 +146,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 80143, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._goatwarrior_shaman_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				hit.PlayEffectGroup(99355);
 				WeaponDamage(hit, 1.5f, DamageType.Cold);
@@ -160,7 +162,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 5379, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._skeletonmage_lightning_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				//hit.PlayEffectGroup(5378);
 				WeaponDamage(hit, 1f, DamageType.Lightning);
@@ -176,7 +178,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 4308, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._goatwarrior_piece_spear, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				hit.PlayEffectGroup(99355);
 				WeaponDamage(hit, 1.5f, DamageType.Cold);
@@ -192,7 +194,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 4103, User.Position, 0.5f, (hit) =>
+			SetProjectile(this, ActorSno._fallenshaman_fireball_projectile, User.Position, 0.5f, (hit) =>
 			{
 				//hit.PlayEffectGroup(4101);
 				WeaponDamage(hit, 1f, DamageType.Fire);
@@ -208,7 +210,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 160154, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._demonflyer_fireball_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				//hit.PlayEffectGroup(160401);
 				WeaponDamage(hit, 1f, DamageType.Fire);
@@ -224,7 +226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 164829, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._succubus_bloodstar_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				WeaponDamage(hit, 1f, DamageType.Physical);
 				projectile.Destroy();
@@ -239,7 +241,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 5212, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._sandwasp_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				//hit.PlayEffectGroup(5215);
 				WeaponDamage(hit, 1.2f, DamageType.Poison);
@@ -255,7 +257,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 179880, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._hoodednightmare_lighting_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				//hit.PlayEffectGroup(158300);
 				WeaponDamage(hit, 1f, DamageType.Physical);
@@ -271,7 +273,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 158698, User.Position, 1f, (hit) =>
+			SetProjectile(this, ActorSno._goatmutant_ranged_spear, User.Position, 1f, (hit) =>
 			{
 				WeaponDamage(hit, 1f, DamageType.Physical);
 				projectile.Destroy();
@@ -286,7 +288,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 176406, User.Position, 0.5f, (hit) =>
+			SetProjectile(this, ActorSno._goatmutant_shaman_blast_projectile, User.Position, 0.5f, (hit) =>
 			{
 				//hit.PlayEffectGroup(176534);
 				WeaponDamage(hit, 1f, DamageType.Physical);
@@ -302,7 +304,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 6040, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._triunesummoner_fireball_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				WeaponDamage(hit, 1f, DamageType.Fire);
 				projectile.Destroy();
@@ -313,11 +315,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	}
 
 	[ImplementsPowerSNO(30500)] // skeletonMage_Lightning_pierce.pow
-	public class skeletonMageLightningpierce : SingleProjectileSkill
+	public class SkeletonMageLightningpierce : SingleProjectileSkill
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 5379, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._skeletonmage_lightning_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				//hit.PlayEffectGroup(5378);
 				WeaponDamage(hit, 1f, DamageType.Lightning);
@@ -329,11 +331,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	}
 
 	[ImplementsPowerSNO(30497)] // skeletonMage_Cold_projectile.pow
-	public class skeletonMageColdprojectile : SingleProjectileSkill
+	public class SkeletonMageColdprojectile : SingleProjectileSkill
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 5370, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._skeletonmage_cold_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				//hit.PlayEffectGroup(5369);
 				WeaponDamage(hit, 0.5f, DamageType.Cold);
@@ -345,15 +347,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	}
 
 	[ImplementsPowerSNO(30499)] // skeletonMage_Fire_projectile.pow
-	public class skeletonMageFireprojectile : SingleProjectileSkill
+	public class SkeletonMageFireprojectile : SingleProjectileSkill
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			int proj = 5374;
+			var proj = ActorSno._skeletonmage_fire_projectile;
 			float dmg = 1.1f;
-			if (this.User.ActorSNO.Id == 472801)
+			if (this.User.SNO == ActorSno._p6_necro_skeletonmage_f_archer)
 			{
-				proj = 472884;
+				proj = ActorSno._p6_necro_skeletonmage_f_archer_projectile;
 				dmg = 4f;
 			}
 			SetProjectile(this, proj, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
@@ -368,11 +370,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	}
 
 	[ImplementsPowerSNO(30502)] // skeletonMage_Poison_pierce.pow
-	public class skeletonMagePoisonpierce : SingleProjectileSkill
+	public class SkeletonMagePoisonpierce : SingleProjectileSkill
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 5385, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
+			SetProjectile(this, ActorSno._skeletonmage_poison_projectile, User.Position, EvalTag(PowerKeys.ProjectileSpeed), (hit) =>
 			{
 				//hit.PlayEffectGroup(5384);
 				WeaponDamage(hit, 1.5f, DamageType.Poison);
@@ -388,7 +390,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 5379, User.Position, 0.7f, (hit) =>
+			SetProjectile(this, ActorSno._skeletonmage_lightning_projectile, User.Position, 0.7f, (hit) =>
 			{
 				//hit.PlayEffectGroup(5384);
 				WeaponDamage(hit, 0.5f, DamageType.Lightning);
@@ -404,7 +406,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 141734, User.Position, 0.5f, (hit) =>
+			SetProjectile(this, ActorSno._dh_sentry_arrow, User.Position, 0.5f, (hit) =>
 			{
 				//hit.PlayEffectGroup(150040);
 				WeaponDamage(hit, ScriptFormula(1), DamageType.Physical);
@@ -637,7 +639,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 377091, User.Position, 0.5f, (hit) =>
+			SetProjectile(this, ActorSno._x1_unique_monster_generic_projectile_physical, User.Position, 0.5f, (hit) =>
 			{
 				hit.PlayEffectGroup(159158);
 				WeaponDamage(hit, 2.00f, DamageType.Arcane);
@@ -653,7 +655,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 4981, User.Position, 1f, (hit) =>
+			SetProjectile(this, ActorSno._quilldemonhorn_projectile, User.Position, 1f, (hit) =>
 			{
 				// Looking at the tagmaps for 107729, the damage should probably be more accurately calculated, but this will have to do for now.
 				WeaponDamage(hit, 1.00f, DamageType.Physical);
@@ -669,7 +671,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 120957, User.Position, 1.00f, (hit) =>
+			SetProjectile(this, ActorSno._zombie_female_barfball_projectile, User.Position, 1.00f, (hit) =>
 			{
 				hit.PlayEffectGroup(142812);
 				WeaponDamage(hit, 1.00f, DamageType.Poison);
@@ -685,7 +687,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 129932, User.Position, 1.00f, (hit) =>
+			SetProjectile(this, ActorSno._dh_bonearrow_projectile, User.Position, 1.00f, (hit) =>
 			{
 				//hit.PlayEffectGroup(142812);
 				WeaponDamage(hit, 1.00f, DamageType.Physical);
@@ -701,7 +703,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 4413, User.Position, 1.00f, (hit) =>
+			SetProjectile(this, ActorSno._g_magicprojectile, User.Position, 1.00f, (hit) =>
 			{
 				//hit.PlayEffectGroup(142812);
 				WeaponDamage(hit, 1.00f, DamageType.Arcane);

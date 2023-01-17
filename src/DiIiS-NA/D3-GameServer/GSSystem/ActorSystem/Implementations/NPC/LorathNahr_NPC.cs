@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.MPQ;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
@@ -20,11 +21,11 @@ using MonsterFF = DiIiS_NA.Core.MPQ.FileFormats.Monster;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	//{[Actor] [Type: Monster] SNOId:284530 GlobalId: 1017400498 Position: x:593.36835 y:489.5003 z:-4.8999996 Name: x1_NPC_LorathNahr}
-	[HandledSNO(284530)]
+	[HandledSNO(ActorSno._x1_npc_lorathnahr)]
 	class LorathNahr_NPC : InteractiveNPC, IUpdateable
 	{
-		public LorathNahr_NPC(MapSystem.World world, int snoID, TagMap tags)
-			: base(world, snoID, tags)
+		public LorathNahr_NPC(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			Brain = new AggressiveNPCBrain(this); // erekose			 
 
@@ -37,7 +38,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
 			this.Attributes[GameAttribute.Invulnerable] = true;
 			this.Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-			if (world.WorldSNO.Id == 308705)
+			if (world.SNO == WorldSno.x1_westmarch_overlook_d)
 			{
 				this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = 0f;
 				this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 0f;
@@ -58,9 +59,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			}
 
 			base.ReadTags();
-
-			if (this.ActorSNO.Id == 256248)
-				this.Attributes[GameAttribute.TeamID] = 0;
 		}
 
 		public void Update(int tickCounter)

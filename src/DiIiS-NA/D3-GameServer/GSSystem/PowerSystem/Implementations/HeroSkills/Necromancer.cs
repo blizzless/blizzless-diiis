@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -43,6 +44,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
     [ImplementsPowerSNO(SkillsSystem.Skills.Necromancer.MainSkills.BoneSpikes)]
     public class BoneSpikes : ChanneledSkill
     {
+        private static readonly float[] rangeDividers = new float[] { 8, 7, 6, 5, 4, 3, 2, 1.5f, 1.25f };
         private Actor _beamEnd;
 
         private Vector3D _calcBeamEnd(float length)
@@ -72,13 +74,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             
 
             AttackPayload attack = new AttackPayload(this);
-            var defaultEff = 462194;
+            var defaultEff = ActorSno._p6_necro_bonespikes;
             if (Rune_B < 1)
             {
                 if (Rune_D == 1)
-                    defaultEff = 472600; 
+                    defaultEff = ActorSno._p6_necro_bonespikes_d_ice_actorparticle; 
                 else if (Rune_E == 1)
-                    defaultEff = 472764;
+                    defaultEff = ActorSno._p6_necro_bonespikes_e_blood_actorparticle;
 
                 if (User.World.CheckLocationForFlag(TargetPosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowProjectile))
                 {
@@ -143,59 +145,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                 bool Regen = false;
 
-                var Explosion1 = SpawnEffect(462194, new Vector3D(User.Position.X + Range.X / 8, User.Position.Y + Range.Y / 8, TargetPosition.Z), 0, WaitSeconds(0.4f));
-                Explosion1.PlayEffect(Effect.PlayEffectGroup, 471513);
-                var Targets1 = GetEnemiesInRadius(Explosion1.Position, 5f);
-                if (Targets1.Actors.Count > 0) Regen = true;
-                WeaponDamage(Targets1, 1.00f, DamageType.Physical);
-
-                var Explosion2 = SpawnEffect(462194, new Vector3D(User.Position.X + Range.X / 7, User.Position.Y + Range.Y / 7, TargetPosition.Z), 0, WaitSeconds(0.4f));
-                Explosion2.PlayEffect(Effect.PlayEffectGroup, 471513);
-                var Targets2 = GetEnemiesInRadius(Explosion2.Position, 5f);
-                if (Targets2.Actors.Count > 0) Regen = true;
-                WeaponDamage(Targets2, 1.00f, DamageType.Physical);
-
-                var Explosion3 = SpawnEffect(462194, new Vector3D(User.Position.X + Range.X / 6, User.Position.Y + Range.Y / 6, TargetPosition.Z), 0, WaitSeconds(0.4f));
-                Explosion3.PlayEffect(Effect.PlayEffectGroup, 471514);
-                var Targets3 = GetEnemiesInRadius(Explosion3.Position, 5f);
-                if (Targets3.Actors.Count > 0) Regen = true;
-                WeaponDamage(Targets3, 1.00f, DamageType.Physical);
-
-                var Explosion4 = SpawnEffect(462194, new Vector3D(User.Position.X + Range.X / 5, User.Position.Y + Range.Y / 5, TargetPosition.Z), 0, WaitSeconds(0.4f));
-                Explosion4.PlayEffect(Effect.PlayEffectGroup, 471514);
-                var Targets4 = GetEnemiesInRadius(Explosion4.Position, 5f);
-                if (Targets4.Actors.Count > 0) Regen = true;
-                WeaponDamage(Targets4, 1.00f, DamageType.Physical);
-
-                var Explosion5 = SpawnEffect(462194, new Vector3D(User.Position.X + Range.X / 4, User.Position.Y + Range.Y / 4, TargetPosition.Z), 0, WaitSeconds(0.4f));
-                Explosion4.PlayEffect(Effect.PlayEffectGroup, 471515);
-                var Targets5 = GetEnemiesInRadius(Explosion5.Position, 5f);
-                if (Targets5.Actors.Count > 0) Regen = true;
-                WeaponDamage(Targets5, 1.00f, DamageType.Physical);
-
-                var Explosion6 = SpawnEffect(462194, new Vector3D(User.Position.X + Range.X / 3, User.Position.Y + Range.Y / 3, TargetPosition.Z), 0, WaitSeconds(0.4f));
-                Explosion6.PlayEffect(Effect.PlayEffectGroup, 471515);
-                var Targets6 = GetEnemiesInRadius(Explosion6.Position, 5f);
-                if (Targets6.Actors.Count > 0) Regen = true;
-                WeaponDamage(Targets6, 1.00f, DamageType.Physical);
-
-                var Explosion7 = SpawnEffect(462194, new Vector3D(User.Position.X + Range.X / 2, User.Position.Y + Range.Y / 2, TargetPosition.Z), 0, WaitSeconds(0.4f));
-                Explosion7.PlayEffect(Effect.PlayEffectGroup, 471516);
-                var Targets7 = GetEnemiesInRadius(Explosion7.Position, 5f);
-                if (Targets7.Actors.Count > 0) Regen = true;
-                WeaponDamage(Targets7, 1.00f, DamageType.Physical);
-
-                var Explosion8 = SpawnEffect(462194, new Vector3D(User.Position.X + Range.X / 1.5f, User.Position.Y + Range.Y / 1.5f, TargetPosition.Z), 0, WaitSeconds(0.4f));
-                Explosion8.PlayEffect(Effect.PlayEffectGroup, 471516);
-                var Targets8 = GetEnemiesInRadius(Explosion8.Position, 5f);
-                if (Targets8.Actors.Count > 0) Regen = true;
-                WeaponDamage(Targets8, 1.00f, DamageType.Physical);
-
-                var Explosion9 = SpawnEffect(462194, new Vector3D(User.Position.X + Range.X / 1.25f, User.Position.Y + Range.Y / 1.25f, TargetPosition.Z), 0, WaitSeconds(0.4f));
-                Explosion9.PlayEffect(Effect.PlayEffectGroup, 471516);
-                var Targets9 = GetEnemiesInRadius(Explosion9.Position, 5f);
-                if (Targets9.Actors.Count > 0) Regen = true;
-                WeaponDamage(Targets9, 1.00f, DamageType.Physical);
+                foreach (var divider in rangeDividers)
+                {
+                    var explosion = SpawnEffect(ActorSno._p6_necro_bonespikes, new Vector3D(User.Position.X + Range.X / divider, User.Position.Y + Range.Y / divider, TargetPosition.Z), 0, WaitSeconds(0.4f));
+                    explosion.PlayEffect(Effect.PlayEffectGroup, 471513);
+                    var targets = GetEnemiesInRadius(explosion.Position, 5f);
+                    if (targets.Actors.Count > 0)
+                        Regen = true;
+                    WeaponDamage(targets, 1.00f, DamageType.Physical);
+                }
 
                 if (Regen)
                     GeneratePrimaryResource(30f);
@@ -537,7 +495,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             this.EffectsPerSecond = 0.5f;
 
             {
-                _beamEnd = SpawnEffect(453772, User.Position, 0, WaitInfinite());
+                _beamEnd = SpawnEffect(ActorSno._p6_necro_siphonblood_a_target_attractchunks, User.Position, 0, WaitInfinite());
 
             }
         }
@@ -749,14 +707,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             else
             {
-                int Actor = 460136;
+                var Actor = ActorSno._p6_necro_bonespear01_ghostly;
                 if (Rune_C > 0)
-                    Actor = 469253;
+                    Actor = ActorSno._p6_necro_bonespear01_decay;
                 if (Rune_A > 0) //Кристализация
-                    Actor = 452802;//452802
+                    Actor = ActorSno._p6_necro_bonespear01;//452802
                 if (Rune_D > 0) //Кровавое копье
                 {
-                    Actor = 468487;
+                    Actor = ActorSno._p6_necro_bonespear01_blood;
                     (User as PlayerSystem.Player).AddPercentageHP(-10);
                 }
                 var projectile = new Projectile(this, Actor, User.Position);
@@ -998,9 +956,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             else
                 UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
             
-             var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+             var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
             
-            var Mage = new SkeletalMage(this.World, this, 0, RuneSelect(472275, 472588, 472606, 472715, 472769, 472801));
+            var Mage = new SkeletalMage(
+                this.World,
+                this,
+                0,
+                RuneSelect(
+                    ActorSno._p6_necro_skeletonmage_a,
+                    ActorSno._p6_necro_skeletonmage_b,
+                    ActorSno._p6_necro_skeletonmage_c,
+                    ActorSno._p6_necro_skeletonmage_d,
+                    ActorSno._p6_necro_skeletonmage_e,
+                    ActorSno._p6_necro_skeletonmage_f_archer
+                )
+            );
             Mage.Brain.DeActivate();
             
             Mage.Scale = 1.2f;
@@ -1348,18 +1318,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             float Damage = 10.5f;
             DamageType DType = DamageType.Physical;
             var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
-            var Point = SpawnEffect(462194, TargetPosition, 0, WaitSeconds(0.2f));
+            var Point = SpawnEffect(ActorSno._p6_necro_bonespikes, TargetPosition, 0, WaitSeconds(0.2f));
             Point.PlayEffect(Effect.PlayEffectGroup, RuneSelect(459954, 473926, 459954, 473907, 459954//D
                 , 473864));
-            List<uint> Actors = new List<uint> { };
-            if (User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] == true)
-                Actors.Add(User.World.SpawnMonster(454066, TargetPosition).GlobalID);
-            else
-            {
-                foreach (var Flesh in this.User.GetActorsInRange(TargetPosition, 11))
-                    if (Actors.Count < 5 & Flesh.ActorSNO.Id == 454066)
-                        Actors.Add(Flesh.GlobalID);
-            }
+            var Actors = User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting]
+                ? new List<uint> { User.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, TargetPosition).GlobalID }
+                : User.GetActorsInRange(TargetPosition, 11).Where(x => x.SNO == ActorSno._p6_necro_corpse_flesh).Select(x => x.GlobalID).Take(5).ToList();
             if (Rune_D > 0)
                 Radius = 25f;
             else if (Rune_C > 0)//Ближнее действие
@@ -1379,7 +1343,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     
                 }
                     
-                var Explosion = SpawnEffect(471527, this.World.GetActorByGlobalId(actor).Position, ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, this.World.GetActorByGlobalId(actor)), WaitSeconds(0.2f));
+                var Explosion = SpawnEffect(
+                    ActorSno._p6_necro_corpseexplosion_projectile_spawn,
+                    this.World.GetActorByGlobalId(actor).Position,
+                    ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, this.World.GetActorByGlobalId(actor)),
+                    WaitSeconds(0.2f)
+                );
                 Explosion.PlayEffect(Effect.PlayEffectGroup, RuneSelect(457183, 471539, 471258, 471249, 471247, 471236));
 
                 Explosion.UpdateDelay = 0.1f;
@@ -1457,7 +1426,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 Flesh = this.User.GetActorsInRange<ActorSystem.Implementations.NecromancerFlesh>(60f).First();
             var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
             DamageType DType = DamageType.Physical;
-            var Explosion = SpawnEffect(471256, Flesh.Position, 0, WaitSeconds(0.2f));
+            var Explosion = SpawnEffect(ActorSno._p6_necro_corpseexplosion_projectile, Flesh.Position, 0, WaitSeconds(0.2f));
             Explosion.PlayEffect(Effect.PlayEffectGroup, 457183);
             var Proxy = SpawnProxy(Flesh.Position, new TickTimer(this.User.World.Game, 300));
             if (User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] == false)
@@ -1730,7 +1699,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 else if (Rune_B > 0) //Бесчеловечность
                     foreach (var minion in User.GetActorsInRange<Minion>(60f))
                     {
-                        if ((User as PlayerSystem.Player).FindFollowerIndex(minion.ActorSNO.Id) == 0)
+                        if ((User as PlayerSystem.Player).FindFollowerIndex(minion.SNO) == 0)
                             break;
                         else
                         {
@@ -1888,8 +1857,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if ((User as PlayerSystem.Player).Revived.Count < 10)
                 {
-                    var Temp = User.World.SpawnMonster(act.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO], act.Position);
-                    var RevivedTemp = new Minion(User.World, Temp.ActorSNO.Id, User, Temp.Tags, false, true);
+                    var Temp = User.World.SpawnMonster((ActorSno)act.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO], act.Position);
+                    var RevivedTemp = new Minion(User.World, Temp.SNO, User, Temp.Tags, false, true);
                     Temp.Destroy();
 
                     RevivedTemp.EnterWorld(act.Position);
@@ -2172,7 +2141,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (User.World.CheckLocationForFlag(TargetPosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
                 {
                     (Golem as Minion).Brain.DeActivate();
-                    var baseeffect = SpawnEffect(475367, Golem.Position, User, WaitSeconds(1f));
+                    var baseeffect = SpawnEffect(ActorSno._p6_bloodgolem_b_despawn, Golem.Position, User, WaitSeconds(1f));
                     baseeffect.PlayEffectGroup(463811);
                     Golem.Teleport(TargetPosition);
                     //var effect = SpawnEffect(351638, TargetPosition, User, WaitSeconds(3f));
@@ -2214,10 +2183,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             else if (Rune_C > 0)
             {
-                List<ActorSystem.Actor> Actors = new List<ActorSystem.Actor> { };
-                foreach (var Flesh in this.User.GetActorsInRange(TargetPosition, 11))
-                    if (Actors.Count < 5 & Flesh.ActorSNO.Id == 454066)
-                        Actors.Add(Flesh);
+                var Actors = User.GetActorsInRange(TargetPosition, 11).Where(x => x.SNO == ActorSno._p6_necro_corpse_flesh).Take(5).ToList();
 
                 AddBuff(Golem, new SBuff());
 
@@ -2241,7 +2207,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     Boom.ContinueWith(delegate
                     {
                         for (int i = 0; i < countofFlesh; i++)
-                            User.World.SpawnMonster(454066, RandomDirection(TargetPosition, 3f, 9f));
+                            User.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, RandomDirection(TargetPosition, 3f, 9f));
 
                         (Golem as Minion).Kill(this);
                         Golem.Destroy();
@@ -2577,7 +2543,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             StartCooldown(EvalTag(PowerKeys.CooldownTime));
             var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][460358].Data;
 
-            int EffectSNO = 471764;
+            var EffectSNO = ActorSno._necro_aotd_a_emitter;
             float Range = 15f;
             float Damage = 120.0f;
             var DType = DamageType.Physical;
@@ -2598,7 +2564,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 DType = DamageType.Cold;
                 Damage = 5.2f;
                 var Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(this.User, TargetPosition);
-                var E = SpawnEffect(466460, TargetPosition, Angle);
+                var E = SpawnEffect(ActorSno._necro_aotd_b_north_emitter, TargetPosition, Angle);
 
                 E.UpdateDelay = 0.2f;
                 E.OnUpdate = () =>
@@ -2620,14 +2586,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                 if (Rune_C > 0)
                 {
-                    EffectSNO = 471848;
+                    EffectSNO = ActorSno._necro_aotd_c_emitter;
                     Range = 20f;
                     Damage = 500.0f;
                 }
                 else if (Rune_E > 0)
                 {
                     (User as PlayerSystem.Player).AddPercentageHP(-20f);
-                    EffectSNO = 474842;
+                    EffectSNO = ActorSno._necro_aotd_f_emitter;
                     Time = 5.0f;
                     Damage = 6.2f;
                 }
@@ -2942,12 +2908,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         #endregion
         public override IEnumerable<TickTimer> Main()
         {
-            var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][451491].Data;
+            var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][451491].Data;
             
             UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
             User.PlayEffect(Effect.PlayEffectGroup, 466026);
             //457752
-            var Explosion = SpawnEffect(457752, TargetPosition, 0, WaitSeconds(0.2f));
+            var Explosion = SpawnEffect(ActorSno._p6_necro_decrepify_a_cast_swipe, TargetPosition, 0, WaitSeconds(0.2f));
             Explosion.PlayEffect(Effect.PlayEffectGroup, RuneSelect(470087, 466027, 466107, 470087, 470087, 470147));
 
             var Targets = GetEnemiesInRadius(TargetPosition, 20f);
@@ -3230,11 +3196,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             if (Rune_D > 0) //Проклятая земля
             {
-                foreach (var alr in World.GetActorsBySNO(471564))
+                foreach (var alr in World.GetActorsBySNO(ActorSno._p6_necro_leech_e_proxyactor))
                     if (alr.Attributes[GameAttribute.Summoner_ID] == (User as PlayerSystem.Player).PlayerIndex)
                         alr.Destroy();
 
-                var proxy = SpawnEffect(471564, TargetPosition,
+                var proxy = SpawnEffect(ActorSno._p6_necro_leech_e_proxyactor, TargetPosition,
                 ActorSystem.Movement.MovementHelpers.GetFacingAngle(this.User, TargetPosition),
                 WaitSeconds(30f));
                 proxy.Attributes[GameAttribute.Summoner_ID] = (User as PlayerSystem.Player).PlayerIndex;
@@ -3242,10 +3208,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             else
             {
-                var Explosion = SpawnEffect(RuneSelect(462384, 475359, 473279, 475178, 473370, 473436),
-                TargetPosition,
-                ActorSystem.Movement.MovementHelpers.GetFacingAngle(this.User, TargetPosition),
-                WaitSeconds(0.2f));
+                var Explosion = SpawnEffect(
+                    RuneSelect(
+                        ActorSno._p6_necro_leech_base_groundarea,
+                        ActorSno._p6_necro_leech_b_groundarea,
+                        ActorSno._p6_necro_leech_c_groundarea,
+                        ActorSno._p6_necro_leech_d_groundarea,
+                        ActorSno._p6_necro_leech_e_groundarea,
+                        ActorSno._p6_necro_leech_f_groundarea
+                    ),
+                    TargetPosition,
+                    ActorSystem.Movement.MovementHelpers.GetFacingAngle(this.User, TargetPosition),
+                    WaitSeconds(0.2f)
+                );
 
                 Explosion.PlayEffect(Effect.PlayEffectGroup, RuneSelect(473263, 475194, 473264, 475171, 473361, 473432));
 
@@ -4477,7 +4452,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             //[473024] [Actor] p6_necro_boneSpirit_F_projectile
             User.Attributes[GameAttribute.Skill_Charges, PowerSNO] -= 1;
             User.Attributes.BroadcastChangedIfRevealed();
-            var projectile = new Projectile(this, RuneSelect(466994, 473020, 473021, 473022, 473023, 473024), User.Position);
+            var projectile = new Projectile(
+                this,
+                RuneSelect(
+                    ActorSno._p6_necro_bonespirit_a_projectile,
+                    ActorSno._p6_necro_bonespirit_b_projectile,
+                    ActorSno._p6_necro_bonespirit_c_projectile,
+                    ActorSno._p6_necro_bonespirit_d_projectile,
+                    ActorSno._p6_necro_bonespirit_e_projectile,
+                    ActorSno._p6_necro_bonespirit_f_projectile
+                ),
+                User.Position
+            );
             projectile.Position.Z += 5f;  // fix height
             DamageType NowDamage = DamageType.Physical;
             int countdamagebonus = 0;

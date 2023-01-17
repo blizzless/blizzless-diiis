@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects;
 //Blizzless Project 2022 
 using System;
@@ -27,7 +28,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			//Logger.Debug("SecondCatapult event started");
 			if (!raised)
 			{
-				var catapult = (world.GetActorBySNO(161071) as actIIICatapult);
+				var catapult = (world.GetActorBySNO(ActorSno._a3dun_wall_lift_gategizmorightface) as ActIIICatapult);
 				catapult.Raise();
 				world.Game.QuestManager.CompleteObjective(0);
 				raised = true;

@@ -60,6 +60,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			}
 		}
 
+		// key is WorldSno, LevelArea
 		public static Dictionary<int, MonsterLayout> Spawns = new Dictionary<int, MonsterLayout>
 		{
 			#region Act I

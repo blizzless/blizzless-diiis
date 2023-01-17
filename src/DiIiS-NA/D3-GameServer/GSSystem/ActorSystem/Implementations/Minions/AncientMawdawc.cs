@@ -12,6 +12,7 @@ using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -20,7 +21,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		public new int SummonLimit = 1;
 
 		public AncientMawdawc(World world, PowerContext context, int AncientsID)
-			: base(world, 90536, context.User, null)
+			: base(world, ActorSno._barbarian_calloftheancients_3, context.User, null)
 		{
 			Scale = 1.2f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.
@@ -47,8 +48,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			{
 				if (this.Master is Player)
 				{
-					if ((this.Master as Player).Followers.Values.Count(a => a == 90536) > 1)
-						(this.Master as Player).DestroyFollower(90536);
+					if ((this.Master as Player).Followers.Values.Count(a => a == SNO) > 1)
+						(this.Master as Player).DestroyFollower(SNO);
 				}
 			}
 

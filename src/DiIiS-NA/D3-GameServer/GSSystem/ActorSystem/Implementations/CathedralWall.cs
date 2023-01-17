@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
@@ -21,21 +22,20 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-    [HandledSNO(5786 // trDun_cath_Chandilier_Trap.acr 
+    [HandledSNO(
+		ActorSno._trdun_cath_wallcollapse_01// trDun_cath_Chandilier_Trap.acr 
 	)]
 	class CathedralWall : Gizmo
 	{
-		public CathedralWall(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CathedralWall(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 
 		}
 
-		private int[] Unbreakables = new int[] { 81699, 5744, 89503 };
-
 		public void ReceiveDamage(Actor source, float damage)
 		{
-			if (this.ActorSNO.Id == 225252 && this.World.Game.CurrentSideQuest != 225253) return;
+			if (this.SNO == ActorSno._trout_highlands_goatman_totem_gharbad && this.World.Game.CurrentSideQuest != 225253) return;
 
 			World.BroadcastIfRevealed(plr => new FloatingNumberMessage
 			{
@@ -47,7 +47,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(Attributes[GameAttribute.Hitpoints_Cur] - damage, 0);
 			Attributes.BroadcastChangedIfRevealed();
 
-			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !this.Unbreakables.Contains(this.ActorSNO.Id))
+			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !this.SNO.IsUndestroyable())
 				Die(source);
 		}
 
@@ -55,7 +55,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			base.OnTargeted(null, null);
 
-			Logger.Trace("Breaked barricade, id: {0}", this.ActorSNO.Id);
+			Logger.Trace("Breaked barricade, id: {0}", this.SNO);
 
 			if (this.AnimationSet.TagMapAnimDefault.ContainsKey(AnimationSetKeys.DeathDefault))
 				World.BroadcastIfRevealed(plr => new PlayAnimationMessage

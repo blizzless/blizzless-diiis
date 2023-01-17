@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -17,13 +18,22 @@ using System.Drawing;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(308737, 314802, 319402, 314804, 314806, 314817, 314792)]
+	[HandledSNO(
+		ActorSno._x1_fortress_spiritbarbarian,
+		ActorSno._x1_fortress_spiritcrusadermmaster,
+		ActorSno._x1_fortress_spiritcrusaderfmaster,
+		ActorSno._x1_fortress_spiritdemonhunter,
+		ActorSno._x1_fortress_spiritmonkpatriarch,
+		ActorSno._x1_fortress_spiritwitchdoctor,
+		ActorSno._x1_fortress_spiritwizard,
+		ActorSno._x1_fortress_spiritnecromancerordan
+	)]
 	public class A5ClassGhost : InteractiveNPC
 	{
 		private bool _collapsed = false;
 
-		public A5ClassGhost(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public A5ClassGhost(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.CollFlags = 1;
 			this.WalkSpeed = 0;
@@ -37,22 +47,25 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			switch (player.Toon.Class)
 			{
 				case ToonClass.Barbarian:
-					showed = (this.ActorSNO.Id == 308737);
+					showed = this.SNO == ActorSno._x1_fortress_spiritbarbarian;
 					break;
 				case ToonClass.Crusader:
-					showed = ((this.ActorSNO.Id == 314802 && player.Toon.Gender == 0) || (this.ActorSNO.Id == 319402 && player.Toon.Gender == 1));
+					showed = (this.SNO == ActorSno._x1_fortress_spiritcrusadermmaster && player.Toon.Gender == 0) || (this.SNO == ActorSno._x1_fortress_spiritcrusaderfmaster && player.Toon.Gender == 1);
 					break;
 				case ToonClass.DemonHunter:
-					showed = (this.ActorSNO.Id == 314804);
+					showed = this.SNO == ActorSno._x1_fortress_spiritdemonhunter;
 					break;
 				case ToonClass.Monk:
-					showed = (this.ActorSNO.Id == 314806);
+					showed = this.SNO == ActorSno._x1_fortress_spiritmonkpatriarch;
 					break;
 				case ToonClass.WitchDoctor:
-					showed = (this.ActorSNO.Id == 314817);
+					showed = this.SNO == ActorSno._x1_fortress_spiritwitchdoctor;
 					break;
 				case ToonClass.Wizard:
-					showed = (this.ActorSNO.Id == 314792);
+					showed = this.SNO == ActorSno._x1_fortress_spiritwizard;
+					break;
+				case ToonClass.Necromancer:
+					showed = SNO == ActorSno._x1_fortress_spiritnecromancerordan;
 					break;
 			}
 

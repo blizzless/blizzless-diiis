@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -19,11 +20,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(188441)]
-	public class actIVPortal : Gizmo
+	[HandledSNO(ActorSno._event47_bigportal)]
+	public class ActIVPortal : Gizmo
 	{
-		public actIVPortal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ActIVPortal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//this.Attributes[GameAttribute.MinimapActive] = true;
 		}

@@ -14,6 +14,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -21,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 	{
 		public new int SummonLimit = 1;
 
-		public MysticAllyMinion(World world, PowerContext context, int MysticAllyID)
+		public MysticAllyMinion(World world, PowerContext context, ActorSno MysticAllyID)
 			: base(world, MysticAllyID, context.User, null)
 		{
 			Scale = 1.35f; //they look cooler bigger :)

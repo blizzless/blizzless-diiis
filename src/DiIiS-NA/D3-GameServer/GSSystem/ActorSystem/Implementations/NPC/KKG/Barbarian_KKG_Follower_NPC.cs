@@ -10,16 +10,17 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	//[ Info] [AttackPayload]: Игрок с индесом: 0 - задамажил: ID: 437089 Name: Barbarian_KKG_Follower_NPC, NumInWorld: 0
-	[HandledSNO(437089)] //Barbarian_KKG_Follower_NPC
+	[HandledSNO(ActorSno._barbarian_kkg_follower_npc)] //Barbarian_KKG_Follower_NPC
 	public class Barbarian_KKG_Follower_NPC : NPC
 	{
 		private bool _collapsed = false;
-		public Barbarian_KKG_Follower_NPC(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Barbarian_KKG_Follower_NPC(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//{[Actor] [Type: Monster] SNOId:437089 GlobalId: 1017303615 Position: x:348.598 y:853.68604 z:5.41089 Name: Barbarian_KKG_Follower_NPC}
 			//437394 - Рык
@@ -53,7 +54,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						_collapsed = true;
 						this.PlayActionAnimation(439753);
 
-						var Cube = World.GetActorBySNO(437895);
+						var Cube = World.GetActorBySNO(ActorSno._p4_ruins_frost_kanaicube_altar);
 						Cube.PlayActionAnimation(441642);
 						//{[Actor] [Type: Gizmo] SNOId:437895 GlobalId: 1017303610 Position: x:331.9304 y:867.761 z:5.41071 Name: p4_Ruins_Frost_KanaiCube_Altar}
 						foreach (var plr in player.InGameClient.Game.Players.Values)

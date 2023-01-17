@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -17,13 +18,13 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(211835)]
+	[HandledSNO(ActorSno._belialfirebomb)]
 	class A2BelialBomb : ProximityTriggeredGizmo
     {
 		private bool _collapsed = false;
 
-		public A2BelialBomb(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public A2BelialBomb(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//this.Field2 = 0x9;//16;
 			//this.Field7 = 0x00000001;

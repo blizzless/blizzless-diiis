@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -23,13 +24,17 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(176806, 161071, 149529)]
-	public class actIIICatapult : Gizmo
+	[HandledSNO(
+		ActorSno._a3dun_wall_lift_gategizmolong,
+		ActorSno._a3dun_wall_lift_gategizmorightface,
+		ActorSno._a3dun_wall_lift_gategizmo
+	)]
+	public class ActIIICatapult : Gizmo
 	{
 		public bool activated = false;
 
-		public actIIICatapult(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ActIIICatapult(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			this.Attributes[GameAttribute.MinimapDisableArrow] = true;

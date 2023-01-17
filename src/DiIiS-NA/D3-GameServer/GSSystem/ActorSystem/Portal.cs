@@ -4,6 +4,7 @@ using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -57,16 +58,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public bool randomed = true;
 		bool Smart = false;
 
-		public Portal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Portal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			if (this.World != null)
-				if (this.World.GetActorsBySNO(this.ActorSNO.Id).Count > 0)
-				{
-					int count = this.World.GetActorsBySNO(this.ActorSNO.Id).Count;
+            {
+				int count = this.World.GetActorsBySNO(this.SNO).Count;
+				if (count > 0)
 					NumberInWorld = count;
-				}
-			try
+            }
+
+            try
 			{
 				//Logger.Debug("Portal {0} has destination world {1}", this.ActorSNO.Id, tags[MarkerKeys.DestinationWorld].Id);
 				//Logger.Debug("Portal {0} has destination LevelArea {1}", this.ActorSNO.Id, tags[MarkerKeys.DestinationLevelArea].Id);
@@ -91,91 +93,91 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			catch (KeyNotFoundException)
 			{
-				Logger.Trace("Portal {0} has incomplete definition", this.ActorSNO.Id);
+				Logger.Trace("Portal {0} has incomplete definition", this.SNO);
 			}
 
-			if (this.World.WorldSNO.Id == 72636 || this.World.WorldSNO.Id == 72637)
+			if (this.World.SNO == WorldSno.trdun_crypt_falsepassage_01 || this.World.SNO == WorldSno.trdun_crypt_falsepassage_02)
 			{
 				this.Destination = SmartExitGenerate();
 			}
 			
 
-			else if (this.World.WorldSNO.Id == 62751) //portal Adria's Hut
+			else if (this.World.SNO == WorldSno.trout_adriascellar) //portal Adria's Hut
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 71150,
+					WorldSNO = (int)WorldSno.trout_town,
 					DestLevelAreaSNO = 101351,
 					StartingPointActorTag = 8
 				};
 
-			else if (this.World.WorldSNO.Id == 339151) //portal Noble's Rest Courtyard
+			else if (this.World.SNO == WorldSno.x1_westm_deathorb_kerwinsrow) //portal Noble's Rest Courtyard
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 338944,
+					WorldSNO = (int)WorldSno.x1_westm_graveyard_deathorb,
 					DestLevelAreaSNO = 338946,
 					StartingPointActorTag = 171
 				};
 
-			else if(this.ActorSNO.Id == 175999 && this.World.WorldSNO.Id == 94676) //portal Leoric Jail -> 3rd lvl Halls of Agony
+			else if(this.SNO == ActorSno._g_portal_arch_orange && this.World.SNO == WorldSno.trdun_jail_level01) //portal Leoric Jail -> 3rd lvl Halls of Agony
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 58983,
+					WorldSNO = (int)WorldSno.trdun_leoric_level03,
 					DestLevelAreaSNO = 19776,
 					StartingPointActorTag = 172
 				};
 
-			else if(this.ActorSNO.Id == 176002 && this.World.WorldSNO.Id == 92126) //portal advisor's tomb -> 2nd lvl Crypt
+			else if(this.SNO == ActorSno._g_portal_archtall_blue && this.World.SNO == WorldSno.trdun_crypt_skeletonkingcrown_02) //portal advisor's tomb -> 2nd lvl Crypt
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 60600,
+					WorldSNO = (int)WorldSno.trdun_crypt_skeletonkingcrown_01,
 					DestLevelAreaSNO = 60601,
 					StartingPointActorTag = 171
 				};
 
-			else if(this.World.WorldSNO.Id == 50657) //portal conclave -> Stinging winds
+			else if(this.World.SNO == WorldSno.caout_interior_d) //portal conclave -> Stinging winds
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 70885,
+					WorldSNO = (int)WorldSno.caout_town,
 					DestLevelAreaSNO = 19839,
 					StartingPointActorTag = 201
 				};
 
-			else if(this.World.WorldSNO.Id == 51270) //portal altar -> Stinging winds
+			else if(this.World.SNO == WorldSno.caout_interior_f) //portal altar -> Stinging winds
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 70885,
+					WorldSNO = (int)WorldSno.caout_town,
 					DestLevelAreaSNO = 19839,
 					StartingPointActorTag = 194
 				};
 
-			else if(this.World.WorldSNO.Id == 60432) //portal Khamsin HQ -> Stinging winds
+			else if(this.World.SNO == WorldSno.caout_khamsin_mine) //portal Khamsin HQ -> Stinging winds
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 70885,
+					WorldSNO = (int)WorldSno.caout_town,
 					DestLevelAreaSNO = 63666,
 					StartingPointActorTag = 70
 				};
 
-			else if(this.World.WorldSNO.Id == 59486 && this.Destination == null) //portal Khamsin HQ -> Stinging winds
+			else if(this.World.SNO == WorldSno.a2dun_aqd_special_01 && this.Destination == null) //portal Khamsin HQ -> Stinging winds
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 59486,
+					WorldSNO = (int)WorldSno.a2dun_aqd_special_01,
 					DestLevelAreaSNO = 62752,
 					StartingPointActorTag = 86
 				};
 
-			else if(this.World.WorldSNO.Id == 80589) //portal ZKShadow
+			else if(this.World.SNO == WorldSno.a2dun_zolt_shadowrealm_level01) //portal ZKShadow
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 50613,
+					WorldSNO = (int)WorldSno.a2dun_zolt_lobby,
 					DestLevelAreaSNO = 19800,
 					StartingPointActorTag = 145
 				};
 
 			#region Спуск на второй уровень в подземелье на кладбище
-			else if (this.World.WorldSNO.Id == 154587 && this.ActorSNO.Id == 176002) //Crypt A1 Q3
+			else if (this.World.SNO == WorldSno.trdun_crypt_skeletonkingcrown_00 && this.SNO == ActorSno._g_portal_archtall_blue) //Crypt A1 Q3
 			{
-				var Portal = world.GetActorBySNO(176002);
+				var Portal = world.GetActorBySNO(ActorSno._g_portal_archtall_blue);
 				if (Portal == null)
 				{
 					this.Destination = SmartExitGenerate();
@@ -184,20 +186,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 60600,
+						WorldSNO = (int)WorldSno.trdun_crypt_skeletonkingcrown_01,
 						DestLevelAreaSNO = 60601,
 						StartingPointActorTag = 15
 					};
 				}
 			}
-			else if (this.World.WorldSNO.Id == 60600)
+			else if (this.World.SNO == WorldSno.trdun_crypt_skeletonkingcrown_01)
 			{
-				var Portal = world.GetActorBySNO(176002);
+				var Portal = world.GetActorBySNO(ActorSno._g_portal_archtall_blue);
 				if (Portal == null)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 154587,
+						WorldSNO = (int)WorldSno.trdun_crypt_skeletonkingcrown_00,
 						DestLevelAreaSNO = 145182,
 						StartingPointActorTag = 171
 					};
@@ -206,7 +208,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 92126,
+						WorldSNO = (int)WorldSno.trdun_crypt_skeletonkingcrown_02,
 						DestLevelAreaSNO = 102362,
 						StartingPointActorTag = 172
 					};
@@ -217,14 +219,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 
 			#region 2 Этаж собора
-			if (world.WorldSNO.Id == 50582 && this.ActorSNO.Id == 176001)
+			if (world.SNO == WorldSno.a1trdun_level04 && this.SNO == ActorSno._g_portal_archtall_orange)
 			{
-				var Portal = world.GetActorBySNO(176001);
+				var Portal = world.GetActorBySNO(ActorSno._g_portal_archtall_orange);
 				if (Portal == null)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 105406,
+						WorldSNO = (int)WorldSno.a1trdun_level05_templar,
 						DestLevelAreaSNO = 87907,
 						StartingPointActorTag = 172
 					};
@@ -233,7 +235,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 60713,
+						WorldSNO = (int)WorldSno.trdun_cain_intro,
 						DestLevelAreaSNO = 60714,
 						StartingPointActorTag = 15 //30
 					};
@@ -241,14 +243,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			#endregion
 			#region 3 Этаж собора
-			if (world.WorldSNO.Id == 105406 && this.ActorSNO.Id == 176001)
+			if (world.SNO == WorldSno.a1trdun_level05_templar && this.SNO == ActorSno._g_portal_archtall_orange)
 			{
-				var Portal = world.GetActorBySNO(176001);
+				var Portal = world.GetActorBySNO(ActorSno._g_portal_archtall_orange);
 				if (Portal == null)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 50582,
+						WorldSNO = (int)WorldSno.a1trdun_level04,
 						DestLevelAreaSNO = 19783,//19785 - 4 уровень собора
 						StartingPointActorTag = 171
 					};
@@ -257,7 +259,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 50584,
+						WorldSNO = (int)WorldSno.a1trdun_level06,
 						DestLevelAreaSNO = 19785,
 						StartingPointActorTag = 172
 					};
@@ -266,20 +268,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			#endregion
 			#region 4 Этаж собора
-			if (world.WorldSNO.Id == 50584 && this.ActorSNO.Id == 176001)
+			if (world.SNO == WorldSno.a1trdun_level06 && this.SNO == ActorSno._g_portal_archtall_orange)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 105406,
+					WorldSNO = (int)WorldSno.a1trdun_level05_templar,
 					DestLevelAreaSNO = 87907,
 					StartingPointActorTag = 171
 				};
 			}
-			if (world.WorldSNO.Id == 50584 && this.ActorSNO.Id == 175467)
+			if (world.SNO == WorldSno.a1trdun_level06 && this.SNO == ActorSno._g_portal_rectangle_blue)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 50585,
+					WorldSNO = (int)WorldSno.a1trdun_level07,
 					DestLevelAreaSNO = 19787,
 					StartingPointActorTag = 172
 				};
@@ -288,11 +290,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			#region Первый этаж Агонии
 			//Вход
-			else if (world.WorldSNO.Id == 2826 && this.ActorSNO.Id == 175999)
+			else if (world.SNO == WorldSno.trdun_leoric_level01 && this.SNO == ActorSno._g_portal_arch_orange)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 75049,
+					WorldSNO = (int)WorldSno.a1dun_leor_manor,
 					DestLevelAreaSNO = 100854,
 					StartingPointActorTag = 171
 				};
@@ -308,11 +310,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				}
 			}
 			//Выход на 2 этаж
-			else if (world.WorldSNO.Id == 2826 && this.ActorSNO.Id == 175482)
+			else if (world.SNO == WorldSno.trdun_leoric_level01 && this.SNO == ActorSno._g_portal_rectangle_orange)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 58982,
+					WorldSNO = (int)WorldSno.trdun_leoric_level02,
 					DestLevelAreaSNO = 19775,
 					StartingPointActorTag = 172,//tags[MarkerKeys.DestinationActorTag]
 				};
@@ -330,11 +332,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 			#region Второй этаж Агонии
 			//Вход
-			else if (world.WorldSNO.Id == 58982 && this.ActorSNO.Id == 175999)
+			else if (world.SNO == WorldSno.trdun_leoric_level02 && this.SNO == ActorSno._g_portal_arch_orange)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 2826,
+					WorldSNO = (int)WorldSno.trdun_leoric_level01,
 					DestLevelAreaSNO = 19774,
 					StartingPointActorTag = 171
 				};
@@ -352,11 +354,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 			#region Переправа в высокогорье
 			//Вход
-			else if (world.WorldSNO.Id == 87707 && this.ActorSNO.Id == 176001 && this.NumberInWorld == 1)
+			else if (world.SNO == WorldSno.trout_highlands_dunexteriora && this.SNO == ActorSno._g_portal_archtall_orange && this.NumberInWorld == 1)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 58982,
+					WorldSNO = (int)WorldSno.trdun_leoric_level02,
 					DestLevelAreaSNO = 19775,
 					StartingPointActorTag = 171
 				};
@@ -374,11 +376,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 			#region Проклятая крепость
 			//Выход на 3 этаж Агонии
-			else if (world.WorldSNO.Id == 94676 && this.ActorSNO.Id == 175999)
+			else if (world.SNO == WorldSno.trdun_jail_level01 && this.SNO == ActorSno._g_portal_arch_orange)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 58983,
+					WorldSNO = (int)WorldSno.trdun_leoric_level03,
 					DestLevelAreaSNO = 19776,
 					StartingPointActorTag = 172
 				};
@@ -396,11 +398,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 			#region Третий этаж Агонии
 			//Вход
-			else if (world.WorldSNO.Id == 58983 && this.ActorSNO.Id == 175999)
+			else if (world.SNO == WorldSno.trdun_leoric_level03 && this.SNO == ActorSno._g_portal_arch_orange)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 94676,
+					WorldSNO = (int)WorldSno.trdun_jail_level01,
 					DestLevelAreaSNO = 94672,
 					StartingPointActorTag = 171
 				};
@@ -419,14 +421,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 
 			#region Восточный водосток
-			if (world.WorldSNO.Id == 62779 && this.ActorSNO.Id == 176007)
+			if (world.SNO == WorldSno.a2dun_aqd_special_b && this.SNO == ActorSno._g_portal_square_blue)
 			{
-				var Portal = world.GetActorBySNO(176007);
+				var Portal = world.GetActorBySNO(ActorSno._g_portal_square_blue);
 				if (Portal == null)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 59486,
+						WorldSNO = (int)WorldSno.a2dun_aqd_special_01,
 						DestLevelAreaSNO = 62752,
 						StartingPointActorTag = 93
 					};
@@ -435,7 +437,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 59486,
+						WorldSNO = (int)WorldSno.a2dun_aqd_special_01,
 						DestLevelAreaSNO = 62752,
 						StartingPointActorTag = 87
 					};
@@ -445,22 +447,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 
 			#region Нижние этажи крепости: Уровень 2
-			if (world.WorldSNO.Id == 75434)
+			if (world.SNO == WorldSno.a3dun_keep_level04)
 			{
-				if (this.ActorSNO.Id == 176001)
+				if (this.SNO == ActorSno._g_portal_archtall_orange)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 93104,
+						WorldSNO = (int)WorldSno.a3dun_keep_level03,
 						DestLevelAreaSNO = 75436,
 						StartingPointActorTag = 171
 					};
 				}
-				else if (this.ActorSNO.Id == 175482)
+				else if (this.SNO == ActorSno._g_portal_rectangle_orange)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 136415,
+						WorldSNO = (int)WorldSno.a3dun_keep_level05,
 						DestLevelAreaSNO = 136448,
 						StartingPointActorTag = 172
 					};
@@ -468,22 +470,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			#endregion
 			#region Нижние этажи крепости: Уровень 3
-			else if (world.WorldSNO.Id == 136415)
+			else if (world.SNO == WorldSno.a3dun_keep_level05)
 			{
-				if (this.ActorSNO.Id == 176001)
+				if (this.SNO == ActorSno._g_portal_archtall_orange)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 75434,
+						WorldSNO = (int)WorldSno.a3dun_keep_level04,
 						DestLevelAreaSNO = 93103,
 						StartingPointActorTag = 171
 					};
 				}
-				else if (this.ActorSNO.Id == 175482)
+				else if (this.SNO == ActorSno._g_portal_rectangle_orange)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 103209,
+						WorldSNO = (int)WorldSno.gluttony_boss,
 						DestLevelAreaSNO = 111232,
 						StartingPointActorTag = 172
 					};
@@ -493,38 +495,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 
 			#region Ареатский кратер: Уровень 1
-			else if (world.WorldSNO.Id == 81049)
+			else if (world.SNO == WorldSno.a3dun_crater_level_01)
 			{
-				if (this.World.GetActorsBySNO(176001).Count > 0)
+				if (this.World.GetActorsBySNO(ActorSno._g_portal_archtall_orange).Count > 0)
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 75434,
+						WorldSNO = (int)WorldSno.a3dun_keep_level04,
 						DestLevelAreaSNO = 112580,
 						StartingPointActorTag = 171
 					};
 				else
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 79401,
-						DestLevelAreaSNO = 80791,
-						StartingPointActorTag = 172
-					};
-			}
-			#endregion
-			#region Ареатский кратер: Уровень 1
-			else if (world.WorldSNO.Id == 81049)
-			{
-				if (this.World.GetActorsBySNO(176001).Count > 0)
-					this.Destination = new ResolvedPortalDestination
-					{
-						WorldSNO = 75434,
-						DestLevelAreaSNO = 112580,
-						StartingPointActorTag = 171
-					};
-				else
-					this.Destination = new ResolvedPortalDestination
-					{
-						WorldSNO = 79401,
+						WorldSNO = (int)WorldSno.a3dun_crater_st_level01,
 						DestLevelAreaSNO = 80791,
 						StartingPointActorTag = 172
 					};
@@ -532,12 +515,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 
 			#region Башня обреченных: Уровень 1
-			else if (world.WorldSNO.Id == 79401)
+			else if (world.SNO == WorldSno.a3dun_crater_st_level01)
 			{
-				if (this.ActorSNO.Id == 204747)
+				if (this.SNO == ActorSno._g_portal_archtall_orange_largeradius)
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 81049,
+						WorldSNO = (int)WorldSno.a3dun_crater_level_01,
 						DestLevelAreaSNO = 86080,
 						StartingPointActorTag = 171
 					};
@@ -545,19 +528,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 
 			#region Башня обреченных: Уровень 2
-			else if (world.WorldSNO.Id == 80763)
+			else if (world.SNO == WorldSno.a3dun_crater_st_level02)
 			{
-				if (this.World.GetActorsBySNO(176001).Count > 0)
+				if (this.World.GetActorsBySNO(ActorSno._g_portal_archtall_orange).Count > 0)
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 79401,
+						WorldSNO = (int)WorldSno.a3dun_crater_st_level01,
 						DestLevelAreaSNO = 80791,
 						StartingPointActorTag = 171
 					};
 				else
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 85201,
+						WorldSNO = (int)WorldSno.a3dun_crater_st_level04,
 						DestLevelAreaSNO = 85202,
 						StartingPointActorTag = 172
 					};
@@ -568,12 +551,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			#endregion
 			#region Башня проклятых: Уровень 1
-			else if (world.WorldSNO.Id == 119641)
+			else if (world.SNO == WorldSno.a3dun_crater_st_level01b)
 			{
-				if (this.ActorSNO.Id == 204747)
+				if (this.SNO == ActorSno._g_portal_archtall_orange_largeradius)
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 81934,
+						WorldSNO = (int)WorldSno.a3dun_crater_level_02,
 						DestLevelAreaSNO = 119305,
 						StartingPointActorTag = 171
 					};
@@ -582,12 +565,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			#region Вход на первый этаж Садов
 			//109143
-			else if (world.WorldSNO.Id == 109143)
+			else if (world.SNO == WorldSno.a4dun_heaven_1000_monsters_fight)
 			{
 				//if (this.ActorSNO.Id == 204747)
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 109513,
+					WorldSNO = (int)WorldSno.a4dun_garden_of_hope_01,
 					DestLevelAreaSNO = 109514,
 					StartingPointActorTag = 172
 				};
@@ -595,11 +578,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 
 			#region Пещера под колодцем
-			else if (world.WorldSNO.Id == 230288)
+			else if (world.SNO == WorldSno.a1trdun_cave_qa_well)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 71150,
+					WorldSNO = (int)WorldSno.trout_town,
 					DestLevelAreaSNO = 91133,
 					StartingPointActorTag = 148
 				};
@@ -607,22 +590,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 
 			#region Демонический разлом на первом этаже Садов Надежды.
-			else if (world.WorldSNO.Id == 109513 && this.ActorSNO.Id == 224890)
+			else if (world.SNO == WorldSno.a4dun_garden_of_hope_01 && this.SNO == ActorSno._a4_heaven_gardens_hellportal)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 109525,//tags[MarkerKeys.DestinationWorld].Id,
+					WorldSNO = (int)WorldSno.a4dun_hell_portal_01,//tags[MarkerKeys.DestinationWorld].Id,
 					DestLevelAreaSNO = 109526,
 					StartingPointActorTag = 172
 				};
 			}
 			#endregion
 			#region Демонический разлом на втором этаже Садов Надежды.
-			else if (world.WorldSNO.Id == 219659 && this.ActorSNO.Id == 224890)
+			else if (world.SNO == WorldSno.a4dun_garden_of_hope_random && this.SNO == ActorSno._a4_heaven_gardens_hellportal)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 109530,//tags[MarkerKeys.DestinationWorld].Id,
+					WorldSNO = (int)WorldSno.a4dun_hell_portal_02,//tags[MarkerKeys.DestinationWorld].Id,
 					DestLevelAreaSNO = 109526,
 					StartingPointActorTag = 172
 				};
@@ -630,11 +613,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 			#region Выход на первый этаж садов
 			//109143
-			else if (world.WorldSNO.Id == 109525)
+			else if (world.SNO == WorldSno.a4dun_hell_portal_01)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 109513,
+					WorldSNO = (int)WorldSno.a4dun_garden_of_hope_01,
 					DestLevelAreaSNO = 109514,
 					StartingPointActorTag = 172
 				};
@@ -642,11 +625,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#endregion
 			#region Выход на второй этаж садов
 			//109143
-			else if (world.WorldSNO.Id == 109530)
+			else if (world.SNO == WorldSno.a4dun_hell_portal_02)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 219659,
+					WorldSNO = (int)WorldSno.a4dun_garden_of_hope_random,
 					DestLevelAreaSNO = 109516,
 					StartingPointActorTag = 172
 				};
@@ -655,56 +638,56 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			#region Шпиль
 			//1 Этаж
-			else if (world.WorldSNO.Id == 121579)
+			else if (world.SNO == WorldSno.a4dun_spire_level_01)
 			{
-				if (this.ActorSNO.Id == 211300) //Выход
+				if (this.SNO == ActorSno._a4dun_spire_elevator_portal_down) //Выход
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 198281,
+						WorldSNO = (int)WorldSno.a4dun_spire_level_00,
 						DestLevelAreaSNO = 198564,
 						StartingPointActorTag = 171
 					};
 				else
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 214956,
+						WorldSNO = (int)WorldSno.a4dun_spire_exterior,
 						DestLevelAreaSNO = 215396,
 						StartingPointActorTag = 172
 					};
 			}
 			//Пролёт 
-			else if (world.WorldSNO.Id == 214956)
+			else if (world.SNO == WorldSno.a4dun_spire_exterior)
 			{
 				if (world.Portals.Count == 0) //Выход
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 121579,
+						WorldSNO = (int)WorldSno.a4dun_spire_level_01,
 						DestLevelAreaSNO = 109538,
 						StartingPointActorTag = 171
 					};
 				else
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 129305,
+						WorldSNO = (int)WorldSno.a4dun_spire_level_02,
 						DestLevelAreaSNO = 109540,
 						StartingPointActorTag = 172
 					};
 			}
 			//2 Этаж
-			else if (world.WorldSNO.Id == 129305)
+			else if (world.SNO == WorldSno.a4dun_spire_level_02)
 			{
 				if (world.Portals.Count == 0)
 					this.Destination = new ResolvedPortalDestination
 					{
 						//TODO: 
-						WorldSNO = 205399,
+						WorldSNO = (int)WorldSno.a4dun_spire_diabloentrance,
 						DestLevelAreaSNO = 205434,
 						StartingPointActorTag = 172
 					};
 				else
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 214956,
+						WorldSNO = (int)WorldSno.a4dun_spire_exterior,
 						DestLevelAreaSNO = 215396,
 						StartingPointActorTag = 171
 					};
@@ -712,12 +695,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			#endregion
 
-			#region Зона гоблинсов =)
-			else if (this.ActorSNO.Id == 393030)
+			#region Сокровищница / Зона гоблинсов =)
+			else if (this.SNO == ActorSno._p1_greed_portal)
 			{
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 379962,
+					WorldSNO = (int)WorldSno.p1_tgoblin_realm,
 					DestLevelAreaSNO = 378681,
 					StartingPointActorTag = 172
 				};
@@ -726,209 +709,201 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#region Эвент - Старый тристрам
 
 			#region 1 Этаж - собор
-			else if (world.WorldSNO.Id == 452721 && this.ActorSNO.Id == 176001)
+			else if (world.SNO == WorldSno.p43_ad_cathedral_level_01 && this.SNO == ActorSno._g_portal_archtall_orange)
 			{
-				if (this.ActorSNO.Id == 176001)
-					if (this.NumberInWorld == 1)
+				if (this.NumberInWorld == 1)
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452922,
-							DestLevelAreaSNO = 452988,
-							StartingPointActorTag = 172
-						};
-					}
-					else
+						WorldSNO = (int)WorldSno.p43_ad_cathedral_level_02,
+						DestLevelAreaSNO = 452988,
+						StartingPointActorTag = 172
+					};
+				}
+				else
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 455282,
-							DestLevelAreaSNO = 455466,
-							StartingPointActorTag = 171
-						};
-					}
+						WorldSNO = (int)WorldSno.p43_ad_oldtristram,
+						DestLevelAreaSNO = 455466,
+						StartingPointActorTag = 171
+					};
+				}
 			}
 			#endregion
 			#region 2 Этаж - собор
-			else if (world.WorldSNO.Id == 452922 && this.ActorSNO.Id == 176001)
+			else if (world.SNO == WorldSno.p43_ad_cathedral_level_02 && this.SNO == ActorSno._g_portal_archtall_orange)
 			{
-				if (this.ActorSNO.Id == 176001)
-					if (this.NumberInWorld == 1)
+				if (this.NumberInWorld == 1)
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452984,
-							DestLevelAreaSNO = 452989,
-							StartingPointActorTag = 172
-						};
-					}
-					else
+						WorldSNO = (int)WorldSno.p43_ad_cathedral_level_03,
+						DestLevelAreaSNO = 452989,
+						StartingPointActorTag = 172
+					};
+				}
+				else
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452721,
-							DestLevelAreaSNO = 452986,
-							StartingPointActorTag = 171
-						};
-					}
+						WorldSNO = (int)WorldSno.p43_ad_cathedral_level_01,
+						DestLevelAreaSNO = 452986,
+						StartingPointActorTag = 171
+					};
+				}
 
 			}
 			#endregion
 			#region 3 Этаж - собор
-			else if (world.WorldSNO.Id == 452984 && this.ActorSNO.Id == 176001)
+			else if (world.SNO == WorldSno.p43_ad_cathedral_level_03 && this.SNO == ActorSno._g_portal_archtall_orange)
 			{
-				if (this.ActorSNO.Id == 176001)
-					if (this.NumberInWorld == 1)
+				if (this.NumberInWorld == 1)
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452985,
-							DestLevelAreaSNO = 452990,
-							StartingPointActorTag = 172
-						};
-					}
-					else
+						WorldSNO = (int)WorldSno.p43_ad_cathedral_level_04,
+						DestLevelAreaSNO = 452990,
+						StartingPointActorTag = 172
+					};
+				}
+				else
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452922,
-							DestLevelAreaSNO = 452988,
-							StartingPointActorTag = 171
-						};
-					}
+						WorldSNO = (int)WorldSno.p43_ad_cathedral_level_02,
+						DestLevelAreaSNO = 452988,
+						StartingPointActorTag = 171
+					};
+				}
 			}
 			#endregion
 			#region 4 Этаж - собор
-			else if (world.WorldSNO.Id == 452985 && this.ActorSNO.Id == 176001)
+			else if (world.SNO == WorldSno.p43_ad_cathedral_level_04 && this.SNO == ActorSno._g_portal_archtall_orange)
 			{
-				if (this.ActorSNO.Id == 176001)
-					if (this.NumberInWorld == 1)
+				if (this.NumberInWorld == 1)
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452991,
-							DestLevelAreaSNO = 452992,
-							StartingPointActorTag = 172
-						};
-					}
-					else
+						WorldSNO = (int)WorldSno.p43_ad_catacombs_level_05,
+						DestLevelAreaSNO = 452992,
+						StartingPointActorTag = 172
+					};
+				}
+				else
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452984,
-							DestLevelAreaSNO = 452989,
-							StartingPointActorTag = 171
-						};
-					}
+						WorldSNO = (int)WorldSno.p43_ad_cathedral_level_03,
+						DestLevelAreaSNO = 452989,
+						StartingPointActorTag = 171
+					};
+				}
 			}
 			#endregion
 			#region 5 Этаж - катакомбы
-			else if (world.WorldSNO.Id == 452991 && this.ActorSNO.Id == 341572)
+			else if (world.SNO == WorldSno.p43_ad_catacombs_level_05 && this.SNO == ActorSno._g_portal_ladder_veryshort_blue)
 			{
-				if (this.ActorSNO.Id == 341572)
-					if (this.NumberInWorld == 1)
+				if (this.NumberInWorld == 1)
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452996,
-							DestLevelAreaSNO = 452993,
-							StartingPointActorTag = 172
-						};
-					}
-					else
+						WorldSNO = (int)WorldSno.p43_ad_catacombs_level_06,
+						DestLevelAreaSNO = 452993,
+						StartingPointActorTag = 172
+					};
+				}
+				else
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452985,
-							DestLevelAreaSNO = 452990,
-							StartingPointActorTag = 171
-						};
-					}
+						WorldSNO = (int)WorldSno.p43_ad_cathedral_level_04,
+						DestLevelAreaSNO = 452990,
+						StartingPointActorTag = 171
+					};
+				}
 			}
 			#endregion
 			#region 6 Этаж - катакомбы
-			else if (world.WorldSNO.Id == 452996 && this.ActorSNO.Id == 341572)
+			else if (world.SNO == WorldSno.p43_ad_catacombs_level_06 && this.SNO == ActorSno._g_portal_ladder_veryshort_blue)
 			{
-				if (this.ActorSNO.Id == 341572)
-					if (this.NumberInWorld == 1)
+				if (this.NumberInWorld == 1)
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452997,
-							DestLevelAreaSNO = 452994,
-							StartingPointActorTag = 172
-						};
-					}
-					else
+						WorldSNO = (int)WorldSno.p43_ad_catacombs_level_07,
+						DestLevelAreaSNO = 452994,
+						StartingPointActorTag = 172
+					};
+				}
+				else
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452991,
-							DestLevelAreaSNO = 452992,
-							StartingPointActorTag = 171
-						};
-					}
+						WorldSNO = (int)WorldSno.p43_ad_catacombs_level_05,
+						DestLevelAreaSNO = 452992,
+						StartingPointActorTag = 171
+					};
+				}
 			}
 			#endregion
 			#region 7 Этаж - катакомбы
-			else if (world.WorldSNO.Id == 452997 && this.ActorSNO.Id == 341572)
+			else if (world.SNO == WorldSno.p43_ad_catacombs_level_07 && this.SNO == ActorSno._g_portal_ladder_veryshort_blue)
 			{
-				if (this.ActorSNO.Id == 341572)
-					if (this.NumberInWorld == 1)
+				if (this.NumberInWorld == 1)
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452998,
-							DestLevelAreaSNO = 452995,
-							StartingPointActorTag = 172
-						};
-					}
-					else
+						WorldSNO = (int)WorldSno.p43_ad_catacombs_level_08,
+						DestLevelAreaSNO = 452995,
+						StartingPointActorTag = 172
+					};
+				}
+				else
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452996,
-							DestLevelAreaSNO = 452993,
-							StartingPointActorTag = 171
-						};
-					}
+						WorldSNO = (int)WorldSno.p43_ad_catacombs_level_06,
+						DestLevelAreaSNO = 452993,
+						StartingPointActorTag = 171
+					};
+				}
 			}
 			#endregion
 			#region 8 Этаж - катакомбы
-			else if (world.WorldSNO.Id == 452998 && this.ActorSNO.Id == 341572)
+			else if (world.SNO == WorldSno.p43_ad_catacombs_level_08 && this.SNO == ActorSno._g_portal_ladder_veryshort_blue)
 			{
-				if (this.ActorSNO.Id == 341572)
-					if (this.NumberInWorld == 1)
+				if (this.NumberInWorld == 1)
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452999,
-							DestLevelAreaSNO = 453001,
-							StartingPointActorTag = 172
-						};
-					}
-					else
+						WorldSNO = (int)WorldSno.p43_ad_caves_level_09,
+						DestLevelAreaSNO = 453001,
+						StartingPointActorTag = 172
+					};
+				}
+				else
+				{
+					this.Destination = new ResolvedPortalDestination
 					{
-						this.Destination = new ResolvedPortalDestination
-						{
-							WorldSNO = 452997,
-							DestLevelAreaSNO = 452994,
-							StartingPointActorTag = 171
-						};
-					}
+						WorldSNO = (int)WorldSno.p43_ad_catacombs_level_07,
+						DestLevelAreaSNO = 452994,
+						StartingPointActorTag = 171
+					};
+				}
 			}
 			#endregion
 			#endregion
 
 
 			#region Старый монастырь
-			else if (world.WorldSNO.Id == 430335)
+			else if (world.SNO == WorldSno.a3dun_ruins_frost_city_a_02)
 			{
-				if (this.ActorSNO.Id == 175467 && this.World.GetActorsBySNO(175467).Count == 0)
+				if (this.SNO == ActorSno._g_portal_rectangle_blue && this.World.GetActorsBySNO(ActorSno._g_portal_rectangle_blue).Count == 0)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 428493,
+						WorldSNO = (int)WorldSno.a3dun_ruins_frost_city_a_01,
 						DestLevelAreaSNO = 428494,
 						StartingPointActorTag = 171
 					};
@@ -936,13 +911,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			#endregion
 			#region Руины Сечерона
-			else if (world.WorldSNO.Id == 428493)
+			else if (world.SNO == WorldSno.a3dun_ruins_frost_city_a_01)
 			{
-				if (this.ActorSNO.Id == 175467 && this.World.GetActorsBySNO(175467).Count == 1)
+				if (this.SNO == ActorSno._g_portal_rectangle_blue && this.World.GetActorsBySNO(ActorSno._g_portal_rectangle_blue).Count == 1)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 430335,
+						WorldSNO = (int)WorldSno.a3dun_ruins_frost_city_a_02,
 						DestLevelAreaSNO = 430336,
 						StartingPointActorTag = 172
 					};
@@ -950,13 +925,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			#endregion
 			#region Вечный лес
-			else if (world.WorldSNO.Id == 444305)
+			else if (world.SNO == WorldSno.p4_forest_snow_01)
 			{
-				if (this.ActorSNO.Id == 176002 && this.World.GetActorsBySNO(176002).Count == 0)
+				if (this.SNO == ActorSno._g_portal_archtall_blue && this.World.GetActorsBySNO(ActorSno._g_portal_archtall_blue).Count == 0)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 428493,
+						WorldSNO = (int)WorldSno.a3dun_ruins_frost_city_a_01,
 						DestLevelAreaSNO = 428494,
 						StartingPointActorTag = 615
 					};
@@ -966,13 +941,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			#region 5 Акт
 			#region Торговый квартал Вестмарша
-			else if (world.WorldSNO.Id == 261712 && this.ActorSNO.Id == 176002)
+			else if (world.SNO == WorldSno.x1_westm_zone_01 && this.SNO == ActorSno._g_portal_archtall_blue)
 			{
 				if (this.NumberInWorld == 0)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 304235,
+						WorldSNO = (int)WorldSno.x1_westmarch_hub,
 						DestLevelAreaSNO = 270011,
 						StartingPointActorTag = 466
 					};
@@ -980,13 +955,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			#endregion
 			#region Кладбище Бриартон
-			else if (world.WorldSNO.Id == 338944 && this.ActorSNO.Id == 176002)
+			else if (world.SNO == WorldSno.x1_westm_graveyard_deathorb && this.SNO == ActorSno._g_portal_archtall_blue)
 			{
 				if (this.NumberInWorld == 0)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 338891,
+						WorldSNO = (int)WorldSno.x1_westm_deathorb_gideonscourt,
 						DestLevelAreaSNO = 338956,
 						StartingPointActorTag = 171
 					};
@@ -995,13 +970,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			//338946
 			#endregion
 			#region Верхний Вестамарш
-			else if (world.WorldSNO.Id == 263494 && this.ActorSNO.Id == 176001)
+			else if (world.SNO == WorldSno.x1_westm_zone_03 && this.SNO == ActorSno._g_portal_archtall_orange)
 			{
 				if (this.NumberInWorld == 0)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 304235,
+						WorldSNO = (int)WorldSno.x1_westmarch_hub,
 						DestLevelAreaSNO = 270011,
 						StartingPointActorTag = 442
 					};
@@ -1012,13 +987,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#region Проход к Корвусу
 			//Выход - W:267412 A: 258142 P: 171
 
-			else if (world.WorldSNO.Id == 283552 && this.ActorSNO.Id == 341572)
+			else if (world.SNO == WorldSno.x1_catacombs_level01 && this.SNO == ActorSno._g_portal_ladder_veryshort_blue)
 			{
 				if (this.NumberInWorld == 0)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 283566,
+						WorldSNO = (int)WorldSno.x1_catacombs_level02,
 						DestLevelAreaSNO = 283567,
 						StartingPointActorTag = 172
 					};
@@ -1027,20 +1002,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 267412,
+						WorldSNO = (int)WorldSno.x1_bog_01,
 						DestLevelAreaSNO = 258142,
 						StartingPointActorTag = 171
 					};
 				}
 			}
 			//Второй уровень
-			else if (world.WorldSNO.Id == 283566 && this.ActorSNO.Id == 341572)
+			else if (world.SNO == WorldSno.x1_catacombs_level02 && this.SNO == ActorSno._g_portal_ladder_veryshort_blue)
 			{
 				if (this.NumberInWorld == 0)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 283552,
+						WorldSNO = (int)WorldSno.x1_catacombs_level01,
 						DestLevelAreaSNO = 283553,
 						StartingPointActorTag = 171
 					};
@@ -1048,13 +1023,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			#endregion
 			#region Крепость пандемония. Уровень 1
-			else if (world.WorldSNO.Id == 271233 && this.ActorSNO.Id == 176007)
+			else if (world.SNO == WorldSno.x1_fortress_level_01 && this.SNO == ActorSno._g_portal_square_blue)
 			{
 				if (this.NumberInWorld == 0)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 271235,
+						WorldSNO = (int)WorldSno.x1_fortress_level_02,
 						DestLevelAreaSNO = 360494,
 						StartingPointActorTag = 172
 					};
@@ -1063,19 +1038,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 295225,
+						WorldSNO = (int)WorldSno.x1_pand_batteringram,
 						DestLevelAreaSNO = 295228,
 						StartingPointActorTag = 171
 					};
 				}
 			}
-			else if (world.WorldSNO.Id == 271235 && this.ActorSNO.Id == 365112)
+			else if (world.SNO == WorldSno.x1_fortress_level_02 && this.SNO == ActorSno._g_portal_archtall_blue_iconblue)
 			{
 				if (this.NumberInWorld == 0)
 				{
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 271233,
+						WorldSNO = (int)WorldSno.x1_fortress_level_01,
 						DestLevelAreaSNO = 271234,
 						StartingPointActorTag = 171
 					};
@@ -1084,27 +1059,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			#endregion
 			#endregion
-			#region Сокровищница
-			else if (this.ActorSNO.Id == 393030)
-			{
-				this.Destination = new ResolvedPortalDestination
-				{
-					WorldSNO = 379962,
-					DestLevelAreaSNO = 378681,
-					StartingPointActorTag = 172
-				};
-			}
-			#endregion
 			#region Умное вычисление выхода
 			if (this.Destination == null)
 			{
 				//102231 - Пустыня
-				Logger.Warn("Портал - {0} Не определён до конца, исполнение функции ''умного'' вычисления для выхода.", this.ActorSNO.Id);
+				Logger.Warn("Портал - {0} Не определён до конца, исполнение функции ''умного'' вычисления для выхода.", this.SNO);
 				Smart = true;
 
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = -1,
+					WorldSNO = (int)WorldSno.__NONE,
 					DestLevelAreaSNO = -1,
 					StartingPointActorTag = -1
 				};
@@ -1115,18 +1079,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		}
 		public ResolvedPortalDestination SmartExitGenerate()
 		{
-			Logger.Warn("Portal - {0} Smart Генерация.", this.ActorSNO.Id);
+			Logger.Warn("Portal - {0} Smart Генерация.", this.SNO);
 			int LevelArea = 0;
 			int BackPoint = -1;
-			if (this.World.WorldSNO.Name.ToLower().Contains("x1_lr_tileset"))
+			if (this.World.SNO.IsDungeon())
 			{
-				if (this.World.WorldSNO.Id == this.World.Game.WorldOfPortalNephalem)
+				if (this.World.SNO == this.World.Game.WorldOfPortalNephalem)
 				{
 					//Вход 1 этаж
 					if(this.CurrentScene.SceneSNO.Name.ToLower().Contains("entr"))
 						return new ResolvedPortalDestination
 						{
-							WorldSNO = 332336,
+							WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub,
 							DestLevelAreaSNO = 332339,
 							StartingPointActorTag = 24
 						};
@@ -1134,7 +1098,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					else
 						return new ResolvedPortalDestination
 						{
-							WorldSNO = this.World.Game.WorldOfPortalNephalemSec,
+							WorldSNO = (int)this.World.Game.WorldOfPortalNephalemSec,
 							DestLevelAreaSNO = 288684,
 							StartingPointActorTag = 172
 						};
@@ -1142,7 +1106,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				
 				return new ResolvedPortalDestination
 				{
-					WorldSNO = this.World.Game.WorldOfPortalNephalem,
+					WorldSNO = (int)this.World.Game.WorldOfPortalNephalem,
 					DestLevelAreaSNO = 288482,
 					StartingPointActorTag = 171
 				};
@@ -1150,19 +1114,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 			else
 			{
-				if (this.World.Game.Players.Count > 0)
+				if (!World.Game.Players.IsEmpty)
 				{
-					if (this.World.Game.Players.First().Value.CurrentScene.Specification.SNOLevelAreas[1] != -1)
-						LevelArea = this.World.Game.Players.First().Value.CurrentScene.Specification.SNOLevelAreas[1];
-					else
-						LevelArea = this.World.Game.Players.First().Value.CurrentScene.Specification.SNOLevelAreas[0];
+                    var player = this.World.Game.Players.First().Value;
+                    LevelArea = player.CurrentScene.Specification.SNOLevelAreas.LastOrDefault(x => x != -1);
 
-					if (this.World.Game.Players.First().Value.GetActorsInRange<StartingPoint>(20f).Count > 0)
-						BackPoint = (this.World.Game.Players.First().Value.GetActorsInRange<StartingPoint>(20f).First() as StartingPoint).TargetId;
+					if (player.GetActorsInRange<StartingPoint>(20f).Count > 0)
+						BackPoint = (player.GetActorsInRange<StartingPoint>(20f).First() as StartingPoint).TargetId;
 
 					return new ResolvedPortalDestination
-					{
-						WorldSNO = this.World.Game.Players.First().Value.World.WorldSNO.Id,
+                    {
+						WorldSNO = (int)player.World.SNO,
 						DestLevelAreaSNO = LevelArea,
 						StartingPointActorTag = BackPoint
 					};
@@ -1171,7 +1133,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					return new ResolvedPortalDestination
 					{
-						WorldSNO = -1,
+						WorldSNO = (int)WorldSno.__NONE,
 						DestLevelAreaSNO = LevelArea,
 						StartingPointActorTag = -1
 					};
@@ -1181,14 +1143,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public override void EnterWorld(Vector3D position)
 		{
 			base.EnterWorld(position);
-			if (this.World.WorldSNO.Id == 70885 || this.World.WorldSNO.Id == 95804)
+			if (this.World.SNO == WorldSno.caout_town || this.World.SNO == WorldSno.a3_battlefields_02)
 			{
 				var portals = this.GetActorsInRange<Portal>(5f).Where(p => p.Destination != null && p.Destination.DestLevelAreaSNO != -1).ToList();
 				if (portals.Count >= 2)
 				{
 					var random_portal = portals[FastRandom.Instance.Next(portals.Count)];
 					var bounty_portals = this.World.Game.QuestManager.Bounties.Where(b => !b.PortalSpawned).SelectMany(b => b.LevelAreaChecks).Intersect(portals.Select(p => p.Destination.DestLevelAreaSNO));
-					if (bounty_portals.Count() > 0)
+					if (bounty_portals.Any())
 					{
 						random_portal = portals.Where(p => this.World.Game.QuestManager.Bounties.SelectMany(b => b.LevelAreaChecks).Where(w => w != -1).Contains(p.Destination.DestLevelAreaSNO)).First();
 						this.World.Game.QuestManager.Bounties.Where(b => b.LevelAreaChecks.Contains(random_portal.Destination.DestLevelAreaSNO)).First().PortalSpawned = true;
@@ -1199,7 +1161,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				}
 			}
 
-			if (this.Destination == null || this.Destination.WorldSNO == -1)
+			if (this.Destination == null || this.Destination.WorldSNO == (int)WorldSno.__NONE)
 			{
 				var proximity = new RectangleF(this.Position.X - 1f, this.Position.Y - 1f, 2f, 2f);
 				var scenes = this.World.QuadTree.Query<Scene>(proximity);
@@ -1223,7 +1185,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					if (this.Position.Y < 100.0f)
 						this.Destination = new ResolvedPortalDestination
 						{
-							WorldSNO = 81049,
+							WorldSNO = (int)WorldSno.a3dun_crater_level_01,
 							DestLevelAreaSNO = 86080,
 							StartingPointActorTag = 171
 						};
@@ -1231,14 +1193,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (scene.SceneSNO.Id == 335727) //Gideon's Row entrance
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 261712,
+						WorldSNO = (int)WorldSno.x1_westm_zone_01,
 						DestLevelAreaSNO = 261758,
 						StartingPointActorTag = 171
 					};
 				if (scene.SceneSNO.Id == 335742) //Gideon's Row exit
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 338944,
+						WorldSNO = (int)WorldSno.x1_westm_graveyard_deathorb,
 						DestLevelAreaSNO = 338946,
 						StartingPointActorTag = 172
 					};
@@ -1246,7 +1208,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (this.World.PortalOverrides.ContainsKey(scene.SceneSNO.Id))
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = this.World.PortalOverrides[scene.SceneSNO.Id],
+						WorldSNO = (int)this.World.PortalOverrides[scene.SceneSNO.Id],
 						DestLevelAreaSNO = 283553,
 						StartingPointActorTag = 172
 					};
@@ -1262,7 +1224,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			//*/
 			if (this.World.IsPvP && this.Destination != null && this.Destination.DestLevelAreaSNO == 19947) //spawn safe zone
 			{
-				var zone_actor = new PVPSafeZone(this.World, 275752, new TagMap());
+				var zone_actor = new PVPSafeZone(this.World, ActorSno._pvp_murderball_highscoringzone, new TagMap());
 				zone_actor.AdjustPosition = false;
 				zone_actor.EnterWorld(this.Position);
 				this.World.BuffManager.AddBuff(zone_actor, zone_actor, new PVPSafeZoneBuff());
@@ -1272,84 +1234,82 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public override bool Reveal(Player player)
 		{
 			
-			if (this.ActorSNO.Id == 176002 && this.World.WorldSNO.Id == 154587)
+			if (this.SNO == ActorSno._g_portal_archtall_blue && this.World.SNO == WorldSno.trdun_crypt_skeletonkingcrown_00)
 			{
 				//this.Destination.WorldSNO = 
 			}
 			if (!this.randomed && this.Destination.DestLevelAreaSNO != 19794) return false;
 			//if (this.ActorSNO.Id == 209083) return false; //pony level portal
-			if (this.ActorSNO.Id == 175482 && this.World.WorldSNO.Id == 178152) return false; //armory a4 portal
+			if (this.SNO == ActorSno._g_portal_rectangle_orange && this.World.SNO == WorldSno.a4dun_heaven_hub_keep) return false; //armory a4 portal
 			if (this.World.IsPvP && this.Destination != null && this.Destination.DestLevelAreaSNO != 19947) return false; //unwanted portals in PvP hub
 																														  //Logger.Debug(" (Reveal) portal {0} has location {1}", this.ActorSNO, this._position);
 			if (this.Destination != null)
 			{
-				if (this.Destination.DestLevelAreaSNO == 168200 && this.World.WorldSNO.Id == 70885) return false; //treasure room short portal
+				if (this.Destination.DestLevelAreaSNO == 168200 && this.World.SNO == WorldSno.caout_town) return false; //treasure room short portal
 				if (this.Destination.DestLevelAreaSNO == 154588) return false;
 				if (this.Destination.DestLevelAreaSNO == 83264) return false;
 				if (this.Destination.DestLevelAreaSNO == 83265) return false;
 				if (this.Destination.DestLevelAreaSNO == 161964) return false;
 				if (this.Destination.DestLevelAreaSNO == 81178) return false;
 				if (this.Destination.DestLevelAreaSNO == 210451 && !(this.World.Game.CurrentQuest == 121792 || this.World.Game.CurrentQuest == 57339)) return false;
-				if (this.Destination.DestLevelAreaSNO == 19789 && this.World.WorldSNO.Id == 50585) return false;
-				if (this.Destination.WorldSNO == 332336 && this.Destination.StartingPointActorTag == 483 && this.World.WorldSNO.Id == 71150)
+				if (this.Destination.DestLevelAreaSNO == 19789 && this.World.SNO == WorldSno.a1trdun_level07) return false;
+				if (this.Destination.WorldSNO == (int)WorldSno.x1_tristram_adventure_mode_hub && this.Destination.StartingPointActorTag == 483 && this.World.SNO == WorldSno.trout_town)
 				{
-					this.Destination.WorldSNO = 71150; this.Destination.StartingPointActorTag = 338;
+					this.Destination.WorldSNO = (int)WorldSno.trout_town;
+					this.Destination.StartingPointActorTag = 338;
 				}
 			}
 
-			if (this.World.WorldSNO.Id == 80763 && this.Destination.WorldSNO == 85201) //Tower of the Damned lvl2
-				this.Destination.StartingPointActorTag = 172;
-
 			
-			if (this.World.WorldSNO.Id == 85201) //Heart of the Damned
+			if (this.World.SNO == WorldSno.a3dun_crater_st_level04) //Heart of the Damned
 				if (this.Position.X < 100.0f)
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 81934,
+						WorldSNO = (int)WorldSno.a3dun_crater_level_02,
 						DestLevelAreaSNO = 119305,
 						StartingPointActorTag = 172
 					};
 				else
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 80763,
+						WorldSNO = (int)WorldSno.a3dun_crater_st_level02,
 						DestLevelAreaSNO = 80792,
 						StartingPointActorTag = 171
 					};
 
-			if (this.World.WorldSNO.Id == 119641) //Tower of the Cursed lvl1
+			if (this.World.SNO == WorldSno.a3dun_crater_st_level01b) //Tower of the Cursed lvl1
 				if (this.Position.X > 300.0f)
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 139272,
+						WorldSNO = (int)WorldSno.a3dun_crater_st_level02b,
 						DestLevelAreaSNO = 139274,
 						StartingPointActorTag = 172
 					};
 
-			if (this.World.WorldSNO.Id == 139272) //Tower of the Cursed lvl2
+			if (this.World.SNO == WorldSno.a3dun_crater_st_level02b) //Tower of the Cursed lvl2
 				this.Destination = new ResolvedPortalDestination
 				{
-					WorldSNO = 119641,
+					WorldSNO = (int)WorldSno.a3dun_crater_st_level01b,
 					DestLevelAreaSNO = 119653,
 					StartingPointActorTag = 171
 				};
 
-			if (this.World.WorldSNO.Id == 192687) //drowned passge portals
+			if (this.World.SNO == WorldSno.a2dun_aqd_oasis_level00) //drowned passge portals
 				if (this.Position.Y > 200.0f)
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 59486,
+						WorldSNO = (int)WorldSno.a2dun_aqd_special_01,
 						DestLevelAreaSNO = 62752,
 						StartingPointActorTag = 95
 					};
 				else
 					this.Destination = new ResolvedPortalDestination
 					{
-						WorldSNO = 192640,
+						WorldSNO = (int)WorldSno.a2dun_aqd_oasis_level01,
 						DestLevelAreaSNO = 192689,
 						StartingPointActorTag = 96
 					};
-			if (this.Destination == null || this.Destination.WorldSNO == -1 || this.Destination.StartingPointActorTag > 500)
+			if (this.Destination == null || this.Destination.WorldSNO == (int)WorldSno.__NONE || this.Destination.StartingPointActorTag > 500)
 			{
 				if (Smart == true)
 					this.Destination = SmartExitGenerate();
@@ -1368,13 +1328,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 					if (this.World.worldData.DynamicWorld)
 						if (scene.TileType == 300)
-							if (this.World.NextLocation.WorldSNO != -1)
+							if (this.World.NextLocation.WorldSNO != (int)WorldSno.__NONE)
 								this.Destination = this.World.NextLocation;
-							else if (this.World.PrevLocation.WorldSNO != -1)
+							else if (this.World.PrevLocation.WorldSNO != (int)WorldSno.__NONE)
 								this.Destination = this.World.PrevLocation;
 							else
 							{
-								if (this.World.PrevLocation.WorldSNO != -1)
+								if (this.World.PrevLocation.WorldSNO != (int)WorldSno.__NONE)
 									this.Destination = this.World.PrevLocation;
 							}
 				}
@@ -1382,7 +1342,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 
 			//if (this.Destination == null || this.Destination.DestLevelAreaSNO == -1) this.Destination = SmartExitGenerate(); //return false;
-			if (this.Destination.WorldSNO == 204707 && this.World.Game.CurrentQuest == 101758) return false;
+			if (this.Destination.WorldSNO == (int)WorldSno.a3dun_hub_adria_tower_intro && this.World.Game.CurrentQuest == 101758) return false;
 
 			if (!base.Reveal(player))
 				return false;
@@ -1395,12 +1355,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			player.InGameClient.SendMessage(new MapMarkerInfoMessage
 			{
-				HashedName = StringHashHelper.HashItemName(string.Format("{0}-{1}", this.ActorSNO.Name, this.GlobalID)),
+				HashedName = StringHashHelper.HashItemName(string.Format("{0}-{1}", this.Name, this.GlobalID)),
 				Place = new WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
 				ImageInfo = MinimapIcon,
 				Label = -1,
 				snoStringList = -1,
-				snoKnownActorOverride = this.ActorSNO.Id,
+				snoKnownActorOverride = (int)this.SNO,
 				snoQuestSource = -1,
 				Image = -1,
 				Active = true,
@@ -1421,8 +1381,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (this.Destination.StartingPointActorTag != 0)
 			{
 				StartingPoint NeededStartingPoint = world.GetStartingPointById(this.Destination.StartingPointActorTag);
-				var DestWorld = world.Game.GetWorld(this.Destination.WorldSNO);
-				var StartingPoints = DestWorld.GetActorsBySNO(5502);
+				var DestWorld = world.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
+				var StartingPoints = DestWorld.GetActorsBySNO(ActorSno._start_location_0);
 
 				foreach (var ST in StartingPoints) if (ST.CurrentScene.SceneSNO.Id == this.Destination.StartingPointActorTag)
 						NeededStartingPoint = (ST as StartingPoint);
@@ -1437,27 +1397,27 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		}
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (this.Destination.WorldSNO == this.World.Game.WorldOfPortalNephalemSec)
+			if (this.Destination.WorldSNO == (int)this.World.Game.WorldOfPortalNephalemSec)
 			{
 				this.Destination.StartingPointActorTag = 172;
 			}
 			var doors = this.GetActorsInRange<Door>(10f).Where(d => d.Visible);
-			if (this.ActorSNO.Id == 434659 & this.Destination.WorldSNO != 434649)
+			if (this.SNO == ActorSno._p2_totallynotacowlevel_portal && this.Destination.WorldSNO != (int)WorldSno.p2_totallynotacowlevel)
 			{
-				this.Destination.WorldSNO = 379962;
+				this.Destination.WorldSNO = (int)WorldSno.p1_tgoblin_realm;
 				this.Destination.StartingPointActorTag = 171;
 			}
-			Logger.Warn("(OnTargeted) Portal has been activated, Id: {0}, LevelArea: {1}, World: {2}", this.ActorSNO.Id, this.Destination.DestLevelAreaSNO, this.Destination.WorldSNO);
-			if (this.Destination.WorldSNO != 71150 && this.Destination.WorldSNO != 332336)
+			Logger.Warn("(OnTargeted) Portal has been activated, Id: {0}, LevelArea: {1}, World: {2}", this.SNO, this.Destination.DestLevelAreaSNO, this.Destination.WorldSNO);
+			if (this.Destination.WorldSNO != (int)WorldSno.trout_town && this.Destination.WorldSNO != (int)WorldSno.x1_tristram_adventure_mode_hub)
 				foreach (var door in doors)
 					if (!door.isOpened)
 						return;
 			//return;
-			if (Destination.WorldSNO != -1)
-				player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.SimpleMessage(Opcodes.LoadingWarping));
+			if (Destination.WorldSNO != (int)WorldSno.__NONE)
+				player.InGameClient.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
 			if (this.World.IsPvP)
-				this.Destination.WorldSNO = 332336;
-			var world = this.World.Game.GetWorld(this.Destination.WorldSNO);
+				this.Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
+			var world = this.World.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
 
 			if (this.Destination.DestLevelAreaSNO == 288482 && this.World.Game.ActiveNephalemTimer == false && this.World.Game.NephalemGreater == false)
 			{
@@ -1517,14 +1477,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				Logger.Warn("Portal's destination world does not exist (WorldSNO = {0})", this.Destination.WorldSNO);
 				return;
 			}
-			Logger.Info("World - {0} - {1}", world.WorldSNO.Id, world.WorldSNO.Name);
+			Logger.Info("World - {0} - {1}", world.SNO, world.WorldSNO.Name);
 
 			var startingPoint = world.GetStartingPointById(this.Destination.StartingPointActorTag);
 			if (startingPoint == null)
 				startingPoint = GetSmartStartingPoint(world);
 			if (startingPoint != null)
 			{
-				if (this.ActorSNO.Id == 230751) //a2 timed event
+				if (this.SNO == ActorSno._a2dun_zolt_portal_timedevent) //a2 timed event
 				{
 					if (!this.World.Game.QuestManager.SideQuests[120396].Completed)
 						player.ShowConfirmation(this.DynamicID(player), (() => {

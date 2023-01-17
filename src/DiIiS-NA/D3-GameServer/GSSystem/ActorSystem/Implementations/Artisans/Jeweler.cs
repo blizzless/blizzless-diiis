@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
@@ -13,11 +14,11 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
-	[HandledSNO(56949 /* PT_Jewler.acr */)]
+	[HandledSNO(ActorSno._pt_jeweler /* PT_Jewler.acr */)]
 	public class Jeweler : Artisan
 	{
-		public Jeweler(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Jeweler(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 

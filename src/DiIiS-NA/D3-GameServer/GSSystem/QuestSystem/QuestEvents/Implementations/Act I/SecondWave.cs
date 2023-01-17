@@ -28,6 +28,7 @@ using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -48,7 +49,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			var wave2Actors = world.GetActorsInGroup("GizmoGroup2");
 			foreach (var actor in wave2Actors)
 			{
-				var monster = world.SpawnMonster(6632, new Vector3D(actor.Position.X, actor.Position.Y, actor.Position.Z));
+				var monster = world.SpawnMonster(ActorSno._zombiecrawler_a, new Vector3D(actor.Position.X, actor.Position.Y, actor.Position.Z));
 				monster.Attributes[GameAttribute.God] = true;
 				monster.Attributes.BroadcastChangedIfRevealed();
 				(monster as Monster).Brain.DeActivate();

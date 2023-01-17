@@ -24,6 +24,7 @@ using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -44,32 +45,32 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		{
 			//if (world.Game.Empty) return;
 			//Logger.Debug("SpawnSouls event started");
-			var spot1 = world.GetActorBySNO(104104);
+			var spot1 = world.GetActorBySNO(ActorSno._trdun_skeleton_d_3);
 			while (spot1 != null)
 			{
 				ActorsVector3D.Add(spot1.Position);
 				spot1.Destroy();
-				spot1 = world.GetActorBySNO(104104);
+				spot1 = world.GetActorBySNO(ActorSno._trdun_skeleton_d_3);
 			}
-			var spot2 = world.GetActorBySNO(104106);
+			var spot2 = world.GetActorBySNO(ActorSno._trdun_skeleton_b_2);
 			while (spot2 != null)
 			{
 				ActorsVector3D.Add(spot2.Position);
 				spot2.Destroy();
-				spot2 = world.GetActorBySNO(104106);
+				spot2 = world.GetActorBySNO(ActorSno._trdun_skeleton_b_2);
 			}
-			var spot3 = world.GetActorBySNO(104108);
+			var spot3 = world.GetActorBySNO(ActorSno._trdun_skeleton_c_4);
 			while (spot3 != null)
 			{
 				ActorsVector3D.Add(spot3.Position);
 				spot3.Destroy();
-				spot3 = world.GetActorBySNO(104108);
+				spot3 = world.GetActorBySNO(ActorSno._trdun_skeleton_c_4);
 			}
 
 			for (int i = 0; i < 6; i++)
 			{
 				var rand_pos = ActorsVector3D[FastRandom.Instance.Next(ActorsVector3D.Count())];
-				world.SpawnMonster(102927, rand_pos);
+				world.SpawnMonster(ActorSno._ghost_jail_prisoner, rand_pos);
 				ActorsVector3D.Remove(rand_pos);
 			}
 		}
