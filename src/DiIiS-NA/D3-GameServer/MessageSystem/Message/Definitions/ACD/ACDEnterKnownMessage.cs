@@ -30,7 +30,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD
         public int? /* sno */ snoAmbientOcclusionOverrideTex;
         public int? MarkerSetSNO;
         public int? MarkerSetIndex;
-        public uint? TimeActorCreated;
+        public uint? TimeActorCreated = null;
         public EnterKnownLookOverrides EnterKnownLookOverrides;
 
         public ACDEnterKnownMessage() : base(Opcodes.ACDEnterKnownMessage) { }
@@ -39,7 +39,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD
         {
             ActorID = buffer.ReadUInt(32);
             ActorSNOId = buffer.ReadInt(32);
-            Flags = buffer.ReadInt(8);
+            Flags = buffer.ReadInt(9);
             LocationType = buffer.ReadInt(2) + (-1);
             if (buffer.ReadBool())
             {
@@ -83,7 +83,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD
         {
             buffer.WriteUInt(32, ActorID);
             buffer.WriteInt(32, ActorSNOId);
-            buffer.WriteInt(8, Flags);
+            buffer.WriteInt(9, Flags);
             buffer.WriteInt(2, LocationType - (-1));
             buffer.WriteBool(WorldLocation != null);
             if (WorldLocation != null)
