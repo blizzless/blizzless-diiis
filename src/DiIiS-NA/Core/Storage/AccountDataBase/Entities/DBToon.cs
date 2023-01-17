@@ -21,7 +21,7 @@ namespace DiIiS_NA.Core.Storage.AccountDataBase.Entities
 		public virtual int TimeDeadHarcode { get; set; }
 
 		public virtual long Experience { get; set; }
-		public virtual byte[] ParagonBonuses { get; set; }
+		public virtual ushort[] ParagonBonuses { get; set; }
 		public virtual int PvERating { get; set; }
 		public virtual int ChestsOpened { get; set; }                   
 		public virtual int EventsCompleted { get; set; }

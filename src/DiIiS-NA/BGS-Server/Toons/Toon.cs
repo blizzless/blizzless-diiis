@@ -25,7 +25,7 @@ namespace DiIiS_NA.LoginServer.Toons
 {
 	public class Toon : PersistentRPCObject
 	{
-        #region Косметика
+        #region Cosmetics
         public int Cosmetic1 { get { return this.DBToon.Cosmetic1; } set { lock (this.DBToon) { var dbToon = this.DBToon; dbToon.Cosmetic1 = value; DBSessions.SessionUpdate(dbToon); } } }
 		public int Cosmetic2 { get { return this.DBToon.Cosmetic2; } set { lock (this.DBToon) { var dbToon = this.DBToon; dbToon.Cosmetic2 = value; DBSessions.SessionUpdate(dbToon); } } }
 		public int Cosmetic3 { get { return this.DBToon.Cosmetic3; } set { lock (this.DBToon) { var dbToon = this.DBToon; dbToon.Cosmetic3 = value; DBSessions.SessionUpdate(dbToon); } } }
