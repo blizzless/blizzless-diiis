@@ -636,10 +636,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             }
             switch (request.ScopeId)
             {
-                case 3: break; //Обычный режим
-                case 2: Hardcore = true; break; //Героический режим
-                case 5: Season = true; break; //Сезонный
-                case 4: Season = true; Hardcore = true; break; //Сезонный героический
+                case 3: break; //Normal mode
+                case 2: Hardcore = true; break; //Heroic Mode
+                case 5: Season = true; break; //Seasonal
+                case 4: Season = true; Hardcore = true; break; //Seasonal Hardcore
             }
             //foreach (var gameaccount in request.GameAccountIdsList)
             
@@ -693,7 +693,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         response
                             .AddEntry(D3.Leaderboard.Score.CreateBuilder()
                             .SetGameAccountId(Gaccount.AccountId)
-                            .SetScore_((ulong)Hero.Level + (ulong)Gaccount.DBGameAccount.ParagonLevel) //Временное разделение
+                            .SetScore_((ulong)Hero.Level + (ushort)Gaccount.DBGameAccount.ParagonLevel) //Temporary Separation
                             .SetScoreBand(5)
                             .SetLeaderboardId(5)
                             .SetScopeId(5)

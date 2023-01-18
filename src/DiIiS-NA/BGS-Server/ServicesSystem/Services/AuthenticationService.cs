@@ -167,7 +167,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         public override void VerifyWebCredentials(IRpcController controller, VerifyWebCredentialsRequest request, Action<NoData> done)
         {
             done(NoData.CreateBuilder().Build());
-            #region Завершение аутентификации
+            #region Authentication complete
             if (request.WebCredentials.ToStringUtf8().ToLower().Contains("eu-"))
             {
                 (controller as HandlerController).Client.Account = AccountManager.GetAccountByPersistentID(1);

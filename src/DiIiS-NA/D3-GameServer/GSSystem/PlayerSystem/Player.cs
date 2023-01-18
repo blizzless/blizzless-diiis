@@ -2712,7 +2712,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			
 			if (this.ArtisanInteraction == "Blacksmith")
 			{
-				if (blacksmith_data.Level > 55) return;
+				if (blacksmith_data.Level > 12) return;
 				var recipeDefinition = ItemGenerator.GetRecipeDefinition(string.Format("BlackSmith_Train_Level{0}", Math.Min(blacksmith_data.Level, 55)));
 
 				//Logger.Trace(string.Format("BlackSmith_Train_Level{0}", Math.Min(blacksmith_data.Level, 45)));
@@ -2880,7 +2880,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 				if (mystic_data.Level == 12)
 				{
-					//this.GrantAchievement(74987256206128);
+					this.GrantAchievement(74987256206128);
 					if (jeweler_data.Level == 12 && blacksmith_data.Level == 12)
 					{
 						this.GrantCriteria(74987249993545);
@@ -4524,7 +4524,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			try
 			{
 				var Achievement = AchievementSystem.AchievementManager.GetAchievementById(id);
-				long Platinum = -1;
+                if (Achievement == null) return;
+                long Platinum = -1;
 				foreach (var attr in Achievement.AttributesList)
 					if (attr.Key == "Reward Currency Quantity")
 						Platinum = Int64.Parse(attr.Value);
