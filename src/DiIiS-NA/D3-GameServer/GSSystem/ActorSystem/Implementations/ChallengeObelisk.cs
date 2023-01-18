@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -25,11 +26,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-    [HandledSNO(416137 /* x1_OpenWorld_LootRunObelisk_B.acr */)]
+    [HandledSNO(ActorSno._p2_weeklychallenge_obelisk /* x1_OpenWorld_LootRunObelisk_B.acr */)]
     public sealed class ChallengeObelisk : Gizmo
     {
-        public ChallengeObelisk(World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public ChallengeObelisk(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             this.Attributes[GameAttribute.TeamID] = 2;
             this.Attributes[GameAttribute.MinimapActive] = true;
@@ -52,11 +53,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             CollFlags = 0;
 
             TickTimer Timeout = new SecondsTickTimer(this.World.Game, 3.5f);
-            var Boom = System.Threading.Tasks.Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
+            var Boom = Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
             Boom.ContinueWith(delegate
             {
-                this.World.GetActorBySNO(473334).SetVisible(true);
-                this.World.GetActorBySNO(473334).Reveal(player);
+                var actor = this.World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
+                actor.SetVisible(true);
+                actor.Reveal(player);
 
                 World.BroadcastIfRevealed(plr => new ACDCollFlagsMessage()
                 {
@@ -73,8 +75,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                 return false;
             if (!Attributes[GameAttribute.Operatable])
             {
-                this.World.GetActorBySNO(473334).SetVisible(false);
-                this.World.GetActorBySNO(473334).Unreveal(player);
+                var actor = this.World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
+                actor.SetVisible(false);
+                actor.Unreveal(player);
             }
             else
             {

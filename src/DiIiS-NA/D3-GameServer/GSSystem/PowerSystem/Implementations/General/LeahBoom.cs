@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
@@ -23,7 +24,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         public override IEnumerable<TickTimer> Main()
         {
             TargetList targets = new TargetList();
-            var Summoners = World.GetActorsBySNO(186039);
+            var Summoners = World.GetActorsBySNO(ActorSno._triunesummoner_a_cainevent);
             foreach (var Summoner in Summoners)
                 targets.Actors.Add(Summoner);
             WeaponDamage(targets, 100.00f, DamageType.Physical);

@@ -325,7 +325,7 @@ namespace DiIiS_NA.GameServer.Core
 			}
 			else
 			{
-				Logger.Error("Can't find slot in backpack to add item {0}", item.ActorSNO);
+				Logger.Error("Can't find slot in backpack to add item {0}", item.SNO);
 				if (_owner is Player)
 					_owner.World.DropItem((_owner as Player), item);
 				return false;
@@ -342,7 +342,7 @@ namespace DiIiS_NA.GameServer.Core
 			}
 			else
 			{
-				Logger.Error("Can't find slot in backpack to add item {0}", item.ActorSNO);
+				Logger.Error("Can't find slot in backpack to add item {0}", item.SNO);
 				return false;
 			}
 		}

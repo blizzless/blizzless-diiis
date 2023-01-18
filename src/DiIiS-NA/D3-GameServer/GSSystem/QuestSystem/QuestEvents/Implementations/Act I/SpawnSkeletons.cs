@@ -32,6 +32,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using System.Threading.Tasks;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -56,7 +57,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			{
 				foreach (var plr in world.Game.Players.Values)
 					plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
-				var SkeletonKing_Bridge = world.GetActorBySNO(461);
+				var SkeletonKing_Bridge = world.GetActorBySNO(ActorSno._trdun_skeletonking_bridge_active);
 				Task.Delay(1000).ContinueWith(delegate
 				{
 					foreach (var plr in world.Game.Players.Values)
@@ -85,12 +86,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			
 			
 
-			var spawner = world.GetActorBySNO(5913);
+			var spawner = world.GetActorBySNO(ActorSno._trdun_rescuecainskelspawner);
 			while (spawner != null)
 			{
-				world.SpawnMonster(FastRandom.Instance.Next(51339, 51340), spawner.Position);
+				var monster = FastRandom.Instance.Next(10) % 2 == 0 ? ActorSno._skeletonking_shield_skeleton : ActorSno._skeletonking_skeleton;
+				world.SpawnMonster(monster, spawner.Position);
 				spawner.Destroy();
-				spawner = world.GetActorBySNO(5913);
+				spawner = world.GetActorBySNO(ActorSno._trdun_rescuecainskelspawner);
 			}
 		}
 

@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -23,11 +24,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-    [HandledSNO(364715 /* x1_OpenWorld_LootRunObelisk_B.acr */)]
+    [HandledSNO(ActorSno._x1_openworld_lootrunobelisk_b /* x1_OpenWorld_LootRunObelisk_B.acr */)]
     public sealed class NephalemStone : Gizmo
     {
-        public NephalemStone(World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public NephalemStone(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             this.Attributes[GameAttribute.TeamID] = 2;
             this.Attributes[GameAttribute.MinimapActive] = true;

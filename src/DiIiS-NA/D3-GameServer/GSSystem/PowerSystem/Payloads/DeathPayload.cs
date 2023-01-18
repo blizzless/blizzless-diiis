@@ -56,6 +56,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 {
@@ -217,7 +218,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				if (mon.Master != null && mon.Master is Player)
 				{
 					(mon.Master as Player).Followers.Remove(this.Target.GlobalID);
-					(mon.Master as Player).FreeFollowerIndex(mon.ActorSNO.Id);
+					(mon.Master as Player).FreeFollowerIndex(mon.SNO);
 				}
 				if (mon.Brain != null)
 					mon.Brain.Kill();
@@ -252,29 +253,31 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}, this.Target);
 
 			// special death animation
-			switch (this.Target.ActorSNO.Id)
+			switch (this.Target.SNO)
 			{
 				//Boss-A1 Q2
-				case 115403: this.Target.PlayAnimation(11, 199484, 1f); break;
+				case ActorSno._skeleton_a_cain_unique: this.Target.PlayAnimation(11, 199484, 1f); break;
 				//Йондар
-				case 86624: this.Target.PlayAnimation(11, 199484, 1f); break;
+				case ActorSno._adventurer_d_templarintrounique: this.Target.PlayAnimation(11, 199484, 1f); break;
 				//Разнощик чумы
-				case 4157: this.Target.PlayAnimation(11, 8535, 1f); break;
+				case ActorSno._fleshpitflyer_b: this.Target.PlayAnimation(11, 8535, 1f); break;
 				//Темные жрецы
-				case 102452: this.Target.PlayAnimation(11, 199484, 1f); break;
+				case ActorSno._triunevessel_event31: this.Target.PlayAnimation(11, 199484, 1f); break;
 				//Пчелы
-				case 5208:
-				case 104424: this.Target.PlayAnimation(11, 8535, 1f); break;
+				case ActorSno._sandwasp_a:
+				case ActorSno._fleshpitflyer_leoric_inferno:
+					this.Target.PlayAnimation(11, 8535, 1f);
+					break;
 				//X1_LR_Boss_Angel_Corrupt_A
-				case 358489: this.Target.PlayAnimation(11, 142005, 1f); break;
+				case ActorSno._x1_lr_boss_angel_corrupt_a: this.Target.PlayAnimation(11, 142005, 1f); break;
 				//Падшие
-				case 4080: this.Target.PlayAnimation(11, 199484, 1f); break;
+				case ActorSno._fallengrunt_a: this.Target.PlayAnimation(11, 199484, 1f); break;
 				default:
 					if (_FindBestDeathAnimationSNO() != -1)
 						this.Target.PlayAnimation(11, _FindBestDeathAnimationSNO(), 1f);
 					else
 					{
-						Logger.Warn("Анимация смерти не обнаружена: ActorSNOId = {0}", this.Target.ActorSNO.Id);
+						Logger.Warn("Анимация смерти не обнаружена: ActorSNOId = {0}", Target.SNO);
 					}
 					break;
 			}
@@ -306,7 +309,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					this.Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] == 1 ||
 					this.Context.User.Attributes[GameAttribute.Item_Power_Passive, 249954] == 1 ||
 					(float)FastRandom.Instance.NextDouble() < 0.1f ||
-					this.Target.World.WorldSNO.Id == 211471)
+					this.Target.World.SNO == WorldSno.a1dun_random_level01)
 					switch ((int)this.DeathDamageType.HitEffect)
 					{
 						case 0: this.Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage() { ActorId = this.Target.DynamicID(plr), Effect = Effect.Gore }, this.Target); break;
@@ -333,59 +336,59 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				}
 				
 
-			if (this.Target.ActorSNO.Id == 210120) //Сады надежды
+			if (this.Target.SNO == ActorSno._a4dun_garden_corruption_monster) //Сады надежды
 			{
 				//Первый этаж садов надежды
-				if (Target.World.WorldSNO.Id == 109513)
+				if (Target.World.SNO == WorldSno.a4dun_garden_of_hope_01)
 				{
 					//Проверяем есть ли порталы
-					var PortalToHell = Target.World.GetActorsBySNO(224890); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
+					var PortalToHell = Target.World.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
 					if (PortalToHell.Count == 0)
 					{
-						var Corruptions = Target.World.GetActorsBySNO(210120);
+						var Corruptions = Target.World.GetActorsBySNO(ActorSno._a4dun_garden_corruption_monster);
 						if (Corruptions.Count > 1)
 						{
 							if (RandomHelper.Next(0, 30) > 26)
 							{
-								Portal HellPortal = new Portal(Target.World, 224890, Target.World.StartingPoints[0].Tags);
+								Portal HellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
 								HellPortal.EnterWorld(this.Target.Position);
-								this.Context.User.World.SpawnMonster(215103, this.Context.User.Position);
+								this.Context.User.World.SpawnMonster(ActorSno._diablo_vo, this.Context.User.Position);
 								StartConversation(Target.World, 217226);
 							}
 						}
 						else
 						{
-							Portal HellPortal = new Portal(Target.World, 224890, Target.World.StartingPoints[0].Tags);
+							Portal HellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
 							HellPortal.EnterWorld(this.Target.Position);
-							this.Context.User.World.SpawnMonster(215103, this.Context.User.Position);
+							this.Context.User.World.SpawnMonster(ActorSno._diablo_vo, this.Context.User.Position);
 							StartConversation(Target.World, 217226);
 						}
 					}
 				}
 				//Второй этаж садов надежды
-				else if (Target.World.WorldSNO.Id == 219659)
+				else if (Target.World.SNO == WorldSno.a4dun_garden_of_hope_random)
 				{ //Проверяем есть ли порталы
-					var PortalToHell = Target.World.GetActorsBySNO(224890); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
+					var PortalToHell = Target.World.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
 					if (PortalToHell.Count == 0)
 					{
-						var Corruptions = Target.World.GetActorsBySNO(210120);
+						var Corruptions = Target.World.GetActorsBySNO(ActorSno._a4dun_garden_corruption_monster);
 						if (Corruptions.Count > 1)
 						{
 							if (RandomHelper.Next(0, 30) > 26)
 							{
-								Portal HellPortal = new Portal(Target.World, 224890, Target.World.StartingPoints[0].Tags);
+								Portal HellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
 								HellPortal.EnterWorld(this.Target.Position);
-								if (this.Context.User.World.GetActorsBySNO(215103).Count == 0)
-									this.Context.User.World.SpawnMonster(215103, this.Context.User.Position);
+								if (this.Context.User.World.GetActorsBySNO(ActorSno._diablo_vo).Count == 0)
+									this.Context.User.World.SpawnMonster(ActorSno._diablo_vo, this.Context.User.Position);
 								StartConversation(Target.World, 217228);
 							}
 						}
 						else
 						{
-							Portal HellPortal = new Portal(Target.World, 224890, Target.World.StartingPoints[0].Tags);
+							Portal HellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
 							HellPortal.EnterWorld(this.Target.Position);
-							if (this.Context.User.World.GetActorsBySNO(215103).Count == 0)
-								this.Context.User.World.SpawnMonster(215103, this.Context.User.Position);
+							if (this.Context.User.World.GetActorsBySNO(ActorSno._diablo_vo).Count == 0)
+								this.Context.User.World.SpawnMonster(ActorSno._diablo_vo, this.Context.User.Position);
 							StartConversation(Target.World, 217228);
 						}
 					}
@@ -466,22 +469,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 					if (this.Target is Champion)
 					{
-						plr.CheckKillMonsterCriteria(this.Target.ActorSNO.Id, 1);
+						plr.CheckKillMonsterCriteria(this.Target.SNO, 1);
 					}
 					if (this.Target is Rare)
 					{
-						plr.CheckKillMonsterCriteria(this.Target.ActorSNO.Id, 2);
+						plr.CheckKillMonsterCriteria(this.Target.SNO, 2);
 					}
 					if (this.Target is Unique)
 					{
-						plr.CheckKillMonsterCriteria(this.Target.ActorSNO.Id, 4);
+						plr.CheckKillMonsterCriteria(this.Target.SNO, 4);
 					}
 				}
 
 				if (this.Target is Unique)
 				{
-					if (LoreRegistry.Lore.ContainsKey(this.Target.World.WorldSNO.Id) && LoreRegistry.Lore[this.Target.World.WorldSNO.Id].chests_lore.ContainsKey(this.Target.ActorSNO.Id))
-						foreach (int loreId in LoreRegistry.Lore[this.Target.World.WorldSNO.Id].chests_lore[this.Target.ActorSNO.Id])
+					if (LoreRegistry.Lore.ContainsKey(this.Target.World.SNO) && LoreRegistry.Lore[this.Target.World.SNO].chests_lore.ContainsKey(this.Target.SNO))
+						foreach (int loreId in LoreRegistry.Lore[this.Target.World.SNO].chests_lore[this.Target.SNO])
 							if (!plr.HasLore(loreId))
 							{
 								this.Target.World.DropItem(this.Target, null, ItemGenerator.CreateLore(plr, loreId));
@@ -564,32 +567,32 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					if (this.Context.DogsSummoned >= 3)
 						plr.GrantAchievement(74987243307567);
 			}
-			Logger.Trace("Killed monster, id: {0}, level {1}", this.Target.ActorSNO.Id, this.Target.Attributes[GameAttribute.Level]);
+			Logger.Trace("Killed monster, id: {0}, level {1}", this.Target.SNO, this.Target.Attributes[GameAttribute.Level]);
 
 			
 			//handling quest triggers
-			if (this.Target.World.Game.QuestProgress.QuestTriggers.ContainsKey(this.Target.ActorSNO.Id))
+			if (this.Target.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)this.Target.SNO))
 			{
-				var trigger = this.Target.World.Game.QuestProgress.QuestTriggers[this.Target.ActorSNO.Id];
+				var trigger = this.Target.World.Game.QuestProgress.QuestTriggers[(int)this.Target.SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
 				{
-					this.Target.World.Game.QuestProgress.UpdateCounter(this.Target.ActorSNO.Id);
-					if (trigger.count == this.Target.World.Game.QuestProgress.QuestTriggers[this.Target.ActorSNO.Id].counter)
+					this.Target.World.Game.QuestProgress.UpdateCounter((int)this.Target.SNO);
+					if (trigger.count == this.Target.World.Game.QuestProgress.QuestTriggers[(int)this.Target.SNO].counter)
 						trigger.questEvent.Execute(this.Target.World); // launch a questEvent
 				}
 				else
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
 				{
-					this.Target.World.Game.QuestProgress.UpdateCounter(this.Target.ActorSNO.Id);
+					this.Target.World.Game.QuestProgress.UpdateCounter((int)this.Target.SNO);
 				}
 			}
-			else if (this.Target.World.Game.SideQuestProgress.QuestTriggers.ContainsKey(this.Target.ActorSNO.Id))
+			else if (this.Target.World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)this.Target.SNO))
 			{
-				var trigger = this.Target.World.Game.SideQuestProgress.QuestTriggers[this.Target.ActorSNO.Id];
+				var trigger = this.Target.World.Game.SideQuestProgress.QuestTriggers[(int)this.Target.SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
 				{
-					this.Target.World.Game.SideQuestProgress.UpdateSideCounter(this.Target.ActorSNO.Id);
-					if (trigger.count == this.Target.World.Game.SideQuestProgress.QuestTriggers[this.Target.ActorSNO.Id].counter)
+					this.Target.World.Game.SideQuestProgress.UpdateSideCounter((int)this.Target.SNO);
+					if (trigger.count == this.Target.World.Game.SideQuestProgress.QuestTriggers[(int)this.Target.SNO].counter)
 						trigger.questEvent.Execute(this.Target.World); // launch a questEvent
 				}
 			}
@@ -598,7 +601,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			foreach (var bounty in this.Target.World.Game.QuestManager.Bounties)
 			{	if (this.Target.OriginalLevelArea == -1)
 					this.Target.OriginalLevelArea = this.Target.CurrentScene.Specification.SNOLevelAreas[0];
-				bounty.CheckKill(this.Target.ActorSNO.Id, this.Target.OriginalLevelArea, this.Target.World.WorldSNO.Id);
+				bounty.CheckKill((int)this.Target.SNO, this.Target.OriginalLevelArea, this.Target.World.SNO);
 			}
 
 			//Nephalem Rift
@@ -751,7 +754,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							Field0 = 0x0005D6EA
 						});
 
-						this.Target.World.SpawnMonster(398682, this.Target.Position);
+						this.Target.World.SpawnMonster(ActorSno._p1_lr_tieredrift_nephalem, this.Target.Position);
 
 						this.Target.World.SpawnRandomUniqueGem(this.Target, plr);
 
@@ -760,7 +763,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 332339, 0)); //Зона
 						NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 24, 0)); //Точка входа
 						
-						var portal = new Portal(this.Target.World, 345935, NewTagMap);
+						var portal = new Portal(this.Target.World, ActorSno._x1_openworld_lootrunportal, NewTagMap);
 
 						portal.EnterWorld(new Core.Types.Math.Vector3D(this.Target.Position.X + 10f, this.Target.Position.Y + 10f, this.Target.Position.Z));
 					}
@@ -796,8 +799,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						}
 					});
 					//StartConversation(this.Target.World, 340878);
-					var HubWorld = this.Target.World.Game.GetWorld(332336);
-					var Orek = (HubWorld.GetActorBySNO(363744) as InteractiveNPC);
+					var HubWorld = this.Target.World.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
+					var Orek = (HubWorld.GetActorBySNO(ActorSno._x1_lr_nephalem) as InteractiveNPC);
 					Orek.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(340878));
 					Orek.ForceConversationSNO = 340878;
 					Orek.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
@@ -822,7 +825,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					if (this.Target is Unique)
 					{
 						int chance = this.Target.World.Game.IsHardcore ? 30 : 10;
-						if (this.Target.ActorSNO.Id != 196102 && (this.Target as Unique).CanDropKey && FastRandom.Instance.Next(100) < chance)
+						if (this.Target.SNO != ActorSno._terrordemon_a_unique_1000monster && (this.Target as Unique).CanDropKey && FastRandom.Instance.Next(100) < chance)
 							this.Target.World.DropItem(this.Target, null, ItemGenerator.CreateItem(this.Context.User, ItemGenerator.GetItemDefinition(-110888638)));
 					}
 
@@ -912,20 +915,30 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							}
 
 							if (Target.World.Game.IsSeasoned)
-								if (Target.ActorSNO.Id == 4630) //Раканот
-									plr.GrantCriteria(74987254022737);
-								else if (Target.ActorSNO.Id == 5350) //Король-скиллет
-									plr.GrantCriteria(74987252582955);
-								else if (Target.ActorSNO.Id == 96192)//Siegebreaker - Сделай свой выбор
-									plr.GrantCriteria(74987246511881);
-								else if (Target.ActorSNO.Id == 279394)//Adria - Я становлюсь Звездой
-									plr.GrantCriteria(74987252384014);
-							if ((int)this.Target.Quality >= 4)
+                            {
+								switch(Target.SNO)
+                                {
+									case ActorSno._despair: //Раканот
+										plr.GrantCriteria(74987254022737);
+										break;
+									case ActorSno._skeletonking: //Король-скиллет
+										plr.GrantCriteria(74987252582955);
+										break;
+									case ActorSno._siegebreakerdemon: //Siegebreaker - Сделай свой выбор
+										plr.GrantCriteria(74987246511881);
+										break;
+									case ActorSno._x1_adria_boss: //Adria - Я становлюсь Звездой
+										plr.GrantCriteria(74987252384014);
+										break;
+								}
+                            }
+
+                            if ((int)this.Target.Quality >= 4)
 							{
-								if (this.Target.ActorSNO.Id == 212750) //Chiltara
+								if (this.Target.SNO == ActorSno._lacunifemale_c_unique) //Chiltara
 									if ((float)FastRandom.Instance.NextDouble() < 0.5f)
 										this.Target.World.SpawnItem(this.Target, plr, -799974399);
-								if (this.Target.ActorSNO.Id == 148449) //Izual
+								if (this.Target.SNO == ActorSno._bigred_izual) //Izual
 									if ((float)FastRandom.Instance.NextDouble() < 0.2f)
 									{
 										switch (this.Target.World.Game.Difficulty)
@@ -948,27 +961,27 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 										}
 									}
 
-								switch (this.Target.ActorSNO.Id)
+								switch (this.Target.SNO)
 								{
-									case 220683:
+									case ActorSno._graverobber_a_ghost_unique_03:
 										plr.GrantCriteria(74987243307212);
 										break;
-									case 225502:
+									case ActorSno._gravedigger_b_ghost_unique_01:
 										plr.GrantCriteria(74987243309859);
 										break;
-									case 218348:
+									case ActorSno._graverobber_a_ghost_unique_01:
 										plr.GrantCriteria(74987243309860);
 										break;
-									case 218351:
+									case ActorSno._graverobber_a_ghost_unique_02:
 										plr.GrantCriteria(74987243309861);
 										break;
-									case 209553:
+									case ActorSno._ghost_a_unique_01:
 										plr.GrantCriteria(74987243309862);
 										break;
-									case 165602:
+									case ActorSno._ghost_d_unique01:
 										plr.GrantCriteria(74987243309863);
 										break;
-									case 222526:
+									case ActorSno._ghost_d_unique_01:
 										plr.GrantCriteria(74987243309864);
 										break;
 								}
@@ -980,8 +993,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				if (this.Context.User is Player & this.Target is Monster)
 					if (RandomHelper.Next(0, 100) > 40 & (this.Context.User as Player).Toon.Class == ToonClass.Necromancer)
 					{
-						var Flesh = this.Context.User.World.SpawnMonster(454066, PositionOfDeath);
-						Flesh.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO] = this.Target.ActorSNO.Id;
+						var Flesh = this.Context.User.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, PositionOfDeath);
+						Flesh.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO] = (int)this.Target.SNO;
 						Flesh.Attributes.BroadcastChangedIfRevealed();
 					}
 			}
@@ -1000,14 +1013,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			if (this.Target is Boss)
 				foreach (Player plr in players)
-					switch (this.Target.ActorSNO.Id)
+					switch (this.Target.SNO)
 					{
-						case 5350: //Leoric
+						case ActorSno._skeletonking: //Leoric
 							if (this.Context.PowerSNO == 93885) //weapon throw
 								plr.GrantAchievement(74987243307050);
 							if (isCoop) plr.GrantAchievement(74987252301189); if (isHardcore) plr.GrantAchievement(74987243307489); else plr.GrantAchievement(74987249381288);
 							break;
-						case 3526: //Butcher
+						case ActorSno._butcher: //Butcher
 							if (this.Context.PowerSNO == 93885) //weapon throw
 								plr.GrantAchievement(74987243307050);
 							if (this.Context.PowerSNO == 71548) //spectral blade
@@ -1015,15 +1028,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							if (isCoop) plr.GrantAchievement(74987252696819); if (isHardcore) plr.GrantAchievement(74987254551339); else plr.GrantAchievement(74987258164419);
 							plr.SetProgress(1, this.Target.World.Game.Difficulty);
 							break;
-						case 6031: //Maghda
+						case ActorSno._maghda: //Maghda
 							if (this.Context.PowerSNO == 93885) //weapon throw
 								plr.GrantAchievement(74987243307050);
 							if (isCoop) plr.GrantAchievement(74987255855515); if (isHardcore) plr.GrantAchievement(74987243307507); else plr.GrantAchievement(74987246434969);
 							break;
-						case 80509: //Zoltun Kulle
+						case ActorSno._zoltunkulle: //Zoltun Kulle
 							if (isCoop) plr.GrantAchievement(74987246137208); if (isHardcore) plr.GrantAchievement(74987243307509); else plr.GrantAchievement(74987252195665);
 							break;
-						case 3349: //Belial (big)
+						case ActorSno._belial: //Belial (big)
 							if (this.Context.PowerSNO == 93885) //weapon throw
 								plr.GrantAchievement(74987243307050);
 							if (this.Context.PowerSNO == 71548) //spectral blade
@@ -1031,20 +1044,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							if (isCoop) plr.GrantAchievement(74987256826382); if (isHardcore) plr.GrantAchievement(74987244906887); else plr.GrantAchievement(74987244645044);
 							plr.SetProgress(2, this.Target.World.Game.Difficulty);
 							break;
-						case 87642: //Gluttony
+						case ActorSno._gluttony: //Gluttony
 							if (isCoop) plr.GrantAchievement(74987249112946); if (isHardcore) plr.GrantAchievement(74987243307519); else plr.GrantAchievement(74987259418615);
 							break;
-						case 96192: //Siegebreaker
+						case ActorSno._siegebreakerdemon: //Siegebreaker
 							if (this.Context.PowerSNO == 93885) //weapon throw
 								plr.GrantAchievement(74987243307050);
 							if (isCoop) plr.GrantAchievement(74987253664242); if (isHardcore) plr.GrantAchievement(74987243307521); else plr.GrantAchievement(74987248255991);
 							break;
-						case 95250: //Cydaea
+						case ActorSno._mistressofpain: //Cydaea
 							if (this.Context.PowerSNO == 93885) //weapon throw
 								plr.GrantAchievement(74987243307050);
 							if (isCoop) plr.GrantAchievement(74987257890442); if (isHardcore) plr.GrantAchievement(74987243307523); else plr.GrantAchievement(74987254675042);
 							break;
-						case 89690: //Azmodan
+						case ActorSno._azmodan: //Azmodan
 							if (this.Context.PowerSNO == 93885) //weapon throw
 								plr.GrantAchievement(74987243307050);
 							if (this.Context.PowerSNO == 71548) //spectral blade
@@ -1052,19 +1065,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							if (isCoop) plr.GrantAchievement(74987247100576); if (isHardcore) plr.GrantAchievement(74987251893684); else plr.GrantAchievement(74987247855713);
 							plr.SetProgress(3, this.Target.World.Game.Difficulty);
 							break;
-						case 196102: //Iskatu
+						case ActorSno._terrordemon_a_unique_1000monster: //Iskatu
 							if (isCoop) plr.GrantAchievement(74987255392558); if (isHardcore) plr.GrantAchievement(74987248632930); else plr.GrantAchievement(74987246017001);
 							break;
-						case 4630: //Rakanoth
+						case ActorSno._despair: //Rakanoth
 							if (this.Context.PowerSNO == 93885) //weapon throw
 								plr.GrantAchievement(74987243307050);
 							if (isCoop) plr.GrantAchievement(74987248781143); if (isHardcore) plr.GrantAchievement(74987243307533); else plr.GrantAchievement(74987256508058);
 							break;
-						case 148449: //Izual
+						case ActorSno._bigred_izual: //Izual
 							if (isCoop) plr.GrantAchievement(74987254969009); if (isHardcore) plr.GrantAchievement(74987247989681); else plr.GrantAchievement(74987244988685);
 							if (isSeasoned) plr.GrantCriteria(74987249642121);
 							break;
-						case 114917: //Diablo
+						case ActorSno._diablo: //Diablo
 							if (this.Context.PowerSNO == 93885) //weapon throw
 								plr.GrantAchievement(74987243307050);
 							if (isCoop) plr.GrantAchievement(74987250386944); if (isHardcore) plr.GrantAchievement(74987250070969); else plr.GrantAchievement(74987248188984);
@@ -1100,7 +1113,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				KillerLevel = 100,
 				KillerPlayerIndex = (this.Context.User is Player ? (this.Context.User as Player).PlayerIndex : -1),                                                                            //player killer(?)
 				KillerMonsterRarity = (this.Context.User is Player ? 0 : (int)this.Context.User.Quality),            //quality of actorKiller
-				snoKillerActor = (this.Context.User is Player ? -1 : this.Context.User.ActorSNO.Id),    //if player killer, then minion SnoId
+				snoKillerActor = this.Context.User is Player ? -1 : (int)this.Context.User.SNO,    //if player killer, then minion SnoId
 				KillerTeam = -1,                                                                            //player killer(?)
 				KillerRareNameGBIDs = new int[] { -1, -1 },
 				snoPowerDmgSource = -1
@@ -1131,7 +1144,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			player.QueueDeath(true);
 			if (!player.World.IsPvP)
 			{
-				var tomb = new Headstone(this.Target.World, 4860, new TagMap(), player.PlayerIndex);
+				var tomb = new Headstone(this.Target.World, ActorSno._playerheadstone, new TagMap(), player.PlayerIndex);
 				tomb.EnterWorld(player.Position);
 				
 				player.Inventory.DecreaseDurability(0.1f);

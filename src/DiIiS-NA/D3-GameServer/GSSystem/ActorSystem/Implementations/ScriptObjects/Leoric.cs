@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -21,11 +22,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(5354)]
+	[HandledSNO(ActorSno._skeletonkinggizmo)]
 	public class Leoric : Gizmo
 	{
-		public Leoric(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Leoric(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.MinimapActive] = true;
 		}
@@ -64,8 +65,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			Attributes.BroadcastChangedIfRevealed();
 
 			Attributes.BroadcastChangedIfRevealed();
-			var ListenerKingSkeletons = System.Threading.Tasks.Task.Delay(16000).ContinueWith(delegate {
-				this.World.SpawnMonster(5350, this.Position);
+			var ListenerKingSkeletons = Task.Delay(16000).ContinueWith(delegate {
+				this.World.SpawnMonster(ActorSno._skeletonking, this.Position);
 				this.Destroy();
 			});
 		}

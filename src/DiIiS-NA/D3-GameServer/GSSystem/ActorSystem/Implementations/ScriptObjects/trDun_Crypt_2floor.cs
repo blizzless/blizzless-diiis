@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -9,12 +10,12 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-    [HandledSNO(116099)]
-    class trDun_Crypt_2floor : Gizmo
+    [HandledSNO(ActorSno._trdun_skeletonking_sealed_door_1000_pounder)]
+    class TrDun_Crypt_2floor : Gizmo
     {
         private bool _collapsed = false;
-        public trDun_Crypt_2floor(World world, int snoId, TagMap tags)
-           : base(world, snoId, tags)
+        public TrDun_Crypt_2floor(World world, ActorSno sno, TagMap tags)
+           : base(world, sno, tags)
         {
             Field2 = 0;
         }
@@ -34,7 +35,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
             {
                 _collapsed = true;
                 this.PlayAnimation(5, 116098); //- Разлом
-                this.World.SpawnMonster(76953, this.Position);
+                this.World.SpawnMonster(ActorSno._unburied_a_unique, this.Position);
             }
         }
 

@@ -14,13 +14,14 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
 	class HexMinion : Minion
 	{
 		public HexMinion(World world, PowerContext context, int HexID)
-			: base(world, 107826, context.User, null)
+			: base(world, ActorSno._fetish_hex, context.User, null)
 		{
 			Scale = 1f;
 			//TODO: get a proper value for this.

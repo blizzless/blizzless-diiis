@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
@@ -44,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 206229, User.Position, 1f, (hit) =>
+			SetProjectile(this, ActorSno._witchdoctor_fetisharmy_hunter, User.Position, 1f, (hit) =>
 			{
 				WeaponDamage(hit, 1.00f, DamageType.Poison);
 				projectile.Destroy();
@@ -158,7 +159,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 
 		public override IEnumerable<TickTimer> Main()
 		{
-			SetProjectile(this, 3901, User.Position, 1.5f, (hit) =>
+			SetProjectile(this, ActorSno._d3arrow, User.Position, 1.5f, (hit) =>
 			{
 				WeaponDamage(hit, 1.00f, DamageType.Physical);
 				projectile.Destroy();

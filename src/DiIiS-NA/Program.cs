@@ -12,6 +12,7 @@ using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 using DiIiS_NA.GameServer.AchievementSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.CommandManager;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
 //Blizzless Project 2022 

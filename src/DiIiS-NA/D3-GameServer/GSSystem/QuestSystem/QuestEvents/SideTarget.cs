@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 //Blizzless Project 2022 
 using System.Text;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
@@ -17,7 +18,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
         public override void Execute(MapSystem.World world)
         {
             foreach (var actr in world.Actors.Values)
-                if (actr.ActorSNO.Id == 219725)
+                if (actr.SNO == ActorSno._zombiefemale_a_tristramquest_unique)
                 {
                     actr.Attributes[GameAttribute.Quest_Monster] = false;
                     actr.Attributes.BroadcastChangedIfRevealed();

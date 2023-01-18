@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -18,65 +19,65 @@ using System.Threading.Tasks;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	[HandledSNO(
-	5350,       //Leoric King
-	51341,      //Aranea
-	3526,       //Butcher
-	6031,       //Maghda
-	80509,      //Zoltun Kulle
-	62975,      //Belial (small)
-	3349,       //Belial (big)
-	87642,      //Gluttony
-	96192,      //Siegebreaker
-	95250,      //Cydaea
-	89690,      //Azmodan
-	148449,     //Izual
-	196102,     //Iskatu
-	4630,       //Despair (Rakanoth)
-	114917,     //Diablo
-	133562,     //Diablo's shadow
-	291368,     //Urzael
-	279394,     //Adria
-	297730,      //Malthael
-	//Nephalem Bosses
-	358429, //X1_LR_Boss_MistressofPain 
-	358489, //X1_LR_Boss_Angel_Corrupt_A 
-	358614, //X1_LR_Boss_creepMob_A 
-	359094, //X1_LR_Boss_SkeletonSummoner_C 
-	359688, //X1_LR_Boss_Succubus_A 
-	360281, //X1_LR_Boss_Snakeman_Melee_Belial 
-	360636, //X1_LR_Boss_TerrorDemon_A 
-	434201, //P4_LR_Boss_Sandmonster_Turret 
-	343743, //x1_LR_Boss_SkeletonKing 
-	343751, //x1_LR_Boss_Gluttony 
-	343759, //x1_LR_Boss_Despair 
-	343767, //x1_LR_Boss_MalletDemon 
-	344119, //X1_LR_Boss_morluSpellcaster_Ice 
-	344389, //X1_LR_Boss_SandMonster 
-	345004, //X1_LR_Boss_morluSpellcaster_Fire 
-	346563, //X1_LR_Boss_DeathMaiden 
-	353517, //X1_LR_Boss_Secret_Cow 
-	353535, //X1_LR_Boss_Squigglet 
-	353823, //X1_LR_Boss_sniperAngel 
-	353874, //X1_LR_Boss_westmarchBrute 
-	354050, //X1_LR_Boss_Dark_Angel 
-	354144, //X1_LR_Boss_BigRed_Izual 
-	354652, //X1_LR_Boss_demonFlyerMega 
-	426943, //X1_LR_Boss_RatKing_A 
-	428323, //X1_LR_Boss_RatKing_A_UI 
-	429010, //X1_LR_Boss_TerrorDemon_A_BreathMinion 
-	357917, //x1_LR_Boss_Butcher 
-	358208, //X1_LR_Boss_ZoltunKulle 
-	360766, //X1_LR_Boss_Minion_shadowVermin_A 
-	360794, //X1_LR_Boss_Minion_TerrorDemon_Clone_C 
-	360327, //X1_LR_Boss_Minion_Swarm_A 
-	360329 //X1_LR_Boss_Minion_electricEel_B 
+		ActorSno._skeletonking,       //Leoric King
+		ActorSno._spiderqueen,      //Aranea
+		ActorSno._butcher,       //Butcher
+		ActorSno._maghda,       //Maghda
+		ActorSno._zoltunkulle,      //Zoltun Kulle
+		ActorSno._belial_trueform,      //Belial (small)
+		ActorSno._belial,       //Belial (big)
+		ActorSno._gluttony,      //Gluttony
+		ActorSno._siegebreakerdemon,      //Siegebreaker
+		ActorSno._mistressofpain,      //Cydaea
+		ActorSno._azmodan,      //Azmodan
+		ActorSno._bigred_izual,     //Izual
+		ActorSno._terrordemon_a_unique_1000monster,     //Iskatu
+		ActorSno._despair,       //Despair (Rakanoth)
+		ActorSno._diablo,     //Diablo
+		ActorSno._terrordiablo,     //Diablo's shadow
+		ActorSno._x1_urzael_boss,     //Urzael
+		ActorSno._x1_adria_boss,     //Adria
+		ActorSno._x1_malthael_boss,      //Malthael
+		//Nephalem Bosses
+		ActorSno._x1_lr_boss_mistressofpain, //X1_LR_Boss_MistressofPain 
+		ActorSno._x1_lr_boss_angel_corrupt_a, //X1_LR_Boss_Angel_Corrupt_A 
+		ActorSno._x1_lr_boss_creepmob_a, //X1_LR_Boss_creepMob_A 
+		ActorSno._x1_lr_boss_skeletonsummoner_c, //X1_LR_Boss_SkeletonSummoner_C 
+		ActorSno._x1_lr_boss_succubus_a, //X1_LR_Boss_Succubus_A 
+		ActorSno._x1_lr_boss_snakeman_melee_belial, //X1_LR_Boss_Snakeman_Melee_Belial 
+		ActorSno._x1_lr_boss_terrordemon_a, //X1_LR_Boss_TerrorDemon_A 
+		ActorSno._p4_lr_boss_sandmonster_turret, //P4_LR_Boss_Sandmonster_Turret 
+		ActorSno._x1_lr_boss_skeletonking, //x1_LR_Boss_SkeletonKing 
+		ActorSno._x1_lr_boss_gluttony, //x1_LR_Boss_Gluttony 
+		ActorSno._x1_lr_boss_despair, //x1_LR_Boss_Despair 
+		ActorSno._x1_lr_boss_malletdemon, //x1_LR_Boss_MalletDemon 
+		ActorSno._x1_lr_boss_morluspellcaster_ice, //X1_LR_Boss_morluSpellcaster_Ice 
+		ActorSno._x1_lr_boss_sandmonster, //X1_LR_Boss_SandMonster 
+		ActorSno._x1_lr_boss_morluspellcaster_fire, //X1_LR_Boss_morluSpellcaster_Fire 
+		ActorSno._x1_lr_boss_deathmaiden, //X1_LR_Boss_DeathMaiden 
+		ActorSno._x1_lr_boss_secret_cow, //X1_LR_Boss_Secret_Cow 
+		ActorSno._x1_lr_boss_squigglet, //X1_LR_Boss_Squigglet 
+		ActorSno._x1_lr_boss_sniperangel, //X1_LR_Boss_sniperAngel 
+		ActorSno._x1_lr_boss_westmarchbrute, //X1_LR_Boss_westmarchBrute 
+		ActorSno._x1_lr_boss_dark_angel, //X1_LR_Boss_Dark_Angel 
+		ActorSno._x1_lr_boss_bigred_izual, //X1_LR_Boss_BigRed_Izual 
+		ActorSno._x1_lr_boss_demonflyermega, //X1_LR_Boss_demonFlyerMega 
+		ActorSno._x1_lr_boss_ratking_a, //X1_LR_Boss_RatKing_A 
+		ActorSno._x1_lr_boss_ratking_a_ui, //X1_LR_Boss_RatKing_A_UI 
+		ActorSno._x1_lr_boss_terrordemon_a_breathminion, //X1_LR_Boss_TerrorDemon_A_BreathMinion 
+		ActorSno._x1_lr_boss_butcher, //x1_LR_Boss_Butcher 
+		ActorSno._x1_lr_boss_zoltunkulle, //X1_LR_Boss_ZoltunKulle 
+		ActorSno._x1_lr_boss_minion_shadowvermin_a, //X1_LR_Boss_Minion_shadowVermin_A 
+		ActorSno._x1_lr_boss_minion_terrordemon_clone_c, //X1_LR_Boss_Minion_TerrorDemon_Clone_C 
+		ActorSno._x1_lr_boss_minion_swarm_a, //X1_LR_Boss_Minion_Swarm_A 
+		ActorSno._x1_lr_boss_minion_electriceel_b //X1_LR_Boss_Minion_electricEel_B 
 	)/*Act Bosses*/]
 	public sealed class Boss : Monster
 	{
-		public Boss(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Boss(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
-			if (snoId == 80509 && world.WorldSNO.Id == 50613) this.SetVisible(false);
+			if (sno == ActorSno._zoltunkulle && world.SNO == WorldSno.a2dun_zolt_lobby) this.SetVisible(false);
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
 			this.Attributes[GameAttribute.//Blizzless Project 2022 
@@ -89,13 +90,14 @@ using_Bossbar] = true;
 			this.Attributes[GameAttribute.TeamID] = 10;
 			
 			this.WalkSpeed *= 0.5f;
-			switch (snoId)
+            MonsterBrain monsterBrain = (Brain as MonsterBrain);
+            switch (sno)
 			{
-				case 114917: //Diablo
-					//(Brain as MonsterBrain).RemovePresetPower(30592);
-					//(Brain as MonsterBrain).AddPresetPower(136189); //[136189] Diablo_ClawRip
-					(Brain as MonsterBrain).AddPresetPower(136223); //Diablo_RingOfFire
-					(Brain as MonsterBrain).AddPresetPower(136226); //Diablo_HellSpikes
+				case ActorSno._diablo: //Diablo
+                             //(Brain as MonsterBrain).RemovePresetPower(30592);
+                             //(Brain as MonsterBrain).AddPresetPower(136189); //[136189] Diablo_ClawRip
+                    monsterBrain.AddPresetPower(136223); //Diablo_RingOfFire
+                    monsterBrain.AddPresetPower(136226); //Diablo_HellSpikes
 					;
 
 					/*
@@ -154,30 +156,30 @@ using_Bossbar] = true;
 						
 					*/
 					break;
-				case 5350://Leoric King
-					(Brain as MonsterBrain).RemovePresetPower(30592);
-					(Brain as MonsterBrain).AddPresetPower(30496);
-					(Brain as MonsterBrain).AddPresetPower(30504);
-					(Brain as MonsterBrain).AddPresetPower(73824);
-					(Brain as MonsterBrain).AddPresetPower(79334);
+				case ActorSno._skeletonking://Leoric King
+                    monsterBrain.RemovePresetPower(30592);
+                    monsterBrain.AddPresetPower(30496);
+                    monsterBrain.AddPresetPower(30504);
+                    monsterBrain.AddPresetPower(73824);
+                    monsterBrain.AddPresetPower(79334);
 					break;
-				case 3526://Butcher
-					(Brain as MonsterBrain).AddPresetPower(83008);
+				case ActorSno._butcher://Butcher
+                    monsterBrain.AddPresetPower(83008);
 					break;
-				case 62975://Belial (small)
+				case ActorSno._belial_trueform://Belial (small)
 					this.HasLoot = false;
 					break;
-				case 3349://Belial (big)
-					(Brain as MonsterBrain).AddPresetPower(152540);
+				case ActorSno._belial://Belial (big)
+                    monsterBrain.AddPresetPower(152540);
 					break;
-				case 6031://Maghda
-					(Brain as MonsterBrain).AddPresetPower(131744); //summon berserker
-																	//(Brain as MonsterBrain).AddPresetPower(131745); //mothDust
-					(Brain as MonsterBrain).AddPresetPower(131749); //teleport
+				case ActorSno._maghda://Maghda
+                    monsterBrain.AddPresetPower(131744); //summon berserker
+                                                         //(Brain as MonsterBrain).AddPresetPower(131745); //mothDust
+                    monsterBrain.AddPresetPower(131749); //teleport
 					break;
-				case 87642://Gluttony
-					(Brain as MonsterBrain).AddPresetPower(93676); //gas cloud
-					(Brain as MonsterBrain).AddPresetPower(211292); //slime spawn
+				case ActorSno._gluttony://Gluttony
+                    monsterBrain.AddPresetPower(93676); //gas cloud
+                    monsterBrain.AddPresetPower(211292); //slime spawn
 					break;
 				default:
 					break;
@@ -201,7 +203,7 @@ using_Bossbar] = true;
 
 		public override bool Reveal(PlayerSystem.Player player)
 		{
-			if (this.ActorSNO.Id == 196102)
+			if (this.SNO == ActorSno._terrordemon_a_unique_1000monster)
 			{
 				this.Destroy();
 				return false;

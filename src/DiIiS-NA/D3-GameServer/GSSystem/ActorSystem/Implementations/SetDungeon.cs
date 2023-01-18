@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -15,16 +16,41 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-    [HandledSNO(450245,450247,450248,450249,450250,
-                450251,450252,450253,450254,450255,
-                450256,450257,450258,450259,450260,
-                450261,450262,450263,450264,450265,
-                450266,450267,450268,450269 )]
+    [HandledSNO(
+        ActorSno._p4_setdung_totem_dh_ess,
+        ActorSno._p4_setdung_totem_barb_kings,
+        ActorSno._p4_setdung_totem_barb_might,
+        ActorSno._p4_setdung_totem_barb_raekor,
+        ActorSno._p4_setdung_totem_barb_wastes,
+        ActorSno._p4_setdung_totem_cru_akkhan,
+        ActorSno._p4_setdung_totem_cru_roland,
+        ActorSno._p4_setdung_totem_cru_seeker,
+        ActorSno._p4_setdung_totem_cru_thorns,
+        ActorSno._p4_setdung_totem_dh_mar,
+        ActorSno._p4_setdung_totem_dh_nat,
+        ActorSno._p4_setdung_totem_dh_shadow,
+        ActorSno._p4_setdung_totem_monk_innas,
+        ActorSno._p4_setdung_totem_monk_storms,
+        ActorSno._p4_setdung_totem_monk_sunwuko,
+        ActorSno._p4_setdung_totem_monk_uliana,
+        ActorSno._p4_setdung_totem_wd_haunt,
+        ActorSno._p4_setdung_totem_wd_jade,
+        ActorSno._p4_setdung_totem_wd_spider,
+        ActorSno._p4_setdung_totem_wd_tooth,
+        ActorSno._p4_setdung_totem_wiz_firebird,
+        ActorSno._p4_setdung_totem_wiz_opus,
+        ActorSno._p4_setdung_totem_wiz_rasha,
+        ActorSno._p4_setdung_totem_wiz_vyr,
+        ActorSno._p6_setdung_totem_necro_blood,
+        ActorSno._p6_setdung_totem_necro_bone,
+        ActorSno._p6_setdung_totem_necro_plague,
+        ActorSno._p6_setdung_totem_necro_saint
+    )]
     public sealed class SetDungeon : Gizmo
     {
         public bool PlrNear = false;
-        public SetDungeon(World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public SetDungeon(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             this.Attributes[GameAttribute.TeamID] = 2;
             this.Attributes[GameAttribute.MinimapActive] = true;
@@ -56,6 +82,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
         public override bool Reveal(Player player)
         {
+            // TODO: check that player has set
             if (!base.Reveal(player))
                 return false;
             
@@ -72,7 +99,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					+		[6]	{411669 = 449674}	DiIiS_NA.GameServer.Core.Types.TagMap.TagMapEntry - Use
 
 				 */
-		public override void OnPlayerApproaching(PlayerSystem.Player player)
+		public override void OnPlayerApproaching(Player player)
 		{
 			try
 			{

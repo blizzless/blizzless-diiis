@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 //Blizzless Project 2022 
@@ -51,7 +52,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 4,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //free Guards
-					ListenKill(196102, 1, new SideAdvance());
+					ListenKill(ActorSno._terrordemon_a_unique_1000monster, 1, new SideAdvance());
 				})
 			});
 
@@ -62,7 +63,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //guard winches
-					ListenKill(196102, 1, new SideAdvance());
+					ListenKill(ActorSno._terrordemon_a_unique_1000monster, 1, new SideAdvance());
 				})
 			});
 
@@ -97,7 +98,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 7,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					ListenKill(81982, 4, new SideAdvance());
+					ListenKill(ActorSno._fleshpitflyerspawner_b_event_farmambush, 4, new SideAdvance());
 				})
 			});
 			this.Game.QuestManager.SideQuests[81925].Steps.Add(7, new QuestStep
@@ -107,10 +108,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 4,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					StartConversation(this.Game.GetWorld(71150), 60182);
-					if (this.Game.Players.Count > 0)
-						this.Game.GetWorld(71150).SpawnMonster(260231, this.Game.Players.First().Value.Position);
-					ListenKill(260231, 1, new SideAdvance());
+					var world = this.Game.GetWorld(WorldSno.trout_town);
+					StartConversation(world, 60182);
+					if (!Game.Players.IsEmpty)
+						world.SpawnMonster(ActorSno._fleshpitflyer_b_farmhouseambush_unique, this.Game.Players.First().Value.Position);
+					ListenKill(ActorSno._fleshpitflyer_b_farmhouseambush_unique, 1, new SideAdvance());
 				})
 			});
 			this.Game.QuestManager.SideQuests[81925].Steps.Add(4, new QuestStep
@@ -120,7 +122,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					StartConversation(this.Game.GetWorld(71150), 60184);
+					StartConversation(this.Game.GetWorld(WorldSno.trout_town), 60184);
 				})
 			});
 			#endregion
@@ -128,7 +130,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			#region Last Stand of Ancients
 			this.Game.QuestManager.SideQuests.Add(121745, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 			//102008 tomb
-			GlobalListenInteract(102008, 1, new StartSideQuest(121745, true));
+			GlobalListenInteract(ActorSno._temp_story_trigger_enabled, 1, new StartSideQuest(121745, true));
 
 			this.Game.QuestManager.SideQuests[121745].Steps.Add(-1, new QuestStep
 			{
@@ -147,9 +149,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //defend yourself
-					script = new Invasion(this.Game.GetWorld(71150).Players.First().Value.Position, 50f, new List<int> { 5395, 5347 }, 30f, 112134, false);
-					script.Execute(this.Game.GetWorld(71150));
-					ListenKill(112134, 3, new SideAdvance()); //mob skeleton
+					var world = this.Game.GetWorld(WorldSno.trout_town);
+					script = new Invasion(world.Players.First().Value.Position, 50f, new List<ActorSno> { ActorSno._skeleton_b, ActorSno._skeletonarcher_b }, 30f, ActorSno._shield_skeleton_nephchamp, false);
+					script.Execute(world);
+					ListenKill(ActorSno._shield_skeleton_nephchamp, 3, new SideAdvance()); //mob skeleton
 				})
 			});
 
@@ -185,7 +188,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //escape to treasure room
-					SetQuestTimer(120396, 180f, this.Game.GetWorld(50596), new SideAbandon());
+					SetQuestTimer(120396, 180f, this.Game.GetWorld(WorldSno.a2dun_zolt_timed01_level01), new SideAbandon());
 					ListenTeleport(168200, new SideAdvance());
 				})
 			});
@@ -225,7 +228,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //Break Totems
-					ListenKill(225252, 2, new SideAdvance());
+					ListenKill(ActorSno._trout_highlands_goatman_totem_gharbad, 2, new SideAdvance());
 				})
 			});
 
@@ -236,9 +239,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 12,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill shamans
-					script = new Invasion(this.Game.GetWorld(71150).GetActorBySNO(223597).Position, 30f, new List<int> { 81618, 81090 }, 15f, 81093, false);
-					script.Execute(this.Game.GetWorld(71150));
-					ListenKill(81093, 1, new SideAdvance()); //mob shaman
+                    var world = this.Game.GetWorld(WorldSno.trout_town);
+					script = new Invasion(
+						world.GetActorBySNO(ActorSno._trout_highlands_chiefgoatmenmummyrack_a_gharbadevent).Position,
+						30f,
+						new List<ActorSno> { ActorSno._goatman_ranged_b_event_gharbad_the_weak, ActorSno._goatman_melee_b_event_gharbad_the_weak },
+						15f,
+						ActorSno._goatman_shaman_a_event_gharbad_the_weak,
+						false
+					);
+					script.Execute(world);
+					ListenKill(ActorSno._goatman_shaman_a_event_gharbad_the_weak, 1, new SideAdvance()); //mob shaman
 				})
 			});
 
@@ -260,8 +271,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //Kill gharbad
-					(this.Game.GetWorld(71150).GetActorBySNO(81068) as Gharbad).Resurrect();
-					ListenKill(81342, 1, new SideAdvance());
+					(this.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._gharbad_the_weak_ghost) as Gharbad).Resurrect();
+					ListenKill(ActorSno._goatmutant_melee_a_unique_gharbad, 1, new SideAdvance());
 				})
 			});
 
@@ -298,7 +309,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Poltahr
-					ListenInteract(2935, 1, new LaunchConversation(18039));
+					ListenInteract(ActorSno._a2c2poltahr, 1, new LaunchConversation(18039));
 					ListenConversation(18039, new SideAdvance());
 				})
 			});
@@ -310,8 +321,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 17,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Idol
-					AddFollower(this.Game.GetWorld(2812), 2935);
-					ListenProximity(4522, new SideAdvance());
+					AddFollower(this.Game.GetWorld(WorldSno.a2c2dun_zolt_treasurehunter), ActorSno._a2c2poltahr);
+					ListenProximity(ActorSno._interactlocation, new SideAdvance());
 				})
 			});
 
@@ -322,8 +333,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 19,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //get idol
-					StartConversation(this.Game.GetWorld(2812), 18038);
-					ListenInteract(307, 1, new SideAdvance());
+					StartConversation(this.Game.GetWorld(WorldSno.a2c2dun_zolt_treasurehunter), 18038);
+					ListenInteract(ActorSno._a2dun_zolt_pedestal, 1, new SideAdvance());
 				})
 			});
 
@@ -334,11 +345,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //stop ambush
-					foreach (var spawner in this.Game.GetWorld(2812).GetActorsBySNO(54571))
+					foreach (var spawner in this.Game.GetWorld(WorldSno.a2c2dun_zolt_treasurehunter).GetActorsBySNO(ActorSno._spawner_skeletonmage_cold_a))
 					{
-						spawner.World.SpawnMonster(5367, spawner.Position);
+						spawner.World.SpawnMonster(ActorSno._skeletonmage_cold_a, spawner.Position);
 					}
-					ListenKill(5367, 4, new LaunchConversation(18037));
+					ListenKill(ActorSno._skeletonmage_cold_a, 4, new LaunchConversation(18037));
 					ListenConversation(18037, new SideAdvance());
 				})
 			});
@@ -350,7 +361,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					DestroyFollower(2935);
+					DestroyFollower(ActorSno._a2c2poltahr);
 				})
 			});
 			#endregion
@@ -376,10 +387,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 18,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					setActorOperable(this.Game.GetWorld(158593), 207615, false);
-					var spots = this.Game.GetWorld(158593).GetActorsBySNO(3461);
-					this.Game.GetWorld(158593).SpawnMonster(219879, spots[FastRandom.Instance.Next(spots.Count())].Position);
-					ListenInteract(219879, 1, new SideAdvance());
+					var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large);
+					SetActorOperable(world, ActorSno._a2dun_aqd_godhead_door_largepuzzle, false);
+					var spots = world.GetActorsBySNO(ActorSno._boxtrigger__one_shot_);
+					world.SpawnMonster(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, spots[FastRandom.Instance.Next(spots.Count)].Position);
+					ListenInteract(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, 1, new SideAdvance());
 				})
 			});
 
@@ -390,8 +402,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 20,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					setActorOperable(this.Game.GetWorld(158593), 207615, true);
-					ListenInteract(207615, 1, new SideAdvance());
+					SetActorOperable(this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large), ActorSno._a2dun_aqd_godhead_door_largepuzzle, true);
+					ListenInteract(ActorSno._a2dun_aqd_godhead_door_largepuzzle, 1, new SideAdvance());
 				})
 			});
 
@@ -402,23 +414,24 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 22,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //claim treasure
-					ListenInteract(190524, 1, new SideAdvance());
+					ListenInteract(ActorSno._a2dun_aqd_chest_special_facepuzzle_large, 1, new SideAdvance());
 				})
 			});
 
 			this.Game.QuestManager.SideQuests[158596].Steps.Add(22, new QuestStep
-			{
+            {
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill unique
-					foreach (var spawner in this.Game.GetWorld(158593).GetActorsBySNO(219919))
+                    var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large);
+                    foreach (var spawner in world.GetActorsBySNO(ActorSno._spawner_ghost_d_facepuzzle))
 					{
-						spawner.World.SpawnMonster(4198, spawner.Position);
+						spawner.World.SpawnMonster(ActorSno._ghost_d, spawner.Position);
 					}
-					this.Game.GetWorld(158593).SpawnMonster(207605, this.Game.GetWorld(158593).GetActorBySNO(219918).Position);
-					ListenKill(207605, 1, new SideAdvance());
+                    world.SpawnMonster(ActorSno._ghost_d_facepuzzleunique, world.GetActorBySNO(ActorSno._spawner_ghost_d_facepuzzleunique).Position);
+                    ListenKill(ActorSno._ghost_d_facepuzzleunique, 1, new SideAdvance());
 				})
 			});
 
@@ -448,16 +461,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 
 			this.Game.QuestManager.SideQuests[158377].Steps.Add(13, new QuestStep
-			{
+            {
 				Completed = false,
 				Saveable = false,
 				NextStep = 17,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					setActorOperable(this.Game.GetWorld(157882), 153836, false);
-					var spots = this.Game.GetWorld(157882).GetActorsBySNO(3461);
-					this.Game.GetWorld(157882).SpawnMonster(219879, spots[FastRandom.Instance.Next(spots.Count())].Position);
-					ListenInteract(219879, 1, new SideAdvance());
+                    var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small);
+                    SetActorOperable(world, ActorSno._a2dun_aqd_godhead_door, false);
+					var spots = world.GetActorsBySNO(ActorSno._boxtrigger__one_shot_);
+                    world.SpawnMonster(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, spots[FastRandom.Instance.Next(spots.Count)].Position);
+                    ListenInteract(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, 1, new SideAdvance());
 				})
 			});
 
@@ -468,8 +482,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 22,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					setActorOperable(this.Game.GetWorld(157882), 153836, true);
-					ListenInteract(153836, 1, new SideAdvance());
+					SetActorOperable(this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small), ActorSno._a2dun_aqd_godhead_door, true);
+					ListenInteract(ActorSno._a2dun_aqd_godhead_door, 1, new SideAdvance());
 				})
 			});
 
@@ -480,7 +494,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 19,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //claim treasure
-					ListenInteract(190708, 1, new SideAdvance());
+					ListenInteract(ActorSno._a2dun_aqd_chest_rare_facepuzzlesmall, 1, new SideAdvance());
 				})
 			});
 
@@ -491,12 +505,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill unique
-					foreach (var spawner in this.Game.GetWorld(157882).GetActorsBySNO(219901))
+					var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small);
+					foreach (var spawner in world.GetActorsBySNO(ActorSno._spawner_fastmummy_climb_a_smallfacepuzzle))
 					{
-						spawner.World.SpawnMonster(4104, spawner.Position);
+						spawner.World.SpawnMonster(ActorSno._fastmummy_a, spawner.Position);
 					}
-					this.Game.GetWorld(157882).SpawnMonster(203795, this.Game.GetWorld(157882).GetActorBySNO(219885).Position);
-					ListenKill(203795, 1, new SideAdvance());
+					world.SpawnMonster(ActorSno._fastmummy_b_facepuzzleunique, world.GetActorBySNO(ActorSno._spawner_fastmummy_b_smallfacepuzzleunique).Position);
+					ListenKill(ActorSno._fastmummy_b_facepuzzleunique, 1, new SideAdvance());
 				})
 			});
 
@@ -530,7 +545,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.ActorSNO.Id, 1, new SideAdvance());
+					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
@@ -541,9 +556,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<int> { 276465 }, 375188);
+					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._x1_zombieskinny_a }, ActorSno._x1_zombieskinny_skeleton_a_lr_boss);
 					script.Execute(this.Game.SideQuestGizmo.World);
-					ListenKill(375188, 1, new SideAdvance());
+					ListenKill(ActorSno._x1_zombieskinny_skeleton_a_lr_boss, 1, new SideAdvance());
 				})
 			});
 
@@ -579,7 +594,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.ActorSNO.Id, 1, new SideAdvance());
+					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
@@ -590,9 +605,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<int> { 375, 4282, 4283, 4284, 4286 }, 81093);
+					script = new WavedInvasion(
+						this.Game.SideQuestGizmo.Position,
+						30f,
+						new List<ActorSno> { ActorSno._goatman_shaman_b, ActorSno._goatman_melee_a, ActorSno._goatman_melee_b, ActorSno._goatman_melee_c, ActorSno._goatman_ranged_a },
+						ActorSno._goatman_shaman_a_event_gharbad_the_weak
+					);
 					script.Execute(this.Game.SideQuestGizmo.World);
-					ListenKill(81093, 1, new SideAdvance());
+					ListenKill(ActorSno._goatman_shaman_a_event_gharbad_the_weak, 1, new SideAdvance());
 				})
 			});
 
@@ -628,7 +648,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.ActorSNO.Id, 1, new SideAdvance());
+					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
@@ -639,9 +659,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<int> { 90960 }, 104043);
+					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._triunecultist_c_event }, ActorSno._cultist_crownleader);
 					script.Execute(this.Game.SideQuestGizmo.World);
-					ListenKill(104043, 1, new SideAdvance());
+					ListenKill(ActorSno._cultist_crownleader, 1, new SideAdvance());
 				})
 			});
 
@@ -677,7 +697,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.ActorSNO.Id, 1, new SideAdvance());
+					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
@@ -688,9 +708,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<int> { 4201, 4202 }, 371013);
+					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._ghoul_a, ActorSno._ghoul_b }, ActorSno._ghoul_b_speedkill_rare);
 					script.Execute(this.Game.SideQuestGizmo.World);
-					ListenKill(371013, 1, new SideAdvance());
+					ListenKill(ActorSno._ghoul_b_speedkill_rare, 1, new SideAdvance());
 				})
 			});
 
@@ -726,7 +746,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.ActorSNO.Id, 1, new SideAdvance());
+					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
@@ -737,9 +757,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<int> { 220474 }, 301232);
+					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._demontrooper_a_catapult }, ActorSno._x1_demontrooper_chronodemon_test_a);
 					script.Execute(this.Game.SideQuestGizmo.World);
-					ListenKill(301232, 1, new SideAdvance());
+					ListenKill(ActorSno._x1_demontrooper_chronodemon_test_a, 1, new SideAdvance());
 				})
 			});
 
@@ -775,7 +795,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.ActorSNO.Id, 1, new SideAdvance());
+					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
@@ -786,9 +806,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<int> { 51339, 51340, 230834 }, 239339);
+					script = new WavedInvasion(
+						this.Game.SideQuestGizmo.Position,
+						30f,
+						new List<ActorSno> { ActorSno._skeletonking_shield_skeleton, ActorSno._skeletonking_skeleton, ActorSno._skeletonarcher_jail },
+						ActorSno._skeleton_necrojar
+					);
 					script.Execute(this.Game.SideQuestGizmo.World);
-					ListenKill(239339, 1, new SideAdvance());
+					ListenKill(ActorSno._skeleton_necrojar, 1, new SideAdvance());
 				})
 			});
 
@@ -822,8 +847,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
-					var TristHab = this.Game.GetWorld(332336);
-					var Tyrael = TristHab.GetActorBySNO(114622) as ActorSystem.InteractiveNPC;
+					var TristHab = this.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
+					var Tyrael = TristHab.GetActorBySNO(ActorSno._tyrael_heaven) as ActorSystem.InteractiveNPC;
 					if (Tyrael != null)
 					{
 						Tyrael.ForceConversationSNO = 352539;
@@ -872,7 +897,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
-					ListenInteract(114622, 1, new LaunchConversation(357038));
+					ListenInteract(ActorSno._tyrael_heaven, 1, new LaunchConversation(357038));
 					ListenConversation(357038, new SideAdvance());
 				})
 			});
@@ -916,7 +941,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
-					ListenInteract(114622, 1, new LaunchConversation(357040));
+					ListenInteract(ActorSno._tyrael_heaven, 1, new LaunchConversation(357040));
 					ListenConversation(357040, new SideAdvance());
 				})
 			});
@@ -961,7 +986,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
-					ListenInteract(114622, 1, new LaunchConversation(357021));
+					ListenInteract(ActorSno._tyrael_heaven, 1, new LaunchConversation(357021));
 					ListenConversation(357021, new SideAdvance());
 				})
 			});
@@ -1005,7 +1030,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
-					ListenInteract(114622, 1, new LaunchConversation(357042));
+					ListenInteract(ActorSno._tyrael_heaven, 1, new LaunchConversation(357042));
 					ListenConversation(357042, new SideAdvance());
 				})
 			});

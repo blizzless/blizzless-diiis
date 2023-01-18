@@ -36,14 +36,15 @@ using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 {
 	public class Hireling : InteractiveNPC, IUpdateable
 	{
-		protected int mainSNO = -1;
-		protected int hirelingSNO = -1;
-		protected int proxySNO = -1;
+		protected ActorSno mainSNO = ActorSno.__NONE;
+		protected ActorSno hirelingSNO = ActorSno.__NONE;
+		protected ActorSno proxySNO = ActorSno.__NONE;
 		protected int skillKit = -1;
 		protected int hirelingGBID = -1;
 
@@ -51,15 +52,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 		// Resource generation timing
 		private int _lastResourceUpdateTick;
 
-		public bool IsProxy { get { return ActorSNO.Id == proxySNO; } }
-		public bool IsHireling { get { return ActorSNO.Id == hirelingSNO; } }
-		public bool HasHireling { get { return this.hirelingSNO != -1; } }
-		public bool HasProxy { get { return this.proxySNO != -1; } }
+		public bool IsProxy { get { return SNO == proxySNO; } }
+		public bool IsHireling { get { return SNO == hirelingSNO; } }
+		public bool HasHireling { get { return this.hirelingSNO != ActorSno.__NONE; } }
+		public bool HasProxy { get { return this.proxySNO != ActorSno.__NONE; } }
 		public int PetType { get { return IsProxy ? 22 : 0; } }
 		private Dictionary<Player, Dictionary<int, Item>> _equipment = new Dictionary<Player, Dictionary<int, Item>>();
 
-		public Hireling(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Hireling(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.TeamID] = 2;
 			Interactions.Add(new HireInteraction());
@@ -156,7 +157,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 		}
 
-		public virtual Hireling CreateHireling(MapSystem.World world, int snoId, TagMap tags)
+		public virtual Hireling CreateHireling(MapSystem.World world, ActorSno sno, TagMap tags)
 		{
 			throw new NotImplementedException();
 		}
@@ -231,7 +232,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 		public override void OnHire(Player player)
 		{
-			if (hirelingSNO == -1)
+			if (hirelingSNO == ActorSno.__NONE)
 				return;
 
 			if (this.World.Game.Players.Count > 1) return;
@@ -274,7 +275,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			}
 			if (player.ActiveHireling == null)
 				return;
-			if (proxySNO == -1)
+			if (proxySNO == ActorSno.__NONE)
 				return;
 
 			if (IsHireling || IsProxy)
@@ -447,7 +448,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 					Owner = player.PlayerIndex,
 					Index = 10,
 					PetId = this.DynamicID(player),
-					Type = this.ActorSNO.Id == 274457 ? 29 : 0,
+					Type = this.SNO == ActorSno._x1_malthael_npc ? 29 : 0,
 				});
 
 			return true;

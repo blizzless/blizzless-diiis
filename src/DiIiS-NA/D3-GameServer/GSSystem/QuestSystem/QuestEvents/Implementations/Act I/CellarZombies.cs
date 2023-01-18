@@ -28,6 +28,7 @@ using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -39,6 +40,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 		//private static readonly Logger Logger = LogManager.CreateLogger();
 
+		private static readonly ActorSno[] spawners = new ActorSno[]
+		{
+			ActorSno._omninpc_tristram_male_b_blacksmith,
+			ActorSno._omninpc_tristram_male_e_blacksmith,
+			ActorSno._omninpc_tristram_male_d_blacksmith,
+			ActorSno._omninpc_tristram_male_c_blacksmith,
+			ActorSno._omninpc_tristram_male_f_blacksmith,
+			ActorSno._omninpc_tristram_male_g_blacksmith,
+			ActorSno._omninpc_tristram_male_f_blacksmith,
+			ActorSno._omninpc_tristram_male_a_blacksmith
+		};
+
 		public CellarZombies()
 			: base(151123)
 		{
@@ -48,62 +61,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		{
 			if (world.Game.Empty) return;
 
-			List<ActorSystem.Actor> actorstotarget = new List<ActorSystem.Actor> { };
+			List<Actor> actorstotarget = new List<Actor> { };
 
-			var spawner = world.GetActorBySNO(204605);
-			while (spawner != null)
-			{
-				actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
-				spawner.Destroy();
-				spawner = world.GetActorBySNO(204605);
-			}
-
-			spawner = world.GetActorBySNO(204606);
-			while (spawner != null)
-			{
-				actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
-				spawner.Destroy();
-				spawner = world.GetActorBySNO(204606);
-			}
-
-			spawner = world.GetActorBySNO(204607);
-			while (spawner != null)
-			{
-				actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
-				spawner.Destroy();
-				spawner = world.GetActorBySNO(204607);
-			}
-
-			spawner = world.GetActorBySNO(204608);
-			while (spawner != null)
-			{
-				actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
-				spawner.Destroy();
-				spawner = world.GetActorBySNO(204608);
-			}
-
-			spawner = world.GetActorBySNO(204615);
-			while (spawner != null)
-			{
-				actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
-				spawner.Destroy();
-				spawner = world.GetActorBySNO(204615);
-			}
-
-			spawner = world.GetActorBySNO(204616);
-			while (spawner != null)
-			{
-				actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
-				spawner.Destroy();
-				spawner = world.GetActorBySNO(204616);
-			}
-
-			spawner = world.GetActorBySNO(174023);
-			while (spawner != null)
-			{
-				actorstotarget.Add(world.SpawnMonster(203121, spawner.Position));
-				spawner.Destroy();
-				spawner = world.GetActorBySNO(174023);
+			foreach(var sno in spawners)
+            {
+				var spawner = world.GetActorBySNO(sno);
+				while (spawner != null)
+				{
+					actorstotarget.Add(world.SpawnMonster(ActorSno._zombieskinny_a_leahinn, spawner.Position));
+					spawner.Destroy();
+					spawner = world.GetActorBySNO(sno);
+				}
 			}
 
 			foreach (var actor in actorstotarget)

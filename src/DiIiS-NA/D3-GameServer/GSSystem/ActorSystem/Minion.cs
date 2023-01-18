@@ -34,6 +34,7 @@ using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -59,7 +60,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			get
 			{
-				return (int)DiIiS_NA.Core.MPQ.FileFormats.SpawnType.Normal;
+				return (int)SpawnType.Normal;
 			}
 			set
 			{
@@ -69,8 +70,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public float PrimaryAttribute = 0;
 
-		public Minion(MapSystem.World world, int snoId, Actor master, TagMap tags, bool QuestFollow = false, bool Revived = false)
-			: base(world, snoId, tags)
+		public Minion(MapSystem.World world, ActorSno sno, Actor master, TagMap tags, bool QuestFollow = false, bool Revived = false)
+			: base(world, sno, tags)
 		{
 			// The following two seems to be shared with monsters. One wonders why there isn't a specific actortype for minions.
 			this.Master = master;
@@ -109,11 +110,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				this.Attributes[GameAttribute.TeamID] = master.Attributes[GameAttribute.TeamID];
 				if (master is Player)
 				{
-					if ((master as Player).Followers.Values.Count(a => a == snoId) >= this.SummonLimit)
-						(master as Player).DestroyFollower(snoId);
+					if ((master as Player).Followers.Values.Count(a => a == sno) >= this.SummonLimit)
+						(master as Player).DestroyFollower(sno);
 
-					(master as Player).SetFollowerIndex(snoId);
-					(master as Player).Followers.Add(this.GlobalID, snoId);
+					(master as Player).SetFollowerIndex(sno);
+					(master as Player).Followers.Add(this.GlobalID, sno);
 				}
 			}
 		}
@@ -153,7 +154,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (this.Master != null && this.Master is Player)
 				{
 					(this.Master as Player).Followers.Remove(this.GlobalID);
-					(this.Master as Player).FreeFollowerIndex(this.ActorSNO.Id);
+					(this.Master as Player).FreeFollowerIndex(this.SNO);
 					(this.Master as Player).Revived.Remove(this);
 				}
 				(this.Master as Player).InGameClient.SendMessage(new PetDetachMessage()
@@ -163,7 +164,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (this is SkeletalMage)
 				{
 					if ((this as SkeletalMage).Rune_Flesh)
-						this.World.SpawnMonster(454066, this.Position);
+						this.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, this.Position);
 				}
 				
 				this.Destroy();
@@ -226,7 +227,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					player.InGameClient.SendMessage(new PetMessage()
 					{
 						Owner = player.PlayerIndex,
-						Index = isGolem ? 9 : player.CountFollowers(this.ActorSNO.Id) + PlusIndex,
+						Index = isGolem ? 9 : player.CountFollowers(this.SNO) + PlusIndex,
 						PetId = this.DynamicID(player),
 						Type = TypeID,
 					});

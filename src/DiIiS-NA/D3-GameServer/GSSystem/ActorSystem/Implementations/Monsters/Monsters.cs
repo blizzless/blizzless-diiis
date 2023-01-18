@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -20,33 +21,47 @@ using DiIiS_NA.GameServer.MessageSystem;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 {
 	#region Spore
-	[HandledSNO(5482)]
+	[HandledSNO(ActorSno._spore)]
 	public class Spore : Monster
 	{
-		public Spore(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Spore(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(30525);//SporeCloud.pow
 		}
 	}
 	#endregion
 	#region QuillDemon
-	[HandledSNO(4982, 4983, 4984, 4985, 201878, 187664, 220455, 128781)]
+	[HandledSNO(
+		ActorSno._quilldemon_a,
+		ActorSno._quilldemon_b,
+		ActorSno._quilldemon_d,
+		ActorSno._quilldemon_c,
+		ActorSno._quilldemon_a_unique_loothoarderleader,
+		ActorSno._quilldemon_a_loothoarder,
+		ActorSno._quilldemon_c_unique_01,
+		ActorSno._quilldemon_a_baby_event
+	)]
 	public class QuillDemon : Monster
 	{
-		public QuillDemon(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public QuillDemon(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(107729);
 		}
 	}
 	#endregion
 	#region DarkCultists
-	[HandledSNO(6024,6028)]
+	[HandledSNO(
+		ActorSno._triunecultist_a,
+		ActorSno._triunecultist_b,
+		ActorSno._triunecultist_c,
+		ActorSno._triunecultist_d
+	)]
 	public class DarkCultists : Monster
 	{
-		public DarkCultists(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DarkCultists(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -54,23 +69,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			this.WalkSpeed = 0.3f;
 		}
 	}
-	[HandledSNO(6052)]
-	public class BerserkMini : Monster
-	{
-		public BerserkMini(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
-		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
-		}
-	}
-	[HandledSNO(90008)]
+	[HandledSNO(ActorSno._townattackcultistmelee)]
 	public class DarkCultistsTownAttackMelee : Monster
 	{
-		public DarkCultistsTownAttackMelee(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DarkCultistsTownAttackMelee(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -78,23 +81,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			this.WalkSpeed = 0.3f;
 		}
 	}
-	[HandledSNO(6027)]
-	public class CrazyDarkCultistsMelee : Monster
-	{
-		public CrazyDarkCultistsMelee(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
-		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
-		}
-	}
-	[HandledSNO(6035, 6036, 6038, 6039)]
+	[HandledSNO(
+		ActorSno._triunesummoner_a,
+		ActorSno._triunesummoner_b,
+		ActorSno._triunesummoner_c,
+		ActorSno._triunesummoner_d
+	)]
 	public class DarkSummoner : Monster
 	{
-		public DarkSummoner(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DarkSummoner(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(30570);
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
@@ -103,11 +99,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			this.WalkSpeed = 0.15f;
 		}
 	}
-	[HandledSNO(178297)]
+	[HandledSNO(ActorSno._townattack_summoner)]
 	public class DarkCultistSummnoer : Monster
 	{
-		public DarkCultistSummnoer(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DarkCultistSummnoer(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 
 			(Brain as MonsterBrain).AddPresetPower(30547);
@@ -117,11 +113,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			this.WalkSpeed = 0.15f;
 		}
 	}
-	[HandledSNO(90367)]
+	[HandledSNO(ActorSno._townattack_cultist)]
 	public class DarkCultistSummnoerTownAttack : Monster
 	{
-		public DarkCultistSummnoerTownAttack(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DarkCultistSummnoerTownAttack(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(30570);
 			(Brain as MonsterBrain).AddPresetPower(30547);
@@ -133,12 +129,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
     #endregion
     #region SandsShark
-    [HandledSNO(5199 //SandShark_A
-				)]
+    [HandledSNO(ActorSno._sandshark_a)] //SandShark_A
 	public class Shark : Monster
 	{
-		public Shark(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Shark(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -148,13 +143,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region Lacuni
-	[HandledSNO(4550, //LacuniMale_A
-				4542 //LacuniFemale_B
-				)]
+	[HandledSNO(
+		ActorSno._lacunimale_a,
+		ActorSno._lacunimale_b,
+		ActorSno._lacunimale_c,
+		ActorSno._lacunifemale_a,
+		ActorSno._lacunifemale_b
+	)]
 	public class Lacuni : Monster
 	{
-		public Lacuni(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Lacuni(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -164,13 +163,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region Fallens
-	[HandledSNO(4070, //FallenChampion_A
-				0
-				)]
+	[HandledSNO(
+		ActorSno._fallenchampion_a,
+		ActorSno._fallenchampion_b,
+		ActorSno._fallenchampion_c,
+		ActorSno._fallenchampion_d
+	)]
 	public class Fallens : Monster
 	{
-		public Fallens(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Fallens(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -181,11 +183,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	#endregion
 	#region ACT V
 	#region BodyPile
-	[HandledSNO(335727, 249013)]
+	[HandledSNO(ActorSno._x1_westm_alley_bodypile_a_sp)]
 	public class BodyPile : Monster
 	{
-		public BodyPile(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public BodyPile(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//(Brain as MonsterBrain).PresetPowers.Clear();
 			//(Brain as MonsterBrain).AddPresetPower(117580);
@@ -200,40 +202,51 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 
 	}
 	#endregion
-	[HandledSNO(277203, 82764, 261556, 135611, 466620, 360766, 188462, 334290, 199478, 60049)]
+	[HandledSNO(
+		ActorSno._x1_malthael_spirit,
+		ActorSno._shadowvermin_b,
+		ActorSno._x1_shadowvermin_a,
+		ActorSno._shadowvermin_c,
+		ActorSno._p6_shadowvermin,
+		ActorSno._shadowvermin_a_1000monsterfight,
+		ActorSno._x1_fortress_judgeevent_shadowvermin,
+		ActorSno._shadowvermin_c_spire,
+		ActorSno._shadowvermin_a
+	)]
 	public class Malthael_Spirit : Monster
 	{
-		public Malthael_Spirit(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
-		{
-			this.WalkSpeed = 0.2f;
-		}
-	}
-	[HandledSNO(199478)]
-	public class shadowVermin : Monster
-	{
-		public shadowVermin(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Malthael_Spirit(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.2f;
 		}
 	}
 	//273417
-	[HandledSNO(273417, 273418, 273419, 274324, 346563, 348771)]
+	[HandledSNO(
+		ActorSno._x1_deathmaiden_a,
+		ActorSno._x1_deathmaiden_unique_a,
+		ActorSno._x1_deathmaiden_unique_b,
+		ActorSno._x1_deathmaiden_unique_c,
+		ActorSno._x1_deathmaiden_unique_heaven
+	)]
 	public class DeathMaiden : Monster
 	{
-		public DeathMaiden(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DeathMaiden(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.3f;
 		}
 	}
 	//282789
-	[HandledSNO(282789, 360861, 310888)]
+	[HandledSNO(
+		ActorSno._x1_skeletonarcher_westmarch_a,
+		ActorSno._x1_skeletonarcher_westmarch_unique_a,
+		ActorSno._x1_skeletonarcher_westmarch_ghost_a
+	)]
 	public class SkeletonArcher_Westmarch : Monster
 	{
-		public SkeletonArcher_Westmarch(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletonArcher_Westmarch(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.24f;
 			//this.WalkSpeed /= 2f;
@@ -241,32 +254,41 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		
 	}
 	//276309
-	[HandledSNO(276309, 276495//, 282027
-		)]
+	[HandledSNO(
+		ActorSno._x1_skeleton_westmarch_a,
+		ActorSno._x1_ghostguard_02_a
+		//, 282027
+	)]
 	public class Skeleton_Westmarch : Monster
 	{
-		public Skeleton_Westmarch(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Skeleton_Westmarch(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.25f;
 		}
 	}
 	#endregion
 	#region Ghost
-	[HandledSNO(370, 136943, 4196, 4197, 4198)]
+	[HandledSNO(
+		ActorSno._ghost_a,
+		ActorSno._ghost_a_norun,
+		ActorSno._ghost_b,
+		ActorSno._ghost_c,
+		ActorSno._ghost_d
+	)]
 	public class EnragedPhantom : Monster
 	{
-		public EnragedPhantom(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public EnragedPhantom(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			
 		}
 	}
-	[HandledSNO(319442, 309114)]
+	[HandledSNO(ActorSno._x1_ghost_dark_introoverlook, ActorSno._x1_ghost_dark_a)]
 	public class DarkGhost : Monster
 	{
-		public DarkGhost(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DarkGhost(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.25f;
 			
@@ -274,20 +296,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region Unburieds
-	[HandledSNO(6356)]
+	[HandledSNO(
+		ActorSno._unburied_a,
+		ActorSno._unburied_b,
+		ActorSno._unburied_c,
+		ActorSno._unburied_d
+	)]
 	public class Unburied : Monster
 	{
-		public Unburied(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
-		{
-		}
-	}
-
-	[HandledSNO(6359)]
-	public class DisentombHulk : Monster
-	{
-		public DisentombHulk(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Unburied(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
@@ -298,201 +316,209 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	//[470241] LS_WoodWraith (Monster )
 	//[430928] P4_WoodWraith_A (Monster )
 	//
-	[HandledSNO(6572, 139454, 139456)]
+	[HandledSNO(
+		ActorSno._woodwraith_a_01,
+		ActorSno._woodwraith_a_02,
+		ActorSno._woodwraith_a_03
+	)]
 	public class WoodWraith : Monster
 	{
-		public WoodWraith(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public WoodWraith(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//this.SetVisible(false);
 		}
 	}
-	[HandledSNO(170324, 170325, 495)]
+	[HandledSNO(
+		ActorSno._woodwraith_b_01,
+		ActorSno._woodwraith_b_02,
+		ActorSno._woodwraith_b_03
+	)]
 	public class HighLandWalker : Monster
 	{
-		public HighLandWalker(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public HighLandWalker(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//this.SetVisible(false);
 		}
 	}
-	[HandledSNO(496)]
+	[HandledSNO(ActorSno._woodwraith_unique_a)]
 	public class TheOldMan : Monster
 	{
-		public TheOldMan(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public TheOldMan(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			// Summon Spores
 		}
 	}
 	#endregion
 	#region Zombies
-	[HandledSNO(6652)]
+	[HandledSNO(ActorSno._zombie_a)]
 	public class WalkingCorpse : Monster
 	{
-		public WalkingCorpse(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public WalkingCorpse(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(6653)]
+	[HandledSNO(ActorSno._zombie_b)]
 	public class HungryCorpse : Monster
 	{
-		public HungryCorpse(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public HungryCorpse(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(6654)]
+	[HandledSNO(ActorSno._zombie_c)]
 	public class BloatedCorpse : Monster
 	{
-		public BloatedCorpse(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public BloatedCorpse(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(204256)]
+	[HandledSNO(ActorSno._zombie_e)]
 	public class RancidStumbler : Monster
 	{
-		public RancidStumbler(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public RancidStumbler(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(6644)] //ZombieSkinny
+	[HandledSNO(ActorSno._zombieskinny_a)] //ZombieSkinny
 	public class Risen : Monster
 	{
-		public Risen(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Risen(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(6646)] //ZombieSkinny
+	[HandledSNO(ActorSno._zombieskinny_b)] //ZombieSkinny
 	public class RavenousDead : Monster
 	{
-		public RavenousDead(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public RavenousDead(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(6647)] //ZombieSkinny
+	[HandledSNO(ActorSno._zombieskinny_c)] //ZombieSkinny
 	public class VoraciousZombie : Monster
 	{
-		public VoraciousZombie(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public VoraciousZombie(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(6651)] //ZombieSkinny
+	[HandledSNO(ActorSno._zombieskinny_d)] //ZombieSkinny
 	public class Decayer : Monster
 	{
-		public Decayer(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Decayer(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
 	//Risen
-	[HandledSNO(218339)] //ZombieSkinny_Custom_A.acr
+	[HandledSNO(ActorSno._zombieskinny_custom_a)] //ZombieSkinny_Custom_A.acr
 	public class ZombieSkinny : Monster
 	{
-		public ZombieSkinny(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ZombieSkinny(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(218367)] //ZombieCrawler_Barricade_A.acr
+	[HandledSNO(ActorSno._zombiecrawler_barricade_a)] //ZombieCrawler_Barricade_A.acr
 	public class CrowlingTorso : Monster
 	{
-		public CrowlingTorso(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CrowlingTorso(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(203121)] //ZombieSkinny_A_LeahInn.acr
+	[HandledSNO(ActorSno._zombieskinny_a_leahinn)] //ZombieSkinny_A_LeahInn.acr
 	public class LeahInnZombie : Monster
 	{
-		public LeahInnZombie(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public LeahInnZombie(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	#endregion
-	#region Skeleton
-	[HandledSNO(539)]
-	public class Skeleton : Monster
-	{
-		public Skeleton(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
-		{
-		}
-	}
-	[HandledSNO(87012)]
+    #endregion
+    #region Skeleton
+    [HandledSNO(ActorSno._skeleton_a)]
+    public class Skeleton : Monster
+    {
+        public Skeleton(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
+        {
+        }
+    }
+    [HandledSNO(ActorSno._skeleton_a_cain)]
 	public class RoyalHanchman : Monster
 	{
-		public RoyalHanchman(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public RoyalHanchman(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(5395)]
+	[HandledSNO(ActorSno._skeleton_b)]
 	public class Returned : Monster
 	{
-		public Returned(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Returned(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(5397)]
+	[HandledSNO(ActorSno._skeleton_d)]
 	public class SkeletalWarrior : Monster
 	{
-		public SkeletalWarrior(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletalWarrior(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(80652)]
+	[HandledSNO(ActorSno._skeleton_cain)]
 	public class SkeletonKnee : Monster
 	{
-		public SkeletonKnee(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletonKnee(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//30474
 		}
 	}
-	[HandledSNO(5411)]
+	[HandledSNO(ActorSno._skeleton_twohander_a)]
 	public class SkeletalExecutioner : Monster
 	{
-		public SkeletalExecutioner(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletalExecutioner(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(434)]
+	[HandledSNO(ActorSno._skeleton_twohander_b)]
 	public class ReturnedExecutioner : Monster
 	{
-		public ReturnedExecutioner(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ReturnedExecutioner(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
 	#endregion
 	#region Skeleton_Necromantic_Minion
 	//Necromantic Minion
-	[HandledSNO(105863)]
+	[HandledSNO(ActorSno._skeleton_a_templarintro_nowander)]
 	public class NecromanticMinion : Monster
 	{
-		public NecromanticMinion(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public NecromanticMinion(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
 	#endregion
 	#region TriuneCultists
-	[HandledSNO(90960)]
+	[HandledSNO(ActorSno._triunecultist_c_event)]
 	public class TriuneCultist : Monster
 	{
-		public TriuneCultist(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public TriuneCultist(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -504,11 +530,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	#region Skeleton_Summoner
 	//No Uniques Added
 	// Tomb Guardian -> All
-	[HandledSNO(5387, 5389)]
+	[HandledSNO(
+		ActorSno._skeletonsummoner_a,
+		ActorSno._skeletonsummoner_b,
+		ActorSno._skeletonsummoner_c,
+		ActorSno._skeletonsummoner_d
+	)]
 	public class TombGuardian : Monster
 	{
-		public TombGuardian(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public TombGuardian(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -519,122 +550,119 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region Skeleton_Archer
-	[HandledSNO(5346)]
+	[HandledSNO(ActorSno._skeletonarcher_a)]
 	public class SkeletalArcher : Monster
 	{
-		public SkeletalArcher(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
-		{
-		}
-	}
-
-	[HandledSNO(5347)]
-	public class ReturnedArcher : Monster
-	{
-		public ReturnedArcher(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletalArcher(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
 	#endregion
 	#region Shield_Skeleton
-	[HandledSNO(5275)]
+	[HandledSNO(ActorSno._shield_skeleton_a)]
 	public class SkeletalShieldBearer : Monster
 	{
-		public SkeletalShieldBearer(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletalShieldBearer(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(5276)]
+	[HandledSNO(ActorSno._shield_skeleton_b)]
 	public class ReturnedShieldMan : Monster
 	{
-		public ReturnedShieldMan(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ReturnedShieldMan(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(5277)]
+	[HandledSNO(ActorSno._shield_skeleton_c)]
 	public class SkeletalSentry : Monster
 	{
-		public SkeletalSentry(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletalSentry(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
 	#endregion
 	#region Grotesque
-	[HandledSNO(3847, 3848, 3849, 3850)]
+	[HandledSNO(
+		ActorSno._corpulent_a,
+		ActorSno._corpulent_b,
+		ActorSno._corpulent_c,
+		ActorSno._corpulent_d
+	)]
 	public class Corpulent : Monster
 	{
 		//3851 suicide blood, 220536 suicide imps = these happen on different SNOs and happen as they are dying.
 
-		public Corpulent(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Corpulent(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(30178); //Explode
 		}
 	}
-	[HandledSNO(4564)]
+	[HandledSNO(ActorSno._lamprey_a)]
 	public class CorpseWorm : Monster
 	{
 
-		public CorpseWorm(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CorpseWorm(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
 
 	#endregion
 	#region FleshPitFlyers
-	[HandledSNO(4156)]
+	[HandledSNO(ActorSno._fleshpitflyer_a)]
 	public class CarrionBat : Monster
 	{
-		public CarrionBat(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CarrionBat(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(4157, 81954)]
+	[HandledSNO(ActorSno._fleshpitflyer_b_event_ambusher)]
 	public class PlagueCarrier : Monster
 	{
-		public PlagueCarrier(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public PlagueCarrier(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(218314)]
+	[HandledSNO(ActorSno._fleshpitflyer_a_unique_01)]
 	public class Glidewing : Monster
 	{
-		public Glidewing(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Glidewing(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
-	[HandledSNO(218362)]
-	public class Firestarter : Monster
-	{
-		public Firestarter(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
-		{
-		}
-	}
-	[HandledSNO(195747)]
+	[HandledSNO(ActorSno._fleshpitflyer_e)]
 	public class VileHellbat : Monster
 	{
-		public VileHellbat(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public VileHellbat(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 	}
 	#endregion
 	#region CarrionNest-FleshPitFlyerSpawner
-	[HandledSNO(4152, 4153, 4154, 4155, 4157,
-		81982, 207433, 308159, 410428)]
+	[HandledSNO(
+		ActorSno._fleshpitflyerspawner_a,
+		ActorSno._fleshpitflyerspawner_b,
+		ActorSno._fleshpitflyerspawner_c,
+		ActorSno._fleshpitflyerspawner_d,
+		ActorSno._fleshpitflyer_b,
+		ActorSno._fleshpitflyerspawner_b_event_farmambush,
+		ActorSno._fleshpitflyerspawner_e_gardens,
+		ActorSno._x1_spawner_fleshpitflyerspawner_b,
+		ActorSno._x1_spawner_fleshpitflyerspawner_gardens
+	)]
 	public class CarrionNest : Monster
 	{
-		public CarrionNest(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CarrionNest(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).PresetPowers.Clear();
 			(Brain as MonsterBrain).AddPresetPower(117580); 
@@ -651,11 +679,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 
 	#endregion
 	#region Columns
-	[HandledSNO(5840)]
+	[HandledSNO(ActorSno._trdun_crypt_pillar_spawner)]
 	public class CryptColumn : Monster
 	{
-		public CryptColumn(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CryptColumn(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).PresetPowers.Clear();
 			(Brain as MonsterBrain).AddPresetPower(117580);
@@ -669,11 +697,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region Wretched Mothers
-	[HandledSNO(219725, 108444)] // ZombieFemale_A_TristramQuest_Unique.acr
+	[HandledSNO(ActorSno._zombiefemale_a_tristramquest_unique, ActorSno._zombiefemale_a_tristramquest)] // ZombieFemale_A_TristramQuest_Unique.acr
 	public class WretchedMother : Monster
 	{
-		public WretchedMother(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public WretchedMother(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30592); // Only distance attack
 			(Brain as MonsterBrain).AddPresetPower(94734);
@@ -684,11 +712,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region GoatmanShaman
-	[HandledSNO(4282, 4283, 4284)] // Goatman_Melee_A, Goatman_Melee_B, Goatman_Melee_C, Goatman_Melee_D
+	[HandledSNO(
+		ActorSno._goatman_melee_a,
+		ActorSno._goatman_melee_b,
+		ActorSno._goatman_melee_c,
+		ActorSno._goatman_melee_d
+	)] // Goatman_Melee_A, Goatman_Melee_B, Goatman_Melee_C, Goatman_Melee_D
 	public class Goatman_Moonclan_Melee : Monster
 	{
-		public Goatman_Moonclan_Melee(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Goatman_Moonclan_Melee(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Brain = new MonsterBrain(this);
 
@@ -696,11 +729,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			this.WalkSpeed = 0.2f;
 		}
 	}
-	[HandledSNO(218428)] // [218428] Goatman_Melee_A_Unique_01
+	[HandledSNO(ActorSno._goatman_melee_a_unique_01)] // [218428] Goatman_Melee_A_Unique_01
 	public class Goatman_Moonclan_Melee_Unique1 : Monster
 	{
-		public Goatman_Moonclan_Melee_Unique1(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Goatman_Moonclan_Melee_Unique1(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Brain = new MonsterBrain(this);
 
@@ -709,11 +742,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		}
 	}
 	//218428
-	[HandledSNO(4286, 4287)] // Goatman_Ranged_A, Goatman_Ranged_B
+	[HandledSNO(ActorSno._goatman_ranged_a, ActorSno._goatman_ranged_b)] // Goatman_Ranged_A, Goatman_Ranged_B
 	public class Goatman_Moonclan_Ranged : Monster
 	{
-		public Goatman_Moonclan_Ranged(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Goatman_Moonclan_Ranged(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Brain = new MonsterBrain(this);
 
@@ -722,11 +755,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			this.WalkSpeed = 0.2f;
 		}
 	}
-	[HandledSNO(375, 4290, 81093)]
+	[HandledSNO(
+		ActorSno._goatman_shaman_b,
+		ActorSno._goatman_shaman_a,
+		ActorSno._goatman_shaman_a_event_gharbad_the_weak
+	)]
 	public class GoatmanShaman : Monster
 	{
-		public GoatmanShaman(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public GoatmanShaman(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30592); // Only distance attack
 			(Brain as MonsterBrain).AddPresetPower(77342);
@@ -737,11 +774,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 
 	#endregion
 	#region GoatmanMelee
-	[HandledSNO(4282, 4283, 4284, 81090)]
+	[HandledSNO(ActorSno._goatman_melee_b_event_gharbad_the_weak)]
 	public class GoatmanMelee : Monster
 	{
-		public GoatmanMelee(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public GoatmanMelee(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -751,11 +788,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region GoatmanRanged
-	[HandledSNO(4286, 4287, 81618)]
+	[HandledSNO(ActorSno._goatman_ranged_b_event_gharbad_the_weak)]
 	public class GoatmanRanged : Monster
 	{
-		public GoatmanRanged(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public GoatmanRanged(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30592); // Only distance attack
 			(Brain as MonsterBrain).AddPresetPower(30252);
@@ -763,22 +800,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region WitherMoth
-	[HandledSNO(6500)]
+	[HandledSNO(ActorSno._withermoth_a)]
 	public class WitherMoth : Monster
 	{
-		public WitherMoth(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public WitherMoth(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(99077);
 		}
 	}
 	#endregion
 	#region TriuneWizard
-	[HandledSNO(6050)]
+	[HandledSNO(ActorSno._triunewizard)]
 	public class TriuneWizard : Monster
 	{
-		public TriuneWizard(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public TriuneWizard(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -789,11 +826,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region TriuneBerserker
-	[HandledSNO(6052, 6053, 6054, 178512)]
+	[HandledSNO(
+		ActorSno._triune_berserker_a,
+		ActorSno._triune_berserker_b,
+		ActorSno._triune_berserker_c,
+		ActorSno._triune_berserker_d,
+		ActorSno._triune_berserker_maghdapet
+	)]
 	public class TriuneBerserker : Monster
 	{
-		public TriuneBerserker(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public TriuneBerserker(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -803,34 +846,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		}
 	}
 	#endregion
-	#region TownAttack Cultist
-	[HandledSNO(90367)]
-	public class TownAttackCultist : Monster
-	{
-		public TownAttackCultist(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
-		{
-			this.WalkSpeed = 0.1f;
-		}
-	}
-	#endregion
 	#region Overseer
-	[HandledSNO(98879)]
+	[HandledSNO(ActorSno._gravedigger_warden)]
 	public class Overseer : Unique
 	{
-		public Overseer(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Overseer(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.1f;
 		}
 	}
 	#endregion
 	#region AzmodanProxy
-	[HandledSNO(134722, 111712)]
+	[HandledSNO(ActorSno._azmodan_mouth, ActorSno._keep_spy)]
 	public class AzmodanProxy : Unique
 	{
-		public AzmodanProxy(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public AzmodanProxy(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.1f;
 			this.SetVisible(false);
@@ -838,44 +870,44 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region SkeletonMages
-	[HandledSNO(5371, 5372)]
+	[HandledSNO(ActorSno._skeletonmage_fire_a, ActorSno._skeletonmage_fire_b)]
 	public class SkeletonMageFire : Monster
 	{
-		public SkeletonMageFire(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletonMageFire(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30503);
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			(Brain as MonsterBrain).AddPresetPower(30499);
 		}
 	}
-	[HandledSNO(5367, 5368)]
+	[HandledSNO(ActorSno._skeletonmage_cold_a, ActorSno._skeletonmage_cold_b)]
 	public class SkeletonMageCold : Monster
 	{
-		public SkeletonMageCold(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletonMageCold(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30503);
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			(Brain as MonsterBrain).AddPresetPower(30497);
 		}
 	}
-	[HandledSNO(5375, 5376)]
+	[HandledSNO(ActorSno._skeletonmage_lightning_a, ActorSno._skeletonmage_lightning_b)]
 	public class SkeletonMageLightning : Monster
 	{
-		public SkeletonMageLightning(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletonMageLightning(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30503);
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			(Brain as MonsterBrain).AddPresetPower(30500);
 		}
 	}
-	[HandledSNO(5381, 5382)]
+	[HandledSNO(ActorSno._skeletonmage_poison_a, ActorSno._skeletonmage_poison_b)]
 	public class SkeletonMagePoison : Monster
 	{
-		public SkeletonMagePoison(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SkeletonMagePoison(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30503);
 			(Brain as MonsterBrain).RemovePresetPower(30592);
@@ -885,40 +917,57 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region A2Snakeman
-	[HandledSNO(5428, 5429, 5430, 104015)]
-	public class SnakemanRanged : Monster
-	{
-		public SnakemanRanged(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
-		{
-			(Brain as MonsterBrain).RemovePresetPower(30592);
-			(Brain as MonsterBrain).RemovePresetPower(30503);
-			(Brain as MonsterBrain).AddPresetPower(30509);
-		}
-	}
-	[HandledSNO(5432, 213842, 160525, 222005, 22248, 5433, 5434, 104014)]
+	[HandledSNO(
+		ActorSno._snakeman_melee_a,
+		ActorSno._snakeman_melee_b,
+		ActorSno._snakeman_melee_c,
+		ActorSno._snakeman_melee_a_adriarescue,
+		ActorSno._snakeman_melee_a_escapefromcaldeum,
+		ActorSno._snakeman_melee_a_unique_01,
+		ActorSno._snakeman_melee_belial,
+		ActorSno._snakeman_melee_b_unique_01
+	)]
 	public class SnakemanMelee : Monster
 	{
-		public SnakemanMelee(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SnakemanMelee(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.3f;
 		}
 	}
-	[HandledSNO(5428, 5429, 188400, 160443, 222008, 104015, 5430, 367073, 367095)]
+	[HandledSNO(
+		ActorSno._snakeman_caster_a,
+		ActorSno._snakeman_caster_b,
+		ActorSno._snakeman_caster_c,
+		ActorSno._snakeman_caster_a_spawner_escapefromcaldeum,
+		ActorSno._snakeman_caster_a_unique_01,
+		ActorSno._snakeman_caster_belial,
+		ActorSno._snakeman_caster_b_unique_01,
+		ActorSno._snakeman_caster_b_unique_02
+	)]
 	public class SnakemanCaster : Monster
 	{
-		public SnakemanCaster(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SnakemanCaster(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.3f;
 		}
 	}
-	[HandledSNO(4104, 4105, 4106, 219583, 203795, 110613, 222186, 222400, 217744, 220691)]
+	[HandledSNO(
+		ActorSno._fastmummy_a,
+		ActorSno._fastmummy_b,
+		ActorSno._fastmummy_c,
+		ActorSno._fastmummy_b_facepuzzleunique,
+		ActorSno._fastmummy_b_fastmummyambush,
+		ActorSno._fastmummy_b_unique_01,
+		ActorSno._fastmummy_b_unique_02,
+		ActorSno._fastmummy_c_unique,
+		ActorSno._fastmummy_c_unique_01
+	)]
 	public class FastMummy : Monster
 	{
-		public FastMummy(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public FastMummy(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.WalkSpeed = 0.3f;
 		}
@@ -926,11 +975,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 
 	#endregion
 	#region A2FallenShaman
-	[HandledSNO(4100, 231351, 4098, 4099)]
+	[HandledSNO(
+		ActorSno._fallenshaman_a,
+		ActorSno._fallenshaman_b,
+		ActorSno._fallenshaman_c,
+		ActorSno._fallenshaman_a_zoltlev
+	)]
 	public class FallenShaman : Monster
 	{
-		public FallenShaman(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public FallenShaman(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			(Brain as MonsterBrain).AddPresetPower(30252);
@@ -939,11 +993,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region A3DemonFlyer
-	[HandledSNO(62736, 221770, 134416, 132951, 121327, 130794, 141209)]
+	[HandledSNO(
+		ActorSno._demonflyer_a,
+		ActorSno._demonflyer_b_noflee,
+		ActorSno._demonflyer_c,
+		ActorSno._demonflyer_a_bomber,
+		ActorSno._demonflyer_a_swoop,
+		ActorSno._demonflyer_b,
+		ActorSno._demonflyermega_a
+	)]
 	public class DemonFlyer : Monster
 	{
-		public DemonFlyer(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DemonFlyer(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30334);
 			(Brain as MonsterBrain).AddPresetPower(130798);
@@ -951,22 +1013,31 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region A3Succubus
-	[HandledSNO(152535, 152679, 5508)]
+	[HandledSNO(
+		ActorSno._succubus_daughterofpain,
+		ActorSno._succubus_b,
+		ActorSno._succubus_a
+	)]
 	public class Succubus : Monster
 	{
-		public Succubus(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Succubus(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(120874);
 		}
 	}
 	#endregion
 	#region A2SandWasp
-	[HandledSNO(5208, 5209, 5210)]
+	[HandledSNO(
+		ActorSno._sandwasp_a,
+		ActorSno._sandwasp_b,
+		ActorSno._sandwasp_c,
+		ActorSno._sandwasp_d
+	)]
 	public class SandWasp : Monster
 	{
-		public SandWasp(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public SandWasp(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30334);
 			(Brain as MonsterBrain).AddPresetPower(30449);
@@ -974,32 +1045,32 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region A4HoodedNightmare
-	[HandledSNO(106710)]
+	[HandledSNO(ActorSno._hoodednightmare_a)]
 	public class HoodedNightmare : Monster
 	{
-		public HoodedNightmare(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public HoodedNightmare(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(135412);
 		}
 	}
 	#endregion
 	#region GoatMutants
-	[HandledSNO(4303, 4304)]
+	[HandledSNO(ActorSno._goatmutant_shaman_a, ActorSno._goatmutant_shaman_b)]
 	public class GoatMutantShaman : Monster
 	{
-		public GoatMutantShaman(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public GoatMutantShaman(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30952);
 			(Brain as MonsterBrain).AddPresetPower(157947);
 		}
 	}
-	[HandledSNO(4299, 4300)]
+	[HandledSNO(ActorSno._goatmutant_ranged_a, ActorSno._goatmutant_ranged_b)]
 	public class GoatMutantRanged : Monster
 	{
-		public GoatMutantRanged(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public GoatMutantRanged(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30952);
 			(Brain as MonsterBrain).AddPresetPower(159004);
@@ -1007,11 +1078,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region FallenLunatic
-	[HandledSNO(4093, 4094)]
+	[HandledSNO(
+		ActorSno._fallenlunatic_a,
+		ActorSno._fallenlunatic_b,
+		ActorSno._fallenlunatic_c,
+		ActorSno._fallenlunatic_d
+	)]
 	public class FallenLunatic : Monster
 	{
-		public FallenLunatic(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public FallenLunatic(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(66547);
 			this.WalkSpeed = 0.4f;
@@ -1019,11 +1095,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region Wraith
-	[HandledSNO(241288, 304460, 363232, 363361, 470719, 360244)]
+	[HandledSNO(
+		ActorSno._x1_wraith_a,
+		ActorSno._x1_wraith_a_dark,
+		ActorSno._x1_wraith_unique_a,
+		ActorSno._x1_wraith_unique_b,
+		ActorSno._p6_x1_wraith_unique_a_unique_rof_v3_01,
+		ActorSno._x1_wraith_a_fortressunique
+	)]
 	public class Wrath : Monster
 	{
-		public Wrath(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Wrath(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
@@ -1033,12 +1116,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 	}
 	#endregion
 	#region Spiders
-	[HandledSNO(208832 //Spider_Elemental_Cold_tesla_A
-				)]
+	[HandledSNO(ActorSno._spider_elemental_cold_tesla_a)] //Spider_Elemental_Cold_tesla_A
 	public class Spider_Elemental_Cold_tesla_A : Monster
 	{
-		public Spider_Elemental_Cold_tesla_A(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Spider_Elemental_Cold_tesla_A(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
 			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;

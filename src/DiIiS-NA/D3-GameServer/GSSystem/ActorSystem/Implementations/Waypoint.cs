@@ -4,6 +4,7 @@ using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
@@ -49,8 +50,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public int SNOLevelArea = -1;
 
-		public Waypoint(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Waypoint(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 129569;
 			this.Attributes[GameAttribute.MinimapActive] = true;
@@ -94,7 +95,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				if (scene.Specification == null) continue;
 				foreach (var area in scene.Specification.SNOLevelAreas)
 				{
-					if (wayPointInfo[i].SNOWorld != this.World.WorldSNO.Id || wayPointInfo[i].SNOLevelArea != area)
+					if (wayPointInfo[i].SNOWorld != (int)this.World.SNO || wayPointInfo[i].SNOLevelArea != area)
 						continue;
 
 					this.SNOLevelArea = wayPointInfo[i].SNOLevelArea;
@@ -134,13 +135,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			//this.Attributes[Net.GS.Message.GameAttribute.Gizmo_Has_Been_Operated] = true;
 
 			//handling quest triggers (special for Waypoints)
-			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey(this.ActorSNO.Id))
+			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)this.SNO))
 			{
-				var trigger = this.World.Game.QuestProgress.QuestTriggers[this.ActorSNO.Id];
+				var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 				{
-					this.World.Game.QuestProgress.UpdateCounter(this.ActorSNO.Id);
-					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[this.ActorSNO.Id * (-1)].counter)
+					this.World.Game.QuestProgress.UpdateCounter((int)this.SNO);
+					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO * (-1)].counter)
 						try
 						{
 							trigger.questEvent.Execute(this.World); // launch a questEvent
@@ -228,12 +229,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			player.InGameClient.SendMessage(new MapMarkerInfoMessage
 			{
-				HashedName = StringHashHelper.HashItemName(string.Format("{0}-{1}", this.ActorSNO.Name, this.GlobalID)),
+				HashedName = StringHashHelper.HashItemName(string.Format("{0}-{1}", this.Name, this.GlobalID)),
 				Place = new WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
 				ImageInfo = 129569,
 				Label = -1,
 				snoStringList = -1,
-				snoKnownActorOverride = this.ActorSNO.Id,
+				snoKnownActorOverride = (int)this.SNO,
 				snoQuestSource = -1,
 				Image = -1,
 				Active = true,

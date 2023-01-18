@@ -16,13 +16,14 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	class Shrine : Gizmo
 	{
-		public Shrine(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Shrine(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			Attributes[GameAttribute.MinimapActive] = true;
 		}
@@ -37,30 +38,30 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				if (this.Activated) return;
 				this.Activated = true;
 				World.BroadcastIfRevealed(plr => new ANNDataMessage(Opcodes.ShrineActivatedMessage) { ActorID = this.DynamicID(plr) }, this);
-				switch (this.ActorSNO.Id)
+				switch (this.SNO)
 				{
-					case 176074: //blessed
+					case ActorSno._shrine_global_blessed: //blessed
 						foreach (var plr in this.GetPlayersInRange(100f))
 						{
 							this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineBlessedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
 							plr.GrantCriteria(74987243307423);
 						}
 						break;
-					case 176075: //enlightened
+					case ActorSno._shrine_global_enlightened: //enlightened
 						foreach (var plr in this.GetPlayersInRange(100f))
 						{
 							this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineEnlightenedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
 							plr.GrantCriteria(74987243307424);
 						}
 						break;
-					case 176076: //fortune
+					case ActorSno._shrine_global_fortune: //fortune
 						foreach (var plr in this.GetPlayersInRange(100f))
 						{
 							this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFortuneBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
 							plr.GrantCriteria(74987243307425);
 						}
 						break;
-					case 176077: //frenzied
+					case ActorSno._shrine_global_frenzied: //frenzied
 						foreach (var plr in this.GetPlayersInRange(100f))
 						{
 							this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFrenziedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));

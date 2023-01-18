@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.MPQ;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
@@ -19,11 +20,25 @@ using MonsterFF = DiIiS_NA.Core.MPQ.FileFormats.Monster;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(3739, 174436, 205189, 3546, 164195, 181857, 181858, 362323, 362440, 284568, 378363, 361670, 256248, 275409)]
+	[HandledSNO(
+		ActorSno._captainrumfoord,
+		ActorSno._angel_trooper_a,
+		ActorSno._bastionskeepguard_melee_a_01_stationedguard,
+		ActorSno._caldeumguard_cleaver_a,
+		ActorSno._caldeumguard_cleaver_a_jarulf,
+		ActorSno._caldeumguard_cleaver_a_town,
+		ActorSno._caldeumguard_spear_imperial_town,
+		ActorSno._x1_westmhub_guardnohelmunarmed,
+		ActorSno._x1_westmhub_guard_patrol,
+		ActorSno._x1_westmhub_guard,
+		ActorSno._x1_westmhub_guardnohelm,
+		ActorSno._x1_malthael,
+		ActorSno._x1_imperius
+	)]
 	class CaptainRumford : InteractiveNPC, IUpdateable
 	{
-		public CaptainRumford(MapSystem.World world, int snoID, TagMap tags)
-			: base(world, snoID, tags)
+		public CaptainRumford(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			Brain = new AggressiveNPCBrain(this); // erekose			 
 
@@ -48,9 +63,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			}
 
 			base.ReadTags();
-
-			if (this.ActorSNO.Id == 256248)
-				this.Attributes[GameAttribute.TeamID] = 0;
 		}
 
 		public void Update(int tickCounter)

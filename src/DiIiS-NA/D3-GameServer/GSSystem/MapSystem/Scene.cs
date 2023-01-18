@@ -6,6 +6,7 @@ using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Collision;
 //Blizzless Project 2022 
@@ -261,12 +262,12 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			{
 				switch (marker.Type)
 				{
-					case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Actor:
-						var actor = ActorFactory.Create(this.World, marker.SNOHandle.Id, marker.TagMap); // try to create it.
+					case MarkerType.Actor:
+						var actor = ActorFactory.Create(this.World, (ActorSno)marker.SNOHandle.Id, marker.TagMap); // try to create it.
 																										 //Logger.Debug("not-lazy spawned {0}", actor.GetType().Name);
 						if (actor == null) continue;
-						if (this.World.WorldSNO.Id == 95804 && this.SceneSNO.Id == 145392 && actor is StartingPoint) continue; //arreat crater hack
-						if (this.World.WorldSNO.Id == 306549 && this.SceneSNO.Id == 311310 && actor is StartingPoint) continue; //A5 start location hack
+						if (this.World.SNO == WorldSno.a3_battlefields_02 && this.SceneSNO.Id == 145392 && actor is StartingPoint) continue; //arreat crater hack
+						if (this.World.SNO == WorldSno.x1_westm_intro && this.SceneSNO.Id == 311310 && actor is StartingPoint) continue; //A5 start location hack
 
 						var position = marker.PRTransform.Vector3D + this.Position; // calculate the position for the actor.
 						actor.RotationW = marker.PRTransform.Quaternion.W;
@@ -276,17 +277,17 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 						//System.Threading.Thread.Sleep(3);
 						break;
 
-					case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Encounter:
+					case MarkerType.Encounter:
 						try
 						{
 							//Logger.Warn("load Encounter marker {0} in {1} ({2})", marker.Name, markerSetData.FileName, marker.SNOHandle.Id);
-							var encounter = marker.SNOHandle.Target as DiIiS_NA.Core.MPQ.FileFormats.Encounter;
+							var encounter = marker.SNOHandle.Target as Encounter;
 							var actorsno = RandomHelper.RandomItem(encounter.Spawnoptions, x => x.Probability);
 							/*foreach (var option in encounter.Spawnoptions)
 							{
 								Logger.Trace("Encounter option {0} - {1} - {2} - {3}", option.SNOSpawn, option.Probability, option.I1, option.I2);
 							}*/ //only for debugging purposes
-							var actor2 = ActorFactory.Create(this.World, actorsno.SNOSpawn, marker.TagMap); // try to create it.
+							var actor2 = ActorFactory.Create(this.World, (ActorSno)actorsno.SNOSpawn, marker.TagMap); // try to create it.
 							if (actor2 == null) continue;
 
 							var position2 = marker.PRTransform.Vector3D + this.Position; // calculate the position for the actor.
@@ -335,7 +336,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 				foreach (var markerSet in data.MarkerSets)
 				{
-					var markerSetData = MPQStorage.Data.Assets[SNOGroup.MarkerSet][markerSet].Data as DiIiS_NA.Core.MPQ.FileFormats.MarkerSet;
+					var markerSetData = MPQStorage.Data.Assets[SNOGroup.MarkerSet][markerSet].Data as MarkerSet;
 					if (markerSetData == null) return;
 					/*Logger.Info("-------------------------------------");
 					Logger.Info("Marker set name {0}", markerSet);
@@ -345,14 +346,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 					{
 						switch (marker.Type)
 						{
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.AmbientSound:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Light:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Particle:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.SubScenePosition:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.AudioVolume:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.MinimapMarker:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Script:
-							case DiIiS_NA.Core.MPQ.FileFormats.MarkerType.Event:
+							case MarkerType.AmbientSound:
+							case MarkerType.Light:
+							case MarkerType.Particle:
+							case MarkerType.SubScenePosition:
+							case MarkerType.AudioVolume:
+							case MarkerType.MinimapMarker:
+							case MarkerType.Script:
+							case MarkerType.Event:
 								break;
 							default:
 								PreCachedMarkers[data.Header.SNOId].Add(marker);
@@ -466,7 +467,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				specification.SNOCombatMusic = -1;//World.Environment.snoCombatMusic;
 				specification.SNOAmbient = World.Environment.snoAmbient;
 				specification.SNOReverb = World.Environment.snoReverb;
-				specification.SNOPresetWorld = this.World.WorldSNO.Id;
+				specification.SNOPresetWorld = (int)this.World.SNO;
 			}
 			else if (World.Environment != null)
 			{
@@ -475,7 +476,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				specification.SNOAmbient = World.Environment.snoAmbient;
 				specification.SNOReverb = World.Environment.snoReverb;
 				specification.SNOWeather = World.Environment.snoWeather;
-				specification.SNOPresetWorld = this.World.WorldSNO.Id;
+				specification.SNOPresetWorld = (int)this.World.SNO;
 
 			}
 			else
@@ -486,39 +487,37 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				specification.SNOReverb = -1;
 				if (specification.SNOWeather == -1)
 					specification.SNOWeather = 0x00013220;
-				specification.SNOPresetWorld = this.World.WorldSNO.Id;
+				specification.SNOPresetWorld = (int)this.World.SNO;
 			}
 
-			if (this.World.Game.NephalemGreater && this.World.WorldSNO.Name.ToLower().Contains("x1_lr_tileset"))
+			if (this.World.Game.NephalemGreater && this.World.SNO.IsDungeon())
 				specification.SNOLevelAreas[0] = 332339;
 
-			if (this.World.WorldSNO.Name.ToLower().Contains("p43_ad"))
+			switch (this.World.SNO)
 			{
-				switch (this.World.WorldSNO.Id)
-				{
-					case 455282: specification.SNOLevelAreas[0] = 455466; break; //p43_ad_oldtristram 
-					case 452721: specification.SNOLevelAreas[0] = 452986; break; //p43_ad_cathedral_level_01 
-					case 452922: specification.SNOLevelAreas[0] = 452988; break; //p43_ad_cathedral_level_02 
-					case 452984: specification.SNOLevelAreas[0] = 452989; break; //p43_ad_cathedral_level_03 
-					case 452985: specification.SNOLevelAreas[0] = 452990; break; //p43_ad_cathedral_level_04 
-					case 452991: specification.SNOLevelAreas[0] = 452992; break; //p43_ad_catacombs_level_05 
-					case 452996: specification.SNOLevelAreas[0] = 452993; break; //p43_ad_catacombs_level_06 
-					case 452997: specification.SNOLevelAreas[0] = 452994; break; //p43_ad_catacombs_level_07 
-					case 452998: specification.SNOLevelAreas[0] = 452995; break; //p43_ad_catacombs_level_08 
-					case 452999: specification.SNOLevelAreas[0] = 453001; break; //p43_ad_caves_level_09 
-					case 453004: specification.SNOLevelAreas[0] = 453007; break; //p43_ad_caves_level_10 
-					case 453003: specification.SNOLevelAreas[0] = 453006; break; //p43_ad_caves_level_11 
-					case 453002: specification.SNOLevelAreas[0] = 453005; break; //p43_ad_caves_level_12 
-					case 453008: specification.SNOLevelAreas[0] = 453009; break; //p43_ad_hell_level_13 
-					case 453014: specification.SNOLevelAreas[0] = 453011; break; //p43_ad_hell_level_14 
-					case 453015: specification.SNOLevelAreas[0] = 453012; break; //p43_ad_hell_level_15 
-					case 453016: specification.SNOLevelAreas[0] = 453441; break; //p43_ad_hell_level_16 
-					case 453440: specification.SNOLevelAreas[0] = 453441; break; //p43_ad_level02_sidedungeon_darkpassage 
-					case 453446: specification.SNOLevelAreas[0] = 453471; break; //p43_ad_level03_sidedungeon_leoricstomb 
-					case 453582: specification.SNOLevelAreas[0] = 453583; break; //p43_ad_level06_sidedungeon_chamberofbone 
-					case 458255: specification.SNOLevelAreas[0] = 458256; break; //p43_ad_abandonedfarmstead 
-					case 454208: specification.SNOLevelAreas[0] = 454209; break; //p43_ad_level15_sidedungeon_unholyaltar 
-				}
+				case WorldSno.p43_ad_oldtristram: specification.SNOLevelAreas[0] = 455466; break; //p43_ad_oldtristram 
+				case WorldSno.p43_ad_cathedral_level_01: specification.SNOLevelAreas[0] = 452986; break; //p43_ad_cathedral_level_01 
+				case WorldSno.p43_ad_cathedral_level_02: specification.SNOLevelAreas[0] = 452988; break; //p43_ad_cathedral_level_02 
+				case WorldSno.p43_ad_cathedral_level_03: specification.SNOLevelAreas[0] = 452989; break; //p43_ad_cathedral_level_03 
+				case WorldSno.p43_ad_cathedral_level_04: specification.SNOLevelAreas[0] = 452990; break; //p43_ad_cathedral_level_04 
+				case WorldSno.p43_ad_catacombs_level_05: specification.SNOLevelAreas[0] = 452992; break; //p43_ad_catacombs_level_05 
+				case WorldSno.p43_ad_catacombs_level_06: specification.SNOLevelAreas[0] = 452993; break; //p43_ad_catacombs_level_06 
+				case WorldSno.p43_ad_catacombs_level_07: specification.SNOLevelAreas[0] = 452994; break; //p43_ad_catacombs_level_07 
+				case WorldSno.p43_ad_catacombs_level_08: specification.SNOLevelAreas[0] = 452995; break; //p43_ad_catacombs_level_08 
+				case WorldSno.p43_ad_caves_level_09: specification.SNOLevelAreas[0] = 453001; break; //p43_ad_caves_level_09 
+				case WorldSno.p43_ad_caves_level_10: specification.SNOLevelAreas[0] = 453007; break; //p43_ad_caves_level_10 
+				case WorldSno.p43_ad_caves_level_11: specification.SNOLevelAreas[0] = 453006; break; //p43_ad_caves_level_11 
+				case WorldSno.p43_ad_caves_level_12: specification.SNOLevelAreas[0] = 453005; break; //p43_ad_caves_level_12 
+				case WorldSno.p43_ad_hell_level_13: specification.SNOLevelAreas[0] = 453009; break; //p43_ad_hell_level_13 
+				case WorldSno.p43_ad_hell_level_14: specification.SNOLevelAreas[0] = 453011; break; //p43_ad_hell_level_14 
+				case WorldSno.p43_ad_hell_level_15: specification.SNOLevelAreas[0] = 453012; break; //p43_ad_hell_level_15 
+				case WorldSno.p43_ad_hell_level_16: specification.SNOLevelAreas[0] = 453441; break; //p43_ad_hell_level_16 
+				case WorldSno.p43_ad_level02_sidedungeon_darkpassage: specification.SNOLevelAreas[0] = 453441; break; //p43_ad_level02_sidedungeon_darkpassage 
+				case WorldSno.p43_ad_level03_sidedungeon_leoricstomb: specification.SNOLevelAreas[0] = 453471; break; //p43_ad_level03_sidedungeon_leoricstomb 
+				case WorldSno.p43_ad_level06_sidedungeon_chamberofbone: specification.SNOLevelAreas[0] = 453583; break; //p43_ad_level06_sidedungeon_chamberofbone 
+				case WorldSno.p43_ad_abandonedfarmstead: specification.SNOLevelAreas[0] = 458256; break; //p43_ad_abandonedfarmstead 
+				case WorldSno.p43_ad_level15_sidedungeon_unholyaltar: specification.SNOLevelAreas[0] = 454209; break; //p43_ad_level15_sidedungeon_unholyaltar 
+				default: break; // don't change anything for other worlds
 			}
 			return new RevealSceneMessage
 			{

@@ -18,6 +18,7 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.Core.Logging;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -29,19 +30,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		private ResolvedPortalDestination Destination { get; set; }
 
-		public DungeonStonePortal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public DungeonStonePortal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 
 			//this.Field2 = 0x9;//16;
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 218394;
-			if (this.World.WorldSNO.Name.ToLower().Contains("x1_lr_tileset"))
+			if (this.World.SNO.IsDungeon())
 			{
 				this.Destination = new ResolvedPortalDestination()
 				{
 					DestLevelAreaSNO = 332339,
-					WorldSNO = 332336,
+					WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub,
 					StartingPointActorTag = 24
 				};
 			}
@@ -52,10 +53,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (!base.Reveal(player))
 				return false;
 
-			if (World.WorldSNO.Id == 92126)
+			if (World.SNO == WorldSno.trdun_crypt_skeletonkingcrown_02)
 			{
 				Portal Exit = null;
-				foreach (Actor actor in World.Game.GetWorld(154587).GetStartingPointById(172).GetActorsInRange(120f))
+				foreach (Actor actor in World.Game.GetWorld(WorldSno.trdun_crypt_skeletonkingcrown_00).GetStartingPointById(172).GetActorsInRange(120f))
 					if (actor is Portal)
 						Exit = actor as Portal;
 				if (Exit != null)
@@ -77,8 +78,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (this.Destination.StartingPointActorTag != 0)
 			{
 				StartingPoint NeededStartingPoint = world.GetStartingPointById(this.Destination.StartingPointActorTag);
-				var DestWorld = world.Game.GetWorld(this.Destination.WorldSNO);
-				var StartingPoints = DestWorld.GetActorsBySNO(5502);
+				var DestWorld = world.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
+				var StartingPoints = DestWorld.GetActorsBySNO(ActorSno._start_location_0);
 				foreach (var ST in StartingPoints)
 				{
 					if (ST.CurrentScene.SceneSNO.Id == this.Destination.StartingPointActorTag)
@@ -96,14 +97,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			Logger.Debug("(OnTargeted) Portal has been activated ");
 
-			if (this.World.WorldSNO.Name.ToLower().Contains("x1_lr_tileset"))
+			if (this.World.SNO.IsDungeon())
 			{
 				this.Destination.DestLevelAreaSNO = 332339;
-				this.Destination.WorldSNO = 332336;
+				this.Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
 				this.Destination.StartingPointActorTag = 24;
 			}
 
-			var world = this.World.Game.GetWorld(this.Destination.WorldSNO);
+			var world = this.World.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
 
 			if (world == null)
 			{

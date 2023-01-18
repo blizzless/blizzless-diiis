@@ -117,6 +117,7 @@ using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.UI;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 {
@@ -265,7 +266,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				_spiritGenHit = value;
 				if (this.SkillSet.HasPassive(315271) && _spiritGenHit >= 3) //Mythic Rhythm
 				{
-					this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.MythicRhythmBuff());
+					this.World.BuffManager.AddBuff(this, this, new MythicRhythmBuff());
 					_spiritGenHit = 0;
 				}
 			}
@@ -275,7 +276,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// NPC currently interaced with
 		/// </summary>
 		public InteractiveNPC SelectedNPC { get; set; }
-		public Dictionary<uint, int> Followers { get; private set; }
+		public Dictionary<uint, ActorSno> Followers { get; private set; }
 		private Hireling _activeHireling = null;
 		private Hireling _questHireling = null;
 		public Hireling ActiveHireling
@@ -337,7 +338,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public int KilledSeasonalTempCount = 0;
 		public int KilledElitesTempCount = 0;
 		public int BuffStreakKill = 0;
-		private byte[] ParagonBonuses;
+		private ushort[] ParagonBonuses;
 		public int? HirelingId = null;
 		public bool IsCasting = false;
 		private Action CastResult = null;
@@ -350,7 +351,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// <param name="client">The gameclient for the player.</param>
 		/// <param name="bnetToon">Toon of the player.</param>
 		public Player(World world, GameClient client, Toon bnetToon)
-			: base(world, bnetToon.Gender == 0 ? bnetToon.HeroTable.SNOMaleActor : bnetToon.HeroTable.SNOFemaleActor)
+			: base(world, bnetToon.Gender == 0 ? (ActorSno)bnetToon.HeroTable.SNOMaleActor : (ActorSno)bnetToon.HeroTable.SNOFemaleActor)
 		{
 			this.InGameClient = client;
 			this.PlayerIndex = Interlocked.Increment(ref this.InGameClient.Game.PlayerIndexCounter);
@@ -372,7 +373,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.RotationW = 0.05940768f;
 			this.RotationAxis = new Vector3D(0f, 0f, 0.9982339f);
 			this.Field7 = -1;
-			this.NameSNOId = -1;
+			this.NameSNO = ActorSno.__NONE;
 			this.Field10 = 0x0;
 			this.Dead = false;
 			this.EventWeatherEnabled = false;
@@ -397,7 +398,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.HirelingEnchantressUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307145).Count() > 0;
 			this.SkillSet = new SkillSet(this, this.Toon.Class, this.Toon);
 			this.GroundItems = new Dictionary<uint, Item>();
-			this.Followers = new Dictionary<uint, int>();
+			this.Followers = new Dictionary<uint, ActorSno>();
 			this.Conversations = new ConversationManager(this);
 			this.ExpBonusData = new ExpBonusData(this);
 			this.SelectedNPC = null;
@@ -468,7 +469,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Attributes[GameAttribute.Buff_Icon_Count0, 0x00033C40] = 1;
 			
 			Attributes[GameAttribute.Currencies_Discovered] = 0x0011FFF8;
-			Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5;
 
 			this.Attributes[GameAttribute.Skill, 30592] = 1;
 			this.Attributes[GameAttribute.Resource_Degeneration_Prevented] = false;
@@ -622,28 +622,40 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.Attributes[GameAttribute.Cannot_Dodge] = false;
 			this.Attributes[GameAttribute.Trait, 0x0000CE11] = 1;
 			this.Attributes[GameAttribute.TeamID] = 2;
-			this.Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 1;
+			this.Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5;			// what do these do?
+			this.Attributes[GameAttribute.Stash_Tabs_Rewarded_By_Achievements] = 5;
 			this.Attributes[GameAttribute.Backpack_Slots] = 60;
 			this.Attributes[GameAttribute.General_Cooldown] = 0;
 		}
 
 		public void SetAttributesByParagon()
 		{
-			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 0] = 0;
-			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 1] = 0;
-			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 2] = 0;
-			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 3] = 0;
-			int level = Math.Min(this.Toon.ParagonLevel, 800);
-			for (int i = 0; i < level; i++)
+			// Until the Paragon 800 should be distributed on the 4 tabs,
+			// after that only in the first Core tab.
+			var baseParagonPoints = Math.Min(this.Toon.ParagonLevel, 800);
+			var extraParagonPoints = Math.Max(0, this.Toon.ParagonLevel - 800);
+			for (int i = 0; i < 4; i++)
 			{
-				this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, (i % 4)]++;
+				this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, i] = baseParagonPoints / 4;
+				// Process remainder only for base points.
+				if (i < baseParagonPoints % 4)
+				{
+					this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, i]++;
+				}
 			}
+			// First tab of Paragon (Core) - pos 0.
+			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 0] += extraParagonPoints;
+
 			var assigned_bonuses = this.ParagonBonuses;
+
 			var bonus_ids = ItemGenerator.GetParagonBonusTable(this.Toon.Class);
+
 			foreach (var bonus in bonus_ids)
 			{
 				int slot_index = (bonus.Category * 4) + bonus.Index - 1;
-				this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category] -= assigned_bonuses[slot_index];
+
+                this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category] -= assigned_bonuses[slot_index];
+
 				this.Attributes[GameAttribute.Paragon_Bonus, bonus.Hash] = assigned_bonuses[slot_index];
 
 				float result;
@@ -659,7 +671,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					else
 					{
 						if (bonus.AttributeSpecifiers[0].AttributeId == 133) result = 33f; //Hitpoints_Regen_Per_Second
+
 						if (bonus.AttributeSpecifiers[0].AttributeId == 342) result = 16.5f; //Hitpoints_On_Hit
+
 						if (GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] is GameAttributeF)
 						{
 							var attr = GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeF;
@@ -670,6 +684,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 						else if (GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] is GameAttributeI)
 						{
+
 							var attr = GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeI;
 							if (bonus.AttributeSpecifiers[0].SNOParam != -1)
 								this.Attributes[attr, bonus.AttributeSpecifiers[0].SNOParam] += (int)(result * assigned_bonuses[slot_index]);
@@ -1336,6 +1351,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
 
+			this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;
 			//TestOutPutItemAttributes(); //Activate this only for finding item stats.
 			this.Attributes.BroadcastChangedIfRevealed();
 
@@ -1458,20 +1474,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				case 72061:
 					//Templar
 					Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][52693].Data;
-					hireling = new Templar(this.World, 52693, Data.TagMap);
+					hireling = new Templar(this.World, ActorSno._hireling_templar, Data.TagMap);
 					hireling.GBHandle.GBID = StringHashHelper.HashItemName("Templar");
 
 					break;
 				case 72738:
 					//Scoundrel
 					Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][52694].Data;
-					hireling = new Templar(this.World, 52694, Data.TagMap);
+					hireling = new Templar(this.World, ActorSno._hireling_scoundrel, Data.TagMap);
 					hireling.GBHandle.GBID = StringHashHelper.HashItemName("Scoundrel");
 					break;
 				case 0:
 					//Enchantress
 					Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][4482].Data;
-					hireling = new Templar(this.World, 4482, Data.TagMap);
+					hireling = new Templar(this.World, ActorSno._hireling_enchantress, Data.TagMap);
 					hireling.GBHandle.GBID = StringHashHelper.HashItemName("Enchantress");
 					break;
 
@@ -1545,7 +1561,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			for (int i = 0; i < message.ItemsCount; i++)
 			{
 				Items.Add(Inventory.GetItemByDynId(this, (uint)message.annItems[i]));
-				if (Items[i].ActorSNO.Id == 272056)
+				if (Items[i].SNO == ActorSno._x1_polearm_norm_unique_05)
 					ItemPortalToCows = Items[i];
 			}
 
@@ -1565,7 +1581,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				});
 
 				this.Inventory.DestroyInventoryItem(ItemPortalToCows);
-				this.World.SpawnMonster(434659, new Vector3D(this.Position.X + 5, this.Position.Y + 5, this.Position.Z));
+				this.World.SpawnMonster(ActorSno._p2_totallynotacowlevel_portal, new Vector3D(this.Position.X + 5, this.Position.Y + 5, this.Position.Z));
 			}
 			else
 			{
@@ -1603,18 +1619,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			World NephalemPWorld = null;
 			Actor NStone = null;
 			Portal portal = null;
-			int map = -1;
-			int[] Maps = new int[]
+			var map = WorldSno.__NONE;
+            WorldSno[] Maps = new WorldSno[]
 					{
 
-						331263, //x1_lr_tileset_Westmarch
-                        360797, //_x1_lr_tileset_fortress_large
-						288823, //x1_lr_tileset_zoltruins
-						331389, //x1_lr_tileset_hexmaze
-						275960, //x1_lr_tileset_icecave
+						WorldSno.x1_lr_tileset_westmarch, //x1_lr_tileset_Westmarch
+                        WorldSno.x1_lr_tileset_fortress_large, //_x1_lr_tileset_fortress_large
+						WorldSno.x1_lr_tileset_zoltruins, //x1_lr_tileset_zoltruins
+						WorldSno.x1_lr_tileset_hexmaze, //x1_lr_tileset_hexmaze
+						WorldSno.x1_lr_tileset_icecave, //x1_lr_tileset_icecave
 
-						275946, //x1_lr_tileset_crypt
-						275926, //x1_lr_tileset_corruptspire
+						WorldSno.x1_lr_tileset_crypt, //x1_lr_tileset_crypt
+						WorldSno.x1_lr_tileset_corruptspire, //x1_lr_tileset_corruptspire
 
 						//288843, //x1_lr_tileset_sewers
 			};
@@ -1626,12 +1642,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					Logger.Debug("Вызов нефалемского портала (Обычный)");
 					Activated = false;
 
-					foreach (var oldp in this.World.GetActorsBySNO(345935)) { oldp.Destroy(); }
-					foreach (var oldp in this.World.GetActorsBySNO(396751)) { oldp.Destroy(); }
+					foreach (var oldp in this.World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }
 
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
 					//map = 288823;
-					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, map, 0)); //Мир
+					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //Мир
 					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
 					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Точка входа
 					this.InGameClient.Game.WorldOfPortalNephalem = map;
@@ -1653,14 +1668,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					foreach (var actor in NephalemPWorld.Actors.Values)
 						if (actor is Portal)
 						{
+							var p = actor as Portal;
 							if (!actor.CurrentScene.SceneSNO.Name.ToLower().Contains("entrance"))
 							{
 								if (!actor.CurrentScene.SceneSNO.Name.ToLower().Contains("exit"))
 									actor.Destroy();
 								else if (!ExitSetted)
 								{
-									(actor as Portal).Destination.DestLevelAreaSNO = 288684;
-									(actor as Portal).Destination.WorldSNO = this.InGameClient.Game.WorldOfPortalNephalemSec;
+									p.Destination.DestLevelAreaSNO = 288684;
+									p.Destination.WorldSNO = (int)this.InGameClient.Game.WorldOfPortalNephalemSec;
 									ExitSetted = true;
 
 									var NephalemPWorldS2 = this.InGameClient.Game.GetWorld(this.InGameClient.Game.WorldOfPortalNephalemSec);
@@ -1672,7 +1688,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 											else
 											{
 												(atr as Portal).Destination.DestLevelAreaSNO = 332339;
-												(atr as Portal).Destination.WorldSNO = 332336;
+												(atr as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
 												(atr as Portal).Destination.StartingPointActorTag = 172;
 											}
 										}
@@ -1684,16 +1700,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							}
 							else
 							{
-								(actor as Portal).Destination.DestLevelAreaSNO = 332339;
-								(actor as Portal).Destination.WorldSNO = 332336;
-								(actor as Portal).Destination.StartingPointActorTag = 24;
+								p.Destination.DestLevelAreaSNO = 332339;
+								p.Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
+								p.Destination.StartingPointActorTag = 24;
 							}
 						}
 						else if (actor is Waypoint)
 							actor.Destroy();
 
 					#region Активация
-					NStone = World.GetActorBySNO(364715);
+					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 					NStone.PlayAnimation(5, NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
@@ -1710,7 +1726,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						ActorID = NStone.DynamicID(plr),
 						CollFlags = 0
 					}, NStone);
-					portal = new Portal(this.World, 345935, NewTagMap);
+					portal = new Portal(this.World, ActorSno._x1_openworld_lootrunportal, NewTagMap);
 
 					TickTimer Timeout = new SecondsTickTimer(this.World.Game, 3.5f);
 					var Boom = System.Threading.Tasks.Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
@@ -1802,14 +1818,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					Logger.Debug("Вызов нефалемского портала (Уровень: {0})", message.Field0);
 					Activated = false;
-					foreach (var oldp in this.World.GetActorsBySNO(345935)) { oldp.Destroy(); }
-					foreach (var oldp in this.World.GetActorsBySNO(396751)) { oldp.Destroy(); }
+					foreach (var oldp in this.World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }
 
 					this.InGameClient.Game.ActiveNephalemPortal = true;
 					this.InGameClient.Game.NephalemGreater = true;
 
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
-					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, map, 0)); //Мир
+					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //Мир
 					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
 					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Точка входа
 					this.InGameClient.Game.WorldOfPortalNephalem = map;
@@ -1823,14 +1838,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							else
 							{
 								(actor as Portal).Destination.DestLevelAreaSNO = 332339;
-								(actor as Portal).Destination.WorldSNO = 332336;
+								(actor as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
 								(actor as Portal).Destination.StartingPointActorTag = 24;
 							}
 						}
 						else if (actor is Waypoint)
 							actor.Destroy();
 					#region Активация
-					NStone = World.GetActorBySNO(364715);
+					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 					NStone.PlayAnimation(5, NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
@@ -1847,7 +1862,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						ActorID = NStone.DynamicID(plr),
 						CollFlags = 0
 					}, NStone);
-					portal = new Portal(this.World, 396751, NewTagMap);
+					portal = new Portal(this.World, ActorSno._x1_openworld_tiered_rifts_portal, NewTagMap);
 
 					TickTimer AltTimeout = new SecondsTickTimer(this.World.Game, 3.5f);
 					var AltBoom = System.Threading.Tasks.Task<bool>.Factory.StartNew(() => WaitToSpawn(AltTimeout));
@@ -1988,11 +2003,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			var bonus = ItemGenerator.GetParagonBonusTable(this.Toon.Class).Where(b => b.Hash == message.BonusGBID).FirstOrDefault();
 
-			if (bonus == null) return;
+            if (bonus == null) return;
 			if (message.Amount > this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category]) return;
 			//if (this.ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] + (byte)message.Amount > bonus.Limit) return;
 
-			this.ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] += (byte)message.Amount;
+			// message.Amount have the value send to add on attr of Paragon tabs.
+			this.ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] += (ushort)message.Amount;
 
 			var dbToon = this.Toon.DBToon;
 			dbToon.ParagonBonuses = this.ParagonBonuses;
@@ -2010,7 +2026,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 		private void OnResetParagonPointsMessage(GameClient client, ResetParagonPointsMessage message)
 		{
-			this.ParagonBonuses = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			this.ParagonBonuses = new ushort[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 			var dbToon = this.Toon.DBToon;
 			dbToon.ParagonBonuses = this.ParagonBonuses;
 			this.World.Game.GameDBSession.SessionUpdate(dbToon);
@@ -2259,7 +2275,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 
 #if DEBUG
-				Logger.Warn("OnTargetedActor ID: {0}, Name: {1}, NumInWorld: {2}", actor.ActorSNO.Id, actor.ActorSNO.Name, actor.NumberInWorld);
+				Logger.Warn("OnTargetedActor ID: {0}, Name: {1}, NumInWorld: {2}", actor.SNO, actor.Name, actor.NumberInWorld);
 #else
 				
 #endif
@@ -2409,36 +2425,36 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				actor.OnPlayerApproaching(this);
 
 			this.VacuumPickup();
-			if (this.World.Game.OnLoadWorldActions.ContainsKey(this.World.WorldSNO.Id))
+			if (this.World.Game.OnLoadWorldActions.ContainsKey(this.World.SNO))
 			{
-				Logger.Trace("OnLoadWorldActions: {0}", this.World.WorldSNO.Id);
-				lock (this.World.Game.OnLoadWorldActions[this.World.WorldSNO.Id])
+				Logger.Trace("OnLoadWorldActions: {0}", this.World.SNO);
+				lock (this.World.Game.OnLoadWorldActions[this.World.SNO])
 				{
 					try
 					{
-						foreach (var action in this.World.Game.OnLoadWorldActions[this.World.WorldSNO.Id])
+						foreach (var action in this.World.Game.OnLoadWorldActions[this.World.SNO])
 						{
 							action.Invoke();
 						}
 					}
 					catch { }
-					this.World.Game.OnLoadWorldActions[this.World.WorldSNO.Id].Clear();
+					this.World.Game.OnLoadWorldActions[this.World.SNO].Clear();
 				}
 			}
-			if (this.World.Game.OnLoadWorldActions.ContainsKey(this.CurrentScene.SceneSNO.Id))
+			if (this.World.Game.OnLoadSceneActions.ContainsKey(this.CurrentScene.SceneSNO.Id))
 			{
 				Logger.Trace("OnLoadSceneActions: {0}", this.CurrentScene.SceneSNO.Id);
-				lock (this.World.Game.OnLoadWorldActions[this.CurrentScene.SceneSNO.Id])
+				lock (this.World.Game.OnLoadSceneActions[this.CurrentScene.SceneSNO.Id])
 				{
 					try
 					{
-						foreach (var action in this.World.Game.OnLoadWorldActions[this.CurrentScene.SceneSNO.Id])
+						foreach (var action in this.World.Game.OnLoadSceneActions[this.CurrentScene.SceneSNO.Id])
 						{
 							action.Invoke();
 						}
 					}
 					catch { }
-					this.World.Game.OnLoadWorldActions[this.CurrentScene.SceneSNO.Id].Clear();
+					this.World.Game.OnLoadSceneActions[this.CurrentScene.SceneSNO.Id].Clear();
 				}
 			}
 
@@ -2461,8 +2477,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 					}
 				}
+
+				this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
+
 #if DEBUG
-				Logger.Warn("Местополежение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
+				Logger.Warn("Местоположение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
 #else
 
 #endif
@@ -2519,7 +2538,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 
 			var levelArea = scene.Specification.SNOLevelAreas[0];
-			Logger.Warn($"OnTryWaypoint: Id: {tryWaypointMessage.nWaypoint}, WorldId: {wpWorld.WorldSNO.Id}, levelArea: {levelArea}");
+			Logger.Warn($"OnTryWaypoint: Id: {tryWaypointMessage.nWaypoint}, WorldId: {wpWorld.SNO}, levelArea: {levelArea}");
 			if (wayPoint == null) return;
 			Logger.Warn($"WpWorld: {wpWorld}, wayPoint: {wayPoint}");
 			InGameClient.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
@@ -2614,7 +2633,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (pet is Hireling)
 				ActiveHireling = null;
 			else
-				this.DestroyFollowersBySnoId(pet.ActorSNO.Id);
+				this.DestroyFollowersBySnoId(pet.SNO);
 		}
 		private void OnHirelingRequestLearnSkill(GameClient client, MessageSystem.Message.Definitions.Hireling.HirelingRequestLearnSkillMessage message)
 		{
@@ -2653,7 +2672,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					this.Revive(this.CheckPointPosition);
 					break;
 				case 2:
-					//this.Revive(this.Position);
+					if (this.Attributes[GameAttribute.Corpse_Resurrection_Charges] > 0)
+					{
+						this.Revive(this.Position);
+						this.Attributes[GameAttribute.Corpse_Resurrection_Charges]--;
+					}
 					break;
 			}
 		}
@@ -3009,10 +3032,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			foreach (Actor proximityGizmo in this.GetObjectsInRange<Actor>(20f, true))
 			{
-				if (proximityGizmo == null || proximityGizmo.ActorSNO == null) continue;
-				if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey(proximityGizmo.ActorSNO.Id) && proximityGizmo.Visible) //EnterTrigger
+				if (proximityGizmo == null || proximityGizmo.SNO == ActorSno.__NONE) continue;
+				if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO) && proximityGizmo.Visible) //EnterTrigger
 				{
-					var trigger = this.World.Game.QuestProgress.QuestTriggers[proximityGizmo.ActorSNO.Id];
+					var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
 					{
 						//this.World.Game.Quests.NotifyQuest(this.World.Game.CurrentQuest, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, proximityGizmo.ActorSNO.Id);
@@ -3026,26 +3049,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 					}
 				}
-				else if (this.World.Game.SideQuestProgress.QuestTriggers.ContainsKey(proximityGizmo.ActorSNO.Id))
+				else if (this.World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO))
 				{
-					var trigger = this.World.Game.SideQuestProgress.QuestTriggers[proximityGizmo.ActorSNO.Id];
+					var trigger = this.World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
 					{
-						this.World.Game.SideQuestProgress.UpdateSideCounter(proximityGizmo.ActorSNO.Id);
-						if (trigger.count == this.World.Game.SideQuestProgress.QuestTriggers[proximityGizmo.ActorSNO.Id].counter)
+						this.World.Game.SideQuestProgress.UpdateSideCounter((int)proximityGizmo.SNO);
+						if (trigger.count == this.World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO].counter)
 							trigger.questEvent.Execute(this.World); // launch a questEvent
 					}
 				}
-				if (this.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(proximityGizmo.ActorSNO.Id) && proximityGizmo.Visible) //EnterTrigger
+				if (this.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey((int)proximityGizmo.SNO) && proximityGizmo.Visible) //EnterTrigger
 				{
-					var trigger = this.World.Game.SideQuestProgress.GlobalQuestTriggers[proximityGizmo.ActorSNO.Id];
+					var trigger = this.World.Game.SideQuestProgress.GlobalQuestTriggers[(int)proximityGizmo.SNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
 					{
 						//this.World.Game.Quests.NotifyQuest(this.World.Game.CurrentQuest, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, proximityGizmo.ActorSNO.Id);
 						try
 						{
 							trigger.questEvent.Execute(this.World); // launch a questEvent
-							this.World.Game.SideQuestProgress.GlobalQuestTriggers.Remove(proximityGizmo.ActorSNO.Id);
+							this.World.Game.SideQuestProgress.GlobalQuestTriggers.Remove((int)proximityGizmo.SNO);
 						}
 						catch (Exception e)
 						{
@@ -3129,7 +3152,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				while (NecroSkeletons.Count < 7)
 				{
-					NecromancerSkeleton_A Skeleton = new NecromancerSkeleton_A(this.World, 473147, this);
+					var Skeleton = new NecromancerSkeleton_A(this.World, ActorSno._p6_necro_commandskeletons_a, this);
 					Skeleton.Brain.DeActivate();
 					Skeleton.Scale = 1.2f;
 
@@ -3160,11 +3183,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 			if (EnableGolem || ActiveGolem != null)
 			{
+				var runeActorSno = RuneSelect(451537, ActorSno._p6_necro_revive_golem, ActorSno._p6_bonegolem, ActorSno._p6_bloodgolem, ActorSno._p6_consumefleshgolem, ActorSno._p6_decaygolem, ActorSno._p6_icegolem);
 				if (ActiveGolem != null)
 				{
-
-					if (ActiveGolem.ActorSNO.Id != RuneSelect(451537, 471947, 465239, 460042, 471619, 471646, 471647) ||
-						!this.SkillSet.HasSkill(451537))
+                    if (ActiveGolem.SNO != runeActorSno || !this.SkillSet.HasSkill(451537))
 					{
 						if (ActiveGolem.World != null)
 						{
@@ -3187,9 +3209,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					}
 					else
 					{
-						switch (RuneSelect(451537, 471947, 465239, 460042, 471619, 471646, 471647))
+						switch (runeActorSno)
 						{
-							case 471947:
+							case ActorSno._p6_necro_revive_golem:
 								var NGolem = new BaseGolem(this.World, this);
 								NGolem.Brain.DeActivate();
 								NGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3202,7 +3224,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								NGolem.Attributes.BroadcastChangedIfRevealed();
 								ActiveGolem = NGolem;
 								break;
-							case 471646:
+							case ActorSno._p6_consumefleshgolem:
 								var CFGolem = new ConsumeFleshGolem(this.World, this);
 								CFGolem.Brain.DeActivate();
 								CFGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3216,7 +3238,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								ActiveGolem = CFGolem;
 
 								break;
-							case 471647:
+							case ActorSno._p6_icegolem:
 								var IGolem = new IceGolem(this.World, this);
 								IGolem.Brain.DeActivate();
 								IGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3229,7 +3251,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								IGolem.Attributes.BroadcastChangedIfRevealed();
 								ActiveGolem = IGolem;
 								break;
-							case 465239:
+							case ActorSno._p6_bonegolem:
 								var BGolem = new BoneGolem(this.World, this);
 								BGolem.Brain.DeActivate();
 								BGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3242,7 +3264,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								BGolem.Attributes.BroadcastChangedIfRevealed();
 								ActiveGolem = BGolem;
 								break;
-							case 471619:
+							case ActorSno._p6_decaygolem:
 								var DGolem = new DecayGolem(this.World, this);
 								DGolem.Brain.DeActivate();
 								DGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3255,7 +3277,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								DGolem.Attributes.BroadcastChangedIfRevealed();
 								ActiveGolem = DGolem;
 								break;
-							case 460042:
+							case ActorSno._p6_bloodgolem:
 								var BlGolem = new BloodGolem(this.World, this);
 								BlGolem.Brain.DeActivate();
 								BlGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
@@ -3348,30 +3370,30 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			float Range = 200f;
 			if (this.InGameClient.Game.CurrentEncounter.activated)
 				Range = 360f;
-			
-			List<Actor> actors_around = this.GetActorsInRange(Range);
 
-			if (this.World.WorldSNO.Id == 295225 ||
-				this.World.WorldSNO.Id == 103209 ||
-				this.World.WorldSNO.Id == 186552 ||
-				this.World.WorldSNO.Id == 328484 ||
-				this.World.WorldSNO.Id == 105406)
+			var specialWorlds = new WorldSno[]
 			{
-				actors_around = this.World.Actors.Values.ToList();
-			}
+				WorldSno.x1_pand_batteringram,
+				WorldSno.gluttony_boss,
+				WorldSno.a3dun_hub_adria_tower,
+				WorldSno.x1_malthael_boss_arena,
+				WorldSno.a1trdun_level05_templar,
+			};
+
+			var actors_around = specialWorlds.Contains(this.World.SNO) ? this.World.Actors.Values.ToList() : this.GetActorsInRange(Range);
 
 			foreach (var actor in actors_around) // reveal actors in player's proximity.
 			{
 				if (actor is Player) // if the actors is already revealed, skip it.
 					continue;
 
-				if (this.World.WorldSNO.Id == 332336 && actor is Portal)
-					if ((actor as Portal).Destination.WorldSNO == 332336)
+				if (this.World.SNO == WorldSno.x1_tristram_adventure_mode_hub && actor is Portal)
+					if ((actor as Portal).Destination.WorldSNO == (int)WorldSno.x1_tristram_adventure_mode_hub)
 						continue;
-				if (this.World.WorldSNO.Id == 71150 && actor is Portal)
-					if ((actor as Portal).Destination.WorldSNO == 71150 && (actor as Portal).Destination.DestLevelAreaSNO == 19947)
+				if (this.World.SNO == WorldSno.trout_town && actor is Portal)
+					if ((actor as Portal).Destination.WorldSNO == (int)WorldSno.trout_town && (actor as Portal).Destination.DestLevelAreaSNO == 19947)
 					{
-						(actor as Portal).Destination.WorldSNO = 332336;
+						(actor as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
 						(actor as Portal).Destination.StartingPointActorTag = 483;
 					}
 					
@@ -3460,22 +3482,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				EnterPosition = this.Position,
 				WorldID = world.GlobalID,
-				WorldSNO = world.WorldSNO.Id,
+				WorldSNO = (int)world.SNO,
 				PlayerIndex = this.PlayerIndex,
 				EnterLookUsed = true,
 				EnterKnownLookOverrides = new EnterKnownLookOverrides { Field0 = new int[] { -1, -1, -1, -1, -1, -1 } }
 			});
 
-			switch (world.WorldSNO.Id)
+			switch (world.SNO)
 			{
-				case 308705:
+				case WorldSno.x1_westmarch_overlook_d:
 					this.InGameClient.SendMessage(new PlayerSetCameraObserverMessage()
 					{
 						Field0 = 309026,
 						Field1 = new WorldPlace() { Position = new Vector3D(), WorldID = 0 }
 					});
 					break;
-				case 306549:
+				case WorldSno.x1_westm_intro:
 					this.InGameClient.SendMessage(new PlayerSetCameraObserverMessage()
 					{
 						Field0 = 1541,
@@ -3811,8 +3833,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.Attributes[GameAttribute.Resurrect_As_Observer] = state;
 				//this.Attributes[GameAttribute.Observer] = !state;
 			}
-			//this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 1;	//enable that to allow resurrecting at corpse
-			//this.Attributes[GameAttribute.Corpse_Resurrection_Allowed_Game_Time] = this.World.Game.TickCounter + 300; //timer for auto-revive
+			//this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 1;	// Enable this to allow unlimited resurrection at corpse
+			//this.Attributes[GameAttribute.Corpse_Resurrection_Allowed_Game_Time] = this.World.Game.TickCounter + 300; // Timer for auto-revive (seems to be broken?)
 			this.Attributes.BroadcastChangedIfRevealed();
 		}
 
@@ -4611,11 +4633,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public void CheckKillMonsterCriteria(int actorId, int type)
+		public void CheckKillMonsterCriteria(ActorSno actorSno, int type)
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.CheckKillMonsterCriteria(this.Toon.GameAccount.PersistentID, actorId, type, this.World.Game.IsHardcore);
+				ClientSystem.GameServer.GSBackend.CheckKillMonsterCriteria(this.Toon.GameAccount.PersistentID, (int)actorSno, type, this.World.Game.IsHardcore);
 			}
 			catch (Exception e)
 			{
@@ -5523,45 +5545,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public Actor SpawnNephalemBoss(World world)
 		{
-			#region Боссы
-			int[] BossSNOs = new int[]
-			{
-				358429, //X1_LR_Boss_MistressofPain 
-				358489, //X1_LR_Boss_Angel_Corrupt_A 
-				358614, //X1_LR_Boss_creepMob_A 
-				359094, //X1_LR_Boss_SkeletonSummoner_C 
-				359688, //X1_LR_Boss_Succubus_A 
-				360281, //X1_LR_Boss_Snakeman_Melee_Belial 
-				360636, //X1_LR_Boss_TerrorDemon_A 
-				434201, //P4_LR_Boss_Sandmonster_Turret 
-				343743, //x1_LR_Boss_SkeletonKing 
-				343751, //x1_LR_Boss_Gluttony 
-				343759, //x1_LR_Boss_Despair 
-				343767, //x1_LR_Boss_MalletDemon 
-				344119, //X1_LR_Boss_morluSpellcaster_Ice 
-				344389, //X1_LR_Boss_SandMonster 
-				345004, //X1_LR_Boss_morluSpellcaster_Fire 
-				346563, //X1_LR_Boss_DeathMaiden 
-				353517, //X1_LR_Boss_Secret_Cow 
-				353535, //X1_LR_Boss_Squigglet 
-				353823, //X1_LR_Boss_sniperAngel 
-				353874, //X1_LR_Boss_westmarchBrute 
-				354050, //X1_LR_Boss_Dark_Angel 
-				354144, //X1_LR_Boss_BigRed_Izual 
-				354652, //X1_LR_Boss_demonFlyerMega 
-				426943, //X1_LR_Boss_RatKing_A 
-				428323, //X1_LR_Boss_RatKing_A_UI 
-				429010, //X1_LR_Boss_TerrorDemon_A_BreathMinion 
-				357917, //x1_LR_Boss_Butcher 
-				358208, //X1_LR_Boss_ZoltunKulle 
-				360766, //X1_LR_Boss_Minion_shadowVermin_A 
-				360794, //X1_LR_Boss_Minion_TerrorDemon_Clone_C 
-				360327, //X1_LR_Boss_Minion_Swarm_A 
-				360329, //X1_LR_Boss_Minion_electricEel_B 
-			};
-			#endregion
-
-			Actor Boss = world.SpawnMonster(BossSNOs[RandomHelper.Next(0, BossSNOs.Length - 1)], this.Position);
+			var Boss = world.SpawnMonster(ActorSnoExtensions.nephalemPortalBosses[RandomHelper.Next(0, ActorSnoExtensions.nephalemPortalBosses.Length - 1)], this.Position);
 			Boss.Attributes[GameAttribute.Bounty_Objective] = true;
 			Boss.Attributes[GameAttribute.Is_Loot_Run_Boss] = true;
 			Boss.Attributes.BroadcastChangedIfRevealed();
@@ -5925,7 +5909,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			//Rangged Power - 30599
 			if (source == null) return;
 
-			var minion = new Minion(this.World, source.ActorSNO.Id, this, source.Tags, true);
+			var minion = new Minion(this.World, source.SNO, this, source.Tags, true);
 			minion.SetBrain(new MinionBrain(minion));
 			minion.Brain.DeActivate();
 			minion.WalkSpeed *= 4;
@@ -5951,7 +5935,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			minion.SetVisible(true);
 			minion.Hidden = false;
 
-			if (minion.ActorSNO.Id == 4580)
+			if (minion.SNO == ActorSno._leah)	// (4580) Act I Leah
 			{
 				(minion.Brain as MinionBrain).PresetPowers.Clear();
  				(minion.Brain as MinionBrain).AddPresetPower(30599);
@@ -5966,16 +5950,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public bool HaveFollower(int id)
+		public bool HaveFollower(ActorSno sno)
 		{
-			return this.Followers.ContainsValue(id);
+			return this.Followers.ContainsValue(sno);
 		}
 
-		public void DestroyFollower(int id)
+		public void DestroyFollower(ActorSno sno)
 		{
-			if (this.Followers.ContainsValue(id))
+			if (this.Followers.ContainsValue(sno))
 			{
-				var dynId = this.Followers.Where(x => x.Value == id).First().Key;
+				var dynId = this.Followers.Where(x => x.Value == sno).First().Key;
 				var actor = this.World.GetActorByGlobalId(dynId);
 				if (actor != null)
 					actor.Destroy();
@@ -5983,41 +5967,41 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public void SetFollowerIndex(int snoId)
+		public void SetFollowerIndex(ActorSno sno)
 		{
-			if (!this.HaveFollower(snoId))
+			if (!this.HaveFollower(sno))
 			{
 				for (int i = 1; i < 8; i++)
 					if (!_followerIndexes.ContainsKey(i))
 					{
-						_followerIndexes.Add(i, snoId);
+						_followerIndexes.Add(i, sno);
 						return;
 					}
 			}
 		}
 
-		public void FreeFollowerIndex(int snoId)
+		public void FreeFollowerIndex(ActorSno sno)
 		{
-			if (!this.HaveFollower(snoId))
+			if (!this.HaveFollower(sno))
 			{
-				_followerIndexes.Remove(this.FindFollowerIndex(snoId));
+				_followerIndexes.Remove(this.FindFollowerIndex(sno));
 			}
 		}
 
-		private Dictionary<int, int> _followerIndexes = new Dictionary<int, int>();
+		private Dictionary<int, ActorSno> _followerIndexes = new Dictionary<int, ActorSno>();
 
-		public int FindFollowerIndex(int snoId)
+		public int FindFollowerIndex(ActorSno sno)
 		{
-			if (this.HaveFollower(snoId))
+			if (this.HaveFollower(sno))
 			{
-				return _followerIndexes.Where(i => i.Value == snoId).FirstOrDefault().Key;
+				return _followerIndexes.Where(i => i.Value == sno).FirstOrDefault().Key;
 			}
 			else return 0;
 		}
 
-		public int CountFollowers(int snoId)
+		public int CountFollowers(ActorSno sno)
 		{
-			return this.Followers.Values.Where(f => f == snoId).Count();
+			return this.Followers.Values.Where(f => f == sno).Count();
 		}
 
 		public int CountAllFollowers()
@@ -6033,15 +6017,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.Followers.Remove(dynId);
 				if (actor != null)
 				{
-					this.FreeFollowerIndex(actor.ActorSNO.Id);
+					this.FreeFollowerIndex(actor.SNO);
 					actor.Destroy();
 				}
 			}
 		}
 
-		public void DestroyFollowersBySnoId(int snoId)
+		public void DestroyFollowersBySnoId(ActorSno sno)
 		{
-			var fol_list = this.Followers.Where(f => f.Value == snoId).Select(f => f.Key).ToList();
+			var fol_list = this.Followers.Where(f => f.Value == sno).Select(f => f.Key).ToList();
 			foreach (var fol in fol_list)
 				this.DestroyFollowerById(fol);
 		}

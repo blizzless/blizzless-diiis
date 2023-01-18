@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -91,7 +92,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				for (int i = 0; i < 2; i++)
 				{
-					var monster = ActorFactory.Create(User.World, 6652, new TagMap());
+					var monster = ActorFactory.Create(User.World, ActorSno._zombie_a, new TagMap());
 					monster.Scale = 1.35f;  // TODO: look this up properly
 					monster.EnterWorld(RandomDirection(User.Position, 5f, 18f));
 				}
@@ -112,11 +113,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	{
 		TickTimer _tickTimer = null;
 		public float Radius;
-		public List<int> Monsters;
-		public int LastMob;
+		public List<ActorSno> Monsters;
+		public ActorSno LastMob;
 		public bool LastSolo;
 
-		public InvasionBuff(TickTimer timeout, List<int> mobs, float radius, int lastMob, bool lastSolo)
+		public InvasionBuff(TickTimer timeout, List<ActorSno> mobs, float radius, ActorSno lastMob, bool lastSolo)
 			: base()
 		{
 			Timeout = timeout;
@@ -152,7 +153,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override void Remove()
 		{
-			if (this.LastMob != -1)
+			if (this.LastMob != ActorSno.__NONE)
 			{
 				Monster leaderMob = null;
 				List<Affix> packAffixes = new List<Affix>();
@@ -190,10 +191,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	{
 		TickTimer _tickTimer = null;
 		public float Radius;
-		public List<int> Monsters;
-		public int LastMob;
+		public List<ActorSno> Monsters;
+		public ActorSno LastMob;
 
-		public WavedInvasionBuff(List<int> mobs, float radius, int lastMob)
+		public WavedInvasionBuff(List<ActorSno> mobs, float radius, ActorSno lastMob)
 			: base()
 		{
 			this.Radius = radius;
@@ -236,7 +237,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override void Remove()
 		{
-			if (this.LastMob != -1)
+			if (this.LastMob != ActorSno.__NONE)
 			{
 				Monster leaderMob = null;
 				List<Affix> packAffixes = new List<Affix>();

@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
@@ -27,8 +28,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 	{
 		private bool _collapsed = false;
 
-		public ProximityTriggeredGizmo(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public ProximityTriggeredGizmo(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			//this.Field2 = 0x9;//16;
 			//this.Field7 = 0x00000001;
@@ -44,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				{
 					_collapsed = true;
 
-					if (this.ActorSNO.Id == 59401) //caOut_Oasis_Attack_Plant
+					if (this.SNO == ActorSno._caout_oasis_attack_plant) //caOut_Oasis_Attack_Plant
 					{
 						Task.Delay(1000).ContinueWith(delegate
 						{

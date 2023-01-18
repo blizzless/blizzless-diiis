@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -20,9 +21,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 		{
 			var Center = new Vector3D(96.4f,147.71f,0f);
 			for (int i = 0; i < 5; i++)
-			{ world.SpawnMonster(304307, RandomDirection(Center, 5f, 15f)); world.SpawnMonster(340920, RandomDirection(Center, 5f, 15f)); }
-			world.SpawnMonster(360242, RandomDirection(Center, 5f, 15f));
-			world.GetActorBySNO(295438).PlayActionAnimation(334746);
+			{
+				world.SpawnMonster(ActorSno._x1_leaperangel_a, RandomDirection(Center, 5f, 15f));
+				world.SpawnMonster(ActorSno._x1_westmarchranged_b, RandomDirection(Center, 5f, 15f));
+			}
+			world.SpawnMonster(ActorSno._x1_leaperangel_a_fortressunique, RandomDirection(Center, 5f, 15f));
+			world.GetActorBySNO(ActorSno._x1_pand_batteringram_background).PlayActionAnimation(334746);
 		}
 		public static Vector3D RandomDirection(Vector3D position, float minRadius, float maxRadius)
 		{

@@ -4,14 +4,15 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-    [HandledSNO(453553)]
+    [HandledSNO(ActorSno._p43_ad_griswold)]
     class Griswold : InteractiveNPC
     {
-        public Griswold(World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public Griswold(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             this.Field7 = 1;
             this.Attributes[GameAttribute.TeamID] = 2;

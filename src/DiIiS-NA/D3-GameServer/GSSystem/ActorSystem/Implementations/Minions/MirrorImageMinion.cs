@@ -14,13 +14,14 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
 	class MirrorImageMinion : Minion
 	{
 		public MirrorImageMinion(World world, PowerContext context, int ImageID, float lifetime)
-			: base(world, 98010, context.User, null) //male Mirror images
+			: base(world, ActorSno._wizard_mirrorimage_female, context.User, null) //female Mirror images
 		{
 			Scale = 1.2f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.
@@ -41,13 +42,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 
 			LifeTime = TickTimer.WaitSeconds(world.Game, lifetime);
 
-			if (this.Master != null && context.ScriptFormula(1) < (this.Master as Player).Followers.Values.Where(f => f == 98010).Count())
+			if (this.Master != null && context.ScriptFormula(1) < (this.Master as Player).Followers.Values.Where(f => f == SNO).Count())
 			{
 				if (this.Master is Player)
 				{
 					var rem = new List<uint>();
-					foreach (var fol in (this.Master as Player).Followers.Where(f => f.Key != this.GlobalID).Take((this.Master as Player).Followers.Values.Where(f => f == 98010).Count() - (int)context.ScriptFormula(1)))
-						if (fol.Value == 98010)
+					foreach (var fol in (this.Master as Player).Followers.Where(f => f.Key != this.GlobalID).Take((this.Master as Player).Followers.Values.Where(f => f == SNO).Count() - (int)context.ScriptFormula(1)))
+						if (fol.Value == SNO)
 							rem.Add(fol.Key);
 					foreach (var rm in rem)
 						(this.Master as Player).DestroyFollowerById(rm);

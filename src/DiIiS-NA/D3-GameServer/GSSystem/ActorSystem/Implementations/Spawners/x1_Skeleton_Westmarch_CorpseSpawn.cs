@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -19,13 +20,21 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
 {
-    [HandledSNO(311938, 311944, 311932, 311943, 311933, 311936, 311934)]
+    [HandledSNO(
+        ActorSno._x1_skeleton_westmarch_corpsespawn_06_ground,
+        ActorSno._x1_skeleton_westmarch_corpsespawn_10_ground,
+        ActorSno._x1_skeleton_westmarch_corpsespawn_01_ground,
+        ActorSno._x1_skeleton_westmarch_corpsespawn_09_ground,
+        ActorSno._x1_skeleton_westmarch_corpsespawn_02_sitagainstwall,
+        ActorSno._x1_skeleton_westmarch_corpsespawn_04_neckstabbed,
+        ActorSno._x1_skeleton_westmarch_corpsespawn_03_ground
+    )]
     class x1_Skeleton_Westmarch_CorpseSpawn : Gizmo
     {
         private bool _collapsed = false;
 
-        public x1_Skeleton_Westmarch_CorpseSpawn(World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public x1_Skeleton_Westmarch_CorpseSpawn(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
 
         }
@@ -37,18 +46,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
                 //int duration = 500; // ticks
 
                 this.PlayEffectGroup(295060);
-                World.SpawnMonster(310893, this.Position);
+                World.SpawnMonster(ActorSno._x1_skeleton_westmarch_ghost_a, this.Position);
             }
         }
 
     }
-    [HandledSNO(292834)]
-    class x1_SkeletonArcher_Westmarch_CorpseSpawn : Gizmo
+    [HandledSNO(ActorSno._x1_skeletonarcher_westmarch_corpsespawn)]
+    class X1_SkeletonArcher_Westmarch_CorpseSpawn : Gizmo
     {
         private bool _collapsed = false;
 
-        public x1_SkeletonArcher_Westmarch_CorpseSpawn(World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public X1_SkeletonArcher_Westmarch_CorpseSpawn(World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
 
         }
@@ -60,7 +69,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
                 //int duration = 500; // ticks
 
                 this.PlayEffectGroup(295060);
-                World.SpawnMonster(282789, this.Position);
+                World.SpawnMonster(ActorSno._x1_skeletonarcher_westmarch_a, this.Position);
             }
         }
 

@@ -12,6 +12,7 @@ using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -19,8 +20,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 	{
 		//107031, 106731, 106749, 107067, 107107, 107112
 
-		public CorpseSpider(World world, PowerContext context, int snoId, int SpiderID)
-			: base(world, snoId, context.User, null)
+		public CorpseSpider(World world, PowerContext context, ActorSno sno, int SpiderID)
+			: base(world, sno, context.User, null)
 		{
 			Scale = 0.7f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.

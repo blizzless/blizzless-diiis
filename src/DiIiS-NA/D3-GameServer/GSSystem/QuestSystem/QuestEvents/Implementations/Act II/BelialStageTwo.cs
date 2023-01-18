@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
@@ -21,9 +22,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 				plr.InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });
 				plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
 			}
-			world.GetActorBySNO(62975).Destroy();
-			var Belial = world.SpawnMonster(62975, world.GetStartingPointById(108).Position);
-			foreach (var guard in world.GetActorsBySNO(81857))
+			world.GetActorBySNO(ActorSno._belial_trueform).Destroy();
+			var Belial = world.SpawnMonster(ActorSno._belial_trueform, world.GetStartingPointById(108).Position);
+			foreach (var guard in world.GetActorsBySNO(ActorSno._caldeumguard_spear_imperial))
 				guard.Destroy();
 		}
 

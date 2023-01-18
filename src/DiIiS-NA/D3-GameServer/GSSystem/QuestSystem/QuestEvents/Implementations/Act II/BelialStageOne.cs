@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
@@ -34,24 +35,24 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 				plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
 			}
 
-			world.GetActorBySNO(62975).Destroy();
-			var Belial = world.SpawnMonster(62975, world.GetActorBySNO(59447).Position);
+			world.GetActorBySNO(ActorSno._belial_trueform).Destroy();
+			var Belial = world.SpawnMonster(ActorSno._belial_trueform, world.GetActorBySNO(ActorSno._belialboyemperor).Position);
 			
 			Belial.Attributes[GameAttribute.Invulnerable] = true;
 			Belial.Attributes.BroadcastChangedIfRevealed();
 			(Belial as Monster).Brain.DeActivate();
-			foreach (var Adr in world.GetActorsBySNO(3095))
+			foreach (var Adr in world.GetActorsBySNO(ActorSno._adria))
 				Adr.Destroy();
-			foreach (var Adr in world.GetActorsBySNO(4580))
+			foreach (var Adr in world.GetActorsBySNO(ActorSno._leah))
 				Adr.Destroy();
 
-			world.GetActorBySNO(59447).Destroy(); //hakan boy
-			var guard = world.GetActorBySNO(81857, true);
+			world.GetActorBySNO(ActorSno._belialboyemperor).Destroy(); //hakan boy
+			var guard = world.GetActorBySNO(ActorSno._caldeumguard_spear_imperial, true);
 			while (guard != null)
 			{
-				world.SpawnMonster(60816, guard.Position);
+				world.SpawnMonster(ActorSno._khamsin_snakeman_melee, guard.Position);
 				guard.Destroy();
-				guard = world.GetActorBySNO(81857, true);
+				guard = world.GetActorBySNO(ActorSno._caldeumguard_spear_imperial, true);
 			}
 		}
 

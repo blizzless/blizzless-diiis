@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -13,8 +14,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 	{
 		private bool _checkpointReached = false;
 
-		public Checkpoint(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags, false)
+		public Checkpoint(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags, false)
 		{
 
 		}
@@ -33,6 +34,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				});
 
 				player.CheckPointPosition = this.Position;
+				player.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;     // Reset corpse resurrection charges
 			}
 		}
 

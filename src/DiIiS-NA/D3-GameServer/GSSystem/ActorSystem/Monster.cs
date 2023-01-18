@@ -31,6 +31,7 @@ using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -51,7 +52,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			get
 			{
-				if(this.ActorSNO.Id == 358429)
+				if(this.SNO == ActorSno._x1_lr_boss_mistressofpain)
 					return 7;
 				return (int)DiIiS_NA.Core.MPQ.FileFormats.SpawnType.Normal;
 				//return (int)Mooege.Common.MPQ.FileFormats.SpawnType.Champion;
@@ -103,16 +104,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// Gets the Actors summoning fields from the mpq's and returns them in format for Monsters.
 		/// Useful for the Monsters spawning/summoning skills.
 		/// </summary>
-		public int[] SNOSummons
+		public ActorSno[] SNOSummons
 		{
 			get
 			{
-				return (Monster.Target as MonsterFF).SNOSummonActor;
+				return (Monster.Target as MonsterFF).SNOSummonActor.Select(x => (ActorSno)x).ToArray();
 			}
 		}
 
-		public Monster(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Monster(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x8;
 			this.GBHandle.Type = (int)ActorType.Monster; this.GBHandle.GBID = 1;
@@ -195,14 +196,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				return;
 			this.Brain.Update(tickCounter);
 			
-			if (this.World.WorldSNO.Id == 109561)
-				if (this.ActorSNO.Id == 114917)
+			if (this.World.SNO == WorldSno.a4dun_diablo_arena)
+				if (this.SNO == ActorSno._diablo)
 					if (this.Attributes[GameAttribute.Hitpoints_Cur] < (this.Attributes[GameAttribute.Hitpoints_Max_Total] / 2))
 					{
 						this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
 						this.World.Game.QuestManager.Advance();//advancing United Evil quest
+						var nextWorld = this.World.Game.GetWorld(WorldSno.a4dun_diablo_shadowrealm_01);
 						foreach (var plr in this.World.Players.Values)
-							plr.ChangeWorld(this.World.Game.GetWorld(153670), this.World.Game.GetWorld(153670).GetStartingPointById(172).Position);
+							plr.ChangeWorld(nextWorld, nextWorld.GetStartingPointById(172).Position);
 					}
 
 			if (this is Boss)
@@ -261,9 +263,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (basePoint == null)
 					basePoint = position;
 
-			if (this.ActorSNO.Id == 176988) //ballistas hack
+			if (this.SNO == ActorSno._a3_battlefield_demonic_ballista) //ballistas hack
 			{
-				var ballistas = this.GetActorsInRange<Monster>(5f).Where(monster => monster.ActorSNO.Id == 176988);
+				var ballistas = this.GetActorsInRange<Monster>(5f).Where(monster => monster.SNO == ActorSno._a3_battlefield_demonic_ballista);
 				if (ballistas.Count() >= 2)
 				{
 					this.Destroy();
