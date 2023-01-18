@@ -1,60 +1,60 @@
-﻿//Blizzless Project 2022 
+﻿//Blizzless Project 2022
 using System;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Collections.Generic;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Linq;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Text;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Threading.Tasks;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Combat;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Player;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -199,7 +199,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			if (this.Target is Monster)
 			{
-				
+
 				Monster mon = (Monster)this.Target;
 				if (mon.Brain != null)
 					mon.Brain.Kill();
@@ -246,7 +246,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				ActorId = this.Target.DynamicID(plr),
 				Effect = Effect.Unknown12,
 			}, this.Target);
-			
+
 			this.Target.World.BroadcastIfRevealed(plr => new ANNDataMessage(Opcodes.PlayIdleAnimationMessage)
 			{
 				ActorID = this.Target.DynamicID(plr)
@@ -281,7 +281,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					}
 					break;
 			}
-			
+
 			this.Target.World.BroadcastIfRevealed(plr => new ANNDataMessage(Opcodes.CancelACDTargetMessage)
 			{
 				ActorID = this.Target.DynamicID(plr),
@@ -295,7 +295,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			this.Target.Attributes[GameAttribute.Deleted_On_Server] = true;
 			this.Target.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
 			this.Target.Attributes.BroadcastChangedIfRevealed();
-			
+
 			this.Target.World.BroadcastIfRevealed(plr => new DeathFadeTimeMessage()
 			{
 				Field0 = this.Target.DynamicID(plr),
@@ -303,7 +303,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				Field2 = 200,
 				Field3 = true
 			}, this.Target);
-			
+
 			if (this.Context != null)
 				if (this.Context.User.Attributes[GameAttribute.Item_Power_Passive, 247640] == 1 ||
 					this.Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] == 1 ||
@@ -334,7 +334,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						//(this.Context.User as Player).Attributes[_Buff_Icon_End_TickN, PowerSNO]
 					}
 				}
-				
+
 
 			if (this.Target.SNO == ActorSno._a4dun_garden_corruption_monster) //Сады надежды
 			{
@@ -569,7 +569,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}
 			Logger.Trace("Killed monster, id: {0}, level {1}", this.Target.SNO, this.Target.Attributes[GameAttribute.Level]);
 
-			
+
 			//handling quest triggers
 			if (this.Target.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)this.Target.SNO))
 			{
@@ -613,9 +613,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				{
 					if (plr.PlayerIndex == 0)
 						Master = plr;
-					plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.KillCounterRefresh) 
+					plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.KillCounterRefresh)
 					{
-						
+
 					});
 
 					plr.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DungeonFinderProgressMessage)
@@ -623,7 +623,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						Field0 = this.Target.World.Game.ActiveNephalemProgress
 					});
 
-					
+
 
 					if (this.Target.World.Game.ActiveNephalemProgress > 650)
 					{
@@ -710,7 +710,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				this.Target.World.Game.ActiveNephalemKilledBoss = true;
 				foreach (var plr in this.Target.World.Game.Players.Values)
 				{
-
+					//Enable banner /advocaite
+          plr.Attributes[GameAttributeB.Banner_Usable] = true;
 					if (this.Target.World.Game.NephalemGreater)
 					{
 						plr.InGameClient.SendMessage(new QuestCounterMessage()
@@ -762,7 +763,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, 332336, 0)); //Мир
 						NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 332339, 0)); //Зона
 						NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 24, 0)); //Точка входа
-						
+
 						var portal = new Portal(this.Target.World, ActorSno._x1_openworld_lootrunportal, NewTagMap);
 
 						portal.EnterWorld(new Core.Types.Math.Vector3D(this.Target.Position.X + 10f, this.Target.Position.Y + 10f, this.Target.Position.Z));
@@ -1007,8 +1008,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			//114917
 
 			if (this.Target.Quality == 7 || this.Target.Quality == 2 || this.Target.Quality == 4)
-			{ 
-				
+			{
+
 			}
 
 			if (this.Target is Boss)
@@ -1146,7 +1147,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			{
 				var tomb = new Headstone(this.Target.World, ActorSno._playerheadstone, new TagMap(), player.PlayerIndex);
 				tomb.EnterWorld(player.Position);
-				
+
 				player.Inventory.DecreaseDurability(0.1f);
 				if (player.World.Game.IsHardcore)
 				{
