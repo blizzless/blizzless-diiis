@@ -1,60 +1,60 @@
-﻿//Blizzless Project 2022 
+﻿//Blizzless Project 2022
 using System;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Collections.Generic;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Linq;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Threading.Tasks;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Inventory;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Conversation;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Platinum;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -399,8 +399,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							Field1 = 0
 						});
 						//RiftEndScreenInfoBlobMessage - 524
-						
-						
+
+
 						plr.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.RiftEndScreenInfoBlobMessage)
 						{
 							Data = D3.GameMessage.RiftEndScreenInfo.CreateBuilder()
@@ -414,7 +414,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								.SetCompletionTimeMs(900 * 1000 - plr.InGameClient.Game.LastTieredRiftTimeout * 1000)
 								.SetBannerConfiguration(plr.Toon.GameAccount.BannerConfigurationField.Value)
 								.Build().ToByteArray()
-								
+
 					});
 
 						player.InGameClient.SendMessage(new PlatinumAwardedMessage
@@ -470,10 +470,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						{
 							player.GrantCriteria(74987250579270);
 							if(player.InGameClient.Game.Difficulty >= 3)
-								player.GrantCriteria(74987247265988); 
+								player.GrantCriteria(74987247265988);
 						}
 					}
-					//Таймер до закрытия 
+					//Таймер до закрытия
 					/*
 					plr.InGameClient.SendMessage(new DungeonFinderClosingMessage()
 					{
@@ -499,7 +499,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.player.InGameClient.Game.ActiveNephalemPortal = false;
 				this.player.InGameClient.Game.ActiveNephalemTimer = false;
 				this.player.InGameClient.Game.ActiveNephalemProgress = 0;
-
+				//Enabled banner /advocaite
+				this.player.Attributes[GameAttributeB.Banner_Usable] = true;
 				var HubWorld = this.player.InGameClient.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
 				var NStone = HubWorld.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 				bool Activated = true;
@@ -582,11 +583,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					Gender = (player.Toon.Gender == 0) ? VoiceGender.Male : VoiceGender.Female,
 					TextClass = currentLineNode.LineSpeaker == Speaker.Player ? (GameBalance.Class)player.Toon.VoiceClassID : GameBalance.Class.None,
 					SNOSpeakerActor = (int)GetSpeaker(currentLineNode.LineSpeaker).SNO,
-					LineFlags = 0x00000000,  
+					LineFlags = 0x00000000,
 					AnimationTag = currentLineNode.AnimationTag,
 					Duration = duration,
 					Id = currentUniqueLineID,
-					Priority = 0x00000000   
+					Priority = 0x00000000
 				},
 				Duration = duration,
 			});//, true);
@@ -650,7 +651,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					{
 						case 198199:
 							//Task.Delay(1000).Wait();
-							
+
 							break;
 					}
                     #endregion
@@ -740,7 +741,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							var LeoricGhost = player.World.GetActorBySNO(ActorSno._skeletonking_leoricghost);
 							var LachdananGhost = player.World.GetActorBySNO(ActorSno._ghostknight3);
 							var SwordPlace = player.World.GetActorBySNO(ActorSno._trdun_crypt_deathoftheking_sword_clickable);
-							
+
 							LachdananGhost.Move(SwordPlace.Position, ActorSystem.Movement.MovementHelpers.GetFacingAngle(LachdananGhost, SwordPlace.Position));
 
 							var ListenerA1Q4Event1 = Task.Delay(4000).ContinueWith(delegate

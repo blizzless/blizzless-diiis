@@ -1,15 +1,15 @@
-﻿//Blizzless Project 2022 
+﻿//Blizzless Project 2022
 using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Linq;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -67,6 +67,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (banner_player == null || banner_player.World == null)
 			{
 				Logger.Warn("Banner's destination world does not exist");
+				return;
+			}
+
+			//if banner has been disabled for events like active greater active swarm  /advocaite
+			if(!player.Attributes[GameAttributeB.Banner_Usable])
+			{
 				return;
 			}
 

@@ -12,6 +12,8 @@ namespace DiIiS_NA.Core.Storage.AccountDataBase.Mapper
 			Table("accounts");
 			Id(e => e.Id).CustomType<PostgresUserTypeNullable>().GeneratedBy.Sequence("accounts_seq").UnsavedValue(null);
 			Map(e => e.Email);
+			Map(e => e.DiscordTag);
+			Map(e => e.DiscordId).CustomType<PostgresUserType>().Default("0");
 			Map(e => e.Banned).Not.Nullable().Default("false");
 			Map(e => e.Salt)/*.CustomSqlType("VarBinary(32)")*/.Length(32);
 			Map(e => e.PasswordVerifier)/*.CustomSqlType("VarBinary")*/.Length(128);

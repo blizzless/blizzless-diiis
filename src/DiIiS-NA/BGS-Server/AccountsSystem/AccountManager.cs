@@ -75,6 +75,35 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			Logger.Warn("Created account {0}", email);
 			return GetAccountByEmail(email);
 		}
+		public static bool BindDiscordAccount(string email, ulong discordId, string discordTag)
+		{
+			try
+			{
+				if (DBSessions.SessionQueryWhere<DBAccount>(dba => dba.DiscordId == discordId).Count() > 0)
+					return false;
+
+				var account = GetAccountByEmail(email);
+				account.DBAccount.DiscordTag = discordTag;
+				account.DBAccount.DiscordId = discordId;
+				DBSessions.SessionUpdate(account.DBAccount);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Logger.DebugException(e, "BindDiscordAccount() exception: ");
+				return false;
+			}
+		}
+		public static Account GetAccountByDiscordId(ulong discordId)
+		{
+			List<DBAccount> dbAcc = DBSessions.SessionQueryWhere<DBAccount>(dba => dba.DiscordId == discordId).ToList();
+			if (dbAcc.Count() == 0)
+			{
+				Logger.Warn("GetAccountByDiscordId {0}: DBAccount is null!", discordId);
+				return null;
+			}
+			return GetAccountByDBAccount(dbAcc.First());
+		}
 
 		public static bool GenerateReferralCode(string email)
 		{

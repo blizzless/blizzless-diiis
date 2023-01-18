@@ -1,28 +1,28 @@
-﻿//Blizzless Project 2022 
+﻿//Blizzless Project 2022
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Act;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Connection;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Linq;
 
 namespace DiIiS_NA.GameServer.ClientSystem
@@ -92,7 +92,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 				}*/
 
 				// Set references between MooNetClient and GameClient.
-				if (//Mooege.Net.MooNet.Config.Instance.Enabled && 
+				if (//Mooege.Net.MooNet.Config.Instance.Enabled &&
 					toon.GameAccount.LoggedInClient != null)
 				{
 					client.BnetClient = toon.GameAccount.LoggedInClient;
@@ -134,10 +134,14 @@ namespace DiIiS_NA.GameServer.ClientSystem
 				});
 
 				if (client.Player.PlayerIndex > 0)
+        {
+          //make sure toons Difficulty is set
+          toon.CurrentDifficulty = (uint)game.Difficulty;
 					client.SendMessage(new HandicapMessage(Opcodes.HandicapMessage)
 					{
 						Difficulty = (uint)game.Difficulty
 					});
+        }
 
 
 				toon.LoginTime = DateTimeExtensions.ToUnixTime(DateTime.UtcNow);
@@ -145,7 +149,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 
 				game.Enter(client.Player);
 
-				
+
 			}
 		}
 

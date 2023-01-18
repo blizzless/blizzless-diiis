@@ -1,121 +1,121 @@
-﻿//Blizzless Project 2022 
+﻿//Blizzless Project 2022
 using System;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Collections.Generic;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Linq;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using GameBalance = DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Threading;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Player;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Skill;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;   
-//Blizzless Project 2022 
+//Blizzless Project 2022
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Drawing;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.SkillsSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields.BlizzLess.Net.GS.Message.Fields;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Waypoint;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Trade;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Inventory;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Connection;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Camera;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Combat;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.UI;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -412,6 +412,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			else
 				this.Attributes[GameAttribute.TeamID] = 2;
 
+				//make sure if greater is not active enable banner.
+				if (!this.World.Game.NephalemGreater)
+				{
+					this.Attributes[GameAttributeB.Banner_Usable] = true;
+				}
 			SetAllStatsInCorrectOrder();
 			// Enabled stone of recall
 			if (!this.World.Game.PvP & this.Toon.StoneOfPortal)
@@ -467,7 +472,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Attributes[GameAttribute.Buff_Icon_Count0, 0x0006B48E] = 1;
 			Attributes[GameAttribute.Buff_Icon_Count0, 0x0004601B] = 1;
 			Attributes[GameAttribute.Buff_Icon_Count0, 0x00033C40] = 1;
-			
+
 			Attributes[GameAttribute.Currencies_Discovered] = 0x0011FFF8;
 
 			this.Attributes[GameAttribute.Skill, 30592] = 1;
@@ -1256,7 +1261,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						break;
 				}
 
-			SetAttributesSkillSets();       //reapply synergy passives (laws, mantras, summons)		
+			SetAttributesSkillSets();       //reapply synergy passives (laws, mantras, summons)
 		}
 
 		public void SetAttributesSkillSets()
@@ -1567,7 +1572,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			//Type - 0 - Новое свойство
 			//Type - 1 - Преобразование
-			//Type - 2 - 
+			//Type - 2 -
 
 			if (ItemPortalToCows != null)
 			{
@@ -1650,7 +1655,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
 					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Точка входа
 					this.InGameClient.Game.WorldOfPortalNephalem = map;
-					
+
 					while (true)
 					{
 						map = Maps[RandomHelper.Next(0, Maps.Length)];
@@ -1822,7 +1827,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					this.InGameClient.Game.ActiveNephalemPortal = true;
 					this.InGameClient.Game.NephalemGreater = true;
-
+					//disable banner while greater is active enable once boss is killed or portal is closed /advocaite
+					this.Attributes[GameAttributeB.Banner_Usable] = false;
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
 					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //Мир
 					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
@@ -1971,7 +1977,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnTutorialShown(GameClient client, TutorialShownMessage message)
 		{
-			
+
 			// Server has to save what tutorials are shown, so the player
 			// does not have to see them over and over...
 			int index = ItemGenerator.Tutorials.IndexOf(message.SNOTutorial);
@@ -2143,7 +2149,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.P6_Necro_Frailty_Aura());
 						else
 							this.World.BuffManager.RemoveBuffs(this, 473992);
-			
+
 
 			//_StartSkillCooldown((cooldownskill as ActiveSkillSavedData).snoSkill, SkillChangeCooldownLength);
 		}
@@ -2187,7 +2193,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.SetAttributesByPassives();
 			this.SetAttributesByParagon();
 			this.SetAttributesSkillSets();
-			this.Inventory.CheckWeapons();      //Handles removal of Heavenly Strength			
+			this.Inventory.CheckWeapons();      //Handles removal of Heavenly Strength
 			this.Attributes.BroadcastChangedIfRevealed();
 			this.UpdateHeroState();
 			UpdatePercentageHP(PercHPbeforeChange);
@@ -2277,14 +2283,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 #if DEBUG
 				Logger.Warn("OnTargetedActor ID: {0}, Name: {1}, NumInWorld: {2}", actor.SNO, actor.Name, actor.NumberInWorld);
 #else
-				
+
 #endif
 				if ((actor.GBHandle.Type == 1) && (actor.Attributes[GameAttribute.TeamID] == 10))
 				{
 					this.ExpBonusData.MonsterAttacked(this.InGameClient.Game.TickCounter);
 				}
 				actor.OnTargeted(this, message);
-				
+
 
 			}
 
@@ -2308,8 +2314,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			this.Attributes.BroadcastChangedIfRevealed();
 			var a = this.GetActorsInRange(15f);
-			
-			#region 
+
+			#region
 			//UpdateExp(5000000);
 			/*
 			this.Attributes[GameAttribute.Jewel_Upgrades_Max] = 3;
@@ -2709,7 +2715,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			int AnimByLevel = 0;
 			int IdleByLevel = 0;
-			
+
 			if (this.ArtisanInteraction == "Blacksmith")
 			{
 				if (blacksmith_data.Level > 55) return;
@@ -2773,8 +2779,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				client.SendMessage(new CrafterLevelUpMessage
 				{
 					Type = 0,
-					AnimTag = AnimByLevel, 
-					NewIdle = IdleByLevel, 
+					AnimTag = AnimByLevel,
+					NewIdle = IdleByLevel,
 					Level = blacksmith_data.Level
 				});
 
@@ -2814,7 +2820,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					this.GrantCriteria(74987245845978);
 				}
 				if (jeweler_data.Level == 12)
-				{ 
+				{
 					this.GrantAchievement(74987257153995);
 					if (blacksmith_data.Level == 12 && mystic_data.Level == 12)
 					{
@@ -2911,7 +2917,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 			this.LoadCrafterData();
 
-			
+
 			/**/
 		}
 		public void UnlockTransmog(int transmogGBID)
@@ -3141,7 +3147,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			ActiveSkeletons = switchertobool;
 			EnableGolem = switchertoboolTwo;
 
-			
+
 
 			PowerContext Killer = new PowerContext();
 			Killer.User = this;
@@ -3319,7 +3325,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			int Rune_C = this.Attributes[GameAttribute.Rune_C, PowerSNO];
 			int Rune_D = this.Attributes[GameAttribute.Rune_D, PowerSNO];
 			int Rune_E = this.Attributes[GameAttribute.Rune_E, PowerSNO];
-			
+
 			if (Rune_A > 0) return runeA;
 			else if (Rune_B > 0) return runeB;
 			else if (Rune_C > 0) return runeC;
@@ -3396,7 +3402,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						(actor as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
 						(actor as Portal).Destination.StartingPointActorTag = 483;
 					}
-					
+
 				if (actor.ActorType != ActorType.ClientEffect && actor.ActorType != ActorType.AxeSymbol && actor.ActorType != ActorType.CustomBrain)
 				{
 					actor.Reveal(this);
@@ -3407,7 +3413,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				if ((actor is Player && (!this.World.IsPvP || actor == this)) || actors_around.Contains(actor)) // if the actors is already revealed, skip it.
 					continue;
-				
+
 				actor.Unreveal(this);
 			}
 		}
@@ -3470,14 +3476,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public override void OnEnter(World world)
 		{
-			
+
 
 			world.Reveal(this);
 			this.Unreveal(this);
 
 			if (this._CurrentHPValue == -1f)
 				this.DefaultQueryProximityRadius = 60;
-			
+
 			this.InGameClient.SendMessage(new EnterWorldMessage()
 			{
 				EnterPosition = this.Position,
@@ -3687,7 +3693,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 			this.World.Game.QuestManager.SetBountyMarker(this);
 
-			
+
 			//System.Threading.Tasks.Task.Delay(1000).ContinueWith(a => {this.BetweenWorlds = false;});
 		}
 
@@ -4033,7 +4039,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		private PlayerSavedData GetSavedData()
 		{
 			var item = StringHashHelper.HashItemName("HealthPotionBottomless");
-			
+
 			return new PlayerSavedData()
 			{
 				HotBarButtons = this.SkillSet.HotBarSkills,
@@ -4060,7 +4066,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				ActiveSkills = this.SkillSet.ActiveSkills,
 				snoTraits = this.SkillSet.PassiveSkills,
 				GBIDLegendaryPowers = new int[4] { -1, -1, -1, -1 },
-				
+
 				SavePointData = new SavePointData { snoWorld = -1, SavepointId = -1, },
 				EventFlags = 0
 			};
@@ -4325,7 +4331,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Logger.Trace("Learning recipe #{0}, Artisan type: {1}", recipe, artisan);
 			/*var query = this.World.Game.GameDBSession.SessionQuerySingle<DBCraft>(
 					dbi =>
-					dbi.DBGameAccount.Id == this.Toon.GameAccount.PersistentID && 
+					dbi.DBGameAccount.Id == this.Toon.GameAccount.PersistentID &&
 					dbi.Artisan == artisan &&
 					dbi.isHardcore == this.World.Game.IsHardcore);*/
 			if (artisan == "Blacksmith")
@@ -4399,7 +4405,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				.SetLevel(this.InGameClient.Game.CurrentAct == 3000 ? this.MysticUnlocked == false && mystic_data.Level < 1 ? 1 : mystic_data.Level : mystic_data.Level)
 				.SetCooldownEnd(0)
 				.Build();
-			
+
 			D3.ItemCrafting.CrafterSavedData transmog = D3.ItemCrafting.CrafterSavedData.CreateBuilder()
 				.SetTransmogData(D3.GameBalance.BitPackedGbidArray.CreateBuilder().SetBitfield(ByteString.CopyFrom(mystic_data.LearnedRecipes)))
 				//.AddRangeUnlockedTransmogs(this.UnserializeBytes(mystic_data.LearnedRecipes))
@@ -4408,10 +4414,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			if (this.BlacksmithUnlocked || this.InGameClient.Game.CurrentAct == 3000)
 				this.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataBlacksmithInitialMessage) { Data = blacksmith.ToByteArray() });
-			
+
 			if (this.JewelerUnlocked || this.InGameClient.Game.CurrentAct == 3000)
 				this.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataJewelerInitialMessage) { Data = jeweler.ToByteArray() });
-			
+
 			if (this.MysticUnlocked || this.InGameClient.Game.CurrentAct == 3000)
 			{
 				this.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataMysticInitialMessage) { Data = mystic.ToByteArray() });
@@ -4430,7 +4436,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.Inventory.UpdateCurrencies();
 
 		}
-		
+
 		public void LoadMailData()
 		{
 			List<DBMail> mail_data = this.World.Game.GameDBSession.SessionQueryWhere<DBMail>(dbm => dbm.DBToon.Id == this.Toon.PersistentID && dbm.Claimed == false);
@@ -4539,7 +4545,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					this.Inventory.UpdateCurrencies();
 				}
 				ClientSystem.GameServer.GSBackend.GrantAchievement(this.Toon.GameAccount.PersistentID, id);
-				
+
 			}
 			catch (Exception e)
 			{
@@ -5087,7 +5093,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						PlayerIndex = this.PlayerIndex,
 						Level = this.Level
 					});
-					
+
 
 					//Test Update Monster Level
 					if (this.PlayerIndex == 0)
@@ -5337,7 +5343,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 				else if (item.ItemDefinition.Name == "Platinum")
 				{
-					
+
 					this.InGameClient.SendMessage(new FloatingAmountMessage()
 					{
 						Place = new WorldPlace()
@@ -5486,7 +5492,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 									});
 								}
 
-								
+
 								plr.InGameClient.SendMessage(new PlayMusicMessage(Opcodes.PlayMusicMessage)
 								{
 									SNO = 0x0005BBD8
@@ -5818,7 +5824,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			GeneratePrimaryResource(Math.Max(tickSeconds * this.Attributes[GameAttribute.Resource_Regen_Total, this.Attributes[GameAttribute.Resource_Type_Primary] - 1], 0));
 			GenerateSecondaryResource(Math.Max(tickSeconds * this.Attributes[GameAttribute.Resource_Regen_Total, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1], 0));
 
-			float totalHPregen = //(this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] + 
+			float totalHPregen = //(this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] +
 				this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus]//)
 				* (1 + this.Attributes[GameAttribute.Hitpoints_Regen_Bonus_Percent]);
 			if (!this.Dead && !this.World.Game.PvP) AddHP(Math.Max(tickSeconds * totalHPregen, 0));
@@ -5923,7 +5929,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			minion.Attributes[GameAttribute.Pet_Creator] = 1;
 			minion.Attributes[GameAttribute.Pet_Owner] = 1;
 			minion.Attributes[GameAttribute.Pet_Type] = 25;
-			
+
 			//*/
 			minion.Attributes[GameAttribute.Effect_Owner_ANN] = (int)this.DynamicID(this);
 			minion.EnterWorld(minion.Position);

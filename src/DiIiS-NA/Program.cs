@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022
 //Blizzless Project 2022 
+using DiIiS_NA.Core.Discord.Modules;
 using DiIiS_NA.Core.Logging;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
@@ -165,6 +166,7 @@ namespace DiIiS_NA
                 Logger.Info("REST server started - " + REST.Config.Instance.IP + ":{0}", REST.Config.Instance.PORT);
             }
 
+           
             //BGS
             ServerBootstrap b = new ServerBootstrap();
             IEventLoopGroup boss = new MultithreadEventLoopGroup(1);
@@ -269,7 +271,16 @@ namespace DiIiS_NA
             GameServer = new DiIiS_NA.GameServer.ClientSystem.GameServer();
             GameServerThread = new Thread(GameServer.Run) { Name = "GameServerThread", IsBackground = true };
             GameServerThread.Start();
-
+            if (DiIiS_NA.Core.Discord.Config.Instance.Enabled)
+            {
+                Logger.Info("Starting Discord bot handler..");
+                GameServer.DiscordBot = new Core.Discord.Bot();
+                GameServer.DiscordBot.MainAsync().GetAwaiter().GetResult();
+            }
+            else
+            {
+                Logger.Info("Discord bot Disabled..");
+            }
             DiIiS_NA.GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.RegenerateDensity();
             DiIiS_NA.GameServer.ClientSystem.GameServer.GSBackend = new GSBackend(DiIiS_NA.LoginServer.Config.Instance.BindIP, DiIiS_NA.LoginServer.Config.Instance.WebPort);
             return true;
