@@ -57,7 +57,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			Logger.Trace("Breaked barricade, id: {0}", this.SNO);
 
-			if (this.AnimationSet.TagMapAnimDefault.ContainsKey(AnimationSetKeys.DeathDefault))
+			if (this.AnimationSet.Animations.ContainsKey(AnimationSetKeys.DeathDefault.ID))
 				World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 				{
 					ActorID = this.DynamicID(plr),
@@ -68,7 +68,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						new PlayAnimationMessageSpec()
 						{
 							Duration = 10,
-							AnimationSNO = AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault],
+							AnimationSNO = (int)AnimationSet.Animations[AnimationSetKeys.DeathDefault.ID],
 							PermutationIndex = 0,
 							AnimationTag = 0,
 							Speed = 1

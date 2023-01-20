@@ -11,16 +11,6 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -47,16 +37,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             if (!base.Reveal(player))
                 return false;
 
-            if (Attributes[GameAttribute.Untargetable])
-            {
-                this.PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
-                this.SetIdleAnimation(AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
-            }
-            else
-            {
-                this.PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
-                this.SetIdleAnimation(AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
-            }
+            var animation = Attributes[GameAttribute.Untargetable] ? AnimationSet.Animations[AnimationSetKeys.Open.ID] : AnimationSet.Animations[AnimationSetKeys.IdleDefault.ID];
+            PlayAnimation(5, animation);
+            SetIdleAnimation(animation);
             
             player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Map.MapMarkerInfoMessage()
             {

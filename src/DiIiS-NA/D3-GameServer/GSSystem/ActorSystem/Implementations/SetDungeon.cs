@@ -6,11 +6,7 @@ using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 //Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
@@ -59,7 +55,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
-            this.PlayAnimation(5, 447873);
+            this.PlayAnimation(5, AnimationSno.p4_setdung_portal_neph_rc_portalopen);
 
             foreach (var plr in World.Game.Players.Values)
             {
@@ -86,7 +82,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             if (!base.Reveal(player))
                 return false;
             
-            this.PlayAnimation(5, 449254);
+            this.PlayAnimation(5, AnimationSno.p4_setdung_portal_neph_rc_idle_shimmer);
             return true;
         }
 		/*
@@ -108,7 +104,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                     if (!PlrNear)
                     {
                         PlrNear = true;
-                        this.PlayAnimation(5, 449255);
+                        this.PlayAnimation(5, AnimationSno.p4_setdung_portal_neph_rc_idle_shimmertoopaque);
                     }
                 }
                 else
@@ -116,7 +112,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                     if (PlrNear)
                     {
                         PlrNear = false;
-                        this.PlayAnimation(5, 447868);
+                        this.PlayAnimation(5, AnimationSno.p4_setdung_portal_neph_rc_fadein);
                     }
                 }
 			}

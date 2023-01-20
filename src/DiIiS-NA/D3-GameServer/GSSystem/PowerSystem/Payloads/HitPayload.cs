@@ -818,13 +818,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			else if (this.AutomaticHitEffects && this.Target.World != null && !(this.Target is Player))
 			{
 				// target didn't die, so play hit animation if the actor has one
-				if (this.Target.World.BuffManager.GetFirstBuff<Implementations.KnockbackBuff>(this.Target) == null &&
+				if (this.Target.World.BuffManager.GetFirstBuff<KnockbackBuff>(this.Target) == null &&
 					this.Target.AnimationSet != null)
 				{
-					if (this.Target.AnimationSet.TagMapAnimDefault.ContainsKey(AnimationSetKeys.GetHit) && FastRandom.Instance.Next(100) < 33)
+					if (this.Target.AnimationSet.Animations.ContainsKey(AnimationSetKeys.GetHit.ID) && FastRandom.Instance.Next(100) < 33)
 					{
-						int hitAni = this.Target.AnimationSet.TagMapAnimDefault[AnimationSetKeys.GetHit];
-						if (hitAni != -1)
+						var hitAni = this.Target.AnimationSet.Animations[AnimationSetKeys.GetHit.ID];
+						if (hitAni != AnimationSno._NONE)
 						{
 							// HACK: hardcoded animation speed/ticks, need to base those off hit recovery speed
 							this.Target.PlayAnimation(6, hitAni, 1.0f, 40);
@@ -834,8 +834,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 								{
 									float BackSpeed = this.Target.WalkSpeed;
 									this.Target.WalkSpeed = 0f;
-									TickerSystem.TickTimer Timeout = new TickerSystem.SecondsTickTimer(this.Target.World.Game, 0.3f);
-									var Boom = System.Threading.Tasks.Task<bool>.Factory.StartNew(() => WaitTo(Timeout));
+                                    TickTimer Timeout = new SecondsTickTimer(this.Target.World.Game, 0.3f);
+									var Boom = Task<bool>.Factory.StartNew(() => WaitTo(Timeout));
 									Boom.ContinueWith(delegate
 									{
 										this.Target.WalkSpeed = BackSpeed;

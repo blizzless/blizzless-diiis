@@ -1715,7 +1715,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					#region Активация
 					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
-					NStone.PlayAnimation(5, NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+					NStone.PlayAnimation(5, NStone.AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 					NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -1852,7 +1852,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							actor.Destroy();
 					#region Активация
 					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
-					NStone.PlayAnimation(5, NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+					NStone.PlayAnimation(5, NStone.AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 					NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -3301,7 +3301,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						(ActiveGolem as Minion).Brain.Activate();
 						ActiveGolem.Attributes[GameAttribute.Untargetable] = false;
 						ActiveGolem.Attributes.BroadcastChangedIfRevealed();
-						ActiveGolem.PlayActionAnimation(462828);
+						ActiveGolem.PlayActionAnimation(AnimationSno.p6_bloodgolem_spawn_01);
 					}
 				}
 			}

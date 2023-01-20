@@ -29,6 +29,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 //Blizzless Project 2022 
@@ -568,42 +569,28 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
                 monster.EnterWorld(position);
                 if (monster.AnimationSet != null)
                 {
-                    if (monster.AnimationSet.TagMapAnimDefault.ContainsKey(70097))
-                        monster.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.Animation.PlayAnimationMessage
-                        {
-                            ActorID = monster.DynamicID(plr),
-                            AnimReason = 5,
-                            UnitAniimStartTime = 0,
-                            tAnim = new PlayAnimationMessageSpec[]
-                            {
-                                new PlayAnimationMessageSpec()
-                                {
-                                    Duration = 150,
-                                    AnimationSNO = monster.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Spawn],
-                                    PermutationIndex = 0,
-                                    Speed = 1
-                                }
-                            }
+					var animationTag = new[] { AnimationSetKeys.Spawn.ID, AnimationSetKeys.Spawn2.ID }.FirstOrDefault(x => monster.AnimationSet.Animations.ContainsKey(x));
 
-                        }, monster);
-                    else if (monster.AnimationSet.TagMapAnimDefault.ContainsKey(291072))
-                        monster.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.Animation.PlayAnimationMessage
-                        {
-                            ActorID = monster.DynamicID(plr),
-                            AnimReason = 5,
-                            UnitAniimStartTime = 0,
-                            tAnim = new PlayAnimationMessageSpec[]
-                            {
-                                new PlayAnimationMessageSpec()
-                                {
-                                    Duration = 150,
-                                    AnimationSNO = monster.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Spawn2],
-                                    PermutationIndex = 0,
-                                    Speed = 1
-                                }
-                            }
+					if (animationTag > 0)
+                    {
+						monster.World.BroadcastIfRevealed(plr => new PlayAnimationMessage
+						{
+							ActorID = monster.DynamicID(plr),
+							AnimReason = 5,
+							UnitAniimStartTime = 0,
+							tAnim = new PlayAnimationMessageSpec[]
+							{
+								new PlayAnimationMessageSpec()
+								{
+									Duration = 150,
+									AnimationSNO = (int)monster.AnimationSet.Animations[animationTag],
+									PermutationIndex = 0,
+									Speed = 1
+								}
+							}
 
-                        }, monster);
+						}, monster);
+					}
                 }
             }
 			return monster;

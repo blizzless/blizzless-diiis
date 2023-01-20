@@ -664,22 +664,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}, target);
 		}
 
-		public void SetIdleAnimation(int animationSNO)
+		public void SetIdleAnimation(AnimationSno animationSNO)
 		{
-			if (this.World == null || animationSNO == -1) return;
+			if (this.World == null || animationSNO == AnimationSno._NONE) return;
 
 			this.World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
 				ActorID = this.DynamicID(plr),
-				AnimationSNO = animationSNO
+				AnimationSNO = (int)animationSNO
 			}, this);
 		}
 
-		public void PlayAnimationAsSpawn(int animationSNO)
+		public void PlayAnimationAsSpawn(AnimationSno animationSNO)
 		{
 			if (this is Monster)
 			{
-				var Anim = (DiIiS_NA.Core.MPQ.FileFormats.Anim)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Anim][animationSNO].Data;
+				// unused
+				//var Anim = (DiIiS_NA.Core.MPQ.FileFormats.Anim)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Anim][animationSNO].Data;
 
 				if ((this as Monster).Brain != null)
 				{
@@ -702,7 +703,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					new PlayAnimationMessageSpec
 					{
 						Duration = -2,
-						AnimationSNO = animationSNO,
+						AnimationSNO = (int)animationSNO,
 						PermutationIndex = 0x0,
 						AnimationTag = 0,
 						Speed = 1.0f,
@@ -712,9 +713,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 		}
 
-		public void PlayAnimation(int animationType, int animationSNO, float speed = 1.0f, int? ticksToPlay = null, int type2 = 0)
+		public void PlayAnimation(int animationType, AnimationSno animationSNO, float speed = 1.0f, int? ticksToPlay = null, int type2 = 0)
 		{
-			if (this.World == null || animationSNO == -1) return;
+			if (this.World == null || animationSNO == AnimationSno._NONE) return;
 
 			this.World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
@@ -726,7 +727,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					new PlayAnimationMessageSpec
 					{
 						Duration = ticksToPlay.HasValue ? ticksToPlay.Value : -2,  // -2 = play animation once through
-						AnimationSNO = animationSNO,
+						AnimationSNO = (int)animationSNO,
 						PermutationIndex = 0x0,  // TODO: implement variations?
 						AnimationTag = 0,
 						Speed = speed,
@@ -735,7 +736,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}, this);
 		}
 
-		public void PlayActionAnimation(int animationSNO, float speed = 1.0f, int? ticksToPlay = null)
+		public void PlayActionAnimation(AnimationSno animationSNO, float speed = 1.0f, int? ticksToPlay = null)
 		{
 			PlayAnimation(3, animationSNO, speed, ticksToPlay);
 		}
@@ -985,11 +986,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					if (this.Tags != null)
 						if (this.Tags.ContainsKey(MarkerKeys.Group1Hash))
 							if (this.Tags[MarkerKeys.Group1Hash] == -1248096796)
-								this.PlayActionAnimation(11514);
+								this.PlayActionAnimation(AnimationSno.zombie_male_skinny_eating);
 				}
 				//Задаём идл для работяг
 				else if (this.World.SNO == WorldSno.trout_tristram_inn && this.SNO == ActorSno._omninpc_tristram_male_a)
-					this.PlayActionAnimation(102329);
+					this.PlayActionAnimation(AnimationSno.omninpc_male_hth_injured);
 				else if (this.SNO == ActorSno._leah)
 					player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Inventory.VisualInventoryMessage()
 					{

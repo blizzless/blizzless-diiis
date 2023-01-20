@@ -72,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 					new PlayAnimationMessageSpec()
 					{
 						Duration = 1000,
-						AnimationSNO = AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening],
+						AnimationSNO = (int)AnimationSet.Animations[AnimationSetKeys.Opening.ID],
 						PermutationIndex = 0,
 						AnimationTag = 0,
 						Speed = 1

@@ -1539,7 +1539,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 													//{[1013103213, {[Actor] [Type: Gizmo] SNOId:78439 GlobalId: 1013103213 Position: x:119.54008 y:140.65799 z:-4.535186 Name: Test_CainIntro_greybox_bridge_trOut_TempWorking}]}
 													//Обрушиваем мостик //EffectGroup "CainIntro_shake", 81546
 													var bridge = encWorld.GetActorBySNO(ActorSno._test_cainintro_greybox_bridge_trout_tempworking);
-													bridge.PlayAnimation(5, bridge.AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault]);
+													bridge.PlayAnimation(5, bridge.AnimationSet.Animations[AnimationSetKeys.DeathDefault.ID]);
 													//}
 													foreach (var skeleton in Skeletons)
 													{
@@ -1553,16 +1553,16 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 												//(Должен быть диалог Король скилет.)
 												var Leoric = encWorld.SpawnMonster(ActorSno._skeletonking_ghost, FakeLeoricPosition);
-													Leoric.PlayActionAnimation(668);
+													Leoric.PlayActionAnimation(AnimationSno.skeletonking_ghost_spawn);
 													Task.Delay(1000).ContinueWith(delegate
 													{
 														foreach (var plr in this.Players.Values)
 															plr.Conversations.StartConversation(17692); //Фраза Леорика
-													Task.Delay(14000).ContinueWith(delegate
+															Task.Delay(14000).ContinueWith(delegate
 															{
 															//Leoric.PlayActionAnimation(9854); //Леорик призывает скелетов
 
-															Leoric.PlayActionAnimation(9848); //Себаса
+															Leoric.PlayActionAnimation(AnimationSno.skeletonking_ghost_despawn); //Себаса
 															Task.Delay(1000).ContinueWith(delegate
 																	{
 																		foreach (var plr in this.Players.Values)

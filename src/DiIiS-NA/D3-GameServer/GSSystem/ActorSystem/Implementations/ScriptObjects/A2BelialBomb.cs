@@ -59,7 +59,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					               
 					_collapsed = true;
 
-					this.PlayActionAnimation(10264);
+					this.PlayActionAnimation(AnimationSno.trdun_cath_lever_type2_closing);
 					this.World.PowerManager.RunPower(this, 153000);
 
 					Task.Delay(RandomHelper.Next(5,10) * 1000).ContinueWith(delegate { _collapsed = false; });

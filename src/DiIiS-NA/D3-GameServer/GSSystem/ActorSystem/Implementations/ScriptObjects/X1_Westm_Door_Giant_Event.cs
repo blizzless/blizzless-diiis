@@ -11,12 +11,6 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using System;
 //Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -85,7 +79,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
             {
                 _collapsed = true;
                 #region Анимация больших ворот
-                PlayAnimation(11, 312534, 1);
+                PlayAnimation(11, AnimationSno.x1_westm_door_giant_clicky_closing_soul, 1);
                 World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
                 {
                     ActorID = this.DynamicID(plr),

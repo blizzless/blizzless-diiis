@@ -3811,7 +3811,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				this.ally.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 				this.ally.Attributes[GameAttribute.Untargetable] = true;
 				this.ally.EnterWorld(this.ally.Position);
-				this.ally.PlayActionAnimation(130606);
+				this.ally.PlayActionAnimation(AnimationSno.mystically_female_spawn2);
 
 				(this.ally as Minion).Brain.Activate();
 				this.ally.Attributes[GameAttribute.Untargetable] = false;
@@ -3881,7 +3881,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						this.ally.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 						this.ally.Attributes[GameAttribute.Untargetable] = true;
 						this.ally.EnterWorld(this.ally.Position);
-						this.ally.PlayActionAnimation(130606);
+						this.ally.PlayActionAnimation(AnimationSno.mystically_female_spawn2);
 
 						(this.ally as Minion).Brain.Activate();
 						this.ally.Attributes[GameAttribute.Untargetable] = false;

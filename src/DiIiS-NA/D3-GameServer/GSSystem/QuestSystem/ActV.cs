@@ -485,7 +485,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 									TurnImmediately = true
 								}, Myst);
 
-								Myst.PlayActionAnimation(324119);
+								Myst.PlayActionAnimation(AnimationSno.mystic_crawl_01);
 								AddQuestConversation(Myst, 305750);
 								(Myst as InteractiveNPC).Conversations.Clear();
 								(Myst as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(305750));
@@ -1374,7 +1374,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             portal.Unreveal(plr);
 						}
 						if (this.Game.CurrentQuest == 269552)
-							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).PlayActionAnimation(299978);
+							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).PlayActionAnimation(AnimationSno.x1_pand_batteringram_background_stage1);
 					});
 					
 					
@@ -1466,7 +1466,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 							RamWorld.GetActorBySNO(ActorSno._g_portal_archtall_blue).Reveal(plr);
 						}
 						if (this.Game.CurrentQuest != 269552)
-							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).SetIdleAnimation(360069);
+							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).SetIdleAnimation(AnimationSno.x1_pand_batteringram_background_move_in_and_out_hit_03_dead);
 						//RamWorld.GetActorBySNO(295438).PlayActionAnimation(299978); 
 						//Open(this.Game.GetWorld(295225), 345259);
 						Open(RamWorld, ActorSno._x1_pand_batteringram_background);

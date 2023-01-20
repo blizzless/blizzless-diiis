@@ -2071,7 +2071,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             if (Rune_E > 0)
             {
                 ((this.User as PlayerSystem.Player).ActiveGolem as Minion).Brain.DeActivate();
-                (this.User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(474026);
+                (this.User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(AnimationSno.p6_icegolem_generic_cast);
                 var proxy = SpawnProxy(TargetPosition, WaitSeconds(3f));
                 proxy.PlayEffectGroup(474839);
 
@@ -2100,7 +2100,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 yield return WaitSeconds(targetDistance * 0.024f);
                 
                 //Индикация зоны
-                (this.User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(466348);
+                (this.User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(AnimationSno.p6_bonegolem_active_01);
                 var proxy = SpawnProxy(TargetPosition, WaitSeconds(2f));
                 //Рывок
                 proxy.PlayEffectGroup(466735); //[466735] p6_necro_golem_bone_areaIndicator
