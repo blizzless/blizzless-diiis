@@ -177,8 +177,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public static Account GetAccountByDBAccount(DBAccount dbAccount)
 		{
+			if (dbAccount == null)
+				return null;
 			if (LoadedAccounts.ContainsKey(dbAccount.Id))
+			{
+				LoadedAccounts[dbAccount.Id].DBAccount = dbAccount;
 				return LoadedAccounts[dbAccount.Id];
+			}
 			else
 			{
 				var account = new Account(dbAccount);
