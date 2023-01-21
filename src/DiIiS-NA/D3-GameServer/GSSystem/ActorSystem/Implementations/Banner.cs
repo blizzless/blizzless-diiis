@@ -12,6 +12,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 //Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
