@@ -189,9 +189,6 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					}
 					else
 					{
-						//if ((this.Body as Minion).Master.World != (this.Body as Minion).World) 
-						//this.Body.ChangeWorld((this.Body as Minion).Master.World, (this.Body as Minion).Master.Position);
-
 						var distToMaster = PowerMath.Distance2D(this.Body.Position, (this.Body as Minion).Master.Position);
 						if ((distToMaster > 8f) || (distToMaster < 3f))
 						{
