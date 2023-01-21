@@ -136,7 +136,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 				if (client.Player.PlayerIndex > 0)
         {
           //make sure toons Difficulty is set
-          toon.CurrentDifficulty = (uint)game.Difficulty;
+          toon.CurrentDifficulty = (int)game.Difficulty;
 					client.SendMessage(new HandicapMessage(Opcodes.HandicapMessage)
 					{
 						Difficulty = (uint)game.Difficulty
