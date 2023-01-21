@@ -17,6 +17,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			this.Field2 = 0x9;
 			this.Field7 = 1;
+			this.Attributes[GameAttribute.TeamID] = 2;
 			this.Attributes[GameAttribute.Is_NPC] = true;
 		}
 	}

@@ -26,8 +26,6 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public GSBackend(string BattletHost, int BattlePort)
 		{
 			this.BattleNetSocket = new WatsonTcpClient(BattletHost, BattlePort, this._senderServerConnected, this._senderServerDisconnected, this._senderMessageReceived, false);
-			//Logger.Info("Sender started at {0}:{1}", MooNetHost, MooNetPort);
-			//client.Send(Encoding.UTF8.GetBytes(userInput));
 		}
 
 

@@ -341,7 +341,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (OverridedConv)
 				UpdateConversationList();
 		}
-
 		public void Consume(GameClient client, GameMessage message)
 		{
 			if (message is NPCSelectConversationMessage) OnSelectConversation(client.Player, message as NPCSelectConversationMessage);
@@ -350,27 +349,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (message is CraftInteractionMessage) OnCraft(client.Player);
 			else return;
 		}
-
 		public virtual void OnCraft(Player player)
 		{
 			throw new NotImplementedException();
 		}
-
 		public virtual void OnInventory(Player player)
 		{
 			throw new NotImplementedException();
 		}
-
 		public virtual void OnInventory(Player player, HirelingInventoryMessage message)
 		{
 			throw new NotImplementedException();
 		}
-
 		public virtual void OnHire(Player player)
 		{
 			throw new NotImplementedException();
 		}
-
 		private void OnSelectConversation(Player player, NPCSelectConversationMessage message)
 		{
 			var conversation = Conversations.FirstOrDefault(conv => conv.ConversationSNO == message.ConversationSNO);

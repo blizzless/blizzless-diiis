@@ -1,4 +1,4 @@
-﻿//Blizzless Project 2022 
+//Blizzless Project 2022 
 using System;
 //Blizzless Project 2022 
 using System.Collections.Generic;
@@ -90,14 +90,6 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				this.Body.SNO == ActorSno._a4dun_garden_corruption_monster ||
 				this.Body.SNO == ActorSno._a4dun_garden_hellportal_pillar)
 				return;
-			//if(AttackedBy != null && TimeoutAttacked == null)
-			//	TimeoutAttacked = new SecondsTickTimer(this.Body.World.Game, 3.0f);
-			//if (TimeoutAttacked != null)
-			//	if (TimeoutAttacked.TimedOut)
-			//	{
-			//		TimeoutAttacked = null;
-			//		AttackedBy = null;
-			//	}
 			if (this.Body.SNO == ActorSno._belialvoiceover) //BelialVoiceover
 				return;
 			if (this.Body.Hidden == true)
@@ -113,16 +105,13 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 			if (!(tickCounter % 60 == 0)) return;
 			
-			// this needed? /mdz
 			if (this.Body is NPC) return;
 
-			//preventing "phantom attacks"
 			if (!this.Body.Visible || this.Body.Dead) return;
 
 			if (this.Body.World.Game.Paused) return;
 			if (this.Body.Attributes[GameAttribute.Disabled]) return;
 
-			// check if in disabled state, if so cancel any action then do nothing
 			if (this.Body.Attributes[GameAttribute.Frozen] ||
 			this.Body.Attributes[GameAttribute.Stunned] ||
 			this.Body.Attributes[GameAttribute.Blind] ||
@@ -162,16 +151,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			else
 				this.Feared = false;
 
-			// select and start executing a power if no active action
-			if (this.CurrentAction == null)// || this.CurrentAction is MoveToTargetWithPathfindAction)
+			if (this.CurrentAction == null) 
 			{
-				/*if (this.CurrentAction != null)
-				{
-					this.CurrentAction.Cancel(tickCounter);
-					this.CurrentAction = null;
-				}*/
 
-				// do a little delay so groups of monsters don't all execute at once
 				if (_powerDelay == null)
 					_powerDelay = new SecondsTickTimer(this.Body.World.Game, 1.0f);
 				if (AttackedBy != null || this.Body.GetObjectsInRange<Player>(50f).Count != 0)
@@ -187,7 +169,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						{
 							List<Actor> targets = new List<Actor>();
 
-							if (this.Body.Attributes[GameAttribute.Team_Override] == 1)// && !this.Body.Attributes[GameAttribute.Immune_To_Charm])
+							if (this.Body.Attributes[GameAttribute.Team_Override] == 1)
 								targets = this.Body.GetObjectsInRange<Monster>(60f)
 									.Where(p => !p.Dead)
 									.OrderBy((monster) => PowerMath.Distance2D(monster.Position, this.Body.Position))
@@ -221,9 +203,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							if (targetDistance < attackRange + _target.ActorData.Cylinder.Ax2)
 							{
 								if (this.Body.WalkSpeed != 0)
-									this.Body.TranslateFacing(_target.Position, false); //columns and other non-walkable shit can't turn
+									this.Body.TranslateFacing(_target.Position, false);
 
-								//Logger.Trace("PowerAction to target");
 								this.CurrentAction = new PowerAction(this.Body, powerToUse, _target);
 
 								if (power is SummoningSkill)
@@ -253,14 +234,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 									Logger.Trace("MoveToTargetWithPathfindAction to target");
 									this.CurrentAction = new MoveToTargetWithPathfindAction(
 										this.Body,
-										//(
-										_target,// + MovementHelpers.GetMovementPosition(
-												//new Vector3D(0, 0, 0), 
-												//this.Body.WalkSpeed, 
-												//MovementHelpers.GetFacingAngle(_target.Position, this.Body.Position),
-												//6
-												//)
-												//)
+										_target,
 										attackRange + _target.ActorData.Cylinder.Ax2,
 										powerToUse
 									);
