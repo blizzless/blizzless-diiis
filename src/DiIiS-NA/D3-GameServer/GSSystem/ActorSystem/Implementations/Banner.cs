@@ -62,6 +62,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			Logger.Trace("(OnTargeted) Banner has been activated ");
 
+			if (this.World.Game.Players.Count == 1 || this.BannerPlayerIndex == 0)
+			{
+                player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.SimpleMessage(Opcodes.OpenBannerCustomizationMessage));
+                return;
+			}
+			
 			var banner_player = this.World.Game.Players.Values.Single(p => p.PlayerIndex == this.BannerPlayerIndex);
 
 			if (banner_player == null || banner_player.World == null)
