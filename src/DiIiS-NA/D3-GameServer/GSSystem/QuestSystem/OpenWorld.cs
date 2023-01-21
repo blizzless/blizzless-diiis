@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -46,21 +47,32 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					script = new CryptPortals();
-					script.Execute(this.Game.GetWorld(71150));
-					this.Game.AddOnLoadAction(182976, () => { this.Game.GetWorld(182976).SpawnMonster(51341, new Vector3D { X = 149.439f, Y = 121.452f, Z = 13.794f }); });//spawn spider queen
-					this.Game.AddOnLoadAction(78839, () => { this.Game.GetWorld(78839).SpawnMonster(3526, new Vector3D { X = 93.022f, Y = 89.86f, Z = 0.1f }); });//spawn Butcher
-					this.Game.AddOnLoadAction(214956, () => { this.Game.GetWorld(214956).SpawnMonster(148449, new Vector3D { X = 585.439f, Y = 560.823f, Z = 0.1f }); });//spawn Izual
+					script.Execute(this.Game.GetWorld(WorldSno.trout_town));
+                    this.Game.AddOnLoadWorldAction(WorldSno.a1dun_spidercave_02, () =>
+                    {
+						this.Game.GetWorld(WorldSno.a1dun_spidercave_02).SpawnMonster(ActorSno._spiderqueen, new Vector3D { X = 149.439f, Y = 121.452f, Z = 13.794f }); 
+					});//spawn spider queen
+					this.Game.AddOnLoadWorldAction(WorldSno.trdun_butcherslair_02, () => 
+					{ 
+						this.Game.GetWorld(WorldSno.trdun_butcherslair_02).SpawnMonster(ActorSno._butcher, new Vector3D { X = 93.022f, Y = 89.86f, Z = 0.1f }); 
+					});//spawn Butcher
+					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_spire_exterior, () =>
+					{
+						this.Game.GetWorld(WorldSno.a4dun_spire_exterior).SpawnMonster(ActorSno._bigred_izual, new Vector3D { X = 585.439f, Y = 560.823f, Z = 0.1f }); 
+					});//spawn Izual
 					//this.Game.AddOnLoadAction(109984, () => { foreach (var giz in this.Game.GetWorld(109894).GetActorsBySNO(180254)) giz.Destroy();  });//destroy walls for Belial
-					this.Game.GetWorld(109513).SpawnMonster(6442, new Vector3D { X = 931.48f, Y = 1172.24f, Z = -14.7f }); //waypoint
-					this.Game.AddOnLoadAction(121214, () =>
+					this.Game.GetWorld(WorldSno.a4dun_garden_of_hope_01).SpawnMonster(ActorSno._waypoint, new Vector3D { X = 931.48f, Y = 1172.24f, Z = -14.7f }); //waypoint
+					this.Game.AddOnLoadWorldAction(WorldSno.a3dun_azmodan_arena, () =>
 					{
-						try { this.Game.GetWorld(121214).GetActorBySNO(89690).Destroy(); } catch { };
-						this.Game.GetWorld(121214).SpawnMonster(89690, new Vector3D { X = 395.553f, Y = 394.966f, Z = 0.1f });
+						var world = this.Game.GetWorld(WorldSno.a3dun_azmodan_arena);
+						try { world.GetActorBySNO(ActorSno._azmodan).Destroy(); } catch { };
+						world.SpawnMonster(ActorSno._azmodan, new Vector3D { X = 395.553f, Y = 394.966f, Z = 0.1f });
 					}); //spawn Azmodan
-					this.Game.AddOnLoadAction(226713, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_03, () =>
 					{
-						try { this.Game.GetWorld(226713).GetActorBySNO(96192).Destroy(); } catch { }
-						this.Game.GetWorld(226713).SpawnMonster(96192, new Vector3D { X = 396.565f, Y = 366.167f, Z = 0.1f });
+						var world = this.Game.GetWorld(WorldSno.a3_battlefields_03);
+						try { world.GetActorBySNO(ActorSno._siegebreakerdemon).Destroy(); } catch { }
+						world.SpawnMonster(ActorSno._siegebreakerdemon, new Vector3D { X = 396.565f, Y = 366.167f, Z = 0.1f });
 					}); //spawn Siegebreaker
 
 				})
@@ -143,11 +155,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 								if (NephalemWorld.CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 									break;
 							}
-							BossOfPortal = NephalemWorld.SpawnMonster(358429, SP);
+							BossOfPortal = NephalemWorld.SpawnMonster(ActorSno._x1_lr_boss_mistressofpain, SP);
 							break;
 					}
-					ActiveArrow(NephalemWorld, BossOfPortal.ActorSNO.Id);
-					ListenKill(BossOfPortal.ActorSNO.Id, 1, new QuestEvents.SideAdvance());
+					ActiveArrow(NephalemWorld, BossOfPortal.SNO);
+					ListenKill(BossOfPortal.SNO, 1, new QuestEvents.SideAdvance());
                 })
 			});
 

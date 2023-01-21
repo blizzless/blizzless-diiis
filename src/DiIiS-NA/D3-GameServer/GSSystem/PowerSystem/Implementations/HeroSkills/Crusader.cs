@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -107,7 +108,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					}
 					if (Rune_D > 0)     //Roar
 					{
-						SpawnEffect(347798, User.Position);
+						SpawnEffect(ActorSno._x1_crusader_punish_explosion_nova, User.Position);
 						WeaponDamage(GetEnemiesInRadius(User.Position, ScriptFormula(14)), ScriptFormula(16), DamageType.Fire);
 					}
 					if ((Rune_E > 0) && !HasBuff<FuryChCBuff>(User))        //Fury (buff slot 2)
@@ -388,7 +389,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Rune_C > 0) yield break;
 
 			bool hitAnything = false;
-			var proj = new Projectile(this, RuneSelect(324856, 344573, 324856, 344546, 344573, 345249), User.Position);
+			var proj = new Projectile(
+				this,
+				RuneSelect(
+					ActorSno._x1_crusader_justice_projectile, 
+					ActorSno._x1_crusader_justice_projectile_exploding, 
+					ActorSno._x1_crusader_justice_projectile, 
+					ActorSno._x1_crusader_justice_projectile_seeking, 
+					ActorSno._x1_crusader_justice_projectile_exploding, 
+					ActorSno._x1_crusader_justice_projectile_holybolt
+				),
+				User.Position
+			);
 			proj.Position.Z += 2f;  // fix height
 			proj.OnCollision = (hit) =>
 			{
@@ -423,7 +435,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						additional_targets.Remove(hitPayload.Target);
 						foreach (var target in additional_targets.Take((int)ScriptFormula(8)))
 						{
-							var secondaryProj = new Projectile(this, 345800, hitPayload.Target.Position);
+							var secondaryProj = new Projectile(this, ActorSno._x1_crusader_justice_projectile_split, hitPayload.Target.Position);
 							secondaryProj.Position.Z += 5f;
 							secondaryProj.OnCollision = secondaryHit =>
 							{
@@ -518,7 +530,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			StartCooldown(EvalTag(PowerKeys.CooldownTime));
 			GeneratePrimaryResource(ScriptFormula(3));
 
-			SpawnEffect(RuneSelect(325092, 350158, 350083, 350204, 350052, 350219), User.Position);
+			SpawnEffect(
+				RuneSelect(
+					ActorSno._x1_crusader_provoke_ringgeo,
+					ActorSno._x1_crusader_provoke_ringgeo_life, 
+					ActorSno._x1_crusader_provoke_ringgeo_fear,
+					ActorSno._x1_crusader_provoke_ringgeo_slow,
+					ActorSno._x1_crusader_provoke_ringgeo_lightning,
+					ActorSno._x1_crusader_provoke_ringgeo_block
+				),
+				User.Position
+			);
 
 			AttackPayload attack = new AttackPayload(this);
 			attack.Targets = GetEnemiesInRadius(User.Position, 15f);
@@ -827,7 +849,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (Rune_A > 0)     //Crumble
 					attack.OnDeath = (deathPayload) =>
 					{
-						SpawnEffect(350685, deathPayload.Target.Position);
+						SpawnEffect(ActorSno._x1_crusader_shieldbash_glowsphere_explode, deathPayload.Target.Position);
 						AttackPayload secondaryAttack = new AttackPayload(this);
 						secondaryAttack.Targets = GetEnemiesInRadius(deathPayload.Target.Position, 7f);
 						secondaryAttack.AddWeaponDamage(ScriptFormula(27), DamageType.Holy);
@@ -845,7 +867,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					//SpawnEffect(352871, User.Position);
 					foreach (var projTarget in projDestinations)
 					{
-						var proj = new Projectile(this, 145443, User.Position);
+						// FIXME: check actor
+						var proj = new Projectile(this, ActorSno._x1_crusader_shieldbash_shieldcross, User.Position);
 						proj.Timeout = new SecondsTickTimer(this.World.Game, 1f);
 						proj.OnCollision = (hit) =>
 						{
@@ -1032,7 +1055,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Power][this.PowerSNO].Data;
 			
-			var proj = new Projectile(this, 277722, User.Position);
+			var proj = new Projectile(this, ActorSno._x1_crusader_holyhammer_hammer, User.Position);
 			proj.Position.Z += 2f;
 			//proj.Launch(TargetPosition, 0.2f);
 			proj.EnterWorld(User.Position);
@@ -1058,7 +1081,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_E > 0)             //Piercing shield
 			{
-				var proj1 = new Projectile(this, 348731, User.Position);
+				var proj1 = new Projectile(this, ActorSno._x1_crusader_blessedshield_piercing_shieldprojectile, User.Position);
 				proj1.Position.Z += 5f;  // fix height
 				proj1.RadiusMod = 5f;
 				proj1.OnCollision = (hit) =>
@@ -1081,7 +1104,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_D > 0)             //Shattering throw
 			{
-				var proj2 = new Projectile(this, 348731, User.Position);
+				var proj2 = new Projectile(this, ActorSno._x1_crusader_blessedshield_piercing_shieldprojectile, User.Position);
 				proj2.Position.Z += 5f;
 				proj2.OnCollision = (hit) =>
 				{
@@ -1090,7 +1113,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var additional_targets = GetEnemiesInRadius(hit.Position, 15f).Actors.Take((int)ScriptFormula(4));
 					foreach (var target in additional_targets)
 					{
-						var proj3 = new Projectile(this, 349485, hit.Position);
+						var proj3 = new Projectile(this, ActorSno._x1_crusader_blessedshield_split_shieldprojectile_small, hit.Position);
 						proj3.LaunchChain(hit, target.Position, ShieldOnHitSecondary, 1f, (int)ScriptFormula(12) + 1, 15f);
 					}
 					proj2.Destroy();
@@ -1100,7 +1123,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 
 			//base effect
-			var proj = new Projectile(this, RuneSelect(280462, 348991, 349534, 280462, 349473, 348731), User.Position);
+			var proj = new Projectile(
+				this,
+				RuneSelect(
+					ActorSno._x1_crusader_blessedshield_shieldprojectile,
+					ActorSno._x1_crusader_blessedshield_shieldprojectile_stun,
+					ActorSno._x1_crusader_blessedshield_firey_shieldprojectile,
+					ActorSno._x1_crusader_blessedshield_shieldprojectile,
+					ActorSno._x1_crusader_blessedshield_piercing_shieldprojectile,
+					ActorSno._x1_crusader_blessedshield_piercing_shieldprojectile
+				), 
+				User.Position
+			);
 			proj.LaunchChain(User, TargetPosition, ShieldOnHit, 1f, (int)ScriptFormula(12) + 1, 15f);
 			yield break;
 		}
@@ -1122,7 +1156,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						AddBuff(hitPayload.Target, new DebuffStunned(WaitSeconds(ScriptFormula(18))));
 				if (Rune_B > 0 && Rand.NextDouble() < ScriptFormula(29))        //Combust
 				{
-					SpawnEffect(343180, hitPayload.Target.Position);
+					SpawnEffect(ActorSno._x1_crusader_blessedshield_fire_damagewave, hitPayload.Target.Position);
 					WeaponDamage(GetEnemiesInRadius(hitPayload.Target.Position, ScriptFormula(34)), ScriptFormula(32), DamageType.Fire);
 				}
 				if (Rune_C > 0) AddBuff(User, new AegisBuff());     //Divine Aegis (buff slot 2)
@@ -1190,7 +1224,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_E > 0)     //Retribution
 			{
-				var proj = new Projectile(this, 343099, User.Position);
+				var proj = new Projectile(this, ActorSno._x1_crusader_fistofheavens_chargedbolt_piercing, User.Position);
 				proj.Position.Z += 5f;
 				proj.OnCollision = (hit) =>
 				{
@@ -1200,7 +1234,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					attack.Apply();
 					if (hit == Target)
 					{
-						SpawnEffect(349942, hit.Position);
+						SpawnEffect(ActorSno._x1_crusader_fistofheavens_chargedbolt_piercing_explosion, hit.Position);
 						AttackPayload secondaryAttack = new AttackPayload(this);
 						secondaryAttack.Targets = GetEnemiesInRadius(hit.Position, ScriptFormula(9));
 						secondaryAttack.AddWeaponDamage(ScriptFormula(23), DamageType.Holy);
@@ -1209,7 +1243,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						Vector3D[] boltDestinations = PowerMath.GenerateSpreadPositions(hit.Position, hit.Position + new Vector3D(30, 0, 0), 60f, 6);
 						foreach (var boltTarget in boltDestinations)
 						{
-							var secondaryProj = new Projectile(this, 342257, hit.Position);
+							var secondaryProj = new Projectile(this, ActorSno._x1_crusader_fistofheavens_chargedbolt_lightningrod, hit.Position);
 							secondaryProj.Position.Z += 5f;
 							secondaryProj.OnCollision = (hit) =>
 							{
@@ -1251,7 +1285,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Rune_A > 0)     //Heaven's Tempest
 			{
 				//This aoe's stacking is allowed in retail
-				var tempest = SpawnEffect(342969, fistPoint.Position, 0, WaitSeconds(ScriptFormula(10) + User.Attributes[GameAttribute.Power_Duration_Increase, 30680]));
+				var tempest = SpawnEffect(ActorSno._x1_crusader_fistofheavens_teslacoil_stormcloud, fistPoint.Position, 0, WaitSeconds(ScriptFormula(10) + User.Attributes[GameAttribute.Power_Duration_Increase, 30680]));
 				tempest.UpdateDelay = 1f;
 				tempest.OnUpdate = () =>
 				{
@@ -1264,12 +1298,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			if (Rune_C > 0)     //Fissure
 			{
-				var fissure = SpawnEffect(347135, fistPoint.Position, 0, WaitSeconds(ScriptFormula(18) + User.Attributes[GameAttribute.Power_Duration_Increase, 30680]));
+				var fissure = SpawnEffect(ActorSno._x1_crusader_fistofheavens_teslacoil, fistPoint.Position, 0, WaitSeconds(ScriptFormula(18) + User.Attributes[GameAttribute.Power_Duration_Increase, 30680]));
 				fissure.UpdateDelay = 0.8f;
 				fissure.OnUpdate = () =>
 				{
 					//Another fissure
-					var fissures = fissure.GetActorsInRange<EffectActor>(40f).Where(i => i.ActorSNO.Id == 347135);
+					var fissures = fissure.GetActorsInRange<EffectActor>(40f).Where(i => i.SNO == ActorSno._x1_crusader_fistofheavens_teslacoil);
 					foreach (var fiss in fissures)
 					{
 						if (fiss == fissure) continue;
@@ -1287,7 +1321,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var targets = GetEnemiesInRadius(fissure.Position, 20f).Actors;
 					foreach (var target in targets)
 					{
-						var proj = new Projectile(this, 342257, fissure.Position);
+						var proj = new Projectile(this, ActorSno._x1_crusader_fistofheavens_chargedbolt_lightningrod, fissure.Position);
 						proj.Position.Z += 5f;
 						proj.OnCollision = (hit) =>
 						{
@@ -1303,9 +1337,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			fistPoint.PlayEffectGroup(RuneSelect(341688, -1, -1, -1, 323721, -1));
 			Vector3D[] projDestinations = PowerMath.GenerateSpreadPositions(fistPoint.Position, fistPoint.Position + new Vector3D(30, 0, 0), 60f, 6);
+			var runeActorSno = RuneSelect(
+				ActorSno._x1_crusader_fistofheavens_chargedbolt,
+				ActorSno._x1_crusader_fistofheavens_chargedbolt,
+				ActorSno._x1_crusader_fistofheavens_chargedbolt_knockback,
+				ActorSno._x1_crusader_fistofheavens_chargedbolt,
+				ActorSno._x1_crusader_fistofheavens_chargedbolt_wellofretribution,
+				ActorSno._x1_crusader_fistofheavens_chargedbolt
+			);
 			foreach (var projTarget in projDestinations)
 			{
-				var proj = new Projectile(this, RuneSelect(255056, 255056, 342938, 255056, 324059, 255056), fistPoint.Position);
+                var proj = new Projectile(this, runeActorSno, fistPoint.Position);
 				proj.Position.Z += 5f;
 				if (Rune_D > 0) proj.RadiusMod = ScriptFormula(28);     //Divine Well
 				proj.OnCollision = (hit) =>
@@ -1366,7 +1408,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 				StartCooldown(WaitSeconds(ScriptFormula(25)));
-				SpawnEffect(338807, User.Position, 0, WaitSeconds(5f));
+				SpawnEffect(ActorSno._x1_crusader_phalanx3_blocker, User.Position, 0, WaitSeconds(5f));
 				yield break;
 			}
 
@@ -1403,9 +1445,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 			TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, Math.Min(PowerMath.Distance2D(User.Position, TargetPosition), 30f));
 
-			int projSNO = 330728;
-			if (Rune_B > 0) projSNO = 357358;
-			if (Rune_C > 0) projSNO = 338678;
+			var projSNO = ActorSno._x1_crusader_phalanx3_projectile;
+			if (Rune_B > 0) projSNO = ActorSno._x1_crusader_phalanx3_projectile_chargers;
+			if (Rune_C > 0) projSNO = ActorSno._x1_crusader_phalanx3_projectile_horse;
 
 			for (int i = -1; i < 2; i++)
 			{
@@ -1555,7 +1597,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			if (Rune_E > 0)         //Flurry
 			{
-				var proxy = SpawnEffect(353516, TargetPosition, 0, WaitSeconds(ScriptFormula(41) + User.Attributes[GameAttribute.Power_Duration_Increase, 30680]));
+				var proxy = SpawnEffect(ActorSno._x1_crusader_fallingsword_swordnadorig_spawner, TargetPosition, 0, WaitSeconds(ScriptFormula(41) + User.Attributes[GameAttribute.Power_Duration_Increase, 30680]));
 				proxy.UpdateDelay = 1f;
 				proxy.OnUpdate = () =>
 				{
@@ -1775,8 +1817,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			float healing = LifeRegen(User.Attributes[GameAttribute.Level]);
 			if (Rune_C > 0) healing *= 1.5f;
 
-			var proxy = SpawnEffect(RuneSelect(257376, 257376, 351139, 257376, 324081, 351031), User.Position, 0, WaitSeconds(duration + User.Attributes[GameAttribute.Power_Duration_Increase, 30680]));
-			if (Rune_A > 0) SpawnEffect(300142, User.Position);         //Aegis Purgatory	
+			var proxy = SpawnEffect(
+				RuneSelect(
+					ActorSno._x1_crusader_consecration_proxy, 
+					ActorSno._x1_crusader_consecration_proxy, 
+					ActorSno._x1_crusader_consecration_proxy_frozen, 
+					ActorSno._x1_crusader_consecration_proxy, 
+					ActorSno._x1_crusader_consecration_proxy_shatteredground, 
+					ActorSno._x1_crusader_consecration_proxy_fear
+				),
+				User.Position,
+				0,
+				WaitSeconds(duration + User.Attributes[GameAttribute.Power_Duration_Increase, 30680])
+			);
+			if (Rune_A > 0) SpawnEffect(ActorSno._x1_crusader_consecration_wall, User.Position);         //Aegis Purgatory	
 			proxy.UpdateDelay = 0.9f;
 			proxy.OnUpdate = () =>
 			{
@@ -2155,7 +2209,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					}
 					if (Rune_D > 0)     //Nightmare
 					{
-						var firePool = SpawnEffect(355171, User.Position, 0, WaitSeconds(4f));
+						var firePool = SpawnEffect(ActorSno._x1_crusader_steedcharge_firepool, User.Position, 0, WaitSeconds(4f));
 						firePool.UpdateDelay = 0.9f;
 						firePool.OnUpdate = () =>
 						{
@@ -2767,7 +2821,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				if (User.World.CheckLocationForFlag(beamPoints[0], DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 				{
-					beams[0] = SpawnEffect(330082, beamPoints[0], 0, WaitSeconds(ScriptFormula(0) + 1f));
+					beams[0] = SpawnEffect(ActorSno._x1_crusader_godray_proxy_wander_small, beamPoints[0], 0, WaitSeconds(ScriptFormula(0) + 1f));
 					beams[0].UpdateDelay = 0.9f;
 					beams[0].OnUpdate = () =>
 					{
@@ -2784,7 +2838,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 				if (User.World.CheckLocationForFlag(beamPoints[1], DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 				{
-					beams[1] = SpawnEffect(330082, beamPoints[1], 0, WaitSeconds(ScriptFormula(0) + 1f));
+					beams[1] = SpawnEffect(ActorSno._x1_crusader_godray_proxy_wander_small, beamPoints[1], 0, WaitSeconds(ScriptFormula(0) + 1f));
 					beams[1].UpdateDelay = 0.9f;
 					beams[1].OnUpdate = () =>
 					{
@@ -2801,7 +2855,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 				if (User.World.CheckLocationForFlag(beamPoints[2], DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 				{
-					beams[2] = SpawnEffect(330082, beamPoints[2], 0, WaitSeconds(ScriptFormula(0) + 1f));
+					beams[2] = SpawnEffect(ActorSno._x1_crusader_godray_proxy_wander_small, beamPoints[2], 0, WaitSeconds(ScriptFormula(0) + 1f));
 					beams[2].UpdateDelay = 0.9f;
 					beams[2].OnUpdate = () =>
 					{
@@ -2835,7 +2889,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							bool assign = true;
 							var proxies = moveTarget.GetActorsInRange<EffectActor>(7f);
 							foreach (var proxy in proxies)
-								if (proxy.ActorSNO.Id == 330082) assign = false;
+								if (proxy.SNO == ActorSno._x1_crusader_godray_proxy_wander_small) assign = false;
 
 							if (assign) assignedTargets[i] = moveTarget;
 						}
@@ -2853,7 +2907,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 
 			//base effect
-			var beam = SpawnEffect(RuneSelect(316079, 330019, 349943, 330082, 350072, -1), groundZero.Position, 0, WaitSeconds(ScriptFormula(0)));
+			var beam = SpawnEffect(
+				RuneSelect(
+					ActorSno._x1_crusader_godray_proxy_wander,
+					ActorSno._x1_crusader_godray_proxy_wander_large,
+					ActorSno._x1_crusader_godray_proxy_wander_dot,
+					ActorSno._x1_crusader_godray_proxy_wander_small,
+					ActorSno._x1_crusader_godray_proxy_wander_blocker,
+					ActorSno.__NONE
+				),
+				groundZero.Position,
+				0,
+				WaitSeconds(ScriptFormula(0))
+			);
 			beam.UpdateDelay = 1f;
 			beam.OnUpdate = () =>
 			{
@@ -2867,11 +2933,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var spawn = true;
 					var proxies = beam.GetActorsInRange<EffectActor>(5f);
 					foreach (var proxy in proxies)
-						if (proxy.ActorSNO.Id == 330042) spawn = false;
+						if (proxy.SNO == ActorSno._x1_crusader_heavensfury_groundpool) spawn = false;
 
 					if (spawn)
 					{
-						var blessedPool = SpawnEffect(330042, beam.Position, 0, WaitSeconds(ScriptFormula(7)));
+						var blessedPool = SpawnEffect(ActorSno._x1_crusader_heavensfury_groundpool, beam.Position, 0, WaitSeconds(ScriptFormula(7)));
 						blessedPool.UpdateDelay = 0.9f;
 						blessedPool.OnUpdate = () =>
 						{
@@ -2893,11 +2959,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var spawn = true;
 					var proxies = beam.GetActorsInRange<EffectActor>(7f);
 					foreach (var proxy in proxies)
-						if (proxy.ActorSNO.Id == 330042) spawn = false;
+						if (proxy.SNO == ActorSno._x1_crusader_heavensfury_groundpool) spawn = false;
 
 					if (spawn)
 					{
-						var blessedPool = SpawnEffect(330042, beam.Position, 0, WaitSeconds(ScriptFormula(7)));
+						var blessedPool = SpawnEffect(ActorSno._x1_crusader_heavensfury_groundpool, beam.Position, 0, WaitSeconds(ScriptFormula(7)));
 						blessedPool.UpdateDelay = 1f;
 						blessedPool.OnUpdate = () =>
 						{
@@ -3057,7 +3123,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					Vector3D[] mineSpread = PowerMath.GenerateSpreadPositions(point, point + new Vector3D(5, 0, 0), 180f, 2);
 					foreach (var minePoint in mineSpread)
 					{
-						var mine = new EffectActor(this, 336968, minePoint);
+						var mine = new EffectActor(this, ActorSno._x1_crusader_trebuchet_mine, minePoint);
 						mine.Timeout = WaitSeconds(8f);
 						mine.Scale = 1f;
 						mine.UpdateDelay = 1.5f;
@@ -3094,7 +3160,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				var impact = SpawnProxy(point, WaitSeconds(1f));
 				impact.PlayEffectGroup(RuneSelect(293316, 356927, 293316, -1, -1, -1));
 				yield return WaitSeconds(0.5f);
-				if (Rune_A > 0) SpawnEffect(336710, impact.Position, 0, WaitSeconds(2f));
+				if (Rune_A > 0) SpawnEffect(ActorSno._x1_crusader_trebuchet_tarpit, impact.Position, 0, WaitSeconds(2f));
 
 				AttackPayload attack = new AttackPayload(this);
 				attack.Targets = GetEnemiesInRadius(point, 12f);

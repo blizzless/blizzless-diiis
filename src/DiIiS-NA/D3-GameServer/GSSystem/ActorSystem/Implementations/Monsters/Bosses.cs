@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -20,11 +21,11 @@ using DiIiS_NA.GameServer.MessageSystem;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 {
 	#region Unique_CaptainDaltyn
-	[HandledSNO(156801)]
+	[HandledSNO(ActorSno._unique_captaindaltyn)]
 	public class Unique_CaptainDaltyn : Monster
 	{
-		public Unique_CaptainDaltyn(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Unique_CaptainDaltyn(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			this.Attributes[GameAttribute.Immune_To_Charm] = true;

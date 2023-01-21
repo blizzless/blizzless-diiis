@@ -4,6 +4,7 @@ using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.MPQ;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -89,7 +90,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                                             player.Position.Y + (float)RandomHelper.NextDouble() * 20f,
                                             player.Position.Z);
 
-                var monster = player.World.SpawnMonster(actorSNO, position);
+                var monster = player.World.SpawnMonster((ActorSno)actorSNO, position);
 
             }
             return string.Format("Spawned {0} mobs with ActorSNO: {1}", amount, actorSNO);
@@ -461,7 +462,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 if (!MPQStorage.Data.Assets[SNOGroup.Worlds].ContainsKey(worldId))
                     return "There exist no world with SNOId: " + worldId;
 
-                var world = invokerClient.InGameClient.Game.GetWorld(worldId);
+                var world = invokerClient.InGameClient.Game.GetWorld((WorldSno)worldId);
 
                 if (world == null)
                     return "Can't teleport you to world with snoId " + worldId;
@@ -888,7 +889,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             var matches = invokerClient.InGameClient.Player.World.StartingPoints;
 
             return matches.Aggregate(matches.Count >= 1 ? "Starting Points:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.GlobalID.ToString("D6"), match.ActorSNO.Name, match.TargetId));
+                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.GlobalID.ToString("D6"), match.Name, match.TargetId));
         }
 
         [Command("weather", "Allows you to search for a Weather.\nUsage: lookup weather <pattern>")]

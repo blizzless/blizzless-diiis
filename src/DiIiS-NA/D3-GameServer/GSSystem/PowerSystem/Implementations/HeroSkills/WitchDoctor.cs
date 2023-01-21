@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -52,14 +53,33 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (Rune_B > 0)
 					yield return WaitSeconds(ScriptFormula(17));
 
-				var proj = new Projectile(this,
-										  RuneSelect(107011, 107030, 107035, 107223, 107265, 107114),
-										  User.Position);
+				var proj = new Projectile(
+					this,
+					RuneSelect(
+						ActorSno._witchdoctor_poisondart,
+						ActorSno._witchdoctor_poisondart_runea_fire,
+						ActorSno._witchdoctor_poisondart_runeb_multishot,
+						ActorSno._witchdoctor_poisondart_runec_slow,
+						ActorSno._witchdoctor_poisondart_runed_lowcost,
+						ActorSno._witchdoctor_poisondart_snakeprojectile
+					),
+					User.Position
+				);
 				proj.Position.Z += 3f;
 				proj.OnCollision = (hit) =>
 				{
 					// TODO: fix positioning of hit actors. possibly increase model scale? 
-					SpawnEffect(RuneSelect(112327, 112338, 112327, 112345, 112347, 112311), proj.Position);
+					SpawnEffect(
+						RuneSelect(
+							ActorSno._witchdoctor_poisondart_poison_impact,
+							ActorSno._witchdoctor_poisondart_runea_fire_impact,
+							ActorSno._witchdoctor_poisondart_poison_impact,
+							ActorSno._witchdoctor_poisondart_runec_slow_impact,
+							ActorSno._witchdoctor_poisondart_runed_mana_impact,
+							ActorSno._witchdoctor_poisondart_snakeprojectile_impact
+						),
+						proj.Position
+					);
 
 					proj.Destroy();
 
@@ -104,7 +124,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			StartCooldown(EvalTag(PowerKeys.CooldownTime));
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-			if ((User as Player).SkillSet.HasPassive(218588) && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
 			{
 				var Fetish = new FetishMelee(this.World, this, 0);
 				Fetish.Brain.DeActivate();
@@ -114,7 +134,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				Fetish.PlayActionAnimation(90118);
 				yield return WaitSeconds(0.5f);
 
-				(Fetish as Minion).Brain.Activate();
+				Fetish.Brain.Activate();
 				Fetish.Attributes[GameAttribute.Untargetable] = false;
 				Fetish.Attributes.BroadcastChangedIfRevealed();
 				Fetish.LifeTime = WaitSeconds(60f);
@@ -126,7 +146,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				// NOTE: not normal plague of toads right now but Obsidian runed "Toad of Hugeness"
 				Vector3D userCastPosition = new Vector3D(User.Position);
 				Vector3D inFrontOfUser = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 7f);
-				var bigtoad = SpawnEffect(109906, inFrontOfUser, TargetPosition, WaitInfinite());
+				var bigtoad = SpawnEffect(ActorSno._gianttoad, inFrontOfUser, TargetPosition, WaitInfinite());
 
 				// HACK: holy hell there is alot of hardcoded animation timings here
 
@@ -142,10 +162,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				yield return WaitSeconds(0.3f); // have tongue hang there for a bit
 
-				var tongueMover = new Implementations.KnockbackBuff(-0.01f, 3f, -0.1f);
+				var tongueMover = new KnockbackBuff(-0.01f, 3f, -0.1f);
 				this.World.BuffManager.AddBuff(bigtoad, tongueEnd, tongueMover);
 				if (ValidTarget())
-					this.World.BuffManager.AddBuff(bigtoad, Target, new Implementations.KnockbackBuff(-0.01f, 3f, -0.1f));
+					this.World.BuffManager.AddBuff(bigtoad, Target, new KnockbackBuff(-0.01f, 3f, -0.1f));
 
 				yield return tongueMover.ArrivalTime;
 				tongueEnd.Destroy();
@@ -193,7 +213,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				Projectile[] frogs = new Projectile[3];
 				for (int i = 0; i < frogs.Length; ++i)
 				{
-					var projectile = new Projectile(this, RuneSelect(105792, 105795, -1, -1, 105792, 105829), User.Position);
+					var projectile = new Projectile(
+						this,
+						RuneSelect(
+							ActorSno._wd_plagueoftoads_toad,
+							ActorSno._wd_plagueoftoadsrune_fire_toad,
+							ActorSno.__NONE,
+							ActorSno.__NONE,
+							ActorSno._wd_plagueoftoads_toad,
+							ActorSno._wd_plagueoftoadsrune_confuse_toad
+						),
+						User.Position
+					);
 					projectile.Position.Z -= 3f;
 					projectile.Timeout = timeout;
 					projectile.OnCollision = (hit) =>
@@ -203,7 +234,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							projectile.PlayEffect(Effect.GorePoison);
 							WeaponDamage(hit, Rune_A > 0 ? ScriptFormula(17) : ScriptFormula(0), Rune_A > 0 ? DamageType.Fire : DamageType.Poison);
 
-							if (Rune_E > 0 && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < ScriptFormula(12))
+							if (Rune_E > 0 && FastRandom.Instance.NextDouble() < ScriptFormula(12))
 								AddBuff(hit, new Confusion_Debuff());
 						}
 					};
@@ -215,7 +246,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					for (int i = 0; i < frogs.Length; ++i)
 					{
 						if (frogs[i] == null) continue;
-						var target = PowerMath.GenerateSpreadPositions(frogs[i].Position, PowerMath.TranslateDirection2D(User.Position, TargetPosition, frogs[i].Position, 10f), 30f, 3)[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, 3)];
+						var target = PowerMath.GenerateSpreadPositions(frogs[i].Position, PowerMath.TranslateDirection2D(User.Position, TargetPosition, frogs[i].Position, 10f), 30f, 3)[FastRandom.Instance.Next(0, 3)];
 						//frogs[i].LaunchArc(new Vector3D(RandomDirection(frogs[i].Position, 5f, 10f)), 3f, -0.03f);
 						frogs[i].LaunchArc(target, 3f, -0.03f);
 					}
@@ -287,7 +318,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var Target = GetEnemiesInRadius(TargetPosition, ScriptFormula(14)).GetClosestTo(TargetPosition);
 					if (Target != null)
 					{
-						SpawnEffect(105955, Target.Position);
+						SpawnEffect(ActorSno._witchdoctor_graspofthedead_indigorune_proxyactor, Target.Position);
 						WeaponDamage(GetEnemiesInRadius(Target.Position, ScriptFormula(15)), ScriptFormula(10), DamageType.Holy);
 						yield return WaitSeconds(ScriptFormula(13));
 					}
@@ -295,7 +326,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			else
 			{
-				var Ground = SpawnEffect(RuneSelect(69308, 105953, -1, 105956, 105957, 105958), TargetPosition, 0, WaitSeconds(ScriptFormula(8)));
+				var Ground = SpawnEffect(
+					RuneSelect(
+						ActorSno._witchdoctor_graspofthedead_proxyactor,
+						ActorSno._witchdoctor_graspofthedead_crimsonrune_proxyactor,
+						ActorSno.__NONE,
+						ActorSno._witchdoctor_graspofthedead_obsidianrune_proxyactor,
+						ActorSno._witchdoctor_graspofthedead_goldenrune_proxyactor,
+						ActorSno._witchdoctor_graspofthedead_alabasterrune_proxyactor
+					), 
+					TargetPosition,
+					0,
+					WaitSeconds(ScriptFormula(8))
+				);
 				Ground.UpdateDelay = 0.5f;
 				Ground.OnUpdate = () =>
 				{
@@ -402,7 +445,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (Target == null)
 				{
 
-					var Lingerer = SpawnEffect(111345, TargetPosition, 0, WaitSeconds(ScriptFormula(4)));
+					var Lingerer = SpawnEffect(ActorSno._wd_hauntrune_indigo_spiritemitter, TargetPosition, 0, WaitSeconds(ScriptFormula(4)));
 					Lingerer.OnTimeout = () =>
 					{
 						Lingerer.World.BuffManager.RemoveAllBuffs(Lingerer);
@@ -447,7 +490,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					{
 						if (Rune_B > 0)
 						{
-							var Lingerer = SpawnEffect(111345, Target.Position, 0, WaitSeconds(ScriptFormula(4)));
+							var Lingerer = SpawnEffect(ActorSno._wd_hauntrune_indigo_spiritemitter, Target.Position, 0, WaitSeconds(ScriptFormula(4)));
 							Lingerer.OnTimeout = () =>
 							{
 								Lingerer.World.BuffManager.RemoveAllBuffs(Lingerer);
@@ -548,8 +591,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			StartCooldown(EvalTag(PowerKeys.CooldownTime));
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
+			var runeActorSno = RuneSelect(
+				ActorSno._witchdoctor_zombiecharger_projectile,
+				ActorSno._witchdoctor_zombiecharger_projectile_crimsonrune,
+				ActorSno._x1_wd_zombiecharger_frost_bear,
+				ActorSno._witchdoctor_zombiecharger_projectile,
+				ActorSno._witchdoctor_zombiecharger_projectile_goldenrune,
+				ActorSno._witchdoctor_zombiecharger_projectile_alabasterrune
+			);
 
-			if ((User as Player).SkillSet.HasPassive(218588) && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
 			{
 				var Fetish = new FetishMelee(this.World, this, 0);
 				Fetish.Brain.DeActivate();
@@ -571,7 +622,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				Vector3D inFrontOfUser = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 1f);
 				Vector3D[] projDestinations = PowerMath.GenerateSpreadPositions(User.Position, TargetPosition, 10f, 3);
 
-				var BearProj1 = new Projectile(this, RuneSelect(74056, 105501, 361799, 105463, 105969, 105812), inFrontOfUser);
+				var BearProj1 = new Projectile(this, runeActorSno, inFrontOfUser);
 				BearProj1.Position.Z -= 3f;
 				BearProj1.OnCollision = (hit) =>
 				{
@@ -580,7 +631,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				BearProj1.Launch(projDestinations[1], ScriptFormula(19));
 
 				yield return WaitSeconds(0.5f);
-				var BearProj2 = new Projectile(this, RuneSelect(74056, 105501, 361799, 105463, 105969, 105812), inFrontOfUser);
+				var BearProj2 = new Projectile(this, runeActorSno, inFrontOfUser);
 				BearProj2.Position.Z -= 3f;
 				BearProj2.OnCollision = (hit) =>
 				{
@@ -589,7 +640,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				BearProj2.Launch(projDestinations[0], ScriptFormula(19));
 
 				yield return WaitSeconds(0.5f);
-				var BearProj3 = new Projectile(this, RuneSelect(74056, 105501, 361799, 105463, 105969, 105812), inFrontOfUser);
+				var BearProj3 = new Projectile(this, runeActorSno, inFrontOfUser);
 				BearProj3.Position.Z -= 3f;
 				BearProj3.OnCollision = (hit) =>
 				{
@@ -604,7 +655,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				for (int i = 1; i < projDestinations.Length; i++)
 				{
-					var multiproj = new Projectile(this, RuneSelect(74056, 105501, 361799, 105463, 105969, 105812), inFrontOfUser);
+					var multiproj = new Projectile(this, runeActorSno, inFrontOfUser);
 					multiproj.Position.Z -= 3f;
 					multiproj.OnCollision = (hit) =>
 					{
@@ -617,7 +668,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				int maxZombies = (int)ScriptFormula(24);
 				Vector3D inFrontOfUser = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 3f);
-				var proj = new Projectile(this, RuneSelect(74056, 105501, 361799, 105463, 105969, 105812), inFrontOfUser);
+				var proj = new Projectile(this, runeActorSno, inFrontOfUser);
 				proj.Position.Z -= 3f;
 				proj.Launch(TargetPosition, ScriptFormula(1));
 				proj.OnCollision = (hit) =>
@@ -645,7 +696,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			else if (Rune_E > 0)
 			{
 				Vector3D inFrontOfUser = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 3f);
-				var proj = new Projectile(this, RuneSelect(74056, 105501, 105543, 105463, 105969, 105812), inFrontOfUser);
+				var proj = new Projectile(this, runeActorSno, inFrontOfUser);
 				proj.Position.Z -= 3f;
 				proj.OnCollision = (hit) =>
 				{
@@ -658,10 +709,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				Vector3D inFrontOfUser = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 3f);
 				if (Rune_C > 0)
 				{
-					var tower1 = SpawnEffect(182603, inFrontOfUser, 0, WaitSeconds(1.5f));
-					var tower2 = SpawnEffect(182608, inFrontOfUser, 0, WaitSeconds(1.5f));
-					var tower3 = SpawnEffect(182610, inFrontOfUser, 0, WaitSeconds(1.5f));
-					var tower4 = SpawnEffect(182612, inFrontOfUser, 0, WaitSeconds(1.5f));
+					var tower1 = SpawnEffect(ActorSno._wd_wallofzombies_tower_zombie1, inFrontOfUser, 0, WaitSeconds(1.5f));
+					var tower2 = SpawnEffect(ActorSno._wd_wallofzombies_tower_zombie2, inFrontOfUser, 0, WaitSeconds(1.5f));
+					var tower3 = SpawnEffect(ActorSno._wd_wallofzombies_tower_zombie3, inFrontOfUser, 0, WaitSeconds(1.5f));
+					var tower4 = SpawnEffect(ActorSno._wd_wallofzombies_tower_zombie4, inFrontOfUser, 0, WaitSeconds(1.5f));
 					tower1.OnTimeout = () =>
 					{
 						AttackPayload attack = new AttackPayload(this);
@@ -676,7 +727,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 				else
 				{
-					var proj = new Projectile(this, RuneSelect(74056, 105501, 105543, 74058, 105969, 105812), inFrontOfUser);
+					var proj = new Projectile(this, runeActorSno, inFrontOfUser);
 					proj.Position.Z -= 3f;
 					proj.OnCollision = (hit) =>
 					{
@@ -819,7 +870,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			UsePrimaryResource(ScriptFormula(0) * 0.25f); //resourceCostReduction
 
-			if ((User as Player).SkillSet.HasPassive(218588) && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
 			{
 				var Fetish = new FetishMelee(this.World, this, 0);
 				Fetish.Brain.DeActivate();
@@ -839,11 +890,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Rune_A > 0)
 			{
 				//Projectile Giant Bat Actors
-				var proj = new Projectile(this, 108238, User.Position);
+				var proj = new Projectile(this, ActorSno._wd_firebatsrune_giant_batprojectile, User.Position);
 				proj.Position.Z += 5f;  // unknown if this is needed
 				proj.OnCollision = (hit) =>
 				{
-					SpawnEffect(108389, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z));
+					SpawnEffect(ActorSno._wd_firebatsrune_giant_explosion, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z));
 					AddBuff(hit, new BatDamage());
 					proj.Destroy();
 				};
@@ -855,7 +906,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (GetEnemiesInArcDirection(User.Position, TargetPosition, ScriptFormula(10), ScriptFormula(4)).Actors != null)
 				{
-					var proj = new Projectile(this, 106569, User.Position);
+					var proj = new Projectile(this, ActorSno._wd_firebatsrune_missiles_bat, User.Position);
 					proj.Position.Z += 5f;
 					proj.OnCollision = (hit) =>
 					{
@@ -994,7 +1045,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			Projectile[] grenades = new Projectile[1];
 			for (int i = 0; i < grenades.Length; ++i)
 			{
-				var projectile = new Projectile(this, 6453, User.Position);
+				var projectile = new Projectile(this, ActorSno._wd_fireball_head_projectile, User.Position);
 				grenades[i] = projectile;
 			}
 
@@ -1029,12 +1080,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			else if (Rune_D > 0)
 			{
-				var heads = User.World.GetActorsBySNO(6451);
+				var heads = User.World.GetActorsBySNO(ActorSno._wd_fireball_groundmiss);
 				foreach (var h in heads)
 				{
 					h.Destroy();
 				}
-				var FireColumn = new EffectActor(this, 6451, new Vector3D(TargetPosition.X, TargetPosition.Y, TargetPosition.Z + 5));
+				var FireColumn = new EffectActor(this, ActorSno._wd_fireball_groundmiss, new Vector3D(TargetPosition.X, TargetPosition.Y, TargetPosition.Z + 5));
 				FireColumn.Timeout = WaitSeconds(ScriptFormula(14));
 				FireColumn.Scale = 2f;
 				FireColumn.Spawn();
@@ -1045,7 +1096,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (targets.Actors.Count > 0 && targets != null)
 					{
 						targets.SortByDistanceFrom(FireColumn.Position);
-						var proj = new Projectile(this, 6453, FireColumn.Position);
+						var proj = new Projectile(this, ActorSno._wd_fireball_head_projectile, FireColumn.Position);
 						proj.Position.Z += 5f;  // unknown if this is needed
 						proj.OnCollision = (hit) =>
 						{
@@ -1065,11 +1116,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				{
 					var grenadeN = grenade;
 
-					SpawnEffect(6451, TargetPosition);
+					SpawnEffect(ActorSno._wd_fireball_groundmiss, TargetPosition);
 
 					if (Rune_C > 0)
 					{
-						var pool = SpawnEffect(6483, grenade.Position, 0, WaitSeconds(ScriptFormula(12)));
+						var pool = SpawnEffect(ActorSno._witchdoctor_firebombpool, grenade.Position, 0, WaitSeconds(ScriptFormula(12)));
 						pool.UpdateDelay = 1f;
 						pool.OnUpdate = () =>
 						{
@@ -1083,7 +1134,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					attack.Apply();
 					if (Rune_A > 0)
 					{
-						SpawnEffect(193964, grenade.Position);
+						SpawnEffect(ActorSno._wd_fireball_groundmiss_radius, grenade.Position);
 						WeaponDamage(GetEnemiesInRadius(grenadeN.Position, ScriptFormula(5)), ScriptFormula(21), DamageType.Fire);
 					}
 					if (Rune_B > 0)
@@ -1094,7 +1145,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							grenadeN.LaunchArc(PowerMath.TranslateDirection2D(User.Position, TargetPosition, grenadeN.Position, PowerMath.Distance2D(User.Position, TargetPosition)), height, ScriptFormula(2));
 							yield return grenadeN.ArrivalTime;
 
-							SpawnEffect(6451, grenadeN.Position);
+							SpawnEffect(ActorSno._wd_fireball_groundmiss, grenadeN.Position);
 
 							AttackPayload bonus_attack = new AttackPayload(this);
 							bonus_attack.Targets = GetEnemiesInRadius(grenadeN.Position, ScriptFormula(4));
@@ -1129,7 +1180,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			Actor blast = SpawnProxy(DecoySpot);
 
 			//SpawnEffect(106584, DecoySpot, 0, WaitSeconds(ScriptFormula(0))); //Male
-			SpawnEffect(107705, DecoySpot, 0, WaitSeconds(ScriptFormula(0))); //Female
+			SpawnEffect(ActorSno._witchdoctor_spiritwalk_dummy_female, DecoySpot, 0, WaitSeconds(ScriptFormula(0))); //Female
 
 
 			AddBuff(User, new SpiritWalkBuff());
@@ -1458,7 +1509,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (Rune_E > 0 && payload.Target == Target && payload is DeathPayload)
 				{
-					var swarm = new EffectActor(this, 5515, new Vector3D(Target.Position.X, Target.Position.Y, Target.Position.Z + 3));
+					var swarm = new EffectActor(this, ActorSno._swarm_d, new Vector3D(Target.Position.X, Target.Position.Y, Target.Position.Z + 3));
 					swarm.Timeout = WaitSeconds(ScriptFormula(11));
 					swarm.Scale = 1f;
 					swarm.Spawn();
@@ -1522,7 +1573,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				//this doesnt work.
 				TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, Math.Min(PowerMath.Distance2D(User.Position, TargetPosition), 35f));
-				var AOE_Ghost = SpawnEffect(181880, TargetPosition, 0, WaitSeconds(ScriptFormula(11)));
+				var AOE_Ghost = SpawnEffect(ActorSno._wd_spiritbarragerune_aoe_ghostmodel, TargetPosition, 0, WaitSeconds(ScriptFormula(11)));
 				AOE_Ghost.PlayEffectGroup(186804);
 				AOE_Ghost.UpdateDelay = 1f;
 				AOE_Ghost.OnUpdate = () =>
@@ -1535,7 +1586,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			else
 			{
-				var proj = new Projectile(this, RuneSelect(175354, 181767, 181842, 181818, 175354, 175354), User.Position);
+				var proj = new Projectile(
+					this,
+					RuneSelect(
+						ActorSno._wd_spiritbarrage_ghost,
+						ActorSno._wd_spiritbarragerune_heal_ghost,
+						ActorSno._wd_spiritbarragerune_multi_ghost,
+						ActorSno._wd_spiritbarragerune_mana_ghost,
+						ActorSno._wd_spiritbarrage_ghost,
+						ActorSno._wd_spiritbarrage_ghost
+					),
+					User.Position
+				);
 				proj.Position.Z += 5f;
 				proj.Timeout = WaitSeconds(1.5f);
 				proj.OnCollision = (hit) =>
@@ -1569,7 +1631,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						var target = GetEnemiesInRadius(User.Position, 40f).GetClosestTo(User.Position);
 						if (target != null)
 						{
-							var add_proj = new Projectile(this, 181842, User.Position);
+							var add_proj = new Projectile(this, ActorSno._wd_spiritbarragerune_multi_ghost, User.Position);
 							add_proj.Position.Z += 5f;
 							add_proj.Timeout = WaitSeconds(1.5f);
 							add_proj.OnCollision = (hit) =>
@@ -1641,7 +1703,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-			if ((User as Player).SkillSet.HasPassive(218588) && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
 			{
 				var Fetish = new FetishMelee(this.World, this, 0);
 				Fetish.Brain.DeActivate();
@@ -1651,7 +1713,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				Fetish.PlayActionAnimation(90118);
 				yield return WaitSeconds(0.5f);
 
-				(Fetish as Minion).Brain.Activate();
+				Fetish.Brain.Activate();
 				Fetish.Attributes[GameAttribute.Untargetable] = false;
 				Fetish.Attributes.BroadcastChangedIfRevealed();
 				Fetish.LifeTime = WaitSeconds(60f);
@@ -1660,13 +1722,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_E > 0)
 			{
-				var acid = SpawnEffect(121908, TargetPosition, User.Position);
+				var acid = SpawnEffect(ActorSno._wd_acidcloudrune_barf_pools, TargetPosition, User.Position);
 				yield return WaitSeconds(ScriptFormula(32));
 				WeaponDamage(GetEnemiesInArcDirection(User.Position, TargetPosition, ScriptFormula(31), ScriptFormula(30)), ScriptFormula(2), DamageType.Poison);
 			}
 			else
 			{
-				SpawnEffect(RuneSelect(61398, 121919, 122281, 123587, 121920, -1), TargetPosition);
+				SpawnEffect(RuneSelect(ActorSno._wd_acidcloud, ActorSno._wd_acidcloudrune_damage, ActorSno._wd_acidcloudrune_splash, ActorSno._wd_acidcloudrune_slimes, ActorSno._wd_acidcloudrune_disease, ActorSno.__NONE), TargetPosition);
 				yield return WaitSeconds(ScriptFormula(14));
 				WeaponDamage(GetEnemiesInRadius(TargetPosition, ScriptFormula(1)), ScriptFormula(2), DamageType.Poison);
 			}
@@ -1674,7 +1736,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			//slime -> 121595.ACR
 			//this is a pet and theyre are a max of 3 allowed.
 			//spawn slime that wanders in a certain area
-			var AcidPools = SpawnEffect(Rune_C > 0 ? 121595 : 6509, TargetPosition, 0, WaitSeconds(ScriptFormula(5)));
+			var AcidPools = SpawnEffect(Rune_C > 0 ? ActorSno._wd_acidcloudrune_slime : ActorSno._wizard_acidcloud_pools, TargetPosition, 0, WaitSeconds(ScriptFormula(5)));
 			AcidPools.UpdateDelay = ScriptFormula(7);
 			AcidPools.OnUpdate = () =>
 			{
@@ -1751,8 +1813,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			if (Rune_C > 0)
 			{
+				// FIXME: recheck actor sno
 				//could not find the correct Projectile actor for this.
-				var proj = new Projectile(this, -1, User.Position);
+				var proj = new Projectile(this, ActorSno.__NONE, User.Position);
 				proj.Position.Z += 5f;  // unknown if this is needed
 				proj.OnUpdate = () =>
 				{
@@ -1828,7 +1891,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-			var Voodoo = new EffectActor(this, RuneSelect(117574, 182271, 182276, 182278, 182283, 117574), TargetPosition);
+			var Voodoo = new EffectActor(
+				this,
+				RuneSelect(
+					ActorSno._witchdoctor_bigbadvoodoo_fetish,
+					ActorSno._witchdoctor_bigbadvoodoo_fetish_red,
+					ActorSno._witchdoctor_bigbadvoodoo_fetish_blue,
+					ActorSno._witchdoctor_bigbadvoodoo_fetish_purple,
+					ActorSno._witchdoctor_bigbadvoodoo_fetish_yellow,
+					ActorSno._witchdoctor_bigbadvoodoo_fetish
+				),
+				TargetPosition
+			);
 			Voodoo.Timeout = WaitSeconds(ScriptFormula(0));
 			Voodoo.Scale = 1f;
 			Voodoo.Spawn();
@@ -1977,12 +2051,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				for (int i = 0; i < projDestinations.Length; i++)
 				{
-					var proj = new Projectile(this, 183977, User.Position);
+					var proj = new Projectile(this, ActorSno._wd_wallofzombies_charge_projectile, User.Position);
 					proj.OnCollision = (hit) =>
 					{
 						proj.Destroy();
 						WeaponDamage(hit, ScriptFormula(4), DamageType.Physical);
-						SpawnEffect(182695, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z));
+						// FIXME: check and find correct actor sno
+						SpawnEffect(ActorSno._x1_witchdoctor_wallofzombies_circlewall, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z));
 					};
 					proj.Launch(projDestinations[i], 0.2f);
 				}
@@ -1998,7 +2073,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				for (int i = 0; i < spawnPoints.Length; ++i)
 				{
-					var miniwall = SpawnEffect(135016, spawnPoints[i], castAngle, WaitSeconds(ScriptFormula(0)));
+					var miniwall = SpawnEffect(ActorSno._wd_wallofzombies_emitter_wide, spawnPoints[i], castAngle, WaitSeconds(ScriptFormula(0)));
 					miniwall.UpdateDelay = ScriptFormula(8);
 					miniwall.OnUpdate = () =>
 					{
@@ -2011,7 +2086,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			else
 			{
 				float castAngle = MovementHelpers.GetFacingAngle(User.Position, TargetPosition);
-				var Wall = SpawnEffect(RuneSelect(131202, 135016, 135016, -1, 182574, 131640), TargetPosition, castAngle, WaitSeconds(Rune_E > 0 ? 2 : ScriptFormula(0)));
+				var Wall = SpawnEffect(
+					RuneSelect(
+						ActorSno._wd_wallofzombies_emitter,
+						ActorSno._wd_wallofzombies_emitter_wide,
+						ActorSno._wd_wallofzombies_emitter_wide,
+						ActorSno.__NONE,
+						ActorSno._wd_wallofzombies_emitter_slow,
+						ActorSno._wd_wallofzombies_emitter_tower
+					),
+					TargetPosition,
+					castAngle,
+					WaitSeconds(Rune_E > 0 ? 2 : ScriptFormula(0))
+				);
 				if (Rune_E > 0)
 				{
 					Wall.OnTimeout = () =>
@@ -2144,7 +2231,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			StartCooldown(5f);
 			int dogs = 0;
 			int _enemiesDamaged = 0;
-			foreach (Actor dog in GetAlliesInRadius(User.Position, 100f).Actors.Where(a => a.ActorSNO.Id == 51353 && (User as Player).Followers.ContainsKey(a.GlobalID)))
+			foreach (Actor dog in GetAlliesInRadius(User.Position, 100f).Actors.Where(a => a.SNO == ActorSno._wd_zombiedog && (User as Player).Followers.ContainsKey(a.GlobalID)))
 			{
 				if (Rune_B > 0)
 					(User as Player).AddHP(ScriptFormula(6));
@@ -2439,7 +2526,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (!User.World.CheckLocationForFlag(TargetPosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 				TargetPosition = User.Position;
-			var proj = new Projectile(this, RuneSelect(106504, 215811, 215815, 215816, 215814, 215813), User.Position);
+			var proj = new Projectile(
+				this,
+				RuneSelect(
+					ActorSno._witchdoctor_corpsespiders_projectile,
+					ActorSno._witchdoctor_corpsespiders_projectile_crimsonrune,
+					ActorSno._witchdoctor_corpsespiders_projectile_indigorune,
+					ActorSno._witchdoctor_corpsespiders_projectile_obsidianrune,
+					ActorSno._witchdoctor_corpsespiders_projectile_goldenrune,
+					ActorSno._witchdoctor_corpsespiders_projectile_alabasterrune
+				),
+				User.Position
+			);
 			proj.Position.Z += 5f;
 			proj.LaunchArc(TargetPosition, 5f, -0.07f);
 			yield return WaitSeconds(0.4f);
@@ -2447,7 +2545,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				proj.Destroy();
 			};
-			SpawnEffect(110714, TargetPosition);
+			SpawnEffect(ActorSno._witchdoctor_corpsespiders_jar_breakable, TargetPosition);
 
 			//the rest of this is spiders, which are pets i presume?
 			yield return WaitSeconds(0.05f);
@@ -2471,7 +2569,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				for (int i = 0; i < (int)ScriptFormula(0); i++)
 				{
-					var spider = new CorpseSpider(this.World, this, RuneSelect(107031, 106731, 106749, 107067, 107107, 107112), 0);
+					var spider = new CorpseSpider(
+						this.World,
+						this,
+						RuneSelect(
+							ActorSno._witchdoctor_corpsespider,
+							ActorSno._witchdoctor_corpsespider_crimsonrune,
+							ActorSno._witchdoctor_corpsespider_indigorune,
+							ActorSno._witchdoctor_corpsespider_obsidianrune,
+							ActorSno._witchdoctor_corpsespider_goldenrune,
+							ActorSno._witchdoctor_corpsespider_alabasterrune
+						),
+						0
+					);
 					spider.Brain.DeActivate();
 					spider.Position = RandomDirection(TargetPosition, 3f, 8f);
 					spider.Attributes[GameAttribute.Untargetable] = true;
@@ -2485,7 +2595,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 			}
 
-			if ((User as Player).SkillSet.HasPassive(218588) && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
 			{
 				var Fetish = new FetishMelee(this.World, this, 0);
 				Fetish.Brain.DeActivate();
@@ -2675,10 +2785,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (payload is HitPayload && payload.Target == Target)
 			{
 				Player usr = (Target as Player);
-				float dmg = (payload as HitPayload).TotalDamage * ScriptFormula(9) / usr.Followers.Values.Where(a => a == 51353).Count();
+				float dmg = (payload as HitPayload).TotalDamage * ScriptFormula(9) / usr.Followers.Values.Where(a => a == ActorSno._wd_zombiedog).Count();
 				(payload as HitPayload).TotalDamage *= 1 - ScriptFormula(9);
 				//List<Actor> dogs = GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.ActorSNO.Id == 51353).ToList();
-				foreach (var dog in GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.ActorSNO.Id == 51353))
+				foreach (var dog in GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.SNO == ActorSno._wd_zombiedog))
 					Damage(dog, dmg, 0, DamageType.Physical);
 			}
 		}
@@ -2709,10 +2819,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (payload is HitPayload && payload.Context.User == Target)
 			{
 				Player master = (Target as ZombieDog).Master as Player;
-				float heal = (payload as HitPayload).TotalDamage * ScriptFormula(8) / (master.Followers.Values.Where(a => a == 51353).Count() + 1);
+				float heal = (payload as HitPayload).TotalDamage * ScriptFormula(8) / (master.Followers.Values.Where(a => a == ActorSno._wd_zombiedog).Count() + 1);
 				(payload as HitPayload).TotalDamage *= 1 - ScriptFormula(9);
 				master.AddHP(heal);
-				foreach (var dog in GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.ActorSNO.Id == 51353))
+				foreach (var dog in GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.SNO == ActorSno._wd_zombiedog))
 					dog.AddHP(heal);
 			}
 		}
@@ -2792,7 +2902,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 10f);
 			//TargetPosition.Z += 5f;
 
-			var piranha_pool = SpawnEffect(RuneSelect(348308, 356987, 348308, 357846, 348308, 358653), TargetPosition, 0, WaitSeconds(ScriptFormula(25)));
+			var piranha_pool = SpawnEffect(
+				RuneSelect(
+					ActorSno._x1_wd_piranha_proxy,
+					ActorSno._x1_wd_piranha_gator_proxy,
+					ActorSno._x1_wd_piranha_proxy,
+					ActorSno._x1_wd_piranha_tornado_proxy,
+					ActorSno._x1_wd_piranha_proxy,
+					ActorSno._x1_wd_piranha_cold_proxy
+				),
+				TargetPosition,
+				0,
+				WaitSeconds(ScriptFormula(25))
+			);
 			piranha_pool.UpdateDelay = 1f;
 			piranha_pool.OnUpdate = () =>
 			{

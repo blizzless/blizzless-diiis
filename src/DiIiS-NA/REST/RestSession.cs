@@ -175,7 +175,7 @@ namespace DiIiS_NA.REST
             {
                 loginResult.AuthenticationState = "LOGIN";
                 loginResult.ErrorCode = "UNABLE_TO_DECODE";
-                loginResult.ErrorMessage = "HEBEPHO! WRONG! English do you speak IT?!";
+                loginResult.ErrorMessage = "The information you have entered is not valid.";
                 SendResponse(HttpCode.BadRequest, loginResult);
                 Logger.Error("Аутентификация неудалась: Логин - {0}. Cоединение с REST разорвано.", login);
             }

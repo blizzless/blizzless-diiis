@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -31,26 +32,26 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(96993)]
+	[HandledSNO(ActorSno._a1dun_cath_chest_rare)]
 	class LegendaryChest : LootContainer
 	{
 		public bool ChestActive = false;
 
-		public LegendaryChest(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public LegendaryChest(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
-			this.NameSNOId = 108122;
+			this.NameSNO = ActorSno._caout_stingingwinds_chest;
 			this.Field7 = 1;
 		}
 
-		public override bool Reveal(PlayerSystem.Player player)
+		public override bool Reveal(Player player)
 		{
 			if (!this.ChestActive) return false;
 			return base.Reveal(player);
 		}
 
 
-		public override void OnTargeted(PlayerSystem.Player player, TargetMessage message)
+		public override void OnTargeted(Player player, TargetMessage message)
 		{
 			if (this.Attributes[GameAttribute.Disabled]) return;
 

@@ -14,6 +14,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -22,10 +23,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		//Changes creature with each rune,
 		//RuneSelect(141402, 168815, 150024, 150025, 150026, 150027)
 
-		public static List<int> Sentries = new List<int>() { 141402, 168815, 150024, 150025, 150026, 150027 };
+		public static readonly List<ActorSno> Sentries = new List<ActorSno>()
+		{
+			ActorSno._dh_sentry,
+			ActorSno._dh_sentry_tether,
+			ActorSno._dh_sentry_addsduration,
+			ActorSno._dh_sentry_addsmissiles,
+			ActorSno._dh_sentry_addsheals,
+			ActorSno._dh_sentry_addsshield
+		};
 
-		public SentryMinion(World world, PowerContext context, int SentrySNOId)
-			: base(world, SentrySNOId, context.User, null)
+		public SentryMinion(World world, PowerContext context, ActorSno SentrySNO)
+			: base(world, SentrySNO, context.User, null)
 		{
 			Scale = 1.2f;
 			//TODO: get a proper value for this.

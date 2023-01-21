@@ -56,6 +56,7 @@ using System.Collections.Concurrent;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Platinum;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 {
@@ -109,52 +110,57 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			switch (speaker)
 			{
-				case Speaker.AltNPC1: return GetActorBySNO(asset.SNOAltNpc1);
-				case Speaker.AltNPC2: return GetActorBySNO(asset.SNOAltNpc2);
-				case Speaker.AltNPC3: return GetActorBySNO(asset.SNOAltNpc3);
-				case Speaker.AltNPC4: return GetActorBySNO(asset.SNOAltNpc4);
-				case Speaker.Player: return player;
-				case Speaker.PrimaryNPC: return GetActorBySNO(asset.SNOPrimaryNpc);
-				case Speaker.EnchantressFollower: return null;
-				case Speaker.ScoundrelFollower: return null;
-				case Speaker.TemplarFollower: return null;
-				case Speaker.None: return null;
+				case Speaker.AltNPC1:
+					return GetActorBySNO((ActorSno)asset.SNOAltNpc1);
+				case Speaker.AltNPC2:
+					return GetActorBySNO((ActorSno)asset.SNOAltNpc2);
+				case Speaker.AltNPC3:
+					return GetActorBySNO((ActorSno)asset.SNOAltNpc3);
+				case Speaker.AltNPC4:
+					return GetActorBySNO((ActorSno)asset.SNOAltNpc4);
+				case Speaker.Player:
+					return player;
+				case Speaker.PrimaryNPC:
+					return GetActorBySNO((ActorSno)asset.SNOPrimaryNpc);
+				case Speaker.EnchantressFollower:
+				case Speaker.ScoundrelFollower:
+				case Speaker.TemplarFollower:
+				case Speaker.None:
+					return null;
 			}
 			return null;
 		}
 
-		private ActorSystem.Actor GetActorBySNO(int sno)
+		private ActorSystem.Actor GetActorBySNO(ActorSno sno)
 		{
-			//if (sno == 121208)
-			//	sno = 4580; //hack
-			var result = player.World.Actors.Values.Where(actor => actor.ActorSNO.Id == sno && actor.IsRevealedToPlayer(player)).OrderBy((actor) => PowerMath.Distance2D(actor.Position, player.Position)).FirstOrDefault();
+            ActorSystem.Actor SearchFunc(ActorSno a) => player.World.Actors.Values.Where(actor => actor.SNO == a && actor.IsRevealedToPlayer(player)).OrderBy((actor) => PowerMath.Distance2D(actor.Position, player.Position)).FirstOrDefault();
+            //if (sno == 121208)
+            //	sno = 4580; //hack
+            var result = SearchFunc(sno);
 
-			if (result == null)
-			{
-				if (sno == 87037)
-				{
-					result = player.World.Actors.Values.Where(actor => actor.ActorSNO.Id == 104813 && actor.IsRevealedToPlayer(player)).OrderBy((actor) => PowerMath.Distance2D(actor.Position, player.Position)).FirstOrDefault();
-					return result;
-				}
-				else
-				{
-					result = player.World.Actors.Values.Where(actor => actor.ActorSNO.Id == sno && !actor.IsRevealedToPlayer(player)).OrderBy((actor) => PowerMath.Distance2D(actor.Position, player.Position)).FirstOrDefault();
-					if (result == null)
-						//return player;
-						return player.World.SpawnMonster(sno, new Vector3D(player.Position.X, player.Position.Y, player.Position.Z + 150));
-					else
-					{
-						result.Reveal(player);
-						return result;
-					}
-				}
-			}
-			else
-			{
-				//result.Reveal(player);
-				return result;
-			}
-		}
+            if (result != null)
+            {
+                //result.Reveal(player);
+                return result;
+            }
+
+            if (sno == ActorSno._templarnpc)
+            {
+                return SearchFunc(ActorSno._templarnpc_imprisoned);
+            }
+            else
+            {
+                result = SearchFunc(sno);
+                if (result == null)
+                    //return player;
+                    return player.World.SpawnMonster(sno, new Vector3D(player.Position.X, player.Position.Y, player.Position.Z + 150));
+                else
+                {
+                    result.Reveal(player);
+                    return result;
+                }
+            }
+        }
 
 		/// <summary>
 		/// Creates a new conversation wrapper for an asset with a given sno.
@@ -341,21 +347,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			if (this.SNOId == 72817) //Tristram parom man
 			{
-				var world = this.player.World.Game.GetWorld(72882);
+				var world = this.player.World.Game.GetWorld(WorldSno.trout_townattack);
 				this.player.ChangeWorld(world, world.GetStartingPointById(116).Position);
 			}
 
 			else if (this.SNOId == 208400) //Cow king
 			{
-				var portal = this.player.World.Game.GetWorld(71150).GetActorBySNO(209083);
-				(portal as ActorSystem.Implementations.WhimsyshirePortal).Open();
+				var portal = this.player.World.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._g_portal_tentacle_trist);
+				(portal as WhimsyshirePortal).Open();
 			}
 
 			else if (this.SNOId == 275450) //PvP hub gatekeeper
 			{
 				this.player.ShowConfirmation(this.player.DynamicID(this.player), (() =>
 				{
-					var world = this.player.World.Game.GetWorld(279626);
+					var world = this.player.World.Game.GetWorld(WorldSno.pvp_duel_small_multi);
 					this.player.ChangeWorld(world, world.GetStartingPointById(288).Position);
 				}));
 			}
@@ -494,8 +500,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.player.InGameClient.Game.ActiveNephalemTimer = false;
 				this.player.InGameClient.Game.ActiveNephalemProgress = 0;
 
-				var HubWorld = this.player.InGameClient.Game.GetWorld(332336);
-				var NStone = HubWorld.GetActorBySNO(364715);
+				var HubWorld = this.player.InGameClient.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
+				var NStone = HubWorld.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 				bool Activated = true;
 				NStone.SetIdleAnimation(NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.IdleDefault]);
 				NStone.PlayActionAnimation(NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.Closing]);
@@ -508,9 +514,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				NStone.Attributes[GameAttribute.Immunity] = !Activated;
 				NStone.Attributes.BroadcastChangedIfRevealed();
 
-				foreach (var p in HubWorld.GetActorsBySNO(345935))
-					p.Destroy();
-				foreach (var p in HubWorld.GetActorsBySNO(396751))
+				foreach (var p in HubWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal))
 					p.Destroy();
 			}
 
@@ -560,7 +564,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				ActorID = GetSpeaker(currentLineNode.LineSpeaker).DynamicID(player), // GetActorBySNO(asset.SNOPrimaryNpc).DynamicID,
 				Field1 = new uint[9]
 						{
-							player.DynamicID(player), asset.SNOPrimaryNpc != -1 ? GetActorBySNO(asset.SNOPrimaryNpc).DynamicID(player) : 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
+							player.DynamicID(player), asset.SNOPrimaryNpc != -1 ? GetActorBySNO((ActorSno)asset.SNOPrimaryNpc).DynamicID(player) : 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
 						},
 
 				PlayLineParams = new PlayLineParams()
@@ -577,7 +581,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					AudioClass = (GameBalance.Class)player.Toon.VoiceClassID,
 					Gender = (player.Toon.Gender == 0) ? VoiceGender.Male : VoiceGender.Female,
 					TextClass = currentLineNode.LineSpeaker == Speaker.Player ? (GameBalance.Class)player.Toon.VoiceClassID : GameBalance.Class.None,
-					SNOSpeakerActor = GetSpeaker(currentLineNode.LineSpeaker).ActorSNO.Id,
+					SNOSpeakerActor = (int)GetSpeaker(currentLineNode.LineSpeaker).SNO,
 					LineFlags = 0x00000000,  
 					AnimationTag = currentLineNode.AnimationTag,
 					Duration = duration,
@@ -671,16 +675,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						#region A1-Q2
 					case 17667:
 						//var BlacksmithQuest = player.InGameClient.Game.GetWorld(71150).GetActorBySNO(65036,true);
-						var CainBrains = player.InGameClient.Game.GetWorld(60713).GetActorBySNO(102386, true);
+						var world = player.InGameClient.Game.GetWorld(WorldSno.trdun_cain_intro);
+						var CainBrains = world.GetActorBySNO(ActorSno._cain_intro, true);
 						Vector3D CainPath = new Vector3D(76.99389f, 155.145f, 0.0997252f);
 						var facingAngle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(CainBrains, CainPath);
 						CainBrains.Move(CainPath, facingAngle);
-						var A1Q2Wait1 = System.Threading.Tasks.Task.Delay(7000).ContinueWith(delegate
+						var A1Q2Wait1 = Task.Delay(7000).ContinueWith(delegate
 						{
-							var actor = player.InGameClient.Game.GetWorld(60713).GetActorsBySNO(5723).Where(d => d.Visible).FirstOrDefault();
-							(actor as ActorSystem.Implementations.Door).Open();
+							var actor = world.GetActorsBySNO(ActorSno._trdun_cath_bookcaseshelf_door_reverse).Where(d => d.Visible).FirstOrDefault();
+							(actor as Door).Open();
 
-							var A1Q2Wait2 = System.Threading.Tasks.Task.Delay(2000).ContinueWith(delegate
+							var A1Q2Wait2 = Task.Delay(2000).ContinueWith(delegate
 							{
 								CainBrains.Hidden = true;
 								CainBrains.Unreveal(player);
@@ -691,7 +696,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						#endregion
 						#region A1-Q3
 						case 198292:
-							var BlacksmithQuest = player.InGameClient.Game.GetWorld(71150).GetActorBySNO(65036, true);
+							var BlacksmithQuest = player.InGameClient.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._pt_blacksmith_nonvendor, true);
 							BlacksmithQuest.WalkSpeed = 0.33f;
 							Vector3D FirstPoint = new Vector3D(2905.856f, 2584.807f, 0.5997877f);
 							Vector3D SecondPoint = new Vector3D(2790.396f, 2611.313f, 0.5997864f);
@@ -702,7 +707,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 							BlacksmithQuest.Move(FirstPoint, FirstfacingAngle);
 
-							var ListenerKingSkeletons = System.Threading.Tasks.Task.Delay(3000).ContinueWith(delegate
+							var ListenerKingSkeletons = Task.Delay(3000).ContinueWith(delegate
 							{
 								BlacksmithQuest.Move(SecondPoint, SecondfacingAngle);
 							});
@@ -712,8 +717,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					//168282
 					#region A1-Q4
 					case 168282:
-						var wrld = player.InGameClient.Game.GetWorld(105406);
-						foreach (var Wall in wrld.GetActorsBySNO(109209))
+						var wrld = player.InGameClient.Game.GetWorld(WorldSno.a1trdun_level05_templar);
+						foreach (var Wall in wrld.GetActorsBySNO(ActorSno._trdun_cath_bonewall_a_door))
 							if (Wall.Position.Z > -23f)
 							{
 								Wall.PlayAnimation(11, 108568);
@@ -724,31 +729,31 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							}
 						break;
 					case 17921:
-						var cryptwrld = player.InGameClient.Game.GetWorld(50585);
-						foreach (var ghost in cryptwrld.GetActorsBySNO(5360))
+						var cryptwrld = player.InGameClient.Game.GetWorld(WorldSno.a1trdun_level07);
+						foreach (var ghost in cryptwrld.GetActorsBySNO(ActorSno._skeletonking_ghost))
 							ghost.Destroy();
 						break;
 					#endregion
 					#region A1-Q4 Event_DoK
 					case 139823: //Event_DoK_Kill.cnv
 									 //���� ���������� �����
-							var LeoricGhost = player.World.GetActorBySNO(5365);
-							var LachdananGhost = player.World.GetActorBySNO(4183);
-							var SwordPlace = player.World.GetActorBySNO(163449);
-							;
+							var LeoricGhost = player.World.GetActorBySNO(ActorSno._skeletonking_leoricghost);
+							var LachdananGhost = player.World.GetActorBySNO(ActorSno._ghostknight3);
+							var SwordPlace = player.World.GetActorBySNO(ActorSno._trdun_crypt_deathoftheking_sword_clickable);
+							
 							LachdananGhost.Move(SwordPlace.Position, ActorSystem.Movement.MovementHelpers.GetFacingAngle(LachdananGhost, SwordPlace.Position));
 
-							var ListenerA1Q4Event1 = System.Threading.Tasks.Task.Delay(4000).ContinueWith(delegate
+							var ListenerA1Q4Event1 = Task.Delay(4000).ContinueWith(delegate
 							{
 								StartConversation(139825);
 							});
 							break;
 						case 139825: //Event_DoK_Death.cnv
-							var LeoricGhost1 = player.World.GetActorBySNO(5365);
-							var GhostKnights1 = player.World.GetActorsBySNO(4182);
-							var LachdananGhost1 = player.World.GetActorBySNO(4183);
+							var LeoricGhost1 = player.World.GetActorBySNO(ActorSno._skeletonking_leoricghost);
+							var GhostKnights1 = player.World.GetActorsBySNO(ActorSno._ghostknight2);
+							var LachdananGhost1 = player.World.GetActorBySNO(ActorSno._ghostknight3);
 
-							var ListenerA1Q4Event2 = System.Threading.Tasks.Task.Delay(10000).ContinueWith(delegate
+							var ListenerA1Q4Event2 = Task.Delay(10000).ContinueWith(delegate
 							{
 								player.World.Leave(LeoricGhost1);
 								player.World.Leave(LachdananGhost1);
@@ -768,7 +773,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							int Founded = 0;
 							List<uint> monstersAlive = new List<uint> { };
 							foreach (var Actor in NearActors)
-								if (Actor.ActorSNO.Id == 81982)
+								if (Actor.SNO == ActorSno._fleshpitflyerspawner_b_event_farmambush)
 								{
 									Founded++;
 									monstersAlive.Add(Actor.GlobalID);
@@ -779,14 +784,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							{
 								Logger.Debug("������� �� ��� �������, �������.");
 								monstersAlive.Clear();
-								var OldPit = player.World.GetActorsBySNO(81982);
+								var OldPit = player.World.GetActorsBySNO(ActorSno._fleshpitflyerspawner_b_event_farmambush);
 								foreach (var actor in OldPit)
 									player.World.Leave(actor);
-								var SpawnerOfPits = player.World.GetActorsBySNO(60159);
+								var SpawnerOfPits = player.World.GetActorsBySNO(ActorSno._spawner_fleshpitflyer_b_immediate);
 								foreach (var actor in SpawnerOfPits)
-									player.World.SpawnMonster(81982, actor.Position);
+									player.World.SpawnMonster(ActorSno._fleshpitflyerspawner_b_event_farmambush, actor.Position);
 
-								var NewPits = player.World.GetActorsBySNO(81982);
+								var NewPits = player.World.GetActorsBySNO(ActorSno._fleshpitflyerspawner_b_event_farmambush);
 								foreach (var Actor in NewPits)
 									monstersAlive.Add(Actor.GlobalID);
 								Logger.Debug("������� ��������. ������ �������� ������.");
@@ -795,9 +800,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						#endregion
 						#region A5
 						case 308393:
-						(player.World.GetActorBySNO(308377) as ActorSystem.InteractiveNPC).Conversations.Clear();
-						(player.World.GetActorBySNO(308377) as ActorSystem.InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 1;
-						(player.World.GetActorBySNO(308377) as ActorSystem.InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
+                        var npc = player.World.GetActorBySNO(ActorSno._x1_npc_westmarch_introguy) as ActorSystem.InteractiveNPC;
+                        npc.Conversations.Clear();
+                        npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+                        npc.Attributes.BroadcastChangedIfRevealed();
 						break;
 						#endregion
 					#endregion

@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
@@ -40,8 +41,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// </summary>
 		public AISystem.Brain Brain { get; set; }
 
-		public Living(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Living(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Monster = new SNOHandle(SNOGroup.Monster, (ActorData.MonsterSNO));
 			this.Field2 = 0x9;//16;

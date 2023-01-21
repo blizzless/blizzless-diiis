@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -25,8 +26,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
 	class NecromancerSkeleton_A : Minion
 	{
-		public NecromancerSkeleton_A(MapSystem.World world, int snoId, ActorSystem.Actor master)
-			: base(world, snoId, master, null)
+		public NecromancerSkeleton_A(MapSystem.World world, ActorSno sno, ActorSystem.Actor master)
+			: base(world, sno, master, null)
 		{
 			Scale = 1.35f;
 			

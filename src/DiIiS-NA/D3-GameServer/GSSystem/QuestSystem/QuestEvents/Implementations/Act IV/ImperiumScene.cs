@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
@@ -35,10 +36,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 		{
 			List<Vector3D> Plants = new List<Vector3D> { };
 			List<Actor> Demons = new List<Actor> { };
-			var Hope = world.GetActorBySNO(114074);
-			var Fate = world.GetActorBySNO(112768);
+			var Hope = world.GetActorBySNO(ActorSno._hope);
+			var Fate = world.GetActorBySNO(ActorSno._fate);
 			//Vector3D PlantToImperius = world.GetActorBySNO(205570).Position;
-			var Imperius = world.GetActorBySNO(195606);
+			var Imperius = world.GetActorBySNO(ActorSno._imperius);
 			
 			foreach (var plr in world.Players.Values)
 			{
@@ -49,19 +50,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 			}
 
 			#region Удаляем всех лишних.
-			foreach (var Mob in world.GetActorsBySNO(106708))
+			foreach (var Mob in world.GetActorsBySNO(ActorSno._bigred_a))
 			{
 				Plants.Add(Mob.Position);
 				Mob.Destroy();
 			}
 
-			foreach (var Mob in world.GetActorsBySNO(114074)) //Hope
+			foreach (var Mob in world.GetActorsBySNO(ActorSno._hope)) //Hope
 				if (Mob != Hope)
 					Mob.Destroy();
-			foreach (var Mob in world.GetActorsBySNO(112768)) //Fate
+			foreach (var Mob in world.GetActorsBySNO(ActorSno._fate)) //Fate
 				if (Mob != Fate)
 					Mob.Destroy();
-			foreach (var Mob in world.GetActorsBySNO(205570)) //Angels
+			foreach (var Mob in world.GetActorsBySNO(ActorSno._angel_trooper_a_tyraelpurpose)) //Angels
 				Mob.Destroy();
 
 			#endregion
@@ -74,7 +75,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 			}
 			//Начинаем спектакль
 			//1 шаг - спауним первого черта
-			var FirstMob = world.SpawnMonster(106708, Plants[0]);
+			var FirstMob = world.SpawnMonster(ActorSno._bigred_a, Plants[0]);
 			(FirstMob as Monster).Brain.DeActivate();
 
 			//2 шаг - убиваем монстра
@@ -87,7 +88,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 				{
 					foreach (var plant in Plants)
 					{
-						var Demon = world.SpawnMonster(106708, plant);
+						var Demon = world.SpawnMonster(ActorSno._bigred_a, plant);
 						Demon.PlayAnimation(11, 159227, 1, 6);
 						Demons.Add(Demon);
 					}

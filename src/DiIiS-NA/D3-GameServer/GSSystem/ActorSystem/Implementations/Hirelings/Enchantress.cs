@@ -10,26 +10,27 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 {
-	[HandledSNO(4062 /* Enchantress.acr */)]
+	[HandledSNO(ActorSno._enchantress /* Enchantress.acr */)]
 	public class Enchantress : Hireling
 	{
-		public Enchantress(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Enchantress(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
-			mainSNO = 4062;
-			hirelingSNO = 4482;
-			proxySNO = 192942;
+			mainSNO = ActorSno._enchantress;
+			hirelingSNO = ActorSno._hireling_enchantress;
+			proxySNO = ActorSno._hireling_enchantress_proxy;
 			skillKit = 484938;
 			hirelingGBID = StringHashHelper.HashItemName("Enchantress");
 			this.Attributes[GameAttribute.Hireling_Class] = 3;
 		}
 
-		public override Hireling CreateHireling(MapSystem.World world, int snoId, TagMap tags)
+		public override Hireling CreateHireling(MapSystem.World world, ActorSno sno, TagMap tags)
 		{
-			return new Enchantress(world, snoId, tags);
+			return new Enchantress(world, sno, tags);
 		}
 
 		public void SetSkill(Player player, int SkillSNOId)

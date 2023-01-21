@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using System;
@@ -15,20 +16,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	[HandledSNO(
 		 //act 1
-		 109467,
+		 ActorSno._trout_barkeep,
 		 //act 2
-		 180291,
+		 ActorSno._a2_uniquevendor_innkeeper,
 		 //act 3
-		 181473,
+		 ActorSno._a3_uniquevendor_innkeeper,
 		 //act 4
-		 182413,
+		 ActorSno._a4_uniquevendor_innkeeper,
 		 //act 5
-		 309718
-		 )]
+		 ActorSno._x1_a5_uniquevendor_innkeeper
+	)]
 	public class Innkeeper : Vendor
 	{
-		public Innkeeper(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Innkeeper(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 

@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
@@ -9,15 +10,16 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
-    [HandledSNO(0x0002FA63 /* PT_Blacksmith_ForgeWeaponShortcut.acr */,
-        0x0002FA64 /*PT_Blacksmith_ForgeArmorShortcut.acr */,
-        0x0002FA62 /*PT_Blacksmith_RepairShortcut.acr */,
-        212519 /* Actor PT_Jeweler_AddSocketShortcut */,
-        212517 /* Actor PT_Jeweler_CombineShortcut */,
-        212521 /* Actor PT_Jeweler_RemoveGemShortcut */,
-        212511 /* Actor PT_Mystic_EnhanceShortcut */,
-        212510 /* Actor PT_Mystic_IdentifyShortcut */,
-        439975 /* KanaiCube_Stand */)]
+    [HandledSNO(
+        ActorSno._pt_blacksmith_forgeweaponshortcut /* PT_Blacksmith_ForgeWeaponShortcut.acr */,
+        ActorSno._pt_blacksmith_forgearmorshortcut /*PT_Blacksmith_ForgeArmorShortcut.acr */,
+        ActorSno._pt_blacksmith_repairshortcut /*PT_Blacksmith_RepairShortcut.acr */,
+        ActorSno._pt_jeweler_addsocketshortcut /* Actor PT_Jeweler_AddSocketShortcut */,
+        ActorSno._pt_jeweler_combineshortcut /* Actor PT_Jeweler_CombineShortcut */,
+        ActorSno._pt_jeweler_removegemshortcut /* Actor PT_Jeweler_RemoveGemShortcut */,
+        ActorSno._pt_mystic_enhanceshortcut /* Actor PT_Mystic_EnhanceShortcut */,
+        ActorSno._pt_mystic_identifyshortcut /* Actor PT_Mystic_IdentifyShortcut */
+    )]
     public class ArtisanShortcut : InteractiveNPC
     {
         /*
@@ -42,78 +44,59 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
         [442282] kanai_Cube_Wash
         [138979] NephalemCube
         //*/
-        public ArtisanShortcut(MapSystem.World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public ArtisanShortcut(MapSystem.World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             Attributes[GameAttribute.MinimapActive] = false;
             Attributes[GameAttribute.Conversation_Icon, 0] = 0;
-            switch (this.ActorSNO.Id)
-            {
-                case 0x0002FA62:
-                case 0x0002FA63:
-                case 0x0002FA64:
-                    break;
-                case 212517:
-                case 212519:
-                case 212521:
-                    break;
-                case 212510:
-                case 212511:
-                    break;
-            }
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
             player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = this.DynamicID(player) });
-            switch (this.ActorSNO.Id)
+            switch (this.SNO)
             {
-                case 0x0002FA62:
-                case 0x0002FA63:
-                case 0x0002FA64:
+                case ActorSno._pt_blacksmith_repairshortcut:
+                case ActorSno._pt_blacksmith_forgeweaponshortcut:
+                case ActorSno._pt_blacksmith_forgearmorshortcut:
                     player.ArtisanInteraction = "Blacksmith";
                     break;
-                case 212517:
-                case 212519:
-                case 212521:
+                case ActorSno._pt_jeweler_combineshortcut:
+                case ActorSno._pt_jeweler_addsocketshortcut:
+                case ActorSno._pt_jeweler_removegemshortcut:
                     player.ArtisanInteraction = "Jeweler";
                     break;
-                case 212510:
-                case 212511:
+                case ActorSno._pt_mystic_identifyshortcut:
+                case ActorSno._pt_mystic_enhanceshortcut:
                     player.ArtisanInteraction = "Mystic";
-                    break;
-                case 439975:
-                    player.ArtisanInteraction = "Cube";
                     break;
             }
         }
         public override bool Reveal(Player player)
         {
-            if(this.World.Game.CurrentAct != 3000)
-            switch (this.ActorSNO.Id)
+            if (this.World.Game.CurrentAct != 3000)
             {
-                case 0x0002FA62:
-                case 0x0002FA63:
-                case 0x0002FA64:
-                    if (!player.BlacksmithUnlocked)
-                        return false;
-                    break;
-                case 212517:
-                case 212519:
-                case 212521:
-                    if (!player.JewelerUnlocked)
-                        return false;
-                    break;
-                case 212510:
-                case 212511:
-                    if (!player.MysticUnlocked)
-                        return false;
-                    break;
+                switch (this.SNO)
+                {
+                    case ActorSno._pt_blacksmith_repairshortcut:
+                    case ActorSno._pt_blacksmith_forgeweaponshortcut:
+                    case ActorSno._pt_blacksmith_forgearmorshortcut:
+                        if (!player.BlacksmithUnlocked)
+                            return false;
+                        break;
+                    case ActorSno._pt_jeweler_combineshortcut:
+                    case ActorSno._pt_jeweler_addsocketshortcut:
+                    case ActorSno._pt_jeweler_removegemshortcut:
+                        if (!player.JewelerUnlocked)
+                            return false;
+                        break;
+                    case ActorSno._pt_mystic_identifyshortcut:
+                    case ActorSno._pt_mystic_enhanceshortcut:
+                        if (!player.MysticUnlocked)
+                            return false;
+                        break;
+                }
             }
-
-            if (this.ActorSNO.Id == 439975)
-                if (!player.KanaiUnlocked)
-                    return false;
 
             return base.Reveal(player);
         }

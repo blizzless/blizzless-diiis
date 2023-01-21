@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
@@ -15,11 +16,11 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
-	[HandledSNO(398682 /* P1_LR_TieredRift_Nephalem.acr */)]
+	[HandledSNO(ActorSno._p1_lr_tieredrift_nephalem /* P1_LR_TieredRift_Nephalem.acr */)]
 	public class Nephalem : Artisan
 	{
-		public Nephalem(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Nephalem(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.NPC_Is_Operatable] = true;
 			this.Attributes[GameAttribute.Is_NPC] = true;

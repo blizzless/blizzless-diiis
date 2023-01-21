@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -15,11 +16,11 @@ using System.Drawing;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(377662)]
+	[HandledSNO(ActorSno._x1_bog_catacombsportal_floormarker)]
 	public class A5BogMarker : Gizmo
 	{
-		public A5BogMarker(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public A5BogMarker(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 
@@ -34,19 +35,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			switch (scene.SceneSNO.Id)
 			{
 				case 265624:
-					marker = new Gizmo(this.World, 348134, this.Tags); //x1_Bog_Beacon_Door_Rune_A
+					marker = new Gizmo(this.World, ActorSno._x1_bog_beacon_door_rune_a, this.Tags); //x1_Bog_Beacon_Door_Rune_A
 					marker.EnterWorld(this.Position);
 					break;
 				case 265655:
-					marker = new Gizmo(this.World, 348143, this.Tags); //x1_Bog_Beacon_Door_Rune_B
+					marker = new Gizmo(this.World, ActorSno._x1_bog_beacon_door_rune_b, this.Tags); //x1_Bog_Beacon_Door_Rune_B
 					marker.EnterWorld(this.Position);
 					break;
 				case 265678:
-					marker = new Gizmo(this.World, 348151, this.Tags); //x1_Bog_Beacon_Door_Rune_C
+					marker = new Gizmo(this.World, ActorSno._x1_bog_beacon_door_rune_c, this.Tags); //x1_Bog_Beacon_Door_Rune_C
 					marker.EnterWorld(this.Position);
 					break;
 				case 265693:
-					marker = new Gizmo(this.World, 348163, this.Tags); //x1_Bog_Beacon_Door_Rune_D
+					marker = new Gizmo(this.World, ActorSno._x1_bog_beacon_door_rune_d, this.Tags); //x1_Bog_Beacon_Door_Rune_D
 					marker.EnterWorld(this.Position);
 					break;
 			}

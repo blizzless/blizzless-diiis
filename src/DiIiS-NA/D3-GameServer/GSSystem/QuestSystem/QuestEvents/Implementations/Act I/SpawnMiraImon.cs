@@ -32,6 +32,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -54,17 +55,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		public override void Execute(MapSystem.World world)
 		{
 			if (world.Game.Empty) return;
-			var spawner = world.GetActorBySNO(98888);
+			var spawner = world.GetActorBySNO(ActorSno._blacksmithwife);
 			if (spawner != null)
 			{
-				world.SpawnMonster(85900, spawner.Position);
+				world.SpawnMonster(ActorSno._zombiefemale_a_blacksmitha, spawner.Position);
 				spawner.Destroy();
 			}
 		}
 
-		private bool HoudiniVsZombies(MapSystem.World world, Int32 snoId)
+		private bool HoudiniVsZombies(MapSystem.World world, ActorSno sno)
 		{
-			var actorSourcePosition = world.GetActorBySNO(snoId);
+			var actorSourcePosition = world.GetActorBySNO(sno);
 
 			ActorsVector3D.Add(new Vector3D(actorSourcePosition.Position.X, actorSourcePosition.Position.Y, actorSourcePosition.Position.Z));
 			actorSourcePosition.Destroy();
@@ -102,7 +103,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 					//Load the actor here.
 					uint actor = 0;
-					actor = world.Game.WorldGenerator.loadActor(monsterSNOHandle, PRTransform, world, monsterActor.TagMap);
+					actor = world.Game.WorldGenerator.LoadActor(monsterSNOHandle, PRTransform, world, monsterActor.TagMap);
 
 					monstersAlive.Add(actor);
 					counter++;

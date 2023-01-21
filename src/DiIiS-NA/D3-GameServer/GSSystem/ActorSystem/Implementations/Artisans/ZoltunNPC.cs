@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -21,17 +22,17 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
-    [HandledSNO(429005)] //Zoltun
+    [HandledSNO(ActorSno._p2_hq_zoltunkulle)] //Zoltun
     //[HandledSNO(431095)] //Wardrobe
     public class ZoltunNPC : Artisan
     {
-        public ZoltunNPC(MapSystem.World world, int snoID, TagMap tags)
-            : base(world, snoID, tags)
+        public ZoltunNPC(MapSystem.World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             if (world.Game.CurrentAct == 3000)
             {
 
-                this.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(430146));
+                this.Conversations.Add(new ConversationInteraction(430146));
                 //[430335] [Worlds] a3dun_ruins_frost_city_a_02
                 //[428493] [Worlds] a3dun_ruins_frost_city_a_01
                 //this.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
@@ -39,7 +40,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
             }
         }
 
-        public override void OnTargeted(PlayerSystem.Player player, MessageSystem.Message.Definitions.World.TargetMessage message)
+        public override void OnTargeted(Player player, MessageSystem.Message.Definitions.World.TargetMessage message)
         {
             base.OnTargeted(player, message);//player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.ANNDataMessage(MessageSystem.Opcodes.OpenArtisanWindowMessage) { ActorID = this.DynamicID });
             player.ArtisanInteraction = "KanaiCube";
@@ -47,7 +48,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 
         public override bool Reveal(Player player)
         {
-            if (this.ActorSNO.Id == 439975)
+            if (this.SNO == ActorSno._kanaicube_stand)
                 if (!player.KanaiUnlocked)
                     Interactions.Clear();
                 else
@@ -59,18 +60,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
         }
     }
 
-    [HandledSNO(
-        439975 /* Actor KanaiCube_Stand */)]
+    [HandledSNO(ActorSno._kanaicube_stand /* Actor KanaiCube_Stand */)]
     public class CubeShortcut : InteractiveNPC
     {
-        public CubeShortcut(MapSystem.World world, int snoId, TagMap tags)
-            : base(world, snoId, tags)
+        public CubeShortcut(MapSystem.World world, ActorSno sno, TagMap tags)
+            : base(world, sno, tags)
         {
             Attributes[GameAttribute.MinimapActive] = true;
             Attributes[GameAttribute.Conversation_Icon, 0] = 0;
         }
 
-        public override void OnTargeted(PlayerSystem.Player player, MessageSystem.Message.Definitions.World.TargetMessage message)
+        public override void OnTargeted(Player player, MessageSystem.Message.Definitions.World.TargetMessage message)
         {
             player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = this.DynamicID(player) });
             player.ArtisanInteraction = "Cube";

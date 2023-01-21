@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -25,11 +26,16 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(297813, 297814, 295415, 342675)]
+	[HandledSNO(
+		ActorSno._a1_id_all_book_of_cain,
+		ActorSno._a2_id_all_book_of_cain,
+		ActorSno._a3_id_all_book_of_cain,
+		ActorSno._a5_id_all_book_of_cain_b
+	)]
 	class CainBook : Gizmo
 	{
-		public CainBook(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CainBook(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.TeamID] = 1;
 			this.Attributes[GameAttribute.MinimapActive] = true;

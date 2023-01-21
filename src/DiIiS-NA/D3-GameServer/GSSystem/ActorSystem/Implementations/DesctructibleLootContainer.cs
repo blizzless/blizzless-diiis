@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -29,22 +30,28 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	class DesctructibleLootContainer : Gizmo
 	{
+		private static readonly ActorSno[] tombs = new ActorSno[]
+		{
+			ActorSno._trout_oldtristramtombstonedestructiblea,
+			ActorSno._trout_oldtristramtombstonedestructibled,
+			ActorSno._trout_oldtristramtombstonedestructiblee,
+			ActorSno._trout_oldtristramtombstonedestructibleb,
+			ActorSno._tombstone_a_wilderness_trout_wilderness,
+			ActorSno._tombstone_c_wilderness_trout_wilderness,
+			ActorSno._tombstone_b_wilderness_trout_wilderness
+		};
 
 		private bool haveDrop;
 
-		public DesctructibleLootContainer(World world, int snoId, bool haveDrop, TagMap tags)
-			: base(world, snoId, tags)
+		public DesctructibleLootContainer(World world, ActorSno sno, bool haveDrop, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.haveDrop = haveDrop;
 		}
 
-		private List<int> tombs = new List<int>() { 6155, 6158, 6159, 6156, 74909, 75023, 75132 };
-
-		private int[] Unbreakables = new int[] { 81699, 5744, 89503 };
-
 		public void ReceiveDamage(Actor source, float damage /* critical, type */)
 		{
-			if (this.ActorSNO.Id == 225252 && this.World.Game.CurrentSideQuest != 225253) return;
+			if (this.SNO == ActorSno._trout_highlands_goatman_totem_gharbad && this.World.Game.CurrentSideQuest != 225253) return;
 
 			World.BroadcastIfRevealed(plr => new FloatingNumberMessage
 			{
@@ -58,7 +65,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			Attributes.BroadcastChangedIfRevealed();
 
-			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !this.Unbreakables.Contains(this.ActorSNO.Id))
+			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !this.SNO.IsUndestroyable())
 			{
 				Die(source);
 			}
@@ -92,9 +99,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					}
 			}
 
-			Logger.Trace("Breaked barricade, id: {0}", this.ActorSNO.Id);
+			Logger.Trace("Breaked barricade, id: {0}", this.SNO);
 
-			if (source != null && source is Player && this.tombs.Contains(this.ActorSNO.Id))
+			if (source != null && source is Player && tombs.Contains(this.SNO))
 			{
 				(source as Player).AddAchievementCounter(74987243307171, 1);
 			}
@@ -124,28 +131,28 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			Attributes.BroadcastChangedIfRevealed();
 
 			//handling quest triggers
-			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey(this.ActorSNO.Id))
+			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)this.SNO))
 			{
-				var trigger = this.World.Game.QuestProgress.QuestTriggers[this.ActorSNO.Id];
+				var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
 				{
-					this.World.Game.QuestProgress.UpdateCounter(this.ActorSNO.Id);
-					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[this.ActorSNO.Id].counter)
+					this.World.Game.QuestProgress.UpdateCounter((int)this.SNO);
+					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO].counter)
 						trigger.questEvent.Execute(this.World); // launch a questEvent
 				}
 				else
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
 				{
-					this.World.Game.QuestProgress.UpdateCounter(this.ActorSNO.Id);
+					this.World.Game.QuestProgress.UpdateCounter((int)this.SNO);
 				}
 			}
-			else if (this.World.Game.SideQuestProgress.QuestTriggers.ContainsKey(this.ActorSNO.Id))
+			else if (this.World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)this.SNO))
 			{
-				var trigger = this.World.Game.SideQuestProgress.QuestTriggers[this.ActorSNO.Id];
+				var trigger = this.World.Game.SideQuestProgress.QuestTriggers[(int)this.SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
 				{
-					this.World.Game.SideQuestProgress.UpdateSideCounter(this.ActorSNO.Id);
-					if (trigger.count == this.World.Game.SideQuestProgress.QuestTriggers[this.ActorSNO.Id].counter)
+					this.World.Game.SideQuestProgress.UpdateSideCounter((int)this.SNO);
+					if (trigger.count == this.World.Game.SideQuestProgress.QuestTriggers[(int)this.SNO].counter)
 						trigger.questEvent.Execute(this.World); // launch a questEvent
 				}
 			}

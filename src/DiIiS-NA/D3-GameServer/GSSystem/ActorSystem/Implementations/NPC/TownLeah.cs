@@ -2,6 +2,7 @@
 using DiIiS_NA.Core.MPQ;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
@@ -19,11 +20,11 @@ using MonsterFF = DiIiS_NA.Core.MPQ.FileFormats.Monster;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(4580)]
+	[HandledSNO(ActorSno._leah)]
 	class TownLeah : InteractiveNPC, IUpdateable
 	{
-		public TownLeah(MapSystem.World world, int snoID, TagMap tags)
-			: base(world, snoID, tags)
+		public TownLeah(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			Brain = new AggressiveNPCBrain(this);
 			(Brain as AggressiveNPCBrain).PresetPowers.Clear();
@@ -48,9 +49,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			}
 
 			base.ReadTags();
-
-			if (this.ActorSNO.Id == 256248)
-				this.Attributes[GameAttribute.TeamID] = 0;
 		}
 
 		public void Update(int tickCounter)

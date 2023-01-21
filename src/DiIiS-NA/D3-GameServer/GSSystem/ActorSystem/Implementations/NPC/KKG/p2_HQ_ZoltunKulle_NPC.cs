@@ -10,15 +10,16 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(437073)] //p2_HQ_ZoltunKulle_NPC
-	public class p2_HQ_ZoltunKulle_NPC : NPC
+	[HandledSNO(ActorSno._p2_hq_zoltunkulle_npc)] //p2_HQ_ZoltunKulle_NPC
+	public class P2_HQ_ZoltunKulle_NPC : NPC
 	{
 
-		public p2_HQ_ZoltunKulle_NPC(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public P2_HQ_ZoltunKulle_NPC(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Hidden = true;
 		}

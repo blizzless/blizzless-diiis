@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
@@ -36,7 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		private TickTimer _updateTimer;
 
-		public EffectActor(PowerContext context, int actorSNO, Vector3D position)
+		public EffectActor(PowerContext context, ActorSno actorSNO, Vector3D position)
 			: base(context.World, actorSNO)
 		{
 			this.Context = context;

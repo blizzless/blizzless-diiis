@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
@@ -26,9 +27,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		{
 			//Адрия - Начинает кастовать, камень поднимается, а Лию начинает колбасить, после диалога зажигается круг с пентой и отдаляется камера, через секунд взрыв.
 			
-			var RitualCircle = world.GetActorBySNO(193601);
-			var Leah = world.GetActorBySNO(195376);
-			var NStone = world.GetActorBySNO(156328);
+			var RitualCircle = world.GetActorBySNO(ActorSno._event47_groundrune);
+			var Leah = world.GetActorBySNO(ActorSno._leah_event47);
+			var NStone = world.GetActorBySNO(ActorSno._a2dun_zolt_black_soulstone);
 			RitualCircle.PlayActionAnimation(194705); // stage1
 			Task.Delay(1500).ContinueWith(delegate
 			{

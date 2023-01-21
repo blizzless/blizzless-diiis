@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
@@ -13,11 +14,11 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
-	[HandledSNO(56948 /* PT_Mystic.acr */)]
+	[HandledSNO(ActorSno._pt_mystic /* PT_Mystic.acr */)]
 	public class Mystic : Artisan
 	{
-		public Mystic(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Mystic(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 		}
 

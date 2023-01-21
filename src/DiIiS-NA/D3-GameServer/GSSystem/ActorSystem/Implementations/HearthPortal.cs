@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -25,14 +26,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	class HearthPortal : Gizmo
 	{
-		public int ReturnWorld = -1;
+		public WorldSno ReturnWorld = WorldSno.__NONE;
 
 		public Vector3D ReturnPosition = null;
 
 		public Player Owner = null;
 
-		public HearthPortal(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public HearthPortal(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Attributes[GameAttribute.MinimapActive] = true;
 			this.SetVisible(false);
@@ -50,7 +51,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				return;
 			}
 
-			if (this.World.Game.QuestManager.SideQuests.ContainsKey(120396) && this.World.Game.QuestManager.SideQuests[120396].Completed && this.ReturnWorld == 50596) return;
+			if (this.World.Game.QuestManager.SideQuests.ContainsKey(120396) && this.World.Game.QuestManager.SideQuests[120396].Completed && this.ReturnWorld == WorldSno.a2dun_zolt_timed01_level01) return;
 
 			Vector3D exCheckpoint = player.CheckPointPosition;
 

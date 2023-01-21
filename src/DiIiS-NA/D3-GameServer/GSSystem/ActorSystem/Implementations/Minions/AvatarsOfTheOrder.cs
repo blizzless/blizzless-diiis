@@ -12,13 +12,14 @@ using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
 	class AvatarMelee : Minion
 	{
 		public AvatarMelee(World world, PowerContext context, int AvatarID, float damageMult, TickTimer lifeTime)
-			: base(world, 345682, context.User, null)
+			: base(world, ActorSno._x1_crusader_phalanx, context.User, null)
 		{
 			Scale = 1.2f;
 			WalkSpeed *= 5;
@@ -42,7 +43,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 	class AvatarRanged : Minion
 	{
 		public AvatarRanged(World world, PowerContext context, int AvatarID, float damageMult, TickTimer lifeTime)
-			: base(world, 369795, context.User, null)
+			: base(world, ActorSno._x1_crusader_phalanxarcher, context.User, null)
 		{
 			Scale = 1f;
 			WalkSpeed *= 5;

@@ -8,6 +8,7 @@ using System.Linq;
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -128,11 +129,12 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 				if (_powerDelay.TimedOut)
 				{
-					List<Actor> targets = (this.Body as Minion).Master.GetObjectsInRange<Monster>(40f).Where(m => !m.Dead &&
-																												  m.Visible &&
-																												  !m.ActorSNO.Name.ToLower().Contains("spawner") &&
-																												  !m.ActorSNO.Name.ToLower().Contains("_vo") &&
-																												  !m.ActorSNO.Name.ToLower().Contains("voiceo")).OrderBy(m => PowerMath.Distance2D(m.Position, this.Body.Position)).Cast<Actor>().ToList();
+					List<Actor> targets = (this.Body as Minion).Master
+						.GetObjectsInRange<Monster>(40f)
+						.Where(m => !m.Dead && m.Visible && m.SNO.IsTargetable())
+						.OrderBy(m => PowerMath.Distance2D(m.Position, this.Body.Position))
+						.Cast<Actor>()
+						.ToList();
 					if (this.Body.World.Game.PvP)
 						targets = (this.Body as Minion).Master.GetObjectsInRange<Player>(30f).Where(p => p.GlobalID != (this.Body as Minion).Master.GlobalID && p.Attributes[GameAttribute.TeamID] != (this.Body as Minion).Master.Attributes[GameAttribute.TeamID]).Cast<Actor>().ToList();
 					if (this.Body.World.IsPvP)
@@ -208,7 +210,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			if (!_warnedNoPowers && this.PresetPowers.Count == 0)
 			{
-				Logger.Debug("Minion \"{0}\" has no usable powers. ", this.Body.ActorSNO.Name);
+				Logger.Debug("Minion \"{0}\" has no usable powers. ", this.Body.Name);
 				_warnedNoPowers = true;
 			}
 

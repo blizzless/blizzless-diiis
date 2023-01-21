@@ -38,6 +38,7 @@ using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -63,16 +64,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 82,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
+					var world = this.Game.GetWorld(WorldSno.caout_town);
 					//ListenProximity(151989, new Advance());
 					ListenConversation(57401, new Advance());
 					//Base world State
-					this.Game.GetWorld(70885).GetActorBySNO(175810).SetUsable(false); //Khamsim_Gate
-					this.Game.GetWorld(70885).GetActorBySNO(96132).Hidden = true; //Bezir
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(2928, 1); //Kadin
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(51291, 1); //Aleser
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(51292, 1); //Caliem
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(80980, -1); //Davyd
-					foreach (var Door in this.Game.GetWorld(70885).GetActorsBySNO(175810))
+					world.GetActorBySNO(ActorSno._caout_stingingwinds_khamsin_gate).SetUsable(false); //Khamsim_Gate
+					world.GetActorBySNO(ActorSno._bezir).Hidden = true; //Bezir
+					world.ShowOnlyNumNPC(ActorSno._kadin, 1); //Kadin
+					world.ShowOnlyNumNPC(ActorSno._aleser, 1); //Aleser
+					world.ShowOnlyNumNPC(ActorSno._caliem, 1); //Caliem
+					world.ShowOnlyNumNPC(ActorSno._davyd, -1); //Davyd
+					foreach (var Door in world.GetActorsBySNO(ActorSno._caout_stingingwinds_khamsin_gate))
 						Door.SetUsable(false);//Khamsim_Gate
 					
 				})
@@ -96,8 +98,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 50,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Asheera (201085)
-					this.Game.GetWorld(70885).GetActorBySNO(162378).SetUsable(false);
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(3205, 2);
+					var world = this.Game.GetWorld(WorldSno.caout_town);
+					world.GetActorBySNO(ActorSno._a2duncald_deco_sewer_lid).SetUsable(false);
+					world.ShowOnlyNumNPC(ActorSno._asheara, 2);
 					UnlockTeleport(0);
 					//ListenProximity(3205, new LaunchConversation(201085));
 					ListenConversation(201085, new Advance());
@@ -113,7 +116,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //go through canyon
 					try 
 					{
-						Door TDoor = (this.Game.GetWorld(70885).FindAt(169502, new Vector3D { X = 2905.62f, Y = 1568.82f, Z = 250.75f }, 6.0f) as Door);
+						Door TDoor = (this.Game.GetWorld(WorldSno.caout_town).FindAt(ActorSno._a2dun_cald_exit_gate, new Vector3D { X = 2905.62f, Y = 1568.82f, Z = 250.75f }, 6.0f) as Door);
 						//ListenProximity(TDoor, )
 						TDoor.Open();
 					} catch { }
@@ -129,11 +132,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 52,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill cultists
-					AddFollower(this.Game.GetWorld(70885), 85843);
+					var world = this.Game.GetWorld(WorldSno.caout_town);
+					AddFollower(world, ActorSno._enchantressnpc);
 					//ListenProximity(85843, new SpawnCultists());
 					script = new SpawnCultists();
-					script.Execute(this.Game.GetWorld(70885));
-					ListenKill(6027, 7, new Advance());
+					script.Execute(world);
+					//ListenKill(ActorSno._triunecultist_c, 7, new Advance());
+					ListenProximity(ActorSno._enchantressnpc, new Advance());		// HACK: Skip ambush
 				})
 			});
 
@@ -144,9 +149,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 102,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with enchantress
-					DestroyFollower(85843);
+					DestroyFollower(ActorSno._enchantressnpc);
 					//ListenProximity(85843, new LaunchConversation(85832));
-					var EnchNPC = (this.Game.GetWorld(70885).GetActorBySNO(85843) as InteractiveNPC);
+					var EnchNPC = (this.Game.GetWorld(WorldSno.caout_town).GetActorBySNO(ActorSno._enchantressnpc) as InteractiveNPC);
 					EnchNPC.Conversations.Clear();
 					EnchNPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(85832));
 					ListenConversation(85832, new Advance());
@@ -160,10 +165,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 106,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Lakuni's
-					this.Game.GetWorld(70885).GetActorBySNO(85843).Hidden = true;
-					AddFollower(this.Game.GetWorld(70885), 85843);
-					Open(this.Game.GetWorld(70885), 180225);
-					ListenKill(4541, 5, new Advance());
+					var world = this.Game.GetWorld(WorldSno.caout_town);
+					world.GetActorBySNO(ActorSno._enchantressnpc).Hidden = true;
+					AddFollower(world, ActorSno._enchantressnpc);
+					Open(world, ActorSno._caoutstingingwinds_illusion_rocks);
+					ListenKill(ActorSno._lacunifemale_a, 5, new Advance());
 				})
 			});
 
@@ -174,10 +180,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 91,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Steel Wolf's leader
-					DestroyFollower(85843);
-					AddFollower(this.Game.GetWorld(70885), 85843);
+					var world = this.Game.GetWorld(WorldSno.caout_town);
+					DestroyFollower(ActorSno._enchantressnpc);
+					AddFollower(world, ActorSno._enchantressnpc);
 					//ListenProximity(164195, new LaunchConversation(164197));
-					var Leader = (this.Game.GetWorld(70885).GetActorBySNO(164195) as InteractiveNPC);
+					var Leader = (world.GetActorBySNO(ActorSno._caldeumguard_cleaver_a_jarulf) as InteractiveNPC);
 					Leader.Conversations.Clear();
 					Leader.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(164197));
 					ListenConversation(164197, new Advance());
@@ -191,12 +198,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 58,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 }, new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //break rituals (2 counters)
-					DestroyFollower(85843);
-					AddFollower(this.Game.GetWorld(70885), 85843);
-					var Leader = (this.Game.GetWorld(70885).GetActorBySNO(164195) as InteractiveNPC);
+					var world = this.Game.GetWorld(WorldSno.caout_town);
+					DestroyFollower(ActorSno._enchantressnpc);
+					AddFollower(world, ActorSno._enchantressnpc);
+					var Leader = (world.GetActorBySNO(ActorSno._caldeumguard_cleaver_a_jarulf) as InteractiveNPC);
 					Leader.Conversations.Clear();
-					ListenProximity(171329, new CompleteObjective(0));
-					ListenProximity(3594, new CompleteObjective(1));
+					ListenProximity(ActorSno._caldeumtortured_poor_male_a_ritualvictim, new CompleteObjective(0));
+					ListenProximity(ActorSno._caldeumtortured_poor_male_a, new CompleteObjective(1));
 				})
 			});
 
@@ -207,9 +215,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 117,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //go to Canyon Bridge
-					DestroyFollower(85843);
-					AddFollower(this.Game.GetWorld(70885), 85843);
-					ListenProximity(3665, new Advance());
+					DestroyFollower(ActorSno._enchantressnpc);
+					AddFollower(this.Game.GetWorld(WorldSno.caout_town), ActorSno._enchantressnpc);
+					ListenProximity(ActorSno._caout_mine_rope_short, new Advance());
 				})
 			});
 
@@ -220,9 +228,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 10,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with enchantress
-					DestroyFollower(85843);
-					AddFollower(this.Game.GetWorld(70885), 85843);
-					ListenProximity(85843, new LaunchConversation(86196));
+					DestroyFollower(ActorSno._enchantressnpc);
+					AddFollower(this.Game.GetWorld(WorldSno.caout_town), ActorSno._enchantressnpc);
+					ListenProximity(ActorSno._enchantressnpc, new LaunchConversation(86196));
 					ListenConversation(86196, new Advance());
 				})
 			});
@@ -234,8 +242,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					DestroyFollower(85843);
-					Open(this.Game.GetWorld(70885), 185949);
+					DestroyFollower(ActorSno._enchantressnpc);
+					Open(this.Game.GetWorld(WorldSno.caout_town), ActorSno._caoutstingingwinds_illusion_bridge);
 					if (!this.Game.Empty)
 						foreach (var plr in this.Game.Players.Values)
 						{
@@ -274,7 +282,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 58,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //go through Canyon bridge
-					ListenProximity(6442, new Advance());
+					ListenProximity(ActorSno._waypoint, new Advance());
 					
 				})
 			});
@@ -286,12 +294,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 46,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Khasim gate
-					ListenProximity(145599, new Advance());
-					this.Game.GetWorld(70885).GetActorBySNO(96132).Hidden = true; //Bezir
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(2928, 0); //Kadin
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(51291, 0); //Aleser
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(51292, 0); //Caliem
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(80980, -1); //Davyd
+					var world = this.Game.GetWorld(WorldSno.caout_town);
+					ListenProximity(ActorSno._lore_belial_guardsorders, new Advance());
+					world.GetActorBySNO(ActorSno._bezir).Hidden = true; //Bezir
+					world.ShowOnlyNumNPC(ActorSno._kadin, 0); //Kadin
+					world.ShowOnlyNumNPC(ActorSno._aleser, 0); //Aleser
+					world.ShowOnlyNumNPC(ActorSno._caliem, 0); //Caliem
+					world.ShowOnlyNumNPC(ActorSno._davyd, -1); //Davyd
 
 				})
 			});
@@ -328,20 +337,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 4,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 }, new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill demons and open cell
-					this.Game.AddOnLoadAction(60432, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.caout_khamsin_mine, () =>
 					{
 						if ((Game.CurrentQuest == 93396 & Game.CurrentStep == 30) || (Game.CurrentQuest == 93396 & Game.CurrentStep == 74))
 						{
-							DisableEveryone(this.Game.GetWorld(60432), true);
+							var world = this.Game.GetWorld(WorldSno.caout_khamsin_mine);
+							DisableEveryone(world, true);
 
-							StartConversation(this.Game.GetWorld(60432), 195060);
+							StartConversation(world, 195060);
 							ListenConversation(195060, new LaunchConversation(195062));
 							ListenConversation(195062, new KhasimHQ());
 
 							//ListenKill(60583, 1, new CompleteObjective(0));
-							ListenKill(5434, 6, new CompleteObjective(0));
+							ListenKill(ActorSno._snakeman_melee_c, 6, new CompleteObjective(0));
 							//5434
-							ListenInteract(185284, 1, new CompleteObjective(1));
+							ListenInteract(ActorSno._caout_cage_noscript, 1, new CompleteObjective(1));
 						}
 					});
 					
@@ -357,8 +367,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill stealthed demons
 					script = new SpawnSnakemans();
-					script.Execute(this.Game.GetWorld(70885));
-					ListenKill(60816, 3, new Advance());
+					script.Execute(this.Game.GetWorld(WorldSno.caout_town));
+					ListenKill(ActorSno._khamsin_snakeman_melee, 3, new Advance());
 				})
 			});
 
@@ -369,7 +379,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 10,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with captain David
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(80980, 1);
+					this.Game.GetWorld(WorldSno.caout_town).ShowOnlyNumNPC(ActorSno._davyd, 1);
 					//ListenProximity(80980, new LaunchConversation(60608));
 					ListenConversation(81351, new Advance());
 				})
@@ -382,7 +392,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					Open(this.Game.GetWorld(70885), 175810);
+					Open(this.Game.GetWorld(WorldSno.caout_town), ActorSno._caout_stingingwinds_khamsin_gate);
 				})
 			});
 
@@ -407,8 +417,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 54,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 }, new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //exit through Khasim east gates and find Alcarnus
-					ListenProximity(80980, new CompleteObjective(0));
-					ListenProximity(3410, new CompleteObjective(1));
+					ListenProximity(ActorSno._davyd, new CompleteObjective(0));
+					ListenProximity(ActorSno._body_hangedc_caout_gore, new CompleteObjective(1));
 				})
 			});
 
@@ -419,13 +429,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 26,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Maghda's lair and optionally, free 8 cells
-					var encW = this.Game.GetWorld(70885);
-					encW.SpawnMonster(3628, new Vector3D(528.7084f,	 1469.1945f, 197.2559f));
-					encW.SpawnMonster(3628, new Vector3D(475.812f,	 1554.7146f, 197.25589f));
-					encW.SpawnMonster(3628, new Vector3D(463.88342f, 1542.4092f, 197.25587f));
-					encW.SpawnMonster(3628, new Vector3D(399.93198f, 1485.7723f, 197.38196f));
-					encW.SpawnMonster(3628, new Vector3D(509.43765f, 1254.6984f, 197.31921f));
-					ListenInteract(3628, 8, new Dummy());
+					var encW = this.Game.GetWorld(WorldSno.caout_town);
+					encW.SpawnMonster(ActorSno._caout_cage, new Vector3D(528.7084f,	 1469.1945f, 197.2559f));
+					encW.SpawnMonster(ActorSno._caout_cage, new Vector3D(475.812f,	 1554.7146f, 197.25589f));
+					encW.SpawnMonster(ActorSno._caout_cage, new Vector3D(463.88342f, 1542.4092f, 197.25587f));
+					encW.SpawnMonster(ActorSno._caout_cage, new Vector3D(399.93198f, 1485.7723f, 197.38196f));
+					encW.SpawnMonster(ActorSno._caout_cage, new Vector3D(509.43765f, 1254.6984f, 197.31921f));
+					ListenInteract(ActorSno._caout_cage, 8, new Dummy());
 					ListenTeleport(195268, new Advance());
 				})
 			});
@@ -438,7 +448,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Maghda
 					UnlockTeleport(4);
-					ListenKill(6031, 1, new Advance());
+					ListenKill(ActorSno._maghda, 1, new Advance());
 				})
 			});
 
@@ -450,11 +460,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //return to camp
 					this.Game.CurrentEncounter.activated = false;
-					this.Game.AddOnLoadAction(195200, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.caout_cellar_alcarnus_main, () =>
 					{
-						Open(this.Game.GetWorld(195200), 214196);
+						Open(this.Game.GetWorld(WorldSno.caout_cellar_alcarnus_main), ActorSno._caout_stingingwinds_arena_bridge);
 					});
-					ListenProximity(191492, new Advance());
+					ListenProximity(ActorSno._hearthportal, new Advance());
 				})
 			});
 
@@ -491,7 +501,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Asheera
 											   //ListenProximity(3205, new LaunchConversation(201285));
-					this.Game.GetWorld(70885).ShowOnlyNumNPC(3205, 0);
+					this.Game.GetWorld(WorldSno.caout_town).ShowOnlyNumNPC(ActorSno._asheara, 0);
 					ListenConversation(201285, new Advance());
 				})
 			});
@@ -504,7 +514,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Asheera for reach emperor's palace
 											   //ListenConversation(165807, new Advance());
-					ListenProximity(164057, new AskBossEncounter(162231));
+					ListenProximity(ActorSno._caldeumguard_captain_b_ravd, new AskBossEncounter(162231));
 					ListenTeleport(81178, new Advance());
 				})
 			});
@@ -516,20 +526,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 21,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Emperor
-					this.Game.AddOnLoadAction(81715, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_intro, () =>
 					{
 						//ID: 59447 Name: BelialBoyEmperor
+						var world = this.Game.GetWorld(WorldSno.a2_belial_room_intro);
 						foreach (var plr in this.Game.Players.Values)
 						{
 							plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
-							plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)this.Game.GetWorld(81715).GetActorBySNO(59447).DynamicID(plr), Duration = 1f, Snap = false });
+							plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)world.GetActorBySNO(ActorSno._belialboyemperor).DynamicID(plr), Duration = 1f, Snap = false });
 						}
-						foreach (var leah in this.Game.GetWorld(81715).GetActorsBySNO(4580))
+						foreach (var leah in world.GetActorsBySNO(ActorSno._leah))
 							if (leah is TownLeah)
 								(leah as TownLeah).Brain.DeActivate();
-						setActorOperable(this.Game.GetWorld(81715), 190236, false);
-						DisableEveryone(this.Game.GetWorld(81715), true);
-						StartConversation(this.Game.GetWorld(81715), 160894);
+						SetActorOperable(world, ActorSno._a2dun_cald_belial_room_gate_a, false);
+						DisableEveryone(world, true);
+						StartConversation(world, 160894);
 					});
 					//ListenTeleport(81178, new LaunchConversation(160894));
 					ListenConversation(160894, new LaunchConversation(160896));
@@ -546,24 +557,25 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill demons
 					int snakes = 0;
-					this.Game.AddOnLoadAction(81715, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_intro, () =>
 					{
 						if (this.Game.CurrentQuest == 57331 && this.Game.CurrentStep == 21)
 						{
-							DisableEveryone(this.Game.GetWorld(81715), false);
-							AddFollower(this.Game.GetWorld(81715), 4580);
-							foreach (var leah in this.Game.GetWorld(81715).GetActorsBySNO(4580))
+							var world = this.Game.GetWorld(WorldSno.a2_belial_room_intro);
+							DisableEveryone(world, false);
+							AddFollower(world, ActorSno._leah);
+							foreach (var leah in world.GetActorsBySNO(ActorSno._leah))
 								if (leah is TownLeah)
 									(leah as TownLeah).Brain.Activate(); 
 							script = new SpawnSnakemanGuards();
-							script.Execute(this.Game.GetWorld(81715));
+							script.Execute(world);
 
-							foreach (var snake in this.Game.GetWorld(81715).GetActorsBySNO(60816))
+							foreach (var snake in world.GetActorsBySNO(ActorSno._khamsin_snakeman_melee))
 								snakes++;
 						}
 					});
 					
-					ListenKill(60816, snakes, new Advance());
+					ListenKill(ActorSno._khamsin_snakeman_melee, snakes, new Advance());
 				})
 			});
 
@@ -574,13 +586,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 31,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //escape the emperor's palace
-					this.Game.AddOnLoadAction(81715, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_intro, () =>
 					{
 						if (this.Game.CurrentQuest == 57331 && this.Game.CurrentStep == 2)
 						{
-							DestroyFollower(4580);
-							AddFollower(this.Game.GetWorld(81715), 4580);
-							Open(this.Game.GetWorld(81715), 190236);
+							var world = this.Game.GetWorld(WorldSno.a2_belial_room_intro);
+							DestroyFollower(ActorSno._leah);
+							AddFollower(world, ActorSno._leah);
+							Open(world, ActorSno._a2dun_cald_belial_room_gate_a);
 						}
 					});
 					ListenTeleport(102964, new Advance());
@@ -594,21 +607,22 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 34,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //destroy 4 demon summoners
-					this.Game.AddOnLoadAction(86594, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_cald, () =>
 					{
 						if (this.Game.CurrentQuest == 57331 && this.Game.CurrentStep == 31)
 						{
-							this.Game.GetWorld(86594).ShowOnlyNumNPC(3205, -1); //Leave all Asheara
-							this.Game.GetWorld(86594).ShowOnlyNumNPC(4580, -1); //Leave all Leah
-							this.Game.GetWorld(86594).ShowOnlyNumNPC(4580, -1); //Leave all Adria
-							DestroyFollower(4580);
-							AddFollower(this.Game.GetWorld(81715), 4580);
+							var world = this.Game.GetWorld(WorldSno.a2dun_cald);
+							world.ShowOnlyNumNPC(ActorSno._asheara, -1); //Leave all Asheara
+							world.ShowOnlyNumNPC(ActorSno._leah, -1); //Leave all Leah
+							world.ShowOnlyNumNPC(ActorSno._adria, -1); //Leave all Adria
+							DestroyFollower(ActorSno._leah);
+							AddFollower(this.Game.GetWorld(WorldSno.a2_belial_room_intro), ActorSno._leah);
 							script = new SpawnSnakemanDefenders();
-							script.Execute(this.Game.GetWorld(86594));
+							script.Execute(world);
 
 						}
 					});
-					ListenKill(174866, 4, new Advance());
+					ListenKill(ActorSno._a2dun_cald_belial_summoningmachine_node_monster, 4, new Advance());
 				})
 			});
 
@@ -619,14 +633,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 7,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //hide into Caldeum drains
-					this.Game.AddOnLoadAction(86594, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_cald, () =>
 					{
 						if (this.Game.CurrentQuest == 57331 && this.Game.CurrentStep == 34)
 						{
-							DestroyFollower(4580);
-							AddFollower(this.Game.GetWorld(81715), 4580);
+							DestroyFollower(ActorSno._leah);
+							AddFollower(this.Game.GetWorld(WorldSno.a2_belial_room_intro), ActorSno._leah);
 
-							foreach (var act in this.Game.GetWorld(86594).GetActorsBySNO(159846))
+							foreach (var act in this.Game.GetWorld(WorldSno.a2dun_cald).GetActorsBySNO(ActorSno._temp_snakeportal_center))
 								act.Destroy();//TEMP_SnakePortal_Center
 						}
 					});
@@ -641,13 +655,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					this.Game.AddOnLoadAction(86594, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_cald, () =>
 					{
 						if (this.Game.CurrentQuest == 57331 && this.Game.CurrentStep == 7)
 						{
-							DestroyFollower(4580);
-							this.Game.GetWorld(50588).ShowOnlyNumNPC(4580, -1); //Leave all Leah
-							this.Game.GetWorld(50588).ShowOnlyNumNPC(87496, -1); //Leave all LeahSewer
+							var world = this.Game.GetWorld(WorldSno.a2c1dun_swr_caldeum_01);
+							DestroyFollower(ActorSno._leah);
+							world.ShowOnlyNumNPC(ActorSno._leah, -1); //Leave all Leah
+							world.ShowOnlyNumNPC(ActorSno._leahsewer, -1); //Leave all LeahSewer
 						}
 					});
 					this.Game.CurrentEncounter.activated = false;
@@ -687,19 +702,20 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 15,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill guardians
-					this.Game.AddOnLoadAction(58493, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_swr_adria_level01, () =>
 					{
 						if (this.Game.CurrentQuest == 78264 && this.Game.CurrentStep == 2)
 						{
-							StartConversation(this.Game.GetWorld(58493), 81197);
+							var world = this.Game.GetWorld(WorldSno.a2dun_swr_adria_level01);
+							StartConversation(world, 81197);
 							foreach (var plr in this.Game.Players.Values)
 								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
 							foreach (var plr in this.Game.Players.Values)
-								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)this.Game.GetWorld(58493).GetActorBySNO(3095).DynamicID(plr), Duration = 1f, Snap = false });
+								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)world.GetActorBySNO(ActorSno._adria).DynamicID(plr), Duration = 1f, Snap = false });
 							ListenConversation(81197, new EndCutScene());
 						}
 					});
-					ListenKill(188400, 1, new Advance());
+					ListenKill(ActorSno._snakeman_caster_a_adriatorturer, 1, new Advance());
 					UnlockTeleport(1);
 				})
 			});
@@ -711,9 +727,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 21,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Adria in pit
-					this.Game.AddOnLoadAction(58493, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_swr_adria_level01, () =>
 					{
-						AddQuestConversation(this.Game.GetWorld(58493).GetActorBySNO(3095), 81674);
+						AddQuestConversation(this.Game.GetWorld(WorldSno.a2dun_swr_adria_level01).GetActorBySNO(ActorSno._adria), 81674);
 						ListenConversation(81674, new Advance());
 					});
 				})
@@ -726,13 +742,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 8,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Adria in camp
+					var world = this.Game.GetWorld(WorldSno.a2dun_swr_adria_level01);
 					this.Game.CurrentEncounter.activated = false;
-					if (this.Game.GetWorld(58493).GetActorBySNO(3095) != null)
-						RemoveConversations(this.Game.GetWorld(58493).GetActorBySNO(3095));
+					if (world.GetActorBySNO(ActorSno._adria) != null)
+						RemoveConversations(world.GetActorBySNO(ActorSno._adria));
 
-					var Adria = this.Game.GetWorld(58493).ShowOnlyNumNPC(3095, 0);
-					var Portal = this.Game.GetWorld(58493).GetActorBySNO(203431);
-					var AltPortal = this.Game.GetWorld(58493).SpawnMonster(203431, Portal.Position);
+					var Adria = world.ShowOnlyNumNPC(ActorSno._adria, 0);
+					var Portal = world.GetActorBySNO(ActorSno._adria_town_portal);
+					var AltPortal = world.SpawnMonster(ActorSno._adria_town_portal, Portal.Position);
 
 
 					Adria.Move(Portal.Position, ActorSystem.Movement.MovementHelpers.GetFacingAngle(Adria, Portal)); //Only Talk Adria
@@ -741,12 +758,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
                     System.Threading.Tasks.Task.Delay(3000).ContinueWith(delegate
 					{
-						this.Game.GetWorld(58493).ShowOnlyNumNPC(3095, -1); //Only Talk Adria
+						world.ShowOnlyNumNPC(ActorSno._adria, -1); //Only Talk Adria
 						Portal.Destroy();
 						AltPortal.Destroy();
 					});
 
-						AddQuestConversation(this.Game.GetWorld(161472).GetActorBySNO(3095), 58139);
+						AddQuestConversation(this.Game.GetWorld(WorldSno.caout_refugeecamp).GetActorBySNO(ActorSno._adria), 58139);
 					//ListenProximity(6353, new LaunchConversation(58139));
 					
 					ListenConversation(58139, new Advance());
@@ -761,7 +778,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
 					PlayCutscene(2);
-					this.Game.GetWorld(70885).GetActorBySNO(162378).SetUsable(true);
+					this.Game.GetWorld(WorldSno.caout_town).GetActorBySNO(ActorSno._a2duncald_deco_sewer_lid).SetUsable(true);
 
 				})
 			});
@@ -789,17 +806,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					if (Game.DestinationEnterQuest == 78266)
 						if (Game.DestinationEnterQuestStep == -1 || Game.DestinationEnterQuestStep == 2)
 						{
-							this.Game.AddOnLoadAction(161472, () =>
+							this.Game.AddOnLoadWorldAction(WorldSno.caout_refugeecamp, () =>
 							{
-								ActiveArrow(this.Game.GetWorld(161472), 178304, 70885);
+								ActiveArrow(this.Game.GetWorld(WorldSno.caout_refugeecamp), ActorSno._g_portal_archtall_orange_icondoor, WorldSno.caout_town);
 							});
-							this.Game.AddOnLoadAction(70885, () =>
+							this.Game.AddOnLoadWorldAction(WorldSno.caout_town, () =>
 							{
-								ActiveArrow(this.Game.GetWorld(70885), 176003, 174434);
+								ActiveArrow(this.Game.GetWorld(WorldSno.caout_town), ActorSno._g_portal_circle_blue, WorldSno.a2_swr_fcauseway_01);
 							});
 						}
 					
-					ListenProximity(177881, new Advance());
+					ListenProximity(ActorSno._a2dunswr_gates_causeway_gates, new Advance());
 					
 					//ListenInteract(177881, 1, new Advance());
 				})
@@ -812,7 +829,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 31,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Emperor
-					ListenProximity(62522, new Advance());
+					ListenProximity(ActorSno._hakan, new Advance());
 				})
 			});
 
@@ -825,11 +842,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //find Oasis
 					ListenConversation(180063, new LaunchConversation(187093));
 					ListenTeleport(175367, new Advance());
-					this.Game.AddOnLoadAction(174434, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2_swr_fcauseway_01, () =>
 					{
 						if (this.Game.CurrentQuest == 78266 && this.Game.CurrentStep == 31)
 						{
-							StartConversation(this.Game.GetWorld(174434), 180063);
+							StartConversation(this.Game.GetWorld(WorldSno.a2_swr_fcauseway_01), 180063);
 						}
 					});
 				})
@@ -856,7 +873,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //find Kulle's head
 					UnlockTeleport(5);
 					UnlockTeleport(6);
-					ListenProximity(213907, new Advance());
+					ListenProximity(ActorSno._a2dun_zolt_head_container, new Advance());
 				})
 			});
 
@@ -867,7 +884,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 26,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //get Kulle's head
-					ListenInteract(213907, 1, new Advance());
+					ListenInteract(ActorSno._a2dun_zolt_head_container, 1, new Advance());
 				})
 			});
 
@@ -878,7 +895,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 11,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Adria in camp
-					ListenProximity(6353, new LaunchConversation(123146));
+					ListenProximity(ActorSno._tyrael, new LaunchConversation(123146));
 					ListenConversation(123146, new Advance());
 				})
 			});
@@ -926,13 +943,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 }, new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //turn east lever and turn west lever and open gates to drowned passage
 											   //try {(this.Game.GetWorld(59486).FindAt(83629, new Vector3D{X = 175.1f, Y = 62.275f, Z = 50.17f}, 20.0f) as Door).Open();} catch {}
-					this.Game.AddOnLoadAction(59486, () =>
+					var world = this.Game.GetWorld(WorldSno.a2dun_aqd_special_01);
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_special_01, () =>
 					{
-						(this.Game.GetWorld(59486).FindAt(83629, new Vector3D { X = 175.1f, Y = 62.275f, Z = 50.17f }, 20.0f) as Door).Open();
+						(world.FindAt(ActorSno._a2dun_aqd_act_stone_slab_a_01, new Vector3D { X = 175.1f, Y = 62.275f, Z = 50.17f }, 20.0f) as Door).Open();
 					});
-					ListenInteract(76931, 1, new CompleteObjective(0));
-					ListenInteract(83295, 1, new Advance());
-					StartConversation(this.Game.GetWorld(59486), 186905);
+					ListenInteract(ActorSno._a2dun_aqd_act_waterwheel_lever_a_01, 1, new CompleteObjective(0));
+					ListenInteract(ActorSno._a2dun_aqd_act_waterwheel_lever_b_01, 1, new Advance());
+					StartConversation(world, 186905);
 					//ListenInteract(83295, 1, new CompleteObjective(2));
 				})
 			});
@@ -944,12 +962,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 54,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter to drowned passage
-					this.Game.AddOnLoadAction(59486, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_special_01, () =>
 					{
-						Open(this.Game.GetWorld(59486), 83629);
-						Open(this.Game.GetWorld(59486), 131364);
-						Open(this.Game.GetWorld(59486), 159419);
-						(this.Game.GetWorld(59486).FindAt(83629, new Vector3D { X = 80.5f, Y = 155.631f, Z = 50.33f }, 20.0f) as Door).Open();
+						var world = this.Game.GetWorld(WorldSno.a2dun_aqd_special_01);
+						Open(world, ActorSno._a2dun_aqd_act_stone_slab_a_01);
+						Open(world, ActorSno._a2dun_aqd_special_01_waterfall);
+						Open(world, ActorSno._a2dun_aqd_mainpuzzle_door);
+						(world.FindAt(ActorSno._a2dun_aqd_act_stone_slab_a_01, new Vector3D { X = 80.5f, Y = 155.631f, Z = 50.33f }, 20.0f) as Door).Open();
 					});
 					//try {(this.Game.GetWorld(59486).FindAt(83629, new Vector3D{X = 80.5f, Y = 155.631f, Z = 50.33f}, 20.0f) as Door).Open();} catch {}
 					ListenTeleport(192694, new Advance());
@@ -963,14 +982,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 56,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Deceiveds
-					this.Game.AddOnLoadAction(192687, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
-						setActorOperable(this.Game.GetWorld(192687), 168235, false);
-						this.Game.GetWorld(192687).SpawnMonster(4104, new Vector3D { X = 75.209f, Y = 191.342f, Z = -1.5f });
-						this.Game.GetWorld(192687).SpawnMonster(4104, new Vector3D { X = 44.703f, Y = 179.753f, Z = -1.56f });
-						this.Game.GetWorld(192687).SpawnMonster(4104, new Vector3D { X = 43.304f, Y = 205.28f, Z = -0.34f });
+						var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00);
+						SetActorOperable(world, ActorSno._spawner_leor_iron_maiden_jewelerquest, false);
+						world.SpawnMonster(ActorSno._fastmummy_a, new Vector3D { X = 75.209f, Y = 191.342f, Z = -1.5f });
+						world.SpawnMonster(ActorSno._fastmummy_a, new Vector3D { X = 44.703f, Y = 179.753f, Z = -1.56f });
+						world.SpawnMonster(ActorSno._fastmummy_a, new Vector3D { X = 43.304f, Y = 205.28f, Z = -0.34f });
 					});
-					ListenKill(4104, 3, new Advance());
+					ListenKill(ActorSno._fastmummy_a, 3, new Advance());
 				})
 			});
 
@@ -981,11 +1001,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 58,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //break talking barrel
-					this.Game.AddOnLoadAction(192687, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
-						setActorOperable(this.Game.GetWorld(192687), 168235, true);
+						SetActorOperable(this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00), ActorSno._spawner_leor_iron_maiden_jewelerquest, true);
 					});
-					ListenInteract(168235, 1, new Advance());
+					ListenInteract(ActorSno._spawner_leor_iron_maiden_jewelerquest, 1, new Advance());
 				})
 			});
 
@@ -996,11 +1016,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 60,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with jeweler
-					this.Game.AddOnLoadAction(192687, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
-						this.Game.GetWorld(192687).SpawnMonster(61544, this.Game.GetWorld(192687).GetActorBySNO(168235, true).Position);
+						var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00);
+						world.SpawnMonster(ActorSno._intro_jeweler, world.GetActorBySNO(ActorSno._spawner_leor_iron_maiden_jewelerquest, true).Position);
 					});
-					ListenProximity(61544, new LaunchConversation(168948));
+					ListenProximity(ActorSno._intro_jeweler, new LaunchConversation(168948));
 					ListenConversation(168948, new Advance());
 				})
 			});
@@ -1012,14 +1033,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 62,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find crucible
-					this.Game.AddOnLoadAction(192687, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
 						if (this.Game.CurrentQuest == 57335 && this.Game.CurrentStep == 60)
 						{
-							AddFollower(this.Game.GetWorld(192687), 61544);
+							AddFollower(this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00), ActorSno._intro_jeweler);
 						}
 					});
-					ListenProximity(168240, new Advance());
+					ListenProximity(ActorSno._zombie_unique_jewelerquest, new Advance());
 				})
 			});
 
@@ -1030,24 +1051,25 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 64,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Gevin
-					this.Game.AddOnLoadAction(192687, () =>
+					var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00);
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
 						if (this.Game.CurrentQuest == 57335 && this.Game.CurrentStep == 62)
 						{
-							DestroyFollower(61544);
-							AddFollower(this.Game.GetWorld(192687), 61544);
+							DestroyFollower(ActorSno._intro_jeweler);
+							AddFollower(world, ActorSno._intro_jeweler);
 						}
 					});
 					bool Killed = true;
-					foreach (var act in this.Game.GetWorld(192687).Actors.Values)
-						if (act.ActorSNO.Id == 168240)
+					foreach (var act in world.Actors.Values)
+						if (act.SNO == ActorSno._zombie_unique_jewelerquest)
 							Killed = false;
 					if (!Killed)
-						ListenKill(168240, 1, new Advance());
+						ListenKill(ActorSno._zombie_unique_jewelerquest, 1, new Advance());
 					else
 					{
 						script = new Advance();
-						script.Execute(this.Game.GetWorld(192687));
+						script.Execute(world);
 					}
 
 				})
@@ -1060,15 +1082,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 44,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //get crucible
-					this.Game.AddOnLoadAction(192687, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
 						if (this.Game.CurrentQuest == 57335 && this.Game.CurrentStep == 64)
 						{
-							DestroyFollower(61544);
-							AddFollower(this.Game.GetWorld(192687), 61544);
+							DestroyFollower(ActorSno._intro_jeweler);
+							AddFollower(this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00), ActorSno._intro_jeweler);
 						}
 					});
-					ListenInteract(213514, 1, new Advance());
+					ListenInteract(ActorSno._a2dun_aqd_jeweler_altar, 1, new Advance());
 				})
 			});
 
@@ -1079,12 +1101,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 24,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter the ancient passage
-					this.Game.AddOnLoadAction(192687, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
 						if (this.Game.CurrentQuest == 57335 && this.Game.CurrentStep == 44)
 						{
-							DestroyFollower(61544);
-							AddFollower(this.Game.GetWorld(192687), 61544);
+							DestroyFollower(ActorSno._intro_jeweler);
+							AddFollower(this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00), ActorSno._intro_jeweler);
 						}
 					});
 					ListenTeleport(175330, new Advance());
@@ -1110,9 +1132,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 }, new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find blood in 2 caves
 					if (this.Game.Empty) UnlockTeleport(7);
-					DestroyFollower(61544);
-					ListenInteract(213820, 1, new CompleteObjective(0));
-					ListenInteract(213859, 1, new CompleteObjective(1));
+					DestroyFollower(ActorSno._intro_jeweler);
+					ListenInteract(ActorSno._a2dun_zolt_blood_container, 1, new CompleteObjective(0));
+					ListenInteract(ActorSno._a2dun_zolt_blood_container_02, 1, new CompleteObjective(1));
 				})
 			});
 
@@ -1161,7 +1183,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 35,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter the Limit
-					ListenProximity(220114, new Advance());
+					ListenProximity(ActorSno._hakanprojection, new Advance());
 				})
 			});
 
@@ -1173,22 +1195,22 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 }, new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //open Abyss lock and open Stormhalls lock
 					if (this.Game.Empty) UnlockTeleport(9);
-					this.Game.AddOnLoadAction(50613, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_zolt_lobby, () =>
 					{
 						if (this.Game.CurrentQuest == 57337 && this.Game.CurrentStep == 35)
 						{
-							StartConversation(this.Game.GetWorld(50613), 187015);
+							StartConversation(this.Game.GetWorld(WorldSno.a2dun_zolt_lobby), 187015);
 						}
 					});
-					this.Game.AddOnLoadAction(50610, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_zolt_level01, () =>
 					{
-						(this.Game.GetWorld(50610).GetActorBySNO(74187) as Spawner).Spawn();
+						(this.Game.GetWorld(WorldSno.a2dun_zolt_level01).GetActorBySNO(ActorSno._spawner_zolt_centerpiece) as Spawner).Spawn();
 					});
-					this.Game.AddOnLoadAction(50611, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_zolt_level02, () =>
 					{
-						(this.Game.GetWorld(50611).GetActorBySNO(74187) as Spawner).Spawn();
+						(this.Game.GetWorld(WorldSno.a2dun_zolt_level02).GetActorBySNO(ActorSno._spawner_zolt_centerpiece) as Spawner).Spawn();
 					});
-					ListenInteract(2975, 2, new Advance());
+					ListenInteract(ActorSno._a2dun_zolt_centerpiece_a, 2, new Advance());
 				})
 			});
 
@@ -1199,9 +1221,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 0,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter the shadows world
-					this.Game.AddOnLoadAction(50613, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_zolt_lobby, () =>
 					{
-						Open(this.Game.GetWorld(50613), 205701);
+						Open(this.Game.GetWorld(WorldSno.a2dun_zolt_lobby), ActorSno._a2dun_zolt_shadow_realm_portal_terminus);
 					});
 					UnlockTeleport(9);
 					ListenTeleport(80592, new Advance());
@@ -1215,7 +1237,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Kulle's body
-					ListenInteract(119685, 1, new Advance());
+					ListenInteract(ActorSno._a2dun_zolt_body_container, 1, new Advance());
 				})
 			});
 
@@ -1226,8 +1248,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 26,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Leah
-					ListenProximity(4580, new LaunchConversation(62505));
-					foreach (var act in this.Game.GetWorld(50613).GetActorsBySNO(168333))
+					ListenProximity(ActorSno._leah, new LaunchConversation(62505));
+					foreach (var act in this.Game.GetWorld(WorldSno.a2dun_zolt_lobby).GetActorsBySNO(ActorSno._temp_zknavblocker))
 						act.Destroy();
 					ListenConversation(62505, new Advance());
 				})
@@ -1251,11 +1273,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 4,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Kulle
-					this.Game.AddOnLoadAction(60193, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_zolt_bossfight_level04, () =>
 					{
 						if (this.Game.CurrentQuest == 57337 && this.Game.CurrentStep == 27)
 						{
-							StartConversation(this.Game.GetWorld(60193), 202697);
+							StartConversation(this.Game.GetWorld(WorldSno.a2dun_zolt_bossfight_level04), 202697);
 						}
 					});
 					ListenConversation(202697, new Advance());
@@ -1269,7 +1291,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 31,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Kulle
-					ListenKill(80509, 1, new Advance());
+					ListenKill(ActorSno._zoltunkulle, 1, new Advance());
 				})
 			});
 
@@ -1280,11 +1302,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 33,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //get Soulstone
-					this.Game.AddOnLoadAction(60193, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_zolt_bossfight_level04, () =>
 					{
-						Open(this.Game.GetWorld(60193), 165415);
+						Open(this.Game.GetWorld(WorldSno.a2dun_zolt_bossfight_level04), ActorSno._a2dun_zolt_sandbridgebase_bossfight);
 					});
-					ListenInteract(156328, 1, new Advance());
+					ListenInteract(ActorSno._a2dun_zolt_black_soulstone, 1, new Advance());
 				})
 			});
 
@@ -1295,7 +1317,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 6,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Adria in camp
-					ListenProximity(3095, new LaunchConversation(80513));
+					ListenProximity(ActorSno._adria, new LaunchConversation(80513));
 					ListenConversation(80513, new Advance());
 				})
 			});
@@ -1331,11 +1353,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 23,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Asheara
-					this.Game.AddOnLoadAction(70885, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.caout_town, () =>
 					{
-						this.Game.GetWorld(70885).ShowOnlyNumNPC(3205, 1);
+						var world = this.Game.GetWorld(WorldSno.caout_town);
+						world.ShowOnlyNumNPC(ActorSno._asheara, 1);
 						script = new Advance();
-						script.Execute(this.Game.GetWorld(70885));
+						script.Execute(world);
 					});
 					//ListenProximity(3205, new Advance());
 				})
@@ -1348,7 +1371,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 21,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Asheara
-					foreach (var Ashe in this.Game.GetWorld(70885).GetActorsBySNO(3205))
+					foreach (var Ashe in this.Game.GetWorld(WorldSno.caout_town).GetActorsBySNO(ActorSno._asheara))
 						AddQuestConversation(Ashe, 121359);
 					ListenConversation(121359, new Advance());
 				})
@@ -1361,10 +1384,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //todo: timed event 115494
-					try { (this.Game.GetWorld(70885).FindAt(169502, new Vector3D { X = 3135.3f, Y = 1546.1f, Z = 250.545f }, 15.0f) as Door).Open(); } catch { }
-					foreach (var Ashe in this.Game.GetWorld(70885).GetActorsBySNO(3205))
+					var world = this.Game.GetWorld(WorldSno.caout_town);
+					try { (world.FindAt(ActorSno._a2dun_cald_exit_gate, new Vector3D { X = 3135.3f, Y = 1546.1f, Z = 250.545f }, 15.0f) as Door).Open(); } catch { }
+					foreach (var Ashe in world.GetActorsBySNO(ActorSno._asheara))
 						RemoveConversations(Ashe);
-					StartConversation(this.Game.GetWorld(70885), 178852);
+					StartConversation(world, 178852);
 					ListenConversation(178852, new RefugeesRescue());
 					//ListenProximity(162378, new RefugeesRescue());
 				})
@@ -1401,8 +1425,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 12,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter the Caldeum palace
-					AddFollower(this.Game.GetWorld(81715), 4580);
-					AddFollower(this.Game.GetWorld(161472), 3095);
+					AddFollower(this.Game.GetWorld(WorldSno.a2_belial_room_intro), ActorSno._leah);
+					AddFollower(this.Game.GetWorld(WorldSno.caout_refugeecamp), ActorSno._adria);
 					ListenTeleport(210451, new Advance());
 				})
 			});
@@ -1414,19 +1438,20 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 29,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //go to emperor's palace
-					foreach (var door in this.Game.GetWorld(109894).GetActorsBySNO(190844))
+					var world = this.Game.GetWorld(WorldSno.a2dun_cald_uprising);
+					foreach (var door in world.GetActorsBySNO(ActorSno._a2dun_cald_gate_belial_destroyable))
 						door.Destroy();
-					foreach (var guard in this.Game.GetWorld(109894).GetActorsBySNO(57470))
+					foreach (var guard in world.GetActorsBySNO(ActorSno._caldeumguard_spear_b_nowander))
 						guard.Destroy();
-					DestroyFollower(4580);
-					DestroyFollower(3095);
-					AddFollower(this.Game.GetWorld(81715), 4580);
-					AddFollower(this.Game.GetWorld(161472), 3095);
-					this.Game.AddOnLoadAction(109894, () =>
+					DestroyFollower(ActorSno._leah);
+					DestroyFollower(ActorSno._adria);
+					AddFollower(this.Game.GetWorld(WorldSno.a2_belial_room_intro), ActorSno._leah);
+					AddFollower(this.Game.GetWorld(WorldSno.caout_refugeecamp), ActorSno._adria);
+					this.Game.AddOnLoadWorldAction(WorldSno.a2dun_cald_uprising, () =>
 					{
 						script = new SpawnBelialDefenders();
-						script.Execute(this.Game.GetWorld(109894));
-						Open(this.Game.GetWorld(109894), 180254);
+						script.Execute(world);
+						Open(world, ActorSno._a2dun_cald_belial_magic_blocker);
 					});
 					ListenTeleport(60757, new Advance());
 				})
@@ -1439,38 +1464,39 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 13,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Belial
-					DestroyFollower(4580);
-					DestroyFollower(3095);
-					this.Game.AddOnLoadAction(60756, () =>
+					DestroyFollower(ActorSno._leah);
+					DestroyFollower(ActorSno._adria);
+					this.Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_01, () =>
 					{
-						setActorOperable(this.Game.GetWorld(60756), 169025, false);
-						setActorOperable(this.Game.GetWorld(60756), 190236, false);
-						setActorVisible(this.Game.GetWorld(60756), 191922, false);
+						var world = this.Game.GetWorld(WorldSno.a2_belial_room_01);
+						SetActorOperable(world, ActorSno._a2dun_cald_belial_room_a_breakable_main, false);
+						SetActorOperable(world, ActorSno._a2dun_cald_belial_room_gate_a, false);
+						SetActorVisible(world, ActorSno._a2dun_zolt_black_soulstone_nofx, false);
 						//stage 1
 						if (this.Game.CurrentQuest == 57339 && this.Game.CurrentStep == 29)
 						{
-							DisableEveryone(this.Game.GetWorld(60756), true);
-							foreach (var Adr in this.Game.GetWorld(60756).GetActorsBySNO(3095))
+							DisableEveryone(world, true);
+							foreach (var Adr in world.GetActorsBySNO(ActorSno._adria))
 								(Adr as Minion).Brain.DeActivate();
-							foreach (var Adr in this.Game.GetWorld(60756).GetActorsBySNO(4580))
+							foreach (var Adr in world.GetActorsBySNO(ActorSno._leah))
 								(Adr as TownLeah).Brain.DeActivate();
 							//Старт катсцены
 							System.Threading.Tasks.Task.Run(() => 
 							{
 								while (true)
-									if (this.Game.Players.First().Value.World.WorldSNO.Id == 60756)
+									if (this.Game.Players.First().Value.World.SNO == WorldSno.a2_belial_room_01)
 										break;
 
 								while (true)
-									if (this.Game.GetWorld(60756).GetActorBySNO(59447).IsRevealedToPlayer(this.Game.Players.First().Value))
+									if (world.GetActorBySNO(ActorSno._belialboyemperor).IsRevealedToPlayer(this.Game.Players.First().Value))
 										break;
 
 								foreach (var plr in this.Game.Players.Values)
 									plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
 
 								foreach (var plr in this.Game.Players.Values)
-									plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)this.Game.GetWorld(60756).GetActorBySNO(59447).DynamicID(plr), Duration = 1f, Snap = false });
-								StartConversation(this.Game.GetWorld(60756), 61130);
+									plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)world.GetActorBySNO(ActorSno._belialboyemperor).DynamicID(plr), Duration = 1f, Snap = false });
+								StartConversation(world, 61130);
 							});
 							
 						}
@@ -1478,13 +1504,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					ListenConversation(61130, new BelialStageOne());
 
 					//stage 2
-					ListenKill(60816, 4, new LaunchConversationWithCutScene(68408, 62975));
+					ListenKill(ActorSno._khamsin_snakeman_melee, 4, new LaunchConversationWithCutScene(68408, ActorSno._belial_trueform));
 					ListenConversation(68408, new BelialStageTwo());
 
 					//stage 3
-					ListenKill(62975, 1, new LaunchConversationWithCutScene(62229, 62975));
+					ListenKill(ActorSno._belial_trueform, 1, new LaunchConversationWithCutScene(62229, ActorSno._belial_trueform));
 					ListenConversation(62229, new BelialStageThree());
-					ListenKill(3349, 1, new Advance());
+					ListenKill(ActorSno._belial, 1, new Advance());
 				})
 			});
 
@@ -1496,12 +1522,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //get Belial's soul
 					this.Game.CurrentEncounter.activated = false;
-					this.Game.AddOnLoadAction(60756, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_01, () =>
 					{
-						(this.Game.GetWorld(60756).GetActorBySNO(169025) as BelialRoom).Rebuild();
+						(this.Game.GetWorld(WorldSno.a2_belial_room_01).GetActorBySNO(ActorSno._a2dun_cald_belial_room_a_breakable_main) as BelialRoom).Rebuild();
 					});
 					//this.Game.GetWorld(60756).SpawnMonster(206391, this.Game.GetWorld(60756).GetStartingPointById(108).Position);
-					ListenInteract(206391, 1, new Advance());
+					ListenInteract(ActorSno._belial_bss_soul, 1, new Advance());
 				})
 			});
 
@@ -1512,12 +1538,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 14,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael in camp
-					this.Game.AddOnLoadAction(60756, () =>
+					this.Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_01, () =>
 					{
-						setActorOperable(this.Game.GetWorld(60756), 190236, true);
-						this.Game.GetWorld(60756).GetActorBySNO(206391, true).Destroy();
+						var world = this.Game.GetWorld(WorldSno.a2_belial_room_01);
+						SetActorOperable(world, ActorSno._a2dun_cald_belial_room_gate_a, true);
+						world.GetActorBySNO(ActorSno._belial_bss_soul, true).Destroy();
 					});
-					ListenProximity(146980, new LaunchConversation(80329));
+					ListenProximity(ActorSno._zoltunkulletownhead, new LaunchConversation(80329));
 					ListenConversation(80329, new Advance());
 				})
 			});
@@ -1529,9 +1556,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with caravan leader
-					ListenInteract(177544, 1, new LaunchConversation(177669));
+					ListenInteract(ActorSno._hub_caravanleader, 1, new LaunchConversation(177669));
 					ListenConversation(177669, new ChangeAct(200));
-					this.Game.GetWorld(161472).GetActorBySNO(177544, true).NotifyConversation(1);
+					this.Game.GetWorld(WorldSno.caout_refugeecamp).GetActorBySNO(ActorSno._hub_caravanleader, true).NotifyConversation(1);
 				})
 			});
 
@@ -1561,7 +1588,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			}
 			else if (actor != null)
 			{
-				foreach (var N in actor.World.GetActorsBySNO(actor.ActorSNO.Id))
+				foreach (var N in actor.World.GetActorsBySNO(actor.SNO))
 					if (N is InteractiveNPC)
 					{
 						NPC = N as InteractiveNPC;

@@ -14,13 +14,14 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
 	class GargantuanMinion : Minion
 	{
 		public GargantuanMinion(World world, PowerContext context, int GargID)
-			: base(world, 122305, context.User, null)
+			: base(world, ActorSno._wd_gargantuan, context.User, null)
 		{
 			Scale = 1f;
 			//TODO: get a proper value for this.
@@ -58,7 +59,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 				{
 					var rem = new List<uint>();
 					foreach (var fol in (this.Master as Player).Followers)
-						if (fol.Value == 122305 && fol.Key != this.GlobalID)
+						if (fol.Value == SNO && fol.Key != this.GlobalID)
 							rem.Add(fol.Key);
 					foreach (var rm in rem)
 						(this.Master as Player).DestroyFollowerById(rm);

@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
@@ -75,7 +76,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			foreach (Vector3D position in targetDirs)
 			{
-				var proj = new Projectile(this, RuneSelect(77569, 153864, 153865, 153866, 153867, 153868), User.Position);
+				var proj = new Projectile(
+					this,
+					RuneSelect(
+						ActorSno._demonhunter_bolashot_projectile,
+						ActorSno._demonhunter_bolashotrune_explode_projectile,
+						ActorSno._demonhunter_bolashotrune_multi_projectile,
+						ActorSno._demonhunter_bolashotrune_stun_projectile,
+						ActorSno._demonhunter_bolashotrune_hatred_projectile,
+						ActorSno._demonhunter_bolashotrune_delay_projectile
+					),
+					User.Position
+				);
 				proj.Position.Z += 5f;  // fix height
 				proj.OnCollision = (hit) =>
 				{
@@ -167,7 +179,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			Projectile[] grenades = new Projectile[Rune_C > 0 ? 3 : 1];
 			for (int i = 0; i < grenades.Length; ++i)
 			{
-				var projectile = new Projectile(this, Rune_C > 0 ? 212547 : 88244, User.Position);
+				var projectile = new Projectile(this, Rune_C > 0 ? ActorSno._demonhunter_grenade_projectile_big : ActorSno._demonhunter_grenade_projectile, User.Position);
 				projectile.Timeout = timeout;
 				grenades[i] = projectile;
 			}
@@ -207,12 +219,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				var grenadeN = grenade;
 
-				SpawnEffect(RuneSelect(154027, 154045, 154028, 154044, 154046, 154043), grenade.Position);
+				SpawnEffect(RuneSelect(ActorSno._grenadeproxy_norune, ActorSno._grenadeproxy_crimson, ActorSno._grenadeproxy_indigo, ActorSno._grenadeproxy_obsidian, ActorSno._grenadeproxy_golden, ActorSno._grenadeproxy_alabaster), grenade.Position);
 
 				// poison pool effect
 				if (Rune_A > 0)
 				{
-					var pool = SpawnEffect(154076, grenade.Position, 0, WaitSeconds(ScriptFormula(7)));
+					var pool = SpawnEffect(ActorSno._grenadeproxy_crimson_aoe, grenade.Position, 0, WaitSeconds(ScriptFormula(7)));
 					pool.UpdateDelay = 1f;
 					pool.OnUpdate = () =>
 					{
@@ -291,13 +303,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		IEnumerable<TickTimer> _RuneA()     //Shade
 		{
-			_CreateArrowPool(151842, new Vector3D(User.Position), ScriptFormula(6), ScriptFormula(7));
+			_CreateArrowPool(ActorSno._demonhunter_rainofarrows_alabaster_discipline, new Vector3D(User.Position), ScriptFormula(6), ScriptFormula(7));
 			yield break;
 		}
 
 		IEnumerable<TickTimer> _NoRune()
 		{
-			_CreateArrowPool(131701, new Vector3D(User.Position), ScriptFormula(6), ScriptFormula(7));
+			_CreateArrowPool(ActorSno._demonhunter_rainofarrows, new Vector3D(User.Position), ScriptFormula(6), ScriptFormula(7));
 			yield break;
 		}
 
@@ -311,17 +323,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (targets.Count() > 0)
 					target = targets[Rand.Next(targets.Count())];
 
-				if (target == null)
-					_CreateArrowPool(153029, RandomDirection(User.Position, 1f, 15f), ScriptFormula(16), 2f);
-				else
-					_CreateArrowPool(153029, target.Position, ScriptFormula(16), 2f);
+				var position = target == null ? RandomDirection(User.Position, 1f, 15f) : target.Position;
+				_CreateArrowPool(ActorSno._demonhunter_rainofarrows_indigo_buff, position, ScriptFormula(16), 2f);
 
 				yield return WaitSeconds(1f);
 			}
 			yield break;
 		}
 
-		void _CreateArrowPool(int actorSNO, Vector3D position, float duration, float radius)
+		void _CreateArrowPool(ActorSno actorSNO, Vector3D position, float duration, float radius)
 		{
 			var pool = SpawnEffect(actorSNO, position, 0, Rune_B > 0 ? WaitSeconds(1f) : WaitSeconds(duration));
 			pool.UpdateDelay = (1.0f / EvalTag(PowerKeys.AttackSpeed));
@@ -341,7 +351,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		IEnumerable<TickTimer> _RuneC()         //Anathema
 		{
-			var demon = new Projectile(this, 155276, TargetPosition);
+			var demon = new Projectile(this, ActorSno._dh_rainofarrows_grenade_launcher, TargetPosition);
 			demon.Timeout = WaitSeconds(ScriptFormula(30));
 
 			TickTimer grenadeTimer = null;
@@ -353,7 +363,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 					demon.PlayEffect(Effect.Sound, 215621);
 
-					var grenade = new Projectile(this, 152589, demon.Position);
+					var grenade = new Projectile(this, ActorSno._dh_rainofarrows_shadowbeast_projectile, demon.Position);
 					grenade.Position.Z += 18f;  // make it spawn near demon's cannon
 					grenade.Timeout = WaitSeconds(ScriptFormula(33));
 					grenade.OnTimeout = () =>
@@ -384,7 +394,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			for (int n = 0; n < flyerCount; ++n)
 			{
 				var flyerPosition = RandomDirection(TargetPosition, 0f, ScriptFormula(7));
-				var flyer = SpawnEffect(200808, flyerPosition, 0f, WaitSeconds(ScriptFormula(5)));
+				var flyer = SpawnEffect(ActorSno._demonhunter_rainofarrows_crash_land, flyerPosition, 0f, WaitSeconds(ScriptFormula(5)));
 				flyer.OnTimeout = () =>
 				{
 					flyer.PlayEffectGroup(200516);
@@ -415,7 +425,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				waveOffset += 3.0f;
 				var wavePosition = PowerMath.TranslateDirection2D(castedPosition, TargetPosition, castedPosition, waveOffset);
 				var flyerPosition = RandomDirection(wavePosition, 0f, attackRadius);
-				var flyer = SpawnEffect(200561, flyerPosition, castAngle, WaitSeconds(ScriptFormula(20)));
+				var flyer = SpawnEffect(ActorSno._demonhunter_rainofarrows_kamikaze, flyerPosition, castAngle, WaitSeconds(ScriptFormula(20)));
 				flyer.OnTimeout = () =>
 				{
 					flyer.PlayEffectGroup(200819);
@@ -443,12 +453,23 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			GeneratePrimaryResource(ScriptFormula(13));
 
 
-			var projectile = new Projectile(this, RuneSelect(129932, 154590, 154591, 154592, 154593, 154594), User.Position);
+			var projectile = new Projectile(
+				this,
+				RuneSelect(
+					ActorSno._dh_bonearrow_projectile,
+					ActorSno._dh_bonearrow_projectile_addsfiredamage,
+					ActorSno._dh_bonearrow_projectile_splits,
+					ActorSno._dh_bonearrow_projectile_addsdamage,
+					ActorSno._dh_bonearrow_projectile_increasespeed,
+					ActorSno._dh_bonearrow_projectile_splitsmini
+				),
+				User.Position
+			);
 			projectile.Position.Z += 5f;
 			projectile.Launch(TargetPosition, ScriptFormula(7));
 			projectile.OnCollision = (hit) =>
 			{
-				SpawnEffect(99572, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 5f)); // impact effect (fix height)
+				SpawnEffect(ActorSno._wizard_magicmissile_impact, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 5f)); // impact effect (fix height)
 
 				AttackPayload attack = new AttackPayload(this);
 				attack.SetSingleTarget(hit);
@@ -484,7 +505,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				{
 					for (int i = 0; i < 3; i++)
 					{
-						var projectile_split = new Projectile(this, 154592, projectile.Position);
+						var projectile_split = new Projectile(this, ActorSno._dh_bonearrow_projectile_addsdamage, projectile.Position);
 						projectile_split.CollidedActors.Add(hit);
 						projectile_split.Position.Z += 5f;
 						projectile_split.Launch(RandomDirection(projectile.Position, 7f), ScriptFormula(7));
@@ -557,7 +578,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			StartCooldown(EvalTag(PowerKeys.CooldownTime));
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-			var proj = new Projectile(this, RuneSelect(220527, 222102, 222115, 222128, 220527, 222141), User.Position);
+			var proj = new Projectile(
+				this,
+				// FIXME: should be checked and fixed
+				RuneSelect(
+					ActorSno._dh_impale_projectile_base,
+					ActorSno._dh_impale_projectile,
+					ActorSno._dh_impale_projectile_knockback,
+					ActorSno._dh_impale_projectile_dot,
+					ActorSno._dh_impale_projectile, 
+					ActorSno._dh_impale_projectile_damage
+				),
+				User.Position
+			);
 			proj.Position.Z += 5f;  // fix height
 			proj.OnCollision = (hit) =>
 			{
@@ -599,7 +632,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_D > 0)
 			{
-				SpawnEffect(222156, User.Position);
+				// FIXME: Find correct actor
+				//SpawnEffect(222156, User.Position);
 				//User.PlayEffectGroup(222155);
 				WeaponDamage(GetEnemiesInRadius(User.Position, ScriptFormula(11)), ScriptFormula(12), DamageType.Physical);
 			}
@@ -676,7 +710,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			foreach (Vector3D position in targetDirs)
 			{
-				var proj = new Projectile(this, 203006, User.Position);
+				var proj = new Projectile(this, ActorSno._xbowbolt, User.Position);
 				proj.Position.Z += 5f;  // fix height
 				proj.OnCollision = (hit) =>
 				{
@@ -702,7 +736,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				UseSecondaryResource(ScriptFormula(8));
 				if (Rune_C > 0)
 				{
-					var mine = new EffectActor(this, 148900, User.Position);
+					var mine = new EffectActor(this, ActorSno._dh_safetyshot_mine, User.Position);
 					mine.Timeout = WaitSeconds(ScriptFormula(30));
 					mine.Scale = 1f;
 					mine.Spawn();
@@ -745,7 +779,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			UseSecondaryResource(ScriptFormula(7));
 
 			var GroundSpot = SpawnProxy(User.Position);
-			var caltropsGround = SpawnEffect(196030, GroundSpot.Position, 0, WaitSeconds(ScriptFormula(2)));
+			var caltropsGround = SpawnEffect(ActorSno._dh_caltrops_inactive_proxyactor, GroundSpot.Position, 0, WaitSeconds(ScriptFormula(2)));
 			caltropsGround.UpdateDelay = 0.25f;
 			caltropsGround.OnUpdate = () =>
 			{
@@ -755,7 +789,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				caltropsGround.Destroy();
 				if (Activated) return;
 
-				var calTrops = SpawnEffect(RuneSelect(129784, 154811, 155734, 155159, 155848, 155376), GroundSpot.Position, 0, WaitSeconds(ScriptFormula(2)));
+				var calTrops = SpawnEffect(
+					RuneSelect(
+						ActorSno._dh_caltrops_unruned,
+						ActorSno._dh_caltrops_runea_damage,
+						ActorSno._dh_caltrops_runeb_slower,
+						ActorSno._dh_caltrops_runec_weakenmonsters,
+						ActorSno._dh_caltrops_runed_reducediscipline,
+						ActorSno._dh_caltrops_runee_empower
+					),
+					GroundSpot.Position,
+					0,
+					WaitSeconds(ScriptFormula(2))
+				);
 				if (Rune_E > 0)     //Bait the Trap
 				{
 					if (PowerMath.Distance2D(GroundSpot.Position, User.Position) < 12f)
@@ -895,7 +941,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[DiIiS_NA.GameServer.Core.Types.SNO.SNOGroup.Power][131192].Data;
-			var proj1 = new Projectile(this, RuneSelect(150061, 149935, 150064, 150061, 150062, 150065), User.Position);
+			var proj1 = new Projectile(
+				this,
+				RuneSelect(
+					ActorSno._dh_rapidfire_projectile,
+					ActorSno._dh_rapidfire_projectile_grenades, 
+					ActorSno._dh_rapidfire_projectile_addspierce, 
+					ActorSno._dh_rapidfire_projectile_addsmissiles,
+					ActorSno._dh_rapidfire_projectile_addsdamage,
+					ActorSno._dh_rapidfire_projectile_addsslow
+				),
+				User.Position
+			);
 			proj1.Position.Z += 5f;
 			if (Rune_A > 0)
 			{
@@ -912,7 +969,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				proj1.Launch(new Vector3D(TargetPosition.X + ((float)Rand.NextDouble() * 2f), TargetPosition.Y + ((float)Rand.NextDouble() * 2f), TargetPosition.Z), ScriptFormula(2));
 				proj1.OnCollision = (hit) =>
 				{
-					SpawnEffect(99572, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 5f)); // impact effect (fix height)
+					SpawnEffect(ActorSno._wizard_magicmissile_impact, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 5f)); // impact effect (fix height)
 					WeaponDamage(hit, ScriptFormula(0), Rune_D > 0 ? DamageType.Fire : DamageType.Physical);
 
 					if (Rune_B > 0 && FastRandom.Instance.NextDouble() < ScriptFormula(7))
@@ -930,7 +987,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				var targets = GetEnemiesInRadius(User.Position, 40f).Actors.OrderBy(actor => PowerMath.Distance2D(actor.Position, User.Position)).Take((int)ScriptFormula(16));
 				foreach (var target in targets)
 				{
-					var missile = new Projectile(this, 150063, User.Position);
+					var missile = new Projectile(this, ActorSno._dh_rapidfire_projectile_addsmissiles, User.Position);
 					missile.Position.Z += 5f;
 					missile.Launch(target.Position, ScriptFormula(2));
 					missile.OnCollision = (hit) =>
@@ -959,7 +1016,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			GeneratePrimaryResource(ScriptFormula(2));
-			var proj1 = new Projectile(this, 75678, User.Position);
+			var proj1 = new Projectile(this, ActorSno._demonhunter_entangle_projectile, User.Position);
 			proj1.Position.Z += 5f;
 			proj1.OnCollision = (hit) =>
 			{
@@ -1057,7 +1114,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			float frequency = 0.3f;
 			if (Rune_B > 0 || Rune_D > 0) frequency = 0.7f;
 
-			var proj = new Projectile(this, RuneSelect(77604, 131664, 155092, 155749, 155938, 154674), User.Position);
+			var proj = new Projectile(
+				this, 
+				RuneSelect(
+					ActorSno._demonhunter_moltenarrow_projectile,
+					ActorSno._dh_elementalarrow_iceprojectile, 
+					ActorSno._demonhunter_elementalarrow_lightningball,
+					ActorSno._demonhunter_elementalarrow_skullprojectile,
+					ActorSno._demonhunter_elementalarrow_golden_projectile, 
+					ActorSno._demonhunter_elementalarrow_alabaster_projectile
+				),
+				User.Position
+			);
 
 			if (Rune_E > 0) proj.Scale = 3f;
 			if (Rune_C > 0) proj.Position.Z += 3f;
@@ -1109,7 +1177,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				foreach (var target in splitTargets)
 				{
-					var proj2 = new Projectile(this, 131664, hit.Position);
+					var proj2 = new Projectile(this, ActorSno._dh_elementalarrow_iceprojectile, hit.Position);
 					proj2.Position.Z += 5f;
 					proj2.OnCollision = hit2 =>
 					{
@@ -1249,7 +1317,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				foreach (var targetPos in trap_positions)
 				{
-					var traps = User.World.GetActorsBySNO(111330);
+					var traps = User.World.GetActorsBySNO(ActorSno._demonhunter_spiketrap_proxy);
 					if (traps.Count >= ScriptFormula(2))
 					{
 						traps.First().Destroy();
@@ -1257,7 +1325,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 					var GroundSpot = SpawnProxy(targetPos);
 					GroundSpot.Unstuck();
-					var spikeTrapGround = SpawnEffect(111330, GroundSpot.Position, 0, WaitSeconds(ScriptFormula(4)));
+					var spikeTrapGround = SpawnEffect(ActorSno._demonhunter_spiketrap_proxy, GroundSpot.Position, 0, WaitSeconds(ScriptFormula(4)));
 
 					if (!(Rune_D > 0)) yield return WaitSeconds(ScriptFormula(3));
 
@@ -1272,7 +1340,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 								Actor lastTarget = null;
 								for (int i = 0; i < ScriptFormula(25); i++)
 								{
-									SpawnEffect(194566, lightning_pos);
+									SpawnEffect(ActorSno._demonhunter_spiketraprune_chainlightning_explosion, lightning_pos);
 									var targets = GetEnemiesInRadius(lightning_pos, ScriptFormula(6)).Actors.Where(a => a != lastTarget).ToList();
 									if (targets.Count > 0)
 									{
@@ -1291,7 +1359,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							else
 							{
 								spikeTrapGround.Destroy();
-								SpawnEffect(75887, GroundSpot.Position);
+								SpawnEffect(ActorSno._demonhunter_spiketrap_explosion, GroundSpot.Position);
 								var targets = GetEnemiesInRadius(GroundSpot.Position, ScriptFormula(5));
 								AttackPayload attack = new AttackPayload(this);
 								attack.Targets = targets;
@@ -1434,7 +1502,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				foreach (Vector3D position in targetDirs)
 				{
-					var proj = new Projectile(this, 154939, User.Position);
+					// TODO: check projectile actor
+					var proj = new Projectile(this, ActorSno._dh_multishotrune_bounce_missile_explode, User.Position);
 					proj.Position.Z += 5f;  // fix height
 					proj.OnCollision = (hit) =>
 					{
@@ -1467,7 +1536,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_A > 0)
 			{
-				var cloudCover = SpawnEffect(93837, User.Position, 0, WaitSeconds(ScriptFormula(4)));
+				var cloudCover = SpawnEffect(ActorSno._gluttony_gascloud_proxy, User.Position, 0, WaitSeconds(ScriptFormula(4)));
 				//cloudCover.PlayEffectGroup(219653);//131425
 				cloudCover.UpdateDelay = 0.25f;
 				cloudCover.OnUpdate = () =>
@@ -1607,7 +1676,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					{
 						Vector3D targetPos = RandomDirection(Target.Position, 6f, 20f);
 						//targetPos.Z += 6f;
-						var grenade = new Projectile(this, 88244, Target.Position);
+						var grenade = new Projectile(this, ActorSno._demonhunter_grenade_projectile, Target.Position);
 						grenade.Timeout = WaitSeconds(1f);
 						float targetDistance = PowerMath.Distance2D(Target.Position, targetPos);
 						float bounceOffset = 1f;
@@ -1616,7 +1685,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						//float bouncePercent = 0.7f; // ScriptFormula(23);
 						grenade.OnTimeout = () =>
 						{
-							SpawnEffect(154027, grenade.Position);
+							SpawnEffect(ActorSno._grenadeproxy_norune, grenade.Position);
 							//grenade.PlayEffectGroup(154020);
 							WeaponDamage(GetEnemiesInRadius(grenade.Position, ScriptFormula(25)), ScriptFormula(1) * ScriptFormula(13), DamageType.Fire);
 						};
@@ -1626,11 +1695,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						return false;
 					}
 
-					var proj1 = new Projectile(this, (Rune_E > 0 ? 156100 : 149790), User.Position);
+					var proj1 = new Projectile(this, (Rune_E > 0 ? ActorSno._dh_straferune_knives_knife : ActorSno._dh_strafe_projectile), User.Position);
 					proj1.Position.Z += 6f;
 					proj1.OnCollision = (hit) =>
 					{
-						SpawnEffect(218504, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 6f)); // impact effect (fix height)
+						SpawnEffect(ActorSno._dh_strafe_sphereexplode, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 6f)); // impact effect (fix height)
 						proj1.Destroy();
 						AttackPayload attack = new AttackPayload(this);
 						attack.SetSingleTarget(hit);
@@ -1650,12 +1719,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						if (targets.Actors.Count > 0)
 						{
 							Vector3D nearby_position = targets.Actors[FastRandom.Instance.Next(0, targets.Actors.Count)].Position;
-							var rocket = new Projectile(this, 155355, User.Position);
+							// TODO: check projectile actor
+							var rocket = new Projectile(this, ActorSno._dh_straferune_knives_knife, User.Position);
 							rocket.Position.Z += 6f;
 							rocket.Launch(nearby_position, ScriptFormula(10));
 							rocket.OnCollision = (hit) =>
 							{
-								SpawnEffect(218504, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 6f)); // impact effect (fix height)
+								SpawnEffect(ActorSno._dh_strafe_sphereexplode, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 6f)); // impact effect (fix height)
 								rocket.Destroy();
 								WeaponDamage(hit, ScriptFormula(31), DamageType.Fire);
 							};
@@ -1692,7 +1762,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_C > 0)
 			{
-				var GroundMark = SpawnEffect(230674, TargetPosition, 0, WaitSeconds(ScriptFormula(9)));
+				var GroundMark = SpawnEffect(ActorSno._dh_markedfordeath_proxyactor, TargetPosition, 0, WaitSeconds(ScriptFormula(9)));
 				GroundMark.UpdateDelay = 1f;
 				GroundMark.OnUpdate = () =>
 				{
@@ -1892,7 +1962,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 35f);
 				//TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, Math.Max(PowerMath.Distance2D(User.Position, TargetPosition), 10f));
 
-				var proj = new Projectile(this, 167218, User.Position);
+				var proj = new Projectile(this, ActorSno._demonhunter_clusterarrow_projectile_obsidian, User.Position);
 				proj.Position.Z += 5f;
 				proj.OnUpdate = () =>
 				{
@@ -1912,7 +1982,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						ClusterTimer = WaitSeconds(0.1f);
 						ClusterCount++;
 
-						var grenadeC = new Projectile(this, 167169, proj.Position);
+						var grenadeC = new Projectile(this, ActorSno._demonhunter_clusterarrow_babygrenade_obsidian, proj.Position);
 						grenadeC.OnArrival = () =>
 						{
 							grenadeC.PlayEffectGroup(167359);
@@ -1930,7 +2000,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			//base effect
 			TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, Math.Min(PowerMath.Distance2D(User.Position, TargetPosition), 60f));
 
-			var arrow = new Projectile(this, RuneSelect(129603, 166549, 166550, 167218, 166636, 166621), User.Position);
+			var arrow = new Projectile(
+				this,
+				RuneSelect(
+					ActorSno._demonhunter_clusterarrow_projectile,
+					ActorSno._demonhunter_clusterarrow_projectile_crimson, 
+					ActorSno._demonhunter_clusterarrow_projectile_indigo, 
+					ActorSno._demonhunter_clusterarrow_projectile_obsidian, 
+					ActorSno._demonhunter_clusterarrow_projectile_golden,
+					ActorSno._demonhunter_clusterarrow_projectile_alabaster
+				),
+				User.Position
+			);
 			arrow.Scale = 0.3f;
 			arrow.Position.Z += 5f;
 			arrow.OnArrival = () =>
@@ -1955,7 +2036,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				//base grenades
 				for (int i = 0; i < 4; i++)
 				{
-					var grenade = new Projectile(this, RuneSelect(129621, 166582, -1, 167169, -1, 166620), arrow.Position);
+					var grenade = new Projectile(
+						this,
+						RuneSelect(
+							ActorSno._demonhunter_clusterarrow_babygrenade,
+							ActorSno._demonhunter_clusterarrow_babygrenade_crimson,
+							ActorSno.__NONE,
+							ActorSno._demonhunter_clusterarrow_babygrenade_obsidian,
+							ActorSno.__NONE,
+							ActorSno._demonhunter_clusterarrow_babygrenade_alabaster
+						),
+						arrow.Position
+					);
 					grenade.Position.Z += 5f;
 					grenade.OnArrival = () =>
 					{
@@ -2009,7 +2101,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				Emitter = SpawnEffect(166613, Source, 0f, WaitSeconds(Distance * 0.1f + 1f));       //Missile emitter
+				Emitter = SpawnEffect(ActorSno._dh_clusterarrow_missiles_emitter, Source, 0f, WaitSeconds(Distance * 0.1f + 1f));       //Missile emitter
 				Emitter.PlayEffectGroup(166596, Target);
 				return true;
 			}
@@ -2047,13 +2139,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			//Rune_D spirals out to target, actor calls it a straight projectile.
 
 			//Rune_E is just a buff shield
+			var runeActorSno = RuneSelect(
+				ActorSno._demonhunter_chakram_projectile,
+				ActorSno._demonhunter_chakram_projectile,
+				ActorSno._demonhunter_chakram_indigo_boomerang_projectile,
+				ActorSno._demonhunter_chakram_obsidian_slow_projectile,
+				ActorSno._demonhunter_chakram_golden_straight_projectile,
+				ActorSno.__NONE
+			);
+			var proj = new Projectile(this, runeActorSno, User.Position);
 			if (Rune_E > 0)
 			{
 				AddBuff(User, new ChakramBuff());
 			}
 			else if (Rune_B > 0)
 			{
-				var proj = new Projectile(this, RuneSelect(129228, 129228, 148845, 148846, 148847, -1), User.Position);
 				proj.Position.Z += 2f;
 				proj.LaunchWA(TargetPosition, 0.8f, new Action(() => {
 					proj.Launch(User.Position, 0.8f);
@@ -2066,7 +2166,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			else if(Rune_C > 0)
 			{
-				var proj = new Projectile(this, RuneSelect(129228, 129228, 148845, 148846, 148847, -1), User.Position);
 				proj.Position.Z += 2f;
 				proj.Launch(TargetPosition, 0.2f);
 				this.World.PlayZigAnimation(proj, User, PowerSNO, TargetPosition);
@@ -2078,7 +2177,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			else
 			{
-				var proj = new Projectile(this, RuneSelect(129228, 129228, 148845, 148846, 148847, -1), User.Position);
 				proj.Position.Z += 2f;
 				proj.Launch(TargetPosition, 0.2f);
 				this.World.PlaySpiralAnimation(proj, User, PowerSNO, TargetPosition);
@@ -2088,7 +2186,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				};
 				if (Rune_A > 0)
 				{
-					var dproj = new Projectile(this, RuneSelect(129228, 129228, 148845, 148846, 148847, -1), User.Position);
+					var dproj = new Projectile(this, runeActorSno, User.Position);
 					dproj.Position.Z += 2f;
 					dproj.Launch(TargetPosition, 0.2f);
 					this.World.PlayReverSpiralAnimation(dproj, User, PowerSNO, TargetPosition);
@@ -2144,7 +2242,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 			//StartCooldown(EvalTag(PowerKeys.CooldownTime));
 			User.Attributes[GameAttribute.Skill_Charges, 129217] -= 1;
-			var old_turret = User.World.GetActorsBySNO(RuneSelect(141402, 168815, 150024, 150025, 150026, 150027));
+			var old_turret = User.World.GetActorsBySNO(RuneSelect(ActorSno._dh_sentry, ActorSno._dh_sentry_tether, ActorSno._dh_sentry_addsduration, ActorSno._dh_sentry_addsmissiles, ActorSno._dh_sentry_addsheals, ActorSno._dh_sentry_addsshield));
 
 			//if (old_turret.Count > 0)
 			int CountByHero = 0;
@@ -2157,7 +2255,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						old_turret.First().Destroy();
 				}
 			
-			var Turret = new EffectActor(this, RuneSelect(141402, 168815, 150024, 150025, 150026, 150027), RandomDirection(User.Position, 3f, 8f));
+			var Turret = new EffectActor(this, RuneSelect(ActorSno._dh_sentry, ActorSno._dh_sentry_tether, ActorSno._dh_sentry_addsduration, ActorSno._dh_sentry_addsmissiles, ActorSno._dh_sentry_addsheals, ActorSno._dh_sentry_addsshield), RandomDirection(User.Position, 3f, 8f));
 			Turret.Timeout = WaitSeconds(ScriptFormula(0));
 			Turret.Scale = 1f;
 			Turret.Spawn();
@@ -2173,7 +2271,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (targets.Actors.Count > 0 && targets != null)
 				{
 					targets.SortByDistanceFrom(Turret.Position);
-					var proj = new Projectile(this, 141734, Turret.Position);
+					var proj = new Projectile(this, ActorSno._dh_sentry_arrow, Turret.Position);
 					proj.Position.Z += 5f;
 					proj.OnCollision = (hit) =>
 					{
@@ -2187,7 +2285,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (Rune_C > 0)
 					foreach (var enemy in GetEnemiesInRadius(Turret.Position, 10f).Actors)
 					{
-						var multi_proj = new Projectile(this, 204542, Turret.Position);
+						var multi_proj = new Projectile(this, ActorSno._wardenmissile_projectile, Turret.Position);
 						multi_proj.Position.Z += 5f;
 						multi_proj.OnCollision = (hit) =>
 						{
@@ -2445,17 +2543,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				if (this.companion != null) return false;
 				if (User.World == null) return false;
-				int minionID = 133741;  //Raven
+				var minionID = ActorSno._dh_companion;  //Raven
 				if (User.Attributes[GameAttribute.Rune_A, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
-					minionID = 173827;  //Spider, slow on hit done in HitPayload
+					minionID = ActorSno._dh_companion_spider;  //Spider, slow on hit done in HitPayload
 				if (User.Attributes[GameAttribute.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
-					minionID = 181748;  //Boar
+					minionID = ActorSno._dh_companion_boar;  //Boar
 				if (User.Attributes[GameAttribute.Rune_C, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
-					minionID = 159098;  //Wolf
+					minionID = ActorSno._dh_companion_runec;  //Wolf
 				if (User.Attributes[GameAttribute.Rune_D, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
-					minionID = 159144;  //Bat
+					minionID = ActorSno._dh_companion_runed;  //Bat
 				if (User.Attributes[GameAttribute.Rune_E, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
-					minionID = 178664;  //Ferret
+					minionID = ActorSno._dh_companion_runee;  //Ferret
 
 				this.companion = new CompanionMinion(this.World, this, minionID);
 				this.companion.Brain.DeActivate();
@@ -2573,7 +2671,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				limit++;
 				if (Rune_A > 0)
 				{
-					var step = SpawnEffect(151805, User.Position, 0, WaitSeconds(ScriptFormula(13)));
+					var step = SpawnEffect(ActorSno._dh_vaultrune_damage_char, User.Position, 0, WaitSeconds(ScriptFormula(13)));
 					step.UpdateDelay = 0.5f;
 					step.OnUpdate = () =>
 					{
@@ -2585,7 +2683,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var closetarget = GetEnemiesInRadius(User.Position, 10f).GetClosestTo(User.Position);
 					if (closetarget != null)
 					{
-						var projectile = new Projectile(this, 151591, User.Position);
+						var projectile = new Projectile(this, ActorSno._dh_vaultrune_projectile, User.Position);
 						projectile.OnCollision = (hit) =>
 						{
 							WeaponDamage(hit, ScriptFormula(4), DamageType.Physical);
@@ -2675,7 +2773,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 					foreach (Vector3D position in targetDirs)
 					{
-						var proj = new Projectile(this, 147809, User.Position);
+						var proj = new Projectile(this, ActorSno._demonhunter_fanofknives_knife, User.Position);
 						proj.Position.Z += 5f;  // fix height
 						proj.OnCollision = (hit) =>
 						{

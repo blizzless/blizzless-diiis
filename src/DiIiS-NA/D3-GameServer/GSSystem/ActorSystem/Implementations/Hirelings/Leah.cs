@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
@@ -21,15 +22,16 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 {
-	//[HandledSNO(144681 /* Leah_Party.acr */)]
-	public class Leah : Hireling
+    // TODO: Check for copy-paste from Scoundrel
+    //[HandledSNO(144681 /* Leah_Party.acr */)]
+    public class Leah : Hireling
 	{
-		public Leah(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Leah(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
-			mainSNO = 4580;
-			hirelingSNO = 52694;
-			proxySNO = 192941;
+			mainSNO = ActorSno._leah;
+			hirelingSNO = ActorSno._hireling_scoundrel;
+			proxySNO = ActorSno._hireling_scoundrel_proxy;
 			skillKit = 0x8AFE;
 			hirelingGBID = StringHashHelper.HashItemName("Scoundrel");
 			Attributes[GameAttribute.Hireling_Class] = 4;
@@ -49,9 +51,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 		}
 
-		public override Hireling CreateHireling(World world, int snoId, TagMap tags)
+		public override Hireling CreateHireling(World world, ActorSno sno, TagMap tags)
 		{
-			return new Leah(world, snoId, tags);
+			return new Leah(world, sno, tags);
 		}
 
 		public override bool Reveal(Player player)

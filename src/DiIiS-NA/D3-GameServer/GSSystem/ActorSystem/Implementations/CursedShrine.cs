@@ -12,14 +12,19 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	[HandledSNO(364601, 368169)]
+	[HandledSNO(
+		//364601, 368169 - not found, possible values below
+		ActorSno._p4_bountygrounds_cursedshrine,
+		ActorSno._p4_bountygrounds_cursedshrine_a5
+	)]
 	class CursedShrine : Gizmo
 	{
-		public CursedShrine(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public CursedShrine(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			Attributes[GameAttribute.MinimapActive] = true;
 		}

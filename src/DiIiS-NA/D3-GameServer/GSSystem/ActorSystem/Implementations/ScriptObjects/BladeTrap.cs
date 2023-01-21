@@ -1,4 +1,5 @@
 ﻿//Blizzless Project 2022 
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
@@ -17,11 +18,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
-	[HandledSNO(87534)]
+	[HandledSNO(ActorSno._a1dun_leor_hallway_blade_trap)]
 	public class BladeTrap : Monster
 	{
-		public BladeTrap(World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public BladeTrap(World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
 			this.Field2 = 0x8;
 			this.CollFlags = 0;

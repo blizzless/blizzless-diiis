@@ -10,26 +10,27 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 {
-	[HandledSNO(4538 /* Templar.acr */)]
+	[HandledSNO(ActorSno._templar /* Templar.acr */)]
 	public class Templar : Hireling
 	{
-		public Templar(MapSystem.World world, int snoId, TagMap tags)
-			: base(world, snoId, tags)
+		public Templar(MapSystem.World world, ActorSno sno, TagMap tags)
+			: base(world, sno, tags)
 		{
-			mainSNO = 4538;
-			hirelingSNO = 0x0000CDD5;
-			proxySNO = 0x0002F1AC;
+			mainSNO = ActorSno._templar;
+			hirelingSNO = ActorSno._hireling_templar;
+			proxySNO = ActorSno._hireling_templar_proxy;
 			skillKit = 484941;
 			hirelingGBID = StringHashHelper.HashItemName("Templar");
 			this.Attributes[GameAttribute.Hireling_Class] = 1;
 		}
 
-		public override Hireling CreateHireling(MapSystem.World world, int snoId, TagMap tags)
+		public override Hireling CreateHireling(MapSystem.World world, ActorSno sno, TagMap tags)
 		{
-			return new Templar(world, snoId, tags);
+			return new Templar(world, sno, tags);
 		}
 
 		public void SetSkill(Player player, int SkillSNOId)

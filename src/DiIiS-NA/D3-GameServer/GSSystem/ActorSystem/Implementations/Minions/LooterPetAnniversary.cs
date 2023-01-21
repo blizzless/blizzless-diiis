@@ -14,6 +14,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -22,7 +23,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		public new int SummonLimit = 1;
 
 		public LooterPetAnniversary(World world, Actor master)
-			: base(world, 4093, master, null)
+			: base(world, ActorSno._fallenlunatic_a, master, null)
 		{
 			Scale = 0.75f;
 			this.WalkSpeed *= 5;
