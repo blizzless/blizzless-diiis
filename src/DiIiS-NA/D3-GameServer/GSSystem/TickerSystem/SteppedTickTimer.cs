@@ -39,9 +39,9 @@ namespace DiIiS_NA.GameServer.GSSystem.TickerSystem
 			if (ticksPerStep < game.TickRate)
 				throw new ArgumentOutOfRangeException("ticksPerStep", string.Format("ticksPerStep value ({0}) can not be less then timer's belonging game's TickRate ({1}).", ticksPerStep, game.TickRate));
 
-			this.TicksPerStep = ticksPerStep;
-			this.StepAction = stepCallback;
-			this.LastStepTick = game.TickCounter;
+			TicksPerStep = ticksPerStep;
+			StepAction = stepCallback;
+			LastStepTick = game.TickCounter;
 		}
 
 		/// <summary>
@@ -50,23 +50,23 @@ namespace DiIiS_NA.GameServer.GSSystem.TickerSystem
 		/// <param name="tickCounter">The current tick-counter.</param>
 		public override void Update(int tickCounter)
 		{
-			if (this.TimeoutTick == -1) // means timer is already timed-out.
+			if (TimeoutTick == -1) // means timer is already timed-out.
 				return;
 
-			if (!this.TimedOut) // if we haven't timed out yet, check for steps.
+			if (!TimedOut) // if we haven't timed out yet, check for steps.
 			{
-				if ((tickCounter - this.LastStepTick) >= TicksPerStep) // check if we've progressed a step.
+				if ((tickCounter - LastStepTick) >= TicksPerStep) // check if we've progressed a step.
 				{
-					this.LastStepTick = tickCounter;
-					this.StepAction(tickCounter); // call the step-action.
+					LastStepTick = tickCounter;
+					StepAction(tickCounter); // call the step-action.
 				}
 			}
 			else // if we timed-out.
 			{
-				if (this.CompletionAction != null) // if a completition action exists.
-					this.CompletionAction(tickCounter); //call it once the timer time-outs.
+				if (CompletionAction != null) // if a completition action exists.
+					CompletionAction(tickCounter); //call it once the timer time-outs.
 
-				this.Stop(); // stop the timer.
+				Stop(); // stop the timer.
 			}
 		}
 

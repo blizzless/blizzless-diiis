@@ -32,12 +32,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
             var monsterLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][19760].Data;
             var monsterData = (Monster.Target as MonsterFF);
 
-            this.Attributes[GameAttribute.Hitpoints_Max] = 99999;
-            this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-            this.Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-            this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
-            this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
-            this.WalkSpeed = 0f;  // TODO: this is probably multiplied by something erekose the 0.3 is because he is way too fast otherwise
+            Attributes[GameAttribute.Hitpoints_Max] = 99999;
+            Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+            Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
+            Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
+            WalkSpeed = 0f;  // TODO: this is probably multiplied by something erekose the 0.3 is because he is way too fast otherwise
 
         }
 
@@ -55,13 +55,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
             if (!base.Reveal(player))
                 return false;
 
-            this.Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttribute.TeamID] = 2;
             return true;
         }
 
         public void Update(int tickCounter)
         {
-            if (this.Brain == null)
+            if (Brain == null)
                 return;
         }
     }

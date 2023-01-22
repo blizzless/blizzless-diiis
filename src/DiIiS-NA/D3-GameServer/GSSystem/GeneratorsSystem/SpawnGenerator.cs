@@ -54,9 +54,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		public static void RegenerateDensity()
 		{
 			//Logger.Info("Regenerating spawn density map...");
-			foreach (var spawn in SpawnGenerator.Spawns)
+			foreach (var spawn in Spawns)
 			{
-				SpawnGenerator.Spawns[spawn.Key].additional_density = FastRandom.Instance.Next(0, 6);
+				Spawns[spawn.Key].additional_density = FastRandom.Instance.Next(0, 6);
 			}
 		}
 

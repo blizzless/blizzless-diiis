@@ -98,7 +98,7 @@ namespace DiIiS_NA.Core.Discord.Modules
 			var messages = await Context.Guild.GetTextChannel(AnnounceChannelId).GetMessagesAsync(10).FlattenAsync();
 			await Context.Guild.GetTextChannel(AnnounceChannelId).DeleteMessagesAsync(messages);
 			await Context.Guild.GetTextChannel(AnnounceChannelId).SendMessageAsync("Servers status: :tools: **PLANNED MAINTENANCE**.");
-            await Context.Guild.GetTextChannel(AnnounceChannelId).SendMessageAsync($"@here Servers will be restarted in **{minutes}** minutes for a planned maintenance.\n----\nСерверы будут перезагружены через **{minutes}** минут для плановых профилактических работ.");
+            await Context.Guild.GetTextChannel(AnnounceChannelId).SendMessageAsync($"@here Servers will be restarted in **{minutes}** minutes for a planned maintenance.");
 		}
 		
 		[Command("online")]

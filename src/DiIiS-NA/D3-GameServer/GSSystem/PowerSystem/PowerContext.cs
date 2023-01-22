@@ -380,10 +380,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		public float ScriptFormula(int index)
 		{
 			float result;
-			if (!ScriptFormulaEvaluator.Evaluate(this.PowerSNO, PowerTagHelper.GenerateTagForScriptFormula(index),
+			if (!ScriptFormulaEvaluator.Evaluate(PowerSNO, PowerTagHelper.GenerateTagForScriptFormula(index),
 											 User.Attributes, Rand, out result))
 			{
-				Logger.Warn("Not Found ScriptFormula({0}) for power {1}", index, this.PowerSNO);
+				Logger.Warn("Not Found ScriptFormula({0}) for power {1}", index, PowerSNO);
 				return 0;
 			}
 
@@ -420,7 +420,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		public float EvalTag(TagKeyScript key)
 		{
 			float result;
-			if (!ScriptFormulaEvaluator.Evaluate(this.PowerSNO, key,
+			if (!ScriptFormulaEvaluator.Evaluate(PowerSNO, key,
 											 User.Attributes, Rand, out result))
 				return 0;
 

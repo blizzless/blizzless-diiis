@@ -33,7 +33,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			//this.Field2 = 0x9;//16;
 			//this.Field7 = 0x00000001;
-			this.CollFlags = 0;
+			CollFlags = 0;
 
 		}
 
@@ -41,15 +41,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			try
 			{
-				if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale * this.Scale && !_collapsed)
+				if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale * Scale && !_collapsed)
 				{
 					_collapsed = true;
 
-					if (this.SNO == ActorSno._caout_oasis_attack_plant) //caOut_Oasis_Attack_Plant
+					if (SNO == ActorSno._caout_oasis_attack_plant) //caOut_Oasis_Attack_Plant
 					{
 						Task.Delay(1000).ContinueWith(delegate
 						{
-							this.World.PowerManager.RunPower(this, 102874);
+							World.PowerManager.RunPower(this, 102874);
 						});
 					}
 
@@ -58,7 +58,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					if (AnimationSet != null)
 						World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 						{
-							ActorID = this.DynamicID(plr),
+							ActorID = DynamicID(plr),
 							AnimReason = 11,
 							UnitAniimStartTime = 0,
 							tAnim = new PlayAnimationMessageSpec[]
@@ -77,20 +77,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 					World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 					{
-						ActorID = this.DynamicID(plr),
+						ActorID = DynamicID(plr),
 						AnimationSNO = AnimationSetKeys.DeadDefault.ID
 					}, this);
 
 					World.BroadcastIfRevealed(plr => new ACDCollFlagsMessage
 					{
-						ActorID = this.DynamicID(plr),
+						ActorID = DynamicID(plr),
 						CollFlags = 0
 					}, this);
 
-					this.Attributes[GameAttribute.Deleted_On_Server] = true;
+					Attributes[GameAttribute.Deleted_On_Server] = true;
 					Attributes.BroadcastChangedIfRevealed();
 
-					RelativeTickTimer destroy = new RelativeTickTimer(World.Game, duration, x => this.Destroy());
+					RelativeTickTimer destroy = new RelativeTickTimer(World.Game, duration, x => Destroy());
 				}
 			}
 			catch { }

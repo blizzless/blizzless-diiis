@@ -37,7 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					{
 						foreach (var affixDefinition in data.Affixes)
 						{
-							if (affixDefinition.Hash == this.AffixGbid) return affixDefinition;
+							if (affixDefinition.Hash == AffixGbid) return affixDefinition;
 						}
 					}
 				}
@@ -49,7 +49,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			get
 			{
-				return (this.Definition == null ? 0 : this.Definition.Cost);
+				return (Definition == null ? 0 : Definition.Cost);
 			}
 		}
 
@@ -57,7 +57,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			get
 			{
-				return (this.Definition == null ? 0 : this.Definition.AffixLevel);
+				return (Definition == null ? 0 : Definition.AffixLevel);
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			get
 			{
-				return (int)(this.Price * (1 + this.Score));
+				return (int)(Price * (1 + Score));
 			}
 			set { }
 		}

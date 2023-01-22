@@ -29,10 +29,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 0.7f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.
-			this.WalkSpeed *= 5;
-			this.DamageCoefficient = context.ScriptFormula(16) * 2f;
+			WalkSpeed *= 5;
+			DamageCoefficient = context.ScriptFormula(16) * 2f;
 			SetBrain(new MinionBrain(this));
-			this.Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
 			(Brain as MinionBrain).AddPresetPower(30592); //melee_instant
 														  //(Brain as MinionBrain).AddPresetPower(30005); //AINearby
 			if (context.Rune_C > 0)
@@ -49,16 +49,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			Attributes[GameAttribute.Pet_Type] = 0x8;
 			//Pet_Owner and Pet_Creator seems to be 0
 
-			if (this.Master != null)
+			if (Master != null)
 			{
-				if (this.Master is Player)
+				if (Master is Player)
 				{
 					var rem = new List<uint>();
-					foreach (var fol in (this.Master as Player).Followers)
-						if (fol.Value == SNO && fol.Key != this.GlobalID)
+					foreach (var fol in (Master as Player).Followers)
+						if (fol.Value == SNO && fol.Key != GlobalID)
 							rem.Add(fol.Key);
 					foreach (var rm in rem)
-						(this.Master as Player).DestroyFollowerById(rm);
+						(Master as Player).DestroyFollowerById(rm);
 				}
 			}
 

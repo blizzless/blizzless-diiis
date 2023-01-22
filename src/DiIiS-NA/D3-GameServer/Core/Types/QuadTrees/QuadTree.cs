@@ -43,9 +43,9 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 		/// <param name="maximumObjectsPerLeaf">Maximum number of objects per left before it's forced to split into sub-quadrans.</param>
 		public QuadTree(Size minimumLeafSize, int maximumObjectsPerLeaf)
 		{
-			this.RootNode = null;
-			this.MinimumLeafSize = minimumLeafSize;
-			this.MaximumObjectsPerLeaf = maximumObjectsPerLeaf;
+			RootNode = null;
+			MinimumLeafSize = minimumLeafSize;
+			MaximumObjectsPerLeaf = maximumObjectsPerLeaf;
 		}
 
 		/// <summary>
@@ -65,18 +65,18 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 									   @object.Bounds.Y + @object.Bounds.Height / 2);
 				var rootOrigin = new PointF(center.X - rootSize.Width / 2, center.Y - rootSize.Height / 2);
 
-				this.RootNode = new QuadNode(new RectangleF(rootOrigin, rootSize));
+				RootNode = new QuadNode(new RectangleF(rootOrigin, rootSize));
 			}
 			int cycle = 0;
 			while (!RootNode.Bounds.Contains(@object.Bounds))
 			// if root-node's bounds does not contain object, expand the root.
 			{
-				this.ExpandRoot(@object.Bounds);
+				ExpandRoot(@object.Bounds);
 				cycle++;
 				if (cycle > 5) break;
 			}
 
-			this.InsertNodeObject(RootNode, @object); // insert the object to rootNode.
+			InsertNodeObject(RootNode, @object); // insert the object to rootNode.
 		}
 
 		/// <summary>
@@ -88,16 +88,16 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 		public List<T> Query<T>(RectangleF bounds, bool includeHierarchy = false) where T : WorldObject
 		{
 			var results = new List<T>();
-			if (this.RootNode != null)
-				this.Query(bounds, RootNode, results, includeHierarchy);
+			if (RootNode != null)
+				Query(bounds, RootNode, results, includeHierarchy);
 			return results;
 		}
 
 		public List<T> Query<T>(Circle proximity, bool includeHierarchy = false) where T : WorldObject
 		{
 			var results = new List<T>();
-			if (this.RootNode != null)
-				this.Query(proximity, RootNode, results, includeHierarchy);
+			if (RootNode != null)
+				Query(proximity, RootNode, results, includeHierarchy);
 			return results;
 		}
 
@@ -128,7 +128,7 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 
 			foreach (QuadNode childNode in node.Nodes) // query child-nodes too.
 			{
-				this.Query(bounds, childNode, results);
+				Query(bounds, childNode, results);
 			}
 		}
 
@@ -152,7 +152,7 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 
 			foreach (QuadNode childNode in node.Nodes) // query child-nodes too.
 			{
-				this.Query(proximity, childNode, results);
+				Query(proximity, childNode, results);
 			}
 		}
 
@@ -179,9 +179,9 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 			var newRootBounds = new RectangleF((float)newX, (float)newY, RootNode.Bounds.Width * 2f, RootNode.Bounds.Height * 2f);
 			var newRoot = new QuadNode(newRootBounds);
 
-			this.SetupChildNodes(newRoot);
+			SetupChildNodes(newRoot);
 			newRoot[rootDirection] = RootNode;
-			this.RootNode = newRoot;
+			RootNode = newRoot;
 		}
 
 		/// <summary>
@@ -197,9 +197,9 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 			recursionLimit++;
 			if (recursionLimit >= 20) return;
 			// If there's no child-nodes and when new object is insertedi if node's object count will be bigger then MaximumObjectsPerLeaf, force a split.
-			if (!node.HasChildNodes() && node.ContainedObjects.Count + 1 > this.MaximumObjectsPerLeaf)
+			if (!node.HasChildNodes() && node.ContainedObjects.Count + 1 > MaximumObjectsPerLeaf)
 			{
-				this.SetupChildNodes(node);
+				SetupChildNodes(node);
 
 				var childObjects = new List<WorldObject>(node.ContainedObjects.Values); // node's child objects.
 				var childrenToRelocate = new List<WorldObject>(); // child object to be relocated.
@@ -220,8 +220,8 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 
 				foreach (WorldObject childObject in childrenToRelocate) // relocate the child objects we marked.
 				{
-					this.RemoveObjectFromNode(childObject);
-					this.InsertNodeObject(node, childObject, recursionLimit);
+					RemoveObjectFromNode(childObject);
+					InsertNodeObject(node, childObject, recursionLimit);
 				}
 			}
 
@@ -234,11 +234,11 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 				if (!childNode.Bounds.Contains(@object.Bounds))
 					continue;
 
-				this.InsertNodeObject(childNode, @object, recursionLimit);
+				InsertNodeObject(childNode, @object, recursionLimit);
 				return;
 			}
 
-			this.AddObjectToNode(node, @object); // add the object to current node.
+			AddObjectToNode(node, @object); // add the object to current node.
 		}
 
 		/// <summary>
@@ -284,12 +284,12 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 		private void ObjectPositionChanged(object sender, EventArgs e)
 		{
 			var @object = sender as WorldObject;
-			if (@object == null || !this._objectToNodeLookup.ContainsKey(@object)) return;
+			if (@object == null || !_objectToNodeLookup.ContainsKey(@object)) return;
 
-			QuadNode node = this._objectToNodeLookup[@object];
+			QuadNode node = _objectToNodeLookup[@object];
 			if (node.Bounds.Contains(@object.Bounds) && !node.HasChildNodes()) return;
 
-			this.RemoveObjectFromNode(@object);
+			RemoveObjectFromNode(@object);
 			Insert(@object);
 			if (node.Parent != null)
 				CheckChildNodes(node.Parent);
@@ -301,7 +301,7 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 		/// <param name="node">The node.</param>
 		private void SetupChildNodes(QuadNode node)
 		{
-			if (this.MinimumLeafSize.Width > node.Bounds.Width / 2 || this.MinimumLeafSize.Height > node.Bounds.Height / 2)
+			if (MinimumLeafSize.Width > node.Bounds.Width / 2 || MinimumLeafSize.Height > node.Bounds.Height / 2)
 				// make sure we obey MinimumLeafSize.
 				return;
 
@@ -397,7 +397,7 @@ namespace DiIiS_NA.GameServer.Core.Types.QuadTrees
 							childNode.Parent = null;
 					}
 
-					this.RootNode = nodeWithObjects;
+					RootNode = nodeWithObjects;
 				}
 			}
 		}

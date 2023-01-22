@@ -32,9 +32,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem.Implementations
 			{
 				player.PlayLore(LoreSNOId, true);
 			}
-			if (player.GroundItems.ContainsKey(this.GlobalID))
-				player.GroundItems.Remove(this.GlobalID);
-			this.Destroy();
+			if (player.GroundItems.ContainsKey(GlobalID))
+				player.GroundItems.Remove(GlobalID);
+			Destroy();
 		}
 	}
 }

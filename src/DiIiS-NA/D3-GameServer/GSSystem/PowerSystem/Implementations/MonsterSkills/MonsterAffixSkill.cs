@@ -273,7 +273,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					Target.Attributes[GameAttribute.IsRooted] = true;
 					Target.Attributes.BroadcastChangedIfRevealed();
 				}
-				this.Target.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateSyncMessage() { ActorId = this.Target.DynamicID(plr), Position = this.Target.Position, Snap = false }, this.Target);
+				Target.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateSyncMessage() { ActorId = Target.DynamicID(plr), Position = Target.Position, Snap = false }, Target);
 
 				return true;
 			}

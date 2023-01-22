@@ -18,8 +18,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public HandledItemAttribute(params string[] names)
         {
-            this.Names = new List<string>();
-            this.Names.AddRange(names);
+            Names = new List<string>();
+            Names.AddRange(names);
         }
     }
 }

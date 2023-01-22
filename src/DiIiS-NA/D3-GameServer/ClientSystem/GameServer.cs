@@ -28,9 +28,9 @@ namespace DiIiS_NA.GameServer.ClientSystem
 		public Bot DiscordBot { get; set; }
 		public GameServer()
 		{
-			this.OnConnect += ClientManager.Instance.OnConnect;
-			this.OnDisconnect += ClientManager.Instance.OnDisconnect;
-			this.DataReceived += GameServer_DataReceived;
+			OnConnect += ClientManager.Instance.OnConnect;
+			OnDisconnect += ClientManager.Instance.OnDisconnect;
+			DataReceived += GameServer_DataReceived;
 		}
 
 		void GameServer_DataReceived(object sender, ConnectionDataEventArgs e)
@@ -43,7 +43,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 		{
 			int Port = 2001;
 			 
-			if (!this.Listen(Program.GAMESERVERIP, Port)) return;
+			if (!Listen(Program.GAMESERVERIP, Port)) return;
 			Logger.Info("Game Server Started - {0}:{1}...", Program.GAMESERVERIP, Port);
 		}
 	}

@@ -18,16 +18,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public CR_Glass(MapSystem.World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            this.Attributes[GameAttribute.TeamID] = 2;
-            this.Attributes[GameAttribute.MinimapActive] = true;
-            this.Attributes.BroadcastChangedIfRevealed();
+            Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes.BroadcastChangedIfRevealed();
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
             player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.ANNDataMessage46)
             {
-                ActorID = this.DynamicID(player)
+                ActorID = DynamicID(player)
             });
         }
     }

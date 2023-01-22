@@ -30,8 +30,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             Conversations.Add(new Interactions.ConversationInteraction(471065));
             Conversations.Add(new Interactions.ConversationInteraction(471076));
 
-            this.Field7 = 1;
-            this.Attributes[GameAttribute.MinimapActive] = true;
+            Field7 = 1;
+            Attributes[GameAttribute.MinimapActive] = true;
         }
 
         public override void OnTargeted(Player player, TargetMessage message)

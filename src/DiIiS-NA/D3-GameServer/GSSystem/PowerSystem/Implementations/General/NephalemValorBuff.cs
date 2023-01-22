@@ -30,7 +30,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			_currentBonus = 0.033f * this.StackCount;
+			_currentBonus = 0.033f * StackCount;
 			Target.Attributes[GameAttribute.Magic_Find] += _currentBonus;
 			Target.Attributes[GameAttribute.Gold_Find] += _currentBonus;
 			Target.Attributes[GameAttribute.Experience_Bonus_Percent] += _currentBonus;
@@ -50,7 +50,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			Target.Attributes[GameAttribute.Gold_Find] -= _currentBonus;
 			Target.Attributes[GameAttribute.Experience_Bonus_Percent] -= _currentBonus;
 
-			_currentBonus = 0.033f * this.StackCount;
+			_currentBonus = 0.033f * StackCount;
 			Target.Attributes[GameAttribute.Magic_Find] += _currentBonus;
 			Target.Attributes[GameAttribute.Gold_Find] += _currentBonus;
 			Target.Attributes[GameAttribute.Experience_Bonus_Percent] += _currentBonus;

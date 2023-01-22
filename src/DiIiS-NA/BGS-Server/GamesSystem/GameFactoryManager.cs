@@ -248,19 +248,20 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 
 			switch (request.Partition)
 			{
-				case 1: //Кампания
+				case 1: //"Campaign"
+					
 					handicap = request.HandicapLevel;
 					Difficulty = request.MonsterLevel;
 					GameTag = request.GameTag;
 					GameAct = request.GameAct;
 					GameQuest = request.GameQuest;
 					break;
-				case 2: //Приключения
+				case 2: //"Adventure"
+					
 					Difficulty = request.HandicapLevel;
 					GameTag = request.GameTag;
 					break;
-				case 3: //Порталы дерзаний
-
+				case 3: //"Adventure"
 					break;
 			}
 

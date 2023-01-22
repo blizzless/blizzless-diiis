@@ -30,17 +30,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			: base(world, SNO, context.User, null)
 		{
 			Scale = 1.2f; 
-			this.WalkSpeed *= 5;
+			WalkSpeed *= 5;
 			float UsedEssense = 0f;
 			if (context.Rune_A > 0)
 				Rune_Flesh = true;
 			
 			SetBrain(new MinionBrain(this));
-			this.Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
 			//(Brain as MinionBrain).AddPresetPower(119166);
 			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
 
-			this.DamageCoefficient = context.ScriptFormula(14) * 2f;
+			DamageCoefficient = context.ScriptFormula(14) * 2f;
 			Attributes[GameAttribute.Damage_Weapon_Min, 0] = (context.ScriptFormula(14) * context.User.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0]);
 			//(UsedEssense * 3f)
 			if (context.Rune_B > 0)

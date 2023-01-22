@@ -15,10 +15,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public NPC(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Field2 = 0x9;
-			this.Field7 = 1;
-			this.Attributes[GameAttribute.TeamID] = 2;
-			this.Attributes[GameAttribute.Is_NPC] = true;
+			Field2 = 0x9;
+			Field7 = 1;
+			Attributes[GameAttribute.TeamID] = 2;
+			Attributes[GameAttribute.Is_NPC] = true;
 		}
 	}
 }

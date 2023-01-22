@@ -34,9 +34,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			//Logger.Warn("Healthwell has no function, Powers not implemented");
 
-			this.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			this.Attributes[GameAttribute.Gizmo_State] = 1;
+			Attributes[GameAttribute.Gizmo_State] = 1;
 			Attributes.BroadcastChangedIfRevealed();
 			player.AddPercentageHP(50);
 			player.AddAchievementCounter(74987243307169, 1);
@@ -47,7 +47,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Map.MapMarkerInfoMessage()
 			{
 				HashedName = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("x1_OpenWorld_LootRunObelisk_B"),
-				Place = new MessageSystem.Message.Fields.WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
+				Place = new MessageSystem.Message.Fields.WorldPlace { Position = Position, WorldID = World.GlobalID },
 				ImageInfo = 218234,
 				Label = -1,
 				snoStringList = -1,

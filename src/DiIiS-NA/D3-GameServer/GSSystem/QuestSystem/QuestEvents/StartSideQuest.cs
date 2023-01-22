@@ -23,14 +23,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 		public StartSideQuest(int questId, bool forceAbandon)
 			: base(0)
 		{
-			this.QuestId = questId;
-			this.ForceAbandon = forceAbandon;
+			QuestId = questId;
+			ForceAbandon = forceAbandon;
 		}
 
 		public override void Execute(MapSystem.World world)
 		{
-			Logger.Trace("StartSideQuest(): {0}", this.QuestId);
-			world.Game.QuestManager.LaunchSideQuest(this.QuestId, this.ForceAbandon);
+			Logger.Trace("StartSideQuest(): {0}", QuestId);
+			world.Game.QuestManager.LaunchSideQuest(QuestId, ForceAbandon);
 		}
 	}
 }

@@ -26,8 +26,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public override void OnEnter(World world)
 		{
-			var proximity = new RectangleF(this.Position.X - 1f, this.Position.Y - 1f, 2f, 2f);
-			var scenes = this.World.QuadTree.Query<Scene>(proximity);
+			var proximity = new RectangleF(Position.X - 1f, Position.Y - 1f, 2f, 2f);
+			var scenes = World.QuadTree.Query<Scene>(proximity);
 
 			var scene = scenes[0]; // Parent scene
 			Gizmo marker = null;
@@ -35,20 +35,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			switch (scene.SceneSNO.Id)
 			{
 				case 265624:
-					marker = new Gizmo(this.World, ActorSno._x1_bog_beacon_door_rune_a, this.Tags); //x1_Bog_Beacon_Door_Rune_A
-					marker.EnterWorld(this.Position);
+					marker = new Gizmo(World, ActorSno._x1_bog_beacon_door_rune_a, Tags); //x1_Bog_Beacon_Door_Rune_A
+					marker.EnterWorld(Position);
 					break;
 				case 265655:
-					marker = new Gizmo(this.World, ActorSno._x1_bog_beacon_door_rune_b, this.Tags); //x1_Bog_Beacon_Door_Rune_B
-					marker.EnterWorld(this.Position);
+					marker = new Gizmo(World, ActorSno._x1_bog_beacon_door_rune_b, Tags); //x1_Bog_Beacon_Door_Rune_B
+					marker.EnterWorld(Position);
 					break;
 				case 265678:
-					marker = new Gizmo(this.World, ActorSno._x1_bog_beacon_door_rune_c, this.Tags); //x1_Bog_Beacon_Door_Rune_C
-					marker.EnterWorld(this.Position);
+					marker = new Gizmo(World, ActorSno._x1_bog_beacon_door_rune_c, Tags); //x1_Bog_Beacon_Door_Rune_C
+					marker.EnterWorld(Position);
 					break;
 				case 265693:
-					marker = new Gizmo(this.World, ActorSno._x1_bog_beacon_door_rune_d, this.Tags); //x1_Bog_Beacon_Door_Rune_D
-					marker.EnterWorld(this.Position);
+					marker = new Gizmo(World, ActorSno._x1_bog_beacon_door_rune_d, Tags); //x1_Bog_Beacon_Door_Rune_D
+					marker.EnterWorld(Position);
 					break;
 			}
 		}

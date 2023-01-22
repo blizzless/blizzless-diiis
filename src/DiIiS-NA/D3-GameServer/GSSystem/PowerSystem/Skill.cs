@@ -116,10 +116,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			int animationSNO = GetActionAnimationSNO();
 			#region Патч анимаций
 			if(animationSNO == -1)
-			switch (this.User.SNO)
+			switch (User.SNO)
 			{
 					case ActorSno._x1_skeletonarcher_westmarch_a: //x1_SkeletonArcher_Westmarch_A
-						if (this.PowerSNO == 30334)
+						if (PowerSNO == 30334)
 							animationSNO = 303905;
 						break;
 					case ActorSno._p6_necro_skeletonmage_f_archer: //p6_necro_skeletonMage_F_archer

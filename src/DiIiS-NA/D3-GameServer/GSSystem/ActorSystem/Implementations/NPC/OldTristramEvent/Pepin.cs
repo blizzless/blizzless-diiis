@@ -14,8 +14,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public Pepin(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            this.Field7 = 1;
-            this.Attributes[GameAttribute.TeamID] = 2;
+            Field7 = 1;
+            Attributes[GameAttribute.TeamID] = 2;
         }
     }
 }

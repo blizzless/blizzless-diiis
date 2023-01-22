@@ -28,7 +28,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public Brawler(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Invulnerable] = true;
 		}
 
 		public override bool Reveal(Player player)

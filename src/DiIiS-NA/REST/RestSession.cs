@@ -169,7 +169,7 @@ namespace DiIiS_NA.REST
             {
                 loginResult.AuthenticationState = "DONE";
                 SendResponse(HttpCode.OK, loginResult);
-                Logger.Warn("Аутентификация завершена: Логин - {0}. Cоединение с REST разорвано.", login);
+                Logger.Warn("Authentication completed: Login - {0}.", login);
             }
             else
             {
@@ -177,7 +177,7 @@ namespace DiIiS_NA.REST
                 loginResult.ErrorCode = "UNABLE_TO_DECODE";
                 loginResult.ErrorMessage = "The information you have entered is not valid.";
                 SendResponse(HttpCode.BadRequest, loginResult);
-                Logger.Error("Аутентификация неудалась: Логин - {0}. Cоединение с REST разорвано.", login);
+                Logger.Error("Authentication failed: Login - {0}.", login);
             }
             CloseSocket();
             

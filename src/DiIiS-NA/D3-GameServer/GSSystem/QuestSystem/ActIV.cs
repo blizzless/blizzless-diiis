@@ -39,9 +39,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		public override void SetQuests()
 		{
 			#region Fall of Heavens
-			this.Game.QuestManager.Quests.Add(112498, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 113910, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(112498, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 113910, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[112498].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[112498].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -49,7 +49,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					UnlockTeleport(0); //{[World] SNOId: 182944 GlobalId: 117440513 Name: a4dun_heaven_1000_monsters_fight_entrance}
-					var Tyrael = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).GetActorBySNO(ActorSno._tyrael) as InteractiveNPC;
+					var Tyrael = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).GetActorBySNO(ActorSno._tyrael) as InteractiveNPC;
 					Tyrael.Conversations.Clear();
 					Tyrael.OverridedConv = true;
 					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
@@ -60,7 +60,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[112498].Steps.Add(2, new QuestStep
+			Game.QuestManager.Quests[112498].Steps.Add(2, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -68,11 +68,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
 					UnlockTeleport(1);
-					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_heaven_1000_monsters_fight_entrance, () =>
+					Game.AddOnLoadWorldAction(WorldSno.a4dun_heaven_1000_monsters_fight_entrance, () =>
 					{
-						if (this.Game.CurrentQuest == 112498 && this.Game.CurrentStep == 2)
+						if (Game.CurrentQuest == 112498 && Game.CurrentStep == 2)
 						{
-							var Tyrael = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).GetActorBySNO(ActorSno._tyrael) as InteractiveNPC;
+							var Tyrael = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).GetActorBySNO(ActorSno._tyrael) as InteractiveNPC;
 							Tyrael.Conversations.Clear();
 							Tyrael.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(112449));
 							Tyrael.OverridedConv = true;
@@ -87,7 +87,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[112498].Steps.Add(17, new QuestStep
+			Game.QuestManager.Quests[112498].Steps.Add(17, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -99,16 +99,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[112498].Steps.Add(15, new QuestStep
+			Game.QuestManager.Quests[112498].Steps.Add(15, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 12,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Iskatu
-					if (!this.Game.Empty)
+					if (!Game.Empty)
 					{
-						var world = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight);
+						var world = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight);
 						script = new Invasion(world.Players.First().Value.Position, 50f, new List<ActorSno> { ActorSno._shadowvermin_a }, 30f, ActorSno._terrordemon_a_unique_1000monster, true);
 						script.Execute(world);
 						ListenKill(ActorSno._terrordemon_a_unique_1000monster, 1, new Advance());
@@ -116,22 +116,22 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[112498].Steps.Add(12, new QuestStep
+			Game.QuestManager.Quests[112498].Steps.Add(12, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					this.Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.activated = false;
 				})
 			});
 
 			#endregion
 			#region Restoration of Hope
-			this.Game.QuestManager.Quests.Add(113910, new Quest { RewardXp = 12600, RewardGold = 1260, Completed = false, Saveable = true, NextQuest = 114795, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(113910, new Quest { RewardXp = 12600, RewardGold = 1260, Completed = false, Saveable = true, NextQuest = 114795, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -141,15 +141,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(66, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(66, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 58,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Iterael
-					var world = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight);
-					if (this.Game.Empty) UnlockTeleport(2);
+					var world = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight);
+					if (Game.Empty) UnlockTeleport(2);
 					try
 					{
 						if (world.GetActorBySNO(ActorSno._a4dungarden_corruption_gate, true) != null)
@@ -166,7 +166,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(58, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(58, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -174,7 +174,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Iterael
 
-					var Ityrael = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight).GetActorBySNO(ActorSno._fate) as InteractiveNPC;
+					var Ityrael = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight).GetActorBySNO(ActorSno._fate) as InteractiveNPC;
 					Ityrael.Conversations.Clear();
 					Ityrael.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(112763));
 					Ityrael.OverridedConv = true;
@@ -186,16 +186,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(40, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(40, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 17,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Library of Fate
-					if (!this.Game.Empty) UnlockTeleport(2); 
-					if (this.Game.Empty) UnlockTeleport(3);
-					var Ityrael = this.Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight).GetActorBySNO(ActorSno._fate) as InteractiveNPC;
+					if (!Game.Empty) UnlockTeleport(2); 
+					if (Game.Empty) UnlockTeleport(3);
+					var Ityrael = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight).GetActorBySNO(ActorSno._fate) as InteractiveNPC;
 					Ityrael.Conversations.Clear();
 					Ityrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 					Ityrael.Attributes.BroadcastChangedIfRevealed();
@@ -205,7 +205,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(17, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(17, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -216,18 +216,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(11, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(11, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 13,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Rakanoth
-					if (!this.Game.Empty) UnlockTeleport(3);
-					var Library = this.Game.GetWorld(WorldSno.a4dun_libraryoffate);
+					if (!Game.Empty) UnlockTeleport(3);
+					var Library = Game.GetWorld(WorldSno.a4dun_libraryoffate);
 
 					ListenKill(ActorSno._despair, 1, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_libraryoffate, () =>
+					Game.AddOnLoadWorldAction(WorldSno.a4dun_libraryoffate, () =>
 					{
 						var Fate = Library.GetActorBySNO(ActorSno._fate); Vector3D Fate_Dist = Fate.Position; Library.Leave(Fate);
 						var Hope = Library.GetActorBySNO(ActorSno._hope); Vector3D Hope_Dist = Hope.Position; Library.Leave(Hope);
@@ -248,16 +248,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(13, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(13, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 33,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //destroy Auriel's jail
-					this.Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.activated = false;
 					
-					var Library = this.Game.GetWorld(WorldSno.a4dun_libraryoffate);
+					var Library = Game.GetWorld(WorldSno.a4dun_libraryoffate);
 					StartConversation(Library, 217223); // Голос дъябло после битвы
 
 					var Hope_Bound = Library.GetActorBySNO(ActorSno._a4dunspire_interactives_hope_bound);
@@ -270,7 +270,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(33, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(33, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -278,7 +278,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Auriel
 
-					var Library = this.Game.GetWorld(WorldSno.a4dun_libraryoffate);
+					var Library = Game.GetWorld(WorldSno.a4dun_libraryoffate);
 					var Hope_Bound = Library.GetActorBySNO(ActorSno._a4dunspire_interactives_hope_bound);
 					var Hope = Library.SpawnMonster(ActorSno._hope, new Vector3D(Hope_Bound.Position.X - 0.3854f, Hope_Bound.Position.Y + 0.44201f, Hope_Bound.Position.Z));
                     var Fate = Library.SpawnMonster(ActorSno._fate, new Vector3D(Hope_Bound.Position.X - 18.6041f, Hope_Bound.Position.Y + 2.35458f, Hope_Bound.Position.Z));
@@ -298,7 +298,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(38, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(38, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -306,7 +306,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //return to Gardens of Hope lv. 1
 					PlayCutscene(1);
-					var Library = this.Game.GetWorld(WorldSno.a4dun_libraryoffate);
+					var Library = Game.GetWorld(WorldSno.a4dun_libraryoffate);
 					var Hope = Library.GetActorBySNO(ActorSno._hope, true);
 					(Hope as InteractiveNPC).Conversations.Clear();
 					Hope.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
@@ -322,7 +322,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(42, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(42, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -333,7 +333,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(44, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(44, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -345,21 +345,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(62, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(62, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 50,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //leave demonic rift
-					var World = this.Game.GetWorld(WorldSno.a4dun_hell_portal_01);
+					var World = Game.GetWorld(WorldSno.a4dun_hell_portal_01);
 					World.SpawnMonster(ActorSno._diablo_vo, World.Players.Values.First().Position);
 					StartConversation(World, 217230);
 					ListenTeleport(109514, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(50, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(50, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -370,19 +370,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(52, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(52, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 48,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find another demonic rift
-					if (this.Game.Empty) UnlockTeleport(4);
+					if (Game.Empty) UnlockTeleport(4);
 					ListenProximity(ActorSno._a4_heaven_gardens_hellportal, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(48, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(48, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -393,21 +393,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(60, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(60, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 56,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //leave demonic rift
-					var World = this.Game.GetWorld(WorldSno.a4dun_hell_portal_02);
+					var World = Game.GetWorld(WorldSno.a4dun_hell_portal_02);
 					World.SpawnMonster(ActorSno._diablo_vo, World.Players.Values.First().Position);
 					StartConversation(World, 217232);
 					ListenTeleport(109516, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(56, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(56, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -418,16 +418,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(54, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(54, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 23,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
-					if (!this.Game.Empty) UnlockTeleport(4);
+					if (!Game.Empty) UnlockTeleport(4);
 					
-					var Garden = this.Game.GetWorld(WorldSno.a4dun_garden_of_hope_random);
+					var Garden = Game.GetWorld(WorldSno.a4dun_garden_of_hope_random);
 					var Tyrael = Garden.GetActorBySNO(ActorSno._tyrael_heaven_spire);
 					Tyrael.Attributes[GameAttribute.MinimapActive] = true;
 					(Tyrael as InteractiveNPC).Conversations.Clear();
@@ -439,7 +439,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(23, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(23, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -450,23 +450,23 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[113910].Steps.Add(29, new QuestStep
+			Game.QuestManager.Quests[113910].Steps.Add(29, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					this.Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.activated = false;
 					PlayCutscene(2);
 				})
 			});
 
 			#endregion
 			#region To the Spire
-			this.Game.QuestManager.Quests.Add(114795, new Quest { RewardXp = 0, RewardGold = 0, Completed = false, Saveable = true, NextQuest = 114901, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(114795, new Quest { RewardXp = 0, RewardGold = 0, Completed = false, Saveable = true, NextQuest = 114901, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[114795].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[114795].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -476,20 +476,20 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114795].Steps.Add(14, new QuestStep
+			Game.QuestManager.Quests[114795].Steps.Add(14, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 18,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Imperius
-					var CrystalWorld = this.Game.GetWorld(WorldSno.a4dun_garden3_spireentrance);
+					var CrystalWorld = Game.GetWorld(WorldSno.a4dun_garden3_spireentrance);
 					
-					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_garden3_spireentrance, () =>
+					Game.AddOnLoadWorldAction(WorldSno.a4dun_garden3_spireentrance, () =>
 					{
 						foreach (var mob in CrystalWorld.GetActorsBySNO(ActorSno._bigred_a))
 						{
-							(mob as ActorSystem.Monster).Brain.DeActivate();
+							(mob as Monster).Brain.DeActivate();
 							mob.Attributes[GameAttribute.Untargetable] = true;
 						}
 						script = new ImperiumScene();
@@ -499,7 +499,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114795].Steps.Add(18, new QuestStep
+			Game.QuestManager.Quests[114795].Steps.Add(18, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -511,23 +511,23 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114795].Steps.Add(16, new QuestStep
+			Game.QuestManager.Quests[114795].Steps.Add(16, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 12,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //go to road to Spire
-					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_garden3_spireentrance, () =>
+					Game.AddOnLoadWorldAction(WorldSno.a4dun_garden3_spireentrance, () =>
 					{
-						var CrystalWorld = this.Game.GetWorld(WorldSno.a4dun_garden3_spireentrance);
+						var CrystalWorld = Game.GetWorld(WorldSno.a4dun_garden3_spireentrance);
 						foreach (var plr in CrystalWorld.Players.Values)
 						{
 							plr.InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });
 							plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
 						}
 
-						if (this.Game.CurrentQuest == 114795 && this.Game.CurrentStep == 16)
+						if (Game.CurrentQuest == 114795 && Game.CurrentStep == 16)
 						{
 							StartConversation(CrystalWorld, 196566);
 						}
@@ -536,7 +536,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114795].Steps.Add(12, new QuestStep
+			Game.QuestManager.Quests[114795].Steps.Add(12, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -548,9 +548,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 			#endregion
 			#region United Evil
-			this.Game.QuestManager.Quests.Add(114901, new Quest { RewardXp = 21000, RewardGold = 1600, Completed = false, Saveable = true, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(114901, new Quest { RewardXp = 21000, RewardGold = 1600, Completed = false, Saveable = true, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -560,29 +560,29 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(24, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(24, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 26,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //go to Spire exterior
-					if (this.Game.Empty) UnlockTeleport(5);
+					if (Game.Empty) UnlockTeleport(5);
 					ListenTeleport(215396, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(26, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(26, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 7,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Izual
-					if (!this.Game.Empty) UnlockTeleport(5);
-					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_spire_exterior, () =>
+					if (!Game.Empty) UnlockTeleport(5);
+					Game.AddOnLoadWorldAction(WorldSno.a4dun_spire_exterior, () =>
 					{
-						var world = this.Game.GetWorld(WorldSno.a4dun_spire_exterior);
+						var world = Game.GetWorld(WorldSno.a4dun_spire_exterior);
 						world.SpawnMonster(ActorSno._bigred_izual, new Vector3D { X = 585.439f, Y = 560.823f, Z = 0.1f });
 						var iceBarrier = world.GetActorBySNO(ActorSno._a4dunspire_interactives_izual_ice_barrier_a);
 						while (iceBarrier != null)
@@ -595,33 +595,33 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(7, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(7, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 20,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //go to Spire entrance (heavens peak)
-					if (this.Game.Empty) UnlockTeleport(6);
+					if (Game.Empty) UnlockTeleport(6);
 					ListenTeleport(205434, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(20, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(20, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 22,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
-					if (!this.Game.Empty) UnlockTeleport(6);
-					if (this.Game.Empty) UnlockTeleport(7);
+					if (!Game.Empty) UnlockTeleport(6);
+					if (Game.Empty) UnlockTeleport(7);
 					ListenProximity(ActorSno._tyrael_heaven_spire, new LaunchConversation(199698));
 					ListenConversation(199698, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(22, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(22, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -632,34 +632,34 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(10, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(10, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Diablo
-					if (!this.Game.Empty) UnlockTeleport(7);
-					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_diablo_arena, () =>
+					if (!Game.Empty) UnlockTeleport(7);
+					Game.AddOnLoadWorldAction(WorldSno.a4dun_diablo_arena, () =>
 					{
-						Open(this.Game.GetWorld(WorldSno.a4dun_diablo_arena), ActorSno._a4dun_diablo_bone_gate);
+						Open(Game.GetWorld(WorldSno.a4dun_diablo_arena), ActorSno._a4dun_diablo_bone_gate);
 					});
 					ListenProximity(ActorSno._a4dun_diablo_bone_gate, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(1, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 6,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Diablo (1st phase, to 50% hp)		
-					this.Game.AddOnLoadWorldAction(WorldSno.a4dun_diablo_arena, () =>
+					Game.AddOnLoadWorldAction(WorldSno.a4dun_diablo_arena, () =>
 					{
-						if (this.Game.CurrentQuest == 114901 && this.Game.CurrentStep == 1)
+						if (Game.CurrentQuest == 114901 && Game.CurrentStep == 1)
 						{
-							StartConversation(this.Game.GetWorld(WorldSno.a4dun_diablo_arena), 132632);
+							StartConversation(Game.GetWorld(WorldSno.a4dun_diablo_arena), 132632);
 						}
 					});
 					//seems hacky but works
@@ -667,7 +667,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(6, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(6, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -678,49 +678,49 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(12, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(12, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill Diablo (3rd phase)
-					var targetWorld = this.Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3);
-					TeleportToWorld(this.Game.GetWorld(WorldSno.a4dun_diablo_shadowrealm_01), targetWorld, 172);
+					var targetWorld = Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3);
+					TeleportToWorld(Game.GetWorld(WorldSno.a4dun_diablo_shadowrealm_01), targetWorld, 172);
 					StartConversation(targetWorld, 132640);
 					ListenKill(ActorSno._diablo, 1, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(3, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 17,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //destroy Diablo
-					StartConversation(this.Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3), 205783);
+					StartConversation(Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3), 205783);
 					ListenConversation(205783, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(17, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(17, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 5,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Auriel
-					this.Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3).GetActorBySNO(ActorSno._hope).NotifyConversation(1);
-					if (this.Game.IsHardcore)
+					Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3).GetActorBySNO(ActorSno._hope).NotifyConversation(1);
+					if (Game.IsHardcore)
 					{
-						foreach (var plr in this.Game.Players.Values)
+						foreach (var plr in Game.Players.Values)
 							if (!plr.Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.HardcoreMasterUnlocked))
 								plr.Toon.GameAccount.Flags = plr.Toon.GameAccount.Flags | GameAccount.GameAccountFlags.HardcoreMasterUnlocked;
 					}
 					else
 					{
-						foreach (var plr in this.Game.Players.Values)
+						foreach (var plr in Game.Players.Values)
 							if (!plr.Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.MasterUnlocked))
 								plr.Toon.GameAccount.Flags = plr.Toon.GameAccount.Flags | GameAccount.GameAccountFlags.MasterUnlocked;
 					}
@@ -729,7 +729,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[114901].Steps.Add(5, new QuestStep
+			Game.QuestManager.Quests[114901].Steps.Add(5, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,

@@ -260,7 +260,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			int EnemiesHit = 1;
 			public LeapAttackArmorBuff(int enemies)
 			{
-				this.EnemiesHit = enemies;
+				EnemiesHit = enemies;
 			}
 
 			public override void Init()
@@ -273,7 +273,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				User.Attributes[GameAttribute.Armor_Bonus_Percent] += (ScriptFormula(33) * this.EnemiesHit);
+				User.Attributes[GameAttribute.Armor_Bonus_Percent] += (ScriptFormula(33) * EnemiesHit);
 				User.Attributes.BroadcastChangedIfRevealed();
 
 				return true;
@@ -283,7 +283,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 
-				User.Attributes[GameAttribute.Armor_Bonus_Percent] -= (ScriptFormula(33) * this.EnemiesHit);
+				User.Attributes[GameAttribute.Armor_Bonus_Percent] -= (ScriptFormula(33) * EnemiesHit);
 				User.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -857,7 +857,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							if (Rand.NextDouble() < ScriptFormula(5))
 							{
 								//ScriptFormula(4) -> extends duration 
-								this.Extend((int)ScriptFormula(4) * 60);
+								Extend((int)ScriptFormula(4) * 60);
 							}
 						}
 						if (Rune_C > 0)
@@ -2289,7 +2289,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (GainedFury >= (1 / ScriptFormula(21)))
 					{
 						GainedFury -= (1 / ScriptFormula(21));
-						this.Extend(60);
+						Extend(60);
 					}
 				return false;
 			}
@@ -2344,7 +2344,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (i == 0)
 				{
-					var ancient = new AncientKorlic(this.World, this, i);
+					var ancient = new AncientKorlic(World, this, i);
 					ancient.Brain.DeActivate();
 					ancient.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 					ancient.Attributes[GameAttribute.Untargetable] = true;
@@ -2355,7 +2355,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 				if (i == 1)
 				{
-					var ancient = new AncientTalic(this.World, this, i);
+					var ancient = new AncientTalic(World, this, i);
 					ancient.Brain.DeActivate();
 					ancient.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 					ancient.Attributes[GameAttribute.Untargetable] = true;
@@ -2366,7 +2366,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 				if (i == 2)
 				{
-					var ancient = new AncientMawdawc(this.World, this, i);
+					var ancient = new AncientMawdawc(World, this, i);
 					ancient.Brain.DeActivate();
 					ancient.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 					ancient.Attributes[GameAttribute.Untargetable] = true;

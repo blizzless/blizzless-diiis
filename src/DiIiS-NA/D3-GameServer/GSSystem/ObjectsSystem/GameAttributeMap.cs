@@ -571,7 +571,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 
 		public IEnumerable<int> ActiveIds
 		{
-			get { return this._attributeValues.Select(k => k.Key.Id); }
+			get { return _attributeValues.Select(k => k.Key.Id); }
 		}
 		public int?[] AttributeKeys(GameAttribute ga)
 		{
@@ -580,7 +580,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 
 		public void LogAll()
 		{
-			foreach (var pair in this._attributeValues)
+			foreach (var pair in _attributeValues)
 			{
 				Logger.Debug("attribute {0}, {1} => {2}", GameAttribute.Attributes[pair.Key.Id].Name, pair.Key.Key, (GameAttribute.Attributes[pair.Key.Id] is GameAttributeF ? pair.Value.ValueF : pair.Value.Value));
 			}
@@ -588,7 +588,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 
 		public bool Contains(GameAttribute attr)
 		{
-			foreach (var pair in this._attributeValues)
+			foreach (var pair in _attributeValues)
 			{
 				if (pair.Key.Id == attr.Id)
 				{

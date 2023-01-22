@@ -26,7 +26,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public Wardrobe(MapSystem.World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            this.Attributes[GameAttribute.MinimapActive] = true;
+            Attributes[GameAttribute.MinimapActive] = true;
             
         }
 

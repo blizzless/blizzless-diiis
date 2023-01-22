@@ -347,7 +347,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 
             if (@params == null)
-                return this.Fallback();
+                return Fallback();
 
             name = @params[0];
 
@@ -487,7 +487,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 if (invokerClient.InGameClient.Player.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
                 {
                     var trigger = invokerClient.InGameClient.Player.World.Game.SideQuestProgress.GlobalQuestTriggers[levelArea];
-                    if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+                    if (trigger.triggerType == QuestStepObjectiveType.EnterLevelArea)
                     {
                         try
                         {
@@ -628,7 +628,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         public string Event(string[] @params, BattleClient invokerClient)
         {
             if (@params == null)
-                return this.Fallback();
+                return Fallback();
 
             if (@params.Count() != 1)
                 return "Invalid arguments. Type 'help text public' to get help.";
@@ -650,7 +650,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         public string Timer(string[] @params, BattleClient invokerClient)
         {
             if (@params == null)
-                return this.Fallback();
+                return Fallback();
 
             if (@params.Count() != 2)
                 return "Invalid arguments. Type 'help text public' to get help.";
@@ -671,7 +671,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         public string Search(string[] @params, BattleClient invokerClient)
         {
             if (@params == null)
-                return this.Fallback();
+                return Fallback();
 
             var matches = new List<Asset>();
 
@@ -817,7 +817,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "World Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.SNOId.ToString("D6"), match.Name, (match.Data as DiIiS_NA.Core.MPQ.FileFormats.World).DynamicWorld));
+                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.SNOId.ToString("D6"), match.Name, (match.Data as World).DynamicWorld));
         }
 
         [Command("qr", "Show QuestRange of an actor.\nUsage: lookup qr <id>")]

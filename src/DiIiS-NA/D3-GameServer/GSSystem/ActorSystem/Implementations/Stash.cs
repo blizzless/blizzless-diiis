@@ -30,7 +30,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Stash(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.MinimapActive] = true;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 202226;
 		}
 
@@ -39,7 +39,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			player.Inventory.StashRevealed = true;
 			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenSharedStashMessage) 
 			{ 
-				ActorID = this.DynamicID(player) 
+				ActorID = DynamicID(player) 
 			});
 			if (!player.Inventory.StashLoaded)
 				player.Inventory.LoadStashFromDB();
@@ -52,7 +52,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Map.MapMarkerInfoMessage()
 			{
 				HashedName = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("Player_Shared_Stash"),
-				Place = new MessageSystem.Message.Fields.WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
+				Place = new MessageSystem.Message.Fields.WorldPlace { Position = Position, WorldID = World.GlobalID },
 				ImageInfo = 202226,
 				Label = -1,
 				snoStringList = -1,

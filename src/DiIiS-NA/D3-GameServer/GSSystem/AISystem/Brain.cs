@@ -43,23 +43,23 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem
 
 		protected Brain(Actor body)
 		{
-			this.Body = body;
-			this.State = BrainState.Idle;
-			this.Actions = new Queue<ActorAction>();
+			Body = body;
+			State = BrainState.Idle;
+			Actions = new Queue<ActorAction>();
 		}
 
 		protected void QueueAction(ActorAction action)
 		{
-			this.Actions.Enqueue(action);
+			Actions.Enqueue(action);
 		}
 
 		public virtual void Update(int tickCounter)
 		{
-			if (this.State == BrainState.Dead || this.Body == null || this.Body.World == null || this.State == BrainState.Off)
+			if (State == BrainState.Dead || Body == null || Body.World == null || State == BrainState.Off)
 				return;
 
-			this.Think(tickCounter); // let the brain think.
-			this.Perform(tickCounter); // perform any outstanding actions.
+			Think(tickCounter); // let the brain think.
+			Perform(tickCounter); // perform any outstanding actions.
 		}
 
 		/// <summary>
@@ -73,38 +73,38 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem
 		/// </summary>
 		public virtual void Kill()
 		{
-			if (this.CurrentAction != null)
+			if (CurrentAction != null)
 			{
-				this.CurrentAction.Cancel(0);
-				this.CurrentAction = null;
+				CurrentAction.Cancel(0);
+				CurrentAction = null;
 			}
-			this.State = BrainState.Dead;
+			State = BrainState.Dead;
 		}
 
 		public void Activate()
 		{
-			if (this.State == BrainState.Off)
-				this.State = BrainState.Idle;
+			if (State == BrainState.Off)
+				State = BrainState.Idle;
 		}
 
 		public void DeActivate()
 		{
-			this.CurrentAction = null;
-			this.State = BrainState.Off;
+			CurrentAction = null;
+			State = BrainState.Off;
 		}
 
 		private void Perform(int tickCounter)
 		{
-			if (this.CurrentAction == null)
+			if (CurrentAction == null)
 				return;
 
-			if (!this.CurrentAction.Started)
-				this.CurrentAction.Start(tickCounter);
+			if (!CurrentAction.Started)
+				CurrentAction.Start(tickCounter);
 			else
-				this.CurrentAction.Update(tickCounter);
+				CurrentAction.Update(tickCounter);
 
-			if (this.CurrentAction.Done)
-				this.CurrentAction = null;
+			if (CurrentAction.Done)
+				CurrentAction = null;
 		}
 	}
 }

@@ -68,7 +68,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				{
 					(User as Player).InGameClient.SendMessage(new FloatingNumberMessage
 					{
-						ActorID = this.Target.DynamicID(User as Player),
+						ActorID = Target.DynamicID(User as Player),
 						Type = _floatMessage.Value
 					});
 				}
@@ -278,7 +278,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			Speed = Target.WalkSpeed;
 			Target.WalkSpeed = 0f;
-			this.Target.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateSyncMessage() { ActorId = this.Target.DynamicID(plr), Position = this.Target.Position, Snap = false }, this.Target);
+			Target.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateSyncMessage() { ActorId = Target.DynamicID(plr), Position = Target.Position, Snap = false }, Target);
 
 			return true;
 		}

@@ -25,10 +25,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 1.2f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.
-			this.WalkSpeed *= 5;
-			this.DamageCoefficient = context.ScriptFormula(11);
+			WalkSpeed *= 5;
+			DamageCoefficient = context.ScriptFormula(11);
 			SetBrain(new MinionBrain(this));
-			this.Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
 			//TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
 			//Attributes[GameAttribute.Hitpoints_Max] = 20f;
 			//Attributes[GameAttribute.Hitpoints_Cur] = 20f;
@@ -42,16 +42,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 
 			LifeTime = TickTimer.WaitSeconds(world.Game, lifetime);
 
-			if (this.Master != null && context.ScriptFormula(1) < (this.Master as Player).Followers.Values.Where(f => f == SNO).Count())
+			if (Master != null && context.ScriptFormula(1) < (Master as Player).Followers.Values.Where(f => f == SNO).Count())
 			{
-				if (this.Master is Player)
+				if (Master is Player)
 				{
 					var rem = new List<uint>();
-					foreach (var fol in (this.Master as Player).Followers.Where(f => f.Key != this.GlobalID).Take((this.Master as Player).Followers.Values.Where(f => f == SNO).Count() - (int)context.ScriptFormula(1)))
+					foreach (var fol in (Master as Player).Followers.Where(f => f.Key != GlobalID).Take((Master as Player).Followers.Values.Where(f => f == SNO).Count() - (int)context.ScriptFormula(1)))
 						if (fol.Value == SNO)
 							rem.Add(fol.Key);
 					foreach (var rm in rem)
-						(this.Master as Player).DestroyFollowerById(rm);
+						(Master as Player).DestroyFollowerById(rm);
 				}
 			}
 		}

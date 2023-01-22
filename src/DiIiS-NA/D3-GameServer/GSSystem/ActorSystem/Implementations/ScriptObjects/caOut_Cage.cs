@@ -43,16 +43,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
 
-			if (this.Attributes[GameAttribute.Disabled]) return;
+			if (Attributes[GameAttribute.Disabled]) return;
 
 			PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
 			SetIdleAnimation(AnimationSetKeys.Open.ID);
 
-			this.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
 			Attributes.BroadcastChangedIfRevealed();
 
 			base.OnTargeted(player, message);
-			this.Attributes[GameAttribute.Disabled] = true;
+			Attributes[GameAttribute.Disabled] = true;
 
 
 		}

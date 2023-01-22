@@ -50,8 +50,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 
-			Target.Attributes[GameAttribute.Power_Cooldown_Start, TargetPowerSNO] = this.World.Game.TickCounter;
-			Target.Attributes[GameAttribute.Power_Cooldown, TargetPowerSNO] = this.Timeout.TimeoutTick;
+			Target.Attributes[GameAttribute.Power_Cooldown_Start, TargetPowerSNO] = World.Game.TickCounter;
+			Target.Attributes[GameAttribute.Power_Cooldown, TargetPowerSNO] = Timeout.TimeoutTick;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -101,8 +101,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 			
-			Target.Attributes[GameAttribute.Recharge_Start_Time, TargetPowerSNO] = this.World.Game.TickCounter;
-			Target.Attributes[GameAttribute.Next_Charge_Gained_time, TargetPowerSNO] = this.Timeout.TimeoutTick;
+			Target.Attributes[GameAttribute.Recharge_Start_Time, TargetPowerSNO] = World.Game.TickCounter;
+			Target.Attributes[GameAttribute.Next_Charge_Gained_time, TargetPowerSNO] = Timeout.TimeoutTick;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}

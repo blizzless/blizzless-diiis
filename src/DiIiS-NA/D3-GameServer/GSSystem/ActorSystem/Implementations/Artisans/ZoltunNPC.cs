@@ -32,7 +32,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
             if (world.Game.CurrentAct == 3000)
             {
 
-                this.Conversations.Add(new ConversationInteraction(430146));
+                Conversations.Add(new ConversationInteraction(430146));
                 //[430335] [Worlds] a3dun_ruins_frost_city_a_02
                 //[428493] [Worlds] a3dun_ruins_frost_city_a_01
                 //this.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
@@ -48,7 +48,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 
         public override bool Reveal(Player player)
         {
-            if (this.SNO == ActorSno._kanaicube_stand)
+            if (SNO == ActorSno._kanaicube_stand)
                 if (!player.KanaiUnlocked)
                     Interactions.Clear();
                 else
@@ -72,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 
         public override void OnTargeted(Player player, MessageSystem.Message.Definitions.World.TargetMessage message)
         {
-            player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = this.DynamicID(player) });
+            player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
             player.ArtisanInteraction = "Cube";
         }
     }

@@ -33,9 +33,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 		public CommandGroupAttribute(string name, string help, Account.UserLevels minUserLevel = Account.UserLevels.Admin)
 		{
-			this.Name = name.ToLower();
-			this.Help = help;
-			this.MinUserLevel = minUserLevel;
+			Name = name.ToLower();
+			Help = help;
+			MinUserLevel = minUserLevel;
 		}
 	}
 
@@ -59,9 +59,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 		public CommandAttribute(string command, string help, Account.UserLevels minUserLevel = Account.UserLevels.User)
 		{
-			this.Name = command.ToLower();
-			this.Help = help;
-			this.MinUserLevel = minUserLevel;
+			Name = command.ToLower();
+			Help = help;
+			MinUserLevel = minUserLevel;
 		}
 	}
 

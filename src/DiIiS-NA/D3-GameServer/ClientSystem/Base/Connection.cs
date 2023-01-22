@@ -31,18 +31,18 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
 		// Note that this method should only be called prior to encryption!
 		public int Receive(int start, int count)
 		{
-			return this.Socket.Receive(_recvBuffer, start, count, SocketFlags.None);
+			return Socket.Receive(_recvBuffer, start, count, SocketFlags.None);
 		}
 
 		// Wrapper for the Send method that will send the data either to the
 		// Socket (unecnrypted) or to the TLSStream (encrypted).
 		public int _Send(byte[] buffer, int start, int count, SocketFlags flags)
 		{
-			if (!this.IsOpen()) return 0;
+			if (!IsOpen()) return 0;
 			int bytes = 0;
 			try
 			{
-				bytes = this.Socket.Send(buffer, start, count, flags);
+				bytes = Socket.Send(buffer, start, count, flags);
 			}
 			catch
 			{
@@ -79,8 +79,8 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
 			if (socket == null)
 				throw new ArgumentNullException("socket");
 
-			this.LastKeepAliveTick = DateTime.Now.ToUnixTime();
-			this.Socket = socket;
+			LastKeepAliveTick = DateTime.Now.ToUnixTime();
+			Socket = socket;
 		}
 
 		#region socket stuff
@@ -122,10 +122,10 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 					socketEventargs.SetBuffer(_recvBuffer, 0, BufferSize);
 					socketEventargs.Completed += (sender, args) => ReadCallback(args);
 					socketEventargs.SocketFlags = SocketFlags.None;
-					socketEventargs.RemoteEndPoint = this.Socket.RemoteEndPoint;
+					socketEventargs.RemoteEndPoint = Socket.RemoteEndPoint;
 					socketEventargs.UserToken = this;
 
-					if (!this.Socket.ReceiveAsync(socketEventargs))
+					if (!Socket.ReceiveAsync(socketEventargs))
 						ReadCallback(socketEventargs);
 				}
 			}
@@ -153,7 +153,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 			{
 				if (a.BytesTransferred > 0)
 				{
-					this.Server.OnDataReceived(new ConnectionDataEventArgs(connection, connection.RecvBuffer.Enumerate(0, a.BytesTransferred))); // Raise the DataReceived event.
+					Server.OnDataReceived(new ConnectionDataEventArgs(connection, connection.RecvBuffer.Enumerate(0, a.BytesTransferred))); // Raise the DataReceived event.
 
 					if (connection.IsOpen())
 						connection.AsyncRead();
@@ -184,7 +184,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 		public int Send(byte[] buffer)
 		{
 			if (buffer == null) throw new ArgumentNullException("buffer");
-			if (!this.IsOpen()) return 0;
+			if (!IsOpen()) return 0;
 			return Send(buffer, 0, buffer.Length, SocketFlags.None);
 		}
 
@@ -197,7 +197,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 		public int Send(byte[] buffer, SocketFlags flags)
 		{
 			if (buffer == null) throw new ArgumentNullException("buffer");
-			if (!this.IsOpen()) return 0;
+			if (!IsOpen()) return 0;
 			return Send(buffer, 0, buffer.Length, flags);
 		}
 
@@ -211,7 +211,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 		public int Send(byte[] buffer, int start, int count)
 		{
 			if (buffer == null) throw new ArgumentNullException("buffer");
-			if (!this.IsOpen()) return 0;
+			if (!IsOpen()) return 0;
 			return Send(buffer, start, count, SocketFlags.None);
 		}
 
@@ -226,19 +226,19 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 		public int Send(byte[] buffer, int start, int count, SocketFlags flags)
 		{
 			if (buffer == null) throw new ArgumentNullException("buffer");
-			if (!this.IsOpen()) return 0;
+			if (!IsOpen()) return 0;
 
 			var totalBytesSent = 0;
 			var bytesRemaining = buffer.Length;
 
 			try
 			{
-				if (this.Socket == null || this.Socket.Available < 0) throw new Exception("socket is null");
-				lock (this.socketLock)
+				if (Socket == null || Socket.Available < 0) throw new Exception("socket is null");
+				lock (socketLock)
 				{
-					while (bytesRemaining > 0 && this.IsOpen() && !_closing) // Ensure we send every byte.
+					while (bytesRemaining > 0 && IsOpen() && !_closing) // Ensure we send every byte.
 					{
-						int bytesSent = this._Send(buffer, totalBytesSent, bytesRemaining, flags);
+						int bytesSent = _Send(buffer, totalBytesSent, bytesRemaining, flags);
 
 						if (bytesSent == 0) break;
 						bytesRemaining -= bytesSent;
@@ -248,11 +248,11 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 			}
 			catch (SocketException)
 			{
-				this.Disconnect();
+				Disconnect();
 			}
 			catch (Exception e)
 			{
-				this.Disconnect();
+				Disconnect();
 				Logger.WarnException(e, "Send");
 			}
 
@@ -267,7 +267,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 		public int Send(IEnumerable<byte> data)
 		{
 			if (data == null) throw new ArgumentNullException("data");
-			if (!this.IsOpen()) return 0;
+			if (!IsOpen()) return 0;
 			return Send(data, SocketFlags.None);
 		}
 
@@ -280,7 +280,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 		public int Send(IEnumerable<byte> data, SocketFlags flags)
 		{
 			if (data == null) throw new ArgumentNullException("data");
-			if (!this.IsOpen()) return 0;
+			if (!IsOpen()) return 0;
 			var buffer = data.ToArray();
 			return Send(buffer, 0, buffer.Length, SocketFlags.None);
 		}
@@ -297,14 +297,14 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 				Task.Run(() => {
 					try
 					{
-						this.Server.OnClientDisconnect(new ConnectionEventArgs(this));
-						if (this.Socket != null)
+						Server.OnClientDisconnect(new ConnectionEventArgs(this));
+						if (Socket != null)
 						{
 							try
 							{
-								this.Socket.Shutdown(SocketShutdown.Both);
-								this.Socket.Close();
-								this.Socket = null;
+								Socket.Shutdown(SocketShutdown.Both);
+								Socket.Close();
+								Socket = null;
 							}
 							catch (Exception)
 							{
@@ -324,7 +324,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 		{
 			get
 			{
-				return (this.Client is BattleClient);
+				return (Client is BattleClient);
 			}
 		}
 
@@ -333,7 +333,7 @@ using (var socketEventargs = new SocketAsyncEventArgs())
 			_closed = true;
 		}
 
-		public bool IsOpen() { return !_closed && this.Socket != null/* && (!this.IsMooNet || this.LastKeepAliveTick > (DateTime.Now.ToUnixTime() - 120U))*/; }
+		public bool IsOpen() { return !_closed && Socket != null/* && (!this.IsMooNet || this.LastKeepAliveTick > (DateTime.Now.ToUnixTime() - 120U))*/; }
 		public uint LastKeepAliveTick { get; set; }
 
 		/// <summary>

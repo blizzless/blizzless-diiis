@@ -50,15 +50,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (this.Attributes[GameAttribute.Disabled] == true) return;
+			if (Attributes[GameAttribute.Disabled] == true) return;
 			try
 			{
-				Door waterfall = this.World.FindAt(ActorSno._caout_oasis_door_aqueduct_a_top, this.Position, 80.0f) as Door;
+				Door waterfall = World.FindAt(ActorSno._caout_oasis_door_aqueduct_a_top, Position, 80.0f) as Door;
 				if (waterfall == null)
 				{
-					Door gate = this.World.FindAt(ActorSno._caout_oasis_door_aqueduct_a, this.Position, 80.0f) as Door;
+					Door gate = World.FindAt(ActorSno._caout_oasis_door_aqueduct_a, Position, 80.0f) as Door;
 					if (gate == null)
-						(this.World.FindAt(ActorSno._caout_oasis_cenote_door, this.Position, 80.0f) as Door).Open();
+						(World.FindAt(ActorSno._caout_oasis_cenote_door, Position, 80.0f) as Door).Open();
 					else
 						gate.Open();
 				}
@@ -66,10 +66,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 				{
 					waterfall.Open();
 				}
-				this.Attributes[GameAttribute.Disabled] = true;
-				this.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
-				this.Attributes[GameAttribute.Gizmo_State] = 1;
-				this.Attributes.BroadcastChangedIfRevealed();
+				Attributes[GameAttribute.Disabled] = true;
+				Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+				Attributes[GameAttribute.Gizmo_State] = 1;
+				Attributes.BroadcastChangedIfRevealed();
 			}
 			catch { }
 		}

@@ -43,12 +43,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		protected override List<ItemsSystem.Item> GetVendorItems()
 		{
-			return itemGbIds.Select(x => ItemsSystem.ItemGenerator.CookFromDefinition(this.World, ItemsSystem.ItemGenerator.GetItemDefinition(x), 1, false)).ToList();
+			return itemGbIds.Select(x => ItemsSystem.ItemGenerator.CookFromDefinition(World, ItemsSystem.ItemGenerator.GetItemDefinition(x), 1, false)).ToList();
 		}
 
 		public override bool Reveal(PlayerSystem.Player player)
 		{
-			if (this.World.Game.CurrentAct != 3000) return false;
+			if (World.Game.CurrentAct != 3000) return false;
 			return base.Reveal(player);
 		}
 

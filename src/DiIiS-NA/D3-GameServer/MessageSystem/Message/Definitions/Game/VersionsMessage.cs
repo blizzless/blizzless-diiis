@@ -20,9 +20,9 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game
 
         public VersionsMessage(uint snoPacketHash, uint protocol = 0xCB32584D) : base(Opcodes.VersionsMessage)
         {
-            this.SNOPackHash = snoPacketHash;
-            this.ProtocolHash = protocol;
-            this.Version = "DiIiS Server - 2.7.4.84161";
+            SNOPackHash = snoPacketHash;
+            ProtocolHash = protocol;
+            Version = "DiIiS Server - 2.7.4.84161";
         }
 
         public VersionsMessage() : base(Opcodes.VersionsMessage) { }

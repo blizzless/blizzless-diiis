@@ -35,38 +35,38 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public HearthPortal(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.MinimapActive] = true;
-			this.SetVisible(false);
+			Attributes[GameAttribute.MinimapActive] = true;
+			SetVisible(false);
 		}
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
 			Logger.Trace("(OnTargeted) HearthPortal has been activated ");
 
-			var world = this.World.Game.GetWorld(this.ReturnWorld);
+			var world = World.Game.GetWorld(ReturnWorld);
 
 			if (world == null)
 			{
-				Logger.Warn("HearthPortal's world does not exist (WorldSNO = {0})", this.ReturnWorld);
+				Logger.Warn("HearthPortal's world does not exist (WorldSNO = {0})", ReturnWorld);
 				return;
 			}
 
-			if (this.World.Game.QuestManager.SideQuests.ContainsKey(120396) && this.World.Game.QuestManager.SideQuests[120396].Completed && this.ReturnWorld == WorldSno.a2dun_zolt_timed01_level01) return;
+			if (World.Game.QuestManager.SideQuests.ContainsKey(120396) && World.Game.QuestManager.SideQuests[120396].Completed && ReturnWorld == WorldSno.a2dun_zolt_timed01_level01) return;
 
 			Vector3D exCheckpoint = player.CheckPointPosition;
 
-			if (world == this.World)
+			if (world == World)
 				player.Teleport(ReturnPosition);
 			else
 				player.ChangeWorld(world, ReturnPosition);
 
 			player.CheckPointPosition = exCheckpoint;
-			this.SetVisible(false);
+			SetVisible(false);
 		}
 
 		public override bool Reveal(Player player)
 		{
-			if (player != this.Owner) return false;
+			if (player != Owner) return false;
 			return base.Reveal(player);
 		}
 	}

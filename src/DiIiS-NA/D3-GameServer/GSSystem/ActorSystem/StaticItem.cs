@@ -29,9 +29,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public StaticItem(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.GBHandle.Type = (int)ActorType.Item;
-			this.GBHandle.GBID = -1;//944034263;
-			this.Attributes[GameAttribute.Operatable] = true;
+			GBHandle.Type = (int)ActorType.Item;
+			GBHandle.GBID = -1;//944034263;
+			Attributes[GameAttribute.Operatable] = true;
 		}
 
 		public override bool Reveal(Player player)
@@ -43,18 +43,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			Logger.Debug("(OnTargeted) StaticItem has been activated! Id: {0}, Type: {1}", this.SNO, this.ActorData.TagMap[ActorKeys.GizmoGroup]);
+			Logger.Debug("(OnTargeted) StaticItem has been activated! Id: {0}, Type: {1}", SNO, ActorData.TagMap[ActorKeys.GizmoGroup]);
 			//handling quest triggers
-			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)this.SNO))
+			if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
-				var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO];
+				var trigger = World.Game.QuestProgress.QuestTriggers[(int)SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 				{
-					this.World.Game.QuestProgress.UpdateCounter((int)this.SNO);
-					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO].counter)
+					World.Game.QuestProgress.UpdateCounter((int)SNO);
+					if (trigger.count == World.Game.QuestProgress.QuestTriggers[(int)SNO].counter)
 						try
 						{
-							trigger.questEvent.Execute(this.World); // launch a questEvent
+							trigger.questEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{

@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Barbarian_KKG(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.PlayActionAnimation(449259);
+			PlayActionAnimation(449259);
 		}
 
 		protected override void ReadTags()

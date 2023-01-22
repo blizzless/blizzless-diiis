@@ -19,7 +19,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD
         public ACDCreateActorMessage(uint actorID)
             : base(Opcodes.ACDCreateActorMessage)
         {
-            this.ActorId = actorID;
+            ActorId = actorID;
         }
 
         public ACDCreateActorMessage()

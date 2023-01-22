@@ -24,9 +24,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions
 
 		protected ActorAction(Actor owner)
 		{
-			this.Owner = owner;
-			this.Started = false;
-			this.Done = false;
+			Owner = owner;
+			Started = false;
+			Done = false;
 		}
 
 		public abstract void Start(int tickCounter);

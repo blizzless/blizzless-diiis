@@ -61,8 +61,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		public LooterBrain(Actor body, bool lootsLegs)
 			: base(body)
 		{
-			this.LootLegendaries = lootsLegs;
-			this.PresetPowers = new Dictionary<int, Cooldown>();
+			LootLegendaries = lootsLegs;
+			PresetPowers = new Dictionary<int, Cooldown>();
 
 			// build list of powers defined in monster mpq data
 			if (body.ActorData.MonsterSNO > 0)
@@ -72,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				{
 					if (monsterSkill.SNOPower > 0)
 					{
-						this.PresetPowers.Add(monsterSkill.SNOPower, new Cooldown { CooldownTimer = null, CooldownTime = 1f });
+						PresetPowers.Add(monsterSkill.SNOPower, new Cooldown { CooldownTimer = null, CooldownTime = 1f });
 					}
 				}
 			}
@@ -82,52 +82,52 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			base.Update(tickCounter);
 
-			List<Item> gold = this.Body.GetObjectsInRange<Item>(5f).Where(m => ((this.Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && Item.IsGold((m as Item).ItemType)).ToList();
+			List<Item> gold = Body.GetObjectsInRange<Item>(5f).Where(m => ((Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && Item.IsGold((m as Item).ItemType)).ToList();
 			foreach (var item in gold)
 			{
-				((this.Body as Minion).Master as Player).InGameClient.SendMessage(new FloatingAmountMessage()
+				((Body as Minion).Master as Player).InGameClient.SendMessage(new FloatingAmountMessage()
 				{
 					Place = new WorldPlace()
 					{
-						Position = this.Body.Position,
-						WorldID = this.Body.World.GlobalID,
+						Position = Body.Position,
+						WorldID = Body.World.GlobalID,
 					},
 
 					Amount = item.Attributes[GameAttribute.ItemStackQuantityLo],
 					Type = FloatingAmountMessage.FloatType.Gold,
 				});
 
-				((this.Body as Minion).Master as Player).Inventory.PickUpGold(item);
-				((this.Body as Minion).Master as Player).GroundItems.Remove(item.GlobalID);
+				((Body as Minion).Master as Player).Inventory.PickUpGold(item);
+				((Body as Minion).Master as Player).GroundItems.Remove(item.GlobalID);
 				item.Destroy();
 			}
 
-			if (this.LootLegendaries)
+			if (LootLegendaries)
 			{
-				List<Item> legendaries = this.Body.GetObjectsInRange<Item>(5f).Where(m => ((this.Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && (m as Item).ItemDefinition.Name.Contains("Unique_")).ToList();
+				List<Item> legendaries = Body.GetObjectsInRange<Item>(5f).Where(m => ((Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && (m as Item).ItemDefinition.Name.Contains("Unique_")).ToList();
 				foreach (var item in legendaries)
 				{
-					((this.Body as Minion).Master as Player).Inventory.PickUp(item);
+					((Body as Minion).Master as Player).Inventory.PickUp(item);
 				}
 			}
 
-			List<Item> shards = this.Body.GetObjectsInRange<Item>(5f).Where(m => ((this.Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && Item.IsBloodShard((m as Item).ItemType)).ToList();
+			List<Item> shards = Body.GetObjectsInRange<Item>(5f).Where(m => ((Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && Item.IsBloodShard((m as Item).ItemType)).ToList();
 			foreach (var item in shards)
 			{
-				((this.Body as Minion).Master as Player).InGameClient.SendMessage(new FloatingAmountMessage()
+				((Body as Minion).Master as Player).InGameClient.SendMessage(new FloatingAmountMessage()
 				{
 					Place = new WorldPlace()
 					{
-						Position = this.Body.Position,
-						WorldID = this.Body.World.GlobalID,
+						Position = Body.Position,
+						WorldID = Body.World.GlobalID,
 					},
 
 					Amount = item.Attributes[GameAttribute.ItemStackQuantityLo],
 					Type = FloatingAmountMessage.FloatType.BloodStone,
 				});
 
-				((this.Body as Minion).Master as Player).Inventory.PickUpBloodShard(item);
-				((this.Body as Minion).Master as Player).GroundItems.Remove(item.GlobalID);
+				((Body as Minion).Master as Player).Inventory.PickUpBloodShard(item);
+				((Body as Minion).Master as Player).GroundItems.Remove(item.GlobalID);
 				item.Destroy();
 			}
 		}
@@ -136,39 +136,39 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			// this needed? /mdz
 			//if (this.Body is NPC) return;
-			if ((this.Body as Minion).Master == null) return;
+			if ((Body as Minion).Master == null) return;
 
-			if (this.Body.World.Game.Paused) return;
+			if (Body.World.Game.Paused) return;
 
 			// select and start executing a power if no active action
-			if (this.CurrentAction == null)
+			if (CurrentAction == null)
 			{
 				// do a little delay so groups of monsters don't all execute at once
 				if (_powerDelay == null)
-					_powerDelay = new SecondsTickTimer(this.Body.World.Game, (float)RandomHelper.NextDouble());
+					_powerDelay = new SecondsTickTimer(Body.World.Game, (float)RandomHelper.NextDouble());
 
 				if (_powerDelay.TimedOut)
 				{
-					List<Actor> targets = this.Body.GetObjectsInRange<Item>(40f).Where(m => ((this.Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && Item.IsGold((m as Item).ItemType)).Cast<Actor>().ToList();
-					if (this.LootLegendaries)
-						targets.Concat(this.Body.GetObjectsInRange<Item>(40f).Where(m => ((this.Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && (m as Item).ItemDefinition.Name.Contains("Unique_")).Cast<Actor>().ToList());
-					if (targets.Count != 0 && PowerMath.Distance2D(this.Body.Position, (this.Body as Minion).Master.Position) < 80f)
+					List<Actor> targets = Body.GetObjectsInRange<Item>(40f).Where(m => ((Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && Item.IsGold((m as Item).ItemType)).Cast<Actor>().ToList();
+					if (LootLegendaries)
+						targets.Concat(Body.GetObjectsInRange<Item>(40f).Where(m => ((Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && (m as Item).ItemDefinition.Name.Contains("Unique_")).Cast<Actor>().ToList());
+					if (targets.Count != 0 && PowerMath.Distance2D(Body.Position, (Body as Minion).Master.Position) < 80f)
 					{
 						_target = targets.First();
 						//Logger.Trace("MoveToTargetWithPathfindAction to target");
-						this.CurrentAction = new MoveToPointAction(this.Body, _target.Position);
+						CurrentAction = new MoveToPointAction(Body, _target.Position);
 					}
 					else
 					{
-						var distToMaster = PowerMath.Distance2D(this.Body.Position, (this.Body as Minion).Master.Position);
+						var distToMaster = PowerMath.Distance2D(Body.Position, (Body as Minion).Master.Position);
 						if ((distToMaster > 8f) || (distToMaster < 3f))
 						{
 							var Rand = FastRandom.Instance;
-							var position = (this.Body as Minion).Master.Position;
+							var position = (Body as Minion).Master.Position;
 							float angle = (float)(Rand.NextDouble() * Math.PI * 2);
 							float radius = 3f + (float)Rand.NextDouble() * (8f - 3f);
 							var near = new Vector3D(position.X + (float)Math.Cos(angle) * radius, position.Y + (float)Math.Sin(angle) * radius, position.Z);
-							this.CurrentAction = new MoveToPointAction(this.Body, near);
+							CurrentAction = new MoveToPointAction(Body, near);
 						}
 					}
 				}

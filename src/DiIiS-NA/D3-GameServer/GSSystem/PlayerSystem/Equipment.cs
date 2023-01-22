@@ -44,9 +44,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public Equipment(Player owner)
 		{
-			this._equipment = new uint[33];
-			this._owner = owner;
-			this.Items = new Dictionary<uint, Item>();
+			_equipment = new uint[33];
+			_owner = owner;
+			Items = new Dictionary<uint, Item>();
 		}
 
 		/// <summary>
@@ -66,7 +66,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (save)
 				_owner.Inventory.ChangeItemSlotDB(slot, item);
 
-			this.EquipmentChanged = true;
+			EquipmentChanged = true;
 
 			if (item.Attributes[GameAttribute.Item_Quality_Level] > 5)
 			{
@@ -117,9 +117,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				_equipment[slot] = 0;
 				item.Attributes[GameAttribute.Item_Equipped] = false; // Probaly should be handled by Equipable class /fasbat
-				item.Unreveal(this._owner);
-				item.Reveal(this._owner);
-				this.EquipmentChanged = true;
+				item.Unreveal(_owner);
+				item.Reveal(_owner);
+				EquipmentChanged = true;
 				return slot;
 			}
 
@@ -175,19 +175,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					{
 						new VisuaCosmeticItem()
 						{
-							GbId = this._owner.Toon.Cosmetic1
+							GbId = _owner.Toon.Cosmetic1
 						},
 						new VisuaCosmeticItem()
 						{
-							GbId = this._owner.Toon.Cosmetic2
+							GbId = _owner.Toon.Cosmetic2
 						},
 						new VisuaCosmeticItem()
 						{
-							GbId = this._owner.Toon.Cosmetic3
+							GbId = _owner.Toon.Cosmetic3
 						},
 						new VisuaCosmeticItem()
 						{
-							GbId = this._owner.Toon.Cosmetic4
+							GbId = _owner.Toon.Cosmetic4
 						}
 					};
 		}
@@ -225,7 +225,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		internal Item GetEquipment(int targetEquipSlot)
 		{
 			//Logger.Debug("GetEquipment Slot: {0}", targetEquipSlot);
-			return GetItem(this._equipment[targetEquipSlot]);
+			return GetItem(_equipment[targetEquipSlot]);
 		}
 
 		internal Item GetEquipment(EquipmentSlotId targetEquipSlot)
@@ -271,8 +271,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public Item GetItemByDynId(Player plr, uint dynId)
 		{
-			if (this.Items.Values.Where(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId).Count() > 0)
-				return this.Items.Values.Single(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
+			if (Items.Values.Where(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId).Count() > 0)
+				return Items.Values.Single(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
 			else
 				return null;
 		}

@@ -46,16 +46,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         {
             var Targets = User.GetActorsInRange(20f);
             TickTimer waitForImpact = WaitSeconds(1.3f - 0.1f);
-            SpawnEffect(ActorSno._belial_groundbomb_pending, this.User.Position, 0, WaitSeconds(5f)); //[161822] [Actor] Belial_GroundBomb_Pending
+            SpawnEffect(ActorSno._belial_groundbomb_pending, User.Position, 0, WaitSeconds(5f)); //[161822] [Actor] Belial_GroundBomb_Pending
             yield return waitForImpact;
-            SpawnEffect(ActorSno._belial_groundmeteor, this.User.Position, 0, WaitSeconds(3f)); //[185108] [Actor] Belial_GroundMeteor
+            SpawnEffect(ActorSno._belial_groundmeteor, User.Position, 0, WaitSeconds(3f)); //[185108] [Actor] Belial_GroundMeteor
             yield return waitForImpact;
-            var Fire = SpawnEffect(ActorSno._belial_groundbomb_impact, this.User.Position, 0, WaitSeconds(3f));
+            var Fire = SpawnEffect(ActorSno._belial_groundbomb_impact, User.Position, 0, WaitSeconds(3f));
             Fire.UpdateDelay = 1f;
             Fire.OnUpdate = () =>
             {
                 AttackPayload Attack = new AttackPayload(this);
-                Attack.Targets = GetEnemiesInRadius(this.User.Position, 15f);
+                Attack.Targets = GetEnemiesInRadius(User.Position, 15f);
                 Attack.AddWeaponDamage(10f, DamageType.Poison);
                 Attack.OnHit = hitPayload =>
                 {
@@ -125,16 +125,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         {
             yield return WaitSeconds(8f);
             bool inCombat = false;
-            if (this.World.GetActorBySNO(ActorSno._butcher) != null)
+            if (World.GetActorBySNO(ActorSno._butcher) != null)
                 inCombat = true;
 
             if (inCombat == false)
             {
-                (this.User as ActorSystem.Monster).Brain.DeActivate();
+                (User as ActorSystem.Monster).Brain.DeActivate();
                 yield break;
             }
             AddBuff(User, new Burn());
-            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
 
             //yield return WaitSeconds(18f);
             //yield break;
@@ -181,7 +181,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 foreach (var target in Targets)
                     if (target is PlayerSystem.Player || target is ActorSystem.Monster)
                     {
-                        this.User.Attributes[GameAttribute.Damage_Min] = target.Attributes[GameAttribute.Hitpoints_Max] / 20f;
+                        User.Attributes[GameAttribute.Damage_Min] = target.Attributes[GameAttribute.Hitpoints_Max] / 20f;
                         WeaponDamage(target, 1.5f, DamageType.Fire); 
                     }
                 //*/
@@ -337,16 +337,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         {
             yield return WaitSeconds(8f);
             bool inCombat = false;
-            if(this.World.GetActorBySNO(ActorSno._butcher) != null)
+            if(World.GetActorBySNO(ActorSno._butcher) != null)
                 inCombat = true;
             
             if (inCombat == false)
             {
-                (this.User as ActorSystem.Monster).Brain.DeActivate();
+                (User as ActorSystem.Monster).Brain.DeActivate();
                 yield break;
             }
             AddBuff(User, new Burn());
-            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
 
             //yield return WaitSeconds(18f);
             //yield break;
@@ -366,7 +366,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 proxy = SpawnProxy(User.Position, WaitSeconds(8.5f));
                 #region Выборка анимации
                 int EffectOfActivate = 0;
-                switch (this.User.SNO)
+                switch (User.SNO)
                 {
                     case ActorSno._butcherlair_floorpanel_upperleft_base: EffectOfActivate = 201257; break;//[201423] [Actor] ButcherLair_FloorPanel_UpperLeft_Base
                     case ActorSno._butcherlair_floorpanel_uppermid_base: EffectOfActivate = 201444; break;//[201438][Actor] ButcherLair_FloorPanel_UpperMid_Base

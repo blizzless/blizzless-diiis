@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public MysticNoVendor(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Invulnerable] = true;
 		}
 
 		protected override void ReadTags()
@@ -37,7 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public TemplarNPC(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Invulnerable] = true;
 		}
 
 		protected override void ReadTags()

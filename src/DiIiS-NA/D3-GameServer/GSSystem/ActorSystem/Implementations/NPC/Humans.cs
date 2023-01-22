@@ -22,9 +22,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public Humans(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            this.Field7 = 1;
-            this.Attributes[GameAttribute.TeamID] = 2;
-            this.Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = false;
+            Field7 = 1;
+            Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = false;
         }
         
 		public override bool Reveal(PlayerSystem.Player player)
@@ -40,33 +40,33 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         {
             try
             {
-                if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale * this.Scale && ! _collapsed)
+                if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale * Scale && ! _collapsed)
                 {
                     _collapsed = true;
 
-                    if (this.World.SNO == WorldSno.x1_westm_intro)
-                        switch (this.SNO)
+                    if (World.SNO == WorldSno.x1_westm_intro)
+                        switch (SNO)
                         {
                             case ActorSno._x1_westm_intro_human_male:
-                                if (this.Position.X > 1440) 
-                                    StartConversation(this.World, 311433);
+                                if (Position.X > 1440) 
+                                    StartConversation(World, 311433);
                                 else
                                 {
-                                    foreach (var man in this.World.GetActorsBySNO(
+                                    foreach (var man in World.GetActorsBySNO(
                                         ActorSno._x1_westm_intro_human_male,
                                         ActorSno._x1_westm_intro_human_male2,
                                         ActorSno._x1_westm_intro_human_female,
                                         ActorSno._x1_westmarchfemale_deathmaidenkill
                                         ))
                                     {
-                                        if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                        if (man.CurrentScene.SceneSNO.Id == CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
                                     }
                                 }
                                 break;
                             case ActorSno._x1_westm_intro_human_male2:
-                                if (this.Position.X > 1300 & this.Position.Y > 440)
+                                if (Position.X > 1300 & Position.Y > 440)
                                 {
-                                    StartConversation(this.World, 311435);
+                                    StartConversation(World, 311435);
                                     //foreach(var 309191 )
                                     /*
                                      * +		[0]	{Ambush = 306544}	DiIiS_NA.GameServer.Core.Types.TagMap.TagMapEntry
@@ -79,13 +79,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                                     +		[5]	{70976 = 328782}	DiIiS_NA.GameServer.Core.Types.TagMap.TagMapEntry
                                     +		[6]	{98304 = 330015}	DiIiS_NA.GameServer.Core.Types.TagMap.TagMapEntry
                                     */
-                                    foreach (var man in this.World.GetActorsBySNO(
+                                    foreach (var man in World.GetActorsBySNO(
                                         ActorSno._x1_westm_intro_human_male,
                                         ActorSno._x1_westm_intro_human_male2,
                                         ActorSno._x1_westm_intro_human_female
                                         ))
                                     {
-                                        if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                        if (man.CurrentScene.SceneSNO.Id == CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
                                     }
                                     
                                     

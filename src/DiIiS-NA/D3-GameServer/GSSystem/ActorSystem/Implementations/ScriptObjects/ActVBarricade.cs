@@ -28,7 +28,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public override bool Reveal(Player player)
 		{
-			if (this.World.SNO == WorldSno.x1_westmarch_hub) return false;
+			if (World.SNO == WorldSno.x1_westmarch_hub) return false;
 			return base.Reveal(player);
 		}
 	}

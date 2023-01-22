@@ -46,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 																   _magnitude < 0f ? User.Position : Target.Position,
 																   (float)Math.Sqrt(Math.Abs(_magnitude)));
 
-			if (!this.World.CheckLocationForFlag(destination, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+			if (!World.CheckLocationForFlag(destination, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 				return false;
 
 			_mover = new ActorMover(Target);
@@ -103,7 +103,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 																   _magnitude < 0f ? _source : Target.Position,
 																   (float)Math.Sqrt(Math.Abs(_magnitude)));
 
-			if (!this.World.CheckLocationForFlag(destination, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+			if (!World.CheckLocationForFlag(destination, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 				return false;
 
 			_mover = new ActorMover(Target);

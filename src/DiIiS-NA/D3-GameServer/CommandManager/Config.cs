@@ -13,7 +13,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 {
 	public sealed class Config : DiIiS_NA.Core.Config.Config
 	{
-		public char CommandPrefix { get { return this.GetString("CommandPrefix", "!")[0]; } set { this.Set("CommandPrefix", value); } }
+		public char CommandPrefix { get { return GetString("CommandPrefix", "!")[0]; } set { Set("CommandPrefix", value); } }
 
 		private static readonly Config _instance = new Config();
 		public static Config Instance { get { return _instance; } }

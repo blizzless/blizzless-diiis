@@ -86,7 +86,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return (this.IsPvP ? _PvPQuadTree : _quadTree);
+				return (IsPvP ? _PvPQuadTree : _quadTree);
 			}
 			set { }
 		}
@@ -117,7 +117,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return (this.IsPvP ? _PvPscenes : _scenes);
+				return (IsPvP ? _PvPscenes : _scenes);
 			}
 			set { }
 		}
@@ -133,7 +133,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return (this.IsPvP ? _PvPActors : _actors);
+				return (IsPvP ? _PvPActors : _actors);
 			}
 			set { }
 		}
@@ -151,7 +151,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return (this.IsPvP ? _PvPPlayers : _players);
+				return (IsPvP ? _PvPPlayers : _players);
 			}
 			set { }
 		}
@@ -159,14 +159,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <summary>
 		/// Returns true if the world has players in.
 		/// </summary>
-		public bool HasPlayersIn { get { return this.Players.Count > 0; } }
+		public bool HasPlayersIn { get { return Players.Count > 0; } }
 
 		/// <summary>
 		/// Returns a new dynamicId for scenes.
 		/// </summary>
-		public uint NewSceneID { get { return this.IsPvP ? World.NewPvPSceneID : this.Game.NewSceneID; } }
+		public uint NewSceneID { get { return IsPvP ? NewPvPSceneID : Game.NewSceneID; } }
 
-		public bool IsPvP { get { return this.SNO == WorldSno.pvp_duel_small_multi; } } //PvP_Duel_Small
+		public bool IsPvP { get { return SNO == WorldSno.pvp_duel_small_multi; } } //PvP_Duel_Small
 
 		public static bool PvPMapLoaded = false;
 
@@ -187,7 +187,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return ((DiIiS_NA.Core.MPQ.FileFormats.World)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Worlds][this.WorldSNO.Id].Data).Environment;
+				return ((DiIiS_NA.Core.MPQ.FileFormats.World)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Worlds][WorldSNO.Id].Data).Environment;
 			}
 		}
 
@@ -223,28 +223,28 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		public List<StartingPoint> StartingPoints
 		{
-			get { return this.Actors.Values.OfType<StartingPoint>().Select(actor => actor).ToList(); }
+			get { return Actors.Values.OfType<StartingPoint>().Select(actor => actor).ToList(); }
 		}
 
 		public List<Portal> Portals
 		{
-			get { return this.Actors.Values.OfType<Portal>().Select(actor => actor).ToList(); }
+			get { return Actors.Values.OfType<Portal>().Select(actor => actor).ToList(); }
 		}
 
 		public List<Monster> Monsters
 		{
-			get { return this.Actors.Values.OfType<Monster>().Select(actor => actor).ToList(); }
+			get { return Actors.Values.OfType<Monster>().Select(actor => actor).ToList(); }
 		}
 
 		private PowerManager _powerManager;
 		public static PowerManager _PvPPowerManager = new PowerManager();
 
-		public PowerManager PowerManager { get { return this.IsPvP ? World._PvPPowerManager : this._powerManager; } }
+		public PowerManager PowerManager { get { return IsPvP ? _PvPPowerManager : _powerManager; } }
 
 		private BuffManager _buffManager;
 		public static BuffManager _PvPBuffManager = new BuffManager();
 
-		public BuffManager BuffManager { get { return this.IsPvP ? World._PvPBuffManager : this._buffManager; } }
+		public BuffManager BuffManager { get { return IsPvP ? _PvPBuffManager : _buffManager; } }
 
 		/// <summary>
 		/// Creates a new world for the given game with given snoId.
@@ -254,34 +254,34 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public World(Game game, WorldSno sno)
 			: base(sno == WorldSno.pvp_duel_small_multi ? 99999 : game.NewWorldID)
 		{
-			this.WorldSNO = new SNOHandle(SNOGroup.Worlds, (int)sno);
+			WorldSNO = new SNOHandle(SNOGroup.Worlds, (int)sno);
 
-			this.Game = game;
+			Game = game;
 
-			this._scenes = new ConcurrentDictionary<uint, Scene>();
-			this._actors = new ConcurrentDictionary<uint, Actor>();
-			this._players = new ConcurrentDictionary<uint, Player>();
-			this._quadTree = new QuadTree(new Size(60, 60), 0);
-			this.NextLocation = this.PrevLocation = new ResolvedPortalDestination
+			_scenes = new ConcurrentDictionary<uint, Scene>();
+			_actors = new ConcurrentDictionary<uint, Actor>();
+			_players = new ConcurrentDictionary<uint, Player>();
+			_quadTree = new QuadTree(new Size(60, 60), 0);
+			NextLocation = PrevLocation = new ResolvedPortalDestination
 			{
 				WorldSNO = (int)WorldSno.__NONE,
 				DestLevelAreaSNO = -1,
 				StartingPointActorTag = -1
 			};
-			this._powerManager = new PowerManager();
-			this._buffManager = new BuffManager();
+			_powerManager = new PowerManager();
+			_buffManager = new BuffManager();
 
-			this.Game.AddWorld(this);
+			Game.AddWorld(this);
 			//this.Game.StartTracking(this); // start tracking the dynamicId for the world.
 
-			if (this.SNO == WorldSno.x1_bog_01) //Blood Marsh
+			if (SNO == WorldSno.x1_bog_01) //Blood Marsh
 			{
 				var worlds = new List<WorldSno>() { WorldSno.x1_catacombs_level01, WorldSno.x1_catacombs_fakeentrance_02, WorldSno.x1_catacombs_fakeentrance_03, WorldSno.x1_catacombs_fakeentrance_04 };
 				var scenes = new List<int>() { 265624, 265655, 265678, 265693 };
 				foreach (var scene in scenes)
 				{
 					var wld = worlds[FastRandom.Instance.Next(worlds.Count)];
-					this.PortalOverrides.Add(scene, wld);
+					PortalOverrides.Add(scene, wld);
 					worlds.Remove(wld);
 				}
 			}
@@ -291,14 +291,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public void Update(int tickCounter)
 		{
-			foreach (var player in this.Players.Values)
+			foreach (var player in Players.Values)
 			{
 				player.InGameClient.SendTick(); // if there's available messages to send, will handle ticking and flush the outgoing buffer.
 			}
 
 			var actorsToUpdate = new List<IUpdateable>(); // list of actor to update.
 
-			foreach (var player in this.Players.Values) // get players in the world.
+			foreach (var player in Players.Values) // get players in the world.
 			{
 				foreach (var actor in player.GetActorsInRange().OfType<IUpdateable>()) // get IUpdateable actors in range.
 				{
@@ -308,7 +308,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 					actorsToUpdate.Add(actor as IUpdateable);
 				}
 			}
-			foreach (var minion in this.Actors.Values.OfType<Minion>())
+			foreach (var minion in Actors.Values.OfType<Minion>())
 			{
 				if (actorsToUpdate.Contains(minion as IUpdateable))
 					continue;
@@ -319,10 +319,10 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				actor.Update(tickCounter);
 			}
 
-			this.BuffManager.Update();
-			this.PowerManager.Update();
+			BuffManager.Update();
+			PowerManager.Update();
 
-			if (tickCounter % 6 == 0 && this._flippyTimers.Count() > 0)
+			if (tickCounter % 6 == 0 && _flippyTimers.Count() > 0)
 			{
 				UpdateFlippy(tickCounter);
 			}
@@ -344,7 +344,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="actor">The actor.</param>
 		public void BroadcastIfRevealed(Func<Player, GameMessage> message, Actor actor)
 		{
-			foreach (var player in this.Players.Values)
+			foreach (var player in Players.Values)
 			{
 				if (player.RevealedObjects.ContainsKey(actor.GlobalID))
 					player.InGameClient.SendMessage(message(player));
@@ -357,7 +357,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="message"></param>
 		public void BroadcastGlobal(Func<Player, GameMessage> message)
 		{
-			foreach (var player in this.Players.Values)
+			foreach (var player in Players.Values)
 			{
 				player.InGameClient.SendMessage(message(player));
 			}
@@ -385,7 +385,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public void BroadcastExclusive(Func<Player, GameMessage> message, Actor actor, bool global = false)
 		{
 			var players = actor.GetPlayersInRange();
-			if (global) players = this.Players.Values.ToList();
+			if (global) players = Players.Values.ToList();
 			foreach (var player in players.Where(player => player != actor))
 			{
 				if (player.RevealedObjects.ContainsKey(actor.GlobalID)) //revealed only!
@@ -406,15 +406,15 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			lock (player.RevealedObjects)
 			{
-				if (player.RevealedObjects.ContainsKey(this.GlobalID))
+				if (player.RevealedObjects.ContainsKey(GlobalID))
 					return false;
 
-				int sceneGridSize = this.SNO.IsUsingZoltCustomGrid() ? 100 : 60;
+				int sceneGridSize = SNO.IsUsingZoltCustomGrid() ? 100 : 60;
 				
 				player.InGameClient.SendMessage(new RevealWorldMessage() // Reveal world to player
 				{
-					WorldID = this.GlobalID,
-					WorldSNO = this.WorldSNO.Id,
+					WorldID = GlobalID,
+					WorldSNO = WorldSNO.Id,
 					OriginX = 540,
 					OriginY = -600,
 					StitchSizeInFeetX = sceneGridSize,
@@ -423,11 +423,11 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 					WorldSizeInFeetY = 5040,
 					snoDungeonFinderSourceWorld = -1
 				});
-				player.InGameClient.SendMessage(new WorldStatusMessage() { WorldID = this.GlobalID, Field1 = false });
+				player.InGameClient.SendMessage(new WorldStatusMessage() { WorldID = GlobalID, Field1 = false });
 				//*
 				player.InGameClient.SendMessage(new WorldSyncedDataMessage()
 				{
-					WorldID = this.GlobalID,
+					WorldID = GlobalID,
 					SyncedData = new WorldSyncedData()
 					{
 						SnoWeatherOverride = -1,
@@ -437,7 +437,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				});
 
 				//*/
-				player.RevealedObjects.Add(this.GlobalID, this.GlobalID);
+				player.RevealedObjects.Add(GlobalID, GlobalID);
 
 				return true;
 			}
@@ -450,13 +450,13 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <returns></returns>
 		public bool Unreveal(Player player)
 		{
-			if (!player.RevealedObjects.ContainsKey(this.GlobalID)) return false;
+			if (!player.RevealedObjects.ContainsKey(GlobalID)) return false;
 
-			foreach (var scene in this.Scenes.Values) scene.Unreveal(player);
-			player.RevealedObjects.Remove(this.GlobalID);
+			foreach (var scene in Scenes.Values) scene.Unreveal(player);
+			player.RevealedObjects.Remove(GlobalID);
 
-			player.InGameClient.SendMessage(new WorldStatusMessage() { WorldID = this.GlobalID, Field1 = true });
-			player.InGameClient.SendMessage(new PrefetchDataMessage(Opcodes.PrefetchWorldMessage) { SNO = this.WorldSNO.Id });
+			player.InGameClient.SendMessage(new WorldStatusMessage() { WorldID = GlobalID, Field1 = true });
+			player.InGameClient.SendMessage(new PrefetchDataMessage(Opcodes.PrefetchWorldMessage) { SNO = WorldSNO.Id });
 			//player.InGameClient.SendMessage(new WorldDeletedMessage() { WorldID = this.GlobalID });
 
 			return true;
@@ -472,7 +472,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="actor">The actor entering the world.</param>
 		public void Enter(Actor actor)
 		{
-			this.AddActor(actor);
+			AddActor(actor);
 			actor.OnEnter(this);
 
 			// reveal actor to player's in-range.
@@ -482,11 +482,11 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			}
 
 			//Убираем балки с проходов
-			if (this.SNO == WorldSno.trout_town)
+			if (SNO == WorldSno.trout_town)
 			{
-				foreach (var boarded in this.GetActorsBySNO(ActorSno._trout_oldtristram_cellardoor_boarded))
+				foreach (var boarded in GetActorsBySNO(ActorSno._trout_oldtristram_cellardoor_boarded))
 					boarded.Destroy();
-				foreach (var boarded in this.GetActorsBySNO(ActorSno._trout_oldtristram_cellardoor_rubble))
+				foreach (var boarded in GetActorsBySNO(ActorSno._trout_oldtristram_cellardoor_rubble))
 					boarded.Destroy();
 			}
 		}
@@ -499,20 +499,20 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			actor.OnLeave(this);
 
-			foreach (var player in this.Players.Values)
+			foreach (var player in Players.Values)
 			{
 				actor.Unreveal(player);
 			}
 
-			if (this.HasActor(actor.GlobalID))
-				this.RemoveActor(actor);
+			if (HasActor(actor.GlobalID))
+				RemoveActor(actor);
 
 			if (!(actor is Player)) return; // if the leaving actors is a player, unreveal the actors revealed to him contained in the world.
 
 			var revealedObjects = (actor as Player).RevealedObjects.Keys.ToList(); // list of revealed actors.
 			foreach (var obj_id in revealedObjects)
 			{
-				var obj = this.GetActorByGlobalId(obj_id);
+				var obj = GetActorByGlobalId(obj_id);
 				//if (obj != actor) // do not unreveal the player itself.
 				try
 				{
@@ -530,7 +530,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public Actor ShowOnlyNumNPC(ActorSno SNO, int Num)
 		{
 			Actor Setted = null;
-			foreach (var actor in this.GetActorsBySNO(SNO))
+			foreach (var actor in GetActorsBySNO(SNO))
 			{
 				var isVisible = actor.NumberInWorld == Num;
 				if (isVisible)
@@ -538,7 +538,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 				actor.Hidden = !isVisible;
 				actor.SetVisible(isVisible);
-				foreach (var plr in this.Players.Values)
+				foreach (var plr in Players.Values)
                 {
                     if (isVisible) actor.Reveal(plr); else actor.Unreveal(plr);
 				}
@@ -900,7 +900,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="position">The position for drop.</param>
 		public void SpawnGold(Actor source, Player player, int Min = -1)
 		{
-			int amount = (int)(LootManager.GetGoldAmount(player.Attributes[GameAttribute.Level]) * this.Game.GoldModifier * DiIiS_NA.GameServer.Config.Instance.RateMoney);
+			int amount = (int)(LootManager.GetGoldAmount(player.Attributes[GameAttribute.Level]) * Game.GoldModifier * Config.Instance.RateMoney);
 			if (Min != -1)
 				amount += Min;
 			var item = ItemGenerator.CreateGold(player, amount); // somehow the actual ammount is not shown on ground /raist.
@@ -914,7 +914,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="position">The position for drop.</param>
 		public void SpawnBloodShards(Actor source, Player player, int forceAmount = 0)
 		{
-			int amount = LootManager.GetBloodShardsAmount(this.Game.Difficulty + 3);
+			int amount = LootManager.GetBloodShardsAmount(Game.Difficulty + 3);
 			if (forceAmount == 0 && amount == 0) return; //don't drop shards on Normal
 			var item = ItemGenerator.CreateBloodShards(player, forceAmount > 0 ? forceAmount : amount); // somehow the actual ammount is not shown on ground /raist.
 			player.GroundItems[item.GlobalID] = item;
@@ -932,7 +932,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public List<Portal> GetPortalsByLevelArea(int la)
 		{
 			List<Portal> portals = new List<Portal>();
-			foreach (var actor in this.Actors.Values)
+			foreach (var actor in Actors.Values)
 			{
 				if (actor is Portal)
 					if ((actor as Portal).Destination != null)
@@ -964,7 +964,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public bool HasActorsInGroup(string group)
 		{
 			var groupHash = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName(group);
-			foreach (var actor in this.Actors.Values)
+			foreach (var actor in Actors.Values)
 			{
 				if (actor.Tags != null)
 					if (actor.Tags.ContainsKey(MarkerKeys.Group1Hash))
@@ -981,7 +981,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			List<Actor> matchingActors = new List<Actor>();
 			var groupHash = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName(group);
-			foreach (var actor in this.Actors.Values)
+			foreach (var actor in Actors.Values)
 			{
 				if (actor.Tags != null)
 					if (actor.Tags.ContainsKey(MarkerKeys.Group1Hash))
@@ -992,7 +992,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public List<Actor> GetActorsInGroup(int hash)
 		{
 			List<Actor> matchingActors = new List<Actor>();
-			foreach (var actor in this.Actors.Values)
+			foreach (var actor in Actors.Values)
 			{
 				if (actor.Tags != null)
 					if (actor.Tags.ContainsKey(MarkerKeys.Group1Hash))
@@ -1060,7 +1060,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			float x = (float)(RandomHelper.NextDouble() - 0.5) * FlippyMaxDistanceManhattan;
 			float y = (float)(RandomHelper.NextDouble() - 0.5) * FlippyMaxDistanceManhattan;
 			item.Position = source.Position + new Vector3D(x, y, 0);
-			if (this.worldData.DynamicWorld)
+			if (worldData.DynamicWorld)
 				item.Position.Z = GetZForLocation(item.Position, source.Position.Z);
 			item.Unstuck();
 
@@ -1106,8 +1106,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			if (scene.GlobalID == 0 || HasScene(scene.GlobalID))
 				throw new Exception(String.Format("Scene has an invalid ID or was already present (ID = {0})", scene.GlobalID));
 
-			this.Scenes.TryAdd(scene.GlobalID, scene); // add to scenes collection.
-			this.QuadTree.Insert(scene); // add it to quad-tree too.
+			Scenes.TryAdd(scene.GlobalID, scene); // add to scenes collection.
+			QuadTree.Insert(scene); // add it to quad-tree too.
 		}
 
 		/// <summary>
@@ -1120,8 +1120,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				throw new Exception(String.Format("Scene has an invalid ID or was not present (ID = {0})", scene.GlobalID));
 
 			Scene remotedScene;
-			this.Scenes.TryRemove(scene.GlobalID, out remotedScene); // remove it from scenes collection.
-			this.QuadTree.Remove(scene); // remove from quad-tree too.
+			Scenes.TryRemove(scene.GlobalID, out remotedScene); // remove it from scenes collection.
+			QuadTree.Remove(scene); // remove from quad-tree too.
 		}
 
 		/// <summary>
@@ -1132,7 +1132,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public Scene GetScene(uint dynamicID)
 		{
 			Scene scene;
-			this.Scenes.TryGetValue(dynamicID, out scene);
+			Scenes.TryGetValue(dynamicID, out scene);
 			return scene;
 		}
 
@@ -1148,7 +1148,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
         /// <returns><see cref="bool"/></returns>
         public bool HasScene(uint dynamicID)
 		{
-			return this.Scenes.ContainsKey(dynamicID);
+			return Scenes.ContainsKey(dynamicID);
 		}
 
 		/// <summary>
@@ -1164,11 +1164,11 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				return;
 			}
 
-			this.Actors.TryAdd(actor.GlobalID, actor); // add to actors collection.
-			this.QuadTree.Insert(actor); // add it to quad-tree too.
+			Actors.TryAdd(actor.GlobalID, actor); // add to actors collection.
+			QuadTree.Insert(actor); // add it to quad-tree too.
 
 			if (actor.ActorType == ActorType.Player) // if actor is a player, add it to players collection too.
-				this.AddPlayer((Player)actor);
+				AddPlayer((Player)actor);
 		}
 
 		/// <summary>
@@ -1177,21 +1177,21 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="actor">The actor to remove.</param>
 		private void RemoveActor(Actor actor)
 		{
-			if (actor.GlobalID == 0 || !this.Actors.ContainsKey(actor.GlobalID))
+			if (actor.GlobalID == 0 || !Actors.ContainsKey(actor.GlobalID))
 				throw new Exception(String.Format("Actor has an invalid ID or was not present (ID = {0})", actor.GlobalID));
 
 			Actor removedActor;
-			this.Actors.TryRemove(actor.GlobalID, out removedActor); // remove it from actors collection.
-			this.QuadTree.Remove(actor); // remove from quad-tree too.
+			Actors.TryRemove(actor.GlobalID, out removedActor); // remove it from actors collection.
+			QuadTree.Remove(actor); // remove from quad-tree too.
 
 			if (actor.ActorType == ActorType.Player) // if actors is a player, remove it from players collection too.
-				this.RemovePlayer((Player)actor);
+				RemovePlayer((Player)actor);
 		}
 
 		public Actor GetActorByGlobalId(uint globalID)
 		{
 			Actor actor;
-			this.Actors.TryGetValue(globalID, out actor);
+			Actors.TryGetValue(globalID, out actor);
 			return actor;
 		}
 
@@ -1216,7 +1216,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <returns></returns>
 		public Actor GetActorByGlobalId(uint dynamicID, ActorType matchType)
 		{
-			var actor = this.GetActorByGlobalId(dynamicID);
+			var actor = GetActorByGlobalId(dynamicID);
 			if (actor != null)
 			{
 				if (actor.ActorType == matchType)
@@ -1235,7 +1235,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <returns><see cref="bool"/></returns>
 		public bool HasActor(uint dynamicID)
 		{
-			return this.Actors.ContainsKey(dynamicID);
+			return Actors.ContainsKey(dynamicID);
 		}
 
 		/// <summary>
@@ -1246,7 +1246,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <returns></returns>
 		public bool HasActor(uint dynamicID, ActorType matchType)
 		{
-			var actor = this.GetActorByGlobalId(dynamicID, matchType);
+			var actor = GetActorByGlobalId(dynamicID, matchType);
 			return actor != null;
 		}
 
@@ -1257,7 +1257,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <returns>Actor</returns>
 		public T GetActorInstance<T>() where T : Actor
 		{
-			return this.Actors.Values.OfType<T>().FirstOrDefault();
+			return Actors.Values.OfType<T>().FirstOrDefault();
 		}
 
 		/// <summary>
@@ -1269,7 +1269,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			if (player.GlobalID == 0 || HasPlayer(player.GlobalID))
 				throw new Exception(String.Format("Player has an invalid ID or was already present (ID = {0})", player.GlobalID));
 
-			this.Players.TryAdd(player.GlobalID, player); // add it to players collection.
+			Players.TryAdd(player.GlobalID, player); // add it to players collection.
 		}
 
 		/// <summary>
@@ -1278,11 +1278,11 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="player"></param>
 		private void RemovePlayer(Player player)
 		{
-			if (player.GlobalID == 0 || !this.Players.ContainsKey(player.GlobalID))
+			if (player.GlobalID == 0 || !Players.ContainsKey(player.GlobalID))
 				throw new Exception(String.Format("Player has an invalid ID or was not present (ID = {0})", player.GlobalID));
 
 			Player removedPlayer;
-			this.Players.TryRemove(player.GlobalID, out removedPlayer); // remove it from players collection.
+			Players.TryRemove(player.GlobalID, out removedPlayer); // remove it from players collection.
 		}
 
 		/// <summary>
@@ -1293,7 +1293,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public Player GetPlayer(uint dynamicID)
 		{
 			Player player;
-			this.Players.TryGetValue(dynamicID, out player);
+			Players.TryGetValue(dynamicID, out player);
 			return player;
 		}
 
@@ -1304,7 +1304,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <returns><see cref="bool"/></returns>
 		public bool HasPlayer(uint dynamicID)
 		{
-			return this.Players.ContainsKey(dynamicID);
+			return Players.ContainsKey(dynamicID);
 		}
 
 		/// <summary>
@@ -1355,7 +1355,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public Actor FindAt(ActorSno actorSno, Vector3D position, float radius = 3.0f)
 		{
 			var proximityCircle = new Circle(position.X, position.Y, radius);
-			var actors = this.QuadTree.Query<Actor>(proximityCircle);
+			var actors = QuadTree.Query<Actor>(proximityCircle);
 			foreach (var actr in actors)
 				if (actr.Attributes[GameAttribute.Disabled] == false && actr.Attributes[GameAttribute.Gizmo_Has_Been_Operated] == false && actr.SNO == actorSno) return actr;
 			return null;
@@ -1381,9 +1381,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 			// TODO: Destroy pre-generated tile set
 
-			this.worldData = null;
+			worldData = null;
 			//Game game = this.Game;
-			this.Game = null;
+			Game = null;
 			//game.EndTracking(this);
 		}
 
@@ -1393,7 +1393,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			// We loop Scenes as its far quicker than looking thru the QuadTree - DarkLotus
 
-			foreach (Scene s in this.Scenes.Values)
+			foreach (Scene s in Scenes.Values)
 			{
 				if (s.Bounds.Contains(location.X, location.Y))
 				{
@@ -1430,7 +1430,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public float GetZForLocation(Vector3D location, float defaultZ)
 		{
-			foreach (Scene s in this.Scenes.Values)
+			foreach (Scene s in Scenes.Values)
 			{
 				if (s.Bounds.Contains(location.X, location.Y))
 				{
@@ -1472,7 +1472,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 
 			var proximity = new RectangleF(start.X - 1f, start.Y - 1f, 2f, 2f);
-			var scenes = this.QuadTree.Query<Scene>(proximity);
+			var scenes = QuadTree.Query<Scene>(proximity);
 			if (scenes.Count == 0) return false;
 
 			var scene = scenes[0]; // Parent scene /fasbat
@@ -1488,7 +1488,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public override string ToString()
 		{
-			return string.Format("[World] SNOId: {0} GlobalId: {1} Name: {2}", this.WorldSNO.Id, this.GlobalID, this.WorldSNO.Name);
+			return string.Format("[World] SNOId: {0} GlobalId: {1} Name: {2}", WorldSNO.Id, GlobalID, WorldSNO.Name);
 		}
 	}
 }
