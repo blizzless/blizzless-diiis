@@ -613,33 +613,33 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             {
                 case 1:
                     break;
-                case 2: NeededClass = ToonClass.Barbarian; break; // Варвар
-                case 3: NeededClass = ToonClass.Crusader; break; // Крестоносец
-                case 4: NeededClass = ToonClass.DemonHunter; break; // Охотник на демонов
-                case 5: NeededClass = ToonClass.Monk; break; // Монах
-                case 6: NeededClass = ToonClass.WitchDoctor; break; // Колдун
-                case 7: NeededClass = ToonClass.Wizard; break; // Чародей
-                case 8: NeededClass = ToonClass.Necromancer; break; // Некромант
+                case 2: NeededClass = ToonClass.Barbarian; break; // Barbarian.
+                case 3: NeededClass = ToonClass.Crusader; break; // Crusader.
+                case 4: NeededClass = ToonClass.DemonHunter; break; // Demon Hunter.
+                case 5: NeededClass = ToonClass.Monk; break; // Monk.
+                case 6: NeededClass = ToonClass.WitchDoctor; break; // Warlock.
+                case 7: NeededClass = ToonClass.Wizard; break; // Wizard.
+                case 8: NeededClass = ToonClass.Necromancer; break; // Necromancer.
 
-                case 10: // Двойки
+                case 10: // ToonClass.
                     break;
-                case 11: // Тройки
+                case 11: // Fours.
                     break;
-                case 12: // Четверки
+                case 12: // Fours.
                     break;
-                case 30: //Портал Дерзаний - 1 Игрок
-                case 31: //Портал Дерзаний - 2 Игрока
-                case 32: //Портал Дерзаний - 3 Игрока
-                case 33: //Портал Дерзаний - 4 Игрока
+                case 30: // Portal of Endeavors - 1 Player.
+                case 31: // Portal of Endeavor - 2 Players.
+                case 32: // Portal of Daring - 3 Player.
+                case 33: // Portal of Daring - 4 Player.
                 default:
                     break;
             }
             switch (request.ScopeId)
             {
-                case 3: break; //Обычный режим
-                case 2: Hardcore = true; break; //Героический режим
-                case 5: Season = true; break; //Сезонный
-                case 4: Season = true; Hardcore = true; break; //Сезонный героический
+                case 3: break; // Normal mode.
+                case 2: Hardcore = true; break; // Hardcore mode.
+                case 5: Season = true; break; // Seasonal mode.
+                case 4: Season = true; Hardcore = true; break; // Hardcore mode.
             }
             //foreach (var gameaccount in request.GameAccountIdsList)
             
@@ -693,7 +693,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         response
                             .AddEntry(D3.Leaderboard.Score.CreateBuilder()
                             .SetGameAccountId(Gaccount.AccountId)
-                            .SetScore_((ulong)Hero.Level + (ulong)Gaccount.DBGameAccount.ParagonLevel) //Временное разделение
+                            .SetScore_((ulong)Hero.Level + (ushort)Gaccount.DBGameAccount.ParagonLevel) // Temporary Separation.
                             .SetScoreBand(5)
                             .SetLeaderboardId(5)
                             .SetScopeId(5)
