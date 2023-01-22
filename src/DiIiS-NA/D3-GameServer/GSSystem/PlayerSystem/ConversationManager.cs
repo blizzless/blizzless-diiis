@@ -68,23 +68,32 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		Logger Logger = new Logger("Conversation");
 		public event EventHandler ConversationEnded;
 
-		public int ConvPiggyBack { get { return asset.snoConvPiggyback; } }
+		public int ConvPiggyBack
+		{
+			get { return asset.snoConvPiggyback; }
+		}
+
 		public int SNOId = -1;
-		public ConversationTypes ConversationType { get { return asset.ConversationType; } }
+
+		public ConversationTypes ConversationType
+		{
+			get { return asset.ConversationType; }
+		}
 
 		private DiIiS_NA.Core.MPQ.FileFormats.Conversation asset
 		{
 			get
 			{
-				return (DiIiS_NA.Core.MPQ.FileFormats.Conversation)MPQStorage.Data.Assets[SNOGroup.Conversation][SNOId].Data;
+				return (DiIiS_NA.Core.MPQ.FileFormats.Conversation)MPQStorage.Data.Assets[SNOGroup.Conversation][SNOId]
+					.Data;
 			}
 		}
 
-		private int LineIndex = 0;            // index within the RootTreeNodes, conversation progress
+		private int LineIndex = 0; // index within the RootTreeNodes, conversation progress
 		private Player player;
 		private ConversationManager manager;
-		private int currentUniqueLineID;        // id used to identify the current line clientside
-		private int startTick = 0;            // start tick of the current line. used to determine, when to start the next line
+		private int currentUniqueLineID; // id used to identify the current line clientside
+		private int startTick = 0; // start tick of the current line. used to determine, when to start the next line
 		private ConversationTreeNode currentLineNode = null;
 		private int endTick = 0;
 
@@ -94,12 +103,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				var node = from a in currentLineNode.ChildNodes where a.ClassFilter == player.Toon.VoiceClassID select a;
+				var node = from a in currentLineNode.ChildNodes
+					where a.ClassFilter == player.Toon.VoiceClassID
+					select a;
 				if (node.Count() == 0)
 					node = from a in currentLineNode.ChildNodes where a.ClassFilter == -1 select a;
 				if (node.Count() == 0) return 1;
 
-				return node.First().CompressedDisplayTimes.ElementAt((int)manager.ClientLanguage).Languages[player.Toon.VoiceClassID * 2 + (player.Toon.Gender == 0 ? 0 : 1)];
+				return node.First().CompressedDisplayTimes.ElementAt((int)manager.ClientLanguage)
+					.Languages[player.Toon.VoiceClassID * 2 + (player.Toon.Gender == 0 ? 0 : 1)];
 			}
 		}
 
@@ -128,39 +140,44 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				case Speaker.None:
 					return null;
 			}
+
 			return null;
 		}
 
 		private ActorSystem.Actor GetActorBySNO(ActorSno sno)
 		{
-            ActorSystem.Actor SearchFunc(ActorSno a) => player.World.Actors.Values.Where(actor => actor.SNO == a && actor.IsRevealedToPlayer(player)).OrderBy((actor) => PowerMath.Distance2D(actor.Position, player.Position)).FirstOrDefault();
-            //if (sno == 121208)
-            //	sno = 4580; //hack
-            var result = SearchFunc(sno);
+			ActorSystem.Actor SearchFunc(ActorSno a) => player.World.Actors.Values
+				.Where(actor => actor.SNO == a && actor.IsRevealedToPlayer(player))
+				.OrderBy((actor) => PowerMath.Distance2D(actor.Position, player.Position)).FirstOrDefault();
 
-            if (result != null)
-            {
-                //result.Reveal(player);
-                return result;
-            }
+			//if (sno == 121208)
+			//	sno = 4580; //hack
+			var result = SearchFunc(sno);
 
-            if (sno == ActorSno._templarnpc)
-            {
-                return SearchFunc(ActorSno._templarnpc_imprisoned);
-            }
-            else
-            {
-                result = SearchFunc(sno);
-                if (result == null)
-                    //return player;
-                    return player.World.SpawnMonster(sno, new Vector3D(player.Position.X, player.Position.Y, player.Position.Z + 150));
-                else
-                {
-                    result.Reveal(player);
-                    return result;
-                }
-            }
-        }
+			if (result != null)
+			{
+				//result.Reveal(player);
+				return result;
+			}
+
+			if (sno == ActorSno._templarnpc)
+			{
+				return SearchFunc(ActorSno._templarnpc_imprisoned);
+			}
+			else
+			{
+				result = SearchFunc(sno);
+				if (result == null)
+					//return player;
+					return player.World.SpawnMonster(sno,
+						new Vector3D(player.Position.X, player.Position.Y, player.Position.Z + 150));
+				else
+				{
+					result.Reveal(player);
+					return result;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Creates a new conversation wrapper for an asset with a given sno.
@@ -231,7 +248,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					// rotate the primary speaker to face the secondary speaker
 					if (currentLineNode != null)
-						if (currentLineNode.LineSpeaker != Speaker.Player && currentLineNode.SpeakerTarget != Speaker.None)
+						if (currentLineNode.LineSpeaker != Speaker.Player &&
+						    currentLineNode.SpeakerTarget != Speaker.None)
 						{
 							var speaker1 = GetSpeaker(currentLineNode.LineSpeaker);
 							var speaker2 = GetSpeaker(currentLineNode.SpeakerTarget);
@@ -256,7 +274,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					// start the next line if the playback has finished
 					if (tickCounter > endTick)
 						PlayNextLine(false);
-				 }
+				}
 				catch
 				{
 					Logger.Trace("Conv error");
@@ -291,7 +309,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				Field2 = -1
 			});
 
-			if (asset.ConversationType != ConversationTypes.AmbientFloat && asset.ConversationType != ConversationTypes.GlobalFloat)
+			if (asset.ConversationType != ConversationTypes.AmbientFloat &&
+			    asset.ConversationType != ConversationTypes.GlobalFloat)
 				player.CheckConversationCriteria(asset.Header.SNOId);
 
 			Logger.Trace("Handling conversation for Conversation: {0}", SNOId);
@@ -310,6 +329,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					}
 				}
 			}
+
 			if (player.World.Game.SideQuestProgress.QuestTriggers.ContainsKey(SNOId)) //EnterLevelArea
 			{
 				var trigger = player.World.Game.SideQuestProgress.QuestTriggers[SNOId];
@@ -325,6 +345,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					}
 				}
 			}
+
 			if (player.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(SNOId))
 			{
 				var trigger = player.World.Game.SideQuestProgress.GlobalQuestTriggers[SNOId];
@@ -353,7 +374,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			else if (SNOId == 208400) //Cow king
 			{
-				var portal = player.World.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._g_portal_tentacle_trist);
+				var portal = player.World.Game.GetWorld(WorldSno.trout_town)
+					.GetActorBySNO(ActorSno._g_portal_tentacle_trist);
 				(portal as WhimsyshirePortal).Open();
 			}
 
@@ -408,14 +430,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								.SetSuccess(true)
 								.SetIsFromCheat(false)
 								.SetRiftTier(plr.InGameClient.Game.NephalemGreaterLevel + 1)
-								.AddParticipantGameAccounts(D3.OnlineService.GameAccountHandle.CreateBuilder().SetId((uint)plr.Toon.GameAccount.BnetEntityId.Low).SetProgram(17459).SetRegion(1))
+								.AddParticipantGameAccounts(D3.OnlineService.GameAccountHandle.CreateBuilder()
+									.SetId((uint)plr.Toon.GameAccount.BnetEntityId.Low).SetProgram(17459).SetRegion(1))
 								.SetGoldReward(5000 * plr.Level)
 								.SetXpReward(50000 * (long)plr.Level)
 								.SetCompletionTimeMs(900 * 1000 - plr.InGameClient.Game.LastTieredRiftTimeout * 1000)
 								.SetBannerConfiguration(plr.Toon.GameAccount.BannerConfigurationField.Value)
 								.Build().ToByteArray()
 
-					});
+						});
 
 						player.InGameClient.SendMessage(new PlatinumAwardedMessage
 						{
@@ -450,10 +473,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						plr.InGameClient.SendMessage(new QuestStepCompleteMessage()
 						{
 							QuestStepComplete = D3.Quests.QuestStepComplete.CreateBuilder()
-							.SetIsQuestComplete(true)
-							.SetWasRewardAutoequipped(false)
-							.SetReward(D3.Quests.QuestReward.CreateBuilder().SetPlatinumGranted(1).SetGoldGranted(1000 * plr.Level).SetBonusXpGranted(10000 * (ulong)plr.Level))
-							.Build()
+								.SetIsQuestComplete(true)
+								.SetWasRewardAutoequipped(false)
+								.SetReward(D3.Quests.QuestReward.CreateBuilder().SetPlatinumGranted(1)
+									.SetGoldGranted(1000 * plr.Level).SetBonusXpGranted(10000 * (ulong)plr.Level))
+								.Build()
 						});
 
 						player.InGameClient.SendMessage(new PlatinumAwardedMessage
@@ -469,10 +493,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						if (player.InGameClient.Game.Difficulty >= 2)
 						{
 							player.GrantCriteria(74987250579270);
-							if(player.InGameClient.Game.Difficulty >= 3)
+							if (player.InGameClient.Game.Difficulty >= 3)
 								player.GrantCriteria(74987247265988);
 						}
 					}
+
 					//Таймер до закрытия
 					/*
 					plr.InGameClient.SendMessage(new DungeonFinderClosingMessage()
@@ -504,8 +529,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				var HubWorld = player.InGameClient.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
 				var NStone = HubWorld.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 				bool Activated = true;
-				NStone.SetIdleAnimation(NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.IdleDefault]);
-				NStone.PlayActionAnimation(NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.Closing]);
+				NStone.SetIdleAnimation(
+					NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.IdleDefault]);
+				NStone.PlayActionAnimation(
+					NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.Closing]);
 				NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 				NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 				NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -515,7 +542,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				NStone.Attributes[GameAttribute.Immunity] = !Activated;
 				NStone.Attributes.BroadcastChangedIfRevealed();
 
-				foreach (var p in HubWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal))
+				foreach (var p in HubWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal,
+					         ActorSno._x1_openworld_tiered_rifts_portal))
 					p.Destroy();
 			}
 
@@ -547,7 +575,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 
 			if (asset.RootTreeNodes[LineIndex].ConvNodeType == 4)
-				currentLineNode = asset.RootTreeNodes[LineIndex].ChildNodes[RandomHelper.Next(asset.RootTreeNodes[LineIndex].ChildNodes.Count)];
+				currentLineNode = asset.RootTreeNodes[LineIndex]
+					.ChildNodes[RandomHelper.Next(asset.RootTreeNodes[LineIndex].ChildNodes.Count)];
 			else
 				currentLineNode = asset.RootTreeNodes[LineIndex];
 
@@ -562,11 +591,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			// TODO Actor id should be CurrentSpeaker.DynamicID not PrimaryNPC.ActorID. This is a workaround because no audio for the player is playing otherwise
 			player.InGameClient.SendMessage(new PlayConvLineMessage()
 			{
-				ActorID = GetSpeaker(currentLineNode.LineSpeaker).DynamicID(player), // GetActorBySNO(asset.SNOPrimaryNpc).DynamicID,
+				ActorID = GetSpeaker(currentLineNode.LineSpeaker)
+					.DynamicID(player), // GetActorBySNO(asset.SNOPrimaryNpc).DynamicID,
 				Field1 = new uint[9]
-						{
-							player.DynamicID(player), asset.SNOPrimaryNpc != -1 ? GetActorBySNO((ActorSno)asset.SNOPrimaryNpc).DynamicID(player) : 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
-						},
+				{
+					player.DynamicID(player),
+					asset.SNOPrimaryNpc != -1
+						? GetActorBySNO((ActorSno)asset.SNOPrimaryNpc).DynamicID(player)
+						: 0xFFFFFFFF,
+					0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
+				},
 
 				PlayLineParams = new PlayLineParams()
 				{
@@ -581,7 +615,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					LineGender = -1,
 					AudioClass = (GameBalance.Class)player.Toon.VoiceClassID,
 					Gender = (player.Toon.Gender == 0) ? VoiceGender.Male : VoiceGender.Female,
-					TextClass = currentLineNode.LineSpeaker == Speaker.Player ? (GameBalance.Class)player.Toon.VoiceClassID : GameBalance.Class.None,
+					TextClass = currentLineNode.LineSpeaker == Speaker.Player
+						? (GameBalance.Class)player.Toon.VoiceClassID
+						: GameBalance.Class.None,
 					SNOSpeakerActor = (int)GetSpeaker(currentLineNode.LineSpeaker).SNO,
 					LineFlags = 0x00000000,
 					AnimationTag = currentLineNode.AnimationTag,
@@ -590,20 +626,47 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					Priority = 0x00000000
 				},
 				Duration = duration,
-			});//, true);
+			}); //, true);
 		}
 	}
 
 	public class ConversationManager
 	{
 		Logger Logger = new Logger("ConversationManager");
-		internal enum Language { Invalid, Global, enUS, enGB, enSG, esES, esMX, frFR, itIT, deDE, koKR, ptBR, ruRU, zhCN, zTW, trTR, plPL, ptPT }
+
+		internal enum Language
+		{
+			Invalid,
+			Global,
+			enUS,
+			enGB,
+			enSG,
+			esES,
+			esMX,
+			frFR,
+			itIT,
+			deDE,
+			koKR,
+			ptBR,
+			ruRU,
+			zhCN,
+			zTW,
+			trTR,
+			plPL,
+			ptPT
+		}
 
 		private Player player;
-		private ConcurrentDictionary<int, Conversation> openConversations = new ConcurrentDictionary<int, Conversation>();
+
+		private ConcurrentDictionary<int, Conversation> openConversations =
+			new ConcurrentDictionary<int, Conversation>();
+
 		private int linesPlayedTotal = 0;
 
-		internal Language ClientLanguage { get { return Language.enUS; } }
+		internal Language ClientLanguage
+		{
+			get { return Language.enUS; }
+		}
 
 		internal int GetNextUniqueLineID()
 		{
@@ -635,28 +698,32 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				Logger.Warn("Conversation not found: {0}", snoConversation);
 				return;
 			}
+
 			if (snoConversation != 131349)
 				if (!openConversations.ContainsKey(snoConversation))
 				{
-					#if DEBUG
-						Logger.Warn("Conversation started: {0}", snoConversation);
-					#endif
+#if DEBUG
+					Logger.Warn("Conversation started: {0}", snoConversation);
+#endif
 					Conversation newConversation = new Conversation(snoConversation, player, this);
 					newConversation.Start();
 					newConversation.ConversationEnded += new EventHandler(ConversationEnded);
 
 					openConversations.TryAdd(snoConversation, newConversation);
-                    #region События по началу диалогов
-                    switch (snoConversation)
+
+					#region События по началу диалогов
+
+					switch (snoConversation)
 					{
 						case 198199:
 							//Task.Delay(1000).Wait();
 
 							break;
 					}
-                    #endregion
-                }
-        }
+
+					#endregion
+				}
+		}
 
 		/// <summary>
 		/// Remove conversation from the list of open conversations and start its piggyback conversation
@@ -664,7 +731,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		void ConversationEnded(object sender, EventArgs e)
 		{
 			Conversation conversation = sender as Conversation;
-			Logger.Trace(" (ConversationEnded) Sending a notify with type {0} and value {1}", conversation.ConversationType, conversation.SNOId);
+			Logger.Trace(" (ConversationEnded) Sending a notify with type {0} and value {1}",
+				conversation.ConversationType, conversation.SNOId);
 
 			//quests.Notify(QuestStepObjectiveType.HadConversation, conversation.SNOId); //deprecated
 
@@ -673,7 +741,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				switch (conversation.SNOId)
 				{
 					#region Events after Dialogs
-						#region A1-Q2
+
+					#region A1-Q2
+
 					case 17667:
 						//var BlacksmithQuest = player.InGameClient.Game.GetWorld(71150).GetActorBySNO(65036,true);
 						var world = player.InGameClient.Game.GetWorld(WorldSno.trdun_cain_intro);
@@ -683,7 +753,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						cainBrains.Move(cainPath, facingAngle);
 						var a1Q2Wait1 = Task.Delay(7000).ContinueWith(delegate
 						{
-							var actor = world.GetActorsBySNO(ActorSno._trdun_cath_bookcaseshelf_door_reverse).Where(d => d.Visible).FirstOrDefault();
+							var actor = world.GetActorsBySNO(ActorSno._trdun_cath_bookcaseshelf_door_reverse)
+								.Where(d => d.Visible).FirstOrDefault();
 							(actor as Door).Open();
 
 							var a1Q2Wait2 = Task.Delay(2000).ContinueWith(delegate
@@ -694,29 +765,38 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						});
 
 						break;
-						#endregion
-						#region A1-Q3
-						case 198292:
-							var blacksmithQuest = player.InGameClient.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._pt_blacksmith_nonvendor, true);
-							blacksmithQuest.WalkSpeed = 0.33f;
-							Vector3D firstPoint = new Vector3D(2905.856f, 2584.807f, 0.5997877f);
-							Vector3D secondPoint = new Vector3D(2790.396f, 2611.313f, 0.5997864f);
-
-							var firstfacingAngle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(blacksmithQuest, firstPoint);
-
-							var secondfacingAngle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(blacksmithQuest, secondPoint);
-
-							blacksmithQuest.Move(firstPoint, firstfacingAngle);
-
-							var listenerKingSkeletons = Task.Delay(3000).ContinueWith(delegate
-							{
-								blacksmithQuest.Move(secondPoint, secondfacingAngle);
-							});
-							break;
 
 					#endregion
+
+					#region A1-Q3
+
+					case 198292:
+						var blacksmithQuest = player.InGameClient.Game.GetWorld(WorldSno.trout_town)
+							.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor, true);
+						blacksmithQuest.WalkSpeed = 0.33f;
+						Vector3D firstPoint = new Vector3D(2905.856f, 2584.807f, 0.5997877f);
+						Vector3D secondPoint = new Vector3D(2790.396f, 2611.313f, 0.5997864f);
+
+						var firstfacingAngle =
+							ActorSystem.Movement.MovementHelpers.GetFacingAngle(blacksmithQuest, firstPoint);
+
+						var secondfacingAngle =
+							ActorSystem.Movement.MovementHelpers.GetFacingAngle(blacksmithQuest, secondPoint);
+
+						blacksmithQuest.Move(firstPoint, firstfacingAngle);
+
+						var listenerKingSkeletons = Task.Delay(3000).ContinueWith(delegate
+						{
+							blacksmithQuest.Move(secondPoint, secondfacingAngle);
+						});
+						break;
+
+					#endregion
+
 					//168282
+
 					#region A1-Q4
+
 					case 168282:
 						var wrld = player.InGameClient.Game.GetWorld(WorldSno.a1trdun_level05_templar);
 						foreach (var wall in wrld.GetActorsBySNO(ActorSno._trdun_cath_bonewall_a_door))
@@ -728,87 +808,104 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								wall.Attributes.BroadcastChangedIfRevealed();
 								wall.Destroy();
 							}
+
 						break;
 					case 17921:
 						var cryptwrld = player.InGameClient.Game.GetWorld(WorldSno.a1trdun_level07);
 						foreach (var ghost in cryptwrld.GetActorsBySNO(ActorSno._skeletonking_ghost))
 							ghost.Destroy();
 						break;
+
 					#endregion
+
 					#region A1-Q4 Event_DoK
+
 					case 139823: //Event_DoK_Kill.cnv
-									 //kill the king
-							var leoricGhost = player.World.GetActorBySNO(ActorSno._skeletonking_leoricghost);
-							var lachdananGhost = player.World.GetActorBySNO(ActorSno._ghostknight3);
-							var swordPlace = player.World.GetActorBySNO(ActorSno._trdun_crypt_deathoftheking_sword_clickable);
+						//kill the king
+						var leoricGhost = player.World.GetActorBySNO(ActorSno._skeletonking_leoricghost);
+						var lachdananGhost = player.World.GetActorBySNO(ActorSno._ghostknight3);
+						var swordPlace =
+							player.World.GetActorBySNO(ActorSno._trdun_crypt_deathoftheking_sword_clickable);
 
-							lachdananGhost.Move(swordPlace.Position, ActorSystem.Movement.MovementHelpers.GetFacingAngle(lachdananGhost, swordPlace.Position));
+						lachdananGhost.Move(swordPlace.Position,
+							ActorSystem.Movement.MovementHelpers.GetFacingAngle(lachdananGhost, swordPlace.Position));
 
-							var listenerA1Q4Event1 = Task.Delay(4000).ContinueWith(delegate
-							{
-								StartConversation(139825);
-							});
-							break;
-						case 139825: //Event_DoK_Death.cnv
-							var leoricGhost1 = player.World.GetActorBySNO(ActorSno._skeletonking_leoricghost);
-							var ghostKnights1 = player.World.GetActorsBySNO(ActorSno._ghostknight2);
-							var lachdananGhost1 = player.World.GetActorBySNO(ActorSno._ghostknight3);
-
-							var listenerA1Q4Event2 = Task.Delay(10000).ContinueWith(delegate
-							{
-								player.World.Leave(leoricGhost1);
-								player.World.Leave(lachdananGhost1);
-								foreach (var gk in ghostKnights1)
-								{
-									player.World.Leave(gk);
-								}
-							});
-							break;
-                    #endregion
-						#region A1-SQ-Farmer
-                    case 60179:
-							//player.InGameClient.Game.QuestManager.ClearQuests();
-							//player.InGameClient.Game.QuestManager.SetQuests();
-							player.InGameClient.Game.QuestManager.LaunchSideQuest(81925);
-							var nearActors = player.CurrentScene.Actors;
-							int foundCount = 0;
-							foreach (var actor in nearActors)
-								if (actor.SNO == ActorSno._fleshpitflyerspawner_b_event_farmambush)
-								{
-									foundCount++;
-								}
-
-							if (foundCount == 4)
-							{
-								Logger.Debug("All the flies are dead, the farmer can continue his work.");
-							}
-							else
-							{
-								Logger.Debug("There are still flies, kill them.");
-								var oldPit = player.World.GetActorsBySNO(ActorSno._fleshpitflyerspawner_b_event_farmambush);
-								foreach (var actor in oldPit)
-									player.World.Leave(actor);
-								var spawnerOfPits = player.World.GetActorsBySNO(ActorSno._spawner_fleshpitflyer_b_immediate);
-								foreach (var actor in spawnerOfPits)
-									player.World.SpawnMonster(ActorSno._fleshpitflyerspawner_b_event_farmambush, actor.Position);
-
-								var newPits = player.World.GetActorsBySNO(ActorSno._fleshpitflyerspawner_b_event_farmambush);
-								Logger.Debug("The flies are dead. The farmer can continue his work.");
-							}
-							break;
-						#endregion
-						#region A5
-						case 308393:
-                        var npc = player.World.GetActorBySNO(ActorSno._x1_npc_westmarch_introguy) as ActorSystem.InteractiveNPC;
-                        npc.Conversations.Clear();
-                        npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
-                        npc.Attributes.BroadcastChangedIfRevealed();
+						var listenerA1Q4Event1 = Task.Delay(4000).ContinueWith(delegate { StartConversation(139825); });
 						break;
-						#endregion
+					case 139825: //Event_DoK_Death.cnv
+						var leoricGhost1 = player.World.GetActorBySNO(ActorSno._skeletonking_leoricghost);
+						var ghostKnights1 = player.World.GetActorsBySNO(ActorSno._ghostknight2);
+						var lachdananGhost1 = player.World.GetActorBySNO(ActorSno._ghostknight3);
+
+						var listenerA1Q4Event2 = Task.Delay(10000).ContinueWith(delegate
+						{
+							player.World.Leave(leoricGhost1);
+							player.World.Leave(lachdananGhost1);
+							foreach (var gk in ghostKnights1)
+							{
+								player.World.Leave(gk);
+							}
+						});
+						break;
+
+					#endregion
+
+					#region A1-SQ-Farmer
+
+					case 60179:
+						//player.InGameClient.Game.QuestManager.ClearQuests();
+						//player.InGameClient.Game.QuestManager.SetQuests();
+						player.InGameClient.Game.QuestManager.LaunchSideQuest(81925);
+						var nearActors = player.CurrentScene.Actors;
+						int foundCount = 0;
+						foreach (var actor in nearActors)
+							if (actor.SNO == ActorSno._fleshpitflyerspawner_b_event_farmambush)
+							{
+								foundCount++;
+							}
+
+						if (foundCount == 4)
+						{
+							Logger.Debug("All the flies are dead, the farmer can continue his work.");
+						}
+						else
+						{
+							Logger.Debug("There are still flies, kill them.");
+							var oldPit = player.World.GetActorsBySNO(ActorSno._fleshpitflyerspawner_b_event_farmambush);
+							foreach (var actor in oldPit)
+								player.World.Leave(actor);
+							var spawnerOfPits =
+								player.World.GetActorsBySNO(ActorSno._spawner_fleshpitflyer_b_immediate);
+							foreach (var actor in spawnerOfPits)
+								player.World.SpawnMonster(ActorSno._fleshpitflyerspawner_b_event_farmambush,
+									actor.Position);
+
+							var newPits =
+								player.World.GetActorsBySNO(ActorSno._fleshpitflyerspawner_b_event_farmambush);
+							Logger.Debug("The flies are dead. The farmer can continue his work.");
+						}
+
+						break;
+
+					#endregion
+
+					#region A5
+
+					case 308393:
+						var npc =
+							player.World.GetActorBySNO(ActorSno._x1_npc_westmarch_introguy) as
+								ActorSystem.InteractiveNPC;
+						npc.Conversations.Clear();
+						npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+						npc.Attributes.BroadcastChangedIfRevealed();
+						break;
+
+					#endregion
+
 					#endregion
 				}
 
-            openConversations.TryRemove(conversation.SNOId, out _);
+			openConversations.TryRemove(conversation.SNOId, out _);
 
 			if (conversation.ConvPiggyBack != -1)
 				StartConversation(conversation.ConvPiggyBack);
@@ -820,12 +917,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// Returns true when the conversation playing finishes.
 		/// </summary>
 		private bool _conversationTrigger = false;
+
 		public bool ConversationRunning()
 		{
 			var status = _conversationTrigger;
 			_conversationTrigger = false;
 			return status;
 		}
+
 		/// <summary>
 		/// Update all open conversations
 		/// </summary>
