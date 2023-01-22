@@ -30,34 +30,34 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public CowKing(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			CollFlags = 0;
+			WalkSpeed = 0;
+			Attributes[GameAttribute.Invulnerable] = true;
 		}
 
 		public override bool Reveal(Player player)
 		{
-			switch (this.World.Game.Difficulty)
+			switch (World.Game.Difficulty)
 			{
 				case 0:
-					this.Available = (player.Inventory.HasItem(-1077364974) || player.Inventory.HasItem(670723600) || player.Inventory.HasItem(-306066026) || player.Inventory.HasItem(1952916002));
+					Available = (player.Inventory.HasItem(-1077364974) || player.Inventory.HasItem(670723600) || player.Inventory.HasItem(-306066026) || player.Inventory.HasItem(1952916002));
 					break;
 				case 1:
-					this.Available = (player.Inventory.HasItem(670723600) || player.Inventory.HasItem(-306066026) || player.Inventory.HasItem(1952916002));
+					Available = (player.Inventory.HasItem(670723600) || player.Inventory.HasItem(-306066026) || player.Inventory.HasItem(1952916002));
 					break;
 				case 2:
-					this.Available = (player.Inventory.HasItem(-306066026) || player.Inventory.HasItem(1952916002));
+					Available = (player.Inventory.HasItem(-306066026) || player.Inventory.HasItem(1952916002));
 					break;
 				case 3:
-					this.Available = player.Inventory.HasItem(1952916002);
+					Available = player.Inventory.HasItem(1952916002);
 					break;
 				default:
-					this.Available = (player.Inventory.HasItem(-1077364974) || player.Inventory.HasItem(670723600) || player.Inventory.HasItem(-306066026) || player.Inventory.HasItem(1952916002));
+					Available = (player.Inventory.HasItem(-1077364974) || player.Inventory.HasItem(670723600) || player.Inventory.HasItem(-306066026) || player.Inventory.HasItem(1952916002));
 					break;
 			}
 
-			if (this.Available)
-				this.NotifyConversation(2);
+			if (Available)
+				NotifyConversation(2);
 			else
 				return false;
 
@@ -70,10 +70,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (!this.Available) return;
+			if (!Available) return;
 
 			base.OnTargeted(player, message);
-			foreach (var plr in this.World.Players)
+			foreach (var plr in World.Players)
 			{
 				plr.Value.Conversations.StartConversation(208400);
 			}

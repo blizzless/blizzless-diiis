@@ -59,8 +59,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			var LeoricGhost = player.World.SpawnMonster(ActorSno._skeletonking_leoricghost, GhostLeoricPoint);
 			var LachdananGhost = player.World.SpawnMonster(ActorSno._ghostknight3, GhostKingtsSpawners[4].Position);
 
-			LachdananGhost.Move(this.Position, MovementHelpers.GetFacingAngle(LeoricGhost, LachdananGhost));
-			LachdananGhost.Move(this.Position, MovementHelpers.GetFacingAngle(LachdananGhost, this.Position));
+			LachdananGhost.Move(Position, MovementHelpers.GetFacingAngle(LeoricGhost, LachdananGhost));
+			LachdananGhost.Move(Position, MovementHelpers.GetFacingAngle(LachdananGhost, Position));
 			LachdananGhost.Attributes[GameAttribute.TeamID] = 2;
 			LachdananGhost.Attributes.BroadcastChangedIfRevealed();
 			(LachdananGhost as Monster).Brain.DeActivate();
@@ -69,14 +69,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 				GKnight.Attributes[GameAttribute.TeamID] = 2;
 				GKnight.Attributes.BroadcastChangedIfRevealed();
 				(GKnight as Monster).Brain.DeActivate();
-				GKnight.Move(this.Position, MovementHelpers.GetFacingAngle(GKnight, this.Position));
+				GKnight.Move(Position, MovementHelpers.GetFacingAngle(GKnight, Position));
 			}
 			//Запуск сцены
 			StartConversation(player.World, 139823);
 
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimReason = 5,
 				UnitAniimStartTime = 0,
 				tAnim = new PlayAnimationMessageSpec[]
@@ -94,7 +94,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			}, this);
 			World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimationSNO = AnimationSetKeys.Open.ID
 			}, this);
 

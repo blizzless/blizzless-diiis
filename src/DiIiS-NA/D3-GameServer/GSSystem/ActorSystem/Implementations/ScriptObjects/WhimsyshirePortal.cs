@@ -25,7 +25,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override bool Reveal(Player player)
 		{
-			if (!this.Opened) return false;
+			if (!Opened) return false;
 
 			if (!base.Reveal(player))
 				return false;
@@ -35,10 +35,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void Open()
 		{
-			this.Opened = true;
-			foreach (var plr in this.World.Players.Values)
-				this.Reveal(plr);
-			this.World.GetActorBySNO(ActorSno._tentaclelord).Destroy();
+			Opened = true;
+			foreach (var plr in World.Players.Values)
+				Reveal(plr);
+			World.GetActorBySNO(ActorSno._tentaclelord).Destroy();
 		}
 	}
 }

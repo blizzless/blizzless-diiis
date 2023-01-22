@@ -51,12 +51,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void ReceiveDamage(Actor source, float damage /* critical, type */)
 		{
-			if (this.SNO == ActorSno._trout_highlands_goatman_totem_gharbad && this.World.Game.CurrentSideQuest != 225253) return;
+			if (SNO == ActorSno._trout_highlands_goatman_totem_gharbad && World.Game.CurrentSideQuest != 225253) return;
 
 			World.BroadcastIfRevealed(plr => new FloatingNumberMessage
 			{
 				Number = damage,
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				Type = FloatingNumberMessage.FloatType.White
 			}, this);
 
@@ -65,7 +65,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			Attributes.BroadcastChangedIfRevealed();
 
-			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !this.SNO.IsUndestroyable())
+			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !SNO.IsUndestroyable())
 			{
 				Die(source);
 			}
@@ -76,40 +76,40 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			base.OnTargeted(null, null);
 			if (haveDrop)
 			{
-				var dropRates = this.World.Game.IsHardcore ? LootManager.GetSeasonalDropRates((int)this.Quality, 70) : LootManager.GetDropRates((int)this.Quality, 70);
+				var dropRates = World.Game.IsHardcore ? LootManager.GetSeasonalDropRates((int)Quality, 70) : LootManager.GetDropRates((int)Quality, 70);
 				foreach (var rate in dropRates)
-					foreach (var plr in this.GetPlayersInRange(30))
+					foreach (var plr in GetPlayersInRange(30))
 					{
 						float seed = (float)FastRandom.Instance.NextDouble();
 						if (seed < 0.95f)
-							this.World.SpawnGold(this, plr);
+							World.SpawnGold(this, plr);
 						if (seed < 0.06f)
-							this.World.SpawnRandomCraftItem(this, plr);
+							World.SpawnRandomCraftItem(this, plr);
 						if (seed < 0.04f)
-							this.World.SpawnRandomGem(this, plr);
+							World.SpawnRandomGem(this, plr);
 						if (seed < 0.10f)
-							this.World.SpawnRandomPotion(this, plr);
+							World.SpawnRandomPotion(this, plr);
 						if (seed < (rate * (1f + plr.Attributes[GameAttribute.Magic_Find])))
 						{
-							var lootQuality = this.World.Game.IsHardcore ? LootManager.GetSeasonalLootQuality((int)this.Quality, this.World.Game.Difficulty) : LootManager.GetLootQuality((int)this.Quality, this.World.Game.Difficulty);
-							this.World.SpawnRandomEquip(plr, plr, lootQuality);
+							var lootQuality = World.Game.IsHardcore ? LootManager.GetSeasonalLootQuality((int)Quality, World.Game.Difficulty) : LootManager.GetLootQuality((int)Quality, World.Game.Difficulty);
+							World.SpawnRandomEquip(plr, plr, lootQuality);
 						}
 						else
 							break;
 					}
 			}
 
-			Logger.Trace("Breaked barricade, id: {0}", this.SNO);
+			Logger.Trace("Breaked barricade, id: {0}", SNO);
 
-			if (source != null && source is Player && tombs.Contains(this.SNO))
+			if (source != null && source is Player && tombs.Contains(SNO))
 			{
 				(source as Player).AddAchievementCounter(74987243307171, 1);
 			}
 
-			if (this.AnimationSet.TagMapAnimDefault.ContainsKey(AnimationSetKeys.DeathDefault))
+			if (AnimationSet.TagMapAnimDefault.ContainsKey(AnimationSetKeys.DeathDefault))
 				World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 				{
-					ActorID = this.DynamicID(plr),
+					ActorID = DynamicID(plr),
 					AnimReason = 11,
 					UnitAniimStartTime = 0,
 					tAnim = new PlayAnimationMessageSpec[]
@@ -126,38 +126,38 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				}, this);
 
-			this.Attributes[GameAttribute.Deleted_On_Server] = true;
-			this.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
+			Attributes[GameAttribute.Deleted_On_Server] = true;
+			Attributes[GameAttribute.Could_Have_Ragdolled] = true;
 			Attributes.BroadcastChangedIfRevealed();
 
 			//handling quest triggers
-			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)this.SNO))
+			if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
-				var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO];
+				var trigger = World.Game.QuestProgress.QuestTriggers[(int)SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
 				{
-					this.World.Game.QuestProgress.UpdateCounter((int)this.SNO);
-					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO].counter)
-						trigger.questEvent.Execute(this.World); // launch a questEvent
+					World.Game.QuestProgress.UpdateCounter((int)SNO);
+					if (trigger.count == World.Game.QuestProgress.QuestTriggers[(int)SNO].counter)
+						trigger.questEvent.Execute(World); // launch a questEvent
 				}
 				else
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
 				{
-					this.World.Game.QuestProgress.UpdateCounter((int)this.SNO);
+					World.Game.QuestProgress.UpdateCounter((int)SNO);
 				}
 			}
-			else if (this.World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)this.SNO))
+			else if (World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
-				var trigger = this.World.Game.SideQuestProgress.QuestTriggers[(int)this.SNO];
+				var trigger = World.Game.SideQuestProgress.QuestTriggers[(int)SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
 				{
-					this.World.Game.SideQuestProgress.UpdateSideCounter((int)this.SNO);
-					if (trigger.count == this.World.Game.SideQuestProgress.QuestTriggers[(int)this.SNO].counter)
-						trigger.questEvent.Execute(this.World); // launch a questEvent
+					World.Game.SideQuestProgress.UpdateSideCounter((int)SNO);
+					if (trigger.count == World.Game.SideQuestProgress.QuestTriggers[(int)SNO].counter)
+						trigger.questEvent.Execute(World); // launch a questEvent
 				}
 			}
 
-			this.Destroy();
+			Destroy();
 		}
 
 

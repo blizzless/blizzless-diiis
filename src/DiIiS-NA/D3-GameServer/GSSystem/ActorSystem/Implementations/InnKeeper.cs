@@ -37,7 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			var list = new List<ItemsSystem.Item>
 			{
-                ItemsSystem.ItemGenerator.CookFromDefinition(this.World, ItemsSystem.ItemGenerator.GetItemDefinition(DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("HealthPotionBottomless")), 1, false) //HealthPotionConsole
+                ItemsSystem.ItemGenerator.CookFromDefinition(World, ItemsSystem.ItemGenerator.GetItemDefinition(DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("HealthPotionBottomless")), 1, false) //HealthPotionConsole
 			};
 
 			return list;

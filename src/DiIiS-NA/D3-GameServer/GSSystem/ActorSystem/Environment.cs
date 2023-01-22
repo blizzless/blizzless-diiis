@@ -13,9 +13,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public Environment(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Field2 = 0x10;//16;
-			this.Field7 = 0x00000000;
-			this.CollFlags = 1;
+			Field2 = 0x10;//16;
+			Field7 = 0x00000000;
+			CollFlags = 1;
 		}
 	}
 }

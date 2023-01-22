@@ -28,7 +28,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public EquipmentManager(MapSystem.World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            this.Attributes[GameAttribute.MinimapActive] = true;
+            Attributes[GameAttribute.MinimapActive] = true;
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
@@ -36,7 +36,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             //            player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.ANNDataMessage23) - Бафф (шрайн)
             player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.ANNDataMessage45)
             {
-                ActorID = this.DynamicID(player)
+                ActorID = DynamicID(player)
             });
         }
 
@@ -45,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Map.MapMarkerInfoMessage()
             {
                 HashedName = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("EquipmentManagerTest"),
-                Place = new MessageSystem.Message.Fields.WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
+                Place = new MessageSystem.Message.Fields.WorldPlace { Position = Position, WorldID = World.GlobalID },
                 ImageInfo = -1,
                 Label = -1,
                 snoStringList = -1,

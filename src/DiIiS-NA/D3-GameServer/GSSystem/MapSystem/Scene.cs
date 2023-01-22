@@ -325,7 +325,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		public static void PreCacheMarkers()
 		{
-			//Logger.Info("Кэширование маркеров на сценах...");
+			//Logger.Info("Pre-caching markers for scenes...");
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Scene].Values)
 			{
 				DiIiS_NA.Core.MPQ.FileFormats.Scene data = asset.Data as DiIiS_NA.Core.MPQ.FileFormats.Scene;

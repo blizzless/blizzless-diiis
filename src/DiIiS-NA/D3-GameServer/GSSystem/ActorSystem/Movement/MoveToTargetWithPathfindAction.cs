@@ -39,10 +39,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 		{
 			// Sending a request for a Path to the Pathing thread.
 			//_pathRequestTask = owner.World.Game.Pathfinder.GetPath(owner, owner.Position, heading);
-			this.Target = target;
-			this.Heading = target.Position;
-			this.AttackRadius = attackRadius;
-			this.PrioritySkillSNO = prioritySkillSNO;
+			Target = target;
+			Heading = target.Position;
+			AttackRadius = attackRadius;
+			PrioritySkillSNO = prioritySkillSNO;
 		}
 
 		public override void Start(int tickCounter)
@@ -69,25 +69,25 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 			// Each path step will be 2.5f apart roughly, not sure on the math to get correct walk speed for the timer.
 			// mobs sometimes skip a bit, pretty sure this is because timing isnt correct.  :( - DarkLotus
 			//Logger.Trace("Start() {0}", tickCounter);
-			if (this.Owner.WalkSpeed == 0)
+			if (Owner.WalkSpeed == 0)
 			{
-				this.Done = true;
+				Done = true;
 				return;
 			}
 
-			this.Started = true;
+			Started = true;
 			//this.Owner.Position = MovementHelpers.GetMovementPosition(this.Owner.Position, this.Owner.WalkSpeed, Movement.MovementHelpers.GetFacingAngle(this.Owner.Position, this.Owner.CurrentDestination), 60);
-			if (!this.Done)
-				this.Move();
+			if (!Done)
+				Move();
 		}
 
 		private void Move()
 		{
-			this.Stucked = true;
-			Vector3D defaultPosition = this.Owner.Position;
-			Vector3D destPoint = PowerMath.TranslateDirection2D(this.Owner.Position, this.Target.Position, this.Owner.Position, Math.Min(MovementHelpers.GetDistance(this.Owner.Position, this.Target.Position), this.Owner.WalkSpeed * 30));
+			Stucked = true;
+			Vector3D defaultPosition = Owner.Position;
+			Vector3D destPoint = PowerMath.TranslateDirection2D(Owner.Position, Target.Position, Owner.Position, Math.Min(MovementHelpers.GetDistance(Owner.Position, Target.Position), Owner.WalkSpeed * 30));
 			//int searchLimit = 0;
-			var points = PowerMath.GenerateSpreadPositions(this.Owner.Position, destPoint, 30f, 6).OrderBy((pos) => MovementHelpers.GetDistance(pos, destPoint)).ToList();
+			var points = PowerMath.GenerateSpreadPositions(Owner.Position, destPoint, 30f, 6).OrderBy((pos) => MovementHelpers.GetDistance(pos, destPoint)).ToList();
 			foreach (var point in points)
 			{
 				/*if (MovementHelpers.GetUnitsOnPath(
@@ -98,10 +98,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 					this.Owner.ActorData.Cylinder.Ax2 / 2f
 				).Count > 1 || !this.Owner.World.CheckLocationForFlag(destPoint, Mooege.Common.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))*/
 				bool point_accessible = true;
-				for (float i = 0.5f; i <= MovementHelpers.GetDistance(this.Owner.Position, point); i += 1f)
+				for (float i = 0.5f; i <= MovementHelpers.GetDistance(Owner.Position, point); i += 1f)
 				{
-					var point_check = PowerMath.TranslateDirection2D(this.Owner.Position, point, this.Owner.Position, i);
-					if (!(this.Owner.World.CheckLocationForFlag(point_check, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk) && !this.Owner.World.CheckLocationForFlag(point_check, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoNavMeshIntersected)))
+					var point_check = PowerMath.TranslateDirection2D(Owner.Position, point, Owner.Position, i);
+					if (!(Owner.World.CheckLocationForFlag(point_check, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk) && !Owner.World.CheckLocationForFlag(point_check, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoNavMeshIntersected)))
 					{
 						point_accessible = false;
 						break;
@@ -113,7 +113,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 				if (point_accessible)
 				{
 					destPoint = point;
-					this.Stucked = false;
+					Stucked = false;
 					break;
 				}
 			}
@@ -122,48 +122,48 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 			//this.Stucked = false;
 
 			//Vector3D destPoint = this._path.First();
-			if (!this.Stucked && this.Owner.WalkSpeed > 0f)
+			if (!Stucked && Owner.WalkSpeed > 0f)
 			{
-				this.Owner.Move(destPoint, MovementHelpers.GetFacingAngle(this.Owner, destPoint));
-				_lastDelay = (int)(MovementHelpers.GetDistance(this.Owner.Position, destPoint) / (this.Owner.WalkSpeed));
+				Owner.Move(destPoint, MovementHelpers.GetFacingAngle(Owner, destPoint));
+				_lastDelay = (int)(MovementHelpers.GetDistance(Owner.Position, destPoint) / (Owner.WalkSpeed));
 
 				//Logger.Trace("Delay in step: {0}", _lastDelay);
 			}
 			else
 				_lastDelay = 60;
 
-			this.Timer = TickTimer.WaitTicks(
-				this.Owner.World.Game,
+			Timer = TickTimer.WaitTicks(
+				Owner.World.Game,
 				_lastDelay,
 				(tick) =>
 				{
-					if (this.Canceled) return;
-					if (!this.Stucked && this.Owner.WalkSpeed > 0f)
+					if (Canceled) return;
+					if (!Stucked && Owner.WalkSpeed > 0f)
 					{
-						this.Owner.Position = MovementHelpers.GetMovementPosition(defaultPosition, this.Owner.WalkSpeed, Movement.MovementHelpers.GetFacingAngle(this.Owner.Position, destPoint), _lastDelay);
+						Owner.Position = MovementHelpers.GetMovementPosition(defaultPosition, Owner.WalkSpeed, MovementHelpers.GetFacingAngle(Owner.Position, destPoint), _lastDelay);
 					}
 
-					if (this.Owner == null ||
-						this.Owner.Attributes[GameAttribute.Hitpoints_Cur] == 0 ||
-						this.Owner.GetObjectsInRange<Player>(60f).Count == 0 ||
-						MovementHelpers.GetDistance(this.Owner.Position, this.Target.Position) < this.AttackRadius ||
-						(this.Owner is Monster && (this.Owner as Monster).Brain.CurrentAction == null)
+					if (Owner == null ||
+						Owner.Attributes[GameAttribute.Hitpoints_Cur] == 0 ||
+						Owner.GetObjectsInRange<Player>(60f).Count == 0 ||
+						MovementHelpers.GetDistance(Owner.Position, Target.Position) < AttackRadius ||
+						(Owner is Monster && (Owner as Monster).Brain.CurrentAction == null)
 					)
-						this.Done = true;
+						Done = true;
 
-					if (!this.Done)
+					if (!Done)
 					{
-						this.Move();
+						Move();
 					}
 					else
 					{
-						if (this.Owner is Monster && this.Target != null)
+						if (Owner is Monster && Target != null)
 						{
-							var brain = (this.Owner as Monster).Brain as MonsterBrain;
+							var brain = (Owner as Monster).Brain as MonsterBrain;
 
-							if (this.PrioritySkillSNO > 0)
+							if (PrioritySkillSNO > 0)
 							{
-								brain.FastAttack(this.Target, this.PrioritySkillSNO);
+								brain.FastAttack(Target, PrioritySkillSNO);
 							}
 						}
 					}
@@ -175,15 +175,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 
 		public override void Update(int tickCounter)
 		{
-			if (this.Timer != null)
-				this.Timer.Update(tickCounter);
+			if (Timer != null)
+				Timer.Update(tickCounter);
 		}
 
 		public override void Cancel(int tickCounter)
 		{
-			this.Done = true;
-			this.Canceled = true;
-			this.Owner.World.BroadcastIfRevealed(this.Owner.ACDWorldPositionMessage, this.Owner);
+			Done = true;
+			Canceled = true;
+			Owner.World.BroadcastIfRevealed(Owner.ACDWorldPositionMessage, Owner);
 			//this.Owner.Position = MovementHelpers.GetMovementPosition(this.Owner.Position, this.Owner.WalkSpeed, Movement.MovementHelpers.GetFacingAngle(this.Owner.Position, this.Owner.CurrentDestination), (int)(_lastDelay / 16f));
 		}
 	}

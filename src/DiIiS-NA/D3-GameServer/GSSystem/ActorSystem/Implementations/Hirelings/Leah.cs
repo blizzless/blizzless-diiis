@@ -35,19 +35,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			skillKit = 0x8AFE;
 			hirelingGBID = StringHashHelper.HashItemName("Scoundrel");
 			Attributes[GameAttribute.Hireling_Class] = 4;
-			var MS = this.Attributes[GameAttribute.Movement_Scalar];
-			var RS = this.Attributes[GameAttribute.Run_Speed_Granted];
-			var MSRP = this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent];
-			this.Attributes[GameAttribute.Movement_Scalar] = 3f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = 3f;
+			var MS = Attributes[GameAttribute.Movement_Scalar];
+			var RS = Attributes[GameAttribute.Run_Speed_Granted];
+			var MSRP = Attributes[GameAttribute.Movement_Scalar_Reduction_Percent];
+			Attributes[GameAttribute.Movement_Scalar] = 3f;
+			Attributes[GameAttribute.Run_Speed_Granted] = 3f;
 			//this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f; Attributes[GameAttribute.Hitpoints_Max] = 9999f;
-			var HPM = this.Attributes[GameAttribute.Hitpoints_Max];
-			var HPMT = this.Attributes[GameAttribute.Hitpoints_Max_Total];
+			WalkSpeed = 0.3f; Attributes[GameAttribute.Hitpoints_Max] = 9999f;
+			var HPM = Attributes[GameAttribute.Hitpoints_Max];
+			var HPMT = Attributes[GameAttribute.Hitpoints_Max_Total];
 
 			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
             
-            Attributes[GameAttribute.Hitpoints_Max] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
+            Attributes[GameAttribute.Hitpoints_Max] = Attributes[GameAttribute.Hitpoints_Max_Total];
 
 		}
 
@@ -63,7 +63,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
             player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Inventory.VisualInventoryMessage()
             {
-                ActorID = this.DynamicID(player),
+                ActorID = DynamicID(player),
                 EquipmentList = new MessageSystem.Message.Fields.VisualEquipment()
                 {
                     Equipment = new MessageSystem.Message.Fields.VisualItem[]

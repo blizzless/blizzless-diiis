@@ -24,8 +24,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			: base(world, sno, tags, false)
 		{
 			SavepointId = tags[MarkerKeys.SavepointId];
-			var proximity = new RectangleF(this.Position.X - 1f, this.Position.Y - 1f, 2f, 2f);
-			var scenes = this.World.QuadTree.Query<Scene>(proximity);
+			var proximity = new RectangleF(Position.X - 1f, Position.Y - 1f, 2f, 2f);
+			var scenes = World.QuadTree.Query<Scene>(proximity);
 			if (scenes.Count == 0) return; // TODO: fixme! /raist
 			var scene = scenes[0]; // Parent scene /fasbat
 			SNOLevelArea = scene.Specification.SNOLevelAreas[0];
@@ -33,7 +33,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnPlayerApproaching(PlayerSystem.Player player)
 		{
-			if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale * this.Scale && !_savepointReached)
+			if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale * Scale && !_savepointReached)
 			{
 				_savepointReached = true;
 
@@ -46,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				player.SavePointData = new SavePointData() { snoWorld = (int)World.SNO, SavepointId = SavepointId };
 				player.UpdateHeroState();
-				player.CheckPointPosition = this._position; // This seemed easier than having on Death find the SavePoint based on ID, then getting its location. - DarkLotus
+				player.CheckPointPosition = _position; // This seemed easier than having on Death find the SavePoint based on ID, then getting its location. - DarkLotus
 			}
 		}
 

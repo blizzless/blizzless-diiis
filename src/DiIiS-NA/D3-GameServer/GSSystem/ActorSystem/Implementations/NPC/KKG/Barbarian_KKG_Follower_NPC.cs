@@ -23,14 +23,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			: base(world, sno, tags)
 		{
 			//{[Actor] [Type: Monster] SNOId:437089 GlobalId: 1017303615 Position: x:348.598 y:853.68604 z:5.41089 Name: Barbarian_KKG_Follower_NPC}
-			//437394 - Рык
-			//437259 - сидит
-			//437260 - встаёт
-			//437258 - вышагивает вперёд
-			//439753 - исчезновение
-			//449259 - Появление на троне со вспышкой
-			//324250 - перекат
-			//437396 - мертвый
+			//437394 - Roar
+			//437259 - Sit
+			//437260 - Stand
+			//437258 - Walk Forward
+			//439753 - Disappear
+			//449259 - Appear on Throne with Flash
+			//324250 - Roll
+			//437396 - Dead
 
 			//	this.Hidden = true;
 			//	this.SetVisible(false);
@@ -43,16 +43,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			base.ReadTags();
 		}
-		public override void OnPlayerApproaching(PlayerSystem.Player player)
+		public override void OnPlayerApproaching(Player player)
 		{
 			try
 			{
-				if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale * this.Scale && !_collapsed)
+				if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale * Scale && !_collapsed)
 				{
 					if (!player.KanaiUnlocked)
 					{
 						_collapsed = true;
-						this.PlayActionAnimation(439753);
+						PlayActionAnimation(439753);
 
 						var Cube = World.GetActorBySNO(ActorSno._p4_ruins_frost_kanaicube_altar);
 						Cube.PlayActionAnimation(441642);

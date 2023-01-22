@@ -25,10 +25,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 1f;
 			//TODO: get a proper value for this.
-			this.WalkSpeed *= 5;
+			WalkSpeed *= 5;
 			SetBrain(new MinionBrain(this));
-			this.DamageCoefficient = 1f * 2f;
-			this.Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			DamageCoefficient = 1f * 2f;
+			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
 			(Brain as MinionBrain).AddPresetPower(196974); //chicken_walk.pow
 			(Brain as MinionBrain).AddPresetPower(188442); //explode.pow
 			(Brain as MinionBrain).AddPresetPower(107301); //Fetish.pow

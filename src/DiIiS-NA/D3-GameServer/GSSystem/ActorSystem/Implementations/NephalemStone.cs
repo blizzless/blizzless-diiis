@@ -30,16 +30,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public NephalemStone(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            this.Attributes[GameAttribute.TeamID] = 2;
-            this.Attributes[GameAttribute.MinimapActive] = true;
-            this.Attributes[GameAttribute.Untargetable] = false;
-            this.Attributes.BroadcastChangedIfRevealed();
-            this.Attributes[GameAttribute.MinimapIconOverride] = 221224;//327066;
+            Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes[GameAttribute.Untargetable] = false;
+            Attributes.BroadcastChangedIfRevealed();
+            Attributes[GameAttribute.MinimapIconOverride] = 221224;//327066;
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
-            player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.RiftStartEncounterMessage) { ActorID = this.DynamicID(player) });
+            player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.RiftStartEncounterMessage) { ActorID = DynamicID(player) });
         }
 
         public override bool Reveal(Player player)
@@ -49,20 +49,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
             if (Attributes[GameAttribute.Untargetable])
             {
-                this.PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
-                this.SetIdleAnimation(AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
+                PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
+                SetIdleAnimation(AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
             }
             else
             {
-                this.PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
-                this.SetIdleAnimation(AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
+                PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
+                SetIdleAnimation(AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
             }
             
             player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Map.MapMarkerInfoMessage()
             {
 
                 HashedName = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("x1_OpenWorld_LootRunObelisk_B"),
-                Place = new MessageSystem.Message.Fields.WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
+                Place = new MessageSystem.Message.Fields.WorldPlace { Position = Position, WorldID = World.GlobalID },
                 ImageInfo = 221224,
                 Label = -1,
                 snoStringList = 0x0000F063,

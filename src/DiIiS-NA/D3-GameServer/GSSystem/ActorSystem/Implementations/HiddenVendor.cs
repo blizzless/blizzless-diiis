@@ -53,7 +53,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public HiddenVendor(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Enabled = (FastRandom.Instance.Next(100) < 40);
+			Enabled = (FastRandom.Instance.Next(100) < 40);
 		}
 
 		protected override List<Item> GetVendorItems()
@@ -62,7 +62,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			for (int i = 0; i < 9; i++)
 			{
-				var itm = ItemGenerator.GenerateRandomEquip(this, this.level, 6, 7);
+				var itm = ItemGenerator.GenerateRandomEquip(this, level, 6, 7);
 				itm.Attributes[GameAttribute.Item_Cost_Percent_Bonus] = 3f;
 				list.Add(itm);
 			}
@@ -72,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override bool Reveal(PlayerSystem.Player player)
 		{
-			if (!this.Enabled) return false;
+			if (!Enabled) return false;
 			return base.Reveal(player);
 		}
 

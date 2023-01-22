@@ -31,41 +31,41 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 		public MoveToPointWithPathfindAction(Actor owner, Vector3D heading, float attackRadius = 6f)
 			: base(owner)
 		{
-			this.Heading = heading;
-			this.AttackRadius = attackRadius;
+			Heading = heading;
+			AttackRadius = attackRadius;
 		}
 
 		public override void Start(int tickCounter)
 		{
-			if (this.Heading == this.Owner.Position)
+			if (Heading == Owner.Position)
 			{
-				this.Started = true;
-				this.Done = true;
+				Started = true;
+				Done = true;
 				return;
 			}
 
-			this.Started = true;
+			Started = true;
 			
-			if (!this.Done)
-				this.Move();
+			if (!Done)
+				Move();
 		}
 
 		private void Move()
 		{
-			this.Stucked = true;
-			Vector3D defaultPosition = this.Owner.Position;
-			Vector3D destPoint = PowerMath.TranslateDirection2D(this.Owner.Position, this.Heading, this.Owner.Position, Math.Min(MovementHelpers.GetDistance(this.Owner.Position, this.Heading), this.Owner.WalkSpeed * 60));
-			if (this.Owner.Spawner)
-				destPoint = this.Owner.Position;
+			Stucked = true;
+			Vector3D defaultPosition = Owner.Position;
+			Vector3D destPoint = PowerMath.TranslateDirection2D(Owner.Position, Heading, Owner.Position, Math.Min(MovementHelpers.GetDistance(Owner.Position, Heading), Owner.WalkSpeed * 60));
+			if (Owner.Spawner)
+				destPoint = Owner.Position;
 
-			var points = PowerMath.GenerateSpreadPositions(this.Owner.Position, destPoint, 30f, 6).OrderBy((pos) => MovementHelpers.GetDistance(pos, destPoint)).ToList();
+			var points = PowerMath.GenerateSpreadPositions(Owner.Position, destPoint, 30f, 6).OrderBy((pos) => MovementHelpers.GetDistance(pos, destPoint)).ToList();
 			foreach (var point in points)
 			{
 				bool point_accessible = true;
-				for (float i = 0.5f; i <= MovementHelpers.GetDistance(this.Owner.Position, point); i += 1f)
+				for (float i = 0.5f; i <= MovementHelpers.GetDistance(Owner.Position, point); i += 1f)
 				{
-					var point_check = PowerMath.TranslateDirection2D(this.Owner.Position, point, this.Owner.Position, i);
-					if (!(this.Owner.World.CheckLocationForFlag(point_check, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk) && !this.Owner.World.CheckLocationForFlag(point_check, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoNavMeshIntersected)))
+					var point_check = PowerMath.TranslateDirection2D(Owner.Position, point, Owner.Position, i);
+					if (!(Owner.World.CheckLocationForFlag(point_check, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk) && !Owner.World.CheckLocationForFlag(point_check, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoNavMeshIntersected)))
 					{
 						point_accessible = false;
 						break;
@@ -75,49 +75,49 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 				if (point_accessible)
 				{
 					destPoint = point;
-					if (this.Owner.Spawner)
-						destPoint = this.Owner.Position;
-					this.Stucked = false;
+					if (Owner.Spawner)
+						destPoint = Owner.Position;
+					Stucked = false;
 					break;
 				}
 			}
 
-			if (!this.Stucked && this.Owner.WalkSpeed > 0f)
+			if (!Stucked && Owner.WalkSpeed > 0f)
 			{
-				this.Owner.Move(destPoint, MovementHelpers.GetFacingAngle(this.Owner, destPoint));
-				var delay = (int)(MovementHelpers.GetDistance(this.Owner.Position, destPoint) / this.Owner.WalkSpeed);
+				Owner.Move(destPoint, MovementHelpers.GetFacingAngle(Owner, destPoint));
+				var delay = (int)(MovementHelpers.GetDistance(Owner.Position, destPoint) / Owner.WalkSpeed);
 				_lastDelay = delay + (6 - (delay % 6));
 
 			}
 			else
 				_lastDelay = 60;
 
-			this.Timer = TickTimer.WaitTicks(
-				this.Owner.World.Game,
+			Timer = TickTimer.WaitTicks(
+				Owner.World.Game,
 				_lastDelay,
 				(tick) =>
 				{
-					if (!this.Stucked && this.Owner.WalkSpeed > 0f)
+					if (!Stucked && Owner.WalkSpeed > 0f)
 					{
-						this.Owner.Position = MovementHelpers.GetMovementPosition(defaultPosition, this.Owner.WalkSpeed, Movement.MovementHelpers.GetFacingAngle(defaultPosition, destPoint), _lastDelay);
+						Owner.Position = MovementHelpers.GetMovementPosition(defaultPosition, Owner.WalkSpeed, MovementHelpers.GetFacingAngle(defaultPosition, destPoint), _lastDelay);
 					}
 
-					if (this.Owner == null ||
-						this.Owner.Attributes[GameAttribute.Hitpoints_Cur] == 0 ||
-						this.Owner.GetObjectsInRange<Player>(50f).Count == 0 ||
-						MovementHelpers.GetDistance(this.Owner.Position, this.Heading) < this.AttackRadius ||
-						(this.Owner is Monster && (this.Owner as Monster).Brain.CurrentAction == null)
+					if (Owner == null ||
+						Owner.Attributes[GameAttribute.Hitpoints_Cur] == 0 ||
+						Owner.GetObjectsInRange<Player>(50f).Count == 0 ||
+						MovementHelpers.GetDistance(Owner.Position, Heading) < AttackRadius ||
+						(Owner is Monster && (Owner as Monster).Brain.CurrentAction == null)
 					)
 					{
-						this.Done = true;
+						Done = true;
 						//ТЕСТ
-						this.Owner.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateSyncMessage()
-						{ ActorId = this.Owner.DynamicID(plr), Position = this.Owner.Position, Snap = false }, this.Owner);
+						Owner.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateSyncMessage()
+						{ ActorId = Owner.DynamicID(plr), Position = Owner.Position, Snap = false }, Owner);
 
 					}
-					if (!this.Done)
+					if (!Done)
 					{
-						this.Move();
+						Move();
 					}
 				}
 			);
@@ -125,13 +125,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 
 		public override void Update(int tickCounter)
 		{
-			if (this.Timer != null)
-				this.Timer.Update(tickCounter);
+			if (Timer != null)
+				Timer.Update(tickCounter);
 		}
 
 		public override void Cancel(int tickCounter)
 		{
-			this.Done = true;
+			Done = true;
 		}
 	}
 }

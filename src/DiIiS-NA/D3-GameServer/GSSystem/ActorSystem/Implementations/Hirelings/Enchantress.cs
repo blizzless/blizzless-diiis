@@ -25,7 +25,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			proxySNO = ActorSno._hireling_enchantress_proxy;
 			skillKit = 484938;
 			hirelingGBID = StringHashHelper.HashItemName("Enchantress");
-			this.Attributes[GameAttribute.Hireling_Class] = 3;
+			Attributes[GameAttribute.Hireling_Class] = 3;
 		}
 
 		public override Hireling CreateHireling(MapSystem.World world, ActorSno sno, TagMap tags)
@@ -41,9 +41,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 				case 102057:
 				case 101969:
 					player.HirelingInfo[3].Skill1SNOId = SkillSNOId;
-					this.Attributes[GameAttribute.Skill, SkillSNOId] = 1;
-					this.Attributes[GameAttribute.Skill, (SkillSNOId == 102057 ? 101969 : 102057)] = 0;
-					this.Attributes.BroadcastChangedIfRevealed();
+					Attributes[GameAttribute.Skill, SkillSNOId] = 1;
+					Attributes[GameAttribute.Skill, (SkillSNOId == 102057 ? 101969 : 102057)] = 0;
+					Attributes.BroadcastChangedIfRevealed();
 
 					dbhireling.Skill1SNOId = SkillSNOId;
 					player.World.Game.GameDBSession.SessionUpdate(dbhireling);
@@ -51,9 +51,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 				case 102133:
 				case 101461:
 					player.HirelingInfo[3].Skill2SNOId = SkillSNOId;
-					this.Attributes[GameAttribute.Skill, SkillSNOId] = 1;
-					this.Attributes[GameAttribute.Skill, (SkillSNOId == 102133 ? 101461 : 102133)] = 0;
-					this.Attributes.BroadcastChangedIfRevealed();
+					Attributes[GameAttribute.Skill, SkillSNOId] = 1;
+					Attributes[GameAttribute.Skill, (SkillSNOId == 102133 ? 101461 : 102133)] = 0;
+					Attributes.BroadcastChangedIfRevealed();
 
 					dbhireling.Skill2SNOId = SkillSNOId;
 					player.World.Game.GameDBSession.SessionUpdate(dbhireling);
@@ -61,9 +61,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 				case 101990:
 				case 220872:
 					player.HirelingInfo[3].Skill3SNOId = SkillSNOId;
-					this.Attributes[GameAttribute.Skill, SkillSNOId] = 1;
-					this.Attributes[GameAttribute.Skill, (SkillSNOId == 101990 ? 220872 : 101990)] = 0;
-					this.Attributes.BroadcastChangedIfRevealed();
+					Attributes[GameAttribute.Skill, SkillSNOId] = 1;
+					Attributes[GameAttribute.Skill, (SkillSNOId == 101990 ? 220872 : 101990)] = 0;
+					Attributes.BroadcastChangedIfRevealed();
 
 					dbhireling.Skill3SNOId = SkillSNOId;
 					player.World.Game.GameDBSession.SessionUpdate(dbhireling);
@@ -71,9 +71,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 				case 101425:
 				case 201524:
 					player.HirelingInfo[3].Skill4SNOId = SkillSNOId;
-					this.Attributes[GameAttribute.Skill, SkillSNOId] = 1;
-					this.Attributes[GameAttribute.Skill, (SkillSNOId == 101425 ? 201524 : 101425)] = 0;
-					this.Attributes.BroadcastChangedIfRevealed();
+					Attributes[GameAttribute.Skill, SkillSNOId] = 1;
+					Attributes[GameAttribute.Skill, (SkillSNOId == 101425 ? 201524 : 101425)] = 0;
+					Attributes.BroadcastChangedIfRevealed();
 
 					dbhireling.Skill4SNOId = SkillSNOId;
 					player.World.Game.GameDBSession.SessionUpdate(dbhireling);
@@ -97,15 +97,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			player.HirelingInfo[3].Skill3SNOId = -1;
 			player.HirelingInfo[3].Skill4SNOId = -1;
 
-			this.Attributes[GameAttribute.Skill, 102057] = 0;
-			this.Attributes[GameAttribute.Skill, 101969] = 0;
-			this.Attributes[GameAttribute.Skill, 102133] = 0;
-			this.Attributes[GameAttribute.Skill, 101461] = 0;
-			this.Attributes[GameAttribute.Skill, 101990] = 0;
-			this.Attributes[GameAttribute.Skill, 220872] = 0;
-			this.Attributes[GameAttribute.Skill, 101425] = 0;
-			this.Attributes[GameAttribute.Skill, 201524] = 0;
-			this.Attributes.SendChangedMessage(player.InGameClient);
+			Attributes[GameAttribute.Skill, 102057] = 0;
+			Attributes[GameAttribute.Skill, 101969] = 0;
+			Attributes[GameAttribute.Skill, 102133] = 0;
+			Attributes[GameAttribute.Skill, 101461] = 0;
+			Attributes[GameAttribute.Skill, 101990] = 0;
+			Attributes[GameAttribute.Skill, 220872] = 0;
+			Attributes[GameAttribute.Skill, 101425] = 0;
+			Attributes[GameAttribute.Skill, 201524] = 0;
+			Attributes.SendChangedMessage(player.InGameClient);
 		}
 
 

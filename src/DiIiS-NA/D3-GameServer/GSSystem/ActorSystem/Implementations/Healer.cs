@@ -23,8 +23,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Healer(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.TeamID] = 0;
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.TeamID] = 0;
+			Attributes[GameAttribute.MinimapActive] = true;
 		}
 
 		public override void OnTargeted(PlayerSystem.Player player, TargetMessage message)

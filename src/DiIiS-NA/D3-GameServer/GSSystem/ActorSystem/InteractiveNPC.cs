@@ -65,16 +65,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public InteractiveNPC(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = true; //second param - playerIndex
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 1] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 2] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 3] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 4] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 5] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 6] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 7] = true;
-			this.Attributes[GameAttribute.NPC_Is_Operatable] = true;
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = true; //second param - playerIndex
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 1] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 2] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 3] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 4] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 5] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 6] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 7] = true;
+			Attributes[GameAttribute.NPC_Is_Operatable] = true;
+			Attributes[GameAttribute.MinimapActive] = true;
 			Interactions = new List<IInteraction>();
 			Conversations = new List<ConversationInteraction>();
 
@@ -89,7 +89,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			// call base classe update range stuff			
 			try
 			{
-				UpdateQuestRangeVisbility();
+				UpdateQuestRangeVisibility();
 				UpdateConversationList();
 			}
 			catch { }
@@ -100,15 +100,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override bool Reveal(Player player)
 		{
-			if (this.SNO == ActorSno._a1_uniquevendor_armorer) return false;
-			if (this.SNO == ActorSno._tyrael_heaven && this.World.SNO == WorldSno.trout_town && this.World.Game.CurrentAct != 3000) return false;
+			if (SNO == ActorSno._a1_uniquevendor_armorer) return false;
+			if (SNO == ActorSno._tyrael_heaven && World.SNO == WorldSno.trout_town && World.Game.CurrentAct != 3000) return false;
 			return base.Reveal(player);
 		}
 
 		private void UpdateConversationList()
 		{
-			this.ImportantConversationSNO = -1;
-			this.OverridedConv = false;
+			ImportantConversationSNO = -1;
+			OverridedConv = false;
 			bool withames = false;
 
 			if (ConversationList != null) // this is from Actor
@@ -121,7 +121,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					if (entry.SNOConversation == 181330)
 						ConversationsNew.Add(entry.SNOConversation);
 					if (World == null) return;
-					if (entry.SpecialEventFlag != this.World.Game.CurrentAct && entry.SpecialEventFlag != -1) continue;
+					if (entry.SpecialEventFlag != World.Game.CurrentAct && entry.SpecialEventFlag != -1) continue;
 
 					if (entry.SNOQuestActive == -1)
 						ConversationsNew.Add(entry.SNOConversation);
@@ -133,13 +133,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					{
 						ConversationsNew.Add(entry.SNOConversation);
 						if (entry.ConditionReqs == 1)
-							this.ImportantConversationSNO = entry.SNOConversation;
+							ImportantConversationSNO = entry.SNOConversation;
 					}
 					else if (World.Game.CurrentSideStep == -1 & World.Game.CurrentSideQuest == -1)
 						if (entry.SNOQuestRange == -3)
 						{
 							ConversationsNew.Add(entry.SNOConversation);
-							this.ImportantConversationSNO = entry.SNOConversation;
+							ImportantConversationSNO = entry.SNOConversation;
 							SideQuestSNOConv = entry.SNOConversation;
 						}
 				}
@@ -157,7 +157,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				bool sideConversation = false;
 
 				foreach (var conversation in Conversations) // this is in the InteractiveNPC
-					if (conversation.ConversationSNO == this.ImportantConversationSNO)
+					if (conversation.ConversationSNO == ImportantConversationSNO)
 					{
 						if (conversation.Read == false) questConversation = true;
 					}
@@ -174,36 +174,36 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				if (this is Healer) return;
 				
-				this.Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
+				Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
 				
 				if (ForceConversationSNO != -1)
 				{
 					questConversation = true;
-					this.Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
+					Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
 					Conversations.Add(new ConversationInteraction(ForceConversationSNO));
 				}
 
 				Attributes.BroadcastChangedIfRevealed();
 			}
-			if (this.SNO == ActorSno._tyrael_heaven && this.Tags.ContainsKey(MarkerKeys.QuestRange) && this.Tags[MarkerKeys.QuestRange].Id == 312431) //TyraelBountyTurnin
+			if (SNO == ActorSno._tyrael_heaven && Tags.ContainsKey(MarkerKeys.QuestRange) && Tags[MarkerKeys.QuestRange].Id == 312431) //TyraelBountyTurnin
 			{
 				bool active =
-					this.World.Game.CurrentSideQuest == 356988 ||
-					this.World.Game.CurrentSideQuest == 356994 ||
-					this.World.Game.CurrentSideQuest == 356996 ||
-					this.World.Game.CurrentSideQuest == 356999 ||
-					this.World.Game.CurrentSideQuest == 357001;
-				this.Attributes[GameAttribute.Conversation_Icon, 0] = active ? 1 : 3;
+					World.Game.CurrentSideQuest == 356988 ||
+					World.Game.CurrentSideQuest == 356994 ||
+					World.Game.CurrentSideQuest == 356996 ||
+					World.Game.CurrentSideQuest == 356999 ||
+					World.Game.CurrentSideQuest == 357001;
+				Attributes[GameAttribute.Conversation_Icon, 0] = active ? 1 : 3;
 				Attributes.BroadcastChangedIfRevealed();
 			}
 
 			bool HasReaded = false;
-			foreach (var conv in this.Conversations)
+			foreach (var conv in Conversations)
 				if (conv.Read == false)
 					HasReaded = true;
-			if (!HasReaded && this.Attributes[GameAttribute.Conversation_Icon, 0] != 2)
+			if (!HasReaded && Attributes[GameAttribute.Conversation_Icon, 0] != 2)
 			{
-				this.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 
 				//if (entry.Type == ConversationTypes.GlobalFloat)
 				
@@ -219,18 +219,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (this is Hireling && (this as Hireling).IsHireling) return;
 			base.OnPlayerApproaching(player);
 
-			if (!this.IsRevealedToPlayer(player)) return;
+			if (!IsRevealedToPlayer(player)) return;
 			
 			try
 			{
-				if (player.Position.DistanceSquared(ref _position) < 121f && !_ambientPlayed && this.Attributes[GameAttribute.Conversation_Icon, 0] != 2)
+				if (player.Position.DistanceSquared(ref _position) < 121f && !_ambientPlayed && Attributes[GameAttribute.Conversation_Icon, 0] != 2)
 				{
 					_ambientPlayed = true;
 					if (FastRandom.Instance.Next(100) < 50)
 					{
 						if (ConversationList != null)
 						{
-							var suitable_entries = ConversationList.AmbientConversationListEntries.Where(entry => entry.SpecialEventFlag == this.World.Game.CurrentAct).ToList();
+							var suitable_entries = ConversationList.AmbientConversationListEntries.Where(entry => entry.SpecialEventFlag == World.Game.CurrentAct).ToList();
 							if (suitable_entries.Count() > 0)
 							{
 								var random_conv = suitable_entries[FastRandom.Instance.Next(suitable_entries.Count())];
@@ -257,16 +257,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (!OverridedConv)
 				UpdateConversationList();
 
-			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)this.SNO))
+			if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
-				var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
+				var trigger = World.Game.QuestProgress.QuestTriggers[(int)SNO];
+				if (trigger.triggerType == QuestStepObjectiveType.InteractWithActor)
 				{
-					this.World.Game.QuestProgress.UpdateCounter((int)this.SNO);
-					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO].counter)
+					World.Game.QuestProgress.UpdateCounter((int)SNO);
+					if (trigger.count == World.Game.QuestProgress.QuestTriggers[(int)SNO].counter)
 						try
 						{
-							trigger.questEvent.Execute(this.World); // launch a questEvent
+							trigger.questEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -288,11 +288,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				UpdateConversationList();
 				return;
 			}
-			if (Interactions.Count == 0 && this.ImportantConversationSNO > 0)
+			if (Interactions.Count == 0 && ImportantConversationSNO > 0)
 			{
-				player.Conversations.StartConversation(this.ImportantConversationSNO);
+				player.Conversations.StartConversation(ImportantConversationSNO);
 				if (ForceConversationSNO == Conversations[0].ConversationSNO) ForceConversationSNO = -1;
-				this.ImportantConversationSNO = -1;
+				ImportantConversationSNO = -1;
 				UpdateConversationList();
 				return;
 			}
@@ -326,7 +326,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			player.InGameClient.SendMessage(new NPCInteractOptionsMessage()
 			{
-				ActorID = this.DynamicID(player),
+				ActorID = DynamicID(player),
 				tNPCInteraction = npcInters,
 				Type = NPCInteractOptionsType.Normal
 			});
@@ -334,7 +334,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			// TODO: this has no effect, why is it sent?
 			player.InGameClient.SendMessage(new PlayEffectMessage()
 			{
-				ActorId = this.DynamicID(player),
+				ActorId = DynamicID(player),
 				Effect = Effect.Unknown36
 			});
 

@@ -52,14 +52,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public SetDungeon(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            this.Attributes[GameAttribute.TeamID] = 2;
-            this.Attributes[GameAttribute.MinimapActive] = true;
-            this.Attributes.BroadcastChangedIfRevealed();
+            Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes.BroadcastChangedIfRevealed();
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
-            this.PlayAnimation(5, 447873);
+            PlayAnimation(5, 447873);
 
             foreach (var plr in World.Game.Players.Values)
             {
@@ -86,7 +86,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             if (!base.Reveal(player))
                 return false;
             
-            this.PlayAnimation(5, 449254);
+            PlayAnimation(5, 449254);
             return true;
         }
 		/*
@@ -103,12 +103,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			try
 			{
-                if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale)// * this.Scale)
+                if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale)// * this.Scale)
                 {
                     if (!PlrNear)
                     {
                         PlrNear = true;
-                        this.PlayAnimation(5, 449255);
+                        PlayAnimation(5, 449255);
                     }
                 }
                 else
@@ -116,7 +116,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                     if (PlrNear)
                     {
                         PlrNear = false;
-                        this.PlayAnimation(5, 447868);
+                        PlayAnimation(5, 447868);
                     }
                 }
 			}

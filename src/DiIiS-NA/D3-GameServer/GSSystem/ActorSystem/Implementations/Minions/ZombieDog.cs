@@ -27,10 +27,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 1.35f;
 			//TODO: get a proper value for this.
-			this.WalkSpeed *= 5;
-			this.DamageCoefficient = mul * 2f;
+			WalkSpeed *= 5;
+			DamageCoefficient = mul * 2f;
 			SetBrain(new MinionBrain(this));
-			this.Attributes[GameAttribute.Summoned_By_SNO] = 102573;
+			Attributes[GameAttribute.Summoned_By_SNO] = 102573;
 
 			Attributes[GameAttribute.Damage_Weapon_Min, 0] = master.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];
 			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0];

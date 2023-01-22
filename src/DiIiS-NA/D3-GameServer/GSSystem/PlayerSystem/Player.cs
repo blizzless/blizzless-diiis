@@ -1651,9 +1651,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
 					//map = 288823;
-					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //Мир
-					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
-					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Точка входа
+					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //World
+					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Zone
+					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Entry-Pointа
 					this.InGameClient.Game.WorldOfPortalNephalem = map;
 
 					while (true)
@@ -1821,7 +1821,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				default:
 					this.InGameClient.Game.NephalemGreaterLevel = message.Field0;
 
-					Logger.Debug("Вызов нефалемского портала (Уровень: {0})", message.Field0);
+					Logger.Debug("Calling Nephalem Portal (Level: {0})", message.Field0);
 					Activated = false;
 					foreach (var oldp in this.World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }
 
@@ -1830,9 +1830,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					//disable banner while greater is active enable once boss is killed or portal is closed /advocaite
 					this.Attributes[GameAttributeB.Banner_Usable] = false;
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
-					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //Мир
-					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
-					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Точка входа
+					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //World
+					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Zone
+					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Entry-Pointа
 					this.InGameClient.Game.WorldOfPortalNephalem = map;
 
 					NephalemPWorld = this.InGameClient.Game.GetWorld(map);

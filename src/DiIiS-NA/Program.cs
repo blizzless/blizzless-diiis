@@ -221,10 +221,10 @@ namespace DiIiS_NA
             if (e.IsTerminating)
             {
                 Logger.Error(ex.StackTrace);
-                Logger.FatalException(ex, "Была обнаружена корневая ошибка сервера, отключение.");
+                Logger.FatalException(ex, "A root error of the server was detected, disconnection.");
             }
             else
-                Logger.ErrorException(ex, "Перехвачена корневая ошибка, но была предотвращена.");
+                Logger.ErrorException(ex, "A root error of the server was detected but was handled.");
 
             Console.ReadLine();
         }

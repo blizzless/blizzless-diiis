@@ -42,31 +42,31 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (NearestPortal != null)
 			{
 				NearestPortal.SetVisible(false);
-				foreach (var plr in this.World.Players.Values)
+				foreach (var plr in World.Players.Values)
 					NearestPortal.Unreveal(plr);
 			}
 		}
 
 		public override bool Reveal(Player player)
 		{
-			if (this.SNO == ActorSno._trout_cultists_summoning_portal_b) return false;
-			if (this.SNO == ActorSno._a2dun_aqd_godhead_door_largepuzzle && this.World.SNO != WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //dakab door
-			if (this.SNO == ActorSno._a2dun_aqd_godhead_door && this.World.SNO == WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //not dakab door
+			if (SNO == ActorSno._trout_cultists_summoning_portal_b) return false;
+			if (SNO == ActorSno._a2dun_aqd_godhead_door_largepuzzle && World.SNO != WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //dakab door
+			if (SNO == ActorSno._a2dun_aqd_godhead_door && World.SNO == WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large) return false; //not dakab door
 
-			if (this.SNO == ActorSno._a2dun_zolt_random_portal_timed) //Treasure Room door
-				this.isOpened = true;
+			if (SNO == ActorSno._a2dun_zolt_random_portal_timed) //Treasure Room door
+				isOpened = true;
 
-			if (this.SNO == ActorSno._caout_oasis_mine_entrance_a && (float)DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.3f) //Mysterious Cave door
-				this.isOpened = true;
+			if (SNO == ActorSno._caout_oasis_mine_entrance_a && (float)DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() < 0.3f) //Mysterious Cave door
+				isOpened = true;
 
 			if (!base.Reveal(player))
 				return false;
 
-			if (this.isOpened == true)
+			if (isOpened == true)
 			{
 				player.InGameClient.SendMessage(new SetIdleAnimationMessage
 				{
-					ActorID = this.DynamicID(player),
+					ActorID = DynamicID(player),
 					AnimationSNO = AnimationSetKeys.Open.ID
 				});
 			}
@@ -79,7 +79,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				if (NearestPortal != null)
 				{
 					NearestPortal.SetVisible(false);
-					foreach (var plr in this.World.Players.Values)
+					foreach (var plr in World.Players.Values)
 						NearestPortal.Unreveal(plr);
 				}
 			}
@@ -90,7 +90,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimReason = 5,
 				UnitAniimStartTime = 0,
 				tAnim = new PlayAnimationMessageSpec[]
@@ -115,24 +115,24 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimationSNO = AnimationSetKeys.Open.ID
 			}, this);
 
-			this.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			this.Attributes[GameAttribute.Gizmo_State] = 1;
-			this.CollFlags = 0;
-			this.isOpened = true;
+			Attributes[GameAttribute.Gizmo_State] = 1;
+			CollFlags = 0;
+			isOpened = true;
 
-			TickerSystem.TickTimer Timeout = new TickerSystem.SecondsTickTimer(this.World.Game, 1.8f);
+			TickerSystem.TickTimer Timeout = new TickerSystem.SecondsTickTimer(World.Game, 1.8f);
 			if (NearestPortal != null)
 			{
-				var Boom = System.Threading.Tasks.Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
+				var Boom = Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
 				Boom.ContinueWith(delegate
 				{
 					NearestPortal.SetVisible(true);
-					foreach (var plr in this.World.Players.Values)
+					foreach (var plr in World.Players.Values)
 						NearestPortal.Unreveal(plr);
 				});
 			}
@@ -142,11 +142,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (this.Attributes[GameAttribute.Disabled]) return;
-			this.Open();
+			if (Attributes[GameAttribute.Disabled]) return;
+			Open();
             
 			base.OnTargeted(player, message);
-			this.Attributes[GameAttribute.Disabled] = true;
+			Attributes[GameAttribute.Disabled] = true;
 		}
 
 		private bool WaitToSpawn(TickerSystem.TickTimer timer)

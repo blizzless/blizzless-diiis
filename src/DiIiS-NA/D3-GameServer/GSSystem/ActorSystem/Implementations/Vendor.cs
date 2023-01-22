@@ -98,9 +98,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Vendor(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.TeamID] = 0;
-			this.Attributes[GameAttribute.MinimapActive] = true;
-			this.level = this.World.Game.InitialMonsterLevel;
+			Attributes[GameAttribute.TeamID] = 0;
+			Attributes[GameAttribute.MinimapActive] = true;
+			level = World.Game.InitialMonsterLevel;
 			_vendorGrid = new InventoryGrid(this, 1, 20, (int)EquipmentSlotId.Vendor);
 			PopulateItems();
 		}
@@ -113,7 +113,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		protected virtual List<Item> GetVendorItems()
 		{
-            if (_peddlers.Contains(this.SNO))
+            if (_peddlers.Contains(SNO))
 			{
 				return new List<Item>
 				{
@@ -123,18 +123,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			return new List<Item>
 			{
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 7),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 7),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 7),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 6),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 6),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 6),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 5),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 5),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 5),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 5),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 5),
-				ItemGenerator.GenerateRandomEquip(this, this.level, 3, 5),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 7),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 7),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 7),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 6),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 6),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 6),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 5),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 5),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 5),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 5),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 5),
+				ItemGenerator.GenerateRandomEquip(this, level, 3, 5),
 
 				ItemGenerator.GenerateRandomDye(this),
 				ItemGenerator.GenerateRandomDye(this),
@@ -182,7 +182,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			base.OnTargeted(player, message);
 			//player.RefreshReveal();
 			_vendorGrid.Reveal(player);
-			player.InGameClient.SendMessage(new OpenTradeWindowMessage((int)this.DynamicID(player)));
+			player.InGameClient.SendMessage(new OpenTradeWindowMessage((int)DynamicID(player)));
 		}
 
 		public virtual void OnRequestBuyItem(Player player, uint itemId)
@@ -329,7 +329,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				item.Unreveal(player);
 				item.Reveal(player);
 			}
-			player.InGameClient.SendMessage(new OpenTradeWindowMessage((int)this.DynamicID(player)));
+			player.InGameClient.SendMessage(new OpenTradeWindowMessage((int)DynamicID(player)));
 		}
 
 		public void AddBuybackItem(Item item, Player player)
@@ -362,13 +362,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			try
 			{
 				if (Visible)
-					if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale * this.Scale && !_collapsed)
+					if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale * Scale && !_collapsed)
 					{
 						_collapsed = true;
 
 						int convId = -1;
 
-						switch (this.SNO)
+						switch (SNO)
 						{
 							//A1
 							//Miner

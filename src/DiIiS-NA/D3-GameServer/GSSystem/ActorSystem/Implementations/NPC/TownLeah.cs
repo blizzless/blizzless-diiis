@@ -32,18 +32,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			var monsterLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][19760].Data;
 			var monsterData = (Monster.Target as MonsterFF);
 
-			this.Attributes[GameAttribute.Level] = 1;
-			this.Attributes[GameAttribute.Hitpoints_Max] = 100000;
-			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-			this.Attributes[GameAttribute.Attacks_Per_Second] = 1.2f;
-			this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
-			this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
-			this.WalkSpeed = 0.3f * monsterData.AttributeModifiers[129];
+			Attributes[GameAttribute.Level] = 1;
+			Attributes[GameAttribute.Hitpoints_Max] = 100000;
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttribute.Attacks_Per_Second] = 1.2f;
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
+			WalkSpeed = 0.3f * monsterData.AttributeModifiers[129];
 		}
 
 		protected override void ReadTags()
 		{
-			if (!Tags.ContainsKey(MarkerKeys.ConversationList) && this.World.Game.CurrentQuest == 87700)
+			if (!Tags.ContainsKey(MarkerKeys.ConversationList) && World.Game.CurrentQuest == 87700)
 			{
 				Tags.Add(MarkerKeys.ConversationList, new TagMapEntry(MarkerKeys.ConversationList.ID, 108832, 2));
 			}
@@ -53,10 +53,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void Update(int tickCounter)
 		{
-			if (this.Brain == null)
+			if (Brain == null)
 				return;
 
-			this.Brain.Update(tickCounter);
+			Brain.Update(tickCounter);
 		}
 	}
 }

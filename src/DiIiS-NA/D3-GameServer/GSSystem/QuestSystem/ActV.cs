@@ -72,16 +72,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					}
 			}
 			else
-				Logger.Warn("Не удалось присвоить диалог для NPC.");
+				Logger.Warn("Failed to assign a dialog for NPC.");
 		}
 		public static void RemoveConversations(Actor actor)
 		{
-			var NPC = actor as InteractiveNPC;
-			if (NPC != null)
+			if (actor is InteractiveNPC npc)
 			{
-				NPC.Conversations.Clear();
-				NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
-				NPC.Attributes.BroadcastChangedIfRevealed();
+				npc.Conversations.Clear();
+				npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				npc.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
 

@@ -40,22 +40,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public LegendaryChest(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.NameSNO = ActorSno._caout_stingingwinds_chest;
-			this.Field7 = 1;
+			NameSNO = ActorSno._caout_stingingwinds_chest;
+			Field7 = 1;
 		}
 
 		public override bool Reveal(Player player)
 		{
-			if (!this.ChestActive) return false;
+			if (!ChestActive) return false;
 			return base.Reveal(player);
 		}
 
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (this.Attributes[GameAttribute.Disabled]) return;
+			if (Attributes[GameAttribute.Disabled]) return;
 
-			int chance = this.World.Game.IsHardcore ? 99 : 25; //S4 special
+			int chance = World.Game.IsHardcore ? 99 : 25; //S4 special
 			/*
 			if (!player.Inventory.HasItem(-110888638) || (!this.World.Game.IsHardcore && !player.Inventory.HasGold(250000)))
 			{
@@ -68,16 +68,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				//player.InGameClient.SendMessage(new BroadcastTextMessage() { Field0 = string.Format("Legendary Chest has been opened. 1 Chain Key {0}consumed.", (this.World.Game.IsHardcore ? "" : "and 250k gold ")) });
 
 				player.Inventory.GetBag().GrabSomeItems(-110888638, 1);
-				if (!this.World.Game.IsHardcore)
+				if (!World.Game.IsHardcore)
 					player.Inventory.RemoveGoldAmount(250000);
 				if (FastRandom.Instance.Next(100) < chance)
-					this.World.SpawnRandomEquip(player, player, LootManager.Epic, player.Level);
+					World.SpawnRandomEquip(player, player, LootManager.Epic, player.Level);
 				else
-					this.World.SpawnRandomEquip(player, player, LootManager.Rare, player.Level);
+					World.SpawnRandomEquip(player, player, LootManager.Rare, player.Level);
 
 				var toon = player.Toon.DBToon;
 				toon.ChestsOpened++;
-				this.World.Game.GameDBSession.SessionUpdate(toon);
+				World.Game.GameDBSession.SessionUpdate(toon);
 			}
 
 			base.OnTargeted(player, message);

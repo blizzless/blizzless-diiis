@@ -74,47 +74,47 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			: base(world, sno, tags)
 		{
 			// The following two seems to be shared with monsters. One wonders why there isn't a specific actortype for minions.
-			this.Master = master;
-			this.Field2 = 0x8;
-			this.GBHandle.Type = (int)ActorType.Monster; this.GBHandle.GBID = 1;
+			Master = master;
+			Field2 = 0x8;
+			GBHandle.Type = (int)ActorType.Monster; GBHandle.GBID = 1;
 			QuestFollower = QuestFollow;
 			var monsterLevels = (GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.GameBalance][19760].Data;
 			if (Revived)
 				LifeTime = TickTimer.WaitSeconds(world.Game, 15f);
-			this.Attributes[GameAttribute.Level] = master.Attributes[GameAttribute.Level];
+			Attributes[GameAttribute.Level] = master.Attributes[GameAttribute.Level];
 			if (!QuestFollower)
 			{
 				//this.Attributes[GameAttribute.Hitpoints_Max] = monsterLevels.MonsterLevel[this.Attributes[GameAttribute.Level]].F0;
-				this.Attributes[GameAttribute.Hitpoints_Max] = 1000f + (this.Attributes[GameAttribute.Level] * 150f) + (this.Attributes[GameAttribute.Alt_Level] * 150f) + (master.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.35f);
-				this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max];
-				this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
-				this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = 1f;
+				Attributes[GameAttribute.Hitpoints_Max] = 1000f + (Attributes[GameAttribute.Level] * 150f) + (Attributes[GameAttribute.Alt_Level] * 150f) + (master.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.35f);
+				Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max];
+				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
+				Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = 1f;
 			}
-			this.Attributes[GameAttribute.Weapon_Crit_Chance] = master.Attributes[GameAttribute.Weapon_Crit_Chance];
-			this.Attributes[GameAttribute.Crit_Damage_Percent] = master.Attributes[GameAttribute.Crit_Damage_Percent];
-			this.Attributes[GameAttribute.Crit_Percent_Bonus_Capped] = master.Attributes[GameAttribute.Crit_Percent_Bonus_Capped];
+			Attributes[GameAttribute.Weapon_Crit_Chance] = master.Attributes[GameAttribute.Weapon_Crit_Chance];
+			Attributes[GameAttribute.Crit_Damage_Percent] = master.Attributes[GameAttribute.Crit_Damage_Percent];
+			Attributes[GameAttribute.Crit_Percent_Bonus_Capped] = master.Attributes[GameAttribute.Crit_Percent_Bonus_Capped];
 			//this.Attributes[GameAttribute.Attack_Percent] = master.Attributes[GameAttribute.Attack_Bonus_Percent];
-			this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = master.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];
-			this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0];
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] = master.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0];
 
-			if (this.Master is Player)
+			if (Master is Player)
 			{
-				this.PrimaryAttribute = (this.Master as Player).PrimaryAttribute;
+				PrimaryAttribute = (Master as Player).PrimaryAttribute;
 			}
 
-			this._lastResourceUpdateTick = 0;
+			_lastResourceUpdateTick = 0;
 
 			if (master != null)
 			{
 				//this.Attributes[GameAttribute.Summoned_By_ACDID] = (int)master.DynamicID;
-				this.Attributes[GameAttribute.TeamID] = master.Attributes[GameAttribute.TeamID];
+				Attributes[GameAttribute.TeamID] = master.Attributes[GameAttribute.TeamID];
 				if (master is Player)
 				{
-					if ((master as Player).Followers.Values.Count(a => a == sno) >= this.SummonLimit)
+					if ((master as Player).Followers.Values.Count(a => a == sno) >= SummonLimit)
 						(master as Player).DestroyFollower(sno);
 
 					(master as Player).SetFollowerIndex(sno);
-					(master as Player).Followers.Add(this.GlobalID, sno);
+					(master as Player).Followers.Add(GlobalID, sno);
 				}
 			}
 		}
@@ -125,49 +125,49 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void Update(int tickCounter)
 		{
-			if (this.Brain == null || this.World == null)
+			if (Brain == null || World == null)
 				return;
 
-			this.Brain.Update(tickCounter);
+			Brain.Update(tickCounter);
 
-			if (this.World.Game.TickCounter % 30 == 0 && !this.Dead)
+			if (World.Game.TickCounter % 30 == 0 && !Dead)
 			{
-				float tickSeconds = 1f / 60f * (this.World.Game.TickCounter - _lastResourceUpdateTick);
-				_lastResourceUpdateTick = this.World.Game.TickCounter;
+				float tickSeconds = 1f / 60f * (World.Game.TickCounter - _lastResourceUpdateTick);
+				_lastResourceUpdateTick = World.Game.TickCounter;
 				if (!QuestFollower)
 				{
-					float quantity = tickSeconds * this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second];
+					float quantity = tickSeconds * Attributes[GameAttribute.Hitpoints_Regen_Per_Second];
 
-					if (this.Attributes[GameAttribute.Hitpoints_Cur] < this.Attributes[GameAttribute.Hitpoints_Max_Total])
+					if (Attributes[GameAttribute.Hitpoints_Cur] < Attributes[GameAttribute.Hitpoints_Max_Total])
 					{
-						this.Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
-							this.Attributes[GameAttribute.Hitpoints_Cur] + quantity,
-							this.Attributes[GameAttribute.Hitpoints_Max_Total]);
+						Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
+							Attributes[GameAttribute.Hitpoints_Cur] + quantity,
+							Attributes[GameAttribute.Hitpoints_Max_Total]);
 
-						this.Attributes.BroadcastChangedIfRevealed();
+						Attributes.BroadcastChangedIfRevealed();
 					}
 				}
 			}
 
-			if (this.LifeTime != null && this.LifeTime.TimedOut)
+			if (LifeTime != null && LifeTime.TimedOut)
 			{
-				if (this.Master != null && this.Master is Player)
+				if (Master != null && Master is Player)
 				{
-					(this.Master as Player).Followers.Remove(this.GlobalID);
-					(this.Master as Player).FreeFollowerIndex(this.SNO);
-					(this.Master as Player).Revived.Remove(this);
+					(Master as Player).Followers.Remove(GlobalID);
+					(Master as Player).FreeFollowerIndex(SNO);
+					(Master as Player).Revived.Remove(this);
 				}
-				(this.Master as Player).InGameClient.SendMessage(new PetDetachMessage()
+				(Master as Player).InGameClient.SendMessage(new PetDetachMessage()
 				{
-					PetId = this.DynamicID(this.Master as Player)
+					PetId = DynamicID(Master as Player)
 				});
 				if (this is SkeletalMage)
 				{
 					if ((this as SkeletalMage).Rune_Flesh)
-						this.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, this.Position);
+						World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, Position);
 				}
 				
-				this.Destroy();
+				Destroy();
 				//PetAwayMessage
 				//this.Kill();
 				return;
@@ -176,7 +176,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void SetBrain(AISystem.Brain brain)
 		{
-			this.Brain = brain;
+			Brain = brain;
 		}
 
 		public void AddPresetPower(int powerSNO)
@@ -194,7 +194,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					Owner = player.PlayerIndex,
 					Index = 1,
-					PetId = this.DynamicID(player),
+					PetId = DynamicID(player),
 					Type = 0x18,
 				});
 			}
@@ -223,12 +223,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				
 
-				if (player.GlobalID == this.Master.GlobalID && !(this is CorpseSpider || this is CorpseSpiderQueen))
+				if (player.GlobalID == Master.GlobalID && !(this is CorpseSpider || this is CorpseSpiderQueen))
 					player.InGameClient.SendMessage(new PetMessage()
 					{
 						Owner = player.PlayerIndex,
-						Index = isGolem ? 9 : player.CountFollowers(this.SNO) + PlusIndex,
-						PetId = this.DynamicID(player),
+						Index = isGolem ? 9 : player.CountFollowers(SNO) + PlusIndex,
+						PetId = DynamicID(player),
 						Type = TypeID,
 					});
 			}
@@ -244,7 +244,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if(IsRevealedToPlayer(player))
 				player.InGameClient.SendMessage(new PetDetachMessage()
 				{
-					PetId = this.DynamicID(player),
+					PetId = DynamicID(player),
 				});
 			}
 
