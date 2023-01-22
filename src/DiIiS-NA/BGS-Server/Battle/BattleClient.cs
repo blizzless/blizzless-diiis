@@ -1,4 +1,5 @@
-﻿//Blizzless Project 2022
+﻿#define LOG_KEEP_ALIVE
+
 //Blizzless Project 2022 
 using bgs.protocol;
 //Blizzless Project 2022 
@@ -40,7 +41,6 @@ using System.Net.Security;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
 
-
 namespace DiIiS_NA.LoginServer.Battle
 {
     public class BattleClient : SimpleChannelInboundHandler<BNetPacket>, IRpcChannel
@@ -55,19 +55,16 @@ namespace DiIiS_NA.LoginServer.Battle
 		public IRpcController ListenerController;
 		private uint _tokenCounter = 0;
 		public static bgs.protocol.NO_RESPONSE NO_RESPONSE = bgs.protocol.NO_RESPONSE.CreateBuilder().Build();
-		private Dictionary<int, RPCCallBack> pendingResponses = new Dictionary<int, RPCCallBack>();
+		private readonly Dictionary<int, RPCCallBack> _pendingResponses = new Dictionary<int, RPCCallBack>();
 		public bgs.protocol.v2.Attribute AttributeOfServer { get; set; }
 
 		public Account Account { get; set; }
-		public bool MMJoined = false;
 		public const byte ServiceReply = 0xFE;
 		public SslStream ssl = null;
 		private static int REQUEST_SERVICE_ID = 0;
 		private static int RESPONSE_SERVICE_ID = 254;
-		public ulong LastPartitionIdHigh = 0; //HACK: fix it later
-		public ulong LastPartitionIdLow = 0;
 		//public object clientLock = new object();
-		public object serviceLock = new object();
+		public object _serviceLock = new object();
 		public object messageLock = new object();
 		private ulong _listenerId; // last targeted rpc object.
 		public bool MOTDSent { get; private set; }
@@ -172,8 +169,8 @@ namespace DiIiS_NA.LoginServer.Battle
 
 			if (msg.GetHeader().ServiceId == RESPONSE_SERVICE_ID)
 			{
-				if (pendingResponses.Count == 0) return;
-				RPCCallBack done = pendingResponses[(int)header.Token];
+				if (_pendingResponses.Count == 0) return;
+				RPCCallBack done = _pendingResponses[(int)header.Token];
 				if (done != null)
 				{
 					var service = Service.GetByID(header.ServiceId);
@@ -181,7 +178,7 @@ namespace DiIiS_NA.LoginServer.Battle
 					{
 						IMessage message = DescriptorProto.ParseFrom(payload);
 						done.Action(message);
-						pendingResponses.Remove((int)header.Token);
+						_pendingResponses.Remove((int)header.Token);
 					}
 					else
 						Logger.Debug(
@@ -283,8 +280,13 @@ namespace DiIiS_NA.LoginServer.Battle
 									ListenerId = 0
 								};
 #if DEBUG
-								Logger.Warn("Call: {0}, Service hash: {1}, Method: {2}, ID: {3}",
-									service.GetType().Name, header.ServiceHash, method.Name, header.MethodId);
+								#if !LOG_KEEP_ALIVE
+								if (method.Name != "KeepAlive")
+								#endif
+								{
+									Logger.Warn("Call: {0}, Service hash: {1}, Method: {2}, ID: {3}",
+										service.GetType().Name, header.ServiceHash, method.Name, header.MethodId);
+								}
 #endif
 
 								service.CallMethod(method, controller, message,
@@ -445,7 +447,8 @@ namespace DiIiS_NA.LoginServer.Battle
 
 			if (!this.Services.ContainsKey(serviceHash))
 			{
-				Logger.Warn("Не найден сервис привязанный к клиенту {0} [0x{1}].", serviceName, serviceHash.ToString("X8"));
+				Logger.Warn("Service not found for client {0} [0x{1}].", serviceName, serviceHash.ToString("X8"));
+				// in english: "Service not found for client {0} [0x{1}]."
 				return;
 			}
 

@@ -181,7 +181,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			Task.Run(() =>
 			{
-				lock (client.serviceLock)
+				lock (client._serviceLock)
 				{
 					Logger.Trace("GrantAchievement(): id {0}", achievementId);
 					if (client.Account.GameAccount.Achievements.Where(a => a.AchievementId == achievementId && a.Completion != -1).Count() > 0) return;
@@ -246,7 +246,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			Task.Run(() =>
 			{
-				lock (client.serviceLock)
+				lock (client._serviceLock)
 				{
 					Logger.Trace("GrantCriteria(): id {0}", criteriaId);
 					D3.AchievementsStaticData.StaticCriteriaDefinition definition = null;
@@ -381,7 +381,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			Task.Run(() =>
 			{
-				lock (client.serviceLock)
+				lock (client._serviceLock)
 				{
 					if (additionalQuantity == 0) return;
 					Logger.Trace("UpdateQuantity(): id {0}", achievementId);
