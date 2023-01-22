@@ -801,11 +801,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						foreach (var wall in wrld.GetActorsBySNO(ActorSno._trdun_cath_bonewall_a_door))
 							if (wall.Position.Z > -23f)
 							{
-								Wall.PlayAnimation(11, AnimationSno.trdun_cath_bonewall_a_death);
-								Wall.Attributes[GameAttribute.Deleted_On_Server] = true;
-								Wall.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
-								Wall.Attributes.BroadcastChangedIfRevealed();
-								Wall.Destroy();
+								wall.PlayAnimation(11, AnimationSno.trdun_cath_bonewall_a_death);
+								wall.Attributes[GameAttribute.Deleted_On_Server] = true;
+								wall.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
+								wall.Attributes.BroadcastChangedIfRevealed();
+								wall.Destroy();
 							}
 
 						break;
