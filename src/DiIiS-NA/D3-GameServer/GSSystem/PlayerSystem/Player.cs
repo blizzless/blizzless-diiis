@@ -316,7 +316,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				_activeHireling = value;
 			}
 		}
-		public Hireling SetQuestHireling
+		public Hireling QuestHireling
 		{
 			get { return _questHireling; }
 			set

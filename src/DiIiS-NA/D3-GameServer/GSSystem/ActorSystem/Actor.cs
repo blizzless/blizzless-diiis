@@ -51,6 +51,8 @@ using System.Collections.Generic;
 using System.Drawing;
 //Blizzless Project 2022 
 using System.Linq;
+using DiIiS_NA.Core.MPQ;
+using Player = DiIiS_NA.GameServer.GSSystem.PlayerSystem.Player;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -63,15 +65,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// </summary>
 		public SNOHandle ActorSNO { get; private set; }
 		
-		public ActorSno SNO
-		{
-			get { return (ActorSno)ActorSNO.Id; }
-		}
+		public ActorSno SNO => (ActorSno)ActorSNO.Id;
 
-		public string Name
-        {
-			get { return ActorSNO.Name; }
-        }
+		public string Name => ActorSNO.Name;
 
 		/// <summary>
 		/// Gets or sets the sno of the actor used to identify the actor to the player
@@ -201,7 +197,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			get
 			{
-				return (DiIiS_NA.Core.MPQ.FileFormats.Actor)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Actor][(int)SNO].Data;
+				return (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][(int)SNO].Data;
 			}
 		}
 
@@ -213,7 +209,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			get
 			{
 				if (ActorData.AnimSetSNO != -1)
-					return (DiIiS_NA.Core.MPQ.FileFormats.AnimSet)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.AnimSet][ActorData.AnimSetSNO].Data;
+					return (DiIiS_NA.Core.MPQ.FileFormats.AnimSet)MPQStorage.Data.Assets[SNOGroup.AnimSet][ActorData.AnimSetSNO].Data;
 				else
 					return null;
 			}
@@ -310,12 +306,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				Logger.WarnException(e, "quest_OnQuestProgress exception: ");
 			}
 		}
-
+		private bool _isDestroyed = false;
+		
 		/// <summary>
 		/// Unregister from quest events when object is destroyed 
 		/// </summary>
 		public override void Destroy()
 		{
+			if (_isDestroyed) return;
 			if (SNO == ActorSno._p6_necro_corpse_flesh)
 				if (World != null)
 					foreach (var plr in World.Game.Players.Values)
@@ -338,7 +336,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public virtual void EnterWorld(Vector3D position)
 		{
-			var Quest = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Quest][74128];
+			var Quest = MPQStorage.Data.Assets[SNOGroup.Quest][74128];
 
 			if (World != null)
 			{
@@ -363,16 +361,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 		}
 
-		public virtual void BeforeChangeWorld()
-		{
+		public virtual void BeforeChangeWorld() {}
 
-		}
-
-		public virtual void AfterChangeWorld()
-		{
-
-		}
-
+		public virtual void AfterChangeWorld() {}
 
 		public void ChangeWorld(World world, Vector3D position)
 		{
@@ -403,37 +394,37 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			CheckPointPosition = position;
 			if (this is Player)
-				world.BroadcastIfRevealed((plr => ACDWorldPositionMessage(plr)), this);
+				world.BroadcastIfRevealed((ACDWorldPositionMessage), this);
 			AfterChangeWorld();
 
-			if (this is Player)
+			if (this is Player plr)
 			{
-				Hireling hireling = (this as Player).ActiveHireling;
+				Hireling hireling = plr.ActiveHireling;
 				if (hireling != null)
 				{
-					(hireling as Hireling).Brain.DeActivate();
+					hireling.Brain.DeActivate();
 					hireling.ChangeWorld(world, position);
-					(hireling as Hireling).Brain.Activate();
-					(this as Player).ActiveHireling = hireling;
+					hireling.Brain.Activate();
+					plr.ActiveHireling = hireling;
 				}
-				Hireling questhireling = (this as Player).SetQuestHireling;
-				if (questhireling != null)
+				Hireling questHireling = plr.QuestHireling;
+				if (questHireling != null)
 				{
-					(questhireling as Hireling).Brain.DeActivate();
-					questhireling.ChangeWorld(world, position);
-					(questhireling as Hireling).Brain.Activate();
-					(this as Player).SetQuestHireling = questhireling;
+					questHireling.Brain.DeActivate();
+					questHireling.ChangeWorld(world, position);
+					questHireling.Brain.Activate();
+					plr.QuestHireling = questHireling;
 				}
-				foreach (var fol in (this as Player).Followers.Keys.ToList())
+				foreach (var fol in plr.Followers.Keys.ToList())
 				{
 					var minion = prevWorld.GetActorByGlobalId(fol);
-					if (minion != null)
+					if (minion is Minion m)
 					{
-						(minion as Minion).Brain.DeActivate();
-						(this as Player).Followers.Remove(fol);
+						m.Brain.DeActivate();
+						plr.Followers.Remove(fol);
 						minion.ChangeWorld(world, position);
-						(this as Player).Followers.Add(minion.GlobalID, minion.SNO);
-						(minion as Minion).Brain.Activate();
+						plr.Followers.Add(minion.GlobalID, minion.SNO);
+						m.Brain.Activate();
 					}
 				}
 				
@@ -455,10 +446,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public void Teleport(Vector3D position)
 		{
 			Position = position;
-			if (this is Player)
+			if (this is Player player)
 			{
-				(this as Player).BetweenWorlds = true;
-				(this as Player).InGameClient.SendMessage(new ACDTranslateSyncMessage()
+				player.BetweenWorlds = true;
+				player.InGameClient.SendMessage(new ACDTranslateSyncMessage()
 				{
 					ActorId = DynamicID(this as Player),
 					Position = Position
@@ -476,46 +467,40 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 
 			OnTeleport();
-			World.BroadcastIfRevealed(plr => ACDWorldPositionMessage(plr), this);
-			if (this is Player)
+			World.BroadcastIfRevealed(ACDWorldPositionMessage, this);
+			if (this is Player plr)
 			{
-				(this as Player).BetweenWorlds = false;
-			}
-
-			if (this is Player)
-			{
-				var hireling = (this as Player).ActiveHireling;
+				var hireling = plr.ActiveHireling;
 				if (hireling != null)
 				{
 					(hireling as Hireling).Brain.DeActivate();
 					hireling.Position = position;
 					(hireling as Hireling).Brain.Activate();
 				}
-				var questhireling = (this as Player).SetQuestHireling;
-				if (questhireling != null)
+				var questHireling = plr.QuestHireling;
+				if (questHireling != null)
 				{
-					(questhireling as Hireling).Brain.DeActivate();
-					questhireling.Position = position;
-					(questhireling as Hireling).Brain.Activate();
+					questHireling.Brain.DeActivate();
+					questHireling.Position = position;
+					questHireling.Brain.Activate();
 				}
-				foreach (var fol in (this as Player).Followers)
+				foreach (var fol in plr.Followers)
 				{
-					var minion = World.GetActorByGlobalId(fol.Key);
-					if (minion != null)
+					if (World.GetActorByGlobalId(fol.Key) is Minion minion)
 					{
-						(minion as Minion).Brain.DeActivate();
+						minion.Brain.DeActivate();
 						World.GetActorByGlobalId(fol.Key).Position = position;
-						(minion as Minion).Brain.Activate();
+						minion.Brain.Activate();
 					}
 				}
 
-				(this as Player).RevealActorsToPlayer();
-				(this as Player).ReRevealPlayersToPlayer();
+				plr.RevealActorsToPlayer();
+				plr.ReRevealPlayersToPlayer();
 				Attributes[GameAttribute.Looping_Animation_Start_Time] = -1;
 				Attributes[GameAttribute.Looping_Animation_End_Time] = -1;
 				Attributes.BroadcastChangedIfRevealed();
 				//Refresh Inventory
-				(this as Player).Inventory.RefreshInventoryToClient();
+				plr.Inventory.RefreshInventoryToClient();
 			}
 		}
 
@@ -541,18 +526,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public void Unstuck()
 		{
 			if (World == null) return;
-			Vector3D correctPosition = null;
 			for (int i = 1; i <= 8; i++)
 			{
 				int radius = (int)Math.Pow(2, i);
 				for (int a = 0; a < 8; a++)
 				{
 					float angle = (float)((0.125f * a) * (Math.PI * 2));
-					correctPosition = Position + new Vector3D((float)Math.Cos(angle) * radius, (float)Math.Sin(angle) * radius, 0);
+					Vector3D correctPosition = Position + new Vector3D((float)Math.Cos(angle) * radius, (float)Math.Sin(angle) * radius, 0);
 					if (World.CheckLocationForFlag(correctPosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 					{
 						Position = correctPosition;
-						World.BroadcastIfRevealed(plr => ACDWorldPositionMessage(plr), this);
+						World.BroadcastIfRevealed(ACDWorldPositionMessage, this);
 						return;
 					}
 				}
@@ -565,6 +549,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void PlayEffectGroup(int effectGroupSNO)
 		{
+			#if DEBUG
+			if (Dicts.DictSNOEffectGroup.ContainsValue(effectGroupSNO))
+			{
+				var effectGroupKey = Dicts.DictSNOEffectGroup.FirstOrDefault(x => x.Value == effectGroupSNO).Key;
+				Logger.Warn($"PlayEffectGroup {effectGroupSNO} on {GetType().Name}. Type: {effectGroupKey}");
+			}
+			else
+			{
+				Logger.Warn($"PlayEffectGroup {effectGroupSNO} on {GetType().Name}. Type: Unknown");
+			}
+			#endif
 			PlayEffect(Effect.PlayEffectGroup, effectGroupSNO);
 		}
 
@@ -612,7 +607,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					ActorId = DynamicID(this as Player),
 					Effect = effect,
 					OptionalParameter = param,
-					PlayerId = this is Player ? (this as Player).PlayerIndex : null
+					PlayerId = (this as Player)?.PlayerIndex
 				});
 			}
 		}
@@ -676,20 +671,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			if (this is Monster)
 			{
-				var Anim =
-					(DiIiS_NA.Core.MPQ.FileFormats.Anim)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Anim][
+				var anim =
+					(DiIiS_NA.Core.MPQ.FileFormats.Anim)MPQStorage.Data.Assets[SNOGroup.Anim][
 						animationSNO].Data;
-
-				if ((this as Monster).Brain != null)
-				{
-					//(this as Monster).Brain.DeActivate();
-					/*
-                    System.Threading.Tasks.Task.Delay(1200).ContinueWith(delegate
-					{
-						(this as Monster).Brain.Activate();
-					});
-					//*/
-				}
 
 				World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 				{
@@ -724,7 +708,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				{
 					new()
 					{
-						Duration = ticksToPlay.HasValue ? ticksToPlay.Value : -2,  // -2 = play animation once through
+						Duration = ticksToPlay ?? -2,  // -2 = play animation once through
 						AnimationSNO = animationSNO,
 						PermutationIndex = 0x0,  // TODO: implement variations?
 						AnimationTag = 0,
@@ -1135,112 +1119,86 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		#region circurlar region queries
 
-		public List<Player> GetPlayersInRange(float radius = -1)
+		public List<Player> GetPlayersInRange(float? radius = null)
 		{
-			if (radius == -1) radius = DefaultQueryProximityRadius;
+			radius ??= DefaultQueryProximityRadius;
 			return GetObjectsInRange<Player>(radius);
 		}
 
-		public List<Item> GetItemsInRange(float radius = -1)
+		public List<Item> GetItemsInRange(float? radius = null)
 		{
-			if (radius == -1) radius = DefaultQueryProximityRadius;
+			radius ??= DefaultQueryProximityRadius;
 			return GetObjectsInRange<Item>(radius);
 		}
 
-		public List<Monster> GetMonstersInRange(float radius = -1)
+		public List<Monster> GetMonstersInRange(float? radius = null)
 		{
-			if (radius == -1) radius = DefaultQueryProximityRadius;
+			radius ??= DefaultQueryProximityRadius;
 			return GetObjectsInRange<Monster>(radius);
 		}
 
-		public List<Actor> GetActorsInRange(float radius = -1)
+		public List<Actor> GetActorsInRange(float? radius = null)
 		{
-			if (radius == -1) radius = DefaultQueryProximityRadius;
+			radius ??= DefaultQueryProximityRadius;
 			if (World == null || Position == null) return new List<Actor>();
 
 			return GetObjectsInRange<Actor>(radius);
 		}
 
-		public List<Actor> GetActorsInRange(Vector3D TPosition, float radius = -1)
+		public List<Actor> GetActorsInRange(Vector3D TPosition, float? radius = null)
 		{
-			if (radius == -1) radius = DefaultQueryProximityRadius;
+			radius ??= DefaultQueryProximityRadius;
 			return GetObjectsInRange<Actor>(TPosition, radius);
 		}
 
-		public List<T> GetObjectsInRange<T>(Vector3D TPosition, float radius) where T : WorldObject
+		public List<T> GetObjectsInRange<T>(Vector3D TPosition, float? radius = null) where T : WorldObject
 		{
-			var proximityCircle = new Circle(TPosition.X, TPosition.Y, radius);
+			var proximityCircle = new Circle(TPosition.X, TPosition.Y, radius ?? DefaultQueryProximityRadius);
 			return World.QuadTree.Query<T>(proximityCircle);
 		}
 
-		public List<T> GetActorsInRange<T>(float radius = -1) where T : Actor
+		public List<T> GetActorsInRange<T>(float? radius = null) where T : Actor
 		{
-			if (radius == -1) radius = DefaultQueryProximityRadius;
+			radius ??= DefaultQueryProximityRadius;
 			return GetObjectsInRange<T>(radius);
 		}
 
-		public List<Scene> GetScenesInRange(float radius = -1)
+		public List<Scene> GetScenesInRange(float? radius = null)
 		{
-			if (radius == -1) radius = DefaultQueryProximityRadius;
+			radius ??= DefaultQueryProximityRadius;
 			return GetObjectsInRange<Scene>(radius);
 		}
 
-		public List<WorldObject> GetObjectsInRange(float radius = -1)
+		public List<WorldObject> GetObjectsInRange(float? radius = null)
 		{
-			if (radius == -1) radius = DefaultQueryProximityRadius;
+			radius ??= DefaultQueryProximityRadius;
 			return GetObjectsInRange<WorldObject>(radius);
 		}
 
-		public List<T> GetObjectsInRange<T>(float radius = -1, bool includeHierarchy = false) where T : WorldObject
+		public List<T> GetObjectsInRange<T>(float? radius = null, bool includeHierarchy = false) where T : WorldObject
 		{
 			if (World == null || Position == null) return new List<T>();
-			if (radius == -1) radius = DefaultQueryProximityRadius;
-			var proximityCircle = new Circle(Position.X, Position.Y, radius);
+			radius ??= DefaultQueryProximityRadius;
+			var proximityCircle = new Circle(Position.X, Position.Y, radius.Value);
 			return World.QuadTree.Query<T>(proximityCircle, includeHierarchy);
 		}
 
 		#endregion
 
 		#region rectangluar region queries
-
-		public List<Player> GetPlayersInRegion(int lenght = DefaultQueryProximityLenght)
-		{
-			return GetObjectsInRegion<Player>(lenght);
-		}
-
-		public List<Item> GetItemsInRegion(int lenght = DefaultQueryProximityLenght)
-		{
-			return GetObjectsInRegion<Item>(lenght);
-		}
-
-		public List<Monster> GetMonstersInRegion(int lenght = DefaultQueryProximityLenght)
-		{
-			return GetObjectsInRegion<Monster>(lenght);
-		}
-
-		public List<Actor> GetActorsInRegion(int lenght = DefaultQueryProximityLenght)
-		{
-			return GetObjectsInRegion<Actor>(lenght);
-		}
-
-		public List<T> GetActorsInRegion<T>(int lenght = DefaultQueryProximityLenght) where T : Actor
-		{
-			return GetObjectsInRegion<T>(lenght);
-		}
-
-		public List<Scene> GetScenesInRegion(int lenght = DefaultQueryProximityLenght)
-		{
-			return GetObjectsInRegion<Scene>(lenght);
-		}
-
-		public List<WorldObject> GetObjectsInRegion(int lenght = DefaultQueryProximityLenght)
-		{
-			return GetObjectsInRegion<WorldObject>(lenght);
-		}
+		public List<Player> GetPlayersInRegion(int lenght = DefaultQueryProximityLenght) => GetObjectsInRegion<Player>(lenght);
+		public List<Item> GetItemsInRegion(int lenght = DefaultQueryProximityLenght) => GetObjectsInRegion<Item>(lenght);
+		public List<Monster> GetMonstersInRegion(int lenght = DefaultQueryProximityLenght) => GetObjectsInRegion<Monster>(lenght);
+		public List<Actor> GetActorsInRegion(int lenght = DefaultQueryProximityLenght) => GetObjectsInRegion<Actor>(lenght);
+		public List<T> GetActorsInRegion<T>(int lenght = DefaultQueryProximityLenght) where T : Actor => GetObjectsInRegion<T>(lenght);
+		public List<Scene> GetScenesInRegion(int lenght = DefaultQueryProximityLenght) => GetObjectsInRegion<Scene>(lenght);
+		public List<WorldObject> GetObjectsInRegion(int lenght = DefaultQueryProximityLenght) => GetObjectsInRegion<WorldObject>(lenght);
 
 		public List<T> GetObjectsInRegion<T>(int lenght = DefaultQueryProximityLenght) where T : WorldObject
 		{
+			// ReSharper disable PossibleLossOfFraction
 			var proximityRectangle = new RectangleF(Position.X - lenght / 2, Position.Y - lenght / 2, lenght, lenght);
+			// ReSharper enable PossibleLossOfFraction
 			return World.QuadTree.Query<T>(proximityRectangle);
 		}
 
@@ -1332,8 +1290,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (Tags.ContainsKey(MarkerKeys.QuestRange))
 			{
 				int snoQuestRange = Tags[MarkerKeys.QuestRange].Id;
-				if (DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.QuestRange].ContainsKey(snoQuestRange))
-					_questRange = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.QuestRange][snoQuestRange].Data as DiIiS_NA.Core.MPQ.FileFormats.QuestRange;
+				if (MPQStorage.Data.Assets[SNOGroup.QuestRange].ContainsKey(snoQuestRange))
+					_questRange = MPQStorage.Data.Assets[SNOGroup.QuestRange][snoQuestRange].Data as DiIiS_NA.Core.MPQ.FileFormats.QuestRange;
 				else Logger.Debug("Actor {0}  GlobalID {1} is tagged with unknown QuestRange {2}", NameSNO, GlobalID, snoQuestRange);
 			}
 
@@ -1343,8 +1301,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				Logger.Trace(" (ReadTags) actor {0} GlobalID {2} has a conversation list {1}", NameSNO, snoConversationList, GlobalID);
 
-				if (DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.ConversationList].ContainsKey(snoConversationList))
-					ConversationList = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.ConversationList][snoConversationList].Data as DiIiS_NA.Core.MPQ.FileFormats.ConversationList;
+				if (MPQStorage.Data.Assets[SNOGroup.ConversationList].ContainsKey(snoConversationList))
+					ConversationList = MPQStorage.Data.Assets[SNOGroup.ConversationList][snoConversationList].Data as DiIiS_NA.Core.MPQ.FileFormats.ConversationList;
 				else
 					if (snoConversationList != -1)
 					Logger.Warn("Actor {0} - Conversation list {1} not found!", NameSNO, snoConversationList);
@@ -1406,7 +1364,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override string ToString()
 		{
-			return string.Format("[Actor] [Type: {0}] SNOId:{1} GlobalId: {2} Position: {3} Name: {4}", ActorType, SNO, GlobalID, Position, Name);
+			return $"[Actor] [Type: {ActorType}] SNOId:{SNO} GlobalId: {GlobalID} Position: {Position} Name: {Name}";
 		}
 	}
 

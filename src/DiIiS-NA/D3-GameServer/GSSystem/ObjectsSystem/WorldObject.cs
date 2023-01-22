@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 {
-	public abstract class WorldObject : DynamicObject, IRevealable
+	public abstract class WorldObject : DynamicObject, IRevealable, IDisposable
 	{
 		/// <summary>
 		/// The world object belongs to.
@@ -35,7 +35,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		/// </summary>
 		public Vector3D Position
 		{
-			get { return _position; }
+			get => _position;
 			set
 			{
 				_position = value;
@@ -108,14 +108,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		{
 			try
 			{
-				if (this is Actor)
+				if (this is Actor actor)
 					if (World != null)
-						World.Leave(this as Actor);
+						World.Leave(actor);
 
 				//this.World.EndTracking(this);
 			}
 			catch { }
 			World = null;
+		}
+
+
+		public void Dispose()
+		{
+			Destroy();
 		}
 	}
 }
