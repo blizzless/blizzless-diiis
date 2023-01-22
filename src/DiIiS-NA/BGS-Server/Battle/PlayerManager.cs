@@ -28,12 +28,29 @@ namespace DiIiS_NA.LoginServer.Battle
 			OnlinePlayers.Add(client);
 		}
 
-		public static BattleClient GetClientbyCID(ulong cid)
+		public static BattleClient GetClientByCID(ulong cid)
 		{
-			foreach (var bc in OnlinePlayers)
-				if (bc.CID == cid)
-					return bc;
-			return null;
+			return OnlinePlayers.FirstOrDefault(bc => bc.CID == cid);
+		}
+
+		public static void SendWhisper(string message)
+		{
+			Broadcast(client =>
+			{
+				client.SendServerWhisper(message);
+			});
+		}
+		
+		public static void Broadcast(Action<BattleClient> action, Func<BattleClient, bool> predicate)
+		{
+			foreach (var client in OnlinePlayers.Where(predicate))
+				action(client);
+		}
+		
+		public static void Broadcast(Action<BattleClient> action)
+		{
+			foreach (var client in OnlinePlayers)
+				action(client);
 		}
 
 		public static void PlayerDisconnected(BattleClient client)
