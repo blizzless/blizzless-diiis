@@ -59,7 +59,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			//this.Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 3.5f;
 			//this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 3.5f;
 
-			MonsterAffixGenerator.Generate(this, Math.Min(this.World.Game.Difficulty + 1, 5));
+			MonsterAffixGenerator.Generate(this, Math.Min(World.Game.Difficulty + 1, 5));
 		}
 
 		public override int Quality

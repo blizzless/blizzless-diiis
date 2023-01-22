@@ -48,9 +48,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public SetDungeon(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            this.Attributes[GameAttribute.TeamID] = 2;
-            this.Attributes[GameAttribute.MinimapActive] = true;
-            this.Attributes.BroadcastChangedIfRevealed();
+            Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes.BroadcastChangedIfRevealed();
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
@@ -99,7 +99,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			try
 			{
-                if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale)// * this.Scale)
+                if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale)// * this.Scale)
                 {
                     if (!PlrNear)
                     {

@@ -37,8 +37,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public CainBook(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.TeamID] = 1;
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.TeamID] = 1;
+			Attributes[GameAttribute.MinimapActive] = true;
 		}
 
 		public override bool Reveal(Player player)
@@ -46,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Map.MapMarkerInfoMessage()
 			{
 				HashedName = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("CainBook"),
-				Place = new WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
+				Place = new WorldPlace { Position = Position, WorldID = World.GlobalID },
 				ImageInfo = 300665,
 				Label = -1,
 				snoStringList = -1,
@@ -73,7 +73,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimReason = 5,
 				UnitAniimStartTime = 0,
 				tAnim = new PlayAnimationMessageSpec[]

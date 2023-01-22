@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Cain(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Invulnerable] = true;
 		}
 
 		protected override void ReadTags()

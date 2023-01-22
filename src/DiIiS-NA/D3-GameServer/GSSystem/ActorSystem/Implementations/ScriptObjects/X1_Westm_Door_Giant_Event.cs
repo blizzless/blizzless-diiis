@@ -25,8 +25,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
         {
             Field2 = 0;
 
-            //Прячем скелетов.
-            foreach (var skeleton in this.GetActorsInRegion<Monster>(120))
+            //hide skeletons.
+            foreach (var skeleton in GetActorsInRegion<Monster>(120))
             {
                 switch (skeleton.SNO)
                 {
@@ -44,18 +44,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
         public override bool Reveal(Player player)
         {
-            if (this.World.SNO == WorldSno.x1_westm_intro)
+            if (World.SNO == WorldSno.x1_westm_intro)
             {
                 World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
                 {
-                    ActorID = this.DynamicID(plr),
+                    ActorID = DynamicID(plr),
                     AnimationSNO = AnimationSetKeys.Open.ID
                 }, this);
             }
             //
             if (positions.Count == 0)
             {
-                foreach (var skeleton in this.GetActorsInRegion<Monster>(120))
+                foreach (var skeleton in GetActorsInRegion<Monster>(120))
                 {
                     switch (skeleton.SNO)
                     {
@@ -75,21 +75,21 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
         public override void OnPlayerApproaching(Player player)
         {
-            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale * this.Scale && !_collapsed)
+            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale * Scale && !_collapsed)
             {
                 _collapsed = true;
                 #region Анимация больших ворот
                 PlayAnimation(11, AnimationSno.x1_westm_door_giant_clicky_closing_soul, 1);
                 World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
                 {
-                    ActorID = this.DynamicID(plr),
+                    ActorID = DynamicID(plr),
                     AnimationSNO = 286920
                 }, this);
                 #endregion
 
-                #region Возвращаем скелетов
-                foreach (var skeleton in positions) this.World.SpawnMonster(ActorSno._x1_skeleton_westmarch_ghost_a, skeleton);
-                foreach (var skeleton in shieldpositions) this.World.SpawnMonster(ActorSno._x1_shield_skeleton_westmarch_ghost_a, skeleton);
+                #region return skeletons
+                foreach (var skeleton in positions) World.SpawnMonster(ActorSno._x1_skeleton_westmarch_ghost_a, skeleton);
+                foreach (var skeleton in shieldpositions) World.SpawnMonster(ActorSno._x1_shield_skeleton_westmarch_ghost_a, skeleton);
                 #endregion
             }
         }

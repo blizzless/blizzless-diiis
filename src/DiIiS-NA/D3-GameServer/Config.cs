@@ -13,27 +13,96 @@ namespace DiIiS_NA.GameServer
 {
 	public sealed class Config : DiIiS_NA.Core.Config.Config
 	{
-		public bool Enabled { get { return this.GetBoolean("Enabled", true); } set { this.Set("Enabled", value); } }
-		public string BindIP { get { return this.GetString("BindIP", "127.0.0.1"); } set { this.Set("BindIP", value); } }
-		public int WebPort { get { return this.GetInt("WebPort", 9001); } set { this.Set("WebPort", value); } }
-		public int Port { get { return this.GetInt("Port", 1345); } set { this.Set("Port", value); } }
-		public string BindIPv6 { get { return this.GetString("BindIPv6", "::1"); } set { this.Set("BindIPv6", value); } }
-		public bool DRLGemu { get { return this.GetBoolean("DRLGemu", true); } set { this.Set("DRLGemu", value); } }
-		public bool CoreActive { get { return this.GetBoolean("CoreActive", true); } set { this.Set("CoreActive", value); } }
+		public bool Enabled
+		{
+			get => GetBoolean("Enabled", true);
+			set => Set("Enabled", value);
+		}
+
+		public string BindIP
+		{
+			get => GetString("BindIP", "127.0.0.1");
+			set => Set("BindIP", value);
+		}
+
+		public int WebPort
+		{
+			get => GetInt("WebPort", 9001);
+			set => Set("WebPort", value);
+		}
+
+		public int Port
+		{
+			get => GetInt("Port", 1345);
+			set => Set("Port", value);
+		}
+
+		public string BindIPv6
+		{
+			get => GetString("BindIPv6", "::1");
+			set => Set("BindIPv6", value);
+		}
+
+		public bool DRLGemu
+		{
+			get => GetBoolean("DRLGemu", true);
+			set => Set("DRLGemu", value);
+		}
+
+		public bool CoreActive
+		{
+			get => GetBoolean("CoreActive", true);
+			set => Set("CoreActive", value);
+		}
 
 		//Modding of Game-Server
-		public float RateEXP { get { return this.GetFloat("RateExp", 1); } set { this.Set("RateExp", value); } }
-		public float RateMoney { get { return this.GetFloat("RateMoney", 1); } set { this.Set("RateMoney", value); } }
-		public float RateDrop { get { return this.GetFloat("RateDrop", 1); } set { this.Set("RateDrop", value); } }
-		public float RateChangeDrop { get { return this.GetFloat("RateChangeDrop", 1); } set { this.Set("RateChangeDrop", value); } }
-		public float RateMonsterHP { get { return this.GetFloat("RateMonsterHP", 1); } set { this.Set("RateMonsterHP", value); } }
-		public float RateMonsterDMG { get { return this.GetFloat("RateMonsterHP", 1); } set { this.Set("RateMonsterHP", value); } }
+		public float RateEXP
+		{
+			get => GetFloat("RateExp", 1);
+			set => Set("RateExp", value);
+		}
+
+		public float RateMoney
+		{
+			get => GetFloat("RateMoney", 1);
+			set => Set("RateMoney", value);
+		}
+
+		public float RateDrop
+		{
+			get => GetFloat("RateDrop", 1);
+			set => Set("RateDrop", value);
+		}
+
+		public float RateChangeDrop
+		{
+			get => GetFloat("RateChangeDrop", 1);
+			set => Set("RateChangeDrop", value);
+		}
+
+		public float RateMonsterHP
+		{
+			get => GetFloat("RateMonsterHP", 1);
+			set => Set("RateMonsterHP", value);
+		}
+
+		public float RateMonsterDMG
+		{
+			get => GetFloat("RateMonsterHP", 1);
+			set => Set("RateMonsterHP", value);
+		}
 
 
-		public bool IWServer { get { return this.GetBoolean("IWServer", true); } set { this.Set("IWServer", value); } }
+		public bool IWServer
+		{
+			get => GetBoolean("IWServer", true);
+			set => Set("IWServer", value);
+		}
 
-		private static readonly Config _instance = new Config();
-		public static Config Instance { get { return _instance; } }
-		private Config() : base("Game-Server") { }
+		public static Config Instance { get; } = new();
+
+		private Config() : base("Game-Server")
+		{
+		}
 	}
 }

@@ -19,24 +19,24 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public TargetList()
 		{
-			this.Actors = new List<Actor>();
-			this.ExtraActors = new List<Actor>();
+			Actors = new List<Actor>();
+			ExtraActors = new List<Actor>();
 		}
 
 		public void SortByDistanceFrom(Vector3D position)
 		{
-			this.Actors = this.Actors.OrderBy(actor => PowerMath.Distance2D(actor.Position, position)).ToList();
+			Actors = Actors.OrderBy(actor => PowerMath.Distance2D(actor.Position, position)).ToList();
 		}
 
 		public TargetList FilterByType<T>()
 		{
-			this.Actors = this.Actors.Where(actor => actor is T).ToList();
+			Actors = Actors.Where(actor => actor is T).ToList();
 			return this;
 		}
 
 		public TargetList Distinct()
 		{
-			this.Actors = this.Actors.Distinct().ToList();
+			Actors = Actors.Distinct().ToList();
 			return this;
 		}
 
@@ -44,7 +44,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		{
 			Actor closest = null;
 			float closestDistance = float.MaxValue;
-			foreach (Actor actor in this.Actors)
+			foreach (Actor actor in Actors)
 			{
 				float distance = PowerMath.Distance2D(actor.Position, position);
 				if (distance < closestDistance)

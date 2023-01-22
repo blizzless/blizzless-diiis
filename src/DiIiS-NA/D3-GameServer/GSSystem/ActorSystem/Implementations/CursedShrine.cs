@@ -37,12 +37,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			try
 			{
-				if (player.Position.DistanceSquared(ref _position) < 225f && !_collapsed && this.Randomed)
+				if (player.Position.DistanceSquared(ref _position) < 225f && !_collapsed && Randomed)
 				{
 					_collapsed = true;
 
-					this.World.Game.SideQuestGizmo = this;
-					this.World.Game.QuestManager.LaunchSideQuest(eventIds[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, eventIds.Count())], true);
+					World.Game.SideQuestGizmo = this;
+					World.Game.QuestManager.LaunchSideQuest(eventIds[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, eventIds.Count())], true);
 				}
 			}
 			catch { }
@@ -60,51 +60,51 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void Activate()
 		{
-			this.World.BroadcastIfRevealed(plr => new ANNDataMessage(Opcodes.ShrineActivatedMessage) { ActorID = this.DynamicID(plr) }, this);
+			World.BroadcastIfRevealed(plr => new ANNDataMessage(Opcodes.ShrineActivatedMessage) { ActorID = DynamicID(plr) }, this);
 			var type = DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, 4);
 			switch (type)
 			{
 				case 0: //blessed
-					foreach (var plr in this.GetPlayersInRange(100f))
+					foreach (var plr in GetPlayersInRange(100f))
 					{
-						this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineBlessedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+						World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineBlessedBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 						plr.GrantCriteria(74987243307423);
 					}
 					break;
 				case 1: //enlightened
-					foreach (var plr in this.GetPlayersInRange(100f))
+					foreach (var plr in GetPlayersInRange(100f))
 					{
-						this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineEnlightenedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+						World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineEnlightenedBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 						plr.GrantCriteria(74987243307424);
 					}
 					break;
 				case 2: //fortune
-					foreach (var plr in this.GetPlayersInRange(100f))
+					foreach (var plr in GetPlayersInRange(100f))
 					{
-						this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFortuneBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+						World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFortuneBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 						plr.GrantCriteria(74987243307425);
 					}
 					break;
 				case 3: //frenzied
-					foreach (var plr in this.GetPlayersInRange(100f))
+					foreach (var plr in GetPlayersInRange(100f))
 					{
-						this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFrenziedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+						World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFrenziedBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 						plr.GrantCriteria(74987243307426);
 					}
 					break;
 				default:
-					foreach (var plr in this.GetPlayersInRange(100f))
+					foreach (var plr in GetPlayersInRange(100f))
 					{
-						this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineEnlightenedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+						World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineEnlightenedBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 					}
 					break;
 			}
-			this.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			this.Attributes[GameAttribute.Gizmo_State] = 1;
+			Attributes[GameAttribute.Gizmo_State] = 1;
 			Attributes.BroadcastChangedIfRevealed();
 
-			var rewardChests = this.GetActorsInRange<LootContainer>(20f).Where(c => c.rewardChestAvailable == false).ToList();
+			var rewardChests = GetActorsInRange<LootContainer>(20f).Where(c => c.rewardChestAvailable == false).ToList();
 
 			foreach (var chest in rewardChests)
 			{

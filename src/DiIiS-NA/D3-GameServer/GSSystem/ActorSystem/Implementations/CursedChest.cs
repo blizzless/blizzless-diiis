@@ -33,12 +33,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			try
 			{
-				if (player.Position.DistanceSquared(ref _position) < 225f && !_collapsed && this.Randomed)
+				if (player.Position.DistanceSquared(ref _position) < 225f && !_collapsed && Randomed)
 				{
 					_collapsed = true;
 
-					this.World.Game.SideQuestGizmo = this;
-					this.World.Game.QuestManager.LaunchSideQuest(eventIds[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, eventIds.Count())], true);
+					World.Game.SideQuestGizmo = this;
+					World.Game.QuestManager.LaunchSideQuest(eventIds[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, eventIds.Count())], true);
 				}
 			}
 			catch { }
@@ -56,7 +56,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void Activate()
 		{
-			var rewardChests = this.GetActorsInRange<LootContainer>(20f).Where(c => c.rewardChestAvailable == false).ToList();
+			var rewardChests = GetActorsInRange<LootContainer>(20f).Where(c => c.rewardChestAvailable == false).ToList();
 
 			foreach (var chest in rewardChests)
 			{
@@ -65,7 +65,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					chest.Reveal(plr);
 			}
 
-			this.Destroy();
+			Destroy();
 		}
 	}
 }

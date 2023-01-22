@@ -261,7 +261,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			int EnemiesHit = 1;
 			public LeapAttackArmorBuff(int enemies)
 			{
-				this.EnemiesHit = enemies;
+				EnemiesHit = enemies;
 			}
 
 			public override void Init()
@@ -274,7 +274,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				User.Attributes[GameAttribute.Armor_Bonus_Percent] += (ScriptFormula(33) * this.EnemiesHit);
+				User.Attributes[GameAttribute.Armor_Bonus_Percent] += (ScriptFormula(33) * EnemiesHit);
 				User.Attributes.BroadcastChangedIfRevealed();
 
 				return true;
@@ -284,7 +284,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 
-				User.Attributes[GameAttribute.Armor_Bonus_Percent] -= (ScriptFormula(33) * this.EnemiesHit);
+				User.Attributes[GameAttribute.Armor_Bonus_Percent] -= (ScriptFormula(33) * EnemiesHit);
 				User.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -858,7 +858,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							if (Rand.NextDouble() < ScriptFormula(5))
 							{
 								//ScriptFormula(4) -> extends duration 
-								this.Extend((int)ScriptFormula(4) * 60);
+								Extend((int)ScriptFormula(4) * 60);
 							}
 						}
 						if (Rune_C > 0)
@@ -2290,7 +2290,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (GainedFury >= (1 / ScriptFormula(21)))
 					{
 						GainedFury -= (1 / ScriptFormula(21));
-						this.Extend(60);
+						Extend(60);
 					}
 				return false;
 			}

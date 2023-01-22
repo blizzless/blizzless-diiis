@@ -24,16 +24,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 		public WavedInvasion(Vector3D center, float radius, List<ActorSno> mobs, ActorSno lastMob)
 			: base(0)
 		{
-			this.Radius = radius;
-			this.Center = center;
-			this.Monsters = mobs;
-			this.LastMob = lastMob;
+			Radius = radius;
+			Center = center;
+			Monsters = mobs;
+			LastMob = lastMob;
 		}
 
 		public override void Execute(MapSystem.World world)
 		{
-			var marker = world.SpawnMonster(ActorSno._generic_proxy_normal, this.Center);
-			world.BuffManager.AddBuff(marker, marker, new PowerSystem.Implementations.WavedInvasionBuff(this.Monsters, this.Radius, this.LastMob));
+			var marker = world.SpawnMonster(ActorSno._generic_proxy_normal, Center);
+			world.BuffManager.AddBuff(marker, marker, new PowerSystem.Implementations.WavedInvasionBuff(Monsters, Radius, LastMob));
 		}
 	}
 }

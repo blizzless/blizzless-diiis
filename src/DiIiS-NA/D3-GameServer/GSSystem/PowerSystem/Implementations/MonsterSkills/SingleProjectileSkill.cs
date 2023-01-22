@@ -58,7 +58,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 		{
 			var projectileId = ActorSno._d3arrow;//default
 			
-			switch (this.User.SNO)
+			switch (User.SNO)
 			{
 				case ActorSno._fleshpitflyer_b: projectileId = ActorSno._skeletonmage_poison_projectile; break;
 				case ActorSno._demonflyer_c_bomber: projectileId = ActorSno._demonflyer_bomb_projectile; break;//demonFlyer_bomb_projectile
@@ -353,7 +353,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 		{
 			var proj = ActorSno._skeletonmage_fire_projectile;
 			float dmg = 1.1f;
-			if (this.User.SNO == ActorSno._p6_necro_skeletonmage_f_archer)
+			if (User.SNO == ActorSno._p6_necro_skeletonmage_f_archer)
 			{
 				proj = ActorSno._p6_necro_skeletonmage_f_archer_projectile;
 				dmg = 4f;
@@ -496,7 +496,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					var _destination = PowerContext.RandomDirection(User.Position, 20f, 30f);
+					var _destination = RandomDirection(User.Position, 20f, 30f);
 					var moveBuff = new MoverBuff(MovementHelpers.GetCorrectPosition(User.Position, _destination, User.World));
 					AddBuff(User, moveBuff);
 					yield return moveBuff.Timeout;
@@ -569,7 +569,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 		public override IEnumerable<TickTimer> Main()
 		{
 
-			var _destination = PowerContext.RandomDirection(User.Position, 10f, 20f);
+			var _destination = RandomDirection(User.Position, 10f, 20f);
 			var moveBuff = new MoverBuff(MovementHelpers.GetCorrectPosition(User.Position, _destination, User.World));
 			AddBuff(User, moveBuff);
 			yield return moveBuff.Timeout;

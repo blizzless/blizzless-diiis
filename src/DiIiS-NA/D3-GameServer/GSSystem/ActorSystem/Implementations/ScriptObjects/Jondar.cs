@@ -30,13 +30,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public Jondar(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Field2 = 0x8;
-			this.Attributes[GameAttribute.MinimapActive] = true;
-			this.Attributes[GameAttribute.Untargetable] = false;
-			this.Attributes[GameAttribute.Operatable] = true;
-			this.Attributes[GameAttribute.Disabled] = false;
-			this.Attributes[GameAttribute.TeamID] = 10;
-			this.WalkSpeed = 0.1f;
+			Field2 = 0x8;
+			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.Untargetable] = false;
+			Attributes[GameAttribute.Operatable] = true;
+			Attributes[GameAttribute.Disabled] = false;
+			Attributes[GameAttribute.TeamID] = 10;
+			WalkSpeed = 0.1f;
 			//Logger.Debug("Jondar, tagSNO: {0}", tags[MarkerKeys.OnActorSpawnedScript].Id);
 		}
 

@@ -63,10 +63,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public DarkCultists(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	[HandledSNO(ActorSno._townattackcultistmelee)]
@@ -75,10 +75,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public DarkCultistsTownAttackMelee(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	[HandledSNO(
@@ -93,10 +93,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(30570);
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 10f;
-			this.WalkSpeed = 0.15f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 10f;
+			WalkSpeed = 0.15f;
 		}
 	}
 	[HandledSNO(ActorSno._townattack_summoner)]
@@ -107,10 +107,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		{
 
 			(Brain as MonsterBrain).AddPresetPower(30547);
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.15f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.15f;
 		}
 	}
 	[HandledSNO(ActorSno._townattack_cultist)]
@@ -121,10 +121,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		{
 			(Brain as MonsterBrain).AddPresetPower(30570);
 			(Brain as MonsterBrain).AddPresetPower(30547);
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.15f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.15f;
 		}
 	}
     #endregion
@@ -135,10 +135,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Shark(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	#endregion
@@ -155,10 +155,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Lacuni(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	#endregion
@@ -174,10 +174,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Fallens(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	#endregion
@@ -191,13 +191,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		{
 			//(Brain as MonsterBrain).PresetPowers.Clear();
 			//(Brain as MonsterBrain).AddPresetPower(117580);
-			this.Field2 = 0x8;
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
+			Field2 = 0x8;
+			CollFlags = 0;
+			WalkSpeed = 0;
 
-			this.Attributes[GameAttribute.Movement_Scalar] = 0f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = 0f;
-			this.Spawner = true;
+			Attributes[GameAttribute.Movement_Scalar] = 0f;
+			Attributes[GameAttribute.Run_Speed_Granted] = 0f;
+			Spawner = true;
 		}
 
 	}
@@ -218,7 +218,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Malthael_Spirit(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.2f;
+			WalkSpeed = 0.2f;
 		}
 	}
 	//273417
@@ -234,7 +234,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public DeathMaiden(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.3f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	//282789
@@ -248,7 +248,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public SkeletonArcher_Westmarch(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.24f;
+			WalkSpeed = 0.24f;
 			//this.WalkSpeed /= 2f;
 		}
 		
@@ -264,7 +264,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Skeleton_Westmarch(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.25f;
+			WalkSpeed = 0.25f;
 		}
 	}
 	#endregion
@@ -290,7 +290,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public DarkGhost(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.25f;
+			WalkSpeed = 0.25f;
 			
 		}
 	}
@@ -520,10 +520,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public TriuneCultist(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	#endregion
@@ -541,9 +541,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public TombGuardian(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
 			(Brain as MonsterBrain).AddPresetPower(30503);
 			(Brain as MonsterBrain).AddPresetPower(30543); //Summon Skeletons
 		}
@@ -666,13 +666,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		{
 			(Brain as MonsterBrain).PresetPowers.Clear();
 			(Brain as MonsterBrain).AddPresetPower(117580); 
-			this.Field2 = 0x8;
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
+			Field2 = 0x8;
+			CollFlags = 0;
+			WalkSpeed = 0;
 
-			this.Attributes[GameAttribute.Movement_Scalar] = 0f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = 0f;
-			this.Spawner = true;
+			Attributes[GameAttribute.Movement_Scalar] = 0f;
+			Attributes[GameAttribute.Run_Speed_Granted] = 0f;
+			Spawner = true;
 		}
 
 	}
@@ -688,10 +688,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			(Brain as MonsterBrain).PresetPowers.Clear();
 			(Brain as MonsterBrain).AddPresetPower(117580);
 
-			this.Attributes[GameAttribute.Movement_Scalar] = 0f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = 0f;
-			this.WalkSpeed = 0f;
-			this.Spawner = true;
+			Attributes[GameAttribute.Movement_Scalar] = 0f;
+			Attributes[GameAttribute.Run_Speed_Granted] = 0f;
+			WalkSpeed = 0f;
+			Spawner = true;
 		}
 
 	}
@@ -723,10 +723,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Goatman_Moonclan_Melee(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Brain = new MonsterBrain(this);
+			Brain = new MonsterBrain(this);
 
 			(Brain as MonsterBrain).AddPresetPower(30592); //melee_instant
-			this.WalkSpeed = 0.2f;
+			WalkSpeed = 0.2f;
 		}
 	}
 	[HandledSNO(ActorSno._goatman_melee_a_unique_01)] // [218428] Goatman_Melee_A_Unique_01
@@ -735,10 +735,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Goatman_Moonclan_Melee_Unique1(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Brain = new MonsterBrain(this);
+			Brain = new MonsterBrain(this);
 
 			(Brain as MonsterBrain).AddPresetPower(30592); //melee_instant
-			this.WalkSpeed = 0.2f;
+			WalkSpeed = 0.2f;
 		}
 	}
 	//218428
@@ -748,11 +748,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Goatman_Moonclan_Ranged(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Brain = new MonsterBrain(this);
+			Brain = new MonsterBrain(this);
 
 			//(Brain as MonsterBrain).AddPresetPower(30592); //melee_instant
 			(Brain as MonsterBrain).AddPresetPower(30252); //Range_instant
-			this.WalkSpeed = 0.2f;
+			WalkSpeed = 0.2f;
 		}
 	}
 	[HandledSNO(
@@ -768,7 +768,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			(Brain as MonsterBrain).RemovePresetPower(30592); // Only distance attack
 			(Brain as MonsterBrain).AddPresetPower(77342);
 			(Brain as MonsterBrain).AddPresetPower(99077);
-			this.WalkSpeed = 0.2f;
+			WalkSpeed = 0.2f;
 		}
 	}
 
@@ -780,10 +780,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public GoatmanMelee(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.2f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.2f;
 		}
 	}
 	#endregion
@@ -817,10 +817,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public TriuneWizard(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.35f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.35f;
 			(Brain as MonsterBrain).AddPresetPower(99077);
 		}
 	}
@@ -838,10 +838,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public TriuneBerserker(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.35f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.35f;
 			(Brain as MonsterBrain).AddPresetPower(99077);
 		}
 	}
@@ -853,7 +853,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Overseer(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.1f;
+			WalkSpeed = 0.1f;
 		}
 	}
 	#endregion
@@ -864,8 +864,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public AzmodanProxy(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.1f;
-			this.SetVisible(false);
+			WalkSpeed = 0.1f;
+			SetVisible(false);
 		}
 	}
 	#endregion
@@ -912,7 +912,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			(Brain as MonsterBrain).RemovePresetPower(30503);
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			(Brain as MonsterBrain).AddPresetPower(30502);
-			this.WalkSpeed = 0.8f;
+			WalkSpeed = 0.8f;
 		}
 	}
 	#endregion
@@ -932,7 +932,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public SnakemanMelee(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.3f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	[HandledSNO(
@@ -950,7 +950,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public SnakemanCaster(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.3f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	[HandledSNO(
@@ -969,7 +969,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public FastMummy(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0.3f;
+			WalkSpeed = 0.3f;
 		}
 	}
 
@@ -988,7 +988,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		{
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			(Brain as MonsterBrain).AddPresetPower(30252);
-			this.WalkSpeed = 0.4f;
+			WalkSpeed = 0.4f;
 		}
 	}
 	#endregion
@@ -1090,7 +1090,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			: base(world, sno, tags)
 		{
 			(Brain as MonsterBrain).AddPresetPower(66547);
-			this.WalkSpeed = 0.4f;
+			WalkSpeed = 0.4f;
 		}
 	}
 	#endregion
@@ -1108,10 +1108,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Wrath(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	#endregion
@@ -1122,10 +1122,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Spider_Elemental_Cold_tesla_A(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			this.WalkSpeed = 0.3f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			WalkSpeed = 0.3f;
 		}
 	}
 	#endregion

@@ -1,4 +1,4 @@
-﻿//Blizzless Project 2022 
+//Blizzless Project 2022 
 using System;
 //Blizzless Project 2022 
 using System.Collections.Generic;
@@ -62,7 +62,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		public MonsterBrain(Actor body)
 		: base(body)
 		{
-			this.PresetPowers = new Dictionary<int, Cooldown>();
+			PresetPowers = new Dictionary<int, Cooldown>();
 
 			// build list of powers defined in monster mpq data
 			if (body.ActorData.MonsterSNO > 0)
@@ -72,135 +72,117 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				for (int i = 0; i < monsterData.SkillDeclarations.Count(); i++)
 				{
 					if (monsterData.SkillDeclarations[i].SNOPower == -1) continue;
-					if (PowerSystem.PowerLoader.HasImplementationForPowerSNO(monsterData.SkillDeclarations[i].SNOPower))
+					if (PowerLoader.HasImplementationForPowerSNO(monsterData.SkillDeclarations[i].SNOPower))
 					{
 						var cooldownTime = monsterData.MonsterSkillDeclarations[i].Timer / 10f;
-						this.PresetPowers.Add(monsterData.SkillDeclarations[i].SNOPower, new Cooldown { CooldownTimer = null, CooldownTime = cooldownTime });
+						PresetPowers.Add(monsterData.SkillDeclarations[i].SNOPower, new Cooldown { CooldownTimer = null, CooldownTime = cooldownTime });
 					}
 				}
 
 				if (!monsterData.SkillDeclarations.Any(s => s.SNOPower == 30592))
-					this.PresetPowers.Add(30592, new Cooldown { CooldownTimer = null, CooldownTime = 0f }); //hack for dummy mobs without powers
+					PresetPowers.Add(30592, new Cooldown { CooldownTimer = null, CooldownTime = 0f }); //hack for dummy mobs without powers
 			}
 		}
 
 		public override void Think(int tickCounter)
 		{
-			if (this.Body.SNO == ActorSno._uber_siegebreakerdemon ||
-				this.Body.SNO == ActorSno._a4dun_garden_corruption_monster ||
-				this.Body.SNO == ActorSno._a4dun_garden_hellportal_pillar)
+			if (Body.SNO == ActorSno._uber_siegebreakerdemon ||
+				Body.SNO == ActorSno._a4dun_garden_corruption_monster ||
+				Body.SNO == ActorSno._a4dun_garden_hellportal_pillar)
 				return;
-			//if(AttackedBy != null && TimeoutAttacked == null)
-			//	TimeoutAttacked = new SecondsTickTimer(this.Body.World.Game, 3.0f);
-			//if (TimeoutAttacked != null)
-			//	if (TimeoutAttacked.TimedOut)
-			//	{
-			//		TimeoutAttacked = null;
-			//		AttackedBy = null;
-			//	}
-			if (this.Body.SNO == ActorSno._belialvoiceover) //BelialVoiceover
+			if (Body.SNO == ActorSno._belialvoiceover) //BelialVoiceover
 				return;
-			if (this.Body.Hidden == true)
+			if (Body.Hidden == true)
 				return;
 
-			if (this.CurrentAction != null && this.PriorityTarget != null && this.PriorityTarget.Attributes[GameAttribute.Is_Helper] == true)
+			if (CurrentAction != null && PriorityTarget != null && PriorityTarget.Attributes[GameAttribute.Is_Helper] == true)
 			{
-				this.PriorityTarget = null;
-				this.CurrentAction.Cancel(tickCounter);
-				this.CurrentAction = null;
+				PriorityTarget = null;
+				CurrentAction.Cancel(tickCounter);
+				CurrentAction = null;
 				return;
 			}
 
 			if (!(tickCounter % 60 == 0)) return;
 			
-			// this needed? /mdz
-			if (this.Body is NPC) return;
+			if (Body is NPC) return;
 
-			//preventing "phantom attacks"
-			if (!this.Body.Visible || this.Body.Dead) return;
+			if (!Body.Visible || Body.Dead) return;
 
-			if (this.Body.World.Game.Paused) return;
-			if (this.Body.Attributes[GameAttribute.Disabled]) return;
+			if (Body.World.Game.Paused) return;
+			if (Body.Attributes[GameAttribute.Disabled]) return;
 
-			// check if in disabled state, if so cancel any action then do nothing
-			if (this.Body.Attributes[GameAttribute.Frozen] ||
-			this.Body.Attributes[GameAttribute.Stunned] ||
-			this.Body.Attributes[GameAttribute.Blind] ||
-			this.Body.Attributes[GameAttribute.Webbed] ||
-			this.Body.Disable ||
-			this.Body.World.BuffManager.GetFirstBuff<KnockbackBuff>(this.Body) != null ||
-			this.Body.World.BuffManager.GetFirstBuff<SummonedBuff>(this.Body) != null)
+			if (Body.Attributes[GameAttribute.Frozen] ||
+			Body.Attributes[GameAttribute.Stunned] ||
+			Body.Attributes[GameAttribute.Blind] ||
+			Body.Attributes[GameAttribute.Webbed] ||
+			Body.Disable ||
+			Body.World.BuffManager.GetFirstBuff<KnockbackBuff>(Body) != null ||
+			Body.World.BuffManager.GetFirstBuff<SummonedBuff>(Body) != null)
 			{
-				if (this.CurrentAction != null)
+				if (CurrentAction != null)
 				{
-					this.CurrentAction.Cancel(tickCounter);
-					this.CurrentAction = null;
+					CurrentAction.Cancel(tickCounter);
+					CurrentAction = null;
 				}
 				_powerDelay = null;
 
 				return;
 			}
 
-			if (this.Body.Attributes[GameAttribute.Feared])
+			if (Body.Attributes[GameAttribute.Feared])
 			{
-				if (!this.Feared || this.CurrentAction == null)
+				if (!Feared || CurrentAction == null)
 				{
-					if (this.CurrentAction != null)
+					if (CurrentAction != null)
 					{
-						this.CurrentAction.Cancel(tickCounter);
-						this.CurrentAction = null;
+						CurrentAction.Cancel(tickCounter);
+						CurrentAction = null;
 					}
-					this.Feared = true;
-					this.CurrentAction = new MoveToPointWithPathfindAction(
-						this.Body,
-						PowerContext.RandomDirection(this.Body.Position, 3f, 8f)
+					Feared = true;
+					CurrentAction = new MoveToPointWithPathfindAction(
+						Body,
+						PowerContext.RandomDirection(Body.Position, 3f, 8f)
 					);
 					return;
 				}
 				else return;
 			}
 			else
-				this.Feared = false;
+				Feared = false;
 
-			// select and start executing a power if no active action
-			if (this.CurrentAction == null)// || this.CurrentAction is MoveToTargetWithPathfindAction)
+			if (CurrentAction == null) 
 			{
-				/*if (this.CurrentAction != null)
-				{
-					this.CurrentAction.Cancel(tickCounter);
-					this.CurrentAction = null;
-				}*/
 
-				// do a little delay so groups of monsters don't all execute at once
 				if (_powerDelay == null)
-					_powerDelay = new SecondsTickTimer(this.Body.World.Game, 1.0f);
-				if (AttackedBy != null || this.Body.GetObjectsInRange<Player>(50f).Count != 0)
+					_powerDelay = new SecondsTickTimer(Body.World.Game, 1.0f);
+				if (AttackedBy != null || Body.GetObjectsInRange<Player>(50f).Count != 0)
 				{
 					if (_powerDelay.TimedOut)
 					{
-						_powerDelay = new SecondsTickTimer(this.Body.World.Game, 1.0f);
+						_powerDelay = new SecondsTickTimer(Body.World.Game, 1.0f);
 
 						if (AttackedBy != null)
-							this.PriorityTarget = AttackedBy;
+							PriorityTarget = AttackedBy;
 
-						if (this.PriorityTarget == null)
+						if (PriorityTarget == null)
 						{
 							List<Actor> targets = new List<Actor>();
 
-							if (this.Body.Attributes[GameAttribute.Team_Override] == 1)// && !this.Body.Attributes[GameAttribute.Immune_To_Charm])
-								targets = this.Body.GetObjectsInRange<Monster>(60f)
+							if (Body.Attributes[GameAttribute.Team_Override] == 1)
+								targets = Body.GetObjectsInRange<Monster>(60f)
 									.Where(p => !p.Dead)
-									.OrderBy((monster) => PowerMath.Distance2D(monster.Position, this.Body.Position))
+									.OrderBy((monster) => PowerMath.Distance2D(monster.Position, Body.Position))
 									.Cast<Actor>()
 									.ToList();
 							else
-								targets = this.Body.GetActorsInRange(50f)
+								targets = Body.GetActorsInRange(50f)
 									.Where(p => ((p is Player) && !p.Dead && p.Attributes[GameAttribute.Loading] == false && p.Attributes[GameAttribute.Is_Helper] == false && p.World.BuffManager.GetFirstBuff<ActorGhostedBuff>(p) == null)
 										|| ((p is Minion) && !p.Dead && p.Attributes[GameAttribute.Is_Helper] == false)
 										|| (p is DesctructibleLootContainer && p.SNO.IsDoorOrBarricade())
 										|| ((p is Hireling) && !p.Dead)
 										)
-									.OrderBy((actor) => PowerMath.Distance2D(actor.Position, this.Body.Position))
+									.OrderBy((actor) => PowerMath.Distance2D(actor.Position, Body.Position))
 									.Cast<Actor>()
 									.ToList();
 
@@ -209,58 +191,50 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							_target = targets.First();
 						}
 						else
-							_target = this.PriorityTarget;
+							_target = PriorityTarget;
 
 						int powerToUse = PickPowerToUse();
 						if (powerToUse > 0)
 						{
 							PowerScript power = PowerLoader.CreateImplementationForPowerSNO(powerToUse);
-							power.User = this.Body;
-							float attackRange = this.Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : Math.Min((float)power.EvalTag(PowerKeys.AttackRadius), 35f)) : 35f);
-							float targetDistance = PowerMath.Distance2D(_target.Position, this.Body.Position);
+							power.User = Body;
+							float attackRange = Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : Math.Min((float)power.EvalTag(PowerKeys.AttackRadius), 35f)) : 35f);
+							float targetDistance = PowerMath.Distance2D(_target.Position, Body.Position);
 							if (targetDistance < attackRange + _target.ActorData.Cylinder.Ax2)
 							{
-								if (this.Body.WalkSpeed != 0)
-									this.Body.TranslateFacing(_target.Position, false); //columns and other non-walkable shit can't turn
+								if (Body.WalkSpeed != 0)
+									Body.TranslateFacing(_target.Position, false);
 
-								//Logger.Trace("PowerAction to target");
-								this.CurrentAction = new PowerAction(this.Body, powerToUse, _target);
+								CurrentAction = new PowerAction(Body, powerToUse, _target);
 
 								if (power is SummoningSkill)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (this.Body is Boss ? 15f : 7f) };
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) };
 
 								if (power is MonsterAffixSkill)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
 
-								if (this.PresetPowers[powerToUse].CooldownTime > 0f)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(this.Body.World.Game, this.PresetPowers[powerToUse].CooldownTime), CooldownTime = this.PresetPowers[powerToUse].CooldownTime };
+								if (PresetPowers[powerToUse].CooldownTime > 0f)
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, PresetPowers[powerToUse].CooldownTime), CooldownTime = PresetPowers[powerToUse].CooldownTime };
 
 								if (powerToUse == 96925 ||
 								   powerToUse == 223284)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(this.Body.World.Game, 10f), CooldownTime = 10f };
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, 10f), CooldownTime = 10f };
 							}
-							else if (this.Body.WalkSpeed != 0)
+							else if (Body.WalkSpeed != 0)
 							{
-								if (this.Body.SNO.IsWoodwraithOrWasp())
+								if (Body.SNO.IsWoodwraithOrWasp())
 								{
 									Logger.Trace("MoveToPointAction to target");
-									this.CurrentAction = new MoveToPointAction(
-										this.Body, _target.Position
+									CurrentAction = new MoveToPointAction(
+										Body, _target.Position
 									);
 								}
 								else
 								{
 									Logger.Trace("MoveToTargetWithPathfindAction to target");
-									this.CurrentAction = new MoveToTargetWithPathfindAction(
-										this.Body,
-										//(
-										_target,// + MovementHelpers.GetMovementPosition(
-												//new Vector3D(0, 0, 0), 
-												//this.Body.WalkSpeed, 
-												//MovementHelpers.GetFacingAngle(_target.Position, this.Body.Position),
-												//6
-												//)
-												//)
+									CurrentAction = new MoveToTargetWithPathfindAction(
+										Body,
+										_target,
 										attackRange + _target.ActorData.Cylinder.Ax2,
 										powerToUse
 									);
@@ -268,60 +242,60 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							}
 							else
 							{
-								switch (this.Body.SNO)
+								switch (Body.SNO)
 								{
 									case ActorSno._a1dun_leor_firewall2:
 										powerToUse = 223284;
 										break;
 								}
-								this.CurrentAction = new PowerAction(this.Body, powerToUse, _target);
+								CurrentAction = new PowerAction(Body, powerToUse, _target);
 
 								if (power is SummoningSkill)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (this.Body is Boss ? 15f : 7f) };
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) };
 
 								if (power is MonsterAffixSkill)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
 
-								if (this.PresetPowers[powerToUse].CooldownTime > 0f)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(this.Body.World.Game, this.PresetPowers[powerToUse].CooldownTime), CooldownTime = this.PresetPowers[powerToUse].CooldownTime };
+								if (PresetPowers[powerToUse].CooldownTime > 0f)
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, PresetPowers[powerToUse].CooldownTime), CooldownTime = PresetPowers[powerToUse].CooldownTime };
 
 								if (powerToUse == 96925 ||
 								   powerToUse == 223284)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(this.Body.World.Game, 10f), CooldownTime = 10f };
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, 10f), CooldownTime = 10f };
 							}
 						}
 					}
 				}
 
-				else if (this.Body.GetObjectsInRange<Living>(50f).Count != 0)
+				else if (Body.GetObjectsInRange<Living>(50f).Count != 0)
 				{
 					if (_powerDelay.TimedOut)
 					{
-						_powerDelay = new SecondsTickTimer(this.Body.World.Game, 1.0f);
+						_powerDelay = new SecondsTickTimer(Body.World.Game, 1.0f);
 
 						if (AttackedBy != null)
-							this.PriorityTarget = AttackedBy;
+							PriorityTarget = AttackedBy;
 
-						if (this.PriorityTarget == null)
+						if (PriorityTarget == null)
 						{
 							List<Actor> targets = new List<Actor>();
 
-							targets = this.Body.GetActorsInRange(50f)
+							targets = Body.GetActorsInRange(50f)
 							.Where(p => ((p is LorathNahr_NPC) && !p.Dead)
 								|| ((p is CaptainRumford) && !p.Dead)
 								|| (p is DesctructibleLootContainer && p.SNO.IsDoorOrBarricade())
 								|| ((p is Cain) && !p.Dead))
-							.OrderBy((actor) => PowerMath.Distance2D(actor.Position, this.Body.Position))
+							.OrderBy((actor) => PowerMath.Distance2D(actor.Position, Body.Position))
 							.Cast<Actor>()
 							.ToList();
 
 							if (targets.Count == 0)
 							{
-								targets = this.Body.GetActorsInRange(20f)
+								targets = Body.GetActorsInRange(20f)
 									.Where(p => ((p is Monster) && !p.Dead)
 										|| ((p is CaptainRumford) && !p.Dead)
 										)
-									.OrderBy((actor) => PowerMath.Distance2D(actor.Position, this.Body.Position))
+									.OrderBy((actor) => PowerMath.Distance2D(actor.Position, Body.Position))
 									.Cast<Actor>()
 									.ToList();
 
@@ -331,7 +305,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 								foreach (var tar in targets)
 									if (_target == null)
-										if (tar is Monster && tar != this.Body)
+										if (tar is Monster && tar != Body)
 											if (((tar as Monster).Brain as MonsterBrain).AttackedBy != null)
 												_target = ((tar as Monster).Brain as MonsterBrain).AttackedBy;
 							}
@@ -344,13 +318,13 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 								{ _target = tar; break; }
 						}
 						else
-							_target = this.PriorityTarget;
+							_target = PriorityTarget;
 
 						int powerToUse = PickPowerToUse();
 						if (powerToUse > 0)
 						{
 							PowerScript power = PowerLoader.CreateImplementationForPowerSNO(powerToUse);
-							power.User = this.Body;
+							power.User = Body;
 							if (_target == null)
 							{
 								/*
@@ -365,39 +339,39 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 										//*/
 										return;
 							}
-							float attackRange = this.Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : Math.Min((float)power.EvalTag(PowerKeys.AttackRadius), 35f)) : 35f);
-							float targetDistance = PowerMath.Distance2D(_target.Position, this.Body.Position);
+							float attackRange = Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : Math.Min((float)power.EvalTag(PowerKeys.AttackRadius), 35f)) : 35f);
+							float targetDistance = PowerMath.Distance2D(_target.Position, Body.Position);
 							if (targetDistance < attackRange + _target.ActorData.Cylinder.Ax2)
 							{
-								if (this.Body.WalkSpeed != 0)
-									this.Body.TranslateFacing(_target.Position, false); //columns and other non-walkable shit can't turn
+								if (Body.WalkSpeed != 0)
+									Body.TranslateFacing(_target.Position, false); //columns and other non-walkable shit can't turn
 
 								//Logger.Trace("PowerAction to target");
-								this.CurrentAction = new PowerAction(this.Body, powerToUse, _target);
+								CurrentAction = new PowerAction(Body, powerToUse, _target);
 
 								if (power is SummoningSkill)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (this.Body is Boss ? 15f : 7f) };
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) };
 
 								if (power is MonsterAffixSkill)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
 
-								if (this.PresetPowers[powerToUse].CooldownTime > 0f)
-									this.PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(this.Body.World.Game, this.PresetPowers[powerToUse].CooldownTime), CooldownTime = this.PresetPowers[powerToUse].CooldownTime };
+								if (PresetPowers[powerToUse].CooldownTime > 0f)
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, PresetPowers[powerToUse].CooldownTime), CooldownTime = PresetPowers[powerToUse].CooldownTime };
 							}
-							else if (this.Body.WalkSpeed != 0)
+							else if (Body.WalkSpeed != 0)
 							{
-								if (this.Body.SNO.IsWoodwraithOrWasp())
+								if (Body.SNO.IsWoodwraithOrWasp())
 								{
 									Logger.Trace("MoveToPointAction to target");
-									this.CurrentAction = new MoveToPointAction(
-										this.Body, _target.Position
+									CurrentAction = new MoveToPointAction(
+										Body, _target.Position
 									);
 								}
 								else
 								{
 									Logger.Trace("MoveToTargetWithPathfindAction to target");
-									this.CurrentAction = new MoveToTargetWithPathfindAction(
-										this.Body,
+									CurrentAction = new MoveToTargetWithPathfindAction(
+										Body,
 										//(
 										_target,// + MovementHelpers.GetMovementPosition(
 												//new Vector3D(0, 0, 0), 
@@ -418,8 +392,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				else
 				{
 					//Logger.Trace("No enemies in range, return to master");
-					if (this.Body.Position != this.Body.CheckPointPosition)
-						this.CurrentAction = new MoveToPointWithPathfindAction(this.Body, this.Body.CheckPointPosition);
+					if (Body.Position != Body.CheckPointPosition)
+						CurrentAction = new MoveToPointWithPathfindAction(Body, Body.CheckPointPosition);
 				}
 			}
 		}
@@ -445,36 +419,36 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		public void FastAttack(Actor target, int skillSNO)
 		{
 			PowerScript power = PowerLoader.CreateImplementationForPowerSNO(skillSNO);
-			power.User = this.Body;
-			if (this.Body.WalkSpeed != 0)
-				this.Body.TranslateFacing(target.Position, false); //columns and other non-walkable shit can't turn
+			power.User = Body;
+			if (Body.WalkSpeed != 0)
+				Body.TranslateFacing(target.Position, false); //columns and other non-walkable shit can't turn
 
 			//Logger.Trace("Fast PowerAction to target");
-			this.CurrentAction = new PowerAction(this.Body, skillSNO, target);
+			CurrentAction = new PowerAction(Body, skillSNO, target);
 
 			if (power is SummoningSkill)
-				this.PresetPowers[skillSNO] = new Cooldown { CooldownTimer = null, CooldownTime = (this.Body is Boss ? 15f : 7f) };
+				PresetPowers[skillSNO] = new Cooldown { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) };
 
 			if (power is MonsterAffixSkill)
-				this.PresetPowers[skillSNO] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
+				PresetPowers[skillSNO] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
 
-			if (this.PresetPowers[skillSNO].CooldownTime > 0f)
-				this.PresetPowers[skillSNO] = new Cooldown { CooldownTimer = new SecondsTickTimer(this.Body.World.Game, this.PresetPowers[skillSNO].CooldownTime), CooldownTime = this.PresetPowers[skillSNO].CooldownTime };
+			if (PresetPowers[skillSNO].CooldownTime > 0f)
+				PresetPowers[skillSNO] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, PresetPowers[skillSNO].CooldownTime), CooldownTime = PresetPowers[skillSNO].CooldownTime };
 		}
 
 		protected virtual int PickPowerToUse()
 		{
-			if (!_warnedNoPowers && this.PresetPowers.Count == 0)
+			if (!_warnedNoPowers && PresetPowers.Count == 0)
 			{
-				Logger.Info("Monster \"{0}\" has no usable powers. {1} are defined in mpq data.", this.Body.Name, _mpqPowerCount);
+				Logger.Info("Monster \"{0}\" has no usable powers. {1} are defined in mpq data.", Body.Name, _mpqPowerCount);
 				_warnedNoPowers = true;
 			}
 
 			// randomly used an implemented power
-			if (this.PresetPowers.Count > 0)
+			if (PresetPowers.Count > 0)
 			{
 				//int power = this.PresetPowers[RandomHelper.Next(this.PresetPowers.Count)].Key;
-				List<int> availablePowers = Enumerable.ToList(this.PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerSystem.PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key));
+				List<int> availablePowers = Enumerable.ToList(PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key));
 				if (availablePowers.Where(p => p != 30592).Count() > 0)
 				{
 					int SelectedPower = availablePowers.Where(p => p != 30592).ToList()[RandomHelper.Next(availablePowers.Where(p => p != 30592).ToList().Count())];
@@ -493,23 +467,23 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		public void AddPresetPower(int powerSNO)
 		{
-			if (this.PresetPowers.ContainsKey(powerSNO))
+			if (PresetPowers.ContainsKey(powerSNO))
 			{
 				// Logger.Debug("AddPresetPower(): power sno {0} already defined for monster \"{1}\"",
 				//powerSNO, this.Body.ActorSNO.Name);
 				return;
 			}
-			if (this.PresetPowers.ContainsKey(30592)) //if can cast melee
-				this.PresetPowers.Add(powerSNO, new Cooldown { CooldownTimer = null, CooldownTime = 5f });
+			if (PresetPowers.ContainsKey(30592)) //if can cast melee
+				PresetPowers.Add(powerSNO, new Cooldown { CooldownTimer = null, CooldownTime = 5f });
 			else
-				this.PresetPowers.Add(powerSNO, new Cooldown { CooldownTimer = null, CooldownTime = 1f + (float)DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() });
+				PresetPowers.Add(powerSNO, new Cooldown { CooldownTimer = null, CooldownTime = 1f + (float)FastRandom.Instance.NextDouble() });
 		}
 
 		public void RemovePresetPower(int powerSNO)
 		{
-			if (this.PresetPowers.ContainsKey(powerSNO))
+			if (PresetPowers.ContainsKey(powerSNO))
 			{
-				this.PresetPowers.Remove(powerSNO);
+				PresetPowers.Remove(powerSNO);
 			}
 		}
 	}

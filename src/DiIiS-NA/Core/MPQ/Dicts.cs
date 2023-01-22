@@ -9755,10 +9755,12 @@ namespace DiIiS_NA.Core.MPQ
             #endregion
             return DictSNOConversation;
         }
+        public static Dictionary<string, int> DictSNOEffectGroup = new Dictionary<string, int>();
+        
         public static Dictionary<string, int> LoadEffectGroup()
         {
-            Dictionary<string, int> DictSNOEffectGroup = new Dictionary<string, int>();
             #region EffectGroup
+            DictSNOEffectGroup.Clear();
             DictSNOEffectGroup.Add("A1C4HouseFireSmall", 1111);
             DictSNOEffectGroup.Add("a1dun_Leor_Barrel_Torture_A_01_guts", 87589);
             DictSNOEffectGroup.Add("a1dun_leor_BigFireGrate", 108018);

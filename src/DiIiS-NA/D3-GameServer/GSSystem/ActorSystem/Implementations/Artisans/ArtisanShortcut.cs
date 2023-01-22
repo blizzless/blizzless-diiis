@@ -53,8 +53,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
-            player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = this.DynamicID(player) });
-            switch (this.SNO)
+            player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
+            switch (SNO)
             {
                 case ActorSno._pt_blacksmith_repairshortcut:
                 case ActorSno._pt_blacksmith_forgeweaponshortcut:
@@ -74,9 +74,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
         }
         public override bool Reveal(Player player)
         {
-            if (this.World.Game.CurrentAct != 3000)
+            if (World.Game.CurrentAct != 3000)
             {
-                switch (this.SNO)
+                switch (SNO)
                 {
                     case ActorSno._pt_blacksmith_repairshortcut:
                     case ActorSno._pt_blacksmith_forgeweaponshortcut:

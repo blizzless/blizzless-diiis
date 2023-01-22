@@ -2758,8 +2758,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (GuidingLight)       //Guiding Light passive
 				{
 					float missingHP = (User.Attributes[GameAttribute.Hitpoints_Max_Total] - User.Attributes[GameAttribute.Hitpoints_Cur]) / User.Attributes[GameAttribute.Hitpoints_Max_Total];
-					if (!HasBuff<PowerSystem.Implementations.GuidingLightBuff>(User))
-						AddBuff(User, new PowerSystem.Implementations.GuidingLightBuff(Math.Min(missingHP, 0.3f), TickTimer.WaitSeconds(this.World.Game, 10.0f)));
+					if (!HasBuff<GuidingLightBuff>(User))
+						AddBuff(User, new GuidingLightBuff(Math.Min(missingHP, 0.3f), TickTimer.WaitSeconds(World.Game, 10.0f)));
 				}
 
 				return true;
@@ -3251,7 +3251,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (Target is Player)
 				{
 					if ((Target as Player).SkillSet.HasPassive(205707)) //Juggernaut (barbarian)
-						if (DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 30)
+						if (FastRandom.Instance.Next(100) < 30)
 							(Target as Player).AddPercentageHP(20);
 				}
 				return true;
@@ -3415,8 +3415,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (GuidingLight)       //Guiding Light passive
 				{
 					float missingHP = (Target.Attributes[GameAttribute.Hitpoints_Max_Total] - User.Attributes[GameAttribute.Hitpoints_Cur]) / Target.Attributes[GameAttribute.Hitpoints_Max_Total];
-					if (!HasBuff<PowerSystem.Implementations.GuidingLightBuff>(Target))
-						AddBuff(Target, new PowerSystem.Implementations.GuidingLightBuff(Math.Min(missingHP, 0.3f), TickTimer.WaitSeconds(this.World.Game, 10.0f)));
+					if (!HasBuff<GuidingLightBuff>(Target))
+						AddBuff(Target, new GuidingLightBuff(Math.Min(missingHP, 0.3f), TickTimer.WaitSeconds(World.Game, 10.0f)));
 				}
 
 				return true;
@@ -3553,8 +3553,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (GuidingLight)       //Guiding Light passive
 				{
 					float missingHP = (User.Attributes[GameAttribute.Hitpoints_Max_Total] - User.Attributes[GameAttribute.Hitpoints_Cur]) / User.Attributes[GameAttribute.Hitpoints_Max_Total];
-					if (!HasBuff<PowerSystem.Implementations.GuidingLightBuff>(User))
-						AddBuff(User, new PowerSystem.Implementations.GuidingLightBuff(Math.Min(missingHP, 0.3f), TickTimer.WaitSeconds(this.World.Game, 10.0f)));
+					if (!HasBuff<GuidingLightBuff>(User))
+						AddBuff(User, new GuidingLightBuff(Math.Min(missingHP, 0.3f), TickTimer.WaitSeconds(World.Game, 10.0f)));
 				}
 
 				return true;
@@ -3603,7 +3603,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (Target is Player)
 				{
 					if ((Target as Player).SkillSet.HasPassive(205707)) //Juggernaut (barbarian)
-						if (DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 30)
+						if (FastRandom.Instance.Next(100) < 30)
 							(Target as Player).AddPercentageHP(20);
 				}
 
@@ -3788,7 +3788,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply()) return false;
 
-				if (this.ally != null) return false;
+				if (ally != null) return false;
 				if (User.World == null) return false;
 
 				int gender = (User as Player).Toon.Gender;
@@ -3806,16 +3806,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (User.Attributes[GameAttribute.Rune_E, 0x00058676] > 0)  //Indigo
 					AllyId = allys[5];
 
-				this.ally = new MysticAllyMinion(this.World, this, AllyId);
-				this.ally.Brain.DeActivate();
-				this.ally.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-				this.ally.Attributes[GameAttribute.Untargetable] = true;
-				this.ally.EnterWorld(this.ally.Position);
-				this.ally.PlayActionAnimation(AnimationSno.mystically_female_spawn2);
+				ally = new MysticAllyMinion(World, this, AllyId);
+				ally.Brain.DeActivate();
+				ally.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+				ally.Attributes[GameAttribute.Untargetable] = true;
+				ally.EnterWorld(ally.Position);
+				ally.PlayActionAnimation(AnimationSno.mystically_female_spawn2);
 
-				(this.ally as Minion).Brain.Activate();
-				this.ally.Attributes[GameAttribute.Untargetable] = false;
-				this.ally.Attributes.BroadcastChangedIfRevealed();
+				(ally as Minion).Brain.Activate();
+				ally.Attributes[GameAttribute.Untargetable] = false;
+				ally.Attributes.BroadcastChangedIfRevealed();
 
 				if (User.Attributes[GameAttribute.Rune_A, 0x00058676] > 0)  //Fire Ally
 				{
@@ -3860,10 +3860,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				User.Attributes.BroadcastChangedIfRevealed();
 
-				if (this.ally != null)
+				if (ally != null)
 				{
-					this.ally.Destroy();
-					this.ally = null;
+					ally.Destroy();
+					ally = null;
 				}
 			}
 
@@ -3874,18 +3874,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				if (User.World.Game.TickCounter % 300 == 0)
 				{
-					if (this.ally != null && this.ally.Dead)
+					if (ally != null && ally.Dead)
 					{
-						this.ally = new MysticAllyMinion(this.World, this, AllyId);
-						this.ally.Brain.DeActivate();
-						this.ally.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-						this.ally.Attributes[GameAttribute.Untargetable] = true;
-						this.ally.EnterWorld(this.ally.Position);
-						this.ally.PlayActionAnimation(AnimationSno.mystically_female_spawn2);
+						ally = new MysticAllyMinion(World, this, AllyId);
+						ally.Brain.DeActivate();
+						ally.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+						ally.Attributes[GameAttribute.Untargetable] = true;
+						ally.EnterWorld(ally.Position);
+						ally.PlayActionAnimation(AnimationSno.mystically_female_spawn2);
 
-						(this.ally as Minion).Brain.Activate();
-						this.ally.Attributes[GameAttribute.Untargetable] = false;
-						this.ally.Attributes.BroadcastChangedIfRevealed();
+						(ally as Minion).Brain.Activate();
+						ally.Attributes[GameAttribute.Untargetable] = false;
+						ally.Attributes.BroadcastChangedIfRevealed();
 					}
 				}
 

@@ -42,7 +42,7 @@ namespace DiIiS_NA.Core.MPQ
                     return;
                 }
                 this.BaseMPQFiles.Add(mpqFile);
-                Logger.Trace("Добавлено хранилище MPQ: {0}.", file);
+                Logger.Trace("Added MPQ storage: {0}.", file);
             }
 
             this.PatchPattern = patchPattern;
@@ -93,11 +93,11 @@ namespace DiIiS_NA.Core.MPQ
             {
                 foreach (var mpq in pair.Value)
                 {
-                    Logger.Trace("Архив: {0}, включен в систему.", System.IO.Path.GetFileName(mpq));
+                    Logger.Trace("MPQ: {0}, added to the system.", System.IO.Path.GetFileName(mpq));
                     this.FileSystem.Archives.Add(new MpqArchive(new FileStream(mpq, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), true));
                 }
             }
-            Logger.Trace("Система сконструирована.");
+            Logger.Trace("MPQ system constructed.");
         }
     }
 }

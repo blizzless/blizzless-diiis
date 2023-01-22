@@ -20,7 +20,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public Leoric(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.MinimapActive] = true;
 		}
 
 
@@ -58,8 +58,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 			Attributes.BroadcastChangedIfRevealed();
 			var ListenerKingSkeletons = Task.Delay(16000).ContinueWith(delegate {
-				this.World.SpawnMonster(ActorSno._skeletonking, this.Position);
-				this.Destroy();
+				World.SpawnMonster(ActorSno._skeletonking, Position);
+				Destroy();
 			});
 		}
 	}

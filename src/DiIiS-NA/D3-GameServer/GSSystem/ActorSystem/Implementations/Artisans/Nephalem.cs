@@ -22,24 +22,24 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 		public Nephalem(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.NPC_Is_Operatable] = true;
-			this.Attributes[GameAttribute.Is_NPC] = true;
-			this.Attributes[GameAttribute.In_Tiered_Loot_Run_Level] = 0;
-			this.Attributes[GameAttribute.MinimapActive] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 1] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 2] = true;
-			this.Attributes[GameAttribute.NPC_Has_Interact_Options, 3] = true;
+			Attributes[GameAttribute.NPC_Is_Operatable] = true;
+			Attributes[GameAttribute.Is_NPC] = true;
+			Attributes[GameAttribute.In_Tiered_Loot_Run_Level] = 0;
+			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 1] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 2] = true;
+			Attributes[GameAttribute.NPC_Has_Interact_Options, 3] = true;
 			//this.Attributes[GameAttribute.Conversation_Icon] = 2;
 			//this.ForceConversationSNO = 
 		}
 
 		public override void OnCraft(Player player)
 		{
-			if (this.World.Game.ActiveNephalemKilledBoss == true)
+			if (World.Game.ActiveNephalemKilledBoss == true)
 			{
-				this.World.Game.ActiveNephalemKilledBoss = false;
-				foreach (var plr in this.World.Game.Players.Values)
+				World.Game.ActiveNephalemKilledBoss = false;
+				foreach (var plr in World.Game.Players.Values)
 				{
 					plr.InGameClient.SendMessage(new QuestCounterMessage()
 					{
@@ -62,7 +62,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 				}
 			}
 
-			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = this.DynamicID(player) });
+			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
 			player.ArtisanInteraction = "Mystic";
 		}
 

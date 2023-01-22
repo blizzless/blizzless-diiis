@@ -25,9 +25,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public GSBackend(string BattletHost, int BattlePort)
 		{
-			this.BattleNetSocket = new WatsonTcpClient(BattletHost, BattlePort, this._senderServerConnected, this._senderServerDisconnected, this._senderMessageReceived, false);
-			//Logger.Info("Sender started at {0}:{1}", MooNetHost, MooNetPort);
-			//client.Send(Encoding.UTF8.GetBytes(userInput));
+			BattleNetSocket = new WatsonTcpClient(BattletHost, BattlePort, _senderServerConnected, _senderServerDisconnected, _senderMessageReceived, false);
 		}
 
 
@@ -42,7 +40,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			switch (message[0])
 			{
 				case "diiiscg":
-					System.Threading.Tasks.Task.Run(() =>
+					Task.Run(() =>
 					{
 						try
 						{
@@ -78,8 +76,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			//Logger.Info("GameServer подключен к BattleNet.");
 			System.Threading.Thread.Sleep(3000);
-			string BackEndIP = GameServer.Config.Instance.BindIP;
-			int BackEndPort = GameServer.Config.Instance.Port;
+			string BackEndIP = Config.Instance.BindIP;
+			int BackEndPort = Config.Instance.Port;
 			bool PVP = false;
 			if (!PVP)
 				RegisterGameServer(BackEndIP, BackEndPort);

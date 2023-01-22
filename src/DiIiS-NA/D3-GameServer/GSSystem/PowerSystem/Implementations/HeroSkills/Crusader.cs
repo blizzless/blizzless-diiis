@@ -869,7 +869,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					{
 						// FIXME: check actor
 						var proj = new Projectile(this, ActorSno._x1_crusader_shieldbash_shieldcross, User.Position);
-						proj.Timeout = new SecondsTickTimer(this.World.Game, 1f);
+						proj.Timeout = new SecondsTickTimer(World.Game, 1f);
 						proj.OnCollision = (hit) =>
 						{
 							if ((Target != null) && (hit == Target)) return;
@@ -1053,7 +1053,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Power][this.PowerSNO].Data;
+			var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Power][PowerSNO].Data;
 			
 			var proj = new Projectile(this, ActorSno._x1_crusader_holyhammer_hammer, User.Position);
 			proj.Position.Z += 2f;
@@ -1384,7 +1384,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				for (int i = 0; i < maxAvatars; i++)
 				{
-					var avatar = new AvatarRanged(this.World, this, i, ScriptFormula(8) * damageMult, WaitSeconds(ScriptFormula(35) + 2f));
+					var avatar = new AvatarRanged(World, this, i, ScriptFormula(8) * damageMult, WaitSeconds(ScriptFormula(35) + 2f));
 					avatar.Brain.DeActivate();
 					avatar.Position = RandomDirection(User.Position, 3f, 8f);
 					avatar.Attributes[GameAttribute.Untargetable] = true;
@@ -1421,7 +1421,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				for (int i = 0; i < maxAvatars; i++)
 				{
-					var avatar = new AvatarMelee(this.World, this, i, ScriptFormula(46) * damageMult, WaitSeconds(ScriptFormula(36) + 2f));
+					var avatar = new AvatarMelee(World, this, i, ScriptFormula(46) * damageMult, WaitSeconds(ScriptFormula(36) + 2f));
 					avatar.Brain.DeActivate();
 					avatar.Position = RandomDirection(User.Position, 3f, 8f);
 					avatar.Attributes[GameAttribute.Untargetable] = true;
@@ -1577,7 +1577,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				for (int i = 0; i < maxAvatars; i++)
 				{
-					var avatar = new AvatarMelee(this.World, this, i, ScriptFormula(49), WaitSeconds(ScriptFormula(28) + 2f));
+					var avatar = new AvatarMelee(World, this, i, ScriptFormula(49), WaitSeconds(ScriptFormula(28) + 2f));
 					avatar.Brain.DeActivate();
 					avatar.Position = RandomDirection(User.Position, 3f, 8f);
 					avatar.Attributes[GameAttribute.Untargetable] = true;

@@ -38,7 +38,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		public AggressiveNPCBrain(Actor body)
 			: base(body)
 		{
-			this.PresetPowers = new List<int>();
+			PresetPowers = new List<int>();
 
 			if (body.ActorData.MonsterSNO > 0)
 			{
@@ -47,7 +47,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				{
 					if (monsterSkill.SNOPower > 0)
 					{
-						this.PresetPowers.Add(monsterSkill.SNOPower);
+						PresetPowers.Add(monsterSkill.SNOPower);
 					}
 				}
 			}
@@ -55,31 +55,31 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		public override void Think(int tickCounter)
 		{
-			if (this.Body.Attributes[GameAttribute.Frozen] ||
-				this.Body.Attributes[GameAttribute.Stunned] ||
-				this.Body.Attributes[GameAttribute.Blind] ||
-				this.Body.Attributes[GameAttribute.Webbed] ||
-				this.Body.Disable ||
-				this.Body.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.KnockbackBuff>(this.Body) != null)
+			if (Body.Attributes[GameAttribute.Frozen] ||
+				Body.Attributes[GameAttribute.Stunned] ||
+				Body.Attributes[GameAttribute.Blind] ||
+				Body.Attributes[GameAttribute.Webbed] ||
+				Body.Disable ||
+				Body.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.KnockbackBuff>(Body) != null)
 			{
-				if (this.CurrentAction != null)
+				if (CurrentAction != null)
 				{
-					this.CurrentAction.Cancel(tickCounter);
-					this.CurrentAction = null;
+					CurrentAction.Cancel(tickCounter);
+					CurrentAction = null;
 				}
 				_powerDelay = null;
 
 				return;
 			}
 
-			if (this.CurrentAction == null)
+			if (CurrentAction == null)
 			{
 				if (_powerDelay == null)
-					_powerDelay = new SecondsTickTimer(this.Body.World.Game, 1f);
+					_powerDelay = new SecondsTickTimer(Body.World.Game, 1f);
 
 				if (_powerDelay.TimedOut)
 				{
-					var monsters = this.Body.GetObjectsInRange<Monster>(40f).Where(m => m.Visible & !m.Dead).ToList();
+					var monsters = Body.GetObjectsInRange<Monster>(40f).Where(m => m.Visible & !m.Dead).ToList();
 					if (monsters.Count != 0)
 					{
 						_target = monsters[0];
@@ -87,23 +87,23 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						if (powerToUse > 0)
 						{
 							PowerSystem.PowerScript power = PowerSystem.PowerLoader.CreateImplementationForPowerSNO(powerToUse);
-							power.User = this.Body;
-							float attackRange = this.Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : power.EvalTag(PowerKeys.AttackRadius)) : 35f);
-							float targetDistance = PowerSystem.PowerMath.Distance2D(_target.Position, this.Body.Position);
+							power.User = Body;
+							float attackRange = Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : power.EvalTag(PowerKeys.AttackRadius)) : 35f);
+							float targetDistance = PowerSystem.PowerMath.Distance2D(_target.Position, Body.Position);
 							if (targetDistance < attackRange + _target.ActorData.Cylinder.Ax2)
 							{
 								if (_powerDelay.TimedOut)
 								{
 									_powerDelay = null;
-									this.Body.TranslateFacing(_target.Position, false);
+									Body.TranslateFacing(_target.Position, false);
 
-									this.CurrentAction = new PowerAction(this.Body, powerToUse, _target);
+									CurrentAction = new PowerAction(Body, powerToUse, _target);
 								}
 							}
 							else
 							{
-								this.CurrentAction = new MoveToTargetWithPathfindAction(
-									this.Body,
+								CurrentAction = new MoveToTargetWithPathfindAction(
+									Body,
 									_target,
 									attackRange + _target.ActorData.Cylinder.Ax2
 								);
@@ -112,7 +112,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					}
 					else
 					{
-						this.CurrentAction = new MoveToPointAction(this.Body, this.Body.CheckPointPosition);
+						CurrentAction = new MoveToPointAction(Body, Body.CheckPointPosition);
 					}
 				}
 			}
@@ -120,11 +120,11 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		protected virtual int PickPowerToUse()
 		{
-			if (this.PresetPowers.Count > 0)
+			if (PresetPowers.Count > 0)
 			{
-				int powerIndex = RandomHelper.Next(this.PresetPowers.Count);
-				if (PowerSystem.PowerLoader.HasImplementationForPowerSNO(this.PresetPowers[powerIndex]))
-					return this.PresetPowers[powerIndex];
+				int powerIndex = RandomHelper.Next(PresetPowers.Count);
+				if (PowerSystem.PowerLoader.HasImplementationForPowerSNO(PresetPowers[powerIndex]))
+					return PresetPowers[powerIndex];
 			}
 
 			return -1;
@@ -132,7 +132,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		public void AddPresetPower(int powerSNO)
 		{
-			this.PresetPowers.Add(powerSNO);
+			PresetPowers.Add(powerSNO);
 		}
 	}
 }

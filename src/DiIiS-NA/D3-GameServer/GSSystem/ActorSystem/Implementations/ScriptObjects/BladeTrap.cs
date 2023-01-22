@@ -24,10 +24,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public BladeTrap(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Field2 = 0x8;
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			Field2 = 0x8;
+			CollFlags = 0;
+			WalkSpeed = 0;
+			Attributes[GameAttribute.Invulnerable] = true;
 			//Logger.Debug("Jondar, tagSNO: {0}", tags[MarkerKeys.OnActorSpawnedScript].Id);
 		}
 

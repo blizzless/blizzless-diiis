@@ -62,10 +62,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 		public DRLGEmuScene(int _SnoID, int _Weather, int _Music, int _LevelArea)
 		{
-			this.SnoID = _SnoID;
-			this.Weather = _Weather;
-			this.Music = _Music;
-			this.LevelArea = _LevelArea;
+			SnoID = _SnoID;
+			Weather = _Weather;
+			Music = _Music;
+			LevelArea = _LevelArea;
 		}
 	}
 
@@ -88,22 +88,22 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 		public WorldGenerator(Game game)
 		{
-			this.Game = game;
+			Game = game;
 		}
 
-		public static Dictionary<int, int> DefaultConversationLists = new Dictionary<int, int>();
+		public static Dictionary<int, int> DefaultConversationLists = new();
 
-		private List<int> LoadedLevelAreas = new List<int>();
+		private readonly List<int> LoadedLevelAreas = new();
 
 		public void CheckLevelArea(World world, int levelAreaSNO)
 		{
-			if (SpawnGenerator.Spawns.ContainsKey(levelAreaSNO) && SpawnGenerator.Spawns[levelAreaSNO].lazy_load == true)
-				if (!this.LoadedLevelAreas.Contains(levelAreaSNO))
+			if (SpawnGenerator.Spawns.ContainsKey(levelAreaSNO) && SpawnGenerator.Spawns[levelAreaSNO].lazy_load)
+				if (!LoadedLevelAreas.Contains(levelAreaSNO))
 				{
-					this.LoadedLevelAreas.Add(levelAreaSNO);
+					LoadedLevelAreas.Add(levelAreaSNO);
 
 					// Load monsters for level area
-					foreach (var scene in this.LazyLevelAreas[levelAreaSNO])
+					foreach (var scene in _lazyLevelAreas[levelAreaSNO])
 					{
 						LoadMonstersLayout(world, levelAreaSNO, scene);
 					}
@@ -120,7 +120,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 			var worldAsset = MPQStorage.Data.Assets[SNOGroup.Worlds][(int)worldSNO];
 			Dictionary<int, List<Scene>> levelAreas = new Dictionary<int, List<Scene>>();
-			World world = new World(this.Game, worldSNO);
+			World world = new World(Game, worldSNO);
 			bool DRLGEmuActive = false;
 			world.worldData = (DiIiS_NA.Core.MPQ.FileFormats.World)worldAsset.Data;
 			if (worldSNO == WorldSno.a2dun_swr_swr_to_oasis_level01)
@@ -129,23 +129,23 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			//445736 - p4_forest_snow_icecave_01
 			if (world.worldData.DynamicWorld && !worldSNO.IsNotDynamicWorld()) //Gardens of Hope - 2 lvl is NOT random
 			{
-				if (!GameServer.Config.Instance.DRLGemu)
-					Logger.Warn("DRLG-Emu деактивирован.");
+				if (!Config.Instance.DRLGemu)
+					Logger.Warn("DRLG-Emu is Disabled.");
 				string DRLGVersion = "1.8";
 				var WorldContainer = DBSessions.WorldSession.Query<DRLG_Container>().Where(dbt => dbt.WorldSNO == (int)worldSNO).ToList();
-				if (WorldContainer.Count > 0 && worldSNO != WorldSno.a1trdun_level05_templar && GameServer.Config.Instance.DRLGemu)
+				if (WorldContainer.Count > 0 && worldSNO != WorldSno.a1trdun_level05_templar && Config.Instance.DRLGemu)
 				{
 					DRLGEmuActive = true;
-					Logger.Warn("Мир - {0} [{1}] динамический! Найден контейнер, DRLG-Emu v{2} Активирован!", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
+					Logger.Warn("World - {0} [{1}] is dynamic! Found container, DRLG-Emu v{2} Activated!", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
 				}
 				else if (!GenerateRandomDungeon(worldSNO, world.worldData))
 				{
-					Logger.Error("DRLG-Emu v{2} - World - {0} [{1}] динамический! DRLG Engine не нашёл контейнер! Шаблонная система не настроена для этого мира.", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
+					Logger.Error("DRLG-Emu v{2} - World - {0} [{1}] is dynamic! DRLG Engine can't find container! Template system is not configured for this world.", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
 					return null;
 				}
 				else
 				{
-					Logger.Warn("DRLG-Emu v{2} - Мир - {0} [{1}] динамический! DRLG Engine не нашёл контейнер! Запуск шаблонной системы генерации.", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
+					Logger.Warn("DRLG-Emu v{2} - World - {0} [{1}] is dynamic! DRLG Engine can't find container! Template system is started.", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
 					if (world.worldData.DRLGParams != null)
 					{
 						world.NextLocation = new MessageSystem.Message.Fields.ResolvedPortalDestination
@@ -163,7 +163,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					else
 					{
-						Logger.Warn("DRLG-Emu v{2} - Мир - {0} [{1}] динамический! DRLG Engine не нашёл контейнер! Сбой шаблона генерации, не установлена обратная связь.", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
+						Logger.Warn("DRLG-Emu v{2} - World - {0} [{1}] is dynamic! DRLG Engine can't find container! Template system is not configured for this world.", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
 						return null;
 					}
 				}
@@ -180,53 +180,53 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				};
 			}
 
-			if (DRLGEmuActive == true)
+			if (DRLGEmuActive)
 			{
-				List<List<DRLGEmuScene>> DRLGContainers = new List<List<DRLGEmuScene>> { };
-				List<DRLGEmuScene> EnterChuncks = new List<DRLGEmuScene> { };
-				List<DRLGEmuScene> ExitChuncks = new List<DRLGEmuScene> { };
-				List<DRLGEmuScene> WayChuncks = new List<DRLGEmuScene> { };
-				List<DRLGEmuScene> EndChuncks = new List<DRLGEmuScene> { };
-				List<DRLGEmuScene> FillerChuncks = new List<DRLGEmuScene> { };
+				List<List<DRLGEmuScene>> containers = new List<List<DRLGEmuScene>> { };
+				List<DRLGEmuScene> enterChunks = new List<DRLGEmuScene> { };
+				List<DRLGEmuScene> exitChunks = new List<DRLGEmuScene> { };
+				List<DRLGEmuScene> wayChunks = new List<DRLGEmuScene> { };
+				List<DRLGEmuScene> endChunks = new List<DRLGEmuScene> { };
+				List<DRLGEmuScene> fillerChunks = new List<DRLGEmuScene> { };
 
 				var WorldContainer = DBSessions.WorldSession.Query<DRLG_Container>().Where(dbt => dbt.WorldSNO == (int)world.SNO).First();
-				var DRLGTiles = DBSessions.WorldSession.Query<DRLG_Tile>().Where(dbt => dbt.Head_Container == (int)WorldContainer.Id).ToList();
+				var tiles = DBSessions.WorldSession.Query<DRLG_Tile>().Where(dbt => dbt.Head_Container == (int)WorldContainer.Id).ToList();
 
 			REP:
-				DRLGTiles = DBSessions.WorldSession.Query<DRLG_Tile>().Where(dbt => dbt.Head_Container == (int)WorldContainer.Id).ToList();
+				tiles = DBSessions.WorldSession.Query<DRLG_Tile>().Where(dbt => dbt.Head_Container == (int)WorldContainer.Id).ToList();
 				//All Scenes
-				foreach (var Tile in DRLGTiles)
+				foreach (var Tile in tiles)
 				{
 					switch (Tile.Type)
 					{
-						case 0: //Входы
-							EnterChuncks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
+						case 0: //enter
+							enterChunks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
 							break;
-						case 1: //Выходы
-							ExitChuncks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
+						case 1: //exits
+							exitChunks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
 							break;
-						case 2: //Пути
-							WayChuncks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
+						case 2: //way
+							wayChunks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
 							break;
-						case 3: //Тупики
-							EndChuncks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
+						case 3: //dead ends
+							endChunks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
 							break;
-						case 4: //Филлеры
-							FillerChuncks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
+						case 4: //fillers
+							fillerChunks.Add(new DRLGEmuScene(Tile.SNOHandle_Id, Tile.SNOWeather, Tile.SNOMusic, Tile.SNOLevelArea));
 							break;
 					}
 				}
-				DRLGContainers.Add(EnterChuncks);
-				DRLGContainers.Add(ExitChuncks);
-				DRLGContainers.Add(WayChuncks);
-				DRLGContainers.Add(EndChuncks);
-				DRLGContainers.Add(FillerChuncks);
+				containers.Add(enterChunks);
+				containers.Add(exitChunks);
+				containers.Add(wayChunks);
+				containers.Add(endChunks);
+				containers.Add(fillerChunks);
 
 				if (world.SNO.IsGenerated())
 					while (true)
 					{
 
-						DRLGGenerateProcess(world, DRLGContainers, FillerChuncks, WorldContainer.RangeofScenes);
+						DRLGGenerateProcess(world, containers, fillerChunks, WorldContainer.RangeofScenes);
 						if (world.worldData.SceneParams.ChunkCount > 15)
 							break;
 
@@ -235,18 +235,18 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				{
 					try
 					{
-						DRLGGenerateProcess(world, DRLGContainers, FillerChuncks, WorldContainer.RangeofScenes);
+						DRLGGenerateProcess(world, containers, fillerChunks, WorldContainer.RangeofScenes);
 					}
 					catch
 					{
-						Logger.Info("DRLG генератор нашёл ошибку в расчёте, повтор.");
+						Logger.Info("DRLG generator found an error in the calculation, repeat.");
 						goto REP;
 					}
 				}
 				Logger.Info("DRLG work - Completed");
 			}
 
-			var clusters = new Dictionary<int, DiIiS_NA.Core.MPQ.FileFormats.SceneCluster>();
+			var clusters = new Dictionary<int, SceneCluster>();
 			if (world.worldData.SceneClusterSet != null)
 			{
 				foreach (var cluster in world.worldData.SceneClusterSet.SceneClusters)
@@ -273,10 +273,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			}
 
 			// For each cluster generate a list of randomly selected subcenes /fasbat
-			var clusterSelected = new Dictionary<int, List<DiIiS_NA.Core.MPQ.FileFormats.SubSceneEntry>>();
+			var clusterSelected = new Dictionary<int, List<SubSceneEntry>>();
 			foreach (var cID in clusterCount.Keys)
 			{
-				var selected = new List<DiIiS_NA.Core.MPQ.FileFormats.SubSceneEntry>();
+				var selected = new List<SubSceneEntry>();
 				clusterSelected[cID] = selected;
 				var count = clusterCount[cID];
 				foreach (var group in clusters[cID].SubSceneGroups) // First select from each subscene group /fasbat
@@ -327,11 +327,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						else
 						{
 							var entries = clusterSelected[sceneChunk.SceneSpecification.ClusterID];
-							DiIiS_NA.Core.MPQ.FileFormats.SubSceneEntry subSceneEntry = null;
+							SubSceneEntry subSceneEntry = null;
 
 							if (entries.Count > 0)
 							{
-								subSceneEntry = RandomHelper.RandomItem<DiIiS_NA.Core.MPQ.FileFormats.SubSceneEntry>(entries, entry => 1);
+								subSceneEntry = RandomHelper.RandomItem<SubSceneEntry>(entries, entry => 1);
 								entries.Remove(subSceneEntry);
 							}
 							else
@@ -394,14 +394,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			try
 			{
 				if (!world.IsPvP)
-					loadLevelAreas(levelAreas, world);
+					LoadLevelAreas(levelAreas, world);
 			}
 			catch (Exception e)
 			{
 				Logger.WarnException(e, "loadLevelAreas exception: ");
 			}
 
-			#region Патчи 
+			#region patches
 			switch (worldSNO)
 			{
 				case WorldSno.x1_pand_ext_2_battlefields: //x1_pand_ext_2_battlefields
@@ -413,7 +413,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					RandomSpawnInWorldWithLevelArea(world, ActorSno._x1_deathmaiden_unique_fire_a);
 					RandomSpawnInWorldWithLevelArea(world, ActorSno._x1_deathmaiden_unique_fire_a);
 					break;
-				case WorldSno.trdun_leoric_level03: //Установка портала на третий этаж Залов Агонии рядом с входом к Мяснику.
+				case WorldSno.trdun_leoric_level03: //Setting portal to the third floor of the Agony's Halls near the entrance to the Butcher.
 					Vector3D Scene0Pos = world.GetSceneBySnoId(78824).Position;
 					world.SpawnMonster(ActorSno._waypoint, new Vector3D(Scene0Pos.X + 149.0907f, Scene0Pos.Y + 106.7075f, Scene0Pos.Z));
 					break;
@@ -428,21 +428,26 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						ActorSno._x1_pand_hexmaze_en_enchantress
 						)) actor.Destroy();
 					break;
-				case WorldSno.trout_town: //Упоротый наёмник =)
-					var Templar = world.GetActorBySNO(ActorSno._templar);
+				case WorldSno.trout_town: //mercenary
+					var templar = world.GetActorBySNO(ActorSno._templar);
 					var hasmalth = world.GetActorBySNO(ActorSno._x1_malthael_npc);
 
 					if (hasmalth == null)
 					{
-						ActorSystem.Implementations.Hirelings.MalthaelHireling malthaelHire = new ActorSystem.Implementations.Hirelings.MalthaelHireling(world, ActorSno._x1_malthael_npc_nocollision, Templar.Tags);
-						malthaelHire.RotationAxis = new Vector3D(0f, 0f, 0.4313562f);
-						malthaelHire.RotationW = 0.9021817f;
-						malthaelHire.Attributes[GameAttribute.Team_Override] = 2;
+						ActorSystem.Implementations.Hirelings.MalthaelHireling malthaelHire = new ActorSystem.Implementations.Hirelings.MalthaelHireling(world, ActorSno._x1_malthael_npc_nocollision, templar.Tags)
+							{
+								RotationAxis = new Vector3D(0f, 0f, 0.4313562f),
+								RotationW = 0.9021817f,
+								Attributes =
+								{
+									[GameAttribute.Team_Override] = 2
+								}
+							};
 						malthaelHire.EnterWorld(new Vector3D(3017.266f, 2851.986f, 24.04533f));
 					}
 					foreach (var door in world.GetActorsBySNO(ActorSno._house_door_trout_newtristram))
 						door.Destroy();
-					if (this.Game.CurrentAct == 3000)
+					if (Game.CurrentAct == 3000)
 					{
 						var TownDoor = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
 						TownDoor.Attributes[GameAttribute.Team_Override] = 2;
@@ -455,21 +460,21 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						TownDoor.Attributes.BroadcastChangedIfRevealed();
 					}
 					break;
-				case WorldSno.a1trdun_level04: //2 уровень собора
+				case WorldSno.a1trdun_level04: //Cathedral Level 2
 					foreach (var actor in world.GetActorsBySNO(ActorSno._g_portal_townportal_red))
 					{
 						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case WorldSno.a1trdun_level06: //4 уровень собора
+				case WorldSno.a1trdun_level06: //Cathedral Level 4
 					foreach (var actor in world.GetActorsBySNO(ActorSno._g_portal_townportal_red))
 					{
 						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
-				case WorldSno.a1trdun_level05_templar: //Лишние NPC в соборе (3 уровень)
+				case WorldSno.a1trdun_level05_templar: //Cathedral Level 3
 					foreach (var actor in world.GetActorsBySNO(
 						ActorSno._x1_mysticintro_npc,
 						ActorSno._tristramfemale,
@@ -484,59 +489,59 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					break;
 
-				case WorldSno.a2dun_swr_swr_to_oasis_level01: //Убиваем ненужный портал в локации если игра не в режиме приключений
-					if (this.Game.CurrentAct != 3000)
-						foreach (var wayp in world.GetActorsBySNO(ActorSno._waypoint)) wayp.Destroy();
+				case WorldSno.a2dun_swr_swr_to_oasis_level01: //kill useless portal in location if game not in adventure mode
+					if (Game.CurrentAct != 3000)
+						foreach (var waypoint in world.GetActorsBySNO(ActorSno._waypoint)) waypoint.Destroy();
 					break;
-				case WorldSno.a2dun_zolt_head_random01: //Убираем кровь кула
+				case WorldSno.a2dun_zolt_head_random01: //remove blood pool
 					foreach (var act in world.GetActorsBySNO(ActorSno._a2dun_zolt_blood_container_02)) act.Destroy();
 					break;
-				case WorldSno.a2dun_aqd_special_01: //Главный водосток. Убираем лишние порталы.
+				case WorldSno.a2dun_aqd_special_01: //Main Drain. Remove useless portals.
 					foreach (var port in world.Actors.Values)
-						if (port is Portal)
-							if ((port as Portal).Destination.WorldSNO == (int)WorldSno.a2dun_aqd_special_b_level01)
-								port.Destroy();
+						if (port is Portal portal)
+							if (portal.Destination.WorldSNO == (int)WorldSno.a2dun_aqd_special_b_level01)
+								portal.Destroy();
 					break;
-				case WorldSno.a3dun_keep_level04: //Убиваем ненужный портал в локации если игра не в режиме приключений
-					if (this.Game.CurrentAct != 3000)
-						foreach (var wayp in world.GetActorsBySNO(ActorSno._waypoint)) wayp.Destroy();
+				case WorldSno.a3dun_keep_level04: //kill useless portal in location if game not in adventure mode
+					if (Game.CurrentAct != 3000)
+						foreach (var waypoint in world.GetActorsBySNO(ActorSno._waypoint)) waypoint.Destroy();
 					break;
-				#region Убиваем все порталы в демонические разломы на первом этаже садов(теперь и на втором этаже), а то чет дохера их), создавать будет скрипт уничтожения скверны. Добалвяем голос Дьябло на несколько участков
-				case WorldSno.a4dun_garden_of_hope_01: //1 Этаж садов
-					foreach (var HellPortal in world.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal))
-						HellPortal.Destroy();
+				#region kill all portals in demonic rifts on the first floor of the gardens (now and on the second floor), because there are a lot of them), the script will create a script to destroy the demon. Add the voice of Diablo to several areas;
+				case WorldSno.a4dun_garden_of_hope_01: //1st floor of the gardens
+					foreach (var hellPortal in world.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal))
+						hellPortal.Destroy();
 					break;
-				case WorldSno.a4dun_garden_of_hope_random: //2 Этаж садов
-					foreach (var HellPortal in world.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal))
-						HellPortal.Destroy();
+				case WorldSno.a4dun_garden_of_hope_random: //2nd floor of the gardens
+					foreach (var hellPortal in world.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal))
+						hellPortal.Destroy();
 					break;
                 #endregion
 				case WorldSno.a4dun_spire_level_00:
-					var LeahGhost = world.SpawnMonster(ActorSno._a4dun_aspect_ghost_07, new Vector3D(570f, 570f, 0.1f)) as InteractiveNPC;
-					LeahGhost.Conversations.Clear();
-					LeahGhost.Conversations.Add(new ConversationInteraction(198600));
-					LeahGhost.Attributes[GameAttribute.Conversation_Icon, 0] = 6;
-					LeahGhost.Attributes.BroadcastChangedIfRevealed();
+					var leahGhost = world.SpawnMonster(ActorSno._a4dun_aspect_ghost_07, new Vector3D(570f, 570f, 0.1f)) as InteractiveNPC;
+					leahGhost.Conversations.Clear();
+					leahGhost.Conversations.Add(new ConversationInteraction(198600));
+					leahGhost.Attributes[GameAttribute.Conversation_Icon, 0] = 6;
+					leahGhost.Attributes.BroadcastChangedIfRevealed();
 					break;
 					//428f, 836f, -20.3f
 				case WorldSno.a4dun_spire_level_01:
-					var ZoltunGhost = world.SpawnMonster(ActorSno._a4dun_aspect_ghost_02, new Vector3D(428f, 836f, -2f)) as InteractiveNPC;
-					ZoltunGhost.Conversations.Clear();
-					ZoltunGhost.Conversations.Add(new ConversationInteraction(198402));
-					ZoltunGhost.Attributes[GameAttribute.Conversation_Icon, 0] = 6;
-					ZoltunGhost.Attributes.BroadcastChangedIfRevealed();
+					var zoltunGhost = world.SpawnMonster(ActorSno._a4dun_aspect_ghost_02, new Vector3D(428f, 836f, -2f)) as InteractiveNPC;
+					zoltunGhost.Conversations.Clear();
+					zoltunGhost.Conversations.Add(new ConversationInteraction(198402));
+					zoltunGhost.Attributes[GameAttribute.Conversation_Icon, 0] = 6;
+					zoltunGhost.Attributes.BroadcastChangedIfRevealed();
 					break;
 				case WorldSno.a3dun_ruins_frost_city_a_02:
-					foreach (var wayp in world.GetActorsBySNO(ActorSno._waypoint)) wayp.Destroy();
+					foreach (var waypoint in world.GetActorsBySNO(ActorSno._waypoint)) waypoint.Destroy();
 					break;
 				case WorldSno.p43_ad_oldtristram:
-					foreach (var wayp in world.GetActorsBySNO(ActorSno._trout_oldtristram_exit_gate)) wayp.Destroy();
+					foreach (var waypoint in world.GetActorsBySNO(ActorSno._trout_oldtristram_exit_gate)) waypoint.Destroy();
 					break;
 				case WorldSno.x1_tristram_adventure_mode_hub:
 					
-					//Отображаем только одного продавца
+					//Display only one seller
 					world.ShowOnlyNumNPC(ActorSno._a1_uniquevendor_miner_intown_01, 0);
-					//Отображаем только одного мистика
+					//Display only one mystic
 					world.ShowOnlyNumNPC(ActorSno._pt_mystic, 1);
 					var Door = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
 					Door.Attributes[GameAttribute.Team_Override] = 2;
@@ -548,64 +553,61 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					Door.Attributes[GameAttribute.Immunity] = true;
 					Door.Attributes.BroadcastChangedIfRevealed();
 					break;
-				case WorldSno.p43_ad_cathedral_level_01: //1 этаж собора (Режим D1)
-				case WorldSno.p43_ad_cathedral_level_02: //2 этаж собора (Режим D1)
-				case WorldSno.p43_ad_cathedral_level_03: //3 этаж собора (Режим D1)
-				case WorldSno.p43_ad_cathedral_level_04: //4 этаж собора (Режим D1)
-				case WorldSno.p43_ad_catacombs_level_05: //5 этаж собора (Режим D1)
-				case WorldSno.p43_ad_catacombs_level_06: //6 этаж собора (Режим D1)
-				case WorldSno.p43_ad_catacombs_level_07: //7 этаж собора (Режим D1)
-				case WorldSno.p43_ad_catacombs_level_08: //8 этаж собора (Режим D1)
-					foreach (var actor in world.GetActorsBySNO(d1ModeHiddenActors)) actor.Destroy();
+				case WorldSno.p43_ad_cathedral_level_01: //1st floor of the cathedral (D1 mode)
+				case WorldSno.p43_ad_cathedral_level_02: //2nd floor of the cathedral (D1 mode)
+				case WorldSno.p43_ad_cathedral_level_03: //3rd floor of the cathedral (D1 mode)
+				case WorldSno.p43_ad_cathedral_level_04: //4th floor of the cathedral (D1 mode)
+				case WorldSno.p43_ad_catacombs_level_05: //5th floor of the cathedral (D1 mode)
+				case WorldSno.p43_ad_catacombs_level_06: //6th floor of the cathedral (D1 mode)
+				case WorldSno.p43_ad_catacombs_level_07: //7th floor of the cathedral (D1 mode)
+				case WorldSno.p43_ad_catacombs_level_08: //8th floor of the cathedral (D1 mode)
+					foreach (var actor in world.GetActorsBySNO(d1ModeHiddenActors)) 
+						actor.Destroy();
 					foreach (var actor in world.GetActorsBySNO(ActorSno._g_portal_townportal_red))
 					{
-						foreach (var sp in actor.GetActorsInRange<StartingPoint>(20f)) sp.Destroy();
+						foreach (var startingPoint in actor.GetActorsInRange<StartingPoint>(20f)) startingPoint.Destroy();
 						actor.Destroy(); //g_Portal_TownPortal_Red
 					}
 					break;
 			}
 			#endregion
-			#region Глобал патч при генерации
-			foreach (var oldp in world.GetActorsBySNO(
-				ActorSno._x1_openworld_lootrunportal,
-				ActorSno._x1_openworld_tiered_rifts_portal,
-				ActorSno._x1_openworld_tiered_rifts_challenge_portal,
-				ActorSno._x1_westm_bridge_scoundrel
-				)) 
+			#region Global patch when generating
+			foreach (var oldPoint in world.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal,
+															   ActorSno._x1_openworld_tiered_rifts_challenge_portal, ActorSno._x1_westm_bridge_scoundrel)) 
 			{ 
-				oldp.Destroy();
+				oldPoint.Destroy();
 			}
-			foreach (var oldp in world.GetActorsBySNO(ActorSno._placedgold)) { foreach(var plr in world.Game.Players.Values) world.SpawnGold(oldp, plr); oldp.Destroy(); }
+			foreach (var oldPoint in world.GetActorsBySNO(ActorSno._placedgold)) { foreach(var plr in world.Game.Players.Values) world.SpawnGold(oldPoint, plr); oldPoint.Destroy(); }
 																				  
 			if(world.SNO != WorldSno.a1trdun_level05_templar) 
-				foreach (var oldp in world.GetActorsBySNO(ActorSno._x1_openworld_tiered_rifts_challenge_portal)) { oldp.Destroy(); }//109209 - Костяные стены из собора
+				foreach (var oldPoint in world.GetActorsBySNO(ActorSno._x1_openworld_tiered_rifts_challenge_portal)) { oldPoint.Destroy(); }//109209 - Bone Walls from the Cathedral
 			#endregion
 
 			return world;
 		}
 
-		public void RandomSpawnInWorldWithLevelArea(World world, ActorSno monsterSno, int LevelArea = -1)
+		public void RandomSpawnInWorldWithLevelArea(World world, ActorSno monsterSno, int levelArea = -1)
 		{
-			List<Scene> Scenes = world.Scenes.Values.ToList();
-			if (LevelArea != -1) Scenes = Scenes.Where(sc => sc.Specification.SNOLevelAreas[0] == LevelArea && !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
-			else Scenes = Scenes.Where(sc => !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
-			int RandomScene = RandomHelper.Next(0, Scenes.Count - 1);
-			Vector3D SSV = Scenes[RandomScene].Position;
-			Vector3D SP = null;
+			List<Scene> scenes = world.Scenes.Values.ToList();
+			if (levelArea != -1) scenes = scenes.Where(sc => sc.Specification.SNOLevelAreas[0] == levelArea && !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
+			else scenes = scenes.Where(sc => !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
+			int randomScene = RandomHelper.Next(0, scenes.Count - 1);
+			Vector3D SSV = scenes[randomScene].Position;
+			Vector3D startingPoint = null;
 
 			while (true)
 			{
-				SP = new Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
-				if (world.CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+				startingPoint = new Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
+				if (world.CheckLocationForFlag(startingPoint, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 					break;
 			}
-			world.SpawnMonster(monsterSno, SP);
+			world.SpawnMonster(monsterSno, startingPoint);
 		}
 
-		public void FilterWaypoints(World world, int SceneSNO = -1)
+		public void FilterWaypoints(World world, int sceneSno = -1)
 		{
 			var waypoints = world.GetActorsBySNO(ActorSno._waypoint);
-			if (SceneSNO != -1) waypoints = waypoints.Where(wp => wp.CurrentScene.SceneSNO.Id == SceneSNO).ToList();
+			if (sceneSno != -1) waypoints = waypoints.Where(wp => wp.CurrentScene.SceneSNO.Id == sceneSno).ToList();
 
 			if (waypoints.Count > 1)
 			{
@@ -628,25 +630,25 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			Blocked, //"wall" in that direction
 			Open //"path" in that direction
 		}
-		public static void DRLGGenerateProcess(World world, List<List<DRLGEmuScene>> Cont, List<DRLGEmuScene> Fillers, long RangofSc)
+		public static void DRLGGenerateProcess(World world, List<List<DRLGEmuScene>> container, List<DRLGEmuScene> fillers, long range)
 		{
 			if (world.worldData.SceneParams == null)
 				world.worldData.CreateNewSceneParams();
 
 			world.worldData.SceneParams.SceneChunks.Clear();
-			List<Vector3D> BusyChunks = new List<Vector3D> { };
-			List<Vector3D> ReservedChunks = new List<Vector3D> { };
-			Dictionary<char[], Vector3D> WaitChunks = new Dictionary<char[], Vector3D> { };
-			Dictionary<char[], Vector3D> NextWaitChunks = new Dictionary<char[], Vector3D> { };
+			List<Vector3D> busyChunks = new List<Vector3D> { };
+			List<Vector3D> reservedChunks = new List<Vector3D> { };
+			Dictionary<char[], Vector3D> waitChunks = new Dictionary<char[], Vector3D> { };
+			Dictionary<char[], Vector3D> nextWaitChunks = new Dictionary<char[], Vector3D> { };
 
-			bool HasExit = false;
+			bool hasExit = false;
 
-			List<List<DRLGEmuScene>> DRLGContainers = Cont;
-			List<DRLGEmuScene> FillerChuncks = Fillers;
+			List<List<DRLGEmuScene>> DRLGContainers = container;
+			List<DRLGEmuScene> FillerChuncks = fillers;
 
-			char CurrentNav = '.';
+			char currentNav = '.';
 			
-			DRLGEmuScene CurrentScene = null;
+			DRLGEmuScene currentScene = null;
 
 			foreach (var Container in DRLGContainers)
 				foreach (var Scene in Container)
@@ -658,55 +660,55 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					{
 						Logger.Error("Scene {0}, not added on DRLG", Scene.SnoID);
 					}
-			bool Rift = world.SNO.IsGenerated();
+			bool rift = world.SNO.IsGenerated();
 			//Getting Enter
-			var loadedscene = new SceneChunk();
-			CurrentScene = DRLGContainers[0][RandomHelper.Next(0, DRLGContainers[0].Count)];
-			loadedscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-			loadedscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), new Vector3D(0, 0, 0));
-			loadedscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+			var loadedScene = new SceneChunk();
+			currentScene = DRLGContainers[0][RandomHelper.Next(0, DRLGContainers[0].Count)];
+			loadedScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+			loadedScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), new Vector3D(0, 0, 0));
+			loadedScene.SceneSpecification = new SceneSpecification(
+				   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+				   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
 
-			world.worldData.SceneParams.SceneChunks.Add(loadedscene); //Add Chunk
-			BusyChunks.Add(loadedscene.PRTransform.Vector3D); //Cords Busy
+			world.worldData.SceneParams.SceneChunks.Add(loadedScene); //Add Chunk
+			busyChunks.Add(loadedScene.PRTransform.Vector3D); //Cords Busy
 
-			SceneChunk PrestScene = loadedscene;
-			Vector3D PlaceToNewScene = new Vector3D();
+			SceneChunk prestScene = loadedScene;
+			Vector3D placeToNewScene = new Vector3D();
 
-			var nextscene = new SceneChunk();
-			char[] ToWaitChunks;
-			var splits = PrestScene.SNOHandle.Name.Split('_');
-			int PosOfNav = 2;
+			var nextScene = new SceneChunk();
+			char[] toWaitChunks;
+			var splits = prestScene.SNOHandle.Name.Split('_');
+			int positionOfNav = 2;
 			if (splits[0].ToLower().StartsWith("p43") ||
 				splits[2].ToLower().Contains("random") ||
 				splits[2].ToLower().Contains("corrupt"))
-				PosOfNav = 3;
-			else if (PrestScene.SNOHandle.Name.StartsWith("x1_Pand"))
-				PosOfNav = 4;
+				positionOfNav = 3;
+			else if (prestScene.SNOHandle.Name.StartsWith("x1_Pand"))
+				positionOfNav = 4;
 
-			int RangetoNext = (int)RangofSc;
+			int RangetoNext = (int)range;
 
 			//First Switch
-			switch (PrestScene.SNOHandle.Name.Split('_')[PosOfNav])
+			switch (prestScene.SNOHandle.Name.Split('_')[positionOfNav])
 			{
 
 				case "S":
-					CurrentNav = 'N';
+					currentNav = 'N';
 					while (true)
 					{
-						if (PrestScene.SNOHandle.Name.StartsWith("x1_Pand"))
-							PosOfNav = 3;
-						CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
-						if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+						if (prestScene.SNOHandle.Name.StartsWith("x1_Pand"))
+							positionOfNav = 3;
+						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
-					PlaceToNewScene = new Vector3D(PrestScene.PRTransform.Vector3D.X + RangetoNext, PrestScene.PRTransform.Vector3D.Y, PrestScene.PRTransform.Vector3D.Z);
-					ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
-					foreach (var Point in ToWaitChunks)
-						if (Point != CurrentNav)
+					placeToNewScene = new Vector3D(prestScene.PRTransform.Vector3D.X + RangetoNext, prestScene.PRTransform.Vector3D.Y, prestScene.PRTransform.Vector3D.Z);
+					toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
+					foreach (var Point in toWaitChunks)
+						if (Point != currentNav)
 							switch (Point)
 							{
 								//Куда застраивать в названии
@@ -714,77 +716,76 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								//N - Строить налево  -240:0
 								//E - Строить вверх   0:+240
 								//W - Строить вниз    0:-240
-								case 'S': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'N': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'E': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-								case 'W': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+								case 'S': waitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								case 'N': waitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								case 'E': waitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+								case 'W': waitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 							}
-					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
-					nextscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+					nextScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+					nextScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
+					nextScene.SceneSpecification = new SceneSpecification(
+				   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+				   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
 
-					world.worldData.SceneParams.SceneChunks.Add(nextscene); //Добавить сцену
-					BusyChunks.Add(nextscene.PRTransform.Vector3D); //Занять клетку
-					PrestScene = nextscene;
+					world.worldData.SceneParams.SceneChunks.Add(nextScene); //Add scene
+					busyChunks.Add(nextScene.PRTransform.Vector3D); //Occupy cell
+					prestScene = nextScene;
 					break;
 				case "N":
-					CurrentNav = 'S';
+					currentNav = 'S';
 					while (true)
 					{
-						if (PrestScene.SNOHandle.Name.StartsWith("x1_Pand"))
-							PosOfNav = 3;
+						if (prestScene.SNOHandle.Name.StartsWith("x1_Pand"))
+							positionOfNav = 3;
 
-						CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
-						if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
-					PlaceToNewScene = new Vector3D(PrestScene.PRTransform.Vector3D.X - RangetoNext, PrestScene.PRTransform.Vector3D.Y, PrestScene.PRTransform.Vector3D.Z);
-					ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
-					foreach (var Point in ToWaitChunks)
-						if (Point != CurrentNav)
-							switch (Point)
+					placeToNewScene = new Vector3D(prestScene.PRTransform.Vector3D.X - RangetoNext, prestScene.PRTransform.Vector3D.Y, prestScene.PRTransform.Vector3D.Z);
+					toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
+					foreach (var point in toWaitChunks)
+						if (point != currentNav)
+							switch (point)
 							{
-								//Куда застраивать в названии
-								//S - Строить направо +240:0
-								//N - Строить налево  -240:0
-								//E - Строить вверх   0:+240
-								//W - Строить вниз    0:-240
-								case 'S': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'N': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'E': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-								case 'W': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+								//S - build to the right +240:0
+								case 'S': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								//N - build to the left -240:0
+								case 'N': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								//E - build up 0:+240
+								case 'E': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+								//W - build down 0:-240
+								case 'W': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 							}
-					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
-					nextscene.SceneSpecification = new SceneSpecification(
-							   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-							   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+					nextScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+					nextScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
+					nextScene.SceneSpecification = new SceneSpecification(
+							   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+							   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 							   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 							   new int[4] { 0, 0, 0, 0 }, 0));
 
-					world.worldData.SceneParams.SceneChunks.Add(nextscene); //Добавить сцену
-					BusyChunks.Add(nextscene.PRTransform.Vector3D); //Занять клетку
-					PrestScene = nextscene;
+					world.worldData.SceneParams.SceneChunks.Add(nextScene); //Добавить сцену
+					busyChunks.Add(nextScene.PRTransform.Vector3D); //Занять клетку
+					prestScene = nextScene;
 					break;
 				case "E":
-					CurrentNav = 'W';
+					currentNav = 'W';
 					while (true)
 					{
-						if (PrestScene.SNOHandle.Name.StartsWith("x1_Pand"))
-							PosOfNav = 3;
+						if (prestScene.SNOHandle.Name.StartsWith("x1_Pand"))
+							positionOfNav = 3;
 
-						CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
-						if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
-					PlaceToNewScene = new Vector3D(PrestScene.PRTransform.Vector3D.X, PrestScene.PRTransform.Vector3D.Y + RangetoNext, PrestScene.PRTransform.Vector3D.Z);
-					ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
-					foreach (var Point in ToWaitChunks)
-						if (Point != CurrentNav)
+					placeToNewScene = new Vector3D(prestScene.PRTransform.Vector3D.X, prestScene.PRTransform.Vector3D.Y + RangetoNext, prestScene.PRTransform.Vector3D.Z);
+					toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
+					foreach (var Point in toWaitChunks)
+						if (Point != currentNav)
 							switch (Point)
 							{
 								//Куда застраивать в названии
@@ -792,871 +793,864 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								//N - Строить налево  -240:0
 								//E - Строить вверх   0:+240
 								//W - Строить вниз    0:-240
-								case 'S': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'N': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'E': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-								case 'W': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+								case 'S': waitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								case 'N': waitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								case 'E': waitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+								case 'W': waitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 							}
-					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
-					nextscene.SceneSpecification = new SceneSpecification(
-							   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-							   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+					nextScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+					nextScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
+					nextScene.SceneSpecification = new SceneSpecification(
+							   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+							   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 							   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 							   new int[4] { 0, 0, 0, 0 }, 0));
 
-					world.worldData.SceneParams.SceneChunks.Add(nextscene); //Добавить сцену
-					BusyChunks.Add(nextscene.PRTransform.Vector3D); //Занять клетку
-					PrestScene = nextscene;
+					world.worldData.SceneParams.SceneChunks.Add(nextScene); //Добавить сцену
+					busyChunks.Add(nextScene.PRTransform.Vector3D); //Занять клетку
+					prestScene = nextScene;
 					break;
 				case "W":
 
-					CurrentNav = 'E';
+					currentNav = 'E';
 					while (true)
 					{
-						if (PrestScene.SNOHandle.Name.StartsWith("x1_Pand"))
-							PosOfNav = 3;
+						if (prestScene.SNOHandle.Name.StartsWith("x1_Pand"))
+							positionOfNav = 3;
 
-						CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
-						if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
-					PlaceToNewScene = new Vector3D(PrestScene.PRTransform.Vector3D.X, PrestScene.PRTransform.Vector3D.Y - RangetoNext, PrestScene.PRTransform.Vector3D.Z);
-					ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
-					foreach (var Point in ToWaitChunks)
-						if (Point != CurrentNav)
-							switch (Point)
+					placeToNewScene = new Vector3D(prestScene.PRTransform.Vector3D.X, prestScene.PRTransform.Vector3D.Y - RangetoNext, prestScene.PRTransform.Vector3D.Z);
+					toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
+					foreach (var point in toWaitChunks)
+						if (point != currentNav)
+							switch (point)
 							{
-								//Куда застраивать в названии
-								//S - Строить направо +240:0
-								//N - Строить налево  -240:0
-								//E - Строить вверх   0:+240
-								//W - Строить вниз    0:-240
-								case 'S': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'N': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'E': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-								case 'W': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+								//S - Build to the right +240:0
+								case 'S': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								//N - Build to the left -240:0
+								case 'N': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								//E - Build up 0:+240
+								case 'E': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+								//W - Build down 0:-240
+								case 'W': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 							}
-					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
-					nextscene.SceneSpecification = new SceneSpecification(
-							   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-							   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+					nextScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+					nextScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
+					nextScene.SceneSpecification = new SceneSpecification(
+							   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+							   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 							   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 							   new int[4] { 0, 0, 0, 0 }, 0));
 
-					world.worldData.SceneParams.SceneChunks.Add(nextscene); //Добавить сцену
-					BusyChunks.Add(nextscene.PRTransform.Vector3D); //Занять клетку
-					PrestScene = nextscene;
+					world.worldData.SceneParams.SceneChunks.Add(nextScene); // add scene
+					busyChunks.Add(nextScene.PRTransform.Vector3D); //occupy cell
+					prestScene = nextScene;
 					break;
 
 				case "EW":
 
 					var nextscene1 = new SceneChunk();
 
-					CurrentNav = 'E';
+					currentNav = 'E';
 					while (true)
 					{
-						CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
-						if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
-					PlaceToNewScene = new Vector3D(PrestScene.PRTransform.Vector3D.X, PrestScene.PRTransform.Vector3D.Y - RangetoNext, PrestScene.PRTransform.Vector3D.Z);
-					ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
-					foreach (var Point in ToWaitChunks)
-						if (Point != CurrentNav)
-							switch (Point)
+					placeToNewScene = new Vector3D(prestScene.PRTransform.Vector3D.X, prestScene.PRTransform.Vector3D.Y - RangetoNext, prestScene.PRTransform.Vector3D.Z);
+					toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
+					foreach (var point in toWaitChunks)
+						if (point != currentNav)
+							switch (point)
 							{
-								//Куда застраивать в названии
-								//S - Строить направо +240:0
-								//N - Строить налево  -240:0
-								//E - Строить вверх   0:+240
-								//W - Строить вниз    0:-240
-								case 'S': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'N': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'E': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-								case 'W': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+								//S - Build to the right +240:0
+								case 'S': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								//N - Build to the left -240:0
+								case 'N': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								//E - Build up 0:+240
+								case 'E': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+								//W - Build down 0:-240
+								case 'W': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 							}
-					nextscene1.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-					nextscene1.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
+					nextscene1.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+					nextscene1.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
 					nextscene1.SceneSpecification = new SceneSpecification(
-								0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-								-1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+								0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+								-1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 								new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 								new int[4] { 0, 0, 0, 0 }, 0));
 
 					world.worldData.SceneParams.SceneChunks.Add(nextscene1); //Добавить сцену
-					BusyChunks.Add(nextscene1.PRTransform.Vector3D); //Занять клетку
+					busyChunks.Add(nextscene1.PRTransform.Vector3D); //Занять клетку
 
-					CurrentNav = 'W';
+					currentNav = 'W';
 					while (true)
 					{
-						CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
-						if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
-					PlaceToNewScene = new Vector3D(PrestScene.PRTransform.Vector3D.X, PrestScene.PRTransform.Vector3D.Y + RangetoNext, PrestScene.PRTransform.Vector3D.Z);
-					ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
-					foreach (var Point in ToWaitChunks)
-						if (Point != CurrentNav)
-							switch (Point)
+					placeToNewScene = new Vector3D(prestScene.PRTransform.Vector3D.X, prestScene.PRTransform.Vector3D.Y + RangetoNext, prestScene.PRTransform.Vector3D.Z);
+					toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
+					foreach (var point in toWaitChunks)
+						if (point != currentNav)
+							switch (point)
 							{
-								//Куда застраивать в названии
-								//S - Строить направо +240:0
-								//N - Строить налево  -240:0
-								//E - Строить вверх   0:+240
-								//W - Строить вниз    0:-240
-								case 'S': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'N': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-								case 'E': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-								case 'W': WaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+								//S - Build to the right +240:0
+								case 'S': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								//N - Build to the left -240:0
+								case 'N': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+								//E - Build up 0:+240
+								case 'E': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+								//W - Build down 0:-240
+								case 'W': waitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 							}
-					nextscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-					nextscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
-					nextscene.SceneSpecification = new SceneSpecification(
-								0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-								-1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+					nextScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+					nextScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
+					nextScene.SceneSpecification = new SceneSpecification(
+								0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+								-1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 								new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 								new int[4] { 0, 0, 0, 0 }, 0));
 
-					world.worldData.SceneParams.SceneChunks.Add(nextscene); //Добавить сцену
-					BusyChunks.Add(nextscene.PRTransform.Vector3D); //Занять клетку
-					PrestScene = nextscene;
+					world.worldData.SceneParams.SceneChunks.Add(nextScene); //Добавить сцену
+					busyChunks.Add(nextScene.PRTransform.Vector3D); //Занять клетку
+					prestScene = nextScene;
 
 					break;
 			}
 			int DRLGDeep = 5;
-			if (Rift)
+			if (rift)
 				DRLGDeep = 20;
 
 
 				//Deep and exits
 			for (int i = 0; i <= DRLGDeep; i++)
 			{
-				foreach (var waitedScene in WaitChunks)
+				foreach (var waitedScene in waitChunks)
 				{
-					var newscene = new SceneChunk();
+					var newScene = new SceneChunk();
 					switch (waitedScene.Key[0])
 					{
 						case 'S':
-							CurrentNav = 'N';
+							currentNav = 'N';
 							while (true)
 							{
 								if (i > DRLGDeep - 1)
 								{
-									if (HasExit)
+									if (hasExit)
 									{
-										CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-										if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //Way
+										currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //Way
 										{
-											if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+											if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 											break;
 										}
 									}
 									else
 									{
-										CurrentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-										if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav)) //Exit
+										currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav)) //Exit
 										{
-											HasExit = true;
-											if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+											hasExit = true;
+											if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 											break;
 										}
 									}
 								}
 								else
 								{
-									CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+									currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
 									#region проверка на будущее
-									ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
+									toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 									bool ForceStop = false;
-									foreach (var Point in ToWaitChunks)
-										if (Point != waitedScene.Key[0])
-											switch (Point)
+									foreach (var point in toWaitChunks)
+										if (point != waitedScene.Key[0])
+											switch (point)
 											{
-												//Куда застраивать в названии
-												//S - Строить направо +240:0
-												//N - Строить налево  -240:0
-												//E - Строить вверх   0:+240
-												//W - Строить вниз    0:-240
-
+												//S - Build to the right
 												case 'S':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
+												
+												//N - Build to the left
 												case 'N':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
+												
+												//E - Build up
 												case 'E':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
+												
+												//W - Build down
 												case 'W':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)) ||
-														 (ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)) ||
+														 (reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 											}
 									#endregion
-									if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-									if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+									if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+									if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 									{
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 										break;
 									}
 									else if (ForceStop)
 									{
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 										break; 
 									}
 								}
 							}
-							PlaceToNewScene = waitedScene.Value;
-							ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
+							placeToNewScene = waitedScene.Value;
+							toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 
-							foreach (var Point in ToWaitChunks)
-								if (Point != CurrentNav)
-									switch (Point)
+							foreach (var point in toWaitChunks)
+								if (point != currentNav)
+									switch (point)
 									{
-										//Куда застраивать в названии
-										//S - Строить направо +240:0
-										//N - Строить налево  -240:0
-										//E - Строить вверх   0:+240
-										//W - Строить вниз    0:-240
-
-										case 'S': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-										case 'N': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-										case 'E': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-										case 'W': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+										//S - Build right +240:0
+										case 'S': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))) nextWaitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+										//N - Build left  -240:0
+										case 'N': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))) nextWaitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+										//E - Build up    0:+240
+										case 'E': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))) nextWaitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+										//W - Build down  0:-240
+										case 'W': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))) nextWaitChunks.Add(point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 									}
-							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
-							newscene.SceneSpecification = new SceneSpecification(
-								   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-								   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+							newScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+							newScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
+							newScene.SceneSpecification = new SceneSpecification(
+								   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+								   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 								   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 								   new int[4] { 0, 0, 0, 0 }, 0));
 
-							world.worldData.SceneParams.SceneChunks.Add(newscene); //Добавить сцену
-							BusyChunks.Add(newscene.PRTransform.Vector3D); //Занять клетку
-							PrestScene = newscene;
+							world.worldData.SceneParams.SceneChunks.Add(newScene); //Добавить сцену
+							busyChunks.Add(newScene.PRTransform.Vector3D); //Занять клетку
+							prestScene = newScene;
 							break;
 						case 'N':
-							CurrentNav = 'S';
+							currentNav = 'S';
 							while (true)
 							{
 								if (i > DRLGDeep - 1)
 								{
-									if (HasExit)
+									if (hasExit)
 									{
-										CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-										if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //Way
+										currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //Way
 										{
-											if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+											if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 											break;
 										}
 									}
 									else
 									{
-										CurrentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-										if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav)) //Exit
+										currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav)) //Exit
 										{
-											HasExit = true;
-											if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+											hasExit = true;
+											if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 											break;
 										}
 									}
 								}
 								else
 								{
-									CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+									currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
 									#region проверка на будущее
-									ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
-									bool ForceStop = false;
-									foreach (var Point in ToWaitChunks)
-										if (Point != waitedScene.Key[0])
-											switch (Point)
+									toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
+									bool forceStop = false;
+									foreach (var point in toWaitChunks)
+										if (point != waitedScene.Key[0])
+											switch (point)
 											{
-												//Куда застраивать в названии
-												//S - Строить направо +240:0
-												//N - Строить налево  -240:0
-												//E - Строить вверх   0:+240
-												//W - Строить вниз    0:-240
-
+												//S - Build to the right +240:0
 												case 'S':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
-																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																forceStop = true;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
+												//N - Build to the left  -240:0
 												case 'N':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
-																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																forceStop = true;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
+												//E - Build up         0:+240
 												case 'E':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
-																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																forceStop = true;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
+												//W - Build down       0:-240
 												case 'W':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)) ||
-														 (ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)) ||
+														 (reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;// else PosOfNav = 3;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;// else PosOfNav = 3;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
-																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																forceStop = true;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 											}
 									#endregion
-									if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-									if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+									if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+									if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 									{
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 										break;
 									}
-									else if (ForceStop)
+									else if (forceStop)
 									{
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 										break;
 									}
 								}
 							}
-							PlaceToNewScene = waitedScene.Value;
-							ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
+							placeToNewScene = waitedScene.Value;
+							toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 
-							foreach (var Point in ToWaitChunks)
-								if (Point != CurrentNav)
+							foreach (var Point in toWaitChunks)
+								if (Point != currentNav)
 									switch (Point)
 									{
-										//Куда застраивать в названии
-										//S - Строить направо +240:0
-										//N - Строить налево  -240:0
-										//E - Строить вверх   0:+240
-										//W - Строить вниз    0:-240
+										//S - Build to the right +240:0
+										//N - Build to the left  -240:0
+										//E - Build up         0:+240
+										//W - Build down       0:-240
 
-										case 'S': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-										case 'N': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-										case 'E': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-										case 'W': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+										case 'S': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+										case 'N': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+										case 'E': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+										case 'W': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 									}
-							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
-							newscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+							newScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+							newScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
+							newScene.SceneSpecification = new SceneSpecification(
+				   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+				   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
-							world.worldData.SceneParams.SceneChunks.Add(newscene); //Добавить сцену
-							BusyChunks.Add(newscene.PRTransform.Vector3D); //Занять клетку
-							PrestScene = newscene;
+							world.worldData.SceneParams.SceneChunks.Add(newScene); //Добавить сцену
+							busyChunks.Add(newScene.PRTransform.Vector3D); //Занять клетку
+							prestScene = newScene;
 							break;
 						case 'E':
-							CurrentNav = 'W';
+							currentNav = 'W';
 							while (true)
 							{
 								if (i > DRLGDeep - 1)
 								{
-									if (HasExit)
+									if (hasExit)
 									{
-										CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-										if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //Way
+										currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //Way
 										{
-											if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+											if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 											break;
 										}
 									}
 									else
 									{
-										CurrentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-										if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav)) //Exit
+										currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav)) //Exit
 										{
-											HasExit = true;
-											if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+											hasExit = true;
+											if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 											break;
 										}
 									}
 								}
 								else
 								{
-									CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+									currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
 									#region проверка на будущее
-									ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
+									toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 									bool ForceStop = false;
-									foreach (var Point in ToWaitChunks)
+									foreach (var Point in toWaitChunks)
 										if (Point != waitedScene.Key[0])
 											switch (Point)
 											{
-												//Куда застраивать в названии
-												//S - Строить направо +240:0
-												//N - Строить налево  -240:0
-												//E - Строить вверх   0:+240
-												//W - Строить вниз    0:-240
+												//S - Build to the right +240:0
+												//N - Build to the left  -240:0
+												//E - Build up         0:+240
+												//W - Build down       0:-240
 
 												case 'S':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 												case 'N':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 												case 'E':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 												case 'W':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)) ||
-														 (ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)) ||
+														 (reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 											}
 									#endregion
-									if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-									if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+									if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+									if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 									{
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 										break;
 									}
 									else if (ForceStop)
 									{
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 										break;
 									}
 								}
 							}
-							PlaceToNewScene = waitedScene.Value;
-							ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
+							placeToNewScene = waitedScene.Value;
+							toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 
-							foreach (var Point in ToWaitChunks)
-								if (Point != CurrentNav)
+							foreach (var Point in toWaitChunks)
+								if (Point != currentNav)
 									switch (Point)
 									{
-										//Куда застраивать в названии
-										//S - Строить направо +240:0
-										//N - Строить налево  -240:0
-										//E - Строить вверх   0:+240
-										//W - Строить вниз    0:-240
+										//S - Build to the right +240:0
+										//N - Build to the left  -240:0
+										//E - Build up         0:+240
+										//W - Build down       0:-240
 
-										case 'S': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-										case 'N': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-										case 'E': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-										case 'W': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+										case 'S': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+										case 'N': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+										case 'E': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+										case 'W': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 									}
-							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
-							newscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+							newScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+							newScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
+							newScene.SceneSpecification = new SceneSpecification(
+				   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+				   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
-							world.worldData.SceneParams.SceneChunks.Add(newscene); //Добавить сцену
-							BusyChunks.Add(newscene.PRTransform.Vector3D); //Занять клетку
-							PrestScene = newscene;
+							world.worldData.SceneParams.SceneChunks.Add(newScene); //Add scene
+							busyChunks.Add(newScene.PRTransform.Vector3D); //occupy the cell
+							prestScene = newScene;
 							break;
 						case 'W':
-							CurrentNav = 'E';
+							currentNav = 'E';
 							while (true)
 							{
 								if (i > DRLGDeep - 1)
 								{
-									if (HasExit)
+									if (hasExit)
 									{
-										CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-										if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //Way
+										currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //Way
 										{
-											if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+											if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 											break;
 										}
 									}
 									else
 									{
-										CurrentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-										if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav)) //Exit
+										currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav)) //Exit
 										{
-											HasExit = true;
-											if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+											hasExit = true;
+											if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 											break;
 										}
 									}
 								}
 								else
 								{
-									CurrentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+									currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
 									#region проверка на будущее
-									ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
+									toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 									bool ForceStop = false;
-									foreach (var Point in ToWaitChunks)
+									foreach (var Point in toWaitChunks)
 										if (Point != waitedScene.Key[0])
 											switch (Point)
 											{
-												//Куда застраивать в названии
-												//S - Строить направо +240:0
-												//N - Строить налево  -240:0
-												//E - Строить вверх   0:+240
-												//W - Строить вниз    0:-240
+												//S - Build to the right +240:0
+												//N - Build to the left  -240:0
+												//E - Build up         0:+240
+												//W - Build down       0:-240
 
 												case 'S':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 												case 'N':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 												case 'E':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)) ||
-														(ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)) ||
+														(reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 												case 'W':
-													if (BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)) ||
-														 (ReservedChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z))))
+													if (busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)) ||
+														 (reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															CurrentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
-															if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-															if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //End
+															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
 																ForceStop = true;
-																if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+																if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 																break;
 															}
 														}
 													break;
 											}
 									#endregion
-									if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 4;
-									if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length > 1) //Way
+									if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
+									if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 									{
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 										break;
 									}
 									else if (ForceStop)
 									{
-										if (CurrentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || CurrentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) PosOfNav = 3;
+										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 3;
 										break;
 									}
 								}
 							}
-							PlaceToNewScene = waitedScene.Value;
-							ToWaitChunks = CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray();
+							placeToNewScene = waitedScene.Value;
+							toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 
-							foreach (var Point in ToWaitChunks)
-								if (Point != CurrentNav)
+							foreach (var Point in toWaitChunks)
+								if (Point != currentNav)
 									switch (Point)
 									{
-										//Куда застраивать в названии
-										//S - Строить направо +240:0
-										//N - Строить налево  -240:0
-										//E - Строить вверх   0:+240
-										//W - Строить вниз    0:-240
+										//S - Build to the right +240:0
+										//N - Build to the left  -240:0
+										//E - Build up         0:+240
+										//W - Build down       0:-240
 
-										case 'S': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X + RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-										case 'N': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X - RangetoNext, PlaceToNewScene.Y, PlaceToNewScene.Z)); break;
-										case 'E': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y + RangetoNext, PlaceToNewScene.Z)); break;
-										case 'W': if (!BusyChunks.Contains(new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z))) NextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(PlaceToNewScene.X, PlaceToNewScene.Y - RangetoNext, PlaceToNewScene.Z)); break;
+										case 'S': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+										case 'N': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z)); break;
+										case 'E': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z)); break;
+										case 'W': if (!busyChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))) nextWaitChunks.Add(Point.ToString().ToArray(), new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z)); break;
 									}
-							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), PlaceToNewScene);
-							newscene.SceneSpecification = new SceneSpecification(
-				   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-				   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+							newScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+							newScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), placeToNewScene);
+							newScene.SceneSpecification = new SceneSpecification(
+				   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+				   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 				   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 				   new int[4] { 0, 0, 0, 0 }, 0));
-							world.worldData.SceneParams.SceneChunks.Add(newscene); //Добавить сцену
-							BusyChunks.Add(newscene.PRTransform.Vector3D); //Занять клетку
-							PrestScene = newscene;
+							world.worldData.SceneParams.SceneChunks.Add(newScene); //Add scene
+							busyChunks.Add(newScene.PRTransform.Vector3D); //occupy the cell
+							prestScene = newScene;
 							break;
 					}
 				}
-				WaitChunks.Clear();
+				waitChunks.Clear();
 
 
-				foreach (var NC in NextWaitChunks)
+				foreach (var nextChunk in nextWaitChunks)
 				{
-					bool Unique = true;
-					//Не накладываем сцену на сцену!
-					foreach (var EC in BusyChunks) //Проверяем уже созданные.
-						if (NC.Value == EC)
-							Unique = false;
-					foreach (var RC in ReservedChunks)
-						if (NC.Value == RC) //Проверяем резерв!
-							Unique = false;
-					if (Unique)
+					bool unique = true;
+					//we don't put scene on scene!
+					foreach (var busyChunk in busyChunks) //check already created
+						if (nextChunk.Value == busyChunk)
+							unique = false;
+					foreach (var reservedChunk in reservedChunks)
+						if (nextChunk.Value == reservedChunk) //check reserve
+							unique = false;
+					if (unique)
 					{
-						ReservedChunks.Add(NC.Value);
-						WaitChunks.Add(NC.Key, NC.Value);
+						reservedChunks.Add(nextChunk.Value);
+						waitChunks.Add(nextChunk.Key, nextChunk.Value);
 					}
-
 				}
-				NextWaitChunks.Clear();
-				ReservedChunks.Clear();
+				nextWaitChunks.Clear();
+				reservedChunks.Clear();
 			}
 
 			//Force Check Exit
-			if (!HasExit)
+			if (!hasExit)
 			{
-				bool First = false;
-				bool Finish = false;
-				var newscene = new SceneChunk();
-				foreach (var Chunck in world.worldData.SceneParams.SceneChunks)
+				bool first = false;
+				bool finish = false;
+				var newSceneChunk = new SceneChunk();
+				foreach (var chunk in world.worldData.SceneParams.SceneChunks)
 				{
-					if (!HasExit)
+					if (!hasExit)
 					{
-						//Пропускаем первый чанк
-						if (!First) { First = true; continue; }
-						//Начинаем искать тупики
+						//skip first chunk
+						if (!first) { first = true; continue; }
+						//we start to find dead ends
 						//if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(CurrentNav) & CurrentScene.Asset.Name.Split('_')[PosOfNav].ToCharArray().Length == 1) //Way
-						if (Chunck.SNOHandle.Name.Split('_')[PosOfNav].ToCharArray().Length == 1)
+						if (chunk.SNOHandle.Name.Split('_')[positionOfNav].ToCharArray().Length == 1)
 						{
-							char Nav = Chunck.SNOHandle.Name.Split('_')[PosOfNav].ToCharArray()[0];
+							char Nav = chunk.SNOHandle.Name.Split('_')[positionOfNav].ToCharArray()[0];
 							while (true)
 							{
-								CurrentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+								currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
 
-								if (CurrentScene.Asset.Name.Split('_')[PosOfNav].Contains(Nav)) //Exit
+								if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(Nav)) //Exit
 								{
-									HasExit = true;
+									hasExit = true;
 									break;
 								}
 							}
 
-							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-							newscene.PRTransform = Chunck.PRTransform;
-							newscene.SceneSpecification = new SceneSpecification(
-								   0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-								   -1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
+							newSceneChunk.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
+							newSceneChunk.PRTransform = chunk.PRTransform;
+							newSceneChunk.SceneSpecification = new SceneSpecification(
+								   0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+								   -1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1,
 								   new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)),
 								   new int[4] { 0, 0, 0, 0 }, 0));
-							Finish = true;
+							finish = true;
 						}
 					}
-					if (Finish)
+					if (finish)
 					{
-						//Преждевременное завершение и добавление выхода
-						world.worldData.SceneParams.SceneChunks.Add(newscene); //Добавить сцену
-						world.worldData.SceneParams.SceneChunks.Remove(Chunck);
+						//premature completion and adding an exit
+						world.worldData.SceneParams.SceneChunks.Add(newSceneChunk); //Add scene
+						world.worldData.SceneParams.SceneChunks.Remove(chunk);
 						break;
 					}
 				}
 			}
 
 			//Forming Range
-			float ChunkminX = -480;
-			float ChunkmaxX = 0;
-			float ChunkminY = -480;
-			float ChunkmaxY = 0;
+			float chunkMinX = -480;
+			float chunkMaxX = 0;
+			float chunkMinY = -480;
+			float chunkMaxY = 0;
 			foreach (var chunk in world.worldData.SceneParams.SceneChunks)
 			{
-				if (chunk.PRTransform.Vector3D.X > ChunkmaxX) ChunkmaxX = chunk.PRTransform.Vector3D.X;
-				if (chunk.PRTransform.Vector3D.Y > ChunkmaxY) ChunkmaxY = chunk.PRTransform.Vector3D.Y;
+				if (chunk.PRTransform.Vector3D.X > chunkMaxX) chunkMaxX = chunk.PRTransform.Vector3D.X;
+				if (chunk.PRTransform.Vector3D.Y > chunkMaxY) chunkMaxY = chunk.PRTransform.Vector3D.Y;
 			}
-			ChunkmaxX += RangetoNext;
-			ChunkmaxY += RangetoNext;
+			chunkMaxX += RangetoNext;
+			chunkMaxY += RangetoNext;
 
 			//Fillers
 			List<SceneChunk> FillerChunks = new List<SceneChunk>();
 			if (FillerChuncks.Count > 0)
 			{
-				float X = ChunkminX;
-				float Y = ChunkminY;
-				while (X < ChunkmaxX)
+				float x = chunkMinX;
+				float y = chunkMinY;
+				while (x < chunkMaxX)
 				{
-					float ReturnToMinY = ChunkminY;
-					while (Y < ChunkmaxY)
+					float returnToMinY = chunkMinY;
+					while (y < chunkMaxY)
 					{
-						bool Busy = false;
+						bool busy = false;
 						foreach (var chunk in world.worldData.SceneParams.SceneChunks)
-							if (chunk.PRTransform.Vector3D.X == X & chunk.PRTransform.Vector3D.Y == Y)
-							{ Busy = true; break; }
+							if (Math.Abs(chunk.PRTransform.Vector3D.X - x) < 0.001 & Math.Abs(chunk.PRTransform.Vector3D.Y - y) < 0.001)
+							{
+								busy = true; 
+								break;
+							}
 
-						if (!Busy)
+						if (!busy)
 						{
-							CurrentScene = DRLGContainers[4][RandomHelper.Next(0, DRLGContainers[4].Count)];
+							currentScene = DRLGContainers[4][RandomHelper.Next(0, DRLGContainers[4].Count)];
 
-							var newscene = new SceneChunk();
-							newscene.SNOHandle = new SNOHandle(SNOGroup.Scene, CurrentScene.SnoID);
-							newscene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), new Vector3D(X, Y, 0));
-							newscene.SceneSpecification = new SceneSpecification(0, new Vector2D(0, 0), new int[4] { Rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : CurrentScene.LevelArea, Rift ? CurrentScene.LevelArea : -1, -1, -1 },
-								-1, -1, -1, -1, -1, -1, CurrentScene.Music, -1, -1, -1, CurrentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1, new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new int[4] { 0, 0, 0, 0 }, 0));
+							var newscene = new SceneChunk
+							{
+								SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID),
+								PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), new Vector3D(x, y, 0)),
+								SceneSpecification = new SceneSpecification(0, new Vector2D(0, 0), new int[4] { rift ? world.SNO != world.Game.WorldOfPortalNephalem ? 288684 : 288482 : currentScene.LevelArea, rift ? currentScene.LevelArea : -1, -1, -1 },
+									-1, -1, -1, -1, -1, -1, currentScene.Music, -1, -1, -1, currentScene.Weather, -1, -1, -1, -1, -1, new SceneCachedValues(-1, -1, -1, new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new AABB(new Vector3D(-1, -1, -1), new Vector3D(-1, -1, -1)), new int[4] { 0, 0, 0, 0 }, 0))
+							};
 							FillerChunks.Add(newscene);
 						}
-						Busy = false;
-						Y += RangetoNext;
+						busy = false;
+						y += RangetoNext;
 					}
-					Y = ReturnToMinY;
-					X += RangetoNext;
+					y = returnToMinY;
+					x += RangetoNext;
 				}
 
 			}
 			world.worldData.SceneParams.ChunkCount = world.worldData.SceneParams.SceneChunks.Count;
 			foreach (var fil in FillerChunks)
 			{
-				world.worldData.SceneParams.SceneChunks.Add(fil); //Добавить сцену
+				world.worldData.SceneParams.SceneChunks.Add(fil); //Add scene
 			}
 
 			world.DRLGEmuActive = true;
@@ -1796,7 +1790,6 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		/// <param name="tiles"></param>
 		private void AddFillers(Dictionary<Vector3D, TileInfo> worldTiles, Dictionary<int, TileInfo> tiles, int chunkSize)
 		{
-
 			Dictionary<Vector3D, TileInfo> fillersToAdd = new Dictionary<Vector3D, TileInfo>();
 			foreach (var tile in worldTiles)
 			{
@@ -1860,7 +1853,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			//add adjacent tiles for each randomized direction
 			foreach (var exit in randomizedExitTypes)
 			{
-				if (GetTileInfo(tiles, (int)TileTypes.Normal, GetadjacentExitStatus(worldTiles, exit.Value, chunkSize), true) == null) return false;
+				if (GetTileInfo(tiles, (int)TileTypes.Normal, GetAdjacentExitStatus(worldTiles, exit.Value, chunkSize), true) == null) return false;
 			}
 			return true;
 		}
@@ -1884,7 +1877,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			}
 			if (lookingForCork) incCounter = false;
 
-			Dictionary<TileExits, ExitStatus> exitStatus = GetadjacentExitStatus(worldTiles, position, chunkSize);
+			Dictionary<TileExits, ExitStatus> exitStatus = GetAdjacentExitStatus(worldTiles, position, chunkSize);
 			if (counter > 5) //TODO: this value must be set according to difficulty
 			{
 				if (!ContainsTileType(worldTiles, TileTypes.Exit))
@@ -1952,7 +1945,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		/// </summary>
 		/// <param name="worldTiles">Tiles already added to world</param>
 		/// <param name="position">Position</param>
-		private Dictionary<TileExits, ExitStatus> GetadjacentExitStatus(Dictionary<Vector3D, TileInfo> worldTiles, Vector3D position, int chunkSize)
+		private Dictionary<TileExits, ExitStatus> GetAdjacentExitStatus(Dictionary<Vector3D, TileInfo> worldTiles, Vector3D position, int chunkSize)
 		{
 			Dictionary<TileExits, ExitStatus> exitStatusDict = new Dictionary<TileExits, ExitStatus>();
 			//Compute East adjacent Location
@@ -1988,11 +1981,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			Vector3D positionSouth = new Vector3D(position.X, position.Y + chunkSize, 0);
 
 			//get a random direction
-			Dictionary<TileExits, Vector3D> exitTypes = new Dictionary<TileExits, Vector3D>();
-			exitTypes.Add(TileExits.East, positionEast);
-			exitTypes.Add(TileExits.West, positionWest);
-			exitTypes.Add(TileExits.North, positionNorth);
-			exitTypes.Add(TileExits.South, positionSouth);
+			Dictionary<TileExits, Vector3D> exitTypes = new Dictionary<TileExits, Vector3D>
+			{
+				{ TileExits.East, positionEast },
+				{ TileExits.West, positionWest },
+				{ TileExits.North, positionNorth },
+				{ TileExits.South, positionSouth }
+			};
 
 			if (!isRandom)
 				return exitTypes;
@@ -2072,10 +2067,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		{
 			//get all exits that need to be in the new tile
 			int mustHaveExits = 0;
-			Dictionary<int, TileInfo> acceptedTiles = new Dictionary<int, TileInfo>();
-			//By default use all tiles
-			acceptedTiles = tiles;
-			foreach (TileExits exit in System.Enum.GetValues(typeof(TileExits)))
+			Dictionary<int, TileInfo> acceptedTiles = tiles;
+			foreach (TileExits exit in Enum.GetValues(typeof(TileExits)))
 			{
 				if (exitStatus[exit] == ExitStatus.Open) mustHaveExits += (int)exit;
 
@@ -2087,15 +2080,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			}
 			Logger.Trace("Looking for tile with Exits: {0}", mustHaveExits);
 			if (isCork)
-				return GetTileInfo(acceptedTiles.Where(
-					pair => pair.Value.TileType == tileType //&& 
-															//System.Enum.IsDefined(typeof(TileExits), pair.Value.ExitDirectionBits)
-				).ToDictionary(pair => pair.Key, pair => pair.Value), mustHaveExits);
-			else
-				return GetTileInfo(acceptedTiles.Where(
-					pair => pair.Value.TileType == tileType &&
-					!System.Enum.IsDefined(typeof(TileExits), pair.Value.ExitDirectionBits)
-				).ToDictionary(pair => pair.Key, pair => pair.Value), mustHaveExits);
+				return GetTileInfo(acceptedTiles
+					.Where(pair => pair.Value.TileType == tileType)
+					.ToDictionary(pair => pair.Key, pair => pair.Value), mustHaveExits);
+			return GetTileInfo(acceptedTiles
+				.Where(pair => pair.Value.TileType == tileType && !Enum.IsDefined(typeof(TileExits), pair.Value.ExitDirectionBits))
+				.ToDictionary(pair => pair.Key, pair => pair.Value), mustHaveExits);
 		}
 
 		/// <summary>
@@ -2128,7 +2118,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		private TileInfo GetTile(Dictionary<int, TileInfo> tiles, int snoId)
 		{
 			if (!tiles.ContainsKey(snoId)) return null;
-			return tiles.Where(x => x.Key == snoId).First().Value;
+			return tiles.First(x => x.Key == snoId).Value;
 		}
 
 		/// <summary>
@@ -2150,56 +2140,65 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				//return filler
 				return GetTileInfo(tiles, TileTypes.Filler);
 			}
-			List<TileInfo> tilesWithRightTypeAndDirection = new List<TileInfo>();
+			List<TileInfo> tilesWithRightTypeAndDirection;
 
 			if (tileType == TileTypes.Normal)
-				tilesWithRightTypeAndDirection = (from pair in tiles where ((pair.Value.TileType == 100 || pair.Value.TileType == 101 || pair.Value.TileType == 102) && pair.Value.ExitDirectionBits == exitDirectionBits) select pair.Value).ToList<TileInfo>();
+				tilesWithRightTypeAndDirection = (from pair in tiles where (pair.Value.TileType is 100 or 101 or 102 && pair.Value.ExitDirectionBits == exitDirectionBits) select pair.Value).ToList<TileInfo>();
 			else
 				tilesWithRightTypeAndDirection = (from pair in tiles where (pair.Value.TileType == (int)tileType && pair.Value.ExitDirectionBits == exitDirectionBits) select pair.Value).ToList<TileInfo>();
-			if (tilesWithRightTypeAndDirection.Count == 0)
-			{
-				Logger.Error("Did not find matching tile for template! Type: {0}, Direction: {1}", tileType, exitDirectionBits);
-				return null;
-			}
+			if (tilesWithRightTypeAndDirection.Any())
+				return RandomHelper.RandomItem(tilesWithRightTypeAndDirection, entry => entry.Probability);
+			
+			Logger.Error("Did not find matching tile for template! Type: {0}, Direction: {1}", tileType, exitDirectionBits);
+			return null;
 
-			return RandomHelper.RandomItem(tilesWithRightTypeAndDirection, entry => entry.Probability);
 		}
 
 		private void AddTile(DiIiS_NA.Core.MPQ.FileFormats.World worldData, TileInfo tileInfo, Vector3D location)
 		{
-			var sceneChunk = new SceneChunk();
-			sceneChunk.SNOHandle = new SNOHandle(tileInfo.SNOScene);
-			sceneChunk.PRTransform = new PRTransform();
-			sceneChunk.PRTransform.Quaternion = new Quaternion();
-			sceneChunk.PRTransform.Quaternion.W = 1.0f;
-			sceneChunk.PRTransform.Quaternion.Vector3D = new Vector3D(0, 0, 0);
-			sceneChunk.PRTransform.Vector3D = new Vector3D();
+			var sceneChunk = new SceneChunk
+			{
+				SNOHandle = new SNOHandle(tileInfo.SNOScene),
+				PRTransform = new PRTransform
+				{
+					Quaternion = new Quaternion
+					{
+						W = 1.0f,
+						Vector3D = new Vector3D(0, 0, 0)
+					},
+					Vector3D = new Vector3D()
+				}
+			};
 			sceneChunk.PRTransform.Vector3D = location;
 
-			var spec = new SceneSpecification();
-			//scene.Specification = spec;
-			spec.Cell = new Vector2D() { X = 0, Y = 0 };
-			spec.CellZ = 0;
-			spec.SNOLevelAreas = new int[] { -1, -1, -1, -1 };
-			spec.SNOMusic = -1;
-			spec.SNONextLevelArea = -1;
-			spec.SNONextWorld = -1;
-			spec.SNOPresetWorld = -1;
-			spec.SNOPrevLevelArea = -1;
-			spec.SNOPrevWorld = -1;
-			spec.SNOReverb = -1;
-			spec.SNOWeather = 50542;
-			spec.SNOCombatMusic = -1;
-			spec.SNOAmbient = -1;
-			spec.ClusterID = -1;
-			spec.PrevEntranceGUID = 14;
-			spec.DRLGIndex = 5;
-			spec.SceneChunk = -1;
-			spec.OnPathBits = tileInfo.TileType; //we can make it TileType value
-			spec.SceneCachedValues = new SceneCachedValues();
-			spec.SceneCachedValues.CachedValuesValid = 63;
-			spec.SceneCachedValues.NavMeshSizeX = 96;
-			spec.SceneCachedValues.NavMeshSizeY = 96;
+			var spec = new SceneSpecification
+			{
+				//scene.Specification = spec;
+				Cell = new Vector2D() { X = 0, Y = 0 },
+				CellZ = 0,
+				SNOLevelAreas = new[] { -1, -1, -1, -1 },
+				SNOMusic = -1,
+				SNONextLevelArea = -1,
+				SNONextWorld = -1,
+				SNOPresetWorld = -1,
+				SNOPrevLevelArea = -1,
+				SNOPrevWorld = -1,
+				SNOReverb = -1,
+				SNOWeather = 50542,
+				SNOCombatMusic = -1,
+				SNOAmbient = -1,
+				ClusterID = -1,
+				PrevEntranceGUID = 14,
+				DRLGIndex = 5,
+				SceneChunk = -1,
+				OnPathBits = tileInfo.TileType, //we can make it TileType value
+				SceneCachedValues = new SceneCachedValues
+				{
+					CachedValuesValid = 63,
+					NavMeshSizeX = 96,
+					NavMeshSizeY = 96
+				}
+			};
 			//Logger.Trace("Adding Tile: SNOscene {0}", tileInfo.SNOScene);
 			var sceneFile = MPQStorage.Data.Assets[SNOGroup.Scene][tileInfo.SNOScene];
 			var sceneData = (DiIiS_NA.Core.MPQ.FileFormats.Scene)sceneFile.Data;
@@ -2214,7 +2213,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			//System.Threading.Thread.Sleep(3);
 		}
 
-		private static readonly Dictionary<int, float> GizmosToSpawn = new Dictionary<int, float>{
+		private static readonly Dictionary<int, float> GizmosToSpawn = new()
+		{
 			{51300, 0.3f},   //chest common
 			{138989, 0.3f}, //healthwell_global
 			{176074, 0.06f}, //blessed
@@ -2227,34 +2227,34 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			//135384, //shrine_global
 		};
 
-		private static readonly List<int> Goblins = new List<int>{
+		private static readonly List<int> Goblins = new()
+		{
 			{5984},
 			{5985},
 			{5987},
 			{5988}
 		};
 
-		private Dictionary<int, List<Scene>> LazyLevelAreas = new Dictionary<int, List<Scene>>();
+		private readonly Dictionary<int, List<Scene>> _lazyLevelAreas = new();
 
 		/// <summary>
 		/// Loads content for level areas. Call this after scenes have been generated and after scenes have their GizmoLocations
 		/// set (this is done in Scene.LoadActors right now)
+		/// 
+		/// Each Scene has one to four level areas assigned to it. I dont know if that means
+		/// the scene belongs to both level areas or if the scene is split
+		/// Scenes marker tags have generic GizmoLocationA to Z that are used 
+		/// to provide random spawning possibilities.
+		/// For each of these 26 LocationGroups, the LevelArea has a entry in its SpawnType array that defines
+		/// what type of actor/encounter/adventure could spawn there
+		/// 
+		/// It could for example define, that for a level area X, out of the four spawning options
+		/// two are randomly picked and have barrels placed there
 		/// </summary>
 		/// <param name="levelAreas">Dictionary that for every level area has the scenes it consists of</param>
 		/// <param name="world">The world to which to add loaded actors</param>
-		private void loadLevelAreas(Dictionary<int, List<Scene>> levelAreas, World world)
+		private void LoadLevelAreas(Dictionary<int, List<Scene>> levelAreas, World world)
 		{
-			/// Each Scene has one to four level areas assigned to it. I dont know if that means
-			/// the scene belongs to both level areas or if the scene is split
-			/// Scenes marker tags have generic GizmoLocationA to Z that are used 
-			/// to provide random spawning possibilities.
-			/// For each of these 26 LocationGroups, the LevelArea has a entry in its SpawnType array that defines
-			/// what type of actor/encounter/adventure could spawn there
-			/// 
-			/// It could for example define, that for a level area X, out of the four spawning options
-			/// two are randomly picked and have barrels placed there
-			
-
 			Dictionary<PRTransform, DiIiS_NA.Core.MPQ.FileFormats.Actor> dict = new Dictionary<PRTransform, DiIiS_NA.Core.MPQ.FileFormats.Actor>();
 			foreach (int la in levelAreas.Keys)
 			{
@@ -2339,9 +2339,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					foreach (var scene in levelAreas.First().Value)
 					{
 						if (!SpawnGenerator.Spawns.ContainsKey(wid)) break;
-						if (SpawnGenerator.Spawns[wid].lazy_load == true)
+						if (SpawnGenerator.Spawns[wid].lazy_load)
 						{
-							this.LazyLevelAreas.Add(wid, levelAreas.First().Value);
+							_lazyLevelAreas.Add(wid, levelAreas.First().Value);
 							break;
 						}
 						else
@@ -2378,7 +2378,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2421,7 +2421,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2436,9 +2436,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					foreach (var scene in levelAreas[la])
 					{
 						if (!SpawnGenerator.Spawns.ContainsKey(la)) break;
-						if (SpawnGenerator.Spawns[la].lazy_load == true)
+						if (SpawnGenerator.Spawns[la].lazy_load)
 						{
-							this.LazyLevelAreas.Add(la, levelAreas[la]);
+							_lazyLevelAreas.Add(la, levelAreas[la]);
 							break;
 						}
 						else
@@ -2475,7 +2475,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2518,7 +2518,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2538,7 +2538,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 			List<Affix> packAffixes = new List<Affix>();
 			int packs_count = world.worldData.DynamicWorld ? 5 : 4;
-			packs_count += (this.Game.Difficulty / 3);
+			packs_count += (Game.Difficulty / 3);
 
 			if (world.worldData.DRLGParams != null && world.worldData.DRLGParams.Count > 0)
 			{
@@ -2548,7 +2548,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					packs_count += 2;
 			}
 
-			if (this.Game.Difficulty > 4)
+			if (Game.Difficulty > 4)
 				packs_count += SpawnGenerator.Spawns[la].additional_density;
 
 			var groupId = 0;
@@ -2589,7 +2589,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 											Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 											Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 										},
-										Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+										Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 									},
 									world,
 									new TagMap(),
@@ -2632,7 +2632,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 												Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 												Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 											},
-											Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+											Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 										},
 										world,
 										new TagMap(),
@@ -2775,15 +2775,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		/// <summary>
 		/// Loads all markersets of a scene and looks for the one with the subscene position
 		/// </summary>
-		private Vector3D FindSubScenePosition(DiIiS_NA.Core.MPQ.FileFormats.SceneChunk sceneChunk)
+		private Vector3D FindSubScenePosition(SceneChunk sceneChunk)
 		{
 			var mpqScene = MPQStorage.Data.Assets[SNOGroup.Scene][sceneChunk.SNOHandle.Id].Data as DiIiS_NA.Core.MPQ.FileFormats.Scene;
 
 			foreach (var markerSet in mpqScene.MarkerSets)
 			{
-				var mpqMarkerSet = MPQStorage.Data.Assets[SNOGroup.MarkerSet][markerSet].Data as DiIiS_NA.Core.MPQ.FileFormats.MarkerSet;
+				var mpqMarkerSet = MPQStorage.Data.Assets[SNOGroup.MarkerSet][markerSet].Data as MarkerSet;
 				foreach (var marker in mpqMarkerSet.Markers)
-					if (marker.Type == DiIiS_NA.Core.MPQ.FileFormats.MarkerType.SubScenePosition)
+					if (marker.Type == MarkerType.SubScenePosition)
 						return marker.PRTransform.Vector3D;
 			}
 			return null;

@@ -41,9 +41,9 @@ namespace DiIiS_NA.GameServer.GSSystem.TickerSystem
 			//if (timeoutTick <= game.TickCounter)
 			//	throw new ArgumentOutOfRangeException("timeoutTick", string.Format("timeoutTick value {0} can not be equal or less then timer's belonging game's current TickCounter value {1}.", timeoutTick, game.TickCounter));
 
-			this.Game = game;
-			this.TimeoutTick = timeoutTick;
-			this.CompletionAction = completionCallback;
+			Game = game;
+			TimeoutTick = timeoutTick;
+			CompletionAction = completionCallback;
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@ namespace DiIiS_NA.GameServer.GSSystem.TickerSystem
 		/// </summary>
 		public bool Running
 		{
-			get { return !this.TimedOut; }
+			get { return !TimedOut; }
 		}
 
 		/// <summary>
@@ -68,16 +68,16 @@ namespace DiIiS_NA.GameServer.GSSystem.TickerSystem
 		/// <param name="tickCounter">The current tick-counter.</param>
 		public virtual void Update(int tickCounter)
 		{
-			if (this.TimeoutTick == -1) // means timer is already fired there.
+			if (TimeoutTick == -1) // means timer is already fired there.
 				return;
 
-			if (!this.TimedOut) // if we haven't timed-out yet, return.
+			if (!TimedOut) // if we haven't timed-out yet, return.
 				return;
 
-			if (this.CompletionAction != null) // if a completition action exists.
-				this.CompletionAction(tickCounter); //call it once the timer time-outs.
+			if (CompletionAction != null) // if a completition action exists.
+				CompletionAction(tickCounter); //call it once the timer time-outs.
 
-			this.Stop();
+			Stop();
 		}
 
 		/// <summary>
@@ -85,7 +85,7 @@ namespace DiIiS_NA.GameServer.GSSystem.TickerSystem
 		/// </summary>
 		public void Stop()
 		{
-			this.TimeoutTick = -1;
+			TimeoutTick = -1;
 		}
 
 		/// <summary>

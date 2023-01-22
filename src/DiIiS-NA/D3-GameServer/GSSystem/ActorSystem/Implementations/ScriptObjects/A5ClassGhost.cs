@@ -35,9 +35,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public A5ClassGhost(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.CollFlags = 1;
-			this.WalkSpeed = 0;
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			CollFlags = 1;
+			WalkSpeed = 0;
+			Attributes[GameAttribute.Invulnerable] = true;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 120356;
 		}
 
@@ -47,22 +47,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			switch (player.Toon.Class)
 			{
 				case ToonClass.Barbarian:
-					showed = this.SNO == ActorSno._x1_fortress_spiritbarbarian;
+					showed = SNO == ActorSno._x1_fortress_spiritbarbarian;
 					break;
 				case ToonClass.Crusader:
-					showed = (this.SNO == ActorSno._x1_fortress_spiritcrusadermmaster && player.Toon.Gender == 0) || (this.SNO == ActorSno._x1_fortress_spiritcrusaderfmaster && player.Toon.Gender == 1);
+					showed = (SNO == ActorSno._x1_fortress_spiritcrusadermmaster && player.Toon.Gender == 0) || (SNO == ActorSno._x1_fortress_spiritcrusaderfmaster && player.Toon.Gender == 1);
 					break;
 				case ToonClass.DemonHunter:
-					showed = this.SNO == ActorSno._x1_fortress_spiritdemonhunter;
+					showed = SNO == ActorSno._x1_fortress_spiritdemonhunter;
 					break;
 				case ToonClass.Monk:
-					showed = this.SNO == ActorSno._x1_fortress_spiritmonkpatriarch;
+					showed = SNO == ActorSno._x1_fortress_spiritmonkpatriarch;
 					break;
 				case ToonClass.WitchDoctor:
-					showed = this.SNO == ActorSno._x1_fortress_spiritwitchdoctor;
+					showed = SNO == ActorSno._x1_fortress_spiritwitchdoctor;
 					break;
 				case ToonClass.Wizard:
-					showed = this.SNO == ActorSno._x1_fortress_spiritwizard;
+					showed = SNO == ActorSno._x1_fortress_spiritwizard;
 					break;
 				case ToonClass.Necromancer:
 					showed = SNO == ActorSno._x1_fortress_spiritnecromancerordan;
@@ -81,9 +81,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			{
 				if (player.Position.DistanceSquared(ref _position) < 144f && !_collapsed)
 				{
-					if (this.World.Game.CurrentQuest != 273408) return;
+					if (World.Game.CurrentQuest != 273408) return;
 
-					if (this.World.Game.CurrentStep == 12)
+					if (World.Game.CurrentStep == 12)
 					{
 						_collapsed = true;
 

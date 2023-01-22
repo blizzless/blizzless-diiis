@@ -28,10 +28,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (User.GetActorsInRange(80f).Count < 100)
 				for (int i = 0; i < 3; i++)
 				{
-					var monster = ActorFactory.Create(User.World, (ActorSno)(this.User as Monster).SNOSummons[0], new TagMap());
+					var monster = ActorFactory.Create(User.World, (ActorSno)(User as Monster).SNOSummons[0], new TagMap());
 					monster.Scale = 1.35f;
 					monster.EnterWorld(RandomDirection(Target.Position, 3, 10));
-					this.World.BuffManager.AddBuff(User, monster, new Implementations.SummonedBuff());
+					World.BuffManager.AddBuff(User, monster, new SummonedBuff());
 				}
 			yield break;
 		}
@@ -225,7 +225,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					monster.Scale = 1.35f;
 					monster.EnterWorld(RandomDirection(User.Position, 3, 10));
 					monster.Unstuck();
-					this.World.BuffManager.AddBuff(User, monster, new Implementations.SummonedBuff());
+					World.BuffManager.AddBuff(User, monster, new SummonedBuff());
 				}
 			yield break;
 		}
@@ -313,7 +313,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					monster.Scale = 1.35f;
 					monster.EnterWorld(RandomDirection(Target.Position, 3, 10));
 					monster.Unstuck();
-					this.World.BuffManager.AddBuff(User, monster, new Implementations.SummonedBuff());
+					World.BuffManager.AddBuff(User, monster, new SummonedBuff());
 				}
 			yield break;
 		}

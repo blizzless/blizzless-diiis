@@ -40,8 +40,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public static GameAccount GetGameAccountByDBGameAccount(DBGameAccount dbGameAccount)
 		{
+			if (dbGameAccount == null)
+				return null;
 			if (LoadedGameAccounts.ContainsKey(dbGameAccount.Id))
+			{
+				LoadedGameAccounts[dbGameAccount.Id].DBGameAccount = dbGameAccount;
 				return LoadedGameAccounts[dbGameAccount.Id];
+			}
 			else
 			{
 				var account = new GameAccount(dbGameAccount);

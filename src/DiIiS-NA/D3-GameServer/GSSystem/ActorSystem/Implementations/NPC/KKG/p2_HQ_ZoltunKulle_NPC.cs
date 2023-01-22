@@ -21,7 +21,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public P2_HQ_ZoltunKulle_NPC(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Hidden = true;
+			Hidden = true;
 		}
 
 		protected override void ReadTags()

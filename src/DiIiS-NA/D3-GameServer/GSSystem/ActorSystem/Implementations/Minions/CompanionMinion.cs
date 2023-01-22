@@ -41,11 +41,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			if (context.User.Attributes[GameAttribute.Rune_B, 0x000592ff] > 0) Scale = 2f;  //Boar
 			if (context.User.Attributes[GameAttribute.Rune_C, 0x000592ff] > 0) Scale = 2f;  //Wolf
 																							//TODO: get a proper value for this.
-			this.WalkSpeed *= 5;
-			this.DamageCoefficient = context.ScriptFormula(0);
-			this.Attributes[GameAttribute.Invulnerable] = true;
-			this.Attributes[GameAttribute.Is_Helper] = true;
-			this.Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			WalkSpeed *= 5;
+			DamageCoefficient = context.ScriptFormula(0);
+			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Is_Helper] = true;
+			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
 			if (CompanionSNO == ActorSno._dh_companion_ferret)
 				SetBrain(new LooterBrain(this, false));
 			else

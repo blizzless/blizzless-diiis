@@ -37,7 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 			player.InGameClient.SendMessage(new SetIdleAnimationMessage
 			{
-				ActorID = this.DynamicID(player),
+				ActorID = DynamicID(player),
 				AnimationSNO = AnimationSetKeys.Open.ID
 			});
 

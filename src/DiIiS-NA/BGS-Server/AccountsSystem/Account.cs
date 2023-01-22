@@ -43,7 +43,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				var val = new ByteStringPresenceField<D3.OnlineService.EntityId>(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Account, 2, 0, this.LastSelectedGameAccount);
+				var val = new ByteStringPresenceField<D3.OnlineService.EntityId>(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Account, 2, 0, LastSelectedGameAccount);
 				return val;
 			}
 		}
@@ -53,8 +53,8 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			get
 			{
 				ByteStringPresenceField<D3.OnlineService.EntityId> val = null;
-				if (this.GameAccount.CurrentToon != null)
-					val = new ByteStringPresenceField<D3.OnlineService.EntityId>(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Account, 1, 0, this.GameAccount.CurrentToon.D3EntityID);
+				if (GameAccount.CurrentToon != null)
+					val = new ByteStringPresenceField<D3.OnlineService.EntityId>(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Account, 1, 0, GameAccount.CurrentToon.D3EntityID);
 				else
 				{
 					var Fake = D3.OnlineService.EntityId.CreateBuilder().SetIdHigh(0).SetIdLow(0);
@@ -77,7 +77,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				var val = new BoolPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 2, 0, this.IsOnline);
+				var val = new BoolPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 2, 0, IsOnline);
 				return val;
 			}
 		}
@@ -86,7 +86,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				var val = new StringPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 4, 0, this.BattleTagName + "#" + HashCode.ToString("D4"));
+				var val = new StringPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 4, 0, BattleTagName + "#" + HashCode.ToString("D4"));
 				return val;
 			}
 		}
@@ -95,7 +95,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				var val = new StringPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 2, 0, this.BroadcastMessage);
+				var val = new StringPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 2, 0, BroadcastMessage);
 				return val;
 			}
 		}
@@ -105,7 +105,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			get
 			{
 				var val = new EntityIdPresenceFieldList(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 3, 0);
-				val.Value.Add(this.GameAccount.BnetEntityId);
+				val.Value.Add(GameAccount.BnetEntityId);
 				return val;
 			}
 		}
@@ -117,15 +117,15 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			get
 			{
 				var val = new IntPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 6, 0, 0);
-				val.Value = (long)this.LastOnline;
+				val.Value = (long)LastOnline;
 				return val;
 			}
 
 			set
 			{
-				this.LastOnline = (ulong)value.Value;
-				this.DBAccount.LastOnline = (ulong)value.Value;
-				DBSessions.SessionUpdate(this.DBAccount);
+				LastOnline = (ulong)value.Value;
+				DBAccount.LastOnline = (ulong)value.Value;
+				DBSessions.SessionUpdate(DBAccount);
 			}
 
 		}
@@ -152,7 +152,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return this.DBAccount.Email;
+				return DBAccount.Email;
 			}
 			private set
 			{
@@ -160,34 +160,34 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		} 
 		public string SaltedTicket
 		{
-			get { return this.DBAccount.SaltedTicket; }
+			get { return DBAccount.SaltedTicket; }
 			internal set
 			{
-				this.DBAccount.SaltedTicket = value;
-				DBSessions.SessionUpdate(this.DBAccount);
+				DBAccount.SaltedTicket = value;
+				DBSessions.SessionUpdate(DBAccount);
 			}
 		} 
 		public byte[] Salt
 		{
-			get { return this.DBAccount.Salt.ToArray(); }
+			get { return DBAccount.Salt.ToArray(); }
 			internal set
 			{
-				this.DBAccount.Salt = value;
-				DBSessions.SessionUpdate(this.DBAccount);
+				DBAccount.Salt = value;
+				DBSessions.SessionUpdate(DBAccount);
 			}
 		}  // s- User's salt.
 		public byte[] FullSalt
 		{
-			get { return this.DBAccount.Salt.ToArray(); }
+			get { return DBAccount.Salt.ToArray(); }
 		}  // s- User's salt.
 
 		public byte[] PasswordVerifier
 		{
-			get { return this.DBAccount.PasswordVerifier; }
+			get { return DBAccount.PasswordVerifier; }
 			internal set
 			{
-				this.DBAccount.PasswordVerifier = value;
-				DBSessions.SessionUpdate(this.DBAccount);
+				DBAccount.PasswordVerifier = value;
+				DBSessions.SessionUpdate(DBAccount);
 			}
 		} // v - password verifier.
 
@@ -195,12 +195,12 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return this.DBAccount.HashCode;
+				return DBAccount.HashCode;
 			}
 			private set
 			{
-				this.DBAccount.HashCode = value;
-				DBSessions.SessionUpdate(this.DBAccount);
+				DBAccount.HashCode = value;
+				DBSessions.SessionUpdate(DBAccount);
 			}
 		}
 
@@ -208,21 +208,21 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				bool staff = (this.DBAccount.UserLevel > Account.UserLevels.Tester);
+				bool staff = (DBAccount.UserLevel > UserLevels.Tester);
 				//(controller as HandlerController).Client.Account.GameAccount.ProgramField.Value
-				if(this.GameAccount.ProgramField.Value == "APP")
-					return string.Format("{0}", this.DBAccount.BattleTagName);
-				else if (this.GameAccount.ProgramField.Value == "D3")
-					return string.Format("{0}", this.DBAccount.BattleTagName);
+				if(GameAccount.ProgramField.Value == "APP")
+					return string.Format("{0}", DBAccount.BattleTagName);
+				else if (GameAccount.ProgramField.Value == "D3")
+					return string.Format("{0}", DBAccount.BattleTagName);
 					//return string.Format(staff ? " {{icon:bnet}} {{c_legendary}}{0}{{/c}}" : ("{0}"), this.DBAccount.BattleTagName);
 				else
-					return string.Format("{0}", this.DBAccount.BattleTagName);
+					return string.Format("{0}", DBAccount.BattleTagName);
 				//return (staff ? " {icon:bnet} " : (premium ? " {icon:gold} " : "")) + dbAcc.BattleTagName;
 			}  //{c_blue}{/c}
 			private set
 			{
-				this.DBAccount.BattleTagName = value;
-				DBSessions.SessionUpdate(this.DBAccount);
+				DBAccount.BattleTagName = value;
+				DBSessions.SessionUpdate(DBAccount);
 			}
 		}
 
@@ -230,7 +230,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return this.BattleTagName + "#" + this.HashCode.ToString("D4");
+				return BattleTagName + "#" + HashCode.ToString("D4");
 			}
 			set
 			{
@@ -238,19 +238,19 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					throw new Exception("BattleTag must contain '#'");
 
 				var split = value.Split('#');
-				this.DBAccount.BattleTagName = split[0];
-				this.DBAccount.HashCode = Convert.ToInt32(split[1]);
-				DBSessions.SessionUpdate(this.DBAccount);
+				DBAccount.BattleTagName = split[0];
+				DBAccount.HashCode = Convert.ToInt32(split[1]);
+				DBSessions.SessionUpdate(DBAccount);
 			}
 		}
 
 		public UserLevels UserLevel
 		{
-			get { return this.DBAccount.UserLevel; }
+			get { return DBAccount.UserLevel; }
 			internal set
 			{
-				this.DBAccount.UserLevel = value;
-				DBSessions.SessionUpdate(this.DBAccount);
+				DBAccount.UserLevel = value;
+				DBSessions.SessionUpdate(DBAccount);
 			}
 		} // user level for account.
 
@@ -263,16 +263,16 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				if (this.CurrentGameAccountId == 0) return null;
-				if (this._currentGameAccount == null)
-					this._currentGameAccount = GameAccountManager.GetAccountByPersistentID(this.CurrentGameAccountId);
+				if (CurrentGameAccountId == 0) return null;
+				if (_currentGameAccount == null)
+					_currentGameAccount = GameAccountManager.GetAccountByPersistentID(CurrentGameAccountId);
 
-				return this._currentGameAccount;
+				return _currentGameAccount;
 			}
 			set
 			{
-				this._currentGameAccount = value;
-				this.CurrentGameAccountId = value.PersistentID;
+				_currentGameAccount = value;
+				CurrentGameAccountId = value.PersistentID;
 			}
 		}
 
@@ -283,7 +283,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return this.GameAccount.D3GameAccountId;
+				return GameAccount.D3GameAccountId;
 			}
 		}
 
@@ -292,18 +292,18 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		public Account(DBAccount dbAccount)
 			: base(dbAccount.Id)
 		{
-			this.DBAccount = dbAccount;
-			var account_relations = DBSessions.SessionQueryWhere<DBAccountLists>(dbl => dbl.ListOwner.Id == this.PersistentID);
-			this.FriendsIds = new HashSet<ulong>(account_relations.Where(dbl => dbl.Type == "FRIEND").Select(a => a.ListTarget.Id)).ToList();
-			this.IgnoreIds = new HashSet<ulong>(account_relations.Where(dbl => dbl.Type == "IGNORE").Select(a => a.ListTarget.Id)).ToList();
-			this.LastOnline = dbAccount.LastOnline;
+			DBAccount = dbAccount;
+			var account_relations = DBSessions.SessionQueryWhere<DBAccountLists>(dbl => dbl.ListOwner.Id == PersistentID);
+			FriendsIds = new HashSet<ulong>(account_relations.Where(dbl => dbl.Type == "FRIEND").Select(a => a.ListTarget.Id)).ToList();
+			IgnoreIds = new HashSet<ulong>(account_relations.Where(dbl => dbl.Type == "IGNORE").Select(a => a.ListTarget.Id)).ToList();
+			LastOnline = dbAccount.LastOnline;
 			SetFields();
 		}
 
 
 		private void SetFields()
 		{
-			this.BnetEntityId = bgs.protocol.EntityId.CreateBuilder().SetHigh((ulong)EntityIdHelper.HighIdType.AccountId).SetLow(this.PersistentID).Build();
+			BnetEntityId = bgs.protocol.EntityId.CreateBuilder().SetHigh((ulong)EntityIdHelper.HighIdType.AccountId).SetLow(PersistentID).Build();
 		}
 
 		public void Update(IList<FieldOperation> operations)
@@ -331,7 +331,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				}
 			}
 			if (operationsToUpdate.Count > 0)
-				base.UpdateSubscribers(Subscribers, operationsToUpdate);
+				UpdateSubscribers(Subscribers, operationsToUpdate);
 		}
 
 		private Field.Builder DoSet(Field field)
@@ -339,7 +339,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			FieldOperation.Builder operation = FieldOperation.CreateBuilder();
 
 			Field.Builder returnField = Field.CreateBuilder().SetKey(field.Key);
-			if (this.GameAccount.LoggedInClient == null) return returnField;
+			if (GameAccount.LoggedInClient == null) return returnField;
 
 			switch ((FieldKeyHelper.Program)field.Key.Program)
 			{
@@ -352,7 +352,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					if (field.Key.Group == 1 && field.Key.Field == 2) // Account's broadcast message
 					{
 						Logger.Trace("{0} set broadcast message to {1}.", this, field.Value.StringValue);
-						this.BroadcastMessage = field.Value.StringValue;
+						BroadcastMessage = field.Value.StringValue;
 					}
 					else if (field.Key.Group == 1 && field.Key.Field == 7) // Account's AFK status
 					{
@@ -392,22 +392,22 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			}*/
 		}
 
-		public bgs.protocol.presence.v1.Field QueryField(bgs.protocol.presence.v1.FieldKey queryKey)
+		public Field QueryField(FieldKey queryKey)
 		{
-			var field = bgs.protocol.presence.v1.Field.CreateBuilder().SetKey(queryKey);
+			var field = Field.CreateBuilder().SetKey(queryKey);
 
 			switch ((FieldKeyHelper.Program)queryKey.Program)
 			{
 				case FieldKeyHelper.Program.D3:
 					if (queryKey.Group == 1 && queryKey.Field == 1) // Account's last selected toon.
 					{
-						if (this.IsOnline) // check if the account is online actually.
-							field.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(this.GameAccount.LastPlayedHeroId.ToByteString()).Build());
+						if (IsOnline) // check if the account is online actually.
+							field.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(GameAccount.LastPlayedHeroId.ToByteString()).Build());
 					}
 					else if (queryKey.Group == 1 && queryKey.Field == 2) // Account's last selected Game Account
 					{
-						if (this.IsOnline) // check if the account is online actually.
-							field.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(this.LastSelectedGameAccount.ToByteString()).Build());
+						if (IsOnline) // check if the account is online actually.
+							field.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(LastSelectedGameAccount.ToByteString()).Build());
 					}
 					else
 					{
@@ -417,11 +417,11 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				case FieldKeyHelper.Program.BNet:
 					if (queryKey.Group == 1 && queryKey.Field == 4) // Account's battleTag
 					{
-						field.SetValue(bgs.protocol.Variant.CreateBuilder().SetStringValue(this.BattleTag).Build());
+						field.SetValue(bgs.protocol.Variant.CreateBuilder().SetStringValue(BattleTag).Build());
 					}
 					else if (queryKey.Group == 1 && queryKey.Field == 2) // Account's broadcast message
 					{
-						field.SetValue(bgs.protocol.Variant.CreateBuilder().SetStringValue(this.BroadcastMessage).Build());
+						field.SetValue(bgs.protocol.Variant.CreateBuilder().SetStringValue(BroadcastMessage).Build());
 					}
 					else
 					{
@@ -440,7 +440,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			var operations = ChangedFields.GetChangedFieldList();
 			ChangedFields.ClearChanged();
-			base.UpdateSubscribers(this.Subscribers, operations);
+			UpdateSubscribers(Subscribers, operations);
 		}
 
 		//account class generated
@@ -450,7 +450,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		//Bnet, Account,3,index -> GameAccount EntityIds
 		//Bnet, Account,4,0 -> BattleTag
 
-		public override List<bgs.protocol.presence.v1.FieldOperation> GetSubscriptionNotifications()
+		public override List<FieldOperation> GetSubscriptionNotifications()
 		{
 			//TODO: Create delegate-move this out	
 			/*this.GameAccountListField.Value.Clear();
@@ -460,20 +460,20 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			}*/
 
 
-			var operationList = new List<bgs.protocol.presence.v1.FieldOperation>();
+			var operationList = new List<FieldOperation>();
 			//if (this.LastSelectedHero != AccountHasNoToons)
 			//operationList.Add(this.LastPlayedHeroIdField.GetFieldOperation());
-			if (this.LastSelectedGameAccount != AccountHasNoToons)
+			if (LastSelectedGameAccount != AccountHasNoToons)
 			{
-				operationList.Add(this.LastPlayedToonIdField.GetFieldOperation());
-				operationList.Add(this.LastPlayedGameAccountIdField.GetFieldOperation());
+				operationList.Add(LastPlayedToonIdField.GetFieldOperation());
+				operationList.Add(LastPlayedGameAccountIdField.GetFieldOperation());
 			}
-			operationList.Add(this.RealIDTagField.GetFieldOperation());
-			operationList.Add(this.AccountOnlineField.GetFieldOperation());
-			operationList.AddRange(this.GameAccountListField.GetFieldOperationList());
-			operationList.Add(this.AccountBattleTagField.GetFieldOperation());
-			operationList.Add(this.BroadcastMessageField.GetFieldOperation());
-			operationList.Add(this.LastOnlineField.GetFieldOperation());
+			operationList.Add(RealIDTagField.GetFieldOperation());
+			operationList.Add(AccountOnlineField.GetFieldOperation());
+			operationList.AddRange(GameAccountListField.GetFieldOperationList());
+			operationList.Add(AccountBattleTagField.GetFieldOperation());
+			operationList.Add(BroadcastMessageField.GetFieldOperation());
+			operationList.Add(LastOnlineField.GetFieldOperation());
 
 			return operationList;
 		}
@@ -489,13 +489,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			if (password.Length < 8 || password.Length > 16)
 				return false;
 
-			var calculatedVerifier = SRP6a.CalculatePasswordVerifierForAccount(this.Email, password, this.FullSalt);
-			return calculatedVerifier.SequenceEqual(this.PasswordVerifier);
+			var calculatedVerifier = SRP6a.CalculatePasswordVerifierForAccount(Email, password, FullSalt);
+			return calculatedVerifier.SequenceEqual(PasswordVerifier);
 		}
 
 		public override string ToString()
 		{
-			return String.Format("{{ Account: {0} [lowId: {1}] }}", this.Email, this.BnetEntityId.Low);
+			return String.Format("{{ Account: {0} [lowId: {1}] }}", Email, BnetEntityId.Low);
 		}
 
 		/// <summary>

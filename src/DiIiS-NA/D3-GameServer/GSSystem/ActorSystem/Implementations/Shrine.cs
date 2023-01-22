@@ -33,52 +33,52 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			lock (this.taskLock)
+			lock (taskLock)
 			{
-				if (this.Activated) return;
-				this.Activated = true;
-				World.BroadcastIfRevealed(plr => new ANNDataMessage(Opcodes.ShrineActivatedMessage) { ActorID = this.DynamicID(plr) }, this);
-				switch (this.SNO)
+				if (Activated) return;
+				Activated = true;
+				World.BroadcastIfRevealed(plr => new ANNDataMessage(Opcodes.ShrineActivatedMessage) { ActorID = DynamicID(plr) }, this);
+				switch (SNO)
 				{
 					case ActorSno._shrine_global_blessed: //blessed
-						foreach (var plr in this.GetPlayersInRange(100f))
+						foreach (var plr in GetPlayersInRange(100f))
 						{
-							this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineBlessedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+							World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineBlessedBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 							plr.GrantCriteria(74987243307423);
 						}
 						break;
 					case ActorSno._shrine_global_enlightened: //enlightened
-						foreach (var plr in this.GetPlayersInRange(100f))
+						foreach (var plr in GetPlayersInRange(100f))
 						{
-							this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineEnlightenedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+							World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineEnlightenedBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 							plr.GrantCriteria(74987243307424);
 						}
 						break;
 					case ActorSno._shrine_global_fortune: //fortune
-						foreach (var plr in this.GetPlayersInRange(100f))
+						foreach (var plr in GetPlayersInRange(100f))
 						{
-							this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFortuneBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+							World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFortuneBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 							plr.GrantCriteria(74987243307425);
 						}
 						break;
 					case ActorSno._shrine_global_frenzied: //frenzied
-						foreach (var plr in this.GetPlayersInRange(100f))
+						foreach (var plr in GetPlayersInRange(100f))
 						{
-							this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFrenziedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+							World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineFrenziedBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 							plr.GrantCriteria(74987243307426);
 						}
 						break;
 					default:
-						foreach (var plr in this.GetPlayersInRange(100f))
+						foreach (var plr in GetPlayersInRange(100f))
 						{
-							this.World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineEnlightenedBuff(TickTimer.WaitSeconds(this.World.Game, 120.0f)));
+							World.BuffManager.AddBuff(this, plr, new PowerSystem.Implementations.ShrineEnlightenedBuff(TickTimer.WaitSeconds(World.Game, 120.0f)));
 						}
 						break;
 				}
 
-				this.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+				Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
 				//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-				this.Attributes[GameAttribute.Gizmo_State] = 1;
+				Attributes[GameAttribute.Gizmo_State] = 1;
 				Attributes.BroadcastChangedIfRevealed();
 			}
 		}

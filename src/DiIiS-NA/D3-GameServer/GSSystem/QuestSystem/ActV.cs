@@ -72,16 +72,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					}
 			}
 			else
-				Logger.Warn("Не удалось присвоить диалог для NPC.");
+				Logger.Warn("Failed to assign a dialog for NPC.");
 		}
 		public static void RemoveConversations(Actor actor)
 		{
-			var NPC = actor as InteractiveNPC;
-			if (NPC != null)
+			if (actor is InteractiveNPC npc)
 			{
-				NPC.Conversations.Clear();
-				NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
-				NPC.Attributes.BroadcastChangedIfRevealed();
+				npc.Conversations.Clear();
+				npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				npc.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
 
@@ -89,9 +88,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		{
 			#region The Fall of Westmarch.
 			//x1_WestM_IntroQuest
-			this.Game.QuestManager.Quests.Add(251355, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 284683, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(251355, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 284683, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -104,7 +103,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(2, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(2, new QuestStep
             {
 				Completed = false,
 				Saveable = false,
@@ -112,16 +111,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//enter Westmarch
-					var world = this.Game.GetWorld(WorldSno.x1_westm_intro);
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westmarch_overlook_d, () =>
+					var world = Game.GetWorld(WorldSno.x1_westm_intro);
+					Game.AddOnLoadWorldAction(WorldSno.x1_westmarch_overlook_d, () =>
 					{
 				
-						if (this.Game.CurrentQuest == 251355 && this.Game.CurrentStep == 2)
+						if (Game.CurrentQuest == 251355 && Game.CurrentStep == 2)
 						{
-                            StartConversation(this.Game.GetWorld(WorldSno.x1_westmarch_overlook_d), 317212);
+                            StartConversation(Game.GetWorld(WorldSno.x1_westmarch_overlook_d), 317212);
 						}
 					});
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_intro, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_intro, () =>
 					{
                         StartConversation(world, 311433);
 
@@ -147,7 +146,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(59, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(59, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -155,7 +154,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find a5 hub
-					var npc = this.Game.GetWorld(WorldSno.x1_westm_intro).GetActorBySNO(ActorSno._x1_npc_westmarch_introguy);
+					var npc = Game.GetWorld(WorldSno.x1_westm_intro).GetActorBySNO(ActorSno._x1_npc_westmarch_introguy);
 					if (npc != null)
 					{
 						var introGuy = npc as InteractiveNPC;
@@ -168,7 +167,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(14, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(14, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -176,10 +175,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill mobs at hub
-					var world = this.Game.GetWorld(WorldSno.x1_westm_intro);
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_intro, () =>
+					var world = Game.GetWorld(WorldSno.x1_westm_intro);
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_intro, () =>
 					{
-						if (this.Game.CurrentQuest == 251355 && this.Game.CurrentStep == 14)
+						if (Game.CurrentQuest == 251355 && Game.CurrentStep == 14)
 						{
 							try { world.FindAt(ActorSno._x1_westm_door_cloister_locked, new Vector3D { X = 555.9f, Y = 403.47f, Z = 10.2f }, 5.0f).Destroy(); } catch { }
 						}
@@ -203,14 +202,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(7, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(7, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
 				NextStep = 57,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					var world = this.Game.GetWorld(WorldSno.x1_westm_intro);
+					var world = Game.GetWorld(WorldSno.x1_westm_intro);
 					//Delete Monsters
 					foreach (var skeleton in world.GetActorsBySNO(ActorSno._x1_skeleton_westmarch_a, ActorSno._x1_ghost_dark_a, ActorSno._x1_shield_skeleton_westmarch_a))
 						skeleton.Destroy();
@@ -226,7 +225,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(57, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(57, new QuestStep
             {
 				Completed = false,
 				Saveable = false,
@@ -234,13 +233,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//enter the church
-					var world = this.Game.GetWorld(WorldSno.x1_westm_intro);
+					var world = Game.GetWorld(WorldSno.x1_westm_intro);
 					var Tyrael = world.ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as InteractiveNPC;
 					Tyrael.Conversations.Clear();
 					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
 
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_intro, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_intro, () =>
 					{
                         Open(world, ActorSno._x1_westm_church_ext_door_a);
 					});
@@ -251,7 +250,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(18, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(18, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -263,7 +262,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(11, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(11, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -272,14 +271,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
 					UnlockTeleport(0);
-					var Tyrael = this.Game.GetWorld(WorldSno.x1_westmarch_hub).ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as ActorSystem.InteractiveNPC;
+					var Tyrael = Game.GetWorld(WorldSno.x1_westmarch_hub).ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as InteractiveNPC;
 					AddQuestConversation(Tyrael, 252100);
 					//ListenInteract(289293, 1, new LaunchConversation(252100));
 					ListenConversation(252100, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(67, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(67, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -287,7 +286,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//leave the church
-					var Tyrael = this.Game.GetWorld(WorldSno.x1_westmarch_hub).ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as ActorSystem.InteractiveNPC;
+					var Tyrael = Game.GetWorld(WorldSno.x1_westmarch_hub).ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as InteractiveNPC;
 					if (Tyrael != null)
 					{
 						Tyrael.Conversations.Clear();
@@ -298,7 +297,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[251355].Steps.Add(5, new QuestStep
+			Game.QuestManager.Quests[251355].Steps.Add(5, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -312,9 +311,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			#endregion
 			#region Souls of the Dead
 			//X1_WestmHub_Survivor_Rescue
-			this.Game.QuestManager.Quests.Add(284683, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 285098, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(284683, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 285098, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -324,7 +323,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(47, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(47, new QuestStep
             {
 				Completed = false,
 				Saveable = false,
@@ -332,14 +331,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//OnTargetedActor ID: 315793, Name: x1_westm_Door_Cloister, NumInWorld: 0
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westmarch_hub, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westmarch_hub, () =>
 					{
 						if (Game.CurrentQuest == 284683 && Game.CurrentStep == -1 || Game.CurrentQuest == 284683 && Game.CurrentStep == 47)
-                            ActiveArrow(this.Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_westm_door_cloister);
+                            ActiveArrow(Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_westm_door_cloister);
 					});
                     //Enter Westmarch Commons
                     ListenTeleport(261758, new BackToCath());
-                    var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
+                    var world = Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
 					// FIXME: incorrect snoId or possible code duplicate
                     foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_enhanceevent)) //Mystic
 					{
@@ -354,7 +353,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(62, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(62, new QuestStep
             {
 				Completed = false,
 				Saveable = false,
@@ -362,7 +361,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
                     //find orbs
-                    var world = this.Game.GetWorld(WorldSno.x1_westmarch_hub);
+                    var world = Game.GetWorld(WorldSno.x1_westmarch_hub);
                     var target = world.GetActorBySNO(ActorSno._x1_westm_door_cloister, true);
                     DisableArrow(world, target);
                     ListenTeleport(338956, new BackToCath());
@@ -370,7 +369,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(57, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(57, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -378,7 +377,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//destroy bodies
-					var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
+					var world = Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
 					UnlockTeleport(1);
 					foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_novendor_nonglobalfollower)) //Mystic_NonGlobalFollower
 					{
@@ -391,10 +390,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						Myst.SetVisible(false);
 					}
 					ListenKill(ActorSno._x1_deathorb_bodypile, 4, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
 					{
 						
-						if (this.Game.CurrentQuest == 284683 && this.Game.CurrentStep == 57)
+						if (Game.CurrentQuest == 284683 && Game.CurrentStep == 57)
 						{
 							SetActorOperable(world, ActorSno._x1_deathmaiden_unique_deathorb_b, false);
 							SetActorOperable(world, ActorSno._x1_death_orb_monster, false);
@@ -403,7 +402,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(60, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(60, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -411,15 +410,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//slay Drygha
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
 					{
-						SetActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._x1_deathmaiden_unique_deathorb_b, true);
+						SetActorOperable(Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._x1_deathmaiden_unique_deathorb_b, true);
 					});
 					ListenKill(ActorSno._x1_deathmaiden_unique_deathorb_b, 1, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(1, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -427,22 +426,22 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//destroy orb
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
 					{
-						SetActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._x1_death_orb_monster, true);
+						SetActorOperable(Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._x1_death_orb_monster, true);
 					});
 					ListenKill(ActorSno._x1_death_orb_monster, 1, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(68, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(68, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 30,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
+					var world = Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
 					//destroy effects
 					foreach (var act in world.GetActorsBySNO(ActorSno._x1_westmarch_cath_int_debriscenter_orbscenes, ActorSno._x1_death_orb_hp_proxy)) act.Destroy();
 					foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_novendor_nonglobalfollower, ActorSno._pt_mystic_enhanceevent))
@@ -457,7 +456,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(30, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(30, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -465,11 +464,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Mystic
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
 					{
-						if (this.Game.CurrentQuest == 284683 && this.Game.CurrentStep == 30)
+						if (Game.CurrentQuest == 284683 && Game.CurrentStep == 30)
 						{
-							var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
+							var world = Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
 							var Mysts = world.GetActorsBySNO(ActorSno._pt_mystic_novendor);
 							if (Mysts.Count < 1)
 								Mysts.Add(world.SpawnMonster(ActorSno._pt_mystic_novendor, new Vector3D(385.6301f,289.3048f,-18.602905f)));
@@ -499,7 +498,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(32, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(32, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -507,9 +506,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//exit alley
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
 					{
-						var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
+						var world = Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
 						foreach (var Myst in world.GetActorsBySNO(ActorSno._pt_mystic_novendor_nonglobalfollower)) //Mystic_NonGlobalFollower
 						{
 							Myst.Hidden = true;
@@ -544,7 +543,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(55, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(55, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -553,15 +552,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//find death orb
 					ListenTeleport(339158, new AdvanceWithNotify());
-					if (!this.Game.Empty)
+					if (!Game.Empty)
 					{
 						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(49, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(49, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -570,25 +569,25 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//destroy bodies
 					UnlockTeleport(2);
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
 					{
-						if (this.Game.CurrentQuest == 284683 && this.Game.CurrentStep == 49)
+						if (Game.CurrentQuest == 284683 && Game.CurrentStep == 49)
 						{
-							var world = this.Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow);
+							var world = Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow);
 							SetActorOperable(world, ActorSno._x1_deathmaiden_unique_deathorb_c, false);
 							SetActorOperable(world, ActorSno._x1_death_orb_master_monster, false);
 						}
 					});
 					ListenKill(ActorSno._x1_deathorb_bodypile, 6, new Advance());
-					if (!this.Game.Empty)
+					if (!Game.Empty)
 					{
 						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(53, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(53, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -596,20 +595,20 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//slay guardian
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
 					{
-						SetActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow), ActorSno._x1_deathmaiden_unique_deathorb_c, true);
+						SetActorOperable(Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow), ActorSno._x1_deathmaiden_unique_deathorb_c, true);
 					});
 					ListenKill(ActorSno._x1_deathmaiden_unique_deathorb_c, 1, new Advance());
-					if (!this.Game.Empty)
+					if (!Game.Empty)
 					{
 						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(34, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(34, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -617,20 +616,20 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//destroy final orb
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
 					{
-						SetActorOperable(this.Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow), ActorSno._x1_death_orb_master_monster, true);
+						SetActorOperable(Game.GetWorld(WorldSno.x1_westm_deathorb_kerwinsrow), ActorSno._x1_death_orb_master_monster, true);
 					});
 					ListenKill(ActorSno._x1_death_orb_master_monster, 1, new Advance());
-					if (!this.Game.Empty)
+					if (!Game.Empty)
 					{
 						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(40, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(40, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -640,15 +639,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//talk to Mystic
 					ListenProximity(ActorSno._pt_mystic_novendor_nonglobalfollower, new LaunchConversation(305871));
 					ListenConversation(305871, new AdvanceWithNotify());
-					if (!this.Game.Empty)
+					if (!Game.Empty)
 					{
 						DestroyFollower(ActorSno._pt_mystic_novendor_nonglobalfollower);
-						AddFollower(this.Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
+						AddFollower(Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt), ActorSno._pt_mystic_novendor_nonglobalfollower);
 					}
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(42, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(42, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -657,8 +656,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//return to hub
 					ListenTeleport(270011, new Advance());
-					if (!this.Game.Empty)
-						foreach (var plr in this.Game.Players.Values)
+					if (!Game.Empty)
+						foreach (var plr in Game.Players.Values)
 						{
 							if (!plr.MysticUnlocked)
 							{
@@ -671,7 +670,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[284683].Steps.Add(29, new QuestStep
+			Game.QuestManager.Quests[284683].Steps.Add(29, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -685,9 +684,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			#endregion
 			#region The Harbinger
 			//X1_Westm_KillUrzael
-			this.Game.QuestManager.Quests.Add(285098, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 257120, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(285098, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 257120, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[285098].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[285098].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -697,7 +696,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[285098].Steps.Add(1, new QuestStep
+			Game.QuestManager.Quests[285098].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -709,7 +708,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[285098].Steps.Add(6, new QuestStep
+			Game.QuestManager.Quests[285098].Steps.Add(6, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -724,7 +723,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[285098].Steps.Add(12, new QuestStep
+			Game.QuestManager.Quests[285098].Steps.Add(12, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -737,7 +736,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[285098].Steps.Add(14, new QuestStep
+			Game.QuestManager.Quests[285098].Steps.Add(14, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -745,18 +744,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Malthael spirit
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_urzael_arena, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_urzael_arena, () =>
 					{
-						var malthael = this.Game.GetWorld(WorldSno.x1_urzael_arena).SpawnMonster(ActorSno._x1_malthael, new Vector3D { X = 97.65f, Y = 350.23f, Z = 0.1f });
+						var malthael = Game.GetWorld(WorldSno.x1_urzael_arena).SpawnMonster(ActorSno._x1_malthael, new Vector3D { X = 97.65f, Y = 350.23f, Z = 0.1f });
 						malthael.NotifyConversation(1);
 					});
-					this.Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.activated = false;
 					ListenInteract(ActorSno._x1_malthael, 1, new LaunchConversation(274423));
 					ListenConversation(274423, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[285098].Steps.Add(16, new QuestStep
+			Game.QuestManager.Quests[285098].Steps.Add(16, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -768,7 +767,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[285098].Steps.Add(18, new QuestStep
+			Game.QuestManager.Quests[285098].Steps.Add(18, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -781,7 +780,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[285098].Steps.Add(3, new QuestStep
+			Game.QuestManager.Quests[285098].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -796,9 +795,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			#endregion
 			#region The Witch
 			//x1_Adria
-			this.Game.QuestManager.Quests.Add(257120, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 263851, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(257120, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 263851, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -808,7 +807,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(67, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(67, new QuestStep
             {
 				Completed = false,
 				Saveable = false,
@@ -817,8 +816,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
                     //find entrance
                     //DisableArrow(this.Game.GetWorld(304235), target);
-                    var westmarchWorld = this.Game.GetWorld(WorldSno.x1_westmarch_hub);
-                    this.Game.AddOnLoadWorldAction(WorldSno.x1_westmarch_hub, () =>
+                    var westmarchWorld = Game.GetWorld(WorldSno.x1_westmarch_hub);
+                    Game.AddOnLoadWorldAction(WorldSno.x1_westmarch_hub, () =>
 					{
                         westmarchWorld.BroadcastGlobal(plr => new MessageSystem.Message.Definitions.Map.MapMarkerInfoMessage()
 						{
@@ -842,9 +841,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     ListenConversation(345820, new AdvanceWithNotify());
                     AddFollower(westmarchWorld, ActorSno._x1_npc_lorathnahr);
                     StartConversation(westmarchWorld, 305750);
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
 					{
-						var world = this.Game.GetWorld(WorldSno.x1_bog_adriaritual);
+						var world = Game.GetWorld(WorldSno.x1_bog_adriaritual);
 						world.BroadcastGlobal(plr => new MessageSystem.Message.Definitions.Map.MapMarkerInfoMessage()
 						{
 							HashedName = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("QuestMarker"),
@@ -866,7 +865,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(65, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(65, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -874,7 +873,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill mobs
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
 					{
 						script = new WavedInvasion(
 							new Vector3D { X = 101.62f, Y = 105.97f, Z = 0.1f }, 
@@ -882,15 +881,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 							new List<ActorSno> { ActorSno._x1_bogfamily_melee_bogmonsterevent, ActorSno._x1_bogfamily_ranged_bogmonsterevent },
 							ActorSno._x1_bogfamily_brute_bogmonsterevent_unique
 						);
-						script.Execute(this.Game.GetWorld(WorldSno.x1_bog_adriaritual));
+						script.Execute(Game.GetWorld(WorldSno.x1_bog_adriaritual));
 					});
 					ListenKill(ActorSno._x1_bogfamily_brute_bogmonsterevent_unique, 1, new Advance());
 					DestroyFollower(ActorSno._x1_npc_lorathnahr);
-					AddFollower(this.Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_npc_lorathnahr);
+					AddFollower(Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_npc_lorathnahr);
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(92, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(92, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -898,17 +897,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find Nephalem Guidestone
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
 					{
-						Open(this.Game.GetWorld(WorldSno.x1_bog_adriaritual), ActorSno._x1_catacombs_door_b);
+						Open(Game.GetWorld(WorldSno.x1_bog_adriaritual), ActorSno._x1_catacombs_door_b);
 					});
 					ListenProximity(ActorSno._x1_bog_catacombsportal_beaconloc_first, new AdvanceWithNotify());
 					DestroyFollower(ActorSno._x1_npc_lorathnahr);
-					AddFollower(this.Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_npc_lorathnahr);
+					AddFollower(Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_npc_lorathnahr);
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(106, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(106, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -919,11 +918,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					UnlockTeleport(4);
 					ListenInteract(ActorSno._x1_bog_catacombsportal_beaconloc_first, 1, new Advance());
 					DestroyFollower(ActorSno._x1_npc_lorathnahr);
-					AddFollower(this.Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_npc_lorathnahr);
+					AddFollower(Game.GetWorld(WorldSno.x1_westmarch_hub), ActorSno._x1_npc_lorathnahr);
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(73, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(73, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -931,7 +930,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find catacombs
-					var world = this.Game.GetWorld(WorldSno.x1_bog_adriaritual);
+					var world = Game.GetWorld(WorldSno.x1_bog_adriaritual);
 
 					Portal Dest = null;
 					foreach (Portal prtl in world.GetActorsBySNO(ActorSno._g_portal_square_blue))
@@ -959,7 +958,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(10, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(10, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -967,7 +966,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//search tomb
-					var world = this.Game.GetWorld(WorldSno.x1_bog_adriaritual);
+					var world = Game.GetWorld(WorldSno.x1_bog_adriaritual);
 
 					Portal Dest = null;
 					foreach (Portal prtl in world.GetActorsBySNO(ActorSno._g_portal_square_blue))
@@ -997,7 +996,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(110, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(110, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1010,7 +1009,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(14, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(14, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1023,7 +1022,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(78, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(78, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1031,8 +1030,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Lorath
-					this.Game.CurrentEncounter.activated = false;
-					var world = this.Game.GetWorld(WorldSno.x1_adria_boss_arena_02);
+					Game.CurrentEncounter.activated = false;
+					var world = Game.GetWorld(WorldSno.x1_adria_boss_arena_02);
 
 					foreach (var Myst in world.GetActorsBySNO(ActorSno._x1_npc_lorathnahr)) //284530
 					{
@@ -1044,18 +1043,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						(Myst as InteractiveNPC).ForceConversationSNO = 260191;
 					}
 
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_adria_boss_arena_02, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_adria_boss_arena_02, () =>
 					{
 						world.GetActorBySNO(ActorSno._x1_npc_lorathnahr).NotifyConversation(1);
 					});
-					this.Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.activated = false;
 
 					//ListenInteract(284530, 1, new LaunchConversation(260191));
 					ListenConversation(260191, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(115, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(115, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1063,7 +1062,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
-					foreach (var Myst in this.Game.GetWorld(WorldSno.x1_adria_boss_arena_02).GetActorsBySNO(ActorSno._x1_npc_lorathnahr)) //284530
+					foreach (var Myst in Game.GetWorld(WorldSno.x1_adria_boss_arena_02).GetActorsBySNO(ActorSno._x1_npc_lorathnahr)) //284530
 					{
 						(Myst as InteractiveNPC).Conversations.Clear();
 						(Myst as InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 1;
@@ -1074,7 +1073,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[257120].Steps.Add(3, new QuestStep
+			Game.QuestManager.Quests[257120].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1089,9 +1088,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			#endregion
 			#region The Pandemonium Gate
 			//x1_ToHeaven
-			this.Game.QuestManager.Quests.Add(263851, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 273790, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(263851, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 273790, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[263851].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[263851].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1101,7 +1100,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[263851].Steps.Add(15, new QuestStep
+			Game.QuestManager.Quests[263851].Steps.Add(15, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1113,7 +1112,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[263851].Steps.Add(17, new QuestStep
+			Game.QuestManager.Quests[263851].Steps.Add(17, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1125,7 +1124,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[263851].Steps.Add(19, new QuestStep
+			Game.QuestManager.Quests[263851].Steps.Add(19, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1133,16 +1132,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Imperius
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_heaven_pandemonium_portal, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_heaven_pandemonium_portal, () =>
 					{
-						this.Game.GetWorld(WorldSno.x1_heaven_pandemonium_portal).GetActorBySNO(ActorSno._x1_imperius_heaventopandgate).NotifyConversation(1);
+						Game.GetWorld(WorldSno.x1_heaven_pandemonium_portal).GetActorBySNO(ActorSno._x1_imperius_heaventopandgate).NotifyConversation(1);
 					});
 					ListenInteract(ActorSno._x1_imperius_heaventopandgate, 1, new LaunchConversation(361192));
 					ListenConversation(361192, new Advance());
 				})
 			});
 
-			this.Game.QuestManager.Quests[263851].Steps.Add(11, new QuestStep
+			Game.QuestManager.Quests[263851].Steps.Add(11, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1154,7 +1153,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[263851].Steps.Add(3, new QuestStep
+			Game.QuestManager.Quests[263851].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1168,9 +1167,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			#endregion
 			#region The Battlefields of Eternity
 			//X1_PandExt_ExteriorFull
-			this.Game.QuestManager.Quests.Add(273790, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 269552, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(273790, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 269552, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1180,7 +1179,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(35, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(35, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1188,18 +1187,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//cork for Imperius
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_gateoverlook, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_gateoverlook, () =>
 					{
-						if (this.Game.CurrentQuest == 273790 && this.Game.CurrentStep == 35)
+						if (Game.CurrentQuest == 273790 && Game.CurrentStep == 35)
 						{
 							script = new Advance();
-							script.Execute(this.Game.GetWorld(WorldSno.x1_pand_ext_gateoverlook));
+							script.Execute(Game.GetWorld(WorldSno.x1_pand_ext_gateoverlook));
 						}
 					});
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(41, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(41, new QuestStep
             {
 				Completed = false,
 				Saveable = true,
@@ -1209,16 +1208,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //reach Imperius
                     ListenInteract(ActorSno._x1_imperius, 1, new LaunchConversation(361245));
                     ListenConversation(361245, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_gateoverlook, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_gateoverlook, () =>
 					{
-                        var world = this.Game.GetWorld(WorldSno.x1_pand_ext_gateoverlook);
+                        var world = Game.GetWorld(WorldSno.x1_pand_ext_gateoverlook);
                         if (world.GetActorBySNO(ActorSno._x1_imperius, true) != null)
                             world.GetActorBySNO(ActorSno._x1_imperius, true).NotifyConversation(1);
 					});
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(1, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1230,7 +1229,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(51, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(51, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1242,7 +1241,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(11, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(11, new QuestStep
             {
 				Completed = false,
 				Saveable = true,
@@ -1253,16 +1252,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     ListenInteract(ActorSno._x1_imperius, 1, new LaunchConversation(361252));
                     ListenConversation(361252, new LaunchConversation(361275));
                     ListenConversation(361275, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_gateoverlook, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_gateoverlook, () =>
 					{
-                        var world = this.Game.GetWorld(WorldSno.x1_pand_ext_gateoverlook);
+                        var world = Game.GetWorld(WorldSno.x1_pand_ext_gateoverlook);
                         if (world.GetActorBySNO(ActorSno._x1_imperius, true) != null)
                             world.GetActorBySNO(ActorSno._x1_imperius, true).NotifyConversation(1);
 					});
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(43, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(43, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1275,7 +1274,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(45, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(45, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1287,7 +1286,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(30, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(30, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1299,7 +1298,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(33, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(33, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1309,14 +1308,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//talk to Tyrael
 					ListenInteract(ActorSno._x1_tyrael_pandext, 1, new LaunchConversation(346540));
 					ListenConversation(346540, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_batteringram_entrance_a, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_batteringram_entrance_a, () =>
 					{
-						this.Game.GetWorld(WorldSno.x1_pand_ext_batteringram_entrance_a).GetActorBySNO(ActorSno._x1_tyrael_pandext).NotifyConversation(1);
+						Game.GetWorld(WorldSno.x1_pand_ext_batteringram_entrance_a).GetActorBySNO(ActorSno._x1_tyrael_pandext).NotifyConversation(1);
 					});
 				})
 			});
 
-			this.Game.QuestManager.Quests[273790].Steps.Add(15, new QuestStep
+			Game.QuestManager.Quests[273790].Steps.Add(15, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1330,9 +1329,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			#endregion
 			#region Breaching the Fortress
 			//x1_BatteringRamFight
-			this.Game.QuestManager.Quests.Add(269552, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 273408, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(269552, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = 273408, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[269552].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[269552].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1342,7 +1341,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[269552].Steps.Add(32, new QuestStep
+			Game.QuestManager.Quests[269552].Steps.Add(32, new QuestStep
             {
 				Completed = false,
 				Saveable = true,
@@ -1352,7 +1351,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //Board Ram
                     UnlockTeleport(9);
                     ListenTeleport(295228, new Advance());
-					var RamWorld = this.Game.GetWorld(WorldSno.x1_pand_batteringram);
+					var RamWorld = Game.GetWorld(WorldSno.x1_pand_batteringram);
                     var backgroundActor = RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background_static);
                     backgroundActor.Hidden = true;
                     backgroundActor.SetVisible(false);
@@ -1362,11 +1361,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     var knockbackActor = RamWorld.GetActorBySNO(ActorSno._x1_pand_ext_ram_knockback);
                     knockbackActor.Hidden = true;
                     knockbackActor.SetVisible(false);
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
                         var portal = RamWorld.GetActorBySNO(ActorSno._g_portal_archtall_blue);
                         portal.SetVisible(false);
-						foreach (var plr in this.Game.Players.Values)
+						foreach (var plr in Game.Players.Values)
 						{
                             knockbackActor.Unreveal(plr);
                             activationActor.Unreveal(plr);
@@ -1382,7 +1381,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[269552].Steps.Add(25, new QuestStep
+			Game.QuestManager.Quests[269552].Steps.Add(25, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1391,14 +1390,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//breach phase
 					ListenKill(ActorSno._x1_westmarchranged_b, 2, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
-						SetActorVisible(this.Game.GetWorld(WorldSno.x1_pand_batteringram), ActorSno._x1_westmarchbrute_batteringramboss, false);
+						SetActorVisible(Game.GetWorld(WorldSno.x1_pand_batteringram), ActorSno._x1_westmarchbrute_batteringramboss, false);
 					});
 				})
 			});
 
-			this.Game.QuestManager.Quests[269552].Steps.Add(27, new QuestStep
+			Game.QuestManager.Quests[269552].Steps.Add(27, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1407,15 +1406,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//Fight Ram Boss
 					ListenKill(ActorSno._x1_westmarchbrute_batteringramboss, 1, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
-						if (this.Game.CurrentQuest == 269552)
-							SetActorVisible(this.Game.GetWorld(WorldSno.x1_pand_batteringram), ActorSno._x1_westmarchbrute_batteringramboss, true);
+						if (Game.CurrentQuest == 269552)
+							SetActorVisible(Game.GetWorld(WorldSno.x1_pand_batteringram), ActorSno._x1_westmarchbrute_batteringramboss, true);
 					});
 				})
 			});
 
-			this.Game.QuestManager.Quests[269552].Steps.Add(29, new QuestStep
+			Game.QuestManager.Quests[269552].Steps.Add(29, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1424,14 +1423,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//Finish the Gate
 					
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
-						if (this.Game.CurrentQuest == 269552)
+						if (Game.CurrentQuest == 269552)
 						{
 							//Должен быть Удар 1!
 							//{ 70176 = 334746} //Удар 1
 							script = new FirstWaveRam();
-							script.Execute(this.Game.GetWorld(WorldSno.x1_pand_batteringram));
+							script.Execute(Game.GetWorld(WorldSno.x1_pand_batteringram));
 						}
 					});
 					//После волны - Удар 2!
@@ -1446,7 +1445,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[269552].Steps.Add(22, new QuestStep
+			Game.QuestManager.Quests[269552].Steps.Add(22, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1454,14 +1453,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//enter Breach
-					var RamWorld = this.Game.GetWorld(WorldSno.x1_pand_batteringram);
+					var RamWorld = Game.GetWorld(WorldSno.x1_pand_batteringram);
 
-					this.Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.activated = false;
 					ListenTeleport(271234, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
 						RamWorld.GetActorBySNO(ActorSno._g_portal_archtall_blue).SetVisible(true);
-						foreach (var plr in this.Game.Players.Values)
+						foreach (var plr in Game.Players.Values)
 						{
 							RamWorld.GetActorBySNO(ActorSno._g_portal_archtall_blue).Reveal(plr);
 						}
@@ -1474,7 +1473,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[269552].Steps.Add(8, new QuestStep
+			Game.QuestManager.Quests[269552].Steps.Add(8, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1489,9 +1488,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			#endregion
 			#region Angel of Death
 			//x1_Fortress_KillMalthael
-			this.Game.QuestManager.Quests.Add(273408, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.Quests.Add(273408, new Quest { RewardXp = 7000, RewardGold = 620, Completed = false, Saveable = true, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(-1, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1501,7 +1500,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(30, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(30, new QuestStep
             {
 				Completed = false,
 				Saveable = true,
@@ -1509,14 +1508,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//FortressIntroTyrael
-					var world = this.Game.GetWorld(WorldSno.x1_fortress_level_01);
+					var world = Game.GetWorld(WorldSno.x1_fortress_level_01);
 
 					AddQuestConversation(world.GetActorBySNO(ActorSno._tyrael), 302646);
                     //ListenProximity(6353, new LaunchConversation(302646));
                     ListenConversation(302646, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_fortress_level_01, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_fortress_level_01, () =>
 					{
-						if (this.Game.CurrentQuest == 273408 && this.Game.CurrentStep == 30)
+						if (Game.CurrentQuest == 273408 && Game.CurrentStep == 30)
                         {
                             world.GetActorBySNO(ActorSno._tyrael).NotifyConversation(1);
                         }
@@ -1524,7 +1523,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(12, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(12, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1532,7 +1531,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Spirit Well 1
-					RemoveConversations(this.Game.GetWorld(WorldSno.x1_fortress_level_01).GetActorBySNO(ActorSno._tyrael));
+					RemoveConversations(Game.GetWorld(WorldSno.x1_fortress_level_01).GetActorBySNO(ActorSno._tyrael));
 					UnlockTeleport(10);
 					ListenInteract(ActorSno._x1_fortress_spiritbarbarian, 1, new LaunchConversation(335174));
 					ListenInteract(ActorSno._x1_fortress_spiritcrusadermmaster, 1, new LaunchConversation(336672));
@@ -1563,7 +1562,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(36, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(36, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1575,7 +1574,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(65, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(65, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1584,14 +1583,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					//Kill Death Maiden
 					ListenKill(ActorSno._x1_deathmaiden_pand_a_fortressunique, 1, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_fortress_level_02, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_fortress_level_02, () =>
 					{
-						SetActorOperable(this.Game.GetWorld(WorldSno.x1_fortress_level_02), ActorSno._x1_fortress_soul_grinder_a, false);
+						SetActorOperable(Game.GetWorld(WorldSno.x1_fortress_level_02), ActorSno._x1_fortress_soul_grinder_a, false);
 					});
 				})
 			});
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(61, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(61, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1601,14 +1600,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//Destroy Soul Prison
 					UnlockTeleport(11);
 					ListenKill(ActorSno._x1_fortress_soul_grinder_a, 1, new Advance());
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_fortress_level_02, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_fortress_level_02, () =>
 					{
-						SetActorOperable(this.Game.GetWorld(WorldSno.x1_fortress_level_02), ActorSno._x1_fortress_soul_grinder_a, true);
+						SetActorOperable(Game.GetWorld(WorldSno.x1_fortress_level_02), ActorSno._x1_fortress_soul_grinder_a, true);
 					});
 				})
 			});
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(3, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1620,7 +1619,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(8, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(8, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1632,7 +1631,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(21, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(21, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,
@@ -1640,12 +1639,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Success
-					this.Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.activated = false;
 					ListenProximity(ActorSno._tyrael, new LaunchConversation(351334));
 					ListenConversation(351334, new Advance());
-					if (this.Game.IsHardcore)
+					if (Game.IsHardcore)
 					{
-						foreach (var plr in this.Game.Players.Values)
+						foreach (var plr in Game.Players.Values)
 							if (!plr.Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.HardcoreAdventureModeUnlocked))
 							{
 								plr.Toon.GameAccount.Flags = plr.Toon.GameAccount.Flags | GameAccount.GameAccountFlags.HardcoreAdventureModeUnlocked;
@@ -1654,21 +1653,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					}
 					else
 					{
-						foreach (var plr in this.Game.Players.Values)
+						foreach (var plr in Game.Players.Values)
 							if (!plr.Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.AdventureModeUnlocked))
 							{
 								plr.Toon.GameAccount.Flags = plr.Toon.GameAccount.Flags | GameAccount.GameAccountFlags.AdventureModeUnlocked;
 								//plr.InGameClient.SendMessage(new AdventureModeUnlockedMessage());
 							}
 					}
-					this.Game.AddOnLoadWorldAction(WorldSno.x1_malthael_boss_arena, () =>
+					Game.AddOnLoadWorldAction(WorldSno.x1_malthael_boss_arena, () =>
 					{
-						this.Game.GetWorld(WorldSno.x1_malthael_boss_arena).GetActorBySNO(ActorSno._tyrael).NotifyConversation(1);
+						Game.GetWorld(WorldSno.x1_malthael_boss_arena).GetActorBySNO(ActorSno._tyrael).NotifyConversation(1);
 					});
 				})
 			});
 
-			this.Game.QuestManager.Quests[273408].Steps.Add(7, new QuestStep
+			Game.QuestManager.Quests[273408].Steps.Add(7, new QuestStep
 			{
 				Completed = false,
 				Saveable = true,

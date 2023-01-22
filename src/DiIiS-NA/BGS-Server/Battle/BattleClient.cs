@@ -1,4 +1,5 @@
-﻿//Blizzless Project 2022
+﻿#define LOG_KEEP_ALIVE
+
 //Blizzless Project 2022 
 using bgs.protocol;
 //Blizzless Project 2022 
@@ -40,7 +41,6 @@ using System.Net.Security;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
 
-
 namespace DiIiS_NA.LoginServer.Battle
 {
     public class BattleClient : SimpleChannelInboundHandler<BNetPacket>, IRpcChannel
@@ -50,24 +50,21 @@ namespace DiIiS_NA.LoginServer.Battle
 		public Dictionary<uint, uint> Services { get; private set; }
 		public ISocketChannel SocketConnection { get; private set; }
 		public IChannelHandlerContext Connect { get; private set; }
-		public bool AuthentificationStatus = false;
+		public bool AuthenticationStatus = false;
 		public ClientLocale ClientLanguage = ClientLocale.enUS;
-		public IRpcController listenercontroller;
+		public IRpcController ListenerController;
 		private uint _tokenCounter = 0;
 		public static bgs.protocol.NO_RESPONSE NO_RESPONSE = bgs.protocol.NO_RESPONSE.CreateBuilder().Build();
-		private Dictionary<int, RPCCallBack> pendingResponses = new Dictionary<int, RPCCallBack>();
+		private readonly Dictionary<int, RPCCallBack> _pendingResponses = new Dictionary<int, RPCCallBack>();
 		public bgs.protocol.v2.Attribute AttributeOfServer { get; set; }
 
 		public Account Account { get; set; }
-		public bool MMJoined = false;
 		public const byte ServiceReply = 0xFE;
 		public SslStream ssl = null;
 		private static int REQUEST_SERVICE_ID = 0;
 		private static int RESPONSE_SERVICE_ID = 254;
-		public ulong LastPartitionIdHigh = 0; //HACK: fix it later
-		public ulong LastPartitionIdLow = 0;
 		//public object clientLock = new object();
-		public object serviceLock = new object();
+		public object _serviceLock = new object();
 		public object messageLock = new object();
 		private ulong _listenerId; // last targeted rpc object.
 		public bool MOTDSent { get; private set; }
@@ -160,20 +157,20 @@ namespace DiIiS_NA.LoginServer.Battle
 			Services = new Dictionary<uint, uint>();
 			MappedObjects = new ConcurrentDictionary<ulong, ulong>();
 			this.MOTDSent = false;
-
 			if (SocketConnection.Active)
-				Logger.Trace("Клиент - {0} - успешно зашифровал соединение ", socketChannel.RemoteAddress);
+				Logger.Trace("Client - {0} - successfully encrypted the connection", socketChannel.RemoteAddress);
 		}
-        protected override void ChannelRead0(IChannelHandlerContext ctx, BNetPacket msg)
-        {
+
+		protected override void ChannelRead0(IChannelHandlerContext ctx, BNetPacket msg)
+		{
 			Connect = ctx;
 			Header header = msg.GetHeader();
 			byte[] payload = (byte[])msg.GetPayload();
 
 			if (msg.GetHeader().ServiceId == RESPONSE_SERVICE_ID)
 			{
-				if (pendingResponses.Count == 0) return;
-				RPCCallBack done = pendingResponses[(int)header.Token];
+				if (_pendingResponses.Count == 0) return;
+				RPCCallBack done = _pendingResponses[(int)header.Token];
 				if (done != null)
 				{
 					var service = Service.GetByID(header.ServiceId);
@@ -181,115 +178,131 @@ namespace DiIiS_NA.LoginServer.Battle
 					{
 						IMessage message = DescriptorProto.ParseFrom(payload);
 						done.Action(message);
-						pendingResponses.Remove((int)header.Token);
+						_pendingResponses.Remove((int)header.Token);
 					}
 					else
-						Logger.Debug(String.Format("Incoming Response: Unable to identify service (id: %d, hash: 0x%04X)", header.ServiceId, header.ServiceHash));
+						Logger.Debug(
+							$"Incoming Response: Unable to identify service (id: {header.ServiceId}, hash: 0x{header.ServiceHash:04X})");
 				}
 			}
 			else
 			{
- 				var service = Service.GetByID(Service.GetByHash(header.ServiceHash));
-				if(header.ServiceHash != 2119327385)
-				if (service != null)
-				{
-					#region Все хэши сервисов
-					/*
-						AccountService - 1658456209
-						AccountNotify - 1423956503
-						AuthenticationClient - 1898188341
-						AuthenticationServer - 233634817
-						ChallengeNotify - 3151632159
-						ChannelService - 3073563442
-						ChannelSubscriber - 3213656212
-						ChannelVoiceService - 2559626750
-						ClubMembershipListener - 724851067
-						ClubMembershipService - 2495170438 - Нужен
-						ConnectionService - 1698982289
-						DiagService - 3111080599
-						FriendsService - 2749215165
-						FriendsNotify - 1864735251
-						PresenceListener - 2299181151
-						PresenceService - 4194801407
-						ReportService - 2091868617
-						Resources - 3971904954
-						SessionListener - 2145610546
-						SessionService - 510168069
-						SocialNetworkService - 1910276758
-						SocialNetworkListener - 3506428651
-						UserManagerService - 1041835658
-						UserManagerNotify - 3162975266
-						WhisperListener - 1072006302
-						WhisperService - 3240634617
-						ChannelMembershipService - 2119327385
-						ChannelMembershipListener - 25167806
-						ChannelService_v2 - 2039298513
-						ChannelListener_v2 - 451225222
-						ReportService_v2 - 977410299
-						VoiceService_v2 - 4117798472 
-
-						AccountService - 0x62DA0891
-						AccountNotify - 0x54DFDA17
-						AuthenticationClient - 0x71240E35
-						AuthenticationServer - 0x0DECFC01
-						ChallengeNotify - 0xBBDA171F
-						ChannelService - 0xB732DB32
-						ChannelSubscriber - 0xBF8C8094
-						ChannelVoiceService - 0x9890CDFE
-						ClubMembershipListener - 0x2B34597B
-						ClubMembershipService - 0x94B94786
-						ConnectionService - 0x65446991
-						DiagService - 0xB96F5297
-						FriendsService - 0xA3DDB1BD
-						FriendsNotify - 0x6F259A13
-						PresenceListener - 0x890AB85F
-						PresenceService - 0xFA0796FF
-						ReportService - 0x7CAF61C9
-						Resources - ECBE75BA
-						SessionListener - 0x7FE36B32
-						SessionService - 0x1E688C05
-						SocialNetworkService - 0x71DC8296
-						SocialNetworkListener - 0xD0FFDAEB
-						UserManagerService - 0x3E19268A
-						UserManagerNotify - 0xBC872C22
-						WhisperListener - 0x3FE5849E
-						WhisperService - 0xC12828F9
-						ChannelMembershipService - 0x7E525E99
-						ChannelMembershipListener - 0x018007BE
-						ChannelService_v2 - 0x798D39D1
-						ChannelListener_v2 - 0x1AE52686
-						ReportService_v2 - 0x3A4218FB
-						VoiceService_v2 - 0xF5709E48
-					*/
-					#endregion
-					MethodDescriptor method = service.DescriptorForType.Methods.Single(m => GetMethodId(m) == header.MethodId);
-					IMessage proto = service.GetRequestPrototype(method);
-					IBuilder builder = proto.WeakCreateBuilderForType();
-					IMessage message = builder.WeakMergeFrom(ByteString.CopyFrom(payload)).WeakBuild();
-					try
+				var service = Service.GetByID(Service.GetByHash(header.ServiceHash));
+				if (header.ServiceHash != 2119327385)
+					if (service != null)
 					{
-						lock (service)
+						#region All service hashes
+
+						/*
+							AccountService - 1658456209
+							AccountNotify - 1423956503
+							AuthenticationClient - 1898188341
+							AuthenticationServer - 233634817
+							ChallengeNotify - 3151632159
+							ChannelService - 3073563442
+							ChannelSubscriber - 3213656212
+							ChannelVoiceService - 2559626750
+							ClubMembershipListener - 724851067
+							ClubMembershipService - 2495170438 - Нужен
+							ConnectionService - 1698982289
+							DiagService - 3111080599
+							FriendsService - 2749215165
+							FriendsNotify - 1864735251
+							PresenceListener - 2299181151
+							PresenceService - 4194801407
+							ReportService - 2091868617
+							Resources - 3971904954
+							SessionListener - 2145610546
+							SessionService - 510168069
+							SocialNetworkService - 1910276758
+							SocialNetworkListener - 3506428651
+							UserManagerService - 1041835658
+							UserManagerNotify - 3162975266
+							WhisperListener - 1072006302
+							WhisperService - 3240634617
+							ChannelMembershipService - 2119327385
+							ChannelMembershipListener - 25167806
+							ChannelService_v2 - 2039298513
+							ChannelListener_v2 - 451225222
+							ReportService_v2 - 977410299
+							VoiceService_v2 - 4117798472 
+	
+							AccountService - 0x62DA0891
+							AccountNotify - 0x54DFDA17
+							AuthenticationClient - 0x71240E35
+							AuthenticationServer - 0x0DECFC01
+							ChallengeNotify - 0xBBDA171F
+							ChannelService - 0xB732DB32
+							ChannelSubscriber - 0xBF8C8094
+							ChannelVoiceService - 0x9890CDFE
+							ClubMembershipListener - 0x2B34597B
+							ClubMembershipService - 0x94B94786
+							ConnectionService - 0x65446991
+							DiagService - 0xB96F5297
+							FriendsService - 0xA3DDB1BD
+							FriendsNotify - 0x6F259A13
+							PresenceListener - 0x890AB85F
+							PresenceService - 0xFA0796FF
+							ReportService - 0x7CAF61C9
+							Resources - ECBE75BA
+							SessionListener - 0x7FE36B32
+							SessionService - 0x1E688C05
+							SocialNetworkService - 0x71DC8296
+							SocialNetworkListener - 0xD0FFDAEB
+							UserManagerService - 0x3E19268A
+							UserManagerNotify - 0xBC872C22
+							WhisperListener - 0x3FE5849E
+							WhisperService - 0xC12828F9
+							ChannelMembershipService - 0x7E525E99
+							ChannelMembershipListener - 0x018007BE
+							ChannelService_v2 - 0x798D39D1
+							ChannelListener_v2 - 0x1AE52686
+							ReportService_v2 - 0x3A4218FB
+							VoiceService_v2 - 0xF5709E48
+						*/
+
+						#endregion
+
+						MethodDescriptor method =
+							service.DescriptorForType.Methods.Single(m => GetMethodId(m) == header.MethodId);
+						IMessage proto = service.GetRequestPrototype(method);
+						IBuilder builder = proto.WeakCreateBuilderForType();
+						IMessage message = builder.WeakMergeFrom(ByteString.CopyFrom(payload)).WeakBuild();
+						try
 						{
-							var controller = new HandlerController();
-							controller.Client = this;
-							controller.LastCallHeader = header;
-							controller.Status = 0;
-							controller.ListenerId = 0;
+							lock (service)
+							{
+								HandlerController controller = new()
+								{
+									Client = this,
+									LastCallHeader = header,
+									Status = 0,
+									ListenerId = 0
+								};
 #if DEBUG
-							Logger.Warn("Вызов: {0}, Хэш сервиса: {1}, Метод: {2}, ID: {3}", service.GetType().Name, header.ServiceHash, method.Name, header.MethodId);
+								#if !LOG_KEEP_ALIVE
+								if (method.Name != "KeepAlive")
+								#endif
+								{
+									Logger.Warn("Call: {0}, Service hash: {1}, Method: {2}, ID: {3}",
+										service.GetType().Name, header.ServiceHash, method.Name, header.MethodId);
+								}
 #endif
 
-							service.CallMethod(method, controller, message, (IMessage m) => { sendResponse(ctx, (int)header.Token, m, controller.Status); });
+								service.CallMethod(method, controller, message,
+									(IMessage m) => { sendResponse(ctx, (int)header.Token, m, controller.Status); });
+							}
+						}
+						catch (NotImplementedException)
+						{
+							Logger.Warn("Unimplemented service method: {0}.{1}", service.GetType().Name, method.Name);
 						}
 					}
-					catch (NotImplementedException)
+					else
 					{
-						Logger.Warn("Неимплементированный метод сервиса: {0}.{1}", service.GetType().Name, method.Name);
+						Logger.Warn(
+							$"Client is calling unconnected service (id: {header.ServiceId}, hash: {header.ServiceHash}  Method id: {header.MethodId})");
 					}
-				}
-				else
-					Logger.Warn(String.Format("Клиент обращается к неподключенному сервису(id: {0}, hash: {1}  Method id: {2})", header.ServiceId, header.ServiceHash, header.MethodId));
-
 			}
 		}
 
@@ -434,7 +447,8 @@ namespace DiIiS_NA.LoginServer.Battle
 
 			if (!this.Services.ContainsKey(serviceHash))
 			{
-				Logger.Warn("Не найден сервис привязанный к клиенту {0} [0x{1}].", serviceName, serviceHash.ToString("X8"));
+				Logger.Warn("Service not found for client {0} [0x{1}].", serviceName, serviceHash.ToString("X8"));
+				// in english: "Service not found for client {0} [0x{1}]."
 				return;
 			}
 

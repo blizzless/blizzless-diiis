@@ -43,7 +43,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 			
 			foreach (var plr in world.Players.Values)
 			{
-				plr.Conversations.StartConversation(this.ConversationId);
+				plr.Conversations.StartConversation(ConversationId);
 				plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
 				plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)Imperius.DynamicID(plr), Duration = 1f, Snap = false });
 				

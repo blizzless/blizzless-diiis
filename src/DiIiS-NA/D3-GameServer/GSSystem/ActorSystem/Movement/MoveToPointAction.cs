@@ -16,42 +16,42 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 		public MoveToPointAction(Actor owner, Vector3D heading)
 			: base(owner)
 		{
-			this.Heading = heading;
+			Heading = heading;
 		}
 
 		public override void Start(int tickCounter)
 		{
-			var distance = MovementHelpers.GetDistance(this.Owner.Position, this.Heading);
-			var facingAngle = MovementHelpers.GetFacingAngle(this.Owner, this.Heading);
-			this.Owner.Move(this.Heading, facingAngle);
+			var distance = MovementHelpers.GetDistance(Owner.Position, Heading);
+			var facingAngle = MovementHelpers.GetFacingAngle(Owner, Heading);
+			Owner.Move(Heading, facingAngle);
 
 			//Logger.Trace("Heading: " + this.Heading);
 			//Logger.Trace("Start point: " + this.Owner.Position);
 
-			this.Timer = new SteppedRelativeTickTimer(this.Owner.World.Game, 6, (int)(distance / this.Owner.WalkSpeed),
+			Timer = new SteppedRelativeTickTimer(Owner.World.Game, 6, (int)(distance / Owner.WalkSpeed),
 			(tick) =>
 			{
-				this.Owner.Position = MovementHelpers.GetMovementPosition(this.Owner.Position, this.Owner.WalkSpeed, facingAngle, 12);
+				Owner.Position = MovementHelpers.GetMovementPosition(Owner.Position, Owner.WalkSpeed, facingAngle, 12);
 				//Logger.Trace("Step: " + this.Owner.Position);
 			},
 			(tick) =>
 			{
-				this.Owner.Position = Heading;
+				Owner.Position = Heading;
 				//Logger.Trace("Completed: " + this.Owner.Position);
-				this.Done = true;
+				Done = true;
 			});
 
-			this.Started = true;
+			Started = true;
 		}
 
 		public override void Update(int tickCounter)
 		{
-			this.Timer.Update(tickCounter);
+			Timer.Update(tickCounter);
 		}
 
 		public override void Cancel(int tickCounter)
 		{
-			this.Done = true;
+			Done = true;
 		}
 	}
 }

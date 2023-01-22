@@ -33,13 +33,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			: base(world, sno, tags)
 		{
 			bool Activated = false;
-			this.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-			this.Attributes[GameAttribute.Untargetable] = !Activated;
-			this.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-			this.Attributes[GameAttribute.Operatable] = Activated;
-			this.Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-			this.Attributes[GameAttribute.Disabled] = !Activated;
-			this.Attributes[GameAttribute.Immunity] = !Activated;
+			Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
+			Attributes[GameAttribute.Untargetable] = !Activated;
+			Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
+			Attributes[GameAttribute.Operatable] = Activated;
+			Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
+			Attributes[GameAttribute.Disabled] = !Activated;
+			Attributes[GameAttribute.Immunity] = !Activated;
 		}
 
 
@@ -63,7 +63,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		{
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimReason = 5,
 				UnitAniimStartTime = 0,
 				tAnim = new PlayAnimationMessageSpec[]
@@ -82,7 +82,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 			World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimationSNO = AnimationSetKeys.Open.ID
 			}, this);
 		}
@@ -91,7 +91,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		{
 			World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimationSNO = AnimationSetKeys.GizmoState1.ID
 			}, this);
 		}

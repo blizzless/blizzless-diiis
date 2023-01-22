@@ -49,75 +49,75 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		public HirelingBrain(Actor body, Player master)
 			: base(body)
 		{
-			this.Owner = master;
+			Owner = master;
 
-			this.PresetPowers = new List<int>();
+			PresetPowers = new List<int>();
 
 			if (body is Templar && body is MalthaelHireling)
-				this.PresetPowers.Add(30592); //melee instant
+				PresetPowers.Add(30592); //melee instant
 			if (body is Scoundrel)
-				this.PresetPowers.Add(99902); //Scoundrel_ranged_Projectile
+				PresetPowers.Add(99902); //Scoundrel_ranged_Projectile
 			if (body is Enchantress)
-				this.PresetPowers.Add(30273); //HirelingMage_MagicMissile
+				PresetPowers.Add(30273); //HirelingMage_MagicMissile
 			if (body is Leah)
-				this.PresetPowers.Add(99902); //Scoundrel_ranged_Projectile
+				PresetPowers.Add(99902); //Scoundrel_ranged_Projectile
 
 		}
 
 		public override void Think(int tickCounter)
 		{
-			if (this.Owner == null) return;
+			if (Owner == null) return;
 
-			if (this.Body.World.Game.Paused) return;
+			if (Body.World.Game.Paused) return;
 
 			// check if in disabled state, if so cancel any action then do nothing
-			if (this.Body.Attributes[GameAttribute.Frozen] ||
-				this.Body.Attributes[GameAttribute.Stunned] ||
-				this.Body.Attributes[GameAttribute.Blind] ||
-				this.Body.Attributes[GameAttribute.Webbed] ||
-				this.Body.Disable ||
-				this.Body.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.KnockbackBuff>(this.Body) != null)
+			if (Body.Attributes[GameAttribute.Frozen] ||
+				Body.Attributes[GameAttribute.Stunned] ||
+				Body.Attributes[GameAttribute.Blind] ||
+				Body.Attributes[GameAttribute.Webbed] ||
+				Body.Disable ||
+				Body.World.BuffManager.GetFirstBuff<KnockbackBuff>(Body) != null)
 			{
-				if (this.CurrentAction != null)
+				if (CurrentAction != null)
 				{
-					this.CurrentAction.Cancel(tickCounter);
-					this.CurrentAction = null;
+					CurrentAction.Cancel(tickCounter);
+					CurrentAction = null;
 				}
 				_powerDelay = null;
 
 				return;
 			}
 
-			if (this.Body.Attributes[GameAttribute.Feared])
+			if (Body.Attributes[GameAttribute.Feared])
 			{
-				if (!this.Feared || this.CurrentAction == null)
+				if (!Feared || CurrentAction == null)
 				{
-					if (this.CurrentAction != null)
+					if (CurrentAction != null)
 					{
-						this.CurrentAction.Cancel(tickCounter);
-						this.CurrentAction = null;
+						CurrentAction.Cancel(tickCounter);
+						CurrentAction = null;
 					}
-					this.Feared = true;
-					this.CurrentAction = new MoveToPointWithPathfindAction(
-						this.Body,
-						PowerContext.RandomDirection(this.Body.Position, 3f, 8f)
+					Feared = true;
+					CurrentAction = new MoveToPointWithPathfindAction(
+						Body,
+						PowerContext.RandomDirection(Body.Position, 3f, 8f)
 					);
 					return;
 				}
 				else return;
 			}
 			else
-				this.Feared = false;
+				Feared = false;
 
 			// select and start executing a power if no active action
-			if (this.CurrentAction == null)
+			if (CurrentAction == null)
 			{
 				// do a little delay so groups of monsters don't all execute at once
 				if (_powerDelay == null)
-					_powerDelay = new SecondsTickTimer(this.Body.World.Game, 1f);
+					_powerDelay = new SecondsTickTimer(Body.World.Game, 1f);
 
-				var targets = this.Owner.GetObjectsInRange<Monster>(40f).Where(p => !p.Dead && p.Visible).OrderBy(m => PowerMath.Distance2D(m.Position, this.Body.Position)).ToList();
-				if (targets.Count != 0 && PowerMath.Distance2D(this.Body.Position, this.Owner.Position) < 80f)
+				var targets = Owner.GetObjectsInRange<Monster>(40f).Where(p => !p.Dead && p.Visible).OrderBy(m => PowerMath.Distance2D(m.Position, Body.Position)).ToList();
+				if (targets.Count != 0 && PowerMath.Distance2D(Body.Position, Owner.Position) < 80f)
 				{
 					int powerToUse = PickPowerToUse();
 					if (powerToUse > 0)
@@ -129,23 +129,23 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							_target = targets.First();
 
 						PowerScript power = PowerLoader.CreateImplementationForPowerSNO(powerToUse);
-						power.User = this.Body;
-						float attackRange = this.Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : power.EvalTag(PowerKeys.AttackRadius)) : 35f);
-						float targetDistance = PowerMath.Distance2D(_target.Position, this.Body.Position);
+						power.User = Body;
+						float attackRange = Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : power.EvalTag(PowerKeys.AttackRadius)) : 35f);
+						float targetDistance = PowerMath.Distance2D(_target.Position, Body.Position);
 						if (targetDistance < attackRange + _target.ActorData.Cylinder.Ax2)
 						{
 							if (_powerDelay.TimedOut)
 							{
 								_powerDelay = null;
-								this.Body.TranslateFacing(_target.Position, false);
+								Body.TranslateFacing(_target.Position, false);
 
-								this.CurrentAction = new PowerAction(this.Body, powerToUse, _target);
+								CurrentAction = new PowerAction(Body, powerToUse, _target);
 							}
 						}
 						else
 						{
-							this.CurrentAction = new MoveToTargetWithPathfindAction(
-								this.Body,
+							CurrentAction = new MoveToTargetWithPathfindAction(
+								Body,
 								_target,
 								attackRange + _target.ActorData.Cylinder.Ax2
 							);
@@ -154,15 +154,15 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				}
 				else
 				{
-					var distToMaster = PowerMath.Distance2D(this.Body.Position, this.Owner.Position);
+					var distToMaster = PowerMath.Distance2D(Body.Position, Owner.Position);
 					if ((distToMaster > 8f) || (distToMaster < 3f))
 					{
 						var Rand = FastRandom.Instance;
-						var position = this.Owner.Position;
+						var position = Owner.Position;
 						float angle = (float)(Rand.NextDouble() * Math.PI * 2);
 						float radius = 3f + (float)Rand.NextDouble() * (8f - 3f);
 						var near = new Vector3D(position.X + (float)Math.Cos(angle) * radius, position.Y + (float)Math.Sin(angle) * radius, position.Z);
-						this.CurrentAction = new MoveToPointAction(this.Body, near);
+						CurrentAction = new MoveToPointAction(Body, near);
 					}
 				}
 			}
@@ -171,11 +171,11 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		protected virtual int PickPowerToUse()
 		{
 											  // randomly used an implemented power
-			if (this.PresetPowers.Count > 0)
+			if (PresetPowers.Count > 0)
 			{
-				int powerIndex = RandomHelper.Next(this.PresetPowers.Count);
-				if (PowerSystem.PowerLoader.HasImplementationForPowerSNO(this.PresetPowers[powerIndex]))
-					return this.PresetPowers[powerIndex];
+				int powerIndex = RandomHelper.Next(PresetPowers.Count);
+				if (PowerLoader.HasImplementationForPowerSNO(PresetPowers[powerIndex]))
+					return PresetPowers[powerIndex];
 			}
 
 			// no usable power
@@ -184,7 +184,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		public void AddPresetPower(int powerSNO)
 		{
-			this.PresetPowers.Add(powerSNO);
+			PresetPowers.Add(powerSNO);
 		}
 	}
 }

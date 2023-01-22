@@ -24,13 +24,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public PVPSafeZone(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Scale = 1.5f;
-			this.Field2 = 0x8;
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
-			this.Attributes[GameAttribute.Invulnerable] = true;
-			this.Attributes[GameAttribute.Disabled] = true;
-			this.WalkSpeed = 0f;
+			Scale = 1.5f;
+			Field2 = 0x8;
+			CollFlags = 0;
+			WalkSpeed = 0;
+			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Disabled] = true;
+			WalkSpeed = 0f;
 		}
 
 	}

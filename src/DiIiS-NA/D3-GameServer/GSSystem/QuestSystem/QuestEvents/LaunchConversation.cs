@@ -19,14 +19,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 		public LaunchConversation(int convSNOid)
 			: base(0)
 		{
-			this.ConversationId = convSNOid;
+			ConversationId = convSNOid;
 		}
 
 		public override void Execute(MapSystem.World world)
 		{
 			foreach (var plr in world.Players.Values)
 			{
-				plr.Conversations.StartConversation(this.ConversationId);
+				plr.Conversations.StartConversation(ConversationId);
 			}
 		}
 	}

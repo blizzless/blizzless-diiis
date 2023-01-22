@@ -46,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Interactions
 			return new NPCInteraction()
 			{
 				Type = NPCInteractionType.Conversation,
-				ConversationSNO = this.ConversationSNO,
+				ConversationSNO = ConversationSNO,
 				Field2 = -1,
 				State = (Read ? NPCInteractionState.Used : NPCInteractionState.New),
 			};

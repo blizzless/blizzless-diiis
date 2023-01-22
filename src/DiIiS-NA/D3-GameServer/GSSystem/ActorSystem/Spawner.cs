@@ -37,16 +37,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public Spawner(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags, false)
 		{
-			this.Field2 = 8;
-			this.Field7 = 0x00000000;
+			Field2 = 8;
+			Field7 = 0x00000000;
 
 			//Actor.Data.TagMap contains: {66368 = 291072}
 			//public static TagKeyInt Spawn2 = new TagKeyInt(291072);
 			//TODO: Find why Tags is not the same as Actor.Data.TagMap
 			if (Tags.ContainsKey(MarkerKeys.SpawnActor))
-				this.ActorToSpawnSNO = Tags[MarkerKeys.SpawnActor];
+				ActorToSpawnSNO = Tags[MarkerKeys.SpawnActor];
 
-			if (this.SNO == ActorSno._spawner_zolt_centerpiece) this.ActorToSpawnSNO = new SNOHandle(SNOGroup.Actor, (int)ActorSno._a2dun_zolt_centerpiece_a);
+			if (SNO == ActorSno._spawner_zolt_centerpiece) ActorToSpawnSNO = new SNOHandle(SNOGroup.Actor, (int)ActorSno._a2dun_zolt_centerpiece_a);
 		}
 
 		/// <summary>
@@ -55,13 +55,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// <param name="quest"></param>
 		protected override void quest_OnQuestProgress()
 		{
-			if (this.SNO == ActorSno._spawner_zolt_centerpiece) return;
+			if (SNO == ActorSno._spawner_zolt_centerpiece) return;
 			//Spawn if this is spawner
 			try
 			{
-				if (World.Game.QuestManager.IsInQuestRange(_questRange) && !this.triggered)
+				if (World.Game.QuestManager.IsInQuestRange(_questRange) && !triggered)
 				{
-					this.Spawn();
+					Spawn();
 				}
 			}
 			catch { }
@@ -81,8 +81,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public void Spawn()
 		{
 			
-			this.triggered = true;
-			if (this.ActorToSpawnSNO == null)
+			triggered = true;
+			if (ActorToSpawnSNO == null)
 			{
 				Logger.Trace("Triggered spawner with no ActorToSpawnSNO found.");
 				//Try revealing this
@@ -97,14 +97,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			{
 				Quaternion = new Quaternion
 				{
-					W = this.RotationW,
-					Vector3D = this.RotationAxis
+					W = RotationW,
+					Vector3D = RotationAxis
 				},
-				Vector3D = this.Position
+				Vector3D = Position
 			};
 
 			//this.World.Game.WorldGenerator.Actions.Enqueue(() =>
-			this.World.Game.WorldGenerator.LoadActor(ActorToSpawnSNO, location, this.World, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
+			World.Game.WorldGenerator.LoadActor(ActorToSpawnSNO, location, World, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
 			//Mooege.Core.GS.Generators.WorldGenerator.loadActor(ActorToSpawnSNO, location, this.World, ((Mooege.Common.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
 		}
 

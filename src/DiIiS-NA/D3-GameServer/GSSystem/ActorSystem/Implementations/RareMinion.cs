@@ -23,10 +23,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public RareMinion(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Hitpoints_Max] *= 3.0f;
-			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max];
-			this.Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 1.5f;
-			this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 1.5f;
+			Attributes[GameAttribute.Hitpoints_Max] *= 3.0f;
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max];
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 1.5f;
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 1.5f;
 
 			//MonsterAffixGenerator.Generate(this, this.World.Game.Difficulty + 1);
 		}

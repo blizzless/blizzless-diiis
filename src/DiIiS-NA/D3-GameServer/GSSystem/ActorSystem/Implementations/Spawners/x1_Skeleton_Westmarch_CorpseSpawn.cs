@@ -40,13 +40,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
         }
         public override void OnPlayerApproaching(Player player)
         {
-            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 1.5 * this.Scale * this.Scale && !_collapsed)
+            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 1.5 * Scale * Scale && !_collapsed)
             {
                 _collapsed = true;
                 //int duration = 500; // ticks
 
-                this.PlayEffectGroup(295060);
-                World.SpawnMonster(ActorSno._x1_skeleton_westmarch_ghost_a, this.Position);
+                PlayEffectGroup(295060);
+                World.SpawnMonster(ActorSno._x1_skeleton_westmarch_ghost_a, Position);
             }
         }
 
@@ -63,13 +63,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
         }
         public override void OnPlayerApproaching(Player player)
         {
-            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 1.5 * this.Scale * this.Scale && !_collapsed)
+            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 1.5 * Scale * Scale && !_collapsed)
             {
                 _collapsed = true;
                 //int duration = 500; // ticks
 
-                this.PlayEffectGroup(295060);
-                World.SpawnMonster(ActorSno._x1_skeletonarcher_westmarch_a, this.Position);
+                PlayEffectGroup(295060);
+                World.SpawnMonster(ActorSno._x1_skeletonarcher_westmarch_a, Position);
             }
         }
 

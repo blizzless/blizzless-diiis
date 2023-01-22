@@ -169,9 +169,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				yield return WaitSeconds(0.3f); // have tongue hang there for a bit
 
 				var tongueMover = new KnockbackBuff(-0.01f, 3f, -0.1f);
-				this.World.BuffManager.AddBuff(bigtoad, tongueEnd, tongueMover);
+				World.BuffManager.AddBuff(bigtoad, tongueEnd, tongueMover);
 				if (ValidTarget())
-					this.World.BuffManager.AddBuff(bigtoad, Target, new KnockbackBuff(-0.01f, 3f, -0.1f));
+					World.BuffManager.AddBuff(bigtoad, Target, new KnockbackBuff(-0.01f, 3f, -0.1f));
 
 				yield return tongueMover.ArrivalTime;
 				tongueEnd.Destroy();
@@ -372,7 +372,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			public DamageGroundDebuff(Player player)
 			{
-				this.plr = player;
+				plr = player;
 			}
 
 			public override void OnPayload(Payload payload)
@@ -388,7 +388,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 								Target.World.SpawnHealthGlobe(Target, this.plr, Target.Position);
 							else
 							{
-								var dog = new ZombieDog(User.World, this.plr, 0);
+								var dog = new ZombieDog(User.World, plr, 0);
 								dog.Brain.DeActivate();
 								dog.Position = Target.Position;
 								dog.Attributes[GameAttribute.Untargetable] = true;
@@ -1051,7 +1051,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var targets = GetEnemiesInRadius(grenadeN.Position, ScriptFormula(11));
 					if (targets.Actors.Count > 0)
 					{
-						var target = targets.Actors[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, targets.Actors.Count)];
+						var target = targets.Actors[FastRandom.Instance.Next(0, targets.Actors.Count)];
 
 						grenadeN.LaunchArc(PowerMath.TranslateDirection2D(grenadeN.Position, target.Position, grenadeN.Position, PowerMath.Distance2D(grenadeN.Position, target.Position)), height, ScriptFormula(2));
 						yield return grenadeN.ArrivalTime;
@@ -2088,7 +2088,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						List<Actor> Creepers = new List<Actor>();
 						for (int i = 0; i < maxCreepers; i++)
 						{
-							var Creeper = new WallCreeper(this.World, this, i);
+							var Creeper = new WallCreeper(World, this, i);
 							Creeper.Brain.DeActivate();
 							Creeper.Position = RandomDirection(Wall.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 							Creeper.Attributes[GameAttribute.Untargetable] = true;
@@ -2219,7 +2219,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					{
 						var dog = new ZombieDog(User.World, User, 0);
 						dog.Brain.DeActivate();
-						dog.Position = PowerContext.RandomDirection(User.Position, 3f, 8f);
+						dog.Position = RandomDirection(User.Position, 3f, 8f);
 						dog.Attributes[GameAttribute.Untargetable] = true;
 						dog.EnterWorld(dog.Position);
 						dog.PlayActionAnimation(AnimationSno.zombiedog_summon_01);
@@ -2274,7 +2274,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			StartCooldown(EvalTag(PowerKeys.CooldownTime));
-			var garg = new GargantuanMinion(this.World, this, 0);
+			var garg = new GargantuanMinion(World, this, 0);
 			garg.Brain.DeActivate();
 			garg.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 			garg.Attributes[GameAttribute.Untargetable] = true;
@@ -2365,7 +2365,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				var garg = (this.Target as GargantuanMinion);
+				var garg = (Target as GargantuanMinion);
 				garg.WalkSpeed *= 1.2f;
 				garg.CooldownReduction *= 0.65f;
 				return true;
@@ -2381,7 +2381,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			public override void Remove()
 			{
-				var garg = (this.Target as GargantuanMinion);
+				var garg = (Target as GargantuanMinion);
 				garg.WalkSpeed /= 1.2f;
 				garg.CooldownReduction /= 0.65f;
 				base.Remove();
@@ -2405,7 +2405,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			else
 			{
-				var hex = new HexMinion(this.World, this, 0);
+				var hex = new HexMinion(World, this, 0);
 				hex.Brain.DeActivate();
 				hex.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 				hex.Attributes[GameAttribute.Untargetable] = true;
@@ -2495,7 +2495,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_B > 0)
 			{
-				var spider = new CorpseSpiderQueen(this.World, this, 0);
+				var spider = new CorpseSpiderQueen(World, this, 0);
 				spider.Brain.DeActivate();
 				spider.Scale = 3f;
 				spider.Position = RandomDirection(TargetPosition, 3f, 8f);
@@ -2513,7 +2513,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				for (int i = 0; i < (int)ScriptFormula(0); i++)
 				{
 					var spider = new CorpseSpider(
-						this.World,
+						World,
 						this,
 						RuneSelect(
 							ActorSno._witchdoctor_corpsespider,
@@ -2621,7 +2621,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			List<Actor> dogs = new List<Actor>();
 			for (int i = 0; i < maxDogs; i++)
 			{
-				var dog = new ZombieDog(this.World, User, i, ScriptFormula(13));
+				var dog = new ZombieDog(World, User, i, ScriptFormula(13));
 				dog.Brain.DeActivate();
 				dog.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 				dog.Attributes[GameAttribute.Untargetable] = true;

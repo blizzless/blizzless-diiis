@@ -41,7 +41,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public LootRunPortal(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Destination = new ResolvedPortalDestination
+			Destination = new ResolvedPortalDestination
 			{
 				WorldSNO = (int)WorldSno.x1_westm_graveyard_deathorb,
 				DestLevelAreaSNO = 338946,
@@ -58,7 +58,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				MinimapIcon = ActorData.TagMap[ActorKeys.MinimapMarker].Id;
 			}
 
-			this.Field2 = 0x9;//16;
+			Field2 = 0x9;//16;
 		}
 
 		public override bool Reveal(Player player)
@@ -79,43 +79,43 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			Logger.Debug("(OnTargeted) Portal has been activated, Id: {0}, LevelArea: {1}, World: {2}", (int)this.SNO, this.Destination.DestLevelAreaSNO, this.Destination.WorldSNO);
+			Logger.Debug("(OnTargeted) Portal has been activated, Id: {0}, LevelArea: {1}, World: {2}", (int)SNO, Destination.DestLevelAreaSNO, Destination.WorldSNO);
 
-			var world = this.World.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
+			var world = World.Game.GetWorld((WorldSno)Destination.WorldSNO);
 
 			if (world == null)
 			{
-				Logger.Warn("Portal's destination world does not exist (WorldSNO = {0})", this.Destination.WorldSNO);
+				Logger.Warn("Portal's destination world does not exist (WorldSNO = {0})", Destination.WorldSNO);
 				return;
 			}
 
-			var startingPoint = world.GetStartingPointById(this.Destination.StartingPointActorTag);
+			var startingPoint = world.GetStartingPointById(Destination.StartingPointActorTag);
 
 			if (startingPoint != null)
 			{
-				if (this.SNO == ActorSno._a2dun_zolt_portal_timedevent) //a2 timed event
+				if (SNO == ActorSno._a2dun_zolt_portal_timedevent) //a2 timed event
 				{
-					if (!this.World.Game.QuestManager.SideQuests[120396].Completed)
-						player.ShowConfirmation(this.DynamicID(player), (() => {
+					if (!World.Game.QuestManager.SideQuests[120396].Completed)
+						player.ShowConfirmation(DynamicID(player), (() => {
 							player.ChangeWorld(world, startingPoint);
 						}));
 				}
 				else
 				{
-					if (world == this.World)
+					if (world == World)
 						player.Teleport(startingPoint.Position);
 					else
 						player.ChangeWorld(world, startingPoint);
 				}
 
-				if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey(this.Destination.DestLevelAreaSNO)) //EnterLevelArea
+				if (World.Game.QuestProgress.QuestTriggers.ContainsKey(Destination.DestLevelAreaSNO)) //EnterLevelArea
 				{
-					var trigger = this.World.Game.QuestProgress.QuestTriggers[this.Destination.DestLevelAreaSNO];
+					var trigger = World.Game.QuestProgress.QuestTriggers[Destination.DestLevelAreaSNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(this.World); // launch a questEvent
+							trigger.questEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -123,14 +123,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						}
 					}
 				}
-				if (this.World.Game.SideQuestProgress.QuestTriggers.ContainsKey(this.Destination.DestLevelAreaSNO)) //EnterLevelArea
+				if (World.Game.SideQuestProgress.QuestTriggers.ContainsKey(Destination.DestLevelAreaSNO)) //EnterLevelArea
 				{
-					var trigger = this.World.Game.SideQuestProgress.QuestTriggers[this.Destination.DestLevelAreaSNO];
+					var trigger = World.Game.SideQuestProgress.QuestTriggers[Destination.DestLevelAreaSNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(this.World); // launch a questEvent
+							trigger.questEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -138,15 +138,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						}
 					}
 				}
-				if (this.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(this.Destination.DestLevelAreaSNO)) //EnterLevelArea
+				if (World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(Destination.DestLevelAreaSNO)) //EnterLevelArea
 				{
-					var trigger = this.World.Game.SideQuestProgress.GlobalQuestTriggers[this.Destination.DestLevelAreaSNO];
+					var trigger = World.Game.SideQuestProgress.GlobalQuestTriggers[Destination.DestLevelAreaSNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(this.World); // launch a questEvent
-							this.World.Game.SideQuestProgress.GlobalQuestTriggers.Remove(this.Destination.DestLevelAreaSNO);
+							trigger.questEvent.Execute(World); // launch a questEvent
+							World.Game.SideQuestProgress.GlobalQuestTriggers.Remove(Destination.DestLevelAreaSNO);
 						}
 						catch (Exception e)
 						{
@@ -154,11 +154,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						}
 					}
 				}
-				foreach (var bounty in this.World.Game.QuestManager.Bounties)
-					bounty.CheckLevelArea(this.Destination.DestLevelAreaSNO);
+				foreach (var bounty in World.Game.QuestManager.Bounties)
+					bounty.CheckLevelArea(Destination.DestLevelAreaSNO);
 			}
 			else
-				Logger.Warn("Portal's tagged starting point does not exist (Tag = {0})", this.Destination.StartingPointActorTag);
+				Logger.Warn("Portal's tagged starting point does not exist (Tag = {0})", Destination.StartingPointActorTag);
 		}
 	}
 }

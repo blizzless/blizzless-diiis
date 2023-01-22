@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 		{
 		}
 
-		public void OnAddSocket(PlayerSystem.Player player, Item item)
+		public void OnAddSocket(Player player, Item item)
 		{
 			// TODO: Animate Jeweler? Who knows. /fasbat
 			item.Attributes[GameAttribute.Sockets] += 1;
@@ -32,7 +32,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 
 		public override void OnCraft(Player player)
 		{
-			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = this.DynamicID(player) });
+			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
 			player.ArtisanInteraction = "Jeweler";
 		}
 
