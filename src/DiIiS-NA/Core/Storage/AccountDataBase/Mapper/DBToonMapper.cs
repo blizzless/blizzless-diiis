@@ -46,18 +46,6 @@ namespace DiIiS_NA.Core.Storage.AccountDataBase.Mapper
 			Map(e => e.Cosmetic2);
 			Map(e => e.Cosmetic3);
 			Map(e => e.Cosmetic4);
-			Map(e => e.CraftItem1);
-			Map(e => e.CraftItem2);
-			Map(e => e.CraftItem3);
-			Map(e => e.CraftItem4);
-			Map(e => e.CraftItem5);
-			Map(e => e.BigPortalKey);
-			Map(e => e.LeorikKey);
-			Map(e => e.HoradricA1);
-			Map(e => e.HoradricA2);
-			Map(e => e.HoradricA3);
-			Map(e => e.HoradricA4);
-			Map(e => e.HoradricA5);
 		}
 	}
 }

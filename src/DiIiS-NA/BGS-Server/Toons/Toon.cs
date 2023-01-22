@@ -159,164 +159,6 @@ namespace DiIiS_NA.LoginServer.Toons
 		public IntPresenceField HighestUnlockedDifficulty
 		{ get { return new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 7, 0, 9); } }
 
-		public int CraftItem1
-		{
-			get { return this.DBToon.CraftItem1; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem1 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int CraftItem2
-		{
-			get { return this.DBToon.CraftItem2; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem2 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int CraftItem3
-		{
-			get { return this.DBToon.CraftItem3; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem3 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int CraftItem4
-		{
-			get { return this.DBToon.CraftItem4; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem4 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int CraftItem5
-		{
-			get { return this.DBToon.CraftItem5; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem5 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int BigPortalKey
-		{
-			get { return this.DBToon.BigPortalKey; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.BigPortalKey = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int LeorikKey
-		{
-			get { return this.DBToon.LeorikKey; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.LeorikKey = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-
-		public int HoradricA1Res
-		{
-			get { return this.DBToon.HoradricA1; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA1 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int HoradricA2Res
-		{
-			get { return this.DBToon.HoradricA2; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA2 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int HoradricA3Res
-		{
-			get { return this.DBToon.HoradricA3; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA3 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int HoradricA4Res
-		{
-			get { return this.DBToon.HoradricA4; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA4 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int HoradricA5Res
-		{
-			get { return this.DBToon.HoradricA5; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA5 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-
 		/// <summary>
 		/// D3 EntityID encoded id.
 		/// </summary>
@@ -591,10 +433,7 @@ namespace DiIiS_NA.LoginServer.Toons
 			{
 				if (_paragonLevelChanged || !LoginServer.Config.Instance.Enabled)
 				{
-					if (this.IsHardcore)
-						this._cachedParagonLevel = this.GameAccount.DBGameAccount.ParagonLevelHardcore;
-					else
-						this._cachedParagonLevel = this.GameAccount.DBGameAccount.ParagonLevel;
+					this._cachedParagonLevel = this.GameAccount.DBGameAccount.ParagonLevel;
 					_paragonLevelChanged = false;
 				}
 				return this._cachedParagonLevel;
@@ -726,33 +565,30 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// <summary>
 		/// Killed monsters(total for account)
 		/// </summary>
-		public ulong KilledMonsters
-		{
-			get { return this.GameAccount.DBGameAccount.TotalKilled; }
-			set
-			{
-				lock (this.GameAccount.DBGameAccount)
-				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.TotalKilled = value;
-					DBSessions.SessionUpdate(dbGAcc);
+		public ulong TotalKilled {
+			get {
+				return this.GameAccount.DBGameAccount.TotalKilled;
+			}
+			set {
+				var dbGA = this.GameAccount.DBGameAccount;
+				lock (dbGA) {
+					dbGA.TotalKilled = value;
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
-
 		/// <summary>
 		/// Killed elites(total for account)
 		/// </summary>
-		public ulong KilledElites
-		{
-			get { return this.GameAccount.DBGameAccount.ElitesKilled; }
-			set
-			{
-				lock (this.GameAccount.DBGameAccount)
-				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.ElitesKilled = value;
-					DBSessions.SessionUpdate(dbGAcc);
+		public ulong ElitesKilled {
+			get {
+				return this.GameAccount.DBGameAccount.ElitesKilled;
+			}
+			set {
+				var dbGA = this.GameAccount.DBGameAccount;
+				lock (dbGA) {
+					dbGA.ElitesKilled = value;
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
@@ -760,50 +596,25 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// <summary>
 		/// Bounties completed(total for account)
 		/// </summary>
-		public int TotalBounties
-		{
-			get { return this.GameAccount.DBGameAccount.TotalBounties; }
-			set
-			{
-				lock (this.GameAccount.DBGameAccount)
-				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.TotalBounties = value;
-					DBSessions.SessionUpdate(dbGAcc);
+		public int TotalBounties {
+			get {
+				if (this.IsHardcore) {
+					return this.GameAccount.DBGameAccount.TotalBountiesHardcore;
+				}
+				else {
+					return this.GameAccount.DBGameAccount.TotalBounties;
 				}
 			}
-		}
-
-		/// <summary>
-		/// Bounties completed(seasonal)
-		/// </summary>
-		public int TotalBountiesHardcore
-		{
-			get { return this.GameAccount.DBGameAccount.TotalBountiesHardcore; }
-			set
-			{
-				lock (this.GameAccount.DBGameAccount)
-				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.TotalBountiesHardcore = value;
-					DBSessions.SessionUpdate(dbGAcc);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Killed elites(seasonal)
-		/// </summary>
-		public int KilledElitesSeasonal
-		{
-			get { return this.DBToon.ElitesKilled; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.ElitesKilled = value;
-					DBSessions.SessionUpdate(dbToon);
+			set {
+				var dbGA = this.GameAccount.DBGameAccount;
+				lock (dbGA) {
+					if (this.IsHardcore) {
+						dbGA.TotalBountiesHardcore = value;
+					}
+					else {
+						dbGA.TotalBounties = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
@@ -816,9 +627,9 @@ namespace DiIiS_NA.LoginServer.Toons
 			get { return this.DBToon.Kills; }
 			set
 			{
-				lock (this.DBToon)
+				var dbToon = this.DBToon;
+				lock (dbToon)
 				{
-					var dbToon = this.DBToon;
 					dbToon.Kills = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -828,15 +639,24 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// <summary>
 		/// Total collected Gold(total for account)
 		/// </summary>
-		public ulong CollectedGold
-		{
-			get { return this.GameAccount.DBGameAccount.TotalGold; }
-			set
-			{
-				lock (this.GameAccount.DBGameAccount)
-				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.TotalGold = value;
+		public ulong CollectedGold {
+			get {
+				if (this.IsHardcore) {
+					return this.GameAccount.DBGameAccount.HardTotalGold;
+				}
+				else {
+					return this.GameAccount.DBGameAccount.TotalGold;
+				}
+			}
+			set {
+				var dbGAcc = this.GameAccount.DBGameAccount;
+				lock (dbGAcc) {
+					if (this.IsHardcore) {
+						dbGAcc.HardTotalGold = value;
+					}
+					else {
+						dbGAcc.TotalGold = value;
+					}
 					DBSessions.SessionUpdate(dbGAcc);
 				}
 			}

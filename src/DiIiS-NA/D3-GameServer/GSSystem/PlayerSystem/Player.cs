@@ -2487,7 +2487,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
 
 #if DEBUG
-				Logger.Warn("Местоположение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
+				Logger.Warn("Player Location {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
 #else
 
 #endif
@@ -2964,11 +2964,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			// Check the gold
 			if (this.InGameClient.Game.TickCounter % 120 == 0 && this.World != null && this.GoldCollectedTempCount > 0)
 			{
-				if (this.World.Game.IsHardcore)
-					this.Toon.GameAccount.HardcoreGold += (ulong)this.GoldCollectedTempCount;
-				else
-					this.Toon.GameAccount.Gold += (ulong)this.GoldCollectedTempCount;
-
+				this.Toon.GameAccount.Gold += (ulong)this.GoldCollectedTempCount;
 				this.Toon.CollectedGold += (ulong)this.GoldCollectedTempCount;
 
 				if (this.World.Game.IsHardcore)
@@ -2982,13 +2978,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			// Check the blood shards
 			if (this.InGameClient.Game.TickCounter % 120 == 0 && this.World != null && this.BloodShardsCollectedTempCount > 0)
 			{
-				if (this.World.Game.IsHardcore)
-					this.Toon.GameAccount.HardcoreBloodShards += this.BloodShardsCollectedTempCount;
-				else
-					this.Toon.GameAccount.BloodShards += this.BloodShardsCollectedTempCount;
-
+				this.Toon.GameAccount.BloodShards += this.BloodShardsCollectedTempCount;
 				this.Toon.GameAccount.TotalBloodShards += this.BloodShardsCollectedTempCount;
-
 				this.BloodShardsCollectedTempCount = 0;
 			}
 
@@ -3107,21 +3098,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				if (this.KilledMonstersTempCount != 0)
 				{
-					this.Toon.KilledMonsters += (ulong)this.KilledMonstersTempCount;
+					this.Toon.TotalKilled += (ulong)this.KilledMonstersTempCount;
 					this.KilledMonstersTempCount = 0;
 
 					if (this.KilledElitesTempCount != 0)
 					{
-						this.Toon.KilledElites += (ulong)this.KilledElitesTempCount;
-						if (this.World.Game.IsHardcore)
-							this.Toon.KilledElitesSeasonal += this.KilledElitesTempCount;
+						this.Toon.ElitesKilled += (ulong)this.KilledElitesTempCount;
 						this.KilledElitesTempCount = 0;
 					}
 
 					if (this.KilledSeasonalTempCount != 0)
 					{
-						if (this.World.Game.IsHardcore)
-							this.Toon.SeasonalKills += this.KilledSeasonalTempCount;
+						this.Toon.SeasonalKills += this.KilledSeasonalTempCount;
 						this.KilledSeasonalTempCount = 0;
 					}
 				}
@@ -3129,7 +3117,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.CheckAchievementCounters();
 			}
 
-			#region Призывы некроманта
+			#region Necromancer summons
 			bool switchertobool = false;
 			bool switchertoboolTwo = false;
 			ActiveSkillSavedData NowSkillGolem = null;
@@ -4428,13 +4416,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void LoadCurrencyData()
 		{
 			int bloodShards = 0;
-			if (this.World.Game.IsHardcore)
-				bloodShards = this.Toon.GameAccount.HardcoreBloodShards;
-			else
-				bloodShards = this.Toon.GameAccount.BloodShards;
-
+			bloodShards = this.Toon.GameAccount.BloodShards;
 			this.Inventory.UpdateCurrencies();
-
 		}
 
 		public void LoadMailData()
@@ -5377,8 +5360,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						Type = (FloatingAmountMessage.FloatType)22,
 					});
 					//*/
-					this.Toon.CraftItem4++;
-					this.Inventory.UpdateCurrencies();
+					Toon.GameAccount.CraftItem4++;
+					Inventory.UpdateCurrencies();
 					item.Destroy();
 				}
 

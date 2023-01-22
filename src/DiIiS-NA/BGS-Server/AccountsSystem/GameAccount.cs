@@ -1,52 +1,46 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Collections.Generic;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using bgs.protocol.presence.v1;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using D3.Account;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using D3.Achievements;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using D3.Client;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using D3.OnlineService;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using D3.PartyMessage;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using D3.Profile;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.ChannelSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.GuildSystem;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
+//Blizzless Project 2022
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
-using static DiIiS_NA.LoginServer.Toons.Toon;
 
 namespace DiIiS_NA.LoginServer.AccountsSystem
 {
@@ -397,87 +391,531 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		private ulong _currentToonId = 0;
 
-		public ulong Gold
-		{
-			get
-			{
-				return this.DBGameAccount.Gold;
+		public ulong Gold {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardcoreGold;
+				}
+				else {
+					return this.DBGameAccount.Gold;
+				}
 			}
-			set
-			{
-				lock (this.DBGameAccount)
-				{
-					var dbGAcc = this.DBGameAccount;
-					dbGAcc.Gold = value;
-					DBSessions.SessionUpdate(dbGAcc);
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardcoreGold = value;
+					}
+					else {
+						dbGA.Gold = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
 
-		public ulong HardcoreGold
-		{
-			get
-			{
-				return this.DBGameAccount.HardcoreGold;
+		public int BloodShards {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardcoreBloodShards;
+				}
+				else {
+					return this.DBGameAccount.BloodShards;
+				}
 			}
-			set
-			{
-				lock (this.DBGameAccount)
-				{
-					var dbGAcc = this.DBGameAccount;
-					dbGAcc.HardcoreGold = value;
-					DBSessions.SessionUpdate(dbGAcc);
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardcoreBloodShards = value;
+					}
+					else {
+						dbGA.BloodShards = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
 
-		public int BloodShards
-		{
-			get
-			{
-				return this.DBGameAccount.BloodShards;
+		public int TotalBloodShards {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardTotalBloodShards;
+				}
+				else {
+					return this.DBGameAccount.TotalBloodShards;
+				}
 			}
-			set
-			{
-				lock (this.DBGameAccount)
-				{
-					var dbGAcc = this.DBGameAccount;
-					dbGAcc.BloodShards = value;
-					DBSessions.SessionUpdate(dbGAcc);
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardTotalBloodShards = value;
+					}
+					else {
+						dbGA.TotalBloodShards = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
 
-		public int HardcoreBloodShards
-		{
-			get
-			{
-				return this.DBGameAccount.HardcoreBloodShards;
+		public int StashSize {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardcoreStashSize;
+				}
+				else {
+					return this.DBGameAccount.StashSize;
+				}
 			}
-			set
-			{
-				lock (this.DBGameAccount)
-				{
-					var dbGAcc = this.DBGameAccount;
-					dbGAcc.HardcoreBloodShards = value;
-					DBSessions.SessionUpdate(dbGAcc);
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardcoreStashSize = value;
+					}
+					else {
+						dbGA.StashSize = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
 
-		public int TotalBloodShards
-		{
-			get
-			{
-				return this.DBGameAccount.TotalBloodShards;
+		public int SeasonStashSize {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardSeasonStashSize;
+				}
+				else {
+					return this.DBGameAccount.SeasonStashSize;
+				}
 			}
-			set
-			{
-				lock (this.DBGameAccount)
-				{
-					var dbGAcc = this.DBGameAccount;
-					dbGAcc.TotalBloodShards = value;
-					DBSessions.SessionUpdate(dbGAcc);
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardSeasonStashSize = value;
+					}
+					else {
+						dbGA.SeasonStashSize = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public ulong PvPTotalKilled {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardPvPTotalKilled;
+				}
+				else {
+					return this.DBGameAccount.PvPTotalKilled;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardPvPTotalKilled = value;
+					}
+					else {
+						dbGA.PvPTotalKilled = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public ulong PvPTotalWins {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardPvPTotalWins;
+				}
+				else {
+					return this.DBGameAccount.PvPTotalWins;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardPvPTotalWins = value;
+					}
+					else {
+						dbGA.PvPTotalWins = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public ulong PvPTotalGold {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardPvPTotalGold;
+				}
+				else {
+					return this.DBGameAccount.PvPTotalGold;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardPvPTotalGold = value;
+					}
+					else {
+						dbGA.PvPTotalGold = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int CraftItem1 {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardCraftItem1;
+				}
+				else {
+					return this.DBGameAccount.CraftItem1;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardCraftItem1 = value;
+					}
+					else {
+						dbGA.CraftItem1 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int CraftItem2 {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardCraftItem2;
+				}
+				else {
+					return this.DBGameAccount.CraftItem2;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardCraftItem2 = value;
+					}
+					else {
+						dbGA.CraftItem2 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int CraftItem3 {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardCraftItem3;
+				}
+				else {
+					return this.DBGameAccount.CraftItem3;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardCraftItem3 = value;
+					}
+					else {
+						dbGA.CraftItem3 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int CraftItem4 {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardCraftItem4;
+				}
+				else {
+					return this.DBGameAccount.CraftItem4;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardCraftItem4 = value;
+					}
+					else {
+						dbGA.CraftItem4 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int CraftItem5 {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardCraftItem5;
+				}
+				else {
+					return this.DBGameAccount.CraftItem5;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardCraftItem5 = value;
+					}
+					else {
+						dbGA.CraftItem5 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int BigPortalKey {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardBigPortalKey;
+				}
+				else {
+					return this.DBGameAccount.BigPortalKey;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardBigPortalKey = value;
+					}
+					else {
+						dbGA.BigPortalKey = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int LeorikKey {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardLeorikKey;
+				}
+				else {
+					return this.DBGameAccount.LeorikKey;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardLeorikKey = value;
+					}
+					else {
+						dbGA.LeorikKey = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int VialofPutridness {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardVialofPutridness;
+				}
+				else {
+					return this.DBGameAccount.VialofPutridness;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardVialofPutridness = value;
+					}
+					else {
+						dbGA.VialofPutridness = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int IdolofTerror {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardIdolofTerror;
+				}
+				else {
+					return this.DBGameAccount.IdolofTerror;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardIdolofTerror = value;
+					}
+					else {
+						dbGA.IdolofTerror = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int HeartofFright {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardHeartofFright;
+				}
+				else {
+					return this.DBGameAccount.HeartofFright;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount; 
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardHeartofFright = value;
+					}
+					else {
+						dbGA.HeartofFright = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int HoradricA1Res {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardHoradricA1;
+				}
+				else {
+					return this.DBGameAccount.HoradricA1;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardHoradricA1 = value;
+					}
+					else {
+						dbGA.HoradricA1 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int HoradricA2Res {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardHoradricA2;
+				}
+				else {
+					return this.DBGameAccount.HoradricA2;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardHoradricA2 = value;
+					}
+					else {
+						dbGA.HoradricA2 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int HoradricA3Res {
+			get { 
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardHoradricA3;
+				}
+				else {
+					return this.DBGameAccount.HoradricA3;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardHoradricA3 = value;
+					}
+					else {
+						dbGA.HoradricA3 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int HoradricA4Res {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardHoradricA4;
+				}
+				else {
+					return this.DBGameAccount.HoradricA4;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardHoradricA4 = value;
+					}
+					else {
+						dbGA.HoradricA4 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			}
+		}
+
+		public int HoradricA5Res {
+			get {
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardHoradricA5;
+				}
+				else {
+					return this.DBGameAccount.HoradricA5;
+				}
+			}
+			set {
+				var dbGA = this.DBGameAccount;
+				lock (dbGA) {
+					if (this.CurrentToon.IsHardcore) {
+						dbGA.HardHoradricA5 = value;
+					}
+					else {
+						dbGA.HoradricA5 = value;
+					}
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
@@ -697,24 +1135,20 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					.SetBloodShardsCollected((uint)dbGAcc.TotalBloodShards)
 					.SetSeasonId(1)
 					.AddSeasons(1)
-					.SetElitesKilled(dbGAcc.ElitesKilled)
-					.SetGoldCollected(dbGAcc.TotalGold)
 					//deprecated //.SetHighestDifficulty(Convert.ToUInt32(progress[0], 10))
 					.SetNumFallenHeroes(3)
-					.SetParagonLevelHardcore(0)  // Уровень совершенства в гер. режиме
-					.SetBountiesCompleted((uint)dbGAcc.TotalBounties) //Выполнено поручений
-					.SetLootRunsCompleted(0) //Закрыто нефалемских порталов
+					.SetParagonLevelHardcore(0)  // Level of perfection in ger mode
+					.SetBountiesCompleted((uint)dbGAcc.TotalBounties) // Executed orders
+					.SetLootRunsCompleted(0) // Closed by the Nephalemic Portals
 					.SetPvpWins(0)
 					.SetPvpTakedowns(0)
 					.SetPvpDamage(0)
-					.SetMonstersKilled(dbGAcc.TotalKilled) //Убито монстров
-					.SetElitesKilled(this.DBGameAccount.ElitesKilled) //Убито особых противников
-					.SetGoldCollected(this.DBGameAccount.TotalGold) //Собрано золото
-					.SetHighestHardcoreLevel(0)     // Максимальный уровень в гер. режиме
-					.SetHardcoreMonstersKilled(0) // Убито монстров в гер. режиме
-
+					.SetMonstersKilled(dbGAcc.TotalKilled) // Killed monsters
+					.SetElitesKilled(dbGAcc.ElitesKilled) // Special Enemies Killed
+					.SetGoldCollected(dbGAcc.TotalGold) // Collected gold
+					.SetHighestHardcoreLevel(0)     // Maximum level in hermetic mode
+					.SetHardcoreMonstersKilled(0) // Killed monsters in ger mode
 					.SetHighestHardcoreLevel(GetHighestHardcoreLevel())
-					.SetMonstersKilled(dbGAcc.TotalKilled)
 					.SetClassBarbarian(GetClassInfo(ToonClass.Barbarian))
 					.SetClassCrusader(GetClassInfo(ToonClass.Crusader))
 					.SetClassDemonhunter(GetClassInfo(ToonClass.DemonHunter))
@@ -750,9 +1184,30 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public static readonly EntityId AccountHasNoToons =
 			EntityId.CreateBuilder().SetIdHigh(0).SetIdLow(0).Build();
+		
 		//Platinum
-
-		public int Platinum { get { return this.DBGameAccount.Platinum; } set { lock (this.DBGameAccount) { var dbGA = this.DBGameAccount; dbGA.Platinum = value; DBSessions.SessionUpdate(dbGA); } } }
+		public int Platinum {	
+			get { 
+				if (this.CurrentToon.IsHardcore) {
+					return this.DBGameAccount.HardPlatinum;
+				}
+				else {
+					return this.DBGameAccount.Platinum;
+				}
+			}
+			set { 
+				lock (this.DBGameAccount) {
+				var dbGA = this.DBGameAccount; 
+				if (this.CurrentToon.IsHardcore) {
+					dbGA.HardPlatinum = value;
+				}
+				else {
+					dbGA.Platinum = value;
+				}
+					DBSessions.SessionUpdate(dbGA);
+				}
+			} 
+		}
 
 		public List<Toon> Toons
 		{

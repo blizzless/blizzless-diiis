@@ -14,12 +14,10 @@ namespace DiIiS_NA.Core.Storage.AccountDataBase.Entities
 		public virtual ToonClass Class { get; set; }
 		public virtual ToonFlags Flags { get; set; }
 		public virtual byte Level { get; set; }
-
 		public virtual bool Dead { get; set; }
 		public virtual bool StoneOfPortal { get; set; }
 		public virtual int CreatedSeason { get; set; }
 		public virtual int TimeDeadHarcode { get; set; }
-
 		public virtual long Experience { get; set; }
 		public virtual ushort[] ParagonBonuses { get; set; }
 		public virtual int PvERating { get; set; }
@@ -47,18 +45,5 @@ namespace DiIiS_NA.Core.Storage.AccountDataBase.Entities
 		public virtual int Cosmetic2 { get; set; }
 		public virtual int Cosmetic3 { get; set; }
 		public virtual int Cosmetic4 { get; set; }
-		public virtual int CraftItem1 { get; set; }
-		public virtual int CraftItem2 { get; set; }
-		public virtual int CraftItem3 { get; set; }
-		public virtual int CraftItem4 { get; set; }
-		public virtual int CraftItem5 { get; set; }
-		public virtual int BigPortalKey { get; set; }
-		public virtual int LeorikKey { get; set; }
-
-		public virtual int HoradricA1 { get; set; }
-		public virtual int HoradricA2 { get; set; }
-		public virtual int HoradricA3 { get; set; }
-		public virtual int HoradricA4 { get; set; }
-		public virtual int HoradricA5 { get; set; }
 	}
 }

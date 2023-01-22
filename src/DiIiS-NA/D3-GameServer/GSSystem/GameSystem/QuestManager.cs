@@ -1046,14 +1046,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							.Build()
 							).Build()
 				});
-				//Добавляем критерий!
+				// Adding the criterion!
 				player.GrantCriteria(3367569);
-				//Повышаем за выполнене поручения.
+				// Increase for the completion of the assignment.
 				player.UpdateExp((int)xpReward);
 				player.Inventory.AddGoldAmount((int)goldReward);
 				player.Toon.TotalBounties++;
-				if (player.World.Game.IsHardcore)
-					player.Toon.TotalBountiesHardcore++;
 				player.UpdateAchievementCounter(412, 1);
 			}
 			this.Finished = true;

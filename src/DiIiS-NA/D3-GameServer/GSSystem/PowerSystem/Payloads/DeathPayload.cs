@@ -814,7 +814,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					this.Target.World.SpawnGold(this.Target, plr);
 					this.Target.World.SpawnGold(this.Target, plr);
 					this.Target.World.SpawnGold(this.Target, plr);
-					plr.Toon.BigPortalKey++;
+					plr.Toon.GameAccount.BigPortalKey++;
 					this.Target.World.Game.ActiveNephalemProgress = 0f;
 				}
 			}
