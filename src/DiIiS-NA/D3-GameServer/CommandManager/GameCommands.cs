@@ -559,53 +559,47 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("speed", "Modify speed walk of you character.")]
+    [CommandGroup("speed", "Modify speed walk of you character.\nUsage: !speed <value>\nReset: !speed")]
     public class ModifySpeedCommand : CommandGroup
     {
         [DefaultCommand]
         public string ModifySpeed(string[] @params, BattleClient invokerClient)
         {
-            if (invokerClient == null)
-                return "You can not invoke this command from console.";
-
-            if (invokerClient.InGameClient == null)
-                return "You can only invoke this command while ingame.";
+            if (invokerClient?.InGameClient == null)
+                return "This command can only be used in-game.";
 
             if (@params == null)
                 return "Change the movement speed. Min 0 (Base), Max 2.\n You can use decimal values like 1,3 for example.";
-
-            foreach (char ch in @params[0])
+            float speedValue;
+            
+            const float maxSpeed = 3; // 2;
+            const float baseSpeed = 0.36f;
+            
+            if (@params.Any())
             {
-                if (Char.IsLetter(ch))
-                    return "Only Numbers";
-            }
-
-            if (@params[0].Contains(","))
-                return "jojo";
-
-            float SpeedValue = float.Parse(@params[0]);
-            float MaxSpeed = 2;
-            float BaseSpeed = 0.36f;
-            var playerSpeed = invokerClient.InGameClient.Player.Attributes;
-
-            if (SpeedValue <= BaseSpeed) // Base Run Speed [Necrosummon]
-            {
-                playerSpeed[GameAttribute.Running_Rate] = BaseSpeed;
-                return "Speed changed to Base Speed";
-            }
-
-            if (SpeedValue > MaxSpeed)
-            {
-                playerSpeed[GameAttribute.Running_Rate] = MaxSpeed;
-                return $"MaxSpeed {MaxSpeed}";
+                if (!float.TryParse(@params[0], out speedValue) || speedValue < 0 || speedValue > maxSpeed)
+                    return ("Invalid speed value. Must be a number between 0 and 3.");
             }
             else
-                playerSpeed[GameAttribute.Running_Rate] = SpeedValue;
+            {
+                speedValue = 0;
+            }
 
+            var playerSpeed = invokerClient.InGameClient.Player.Attributes;
+
+            if (playerSpeed.FixedMap.Contains(FixedAttribute.Speed))
+                playerSpeed.FixedMap.Remove(FixedAttribute.Speed);
+
+            if (speedValue <= baseSpeed) // Base Run Speed [Necrosummon]
+            {
+                playerSpeed[GameAttribute.Running_Rate] = baseSpeed;
+                return $"Speed reset to Base Speed ({baseSpeed:0.000}).";
+            }
+
+            playerSpeed.FixedMap.Add(FixedAttribute.Speed, attr => attr[GameAttribute.Running_Rate] = speedValue);
             playerSpeed.BroadcastChangedIfRevealed();
-            return $"Speed changed to {SpeedValue}";
+            return $"Speed changed to {speedValue}";
         }
-    }
 
     [CommandGroup("quest", "Retrieves information about quest states and manipulates quest progress.\n Usage: quest [triggers | trigger eventType eventValue | advance snoQuest]")]
     public class QuestCommand : CommandGroup
