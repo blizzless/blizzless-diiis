@@ -165,7 +165,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <summary>
 		/// Returns a new dynamicId for scenes.
 		/// </summary>
-		public uint NewSceneID { get { return IsPvP ? NewPvPSceneID : Game.NewSceneID; } }
+		public uint NewSceneID { get { return IsPvP ? NewPvPSceneID : Game.NewSceneId; } }
 
 		public bool IsPvP { get { return SNO == WorldSno.pvp_duel_small_multi; } } //PvP_Duel_Small
 
@@ -253,7 +253,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="game">The parent game.</param>
 		/// <param name="sno">The sno for the world.</param>
 		public World(Game game, WorldSno sno)
-			: base(sno == WorldSno.pvp_duel_small_multi ? 99999 : game.NewWorldID)
+			: base(sno == WorldSno.pvp_duel_small_multi ? 99999 : game.NewWorldId)
 		{
 			WorldSNO = new SNOHandle(SNOGroup.Worlds, (int)sno);
 

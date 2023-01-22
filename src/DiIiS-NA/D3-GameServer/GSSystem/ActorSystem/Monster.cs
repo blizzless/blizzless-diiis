@@ -146,7 +146,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				MonsterLevel = World.Game.InitialMonsterLevel;
 
 
-			Attributes[GameAttribute.Hitpoints_Max] = (int)((int)monsterLevels.MonsterLevel[MonsterLevel].HPMin + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, (int)monsterLevels.MonsterLevel[MonsterLevel].HPDelta) * HPMultiplier * World.Game.HPModifier);
+			Attributes[GameAttribute.Hitpoints_Max] = (int)((int)monsterLevels.MonsterLevel[MonsterLevel].HPMin + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, (int)monsterLevels.MonsterLevel[MonsterLevel].HPDelta) * HPMultiplier * World.Game.HpModifier);
 			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = ((int)World.Game.ConnectedPlayers.Count + 1) * 1.5f;
 			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] *= Config.Instance.RateMonsterHP;
 			if (World.Game.ConnectedPlayers.Count > 1)

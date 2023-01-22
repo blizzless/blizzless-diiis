@@ -101,7 +101,7 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 			}
 			if (!Player.World.Game.PvP)
 			{
-				Player.World.Game.GameDBSession.SessionUpdate(dbActiveSkills);
+				Player.World.Game.GameDbSession.SessionUpdate(dbActiveSkills);
 			}
 
 		}
@@ -123,7 +123,7 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 			dbActiveSkills.Passive3 = PassiveSkills[3];
 			if (!Player.World.Game.PvP)
 			{
-				Player.World.Game.GameDBSession.SessionUpdate(dbActiveSkills);
+				Player.World.Game.GameDbSession.SessionUpdate(dbActiveSkills);
 			}
 		}
 

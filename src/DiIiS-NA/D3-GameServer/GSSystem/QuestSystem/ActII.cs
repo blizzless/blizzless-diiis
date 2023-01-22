@@ -459,7 +459,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 10,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //return to camp
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					Game.AddOnLoadWorldAction(WorldSno.caout_cellar_alcarnus_main, () =>
 					{
 						Open(Game.GetWorld(WorldSno.caout_cellar_alcarnus_main), ActorSno._caout_stingingwinds_arena_bridge);
@@ -665,7 +665,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 							world.ShowOnlyNumNPC(ActorSno._leahsewer, -1); //Leave all LeahSewer
 						}
 					});
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 				})
 			});
 
@@ -743,7 +743,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Adria in camp
 					var world = Game.GetWorld(WorldSno.a2dun_swr_adria_level01);
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					if (world.GetActorBySNO(ActorSno._adria) != null)
 						RemoveConversations(world.GetActorBySNO(ActorSno._adria));
 
@@ -1521,7 +1521,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 27,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //get Belial's soul
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_01, () =>
 					{
 						(Game.GetWorld(WorldSno.a2_belial_room_01).GetActorBySNO(ActorSno._a2dun_cald_belial_room_a_breakable_main) as BelialRoom).Rebuild();

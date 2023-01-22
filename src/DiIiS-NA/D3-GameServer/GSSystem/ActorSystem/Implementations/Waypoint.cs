@@ -65,7 +65,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		private void ReadWaypointId()
 		{
 			bool isOpenWorld = World.Game.CurrentAct == 3000;
-			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][World.Game.CurrentActSNOid].Data).WayPointInfo.ToList();
+			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][World.Game.CurrentActSnOid].Data).WayPointInfo.ToList();
 			if (isOpenWorld)
 				actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70015].Data).WayPointInfo
 							.Union(((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70016].Data).WayPointInfo)

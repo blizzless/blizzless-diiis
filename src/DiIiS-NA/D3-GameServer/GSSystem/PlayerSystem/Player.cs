@@ -378,7 +378,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Dead = false;
 			EventWeatherEnabled = false;
 
-			var achievements = InGameClient.Game.GameDBSession.SessionQueryWhere<DBAchievements>(dba => dba.DBGameAccount.Id == Toon.GameAccount.PersistentID);
+			var achievements = InGameClient.Game.GameDbSession.SessionQueryWhere<DBAchievements>(dba => dba.DBGameAccount.Id == Toon.GameAccount.PersistentID);
 
 			BlacksmithUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307766).Count() > 0;
 			JewelerUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307780).Count() > 0;
@@ -1538,7 +1538,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 		public void DeclineBossEncounter()
 		{
-			InGameClient.Game.CurrentEncounter.activated = false;
+			InGameClient.Game.CurrentEncounter.Activated = false;
 		}
 		public void TransumteItemsPlayer(GameClient client, TransmuteItemsMessage message)
 		{
@@ -2018,7 +2018,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			var dbToon = Toon.DBToon;
 			dbToon.ParagonBonuses = ParagonBonuses;
-			World.Game.GameDBSession.SessionUpdate(dbToon);
+			World.Game.GameDbSession.SessionUpdate(dbToon);
 
 			SetAttributesByItems();
 			SetAttributesByItemProcs();
@@ -2035,7 +2035,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			ParagonBonuses = new ushort[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 			var dbToon = Toon.DBToon;
 			dbToon.ParagonBonuses = ParagonBonuses;
-			World.Game.GameDBSession.SessionUpdate(dbToon);
+			World.Game.GameDbSession.SessionUpdate(dbToon);
 
 			SetAttributesByItems();
 			SetAttributesByItemProcs();
@@ -2055,10 +2055,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnMailRetrieve(GameClient client, MailRetrieveMessage message)
 		{
-			var dbMail = World.Game.GameDBSession.SessionGet<DBMail>((ulong)message.MailId);
+			var dbMail = World.Game.GameDbSession.SessionGet<DBMail>((ulong)message.MailId);
 			if (dbMail == null || dbMail.DBToon.Id != Toon.PersistentID) return;
 			dbMail.Claimed = true;
-			World.Game.GameDBSession.SessionUpdate(dbMail);
+			World.Game.GameDbSession.SessionUpdate(dbMail);
 
 			if (dbMail.ItemGBID != -1)
 				Inventory.PickUp(ItemGenerator.CookFromDefinition(World, ItemGenerator.GetItemDefinition(dbMail.ItemGBID), -1, true));
@@ -2582,7 +2582,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void RefreshReveal()
 		{
 			float Range = 200f;
-			if (InGameClient.Game.CurrentEncounter.activated)
+			if (InGameClient.Game.CurrentEncounter.Activated)
 				Range = 360f;
 
 			List<Actor> actors_around = GetActorsInRange(Range);
@@ -2691,7 +2691,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			var activeSkills = Toon.DBActiveSkills;
 			activeSkills.PotionGBID = message.Field1;
-			World.Game.GameDBSession.SessionUpdate(activeSkills);
+			World.Game.GameDbSession.SessionUpdate(activeSkills);
 		}
 
 		public void ToonStateChanged()
@@ -2741,7 +2741,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 
 				blacksmith_data.Level++;
-				World.Game.GameDBSession.SessionUpdate(blacksmith_data);
+				World.Game.GameDbSession.SessionUpdate(blacksmith_data);
 				if (blacksmith_data.Level == 2)
 					GrantAchievement(74987243307767);
 				if (blacksmith_data.Level == 5)
@@ -2809,7 +2809,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 
 				jeweler_data.Level++;
-				World.Game.GameDBSession.SessionUpdate(jeweler_data);
+				World.Game.GameDbSession.SessionUpdate(jeweler_data);
 				if (jeweler_data.Level == 2)
 					GrantAchievement(74987243307781);
 				if (jeweler_data.Level == 5)
@@ -2874,7 +2874,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 
 				mystic_data.Level++;
-				World.Game.GameDBSession.SessionUpdate(mystic_data);
+				World.Game.GameDbSession.SessionUpdate(mystic_data);
 				if (mystic_data.Level == 2)
 					GrantAchievement(74987253584575);
 				if (mystic_data.Level == 5)
@@ -2928,7 +2928,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Logger.Trace("Learning transmog #{0}", transmogGBID);
 			learnedTransmogs.Add(transmogGBID);
 			mystic_data.LearnedRecipes = SerializeBytes(learnedTransmogs);
-			World.Game.GameDBSession.SessionUpdate(mystic_data);
+			World.Game.GameDbSession.SessionUpdate(mystic_data);
 
 			LoadCrafterData();
 		}
@@ -3374,7 +3374,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void RevealActorsToPlayer()
 		{
 			float Range = 200f;
-			if (InGameClient.Game.CurrentEncounter.activated)
+			if (InGameClient.Game.CurrentEncounter.Activated)
 				Range = 360f;
 
 			var specialWorlds = new WorldSno[]
@@ -4170,7 +4170,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			serialized += (totalDamage).ToString("F0");
 			var dbStats = Toon.DBToon;
 			dbStats.Stats = serialized;
-			World.Game.GameDBSession.SessionUpdate(dbStats);
+			World.Game.GameDbSession.SessionUpdate(dbStats);
 		}
 
 		public List<PlayerQuestRewardHistoryEntry> QuestRewardHistory
@@ -4239,7 +4239,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void CheckBonusSets()
 		{
-			List<DBBonusSets> sets = World.Game.GameDBSession.SessionQueryWhere<DBBonusSets>(dbi => dbi.DBAccount.Id == Toon.GameAccount.AccountId).ToList();
+			List<DBBonusSets> sets = World.Game.GameDbSession.SessionQueryWhere<DBBonusSets>(dbi => dbi.DBAccount.Id == Toon.GameAccount.AccountId).ToList();
 			foreach (var bonusSet in sets)
 			{
 				if (World.Game.IsHardcore)
@@ -4267,14 +4267,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 
 				//BonusSetsList.CollectionEditions[bonusSet.SetId].Claim(this);
-				World.Game.GameDBSession.SessionUpdate(bonusSet);
+				World.Game.GameDbSession.SessionUpdate(bonusSet);
 				//this.InGameClient.SendMessage(new BroadcastTextMessage() { Field0 = "You have been granted with gifts from bonus pack!" });
 			}
 		}
 
 		public HirelingInfo GetHirelingInfo(int type)
 		{
-			var query = World.Game.GameDBSession.SessionQueryWhere<DBHireling>(dbh => dbh.DBToon.Id == Toon.PersistentID && dbh.Class == type).ToList();
+			var query = World.Game.GameDbSession.SessionQueryWhere<DBHireling>(dbh => dbh.DBToon.Id == Toon.PersistentID && dbh.Class == type).ToList();
 			if (query.Count == 0)
 			{ //returns empty data
 				var hireling_empty = new HirelingInfo { HirelingIndex = type, GbidName = 0x0000, Dead = false, Skill1SNOId = -1, Skill2SNOId = -1, Skill3SNOId = -1, Skill4SNOId = -1, annItems = -1 };
@@ -4338,14 +4338,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				learnedBlacksmithRecipes.Add(recipe);
 				blacksmith_data.LearnedRecipes = SerializeBytes(learnedBlacksmithRecipes);
-				World.Game.GameDBSession.SessionUpdate(blacksmith_data);
+				World.Game.GameDbSession.SessionUpdate(blacksmith_data);
 				UpdateAchievementCounter(404, 1, 0);
 			}
 			if (artisan == "Jeweler")
 			{
 				learnedJewelerRecipes.Add(recipe);
 				jeweler_data.LearnedRecipes = SerializeBytes(learnedJewelerRecipes);
-				World.Game.GameDBSession.SessionUpdate(jeweler_data);
+				World.Game.GameDbSession.SessionUpdate(jeweler_data);
 				UpdateAchievementCounter(404, 1, 1);
 			}
 
@@ -4380,7 +4380,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			if (blacksmith_data == null)
 			{
-				List<DBCraft> craft_data = World.Game.GameDBSession.SessionQueryWhere<DBCraft>(dbc => dbc.DBGameAccount.Id == Toon.GameAccount.PersistentID);
+				List<DBCraft> craft_data = World.Game.GameDbSession.SessionQueryWhere<DBCraft>(dbc => dbc.DBGameAccount.Id == Toon.GameAccount.PersistentID);
 
 				blacksmith_data = craft_data.Single(dbc => dbc.Artisan == "Blacksmith" && dbc.isHardcore == World.Game.IsHardcore && dbc.isSeasoned == World.Game.IsSeasoned);
 				jeweler_data = craft_data.Single(dbc => dbc.Artisan == "Jeweler" && dbc.isHardcore == World.Game.IsHardcore && dbc.isSeasoned == World.Game.IsSeasoned);
@@ -4439,7 +4439,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void LoadMailData()
 		{
-			List<DBMail> mail_data = World.Game.GameDBSession.SessionQueryWhere<DBMail>(dbm => dbm.DBToon.Id == Toon.PersistentID && dbm.Claimed == false);
+			List<DBMail> mail_data = World.Game.GameDbSession.SessionQueryWhere<DBMail>(dbm => dbm.DBToon.Id == Toon.PersistentID && dbm.Claimed == false);
 			var mails = D3.Items.Mails.CreateBuilder();
 			foreach (var mail in mail_data)
 			{
@@ -4726,14 +4726,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void SetProgress(int act, int difficulty)
 		{
 			if (act > 400) return;
-			var dbGAcc = World.Game.GameDBSession.SessionGet<DBGameAccount>(Toon.GameAccount.PersistentID);
+			var dbGAcc = World.Game.GameDbSession.SessionGet<DBGameAccount>(Toon.GameAccount.PersistentID);
 			var progress = dbGAcc.BossProgress;
 			if (progress[(act / 100)] == 0xff || progress[(act / 100)] < (byte)difficulty)
 			{
 				progress[(act / 100)] = (byte)difficulty;
 
 				dbGAcc.BossProgress = progress;
-				World.Game.GameDBSession.SessionUpdate(dbGAcc);
+				World.Game.GameDbSession.SessionUpdate(dbGAcc);
 			}
 		}
 
@@ -5886,7 +5886,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				Logger.Trace("Learning lore #{0}", loreSNOId);
 				var dbToon = Toon.DBToon;
 				dbToon.Lore = SerializeBytes(LearnedLore.m_snoLoreLearned.Take(LearnedLore.Count).ToList());
-				World.Game.GameDBSession.SessionUpdate(dbToon);
+				World.Game.GameDbSession.SessionUpdate(dbToon);
 			}
 		}
 

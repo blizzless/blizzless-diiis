@@ -123,7 +123,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 				})
 			});
 
@@ -255,7 +255,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 33,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //destroy Auriel's jail
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					
 					var Library = Game.GetWorld(WorldSno.a4dun_libraryoffate);
 					StartConversation(Library, 217223); // Голос дъябло после битвы
@@ -457,7 +457,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					PlayCutscene(2);
 				})
 			});

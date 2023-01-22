@@ -417,7 +417,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 				if (LootAndExp)
 				{
-					grantedExp = (int)(grantedExp * plr.World.Game.XPModifier);
+					grantedExp = (int)(grantedExp * plr.World.Game.XpModifier);
 
 					float tempEXP = grantedExp * Config.Instance.RateEXP;
 
@@ -1168,7 +1168,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					player.AddTimedAction(3f, new Action<int>((q) => player.Revive(player.CheckPointPosition)));
 					var toon = player.Toon.DBToon;
 					toon.Deaths++;
-					player.World.Game.GameDBSession.SessionUpdate(toon);
+					player.World.Game.GameDbSession.SessionUpdate(toon);
 				}
 			}
 			//}

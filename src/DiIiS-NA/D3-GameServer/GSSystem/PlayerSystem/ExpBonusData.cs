@@ -202,7 +202,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			if (expBonus > 0)
 			{
-				expBonus = (int)(expBonus * _player.World.Game.XPModifier);
+				expBonus = (int)(expBonus * _player.World.Game.XpModifier);
 
 				_player.InGameClient.SendMessage(new KillCounterUpdateMessage()
 				{

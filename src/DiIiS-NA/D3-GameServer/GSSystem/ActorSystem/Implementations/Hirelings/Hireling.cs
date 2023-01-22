@@ -467,7 +467,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 		public void LoadInventory(Player player)
 		{
 			_equipment.Add(player, new Dictionary<int, Item>());
-			var inventory_list = World.Game.GameDBSession.SessionQueryWhere<DBInventory>(dbi => dbi.DBToon.Id == player.Toon.PersistentID && dbi.HirelingId != 0 && dbi.HirelingId == Attributes[GameAttribute.Hireling_Class]);
+			var inventory_list = World.Game.GameDbSession.SessionQueryWhere<DBInventory>(dbi => dbi.DBToon.Id == player.Toon.PersistentID && dbi.HirelingId != 0 && dbi.HirelingId == Attributes[GameAttribute.Hireling_Class]);
 			foreach (var inv_item in inventory_list)
 			{
 				Item item = ItemGenerator.LoadFromDB(player, inv_item);
@@ -495,7 +495,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			item.DBInventory.EquipmentSlot = slot;
 			item.DBInventory.LocationX = 0;
 			item.DBInventory.LocationY = 0;
-			World.Game.GameDBSession.SessionUpdate(item.DBInventory);
+			World.Game.GameDbSession.SessionUpdate(item.DBInventory);
 			item.Attributes[GameAttribute.Item_Equipped] = true;
 			_equipment[owner].Add(slot, item);
 			RefreshEquipment(owner);
@@ -513,7 +513,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 			item.Owner = owner;
 			_equipment[owner].Remove(slot);
-			World.Game.GameDBSession.SessionDelete(item.DBInventory);
+			World.Game.GameDbSession.SessionDelete(item.DBInventory);
 			owner.Inventory.PickUp(item);
 			item.Unreveal(owner);
 			item.Attributes[GameAttribute.Item_Equipped] = false;

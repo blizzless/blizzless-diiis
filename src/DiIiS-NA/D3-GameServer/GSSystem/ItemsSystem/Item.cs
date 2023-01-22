@@ -398,7 +398,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			DBInventory.Unidentified = false;
 			Attributes[GameAttribute.Unidentified] = false;
 
-			Owner.World.Game.GameDBSession.SessionUpdate(DBInventory);
+			Owner.World.Game.GameDbSession.SessionUpdate(DBInventory);
 			if (Owner is Player)
 			{
 				Unreveal(Owner as Player);
@@ -600,20 +600,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			Attributes[GameAttribute.Durability_Cur] = newDurability;
 			DBInventory.Durability = newDurability;
-			Owner.World.Game.GameDBSession.SessionUpdate(DBInventory);
+			Owner.World.Game.GameDbSession.SessionUpdate(DBInventory);
 		}
 
 		public void UpdateTransmog(int newTransmogGBID)
 		{
 			Attributes[GameAttribute.TransmogGBID] = newTransmogGBID;
 			DBInventory.TransmogGBID = newTransmogGBID;
-			Owner.World.Game.GameDBSession.SessionUpdate(DBInventory);
+			Owner.World.Game.GameDbSession.SessionUpdate(DBInventory);
 		}
 
 		public void SaveAttributes()
 		{
 			DBInventory.Attributes = Attributes.Serialize();
-			Owner.World.Game.GameDBSession.SessionUpdate(DBInventory);
+			Owner.World.Game.GameDbSession.SessionUpdate(DBInventory);
 		}
 
 		public void UpdateStackCount(int newCount)
@@ -625,7 +625,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				Attributes.SendChangedMessage((Owner as Player).InGameClient);
 
 				DBInventory.Count = newCount;
-				Owner.World.Game.GameDBSession.SessionUpdate(DBInventory);
+				Owner.World.Game.GameDbSession.SessionUpdate(DBInventory);
 			}
 		}
 
@@ -1174,7 +1174,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				target.Attributes.BroadcastChangedIfRevealed();
 				target.DBInventory.DyeType = Attributes[GameAttribute.DyeType];
 
-				player.World.Game.GameDBSession.SessionUpdate(target.DBInventory);
+				player.World.Game.GameDbSession.SessionUpdate(target.DBInventory);
 
 				player.Inventory.SendVisualInventory(player);
 
@@ -1289,7 +1289,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			player.Inventory.SendVisualInventory(player);
 			var dbToon = player.Toon.DBToon;
 			dbToon.WingsActive = player.CurrentWingsPowerId;
-			player.World.Game.GameDBSession.SessionUpdate(dbToon);
+			player.World.Game.GameDbSession.SessionUpdate(dbToon);
 			return;
 		}
 

@@ -35,7 +35,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 		public void SetSkill(Player player, int SkillSNOId)
 		{
-			var dbhireling = player.World.Game.GameDBSession.SessionQueryWhere<DBHireling>(dbh => dbh.DBToon.Id == player.Toon.PersistentID && dbh.Class == 1).ToList().First();
+			var dbhireling = player.World.Game.GameDbSession.SessionQueryWhere<DBHireling>(dbh => dbh.DBToon.Id == player.Toon.PersistentID && dbh.Class == 1).ToList().First();
 			switch (SkillSNOId)
 			{
 				case 1747:
@@ -46,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 					Attributes.SendChangedMessage(player.InGameClient);
 
 					dbhireling.Skill1SNOId = SkillSNOId;
-					player.World.Game.GameDBSession.SessionUpdate(dbhireling);
+					player.World.Game.GameDbSession.SessionUpdate(dbhireling);
 					break;
 				case 30357:
 				case 93901:
@@ -56,7 +56,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 					Attributes.SendChangedMessage(player.InGameClient);
 
 					dbhireling.Skill2SNOId = SkillSNOId;
-					player.World.Game.GameDBSession.SessionUpdate(dbhireling);
+					player.World.Game.GameDbSession.SessionUpdate(dbhireling);
 					break;
 				case 30360:
 				case 93888:
@@ -66,7 +66,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 					Attributes.SendChangedMessage(player.InGameClient);
 
 					dbhireling.Skill3SNOId = SkillSNOId;
-					player.World.Game.GameDBSession.SessionUpdate(dbhireling);
+					player.World.Game.GameDbSession.SessionUpdate(dbhireling);
 					break;
 				case 30356:
 				case 30359:
@@ -76,7 +76,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 					Attributes.SendChangedMessage(player.InGameClient);
 
 					dbhireling.Skill4SNOId = SkillSNOId;
-					player.World.Game.GameDBSession.SessionUpdate(dbhireling);
+					player.World.Game.GameDbSession.SessionUpdate(dbhireling);
 					break;
 				default:
 					return;
@@ -85,12 +85,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 		public void Retrain(Player player)
 		{
-			var dbhireling = player.World.Game.GameDBSession.SessionQueryWhere<DBHireling>(dbh => dbh.DBToon.Id == player.Toon.PersistentID && dbh.Class == 1).ToList().First();
+			var dbhireling = player.World.Game.GameDbSession.SessionQueryWhere<DBHireling>(dbh => dbh.DBToon.Id == player.Toon.PersistentID && dbh.Class == 1).ToList().First();
 			dbhireling.Skill1SNOId = -1;
 			dbhireling.Skill2SNOId = -1;
 			dbhireling.Skill3SNOId = -1;
 			dbhireling.Skill4SNOId = -1;
-			player.World.Game.GameDBSession.SessionUpdate(dbhireling);
+			player.World.Game.GameDbSession.SessionUpdate(dbhireling);
 
 			player.HirelingInfo[1].Skill1SNOId = -1;
 			player.HirelingInfo[1].Skill2SNOId = -1;

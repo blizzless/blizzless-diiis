@@ -249,7 +249,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (Encounter == 0) return;
 			//if (this.World.Game.CurrentEncounter.activated) return;
 
-			World.Game.CurrentEncounter.activated = true;
+			World.Game.CurrentEncounter.Activated = true;
 			World.Game.CurrentEncounter.SnoId = Encounter;
 
 			foreach (Player plr in World.Game.Players.Values)

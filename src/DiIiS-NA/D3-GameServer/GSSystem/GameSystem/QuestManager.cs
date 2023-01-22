@@ -75,7 +75,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			Game.QuestProgress.SetQuests();
 			Game.SideQuestProgress.SetQuests();
-			Game.QuestSetuped = true;
+			Game.QuestSetup = true;
 		}
 
 		public void ClearQuests()
@@ -212,7 +212,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					Logger.Trace(" (Advance) quest {0} completed: {1}", Game.CurrentQuest, Quests[Game.CurrentQuest].Completed);
 					foreach (var player in Game.Players.Values)
 					{
-						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp * Game.XPModifier);
+						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp * Game.XpModifier);
 						int goldReward = (int)(Quests[Game.CurrentQuest].RewardGold * Game.GoldModifier);
 						if (Game.CurrentQuest != 312429)
 						{
@@ -317,7 +317,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 				foreach (var player in Game.Players.Values)
 				{
-					int xpReward = (int)(SideQuests[Game.CurrentSideQuest].RewardXp * Game.XPModifier);
+					int xpReward = (int)(SideQuests[Game.CurrentSideQuest].RewardXp * Game.XpModifier);
 					int goldReward = (int)(SideQuests[Game.CurrentSideQuest].RewardGold * Game.GoldModifier);
 
 					player.InGameClient.SendMessage(new QuestStepCompleteMessage()
@@ -348,7 +348,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					}
 					var toon = player.Toon.DBToon;
 					toon.EventsCompleted++;
-					Game.GameDBSession.SessionUpdate(toon);
+					Game.GameDbSession.SessionUpdate(toon);
 					player.CheckQuestCriteria(Game.CurrentSideQuest);
 				};
 
@@ -817,7 +817,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				player.Toon.CurrentQuestId = Game.CurrentQuest;
 				player.Toon.CurrentQuestStepId = Game.CurrentStep;
 
-				List<DBQuestHistory> query = Game.GameDBSession.SessionQueryWhere<DBQuestHistory>(
+				List<DBQuestHistory> query = Game.GameDbSession.SessionQueryWhere<DBQuestHistory>(
 					dbi => dbi.DBToon.Id == player.Toon.PersistentID && dbi.QuestId == Game.CurrentQuest);
 				if (query.Count == 0)
 				{
@@ -825,7 +825,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					questHistory.DBToon = player.Toon.DBToon;
 					questHistory.QuestId = Game.CurrentQuest;
 					questHistory.QuestStep = Game.CurrentStep;
-					Game.GameDBSession.SessionSave(questHistory);
+					Game.GameDbSession.SessionSave(questHistory);
 				}
 				else
 				{
@@ -834,7 +834,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					{
 						questHistory.QuestStep = Game.CurrentStep;
 						if (questCompleted) questHistory.isCompleted = true;
-						Game.GameDBSession.SessionUpdate(questHistory);
+						Game.GameDbSession.SessionUpdate(questHistory);
 					}
 				}
 			}
@@ -1021,7 +1021,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			foreach (var player in QuestManager.Game.Players.Values)
 			{
-				var xpReward = 1000 * player.Level * (1 + (player.Level / 7)) * QuestManager.Game.XPModifier;
+				var xpReward = 1000 * player.Level * (1 + (player.Level / 7)) * QuestManager.Game.XpModifier;
 				if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique)
 					xpReward *= 1.8f;
 				if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.ClearDungeon)

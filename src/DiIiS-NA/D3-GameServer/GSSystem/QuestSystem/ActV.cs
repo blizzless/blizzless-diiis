@@ -749,7 +749,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						var malthael = Game.GetWorld(WorldSno.x1_urzael_arena).SpawnMonster(ActorSno._x1_malthael, new Vector3D { X = 97.65f, Y = 350.23f, Z = 0.1f });
 						malthael.NotifyConversation(1);
 					});
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					ListenInteract(ActorSno._x1_malthael, 1, new LaunchConversation(274423));
 					ListenConversation(274423, new Advance());
 				})
@@ -1030,7 +1030,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Lorath
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					var world = Game.GetWorld(WorldSno.x1_adria_boss_arena_02);
 
 					foreach (var Myst in world.GetActorsBySNO(ActorSno._x1_npc_lorathnahr)) //284530
@@ -1047,7 +1047,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					{
 						world.GetActorBySNO(ActorSno._x1_npc_lorathnahr).NotifyConversation(1);
 					});
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 
 					//ListenInteract(284530, 1, new LaunchConversation(260191));
 					ListenConversation(260191, new Advance());
@@ -1455,7 +1455,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//enter Breach
 					var RamWorld = Game.GetWorld(WorldSno.x1_pand_batteringram);
 
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					ListenTeleport(271234, new Advance());
 					Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
@@ -1639,7 +1639,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Success
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					ListenProximity(ActorSno._tyrael, new LaunchConversation(351334));
 					ListenConversation(351334, new Advance());
 					if (Game.IsHardcore)
