@@ -47,22 +47,5 @@ namespace DiIiS_NA.Core.Storage.AccountDataBase.Entities
 		public virtual int Cosmetic2 { get; set; }
 		public virtual int Cosmetic3 { get; set; }
 		public virtual int Cosmetic4 { get; set; }
-		public virtual int CraftItem1 { get; set; }
-		public virtual int CraftItem2 { get; set; }
-		public virtual int CraftItem3 { get; set; }
-		public virtual int CraftItem4 { get; set; }
-		public virtual int CraftItem5 { get; set; }
-		public virtual int BigPortalKey { get; set; }
-		public virtual int LeorikKey { get; set; }
-
-		public virtual int VialofPutridness { get; set; }
-		public virtual int IdolofTerror { get; set; }
-		public virtual int HeartofFright { get; set; }
-
-		public virtual int HoradricA1 { get; set; }
-		public virtual int HoradricA2 { get; set; }
-		public virtual int HoradricA3 { get; set; }
-		public virtual int HoradricA4 { get; set; }
-		public virtual int HoradricA5 { get; set; }
 	}
 }

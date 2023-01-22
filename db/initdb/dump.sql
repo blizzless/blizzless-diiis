@@ -332,7 +332,22 @@ CREATE TABLE public.game_accounts (
     totalbountieshardcore integer DEFAULT 0 NOT NULL,
     pvptotalkilled bigint,
     pvptotalwins bigint,
-    pvptotalgold bigint
+    pvptotalgold bigint,
+    craftitem1 integer,
+    craftitem2 integer,
+    craftitem3 integer,
+    craftitem4 integer,
+    craftitem5 integer,
+    vialofputridness integer,
+    idolofterror integer,
+    heartoffright integer,
+    leorikkey integer,
+    bigportalkey integer,
+    horadrica1 integer,
+    horadrica2 integer,
+    horadrica3 integer,
+    horadrica4 integer,
+    horadrica5 integer
 );
 
 
@@ -749,22 +764,7 @@ CREATE TABLE public.toons (
     cosmetic1 integer,
     cosmetic2 integer,
     cosmetic3 integer,
-    cosmetic4 integer,
-    craftitem1 integer,
-    craftitem2 integer,
-    craftitem3 integer,
-    craftitem4 integer,
-    craftitem5 integer,
-    vialofputridness integer,
-    idolofterror integer,
-    heartoffright integer,
-    leorikkey integer,
-    bigportalkey integer,
-    horadrica1 integer,
-    horadrica2 integer,
-    horadrica3 integer,
-    horadrica4 integer,
-    horadrica5 integer
+    cosmetic4 integer
 );
 
 

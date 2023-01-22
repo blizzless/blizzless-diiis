@@ -2487,7 +2487,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
 
 #if DEBUG
-				Logger.Warn("Местоположение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
+				Logger.Warn("Player Location {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
 #else
 
 #endif
@@ -5377,7 +5377,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						Type = (FloatingAmountMessage.FloatType)22,
 					});
 					//*/
-					this.Toon.CraftItem4++;
+					this.Toon.GameAccount.CraftItem4++;
 					this.Inventory.UpdateCurrencies();
 					item.Destroy();
 				}

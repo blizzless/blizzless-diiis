@@ -482,6 +482,208 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			}
 		}
 
+
+		public int CraftItem1
+		{
+			get { return this.DBGameAccount.CraftItem1; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.CraftItem1 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int CraftItem2
+		{
+			get { return this.DBGameAccount.CraftItem2; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.CraftItem2 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int CraftItem3
+		{
+			get { return this.DBGameAccount.CraftItem3; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.CraftItem3 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int CraftItem4
+		{
+			get { return this.DBGameAccount.CraftItem4; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.CraftItem4 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int CraftItem5
+		{
+			get { return this.DBGameAccount.CraftItem5; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.CraftItem5 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int BigPortalKey
+		{
+			get { return this.DBGameAccount.BigPortalKey; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.BigPortalKey = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int LeorikKey
+		{
+			get { return this.DBGameAccount.LeorikKey; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.LeorikKey = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+
+
+		public int VialofPutridness
+		{
+			get { return this.DBGameAccount.VialofPutridness; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.VialofPutridness = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+
+		public int IdolofTerror
+		{
+			get { return this.DBGameAccount.IdolofTerror; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.IdolofTerror = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+
+		public int HeartofFright
+		{
+			get { return this.DBGameAccount.HeartofFright; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.HeartofFright = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+
+		public int HoradricA1Res
+		{
+			get { return this.DBGameAccount.HoradricA1; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.HoradricA1 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int HoradricA2Res
+		{
+			get { return this.DBGameAccount.HoradricA2; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.HoradricA2 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int HoradricA3Res
+		{
+			get { return this.DBGameAccount.HoradricA3; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.HoradricA3 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int HoradricA4Res
+		{
+			get { return this.DBGameAccount.HoradricA4; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.HoradricA4 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+		public int HoradricA5Res
+		{
+			get { return this.DBGameAccount.HoradricA5; }
+			set
+			{
+				lock (this.DBGameAccount)
+				{
+					var dbGameAccount = this.DBGameAccount;
+					dbGameAccount.HoradricA5 = value;
+					DBSessions.SessionUpdate(dbGameAccount);
+				}
+			}
+		}
+
 		public Guild Clan
 		{
 			get
