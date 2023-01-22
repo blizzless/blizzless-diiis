@@ -737,7 +737,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					#endregion
 					#region A1-Q4 Event_DoK
 					case 139823: //Event_DoK_Kill.cnv
-									 //���� ���������� �����
+									 //kill the king
 							var leoricGhost = player.World.GetActorBySNO(ActorSno._skeletonking_leoricghost);
 							var lachdananGhost = player.World.GetActorBySNO(ActorSno._ghostknight3);
 							var swordPlace = player.World.GetActorBySNO(ActorSno._trdun_crypt_deathoftheking_sword_clickable);
