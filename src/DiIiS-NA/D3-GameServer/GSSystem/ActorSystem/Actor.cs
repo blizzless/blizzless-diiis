@@ -1,4 +1,4 @@
-﻿//Blizzless Project 2022 
+//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
@@ -682,18 +682,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					UnitAniimStartTime = 0,
 					tAnim = new PlayAnimationMessageSpec[]
 					{
-						new()
+						new PlayAnimationMessageSpec
 						{
 							Duration = -2,
-							AnimationSNO = animationSNO,
+							AnimationSNO = (int)animationSNO,
 							PermutationIndex = 0x0,
 							AnimationTag = 0,
 							Speed = 1.0f,
 						}
 					}
-				}, this);
+					},
+					this);
+				}
 			}
-		}
 
 		public void PlayAnimation(int animationType, int animationSNO, float speed = 1.0f, int? ticksToPlay = null, int type2 = 0)
 		{
