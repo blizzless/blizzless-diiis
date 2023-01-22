@@ -251,6 +251,49 @@ namespace DiIiS_NA.LoginServer.Toons
 			}
 		}
 
+
+		public int VialofPutridness
+		{
+			get { return this.DBToon.VialofPutridness; }
+			set
+			{
+				lock (this.DBToon)
+				{
+					var dbToon = this.DBToon;
+					dbToon.VialofPutridness = value;
+					DBSessions.SessionUpdate(dbToon);
+				}
+			}
+		}
+
+		public int IdolofTerror
+		{
+			get { return this.DBToon.IdolofTerror; }
+			set
+			{
+				lock (this.DBToon)
+				{
+					var dbToon = this.DBToon;
+					dbToon.IdolofTerror = value;
+					DBSessions.SessionUpdate(dbToon);
+				}
+			}
+		}
+
+		public int HeartofFright
+		{
+			get { return this.DBToon.HeartofFright; }
+			set
+			{
+				lock (this.DBToon)
+				{
+					var dbToon = this.DBToon;
+					dbToon.HeartofFright = value;
+					DBSessions.SessionUpdate(dbToon);
+				}
+			}
+		}
+
 		public int HoradricA1Res
 		{
 			get { return this.DBToon.HoradricA1; }

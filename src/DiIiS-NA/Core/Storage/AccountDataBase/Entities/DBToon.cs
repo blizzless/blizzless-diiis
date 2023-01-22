@@ -55,6 +55,10 @@ namespace DiIiS_NA.Core.Storage.AccountDataBase.Entities
 		public virtual int BigPortalKey { get; set; }
 		public virtual int LeorikKey { get; set; }
 
+		public virtual int VialofPutridness { get; set; }
+		public virtual int IdolofTerror { get; set; }
+		public virtual int HeartofFright { get; set; }
+
 		public virtual int HoradricA1 { get; set; }
 		public virtual int HoradricA2 { get; set; }
 		public virtual int HoradricA3 { get; set; }
