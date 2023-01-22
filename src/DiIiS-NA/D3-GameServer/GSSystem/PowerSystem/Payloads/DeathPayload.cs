@@ -266,7 +266,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				//Пчелы
 				case ActorSno._sandwasp_a:
 				case ActorSno._fleshpitflyer_leoric_inferno:
-					Target.PlayAnimation(11, 8535, 1f);
+					Target.PlayAnimation(11, AnimationSno.fleshpitflyer_death, 1f);
 					break;
 				//X1_LR_Boss_Angel_Corrupt_A
 				case ActorSno._x1_lr_boss_angel_corrupt_a: Target.PlayAnimation(11, 142005, 1f); break;
