@@ -423,7 +423,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					plr.KilledMonstersTempCount++;
 				}
 
-				if (Target is Champion || Target is Rare || Target is Boss || Target is Unique)
+				if (Target is Champion or Rare or Boss or Unique)
 				{
 					plr.KilledElitesTempCount++;
 				}
