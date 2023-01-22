@@ -1237,7 +1237,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				Class = joinedPlayer.ClassSNO,
 				snoActorPortrait = joinedPlayer.Toon.DBToon.Cosmetic4,
 				Level = joinedPlayer.Toon.Level,
-				AltLevel = (byte)joinedPlayer.Toon.ParagonLevel,
+				AltLevel = (ushort)joinedPlayer.Toon.ParagonLevel,
 				HighestHeroSoloRiftLevel = 0,
 				StateData = joinedPlayer.GetStateData(),
 				JustJoined = false,

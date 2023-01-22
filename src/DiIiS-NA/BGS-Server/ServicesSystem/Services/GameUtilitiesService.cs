@@ -616,19 +616,19 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             {
                 case 1:
                     break;
-                case 2: NeededClass = ToonClass.Barbarian; break; // Barbarian
-                case 3: NeededClass = ToonClass.Crusader; break; // Crusader
-                case 4: NeededClass = ToonClass.DemonHunter; break; // Demon Hunter
-                case 5: NeededClass = ToonClass.Monk; break; // Monk
-                case 6: NeededClass = ToonClass.WitchDoctor; break; // Witch Doctor
-                case 7: NeededClass = ToonClass.Wizard; break; // Wizard
-                case 8: NeededClass = ToonClass.Necromancer; break; // Necromancer
+                case 2: NeededClass = ToonClass.Barbarian; break; // Barbarian.
+                case 3: NeededClass = ToonClass.Crusader; break; // Crusader.
+                case 4: NeededClass = ToonClass.DemonHunter; break; // Demon Hunter.
+                case 5: NeededClass = ToonClass.Monk; break; // Monk.
+                case 6: NeededClass = ToonClass.WitchDoctor; break; // Warlock.
+                case 7: NeededClass = ToonClass.Wizard; break; // Wizard.
+                case 8: NeededClass = ToonClass.Necromancer; break; // Necromancer.
 
-                case 10: // Двойки
+                case 10: // ToonClass.
                     break;
-                case 11: // Тройки
+                case 11: // Fours.
                     break;
-                case 12: // Четверки
+                case 12: // Fours.
                     break;
                 case 30: //Daring Portal - 1 Player
                 case 31: //Daring Portal - 2 Players
@@ -696,7 +696,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         response
                             .AddEntry(D3.Leaderboard.Score.CreateBuilder()
                             .SetGameAccountId(Gaccount.AccountId)
-                            .SetScore_((ulong)Hero.Level + (ulong)Gaccount.DBGameAccount.ParagonLevel) //Временное разделение
+                            .SetScore_((ulong)Hero.Level + (ushort)Gaccount.DBGameAccount.ParagonLevel) // Temporary Separation.
                             .SetScoreBand(5)
                             .SetLeaderboardId(5)
                             .SetScopeId(5)
