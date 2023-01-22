@@ -2236,7 +2236,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override void OnChannelOpen()
 		{
-			this.EffectsPerSecond = 0.3f;
+			EffectsPerSecond = 0.3f;
 
 			if (Rune_B > 0)
 			{
@@ -2465,7 +2465,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				List<Actor> Images = new List<Actor>();
 				for (int i = 0; i < maxImages; i++)
 				{
-					var Image = new MirrorImageMinion(this.World, this, i, ScriptFormula(9));
+					var Image = new MirrorImageMinion(World, this, i, ScriptFormula(9));
 					Image.Brain.DeActivate();
 					Image.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 					Image.Attributes[GameAttribute.Untargetable] = true;
@@ -3984,7 +3984,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			List<Actor> Images = new List<Actor>();
 			for (int i = 0; i < maxImages; i++)
 			{
-				var Image = new MirrorImageMinion(this.World, this, i, ScriptFormula(2));
+				var Image = new MirrorImageMinion(World, this, i, ScriptFormula(2));
 				Image.Brain.DeActivate();
 				Image.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 				Image.Attributes[GameAttribute.Untargetable] = true;

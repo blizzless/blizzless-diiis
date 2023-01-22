@@ -24,16 +24,16 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public Vector3D()
 		{
-			this.X = 0;
-			this.Y = 0;
-			this.Z = 0;
+			X = 0;
+			Y = 0;
+			Z = 0;
 		}
 
 		public Vector3D(Vector3D vector)
 		{
-			this.X = vector.X;
-			this.Y = vector.Y;
-			this.Z = vector.Z;
+			X = vector.X;
+			Y = vector.Y;
+			Z = vector.Z;
 		}
 
 		public Vector3D(float x, float y, float z)
@@ -97,9 +97,9 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public void Set(float x, float y, float z)
 		{
-			this.X = x;
-			this.Y = y;
-			this.Z = z;
+			X = x;
+			Y = y;
+			Z = z;
 		}
 
 		/// <summary>
@@ -118,8 +118,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public static bool operator ==(Vector3D a, Vector3D b)
 		{
-			if (object.ReferenceEquals(null, a))
-				return object.ReferenceEquals(null, b);
+			if (ReferenceEquals(null, a))
+				return ReferenceEquals(null, b);
 			return a.Equals(b);
 		}
 
@@ -130,8 +130,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public static bool operator >(Vector3D a, Vector3D b)
 		{
-			if (object.ReferenceEquals(null, a))
-				return !object.ReferenceEquals(null, b);
+			if (ReferenceEquals(null, a))
+				return !ReferenceEquals(null, b);
 			return a.X > b.X
 				&& a.Y > b.Y
 				&& a.Z > b.Z;
@@ -154,8 +154,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public static bool operator >=(Vector3D a, Vector3D b)
 		{
-			if (object.ReferenceEquals(null, a))
-				return object.ReferenceEquals(null, b);
+			if (ReferenceEquals(null, a))
+				return ReferenceEquals(null, b);
 			return a.X >= b.X
 				&& a.Y >= b.Y
 				&& a.Z >= b.Z;
@@ -163,8 +163,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public static bool operator <=(Vector3D a, Vector3D b)
 		{
-			if (object.ReferenceEquals(null, a))
-				return object.ReferenceEquals(null, b);
+			if (ReferenceEquals(null, a))
+				return ReferenceEquals(null, b);
 			return a.X <= b.X
 				&& a.Y <= b.Y
 				&& a.Z <= b.Z;
@@ -172,14 +172,14 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public override bool Equals(object o)
 		{
-			if (object.ReferenceEquals(this, o))
+			if (ReferenceEquals(this, o))
 				return true;
 			var v = o as Vector3D;
 			if (v != null)
 			{
-				return this.X == v.X
-					&& this.Y == v.Y
-					&& this.Z == v.Z;
+				return X == v.X
+					&& Y == v.Y
+					&& Z == v.Z;
 			}
 			return false;
 		}

@@ -181,7 +181,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			Task.Run(() =>
 			{
-				lock (client.serviceLock)
+				lock (client._serviceLock)
 				{
 					Logger.Trace("GrantAchievement(): id {0}", achievementId);
 					if (client.Account.GameAccount.Achievements.Where(a => a.AchievementId == achievementId && a.Completion != -1).Count() > 0) return;
@@ -202,7 +202,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 							DBGameAccount = client.Account.GameAccount.DBGameAccount,
 							AchievementId = achievementId,
 							Criteria = new byte[0],
-							IsHardcore = AchievementManager.IsHardcore(achievementId),
+							IsHardcore = IsHardcore(achievementId),
 							CompleteTime = (int)DateTime.Now.ToUnixTime()
 						};
 						DBSessions.SessionSave(achievement);
@@ -222,7 +222,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 					UpdateSnapshot(client, achievementId);
 
-					if (AchievementManager.IsHardcore(achievementId))
+					if (IsHardcore(achievementId))
 					{
 						if (achs.Where(a => a.CompleteTime != -1 && a.IsHardcore == true).Count() >= 30) //31 in total
 						{
@@ -246,7 +246,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			Task.Run(() =>
 			{
-				lock (client.serviceLock)
+				lock (client._serviceLock)
 				{
 					Logger.Trace("GrantCriteria(): id {0}", criteriaId);
 					D3.AchievementsStaticData.StaticCriteriaDefinition definition = null;
@@ -271,7 +271,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 							Logger.Trace("GrantCriteria(): creating new ach data");
 							achievement.DBGameAccount = client.Account.GameAccount.DBGameAccount;
 							achievement.AchievementId = definition.ParentAchievementId;
-							achievement.IsHardcore = AchievementManager.IsHardcore(definition.ParentAchievementId);
+							achievement.IsHardcore = IsHardcore(definition.ParentAchievementId);
 							achievement.CompleteTime = -1;
 							achievement.Quantity = 0;
 							List<uint> crits = new List<uint>();
@@ -381,13 +381,13 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			Task.Run(() =>
 			{
-				lock (client.serviceLock)
+				lock (client._serviceLock)
 				{
 					if (additionalQuantity == 0) return;
 					Logger.Trace("UpdateQuantity(): id {0}", achievementId);
 					if (client.Account.GameAccount.Achievements.Where(a => a.AchievementId == achievementId && a.Completion != -1).Count() > 0) return;
 
-					ulong mainCriteriaId = AchievementManager.GetMainCriteria(achievementId);
+					ulong mainCriteriaId = GetMainCriteria(achievementId);
 					var aa = client.Account.GameAccount.AchievementCriteria;
 					D3.Achievements.CriteriaUpdateRecord mainCriteria;
 					lock (client.Account.GameAccount.AchievementCriteria)
@@ -420,7 +420,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 						Logger.Trace("UpdateQuantity(): creating new ach data");
 						achievement.DBGameAccount = client.Account.GameAccount.DBGameAccount;
 						achievement.AchievementId = achievementId;
-						achievement.IsHardcore = AchievementManager.IsHardcore(achievementId);
+						achievement.IsHardcore = IsHardcore(achievementId);
 						achievement.CompleteTime = -1;
 						List<uint> crits = new List<uint>();
 						achievement.Criteria = SerializeBytes(crits);

@@ -64,9 +64,9 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			}
 			set
 			{
-				lock (this.DBGameAccount)
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.DBAccount = value.DBAccount;
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -79,16 +79,16 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return DBSessions.SessionGet<DBGameAccount>(this.PersistentID);
+				return DBSessions.SessionGet<DBGameAccount>(PersistentID);
 			}
 			set { }
 		}
 
-		public D3.OnlineService.EntityId D3GameAccountId
+		public EntityId D3GameAccountId
 		{
 			get
 			{
-				return D3.OnlineService.EntityId.CreateBuilder().SetIdHigh(BnetEntityId.High).SetIdLow(PersistentID).Build();
+				return EntityId.CreateBuilder().SetIdHigh(BnetEntityId.High).SetIdLow(PersistentID).Build();
 			}
 		}
 
@@ -117,7 +117,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.GameAccount, 3, 0, this.CurrentActivity);
+				return new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.GameAccount, 3, 0, CurrentActivity);
 			}
 		}
 
@@ -126,7 +126,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			get
 			{
 				var val = new ByteStringPresenceField<D3.Guild.GuildSummary>(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.GameAccount, 7, 0);
-				val.Value = this.Clan.Summary;
+				val.Value = Clan.Summary;
 				return val;
 			}
 		}
@@ -144,9 +144,9 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				if (this.CurrentToon == null)
+				if (CurrentToon == null)
 					return Toons.Count > 0 ? Toons.First().D3EntityID : AccountHasNoToons;
-				return this.CurrentToon.D3EntityID;
+				return CurrentToon.D3EntityID;
 			}
 		}
 
@@ -179,11 +179,11 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				if (this.LoggedInClient != null && this.LoggedInClient.CurrentChannel != null)
+				if (LoggedInClient != null && LoggedInClient.CurrentChannel != null)
 				{
 					return bgs.protocol.channel.v1.ChannelId.CreateBuilder()
 						.SetType(0)
-						.SetId((uint)this.LoggedInClient.CurrentChannel.D3EntityId.IdLow)
+						.SetId((uint)LoggedInClient.CurrentChannel.D3EntityId.IdLow)
 						.SetHost(bgs.protocol.ProcessId.CreateBuilder().SetLabel(1).SetEpoch(0))
 						.Build();
 				}
@@ -193,7 +193,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			set
 			{
 				if (value != null)
-					this.LoggedInClient.CurrentChannel = ChannelManager.GetChannelByChannelId (value);
+					LoggedInClient.CurrentChannel = ChannelManager.GetChannelByChannelId (value);
 			}
 		}
 
@@ -201,9 +201,9 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				if (this.LoggedInClient != null && this.LoggedInClient.CurrentChannel != null)
+				if (LoggedInClient != null && LoggedInClient.CurrentChannel != null)
 				{
-					return this.LoggedInClient.CurrentChannel.D3EntityId;
+					return LoggedInClient.CurrentChannel.D3EntityId;
 				}
 				else
 					return null;
@@ -211,7 +211,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			set
 			{
 				if (value != null)
-					this.LoggedInClient.CurrentChannel = ChannelManager.GetChannelByEntityId(value);
+					LoggedInClient.CurrentChannel = ChannelManager.GetChannelByEntityId(value);
 			}
 		}
 
@@ -250,7 +250,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			get
 			{
 				var val = new EntityIdPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.GameAccount, 7, 0);
-				val.Value = this.Owner.BnetEntityId;
+				val.Value = Owner.BnetEntityId;
 				return val;
 			}
 		}
@@ -274,7 +274,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return new IntPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.GameAccount, 4, 0, (long)this.LastOnline);
+				return new IntPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.GameAccount, 4, 0, (long)LastOnline);
 			}
 		}
 
@@ -287,10 +287,10 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				if (this._bannerConfiguration != null)
-					return this._bannerConfiguration;
+				if (_bannerConfiguration != null)
+					return _bannerConfiguration;
 				var res = BannerConfiguration.CreateBuilder();
-				if (this.DBGameAccount.Banner == null || this.DBGameAccount.Banner.Length < 1)
+				if (DBGameAccount.Banner == null || DBGameAccount.Banner.Length < 1)
 				{
 					res = BannerConfiguration.CreateBuilder()
 						.SetBannerShape(189701627)
@@ -306,25 +306,25 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					//.SetEpicBanner((uint)StringHashHelper.HashNormal("Banner_Epic_03_PVP_Class_Completion"))
 					//.SetEpicBanner((uint)StringHashHelper.HashNormal("Banner_Epic_01_Hardcore"))
 
-					lock (this.DBGameAccount)
+					lock (DBGameAccount)
 					{
-						var dbGAcc = this.DBGameAccount;
+						var dbGAcc = DBGameAccount;
 						dbGAcc.Banner = res.Build().ToByteArray();
 						DBSessions.SessionUpdate(dbGAcc);
 					}
 				}
 				else
-					res = BannerConfiguration.CreateBuilder(BannerConfiguration.ParseFrom(this.DBGameAccount.Banner));
+					res = BannerConfiguration.CreateBuilder(BannerConfiguration.ParseFrom(DBGameAccount.Banner));
 
-				this._bannerConfiguration = res.Build();
-				return this._bannerConfiguration;
+				_bannerConfiguration = res.Build();
+				return _bannerConfiguration;
 			}
 			set
 			{
-				this._bannerConfiguration = value;
-				lock (this.DBGameAccount)
+				_bannerConfiguration = value;
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.Banner = value.ToByteArray();
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -356,7 +356,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				if (this.CurrentToon.IsHardcore)
+				if (CurrentToon.IsHardcore)
 					return "D3_GOLD_HC";
 				else
 					return "D3_GOLD";
@@ -369,16 +369,16 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				if (this._currentToonId == 0) return null;
-				return ToonManager.GetToonByLowID(this._currentToonId);
+				if (_currentToonId == 0) return null;
+				return ToonManager.GetToonByLowID(_currentToonId);
 			}
 			set
 			{
-				if (value.GameAccount.PersistentID != this.PersistentID) return; //just in case...
-				this._currentToonId = value.PersistentID;
-				lock (this.DBGameAccount)
+				if (value.GameAccount.PersistentID != PersistentID) return; //just in case...
+				_currentToonId = value.PersistentID;
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.LastPlayedHero = value.DBToon;
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -401,13 +401,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return this.DBGameAccount.Gold;
+				return DBGameAccount.Gold;
 			}
 			set
 			{
-				lock (this.DBGameAccount)
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.Gold = value;
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -418,13 +418,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return this.DBGameAccount.HardcoreGold;
+				return DBGameAccount.HardcoreGold;
 			}
 			set
 			{
-				lock (this.DBGameAccount)
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.HardcoreGold = value;
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -435,13 +435,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return this.DBGameAccount.BloodShards;
+				return DBGameAccount.BloodShards;
 			}
 			set
 			{
-				lock (this.DBGameAccount)
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.BloodShards = value;
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -452,13 +452,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return this.DBGameAccount.HardcoreBloodShards;
+				return DBGameAccount.HardcoreBloodShards;
 			}
 			set
 			{
-				lock (this.DBGameAccount)
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.HardcoreBloodShards = value;
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -469,13 +469,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return this.DBGameAccount.TotalBloodShards;
+				return DBGameAccount.TotalBloodShards;
 			}
 			set
 			{
-				lock (this.DBGameAccount)
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.TotalBloodShards = value;
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -706,7 +706,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			get
 			{
 				GameAccountSettings res = null;
-				if (this.DBGameAccount.UISettings == null || this.DBGameAccount.UISettings.Length < 1)
+				if (DBGameAccount.UISettings == null || DBGameAccount.UISettings.Length < 1)
 				{
 					res = GameAccountSettings.CreateBuilder()
 						//.SetChatFontSize(8)
@@ -715,23 +715,23 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 						.AddAutoJoinChannelsDeprecated("D3_GeneralChat")
 						.Build();
 
-					lock (this.DBGameAccount)
+					lock (DBGameAccount)
 					{
-						var dbGAcc = this.DBGameAccount;
+						var dbGAcc = DBGameAccount;
 						dbGAcc.UISettings = res.ToByteArray();
 						DBSessions.SessionUpdate(dbGAcc);
 					}
 				}
 				else
-					res = GameAccountSettings.ParseFrom(this.DBGameAccount.UISettings);
+					res = GameAccountSettings.ParseFrom(DBGameAccount.UISettings);
 
 				return res;
 			}
 			set
 			{
-				lock (this.DBGameAccount)
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.UISettings = value.ToByteArray();
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -755,9 +755,9 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 						//.SetActionBindingVoiceptt(D3.Client.ActionBinding.CreateBuilder().SetKey1(112).SetKey2(-1).SetKeyModifierFlags1(0).SetKeyModifierFlags2(0).Build())
 						.Build();
 
-					lock (this.DBGameAccount)
+					lock (DBGameAccount)
 					{
-						var dbGAcc = this.DBGameAccount;
+						var dbGAcc = DBGameAccount;
 						dbGAcc.UIPrefs = res.ToByteArray();
 						DBSessions.SessionUpdate(dbGAcc);
 					}
@@ -769,9 +769,9 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			}
 			set
 			{
-				lock (this.DBGameAccount)
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.UIPrefs = value.ToByteArray();
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -792,13 +792,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				if (this._achievements == null)
-					this.SetField();
-				return this._achievements;
+				if (_achievements == null)
+					SetField();
+				return _achievements;
 			}
 			set
 			{
-				this._achievements = value;
+				_achievements = value;
 			}
 		}
 
@@ -806,13 +806,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				if (this._criteria == null)
-					this.SetField();
-				return this._criteria;
+				if (_criteria == null)
+					SetField();
+				return _criteria;
 			}
 			set
 			{
-				this._criteria = value;
+				_criteria = value;
 			}
 		}
 
@@ -822,7 +822,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			uint highestLevel = 1;
 			var _toons = DBSessions.SessionQueryWhere<DBToon>(
 					dbi =>
-					dbi.DBGameAccount.Id == this.PersistentID
+					dbi.DBGameAccount.Id == PersistentID
 					&& dbi.Class == className).ToList();
 			foreach (var toon in _toons)
 			{
@@ -841,7 +841,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			uint highestLevel = 0;
 			var _toons = DBSessions.SessionQueryWhere<DBToon>(
 					dbi =>
-					dbi.DBGameAccount.Id == this.PersistentID
+					dbi.DBGameAccount.Id == PersistentID
 					&& dbi.isHardcore == true).ToList();
 			foreach (var toon in _toons)
 			{
@@ -852,7 +852,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public bool InviteToGuild(Guild guild, GameAccount inviter)
 		{
-			if (guild.IsClan && this.Clan != null)
+			if (guild.IsClan && Clan != null)
 				return false;
 			else
 			{
@@ -861,10 +861,10 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					.SetGuildName(guild.Name)
 					.SetInviterId(inviter.PersistentID)
 					.SetCategory(guild.Category)
-					.SetInviteType(inviter.PersistentID == this.PersistentID ? 1U : 0U)
+					.SetInviteType(inviter.PersistentID == PersistentID ? 1U : 0U)
 					.SetExpireTime(3600);
 				if (guild.IsClan) invite.SetGuildTag(guild.Prefix);
-				this.GuildInvites.Add(invite.Build());
+				GuildInvites.Add(invite.Build());
 
 
 				var update = D3.Notification.GuildInvitesListUpdate.CreateBuilder();
@@ -872,16 +872,16 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 				var notification = bgs.protocol.notification.v1.Notification.CreateBuilder();
 				notification.SetSenderId(bgs.protocol.EntityId.CreateBuilder().SetHigh(0UL).SetLow(0UL));
-				notification.SetTargetAccountId(this.Owner.BnetEntityId);
-				notification.SetTargetId(this.BnetEntityId);
+				notification.SetTargetAccountId(Owner.BnetEntityId);
+				notification.SetTargetId(BnetEntityId);
 				notification.SetType("D3.NotificationMessage");
 				notification.AddAttribute(bgs.protocol.Attribute.CreateBuilder()
 					.SetName("D3.NotificationMessage.MessageId").SetValue(bgs.protocol.Variant.CreateBuilder().SetIntValue(0)));
 				notification.AddAttribute(bgs.protocol.Attribute.CreateBuilder()
 					.SetName("D3.NotificationMessage.Payload").SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(update.Build().ToByteString())));
 
-				this.LoggedInClient.MakeRPC((lid) =>
-					bgs.protocol.notification.v1.NotificationListener.CreateStub(this.LoggedInClient).OnNotificationReceived(new HandlerController() { ListenerId = lid 
+				LoggedInClient.MakeRPC((lid) =>
+					bgs.protocol.notification.v1.NotificationListener.CreateStub(LoggedInClient).OnNotificationReceived(new HandlerController() { ListenerId = lid 
 					}, notification.Build(), callback => { }));
 				return true;
 			}
@@ -891,7 +891,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				var dbGAcc = this.DBGameAccount;
+				var dbGAcc = DBGameAccount;
 				var profile = AccountProfile.CreateBuilder()
 					.SetParagonLevel((uint)dbGAcc.ParagonLevel)
 					.SetDeprecatedBestLadderParagonLevel((uint)dbGAcc.ParagonLevel)
@@ -903,15 +903,15 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					.SetGoldCollected(dbGAcc.TotalGold)
 					//deprecated //.SetHighestDifficulty(Convert.ToUInt32(progress[0], 10))
 					.SetNumFallenHeroes(3)
-					.SetParagonLevelHardcore(0)  // Уровень совершенства в гер. режиме
-					.SetBountiesCompleted((uint)dbGAcc.TotalBounties) //Выполнено поручений
-					.SetLootRunsCompleted(0) //Закрыто нефалемских порталов
+					.SetParagonLevelHardcore(0)  // Hardcore Paragon Level
+					.SetBountiesCompleted((uint)dbGAcc.TotalBounties) // Bounties Completed
+					.SetLootRunsCompleted(0) // Loot Runs Completed
 					.SetPvpWins(0)
 					.SetPvpTakedowns(0)
 					.SetPvpDamage(0)
-					.SetMonstersKilled(dbGAcc.TotalKilled) //Убито монстров
-					.SetElitesKilled(this.DBGameAccount.ElitesKilled) //Убито особых противников
-					.SetGoldCollected(this.DBGameAccount.TotalGold) //Собрано золото
+					.SetMonstersKilled(dbGAcc.TotalKilled) //Monsters killed
+					.SetElitesKilled(DBGameAccount.ElitesKilled) //Убито особых противников
+					.SetGoldCollected(DBGameAccount.TotalGold) //Собрано золото
 					.SetHighestHardcoreLevel(0)     // Максимальный уровень в гер. режиме
 					.SetHardcoreMonstersKilled(0) // Убито монстров в гер. режиме
 
@@ -954,7 +954,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			EntityId.CreateBuilder().SetIdHigh(0).SetIdLow(0).Build();
 		//Platinum
 
-		public int Platinum { get { return this.DBGameAccount.Platinum; } set { lock (this.DBGameAccount) { var dbGA = this.DBGameAccount; dbGA.Platinum = value; DBSessions.SessionUpdate(dbGA); } } }
+		public int Platinum { get { return DBGameAccount.Platinum; } set { lock (DBGameAccount) { var dbGA = DBGameAccount; dbGA.Platinum = value; DBSessions.SessionUpdate(dbGA); } } }
 
 		public List<Toon> Toons
 		{
@@ -965,16 +965,16 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			: base(dbGameAccount.Id)
 		{
 			//DBGameAccount = dbGameAccount;
-			this.AccountId = dbGameAccount.DBAccount.Id;
+			AccountId = dbGameAccount.DBAccount.Id;
 			if (dbGameAccount.LastPlayedHero != null)
-				this._currentToonId = dbGameAccount.LastPlayedHero.Id;
-			this.LastOnline = dbGameAccount.LastOnline;
-			var banner = this.BannerConfiguration; //just pre-loading it
+				_currentToonId = dbGameAccount.LastPlayedHero.Id;
+			LastOnline = dbGameAccount.LastOnline;
+			var banner = BannerConfiguration; //just pre-loading it
 
 			const ulong bnetGameAccountHigh = ((ulong)EntityIdHelper.HighIdType.GameAccountId) + (0x0100004433);// + (0x0100004433);
 
-			this.BnetEntityId = bgs.protocol.EntityId.CreateBuilder().SetHigh(bnetGameAccountHigh).SetLow(PersistentID).Build();
-			this.ProgramField.Value = "D3";
+			BnetEntityId = bgs.protocol.EntityId.CreateBuilder().SetHigh(bnetGameAccountHigh).SetLow(PersistentID).Build();
+			ProgramField.Value = "D3";
 		}
 
 		private void SetField()
@@ -982,7 +982,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			Achievements = new List<AchievementUpdateRecord>();
 			AchievementCriteria = new List<CriteriaUpdateRecord>();
 
-			var achs = DBSessions.SessionQueryWhere<Core.Storage.AccountDataBase.Entities.DBAchievements>(dbi => dbi.DBGameAccount.Id == this.PersistentID).ToList();
+			var achs = DBSessions.SessionQueryWhere<Core.Storage.AccountDataBase.Entities.DBAchievements>(dbi => dbi.DBGameAccount.Id == PersistentID).ToList();
 			foreach (var ach in achs)
 			{
 				if (ach.AchievementId == 1)
@@ -1048,7 +1048,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 
 				//checking last online
-				var dbAcc = this.Owner.DBAccount;
+				var dbAcc = Owner.DBAccount;
 
 				ChangedFields.SetPresenceFieldValue(GameAccountStatusField);
 				ChangedFields.SetPresenceFieldValue(LastOnlineField);
@@ -1073,13 +1073,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return (GameAccountFlags)this.DBGameAccount.Flags | GameAccountFlags.HardcoreAdventureModeUnlocked;
+				return (GameAccountFlags)DBGameAccount.Flags | GameAccountFlags.HardcoreAdventureModeUnlocked;
 			}
 			set
 			{
-				lock (this.DBGameAccount)
+				lock (DBGameAccount)
 				{
-					var dbGAcc = this.DBGameAccount;
+					var dbGAcc = DBGameAccount;
 					dbGAcc.Flags = (int)value;
 					DBSessions.SessionUpdate(dbGAcc);
 				}
@@ -1092,7 +1092,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			{
 				Digest.Builder builder = Digest.CreateBuilder().SetVersion(116)
 					// 7447=>99, 7728=> 100, 8801=>102, 8296=>105, 8610=>106, 8815=>106, 8896=>106, 9183=>107
-					.SetBannerConfiguration(this.BannerConfiguration)
+					.SetBannerConfiguration(BannerConfiguration)
 					//.SetFlags((uint)this.Flags) //1 - Enable Hardcore
 					.SetFlags((uint)114)
 					.SetLastPlayedHeroId(LastPlayedHeroId)
@@ -1103,11 +1103,11 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					.SetChallengeRiftAccountData(D3.ChallengeRifts.AccountData.CreateBuilder()
 						.SetLastChallengeRewardEarned(416175).SetLastChallengeTried(416175)
 						)
-					.AddAltLevels((uint)this.DBGameAccount.ParagonLevel)
+					.AddAltLevels((uint)DBGameAccount.ParagonLevel)
 					//.AddAltLevels((uint)this.DBGameAccount.ParagonLevelHardcore)
 					;
-				if (this.Clan != null)
-					builder.SetGuildId(this.Clan.PersistentId);
+				if (Clan != null)
+					builder.SetGuildId(Clan.PersistentId);
 
 				return builder.Build();
 			}
@@ -1117,7 +1117,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				return (uint)this.Achievements.Where(a => a.Completion != -1).Count() * 10U;
+				return (uint)Achievements.Where(a => a.Completion != -1).Count() * 10U;
 			}
 		}
 
@@ -1127,7 +1127,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			var operations = ChangedFields.GetChangedFieldList();
 			ChangedFields.ClearChanged();
-			base.UpdateSubscribers(Subscribers, operations);
+			UpdateSubscribers(Subscribers, operations);
 		}
 
 		public override List<FieldOperation> GetSubscriptionNotifications()
@@ -1170,7 +1170,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			operationList.Add(BattleTagField.GetFieldOperation());
 			operationList.Add(GameAccountNameField.GetFieldOperation());
 			operationList.Add(OwnerIdField.GetFieldOperation());
-			if (this.Clan != null)
+			if (Clan != null)
 				operationList.Add(ClanIdField.GetFieldOperation());
 			operationList.Add(GameVersionField.GetFieldOperation());
 			operationList.Add(PartyIdField.GetFieldOperation());
@@ -1207,12 +1207,12 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				}
 			}
 			if (operationsToUpdate.Count > 0)
-				base.UpdateSubscribers(Subscribers, operationsToUpdate);
+				UpdateSubscribers(Subscribers, operationsToUpdate);
 		}
 
 		public void TestUpdate()
 		{
-			var operations = this.GetSubscriptionNotifications();
+			var operations = GetSubscriptionNotifications();
 			/*
 			operations.Add(
 				FieldOperation.CreateBuilder()
@@ -1240,7 +1240,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				case FieldKeyHelper.Program.D3:
 					if (field.Key.Group == 2 && field.Key.Field == 3) //CurrentActivity
 					{
-						this.CurrentActivity = (int)field.Value.IntValue;
+						CurrentActivity = (int)field.Value.IntValue;
 						returnField.SetValue(field.Value);
 						Logger.Trace("{0} set CurrentActivity to {1}", this, field.Value.IntValue);
 					}
@@ -1270,7 +1270,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 							Channel channel = ChannelManager.GetChannelByChannelId(bgs.protocol.channel.v1.ChannelId.ParseFrom(field.Value.MessageValue));
 							//this.PartyId = EntityId.CreateBuilder().SetIdLow(NewChannelID.Id).SetIdHigh(0x600000000000000).Build();
 							
-							this.PartyChannelId = bgs.protocol.channel.v1.ChannelId.ParseFrom(field.Value.MessageValue);
+							PartyChannelId = bgs.protocol.channel.v1.ChannelId.ParseFrom(field.Value.MessageValue);
 							LoggedInClient.CurrentChannel = channel;
 							var c = bgs.protocol.channel.v1.ChannelId.ParseFrom(field.Value.MessageValue);
 							//returnField.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(PartyChannelId.ToByteString()).Build());
@@ -1283,7 +1283,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 						}
 						else
 						{
-							this.PartyId = null;
+							PartyId = null;
 							//if(PartyChannelId != null)
 							//	returnField.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(PartyChannelId.ToByteString()).Build());
 							//else

@@ -27,10 +27,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 1.2f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.
-			this.WalkSpeed *= 2;
-			this.DamageCoefficient = 2f * 2f;
+			WalkSpeed *= 2;
+			DamageCoefficient = 2f * 2f;
 			SetBrain(new MinionBrain(this));
-			this.Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
 			//TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
 			//Attributes[GameAttribute.Hitpoints_Max] = 20f;
 			//Attributes[GameAttribute.Hitpoints_Cur] = 20f;

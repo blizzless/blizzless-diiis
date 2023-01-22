@@ -33,9 +33,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		public override void SetQuests()
 		{
 			#region Raising Recruits (followers)
-			this.Game.QuestManager.SideQuests.Add(154195, new Quest { RewardXp = 0, RewardGold = 0, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(154195, new Quest { RewardXp = 0, RewardGold = 0, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[154195].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[154195].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -45,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[154195].Steps.Add(6, new QuestStep
+			Game.QuestManager.SideQuests[154195].Steps.Add(6, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -56,7 +56,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[154195].Steps.Add(4, new QuestStep
+			Game.QuestManager.SideQuests[154195].Steps.Add(4, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -67,7 +67,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[154195].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[154195].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -79,10 +79,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			#endregion
 
 			#region A1Farmer - Clear Farm
-			this.Game.QuestManager.SideQuests.Add(81925, new Quest { RewardXp = 500, RewardGold = 250, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(81925, new Quest { RewardXp = 500, RewardGold = 250, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 			//var quest_data = (Mooege.Common.MPQ.FileFormats.Quest)Mooege.Common.MPQ.MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Actor][81925].Data;
 			//1,7,4
-			this.Game.QuestManager.SideQuests[81925].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[81925].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -91,7 +91,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 				})
 			});
-			this.Game.QuestManager.SideQuests[81925].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[81925].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -101,38 +101,38 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					ListenKill(ActorSno._fleshpitflyerspawner_b_event_farmambush, 4, new SideAdvance());
 				})
 			});
-			this.Game.QuestManager.SideQuests[81925].Steps.Add(7, new QuestStep
+			Game.QuestManager.SideQuests[81925].Steps.Add(7, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 4,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					var world = this.Game.GetWorld(WorldSno.trout_town);
+					var world = Game.GetWorld(WorldSno.trout_town);
 					StartConversation(world, 60182);
 					if (!Game.Players.IsEmpty)
-						world.SpawnMonster(ActorSno._fleshpitflyer_b_farmhouseambush_unique, this.Game.Players.First().Value.Position);
+						world.SpawnMonster(ActorSno._fleshpitflyer_b_farmhouseambush_unique, Game.Players.First().Value.Position);
 					ListenKill(ActorSno._fleshpitflyer_b_farmhouseambush_unique, 1, new SideAdvance());
 				})
 			});
-			this.Game.QuestManager.SideQuests[81925].Steps.Add(4, new QuestStep
+			Game.QuestManager.SideQuests[81925].Steps.Add(4, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
-					StartConversation(this.Game.GetWorld(WorldSno.trout_town), 60184);
+					StartConversation(Game.GetWorld(WorldSno.trout_town), 60184);
 				})
 			});
 			#endregion
 
 			#region Last Stand of Ancients
-			this.Game.QuestManager.SideQuests.Add(121745, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(121745, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 			//102008 tomb
 			GlobalListenInteract(ActorSno._temp_story_trigger_enabled, 1, new StartSideQuest(121745, true));
 
-			this.Game.QuestManager.SideQuests[121745].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[121745].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -142,21 +142,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[121745].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[121745].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //defend yourself
-					var world = this.Game.GetWorld(WorldSno.trout_town);
+					var world = Game.GetWorld(WorldSno.trout_town);
 					script = new Invasion(world.Players.First().Value.Position, 50f, new List<ActorSno> { ActorSno._skeleton_b, ActorSno._skeletonarcher_b }, 30f, ActorSno._shield_skeleton_nephchamp, false);
 					script.Execute(world);
 					ListenKill(ActorSno._shield_skeleton_nephchamp, 3, new SideAdvance()); //mob skeleton
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[121745].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[121745].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -167,11 +167,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 			#endregion
 			#region The Crumbling Vault
-			this.Game.QuestManager.SideQuests.Add(120396, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(120396, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
 			GlobalListenTeleport(19794, new StartSideQuest(120396, true));
 
-			this.Game.QuestManager.SideQuests[120396].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[120396].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -181,37 +181,37 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[120396].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[120396].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //escape to treasure room
-					SetQuestTimer(120396, 180f, this.Game.GetWorld(WorldSno.a2dun_zolt_timed01_level01), new SideAbandon());
+					SetQuestTimer(120396, 180f, Game.GetWorld(WorldSno.a2dun_zolt_timed01_level01), new SideAbandon());
 					ListenTeleport(168200, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[120396].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[120396].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					foreach (var plr in this.Game.Players)
-						if (this.Game.QuestManager.QuestTimerEstimate >= 90f)
+					foreach (var plr in Game.Players)
+						if (Game.QuestManager.QuestTimerEstimate >= 90f)
 							plr.Value.GrantAchievement(74987243307689);
 				})
 			});
 			#endregion
 			#region Revenge of Gharbad
-			this.Game.QuestManager.SideQuests.Add(225253, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(225253, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
 			GlobalListenConversation(81069, new StartSideQuest(225253, true));
 
-			this.Game.QuestManager.SideQuests[225253].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[225253].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -221,7 +221,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[225253].Steps.Add(4, new QuestStep
+			Game.QuestManager.SideQuests[225253].Steps.Add(4, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -232,14 +232,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[225253].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[225253].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 12,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill shamans
-                    var world = this.Game.GetWorld(WorldSno.trout_town);
+                    var world = Game.GetWorld(WorldSno.trout_town);
 					script = new Invasion(
 						world.GetActorBySNO(ActorSno._trout_highlands_chiefgoatmenmummyrack_a_gharbadevent).Position,
 						30f,
@@ -253,7 +253,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[225253].Steps.Add(12, new QuestStep
+			Game.QuestManager.SideQuests[225253].Steps.Add(12, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -264,19 +264,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[225253].Steps.Add(14, new QuestStep
+			Game.QuestManager.SideQuests[225253].Steps.Add(14, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //Kill gharbad
-					(this.Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._gharbad_the_weak_ghost) as Gharbad).Resurrect();
+					(Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._gharbad_the_weak_ghost) as Gharbad).Resurrect();
 					ListenKill(ActorSno._goatmutant_melee_a_unique_gharbad, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[225253].Steps.Add(2, new QuestStep
+			Game.QuestManager.SideQuests[225253].Steps.Add(2, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -288,11 +288,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 			#endregion
 			#region Rygnar's Idol
-			this.Game.QuestManager.SideQuests.Add(30857, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(30857, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
 			GlobalListenTeleport(19795, new StartSideQuest(30857, true));
 
-			this.Game.QuestManager.SideQuests[30857].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[30857].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -302,7 +302,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[30857].Steps.Add(0, new QuestStep
+			Game.QuestManager.SideQuests[30857].Steps.Add(0, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -314,38 +314,38 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[30857].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[30857].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 17,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find Idol
-					AddFollower(this.Game.GetWorld(WorldSno.a2c2dun_zolt_treasurehunter), ActorSno._a2c2poltahr);
+					AddFollower(Game.GetWorld(WorldSno.a2c2dun_zolt_treasurehunter), ActorSno._a2c2poltahr);
 					ListenProximity(ActorSno._interactlocation, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[30857].Steps.Add(17, new QuestStep
+			Game.QuestManager.SideQuests[30857].Steps.Add(17, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 19,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //get idol
-					StartConversation(this.Game.GetWorld(WorldSno.a2c2dun_zolt_treasurehunter), 18038);
+					StartConversation(Game.GetWorld(WorldSno.a2c2dun_zolt_treasurehunter), 18038);
 					ListenInteract(ActorSno._a2dun_zolt_pedestal, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[30857].Steps.Add(19, new QuestStep
+			Game.QuestManager.SideQuests[30857].Steps.Add(19, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //stop ambush
-					foreach (var spawner in this.Game.GetWorld(WorldSno.a2c2dun_zolt_treasurehunter).GetActorsBySNO(ActorSno._spawner_skeletonmage_cold_a))
+					foreach (var spawner in Game.GetWorld(WorldSno.a2c2dun_zolt_treasurehunter).GetActorsBySNO(ActorSno._spawner_skeletonmage_cold_a))
 					{
 						spawner.World.SpawnMonster(ActorSno._skeletonmage_cold_a, spawner.Position);
 					}
@@ -354,7 +354,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[30857].Steps.Add(2, new QuestStep
+			Game.QuestManager.SideQuests[30857].Steps.Add(2, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -366,11 +366,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 			#endregion
 			#region Lost Treasure of Khan Dakab
-			this.Game.QuestManager.SideQuests.Add(158596, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(158596, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
 			GlobalListenTeleport(158594, new StartSideQuest(158596, true));
 
-			this.Game.QuestManager.SideQuests[158596].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[158596].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -380,14 +380,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158596].Steps.Add(16, new QuestStep
+			Game.QuestManager.SideQuests[158596].Steps.Add(16, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 18,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large);
+					var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large);
 					SetActorOperable(world, ActorSno._a2dun_aqd_godhead_door_largepuzzle, false);
 					var spots = world.GetActorsBySNO(ActorSno._boxtrigger__one_shot_);
 					world.SpawnMonster(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, spots[FastRandom.Instance.Next(spots.Count)].Position);
@@ -395,19 +395,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158596].Steps.Add(18, new QuestStep
+			Game.QuestManager.SideQuests[158596].Steps.Add(18, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 20,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					SetActorOperable(this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large), ActorSno._a2dun_aqd_godhead_door_largepuzzle, true);
+					SetActorOperable(Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large), ActorSno._a2dun_aqd_godhead_door_largepuzzle, true);
 					ListenInteract(ActorSno._a2dun_aqd_godhead_door_largepuzzle, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158596].Steps.Add(20, new QuestStep
+			Game.QuestManager.SideQuests[158596].Steps.Add(20, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -418,14 +418,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158596].Steps.Add(22, new QuestStep
+			Game.QuestManager.SideQuests[158596].Steps.Add(22, new QuestStep
             {
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill unique
-                    var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large);
+                    var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large);
                     foreach (var spawner in world.GetActorsBySNO(ActorSno._spawner_ghost_d_facepuzzle))
 					{
 						spawner.World.SpawnMonster(ActorSno._ghost_d, spawner.Position);
@@ -435,7 +435,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158596].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[158596].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -446,11 +446,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 			#endregion
 			#region Sardar's Treasure
-			this.Game.QuestManager.SideQuests.Add(158377, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(158377, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
 			GlobalListenTeleport(158384, new StartSideQuest(158377, true));
 
-			this.Game.QuestManager.SideQuests[158377].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[158377].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -460,14 +460,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158377].Steps.Add(13, new QuestStep
+			Game.QuestManager.SideQuests[158377].Steps.Add(13, new QuestStep
             {
 				Completed = false,
 				Saveable = false,
 				NextStep = 17,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-                    var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small);
+                    var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small);
                     SetActorOperable(world, ActorSno._a2dun_aqd_godhead_door, false);
 					var spots = world.GetActorsBySNO(ActorSno._boxtrigger__one_shot_);
                     world.SpawnMonster(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, spots[FastRandom.Instance.Next(spots.Count)].Position);
@@ -475,19 +475,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158377].Steps.Add(17, new QuestStep
+			Game.QuestManager.SideQuests[158377].Steps.Add(17, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 22,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					SetActorOperable(this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small), ActorSno._a2dun_aqd_godhead_door, true);
+					SetActorOperable(Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small), ActorSno._a2dun_aqd_godhead_door, true);
 					ListenInteract(ActorSno._a2dun_aqd_godhead_door, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158377].Steps.Add(22, new QuestStep
+			Game.QuestManager.SideQuests[158377].Steps.Add(22, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -498,14 +498,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158377].Steps.Add(19, new QuestStep
+			Game.QuestManager.SideQuests[158377].Steps.Add(19, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //kill unique
-					var world = this.Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small);
+					var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small);
 					foreach (var spawner in world.GetActorsBySNO(ActorSno._spawner_fastmummy_climb_a_smallfacepuzzle))
 					{
 						spawner.World.SpawnMonster(ActorSno._fastmummy_a, spawner.Position);
@@ -515,7 +515,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[158377].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[158377].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -526,9 +526,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 			#endregion
 			#region x1_Event_WaveFight_ArmyOfTheDead
-			this.Game.QuestManager.SideQuests.Add(365751, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(365751, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[365751].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[365751].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -538,46 +538,46 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[365751].Steps.Add(13, new QuestStep
+			Game.QuestManager.SideQuests[365751].Steps.Add(13, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
+					ListenInteract(Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[365751].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[365751].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._x1_zombieskinny_a }, ActorSno._x1_zombieskinny_skeleton_a_lr_boss);
-					script.Execute(this.Game.SideQuestGizmo.World);
+					script = new WavedInvasion(Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._x1_zombieskinny_a }, ActorSno._x1_zombieskinny_skeleton_a_lr_boss);
+					script.Execute(Game.SideQuestGizmo.World);
 					ListenKill(ActorSno._x1_zombieskinny_skeleton_a_lr_boss, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[365751].Steps.Add(2, new QuestStep
+			Game.QuestManager.SideQuests[365751].Steps.Add(2, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					if (this.Game.SideQuestGizmo != null && this.Game.SideQuestGizmo is CursedShrine)
-						(this.Game.SideQuestGizmo as CursedShrine).Activate();
+					if (Game.SideQuestGizmo != null && Game.SideQuestGizmo is CursedShrine)
+						(Game.SideQuestGizmo as CursedShrine).Activate();
 				})
 			});
 			#endregion
 			#region x1_Event_WaveFight_BloodClanAssault
-			this.Game.QuestManager.SideQuests.Add(368092, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(368092, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[368092].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[368092].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -587,18 +587,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[368092].Steps.Add(13, new QuestStep
+			Game.QuestManager.SideQuests[368092].Steps.Add(13, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
+					ListenInteract(Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[368092].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[368092].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -606,32 +606,32 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
 					script = new WavedInvasion(
-						this.Game.SideQuestGizmo.Position,
+						Game.SideQuestGizmo.Position,
 						30f,
 						new List<ActorSno> { ActorSno._goatman_shaman_b, ActorSno._goatman_melee_a, ActorSno._goatman_melee_b, ActorSno._goatman_melee_c, ActorSno._goatman_ranged_a },
 						ActorSno._goatman_shaman_a_event_gharbad_the_weak
 					);
-					script.Execute(this.Game.SideQuestGizmo.World);
+					script.Execute(Game.SideQuestGizmo.World);
 					ListenKill(ActorSno._goatman_shaman_a_event_gharbad_the_weak, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[368092].Steps.Add(2, new QuestStep
+			Game.QuestManager.SideQuests[368092].Steps.Add(2, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					if (this.Game.SideQuestGizmo != null && this.Game.SideQuestGizmo is CursedShrine)
-						(this.Game.SideQuestGizmo as CursedShrine).Activate();
+					if (Game.SideQuestGizmo != null && Game.SideQuestGizmo is CursedShrine)
+						(Game.SideQuestGizmo as CursedShrine).Activate();
 				})
 			});
 			#endregion
 			#region x1_Event_WaveFight_CultistLegion
-			this.Game.QuestManager.SideQuests.Add(365033, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(365033, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[365033].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[365033].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -641,46 +641,46 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[365033].Steps.Add(13, new QuestStep
+			Game.QuestManager.SideQuests[365033].Steps.Add(13, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
+					ListenInteract(Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[365033].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[365033].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._triunecultist_c_event }, ActorSno._cultist_crownleader);
-					script.Execute(this.Game.SideQuestGizmo.World);
+					script = new WavedInvasion(Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._triunecultist_c_event }, ActorSno._cultist_crownleader);
+					script.Execute(Game.SideQuestGizmo.World);
 					ListenKill(ActorSno._cultist_crownleader, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[365033].Steps.Add(2, new QuestStep
+			Game.QuestManager.SideQuests[365033].Steps.Add(2, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					if (this.Game.SideQuestGizmo != null && this.Game.SideQuestGizmo is CursedShrine)
-						(this.Game.SideQuestGizmo as CursedShrine).Activate();
+					if (Game.SideQuestGizmo != null && Game.SideQuestGizmo is CursedShrine)
+						(Game.SideQuestGizmo as CursedShrine).Activate();
 				})
 			});
 			#endregion
 			#region x1_Event_Horde_GhoulSwarm
-			this.Game.QuestManager.SideQuests.Add(365305, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(365305, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[365305].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[365305].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -690,46 +690,46 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[365305].Steps.Add(11, new QuestStep
+			Game.QuestManager.SideQuests[365305].Steps.Add(11, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
+					ListenInteract(Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[365305].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[365305].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._ghoul_a, ActorSno._ghoul_b }, ActorSno._ghoul_b_speedkill_rare);
-					script.Execute(this.Game.SideQuestGizmo.World);
+					script = new WavedInvasion(Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._ghoul_a, ActorSno._ghoul_b }, ActorSno._ghoul_b_speedkill_rare);
+					script.Execute(Game.SideQuestGizmo.World);
 					ListenKill(ActorSno._ghoul_b_speedkill_rare, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[365305].Steps.Add(2, new QuestStep
+			Game.QuestManager.SideQuests[365305].Steps.Add(2, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					if (this.Game.SideQuestGizmo != null && this.Game.SideQuestGizmo is CursedChest)
-						(this.Game.SideQuestGizmo as CursedChest).Activate();
+					if (Game.SideQuestGizmo != null && Game.SideQuestGizmo is CursedChest)
+						(Game.SideQuestGizmo as CursedChest).Activate();
 				})
 			});
 			#endregion
 			#region x1_Event_Horde_ArmyOfHell
-			this.Game.QuestManager.SideQuests.Add(368306, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(368306, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[368306].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[368306].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -739,46 +739,46 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[368306].Steps.Add(11, new QuestStep
+			Game.QuestManager.SideQuests[368306].Steps.Add(11, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
+					ListenInteract(Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[368306].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[368306].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 2,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
-					script = new WavedInvasion(this.Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._demontrooper_a_catapult }, ActorSno._x1_demontrooper_chronodemon_test_a);
-					script.Execute(this.Game.SideQuestGizmo.World);
+					script = new WavedInvasion(Game.SideQuestGizmo.Position, 30f, new List<ActorSno> { ActorSno._demontrooper_a_catapult }, ActorSno._x1_demontrooper_chronodemon_test_a);
+					script.Execute(Game.SideQuestGizmo.World);
 					ListenKill(ActorSno._x1_demontrooper_chronodemon_test_a, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[368306].Steps.Add(2, new QuestStep
+			Game.QuestManager.SideQuests[368306].Steps.Add(2, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					if (this.Game.SideQuestGizmo != null && this.Game.SideQuestGizmo is CursedChest)
-						(this.Game.SideQuestGizmo as CursedChest).Activate();
+					if (Game.SideQuestGizmo != null && Game.SideQuestGizmo is CursedChest)
+						(Game.SideQuestGizmo as CursedChest).Activate();
 				})
 			});
 			#endregion
 			#region x1_Event_Horde_Bonepit
-			this.Game.QuestManager.SideQuests.Add(369332, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(369332, new Quest { RewardXp = 100, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[369332].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[369332].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -788,18 +788,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[369332].Steps.Add(11, new QuestStep
+			Game.QuestManager.SideQuests[369332].Steps.Add(11, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //find lever
-					ListenInteract(this.Game.SideQuestGizmo.SNO, 1, new SideAdvance());
+					ListenInteract(Game.SideQuestGizmo.SNO, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[369332].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[369332].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -807,31 +807,31 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //enter vault
 					script = new WavedInvasion(
-						this.Game.SideQuestGizmo.Position,
+						Game.SideQuestGizmo.Position,
 						30f,
 						new List<ActorSno> { ActorSno._skeletonking_shield_skeleton, ActorSno._skeletonking_skeleton, ActorSno._skeletonarcher_jail },
 						ActorSno._skeleton_necrojar
 					);
-					script.Execute(this.Game.SideQuestGizmo.World);
+					script.Execute(Game.SideQuestGizmo.World);
 					ListenKill(ActorSno._skeleton_necrojar, 1, new SideAdvance());
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[369332].Steps.Add(2, new QuestStep
+			Game.QuestManager.SideQuests[369332].Steps.Add(2, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					if (this.Game.SideQuestGizmo != null && this.Game.SideQuestGizmo is CursedChest)
-						(this.Game.SideQuestGizmo as CursedChest).Activate();
+					if (Game.SideQuestGizmo != null && Game.SideQuestGizmo is CursedChest)
+						(Game.SideQuestGizmo as CursedChest).Activate();
 				})
 			});
 			#endregion
 			#region x1_AdventureMode_BountyTurnin_A1
-			this.Game.QuestManager.SideQuests.Add(356988, new Quest { RewardXp = 10000, RewardGold = 1000, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
-			this.Game.QuestManager.SideQuests[356988].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests.Add(356988, new Quest { RewardXp = 10000, RewardGold = 1000, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests[356988].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -840,14 +840,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 				})
 			});
-			this.Game.QuestManager.SideQuests[356988].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[356988].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //talk with Tyrael
-					var TristHab = this.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
+					var TristHab = Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
 					var Tyrael = TristHab.GetActorBySNO(ActorSno._tyrael_heaven) as ActorSystem.InteractiveNPC;
 					if (Tyrael != null)
 					{
@@ -858,18 +858,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					ListenConversation(352539, new SideAdvance());
 				})
 			});
-			this.Game.QuestManager.SideQuests[356988].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[356988].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					foreach (var plr in this.Game.Players.Values)
+					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA1");
 						cache.Attributes[GameAttribute.Act] = 0;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = this.Game.Difficulty;
+						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 						if(plr.Toon.isSeassoned) plr.GrantCriteria(74987258781748);
@@ -878,9 +878,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 			#endregion
 			#region x1_AdventureMode_BountyTurnin_A2
-			this.Game.QuestManager.SideQuests.Add(356994, new Quest { RewardXp = 10000, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(356994, new Quest { RewardXp = 10000, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[356994].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[356994].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -890,7 +890,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[356994].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[356994].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -902,18 +902,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[356994].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[356994].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					foreach (var plr in this.Game.Players.Values)
+					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA2");
 						cache.Attributes[GameAttribute.Act] = 100;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = this.Game.Difficulty;
+						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 						if (plr.Toon.isSeassoned) plr.GrantCriteria(74987247833299);
@@ -922,9 +922,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 			#endregion
 			#region x1_AdventureMode_BountyTurnin_A3
-			this.Game.QuestManager.SideQuests.Add(356996, new Quest { RewardXp = 10000, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(356996, new Quest { RewardXp = 10000, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[356996].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[356996].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -934,7 +934,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[356996].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[356996].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -946,18 +946,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[356996].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[356996].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					foreach (var plr in this.Game.Players.Values)
+					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA3");
 						cache.Attributes[GameAttribute.Act] = 200;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = this.Game.Difficulty;
+						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 
@@ -967,9 +967,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 			#endregion
 			#region x1_AdventureMode_BountyTurnin_A4
-			this.Game.QuestManager.SideQuests.Add(356999, new Quest { RewardXp = 10000, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(356999, new Quest { RewardXp = 10000, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[356999].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[356999].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -979,7 +979,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[356999].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[356999].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -991,18 +991,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[356999].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[356999].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					foreach (var plr in this.Game.Players.Values)
+					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA4");
 						cache.Attributes[GameAttribute.Act] = 300;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = this.Game.Difficulty;
+						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 						if (plr.Toon.isSeassoned) plr.GrantCriteria(74987256262166);
@@ -1011,9 +1011,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			});
 			#endregion
 			#region x1_AdventureMode_BountyTurnin_A5
-			this.Game.QuestManager.SideQuests.Add(357001, new Quest { RewardXp = 10000, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+			Game.QuestManager.SideQuests.Add(357001, new Quest { RewardXp = 10000, RewardGold = 100, Completed = false, Saveable = false, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
 
-			this.Game.QuestManager.SideQuests[357001].Steps.Add(-1, new QuestStep
+			Game.QuestManager.SideQuests[357001].Steps.Add(-1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -1023,7 +1023,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[357001].Steps.Add(1, new QuestStep
+			Game.QuestManager.SideQuests[357001].Steps.Add(1, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
@@ -1035,18 +1035,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				})
 			});
 
-			this.Game.QuestManager.SideQuests[357001].Steps.Add(3, new QuestStep
+			Game.QuestManager.SideQuests[357001].Steps.Add(3, new QuestStep
 			{
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
 				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => { //complete
-					foreach (var plr in this.Game.Players.Values)
+					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA5");
 						cache.Attributes[GameAttribute.Act] = 400;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = this.Game.Difficulty;
+						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 						if (plr.Toon.isSeassoned) plr.GrantCriteria(74987249495955);

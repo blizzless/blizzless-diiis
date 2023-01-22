@@ -13,8 +13,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public HandledSNOAttribute(params ActorSno[] snoIds)
 		{
-			this.SNOIds = new List<ActorSno>();
-			this.SNOIds.AddRange(snoIds);
+			SNOIds = new List<ActorSno>();
+			SNOIds.AddRange(snoIds);
 		}
 	}
 }

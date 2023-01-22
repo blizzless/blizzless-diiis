@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public PVPTraining(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.WalkSpeed = 0f;
+			WalkSpeed = 0f;
 		}
 
 	}

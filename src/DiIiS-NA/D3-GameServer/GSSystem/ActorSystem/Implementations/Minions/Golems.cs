@@ -39,7 +39,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
-            this.WalkSpeed *= 3;
+            WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
             Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
@@ -59,7 +59,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
-            this.WalkSpeed *= 3;
+            WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
             Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
@@ -79,7 +79,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
-            this.WalkSpeed *= 3;
+            WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
             Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
@@ -99,7 +99,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
-            this.WalkSpeed *= 3;
+            WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
             Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
@@ -118,7 +118,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
-            this.WalkSpeed *= 3;
+            WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
             Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
@@ -138,7 +138,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
         {
             Scale = 1.35f;
             //TODO: get a proper value for this.
-            this.WalkSpeed *= 3;
+            WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
             Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];

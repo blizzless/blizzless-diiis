@@ -38,15 +38,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public ActVFortressPortal(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.MinimapActive] = true;
 		}
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
 			base.OnTargeted(player, message);
 
-			var proximity = new RectangleF(this.Position.X - 1f, this.Position.Y - 1f, 2f, 2f);
-			var scene = this.World.QuadTree.Query<Scene>(proximity).First();
+			var proximity = new RectangleF(Position.X - 1f, Position.Y - 1f, 2f, 2f);
+			var scene = World.QuadTree.Query<Scene>(proximity).First();
 
 			var portals = Scene.PreCachedMarkers[scene.SceneSNO.Id].Where(m => m.SNOHandle.Id == 328830).Select(m => m.PRTransform.Vector3D).ToList();
 			var destinations = Scene.PreCachedMarkers[scene.SceneSNO.Id].Where(m => m.Name.Contains("_Destination")).Select(m => m.PRTransform.Vector3D).ToList();
@@ -57,7 +57,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			float closestDistance = float.MaxValue;
 			foreach (var portal_pos in portals)
 			{
-				float distance = PowerMath.Distance2D((portal_pos + scene.Position), this.Position);
+				float distance = PowerMath.Distance2D((portal_pos + scene.Position), Position);
 				if (distance < closestDistance)
 				{
 					n = i;
@@ -77,12 +77,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 				return false;
 			player.InGameClient.SendMessage(new MapMarkerInfoMessage
 			{
-				HashedName = StringHashHelper.HashItemName(string.Format("{0}-{1}", this.Name, this.GlobalID)),
-				Place = new WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
+				HashedName = StringHashHelper.HashItemName(string.Format("{0}-{1}", Name, GlobalID)),
+				Place = new WorldPlace { Position = Position, WorldID = World.GlobalID },
 				ImageInfo = 377766,
 				Label = -1,
 				snoStringList = -1,
-				snoKnownActorOverride = (int)this.SNO,
+				snoKnownActorOverride = (int)SNO,
 				snoQuestSource = -1,
 				Image = -1,
 				Active = true,

@@ -27,17 +27,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Unique_CaptainDaltyn(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.MinimapActive] = true;
-			this.Attributes[GameAttribute.Immune_To_Charm] = true;
-			this.Attributes[GameAttribute.//Blizzless Project 2022 
+			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.Immune_To_Charm] = true;
+			Attributes[GameAttribute.//Blizzless Project 2022 
 using_Bossbar] = true;
-			this.Attributes[GameAttribute.InBossEncounter] = true;
+			Attributes[GameAttribute.InBossEncounter] = true;
 
-			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-			this.Attributes[GameAttribute.TeamID] = 10;
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttribute.TeamID] = 10;
 
 
-			this.WalkSpeed = 0.2f;
+			WalkSpeed = 0.2f;
 
 		}
 

@@ -49,12 +49,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			int missedTicks = 0;
 
 			Thread.BeginThreadAffinity();
-			if (this.CPUAffinity != 0)
+			if (CPUAffinity != 0)
 			{
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-					this.CurrentThread.ProcessorAffinity = new IntPtr((int)this.CPUAffinity);
+					CurrentThread.ProcessorAffinity = new IntPtr((int)CPUAffinity);
 				else
-					sched_setaffinity(0, new IntPtr(sizeof(ulong)), ref this.CPUAffinity);
+					sched_setaffinity(0, new IntPtr(sizeof(ulong)), ref CPUAffinity);
 			}
 
 			while (true)
@@ -122,7 +122,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			lock (_lock)
 			{
-				this.Games.Add(game);
+				Games.Add(game);
 			}
 		}
 
@@ -130,7 +130,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			get
 			{
-				int id = this.CurrentTId;
+				int id = CurrentTId;
 				return
 					(from ProcessThread th in Process.GetCurrentProcess().Threads
 					 where th.Id == id

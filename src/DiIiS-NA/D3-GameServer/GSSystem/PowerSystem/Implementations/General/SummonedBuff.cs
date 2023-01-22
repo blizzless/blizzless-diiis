@@ -1,15 +1,5 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -26,11 +16,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			base.Apply();
 
-			this.Target.HasLoot = false;
+			Target.HasLoot = false;
 			// lookup and play spawn animation, otherwise fail
-			if (this.Target.AnimationSet != null && this.Target.AnimationSet.TagExists(AnimationTags.Spawn))
+			if (Target.AnimationSet != null && Target.AnimationSet.TagExists(AnimationTags.Spawn))
 			{
-				this.Target.PlayActionAnimation(this.Target.AnimationSet.GetAniSNO(AnimationTags.Spawn));
+				Target.PlayActionAnimation(Target.AnimationSet.GetAniSNO(AnimationTags.Spawn));
 				return true;
 			}
 			else

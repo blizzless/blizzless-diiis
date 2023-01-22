@@ -24,9 +24,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Ghost(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			CollFlags = 0;
+			WalkSpeed = 0;
+			Attributes[GameAttribute.Invulnerable] = true;
 		}
 	}
 }

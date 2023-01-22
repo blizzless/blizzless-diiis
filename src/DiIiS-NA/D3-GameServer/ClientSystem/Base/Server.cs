@@ -41,11 +41,11 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
 		public virtual bool Listen(string bindIP, int port)
 		{
 			// Check if the server has been disposed.
-			if (_disposed) throw new ObjectDisposedException(this.GetType().Name, "Server has been disposed.");
+			if (_disposed) throw new ObjectDisposedException(GetType().Name, "Server has been disposed.");
 
 			// Check if the server is already listening.
 			if (IsListening) throw new InvalidOperationException("Server is already listening.");
-			this.Port = port;
+			Port = port;
 
 			Acceptor = new AsyncAcceptor();
 			if (!Acceptor.Start(bindIP, port))

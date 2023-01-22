@@ -91,7 +91,7 @@ namespace DiIiS_NA.GameServer.Core.Types.TagMap
 			for (int i = 0; i < TagMapSize; i++)
 			{
 				var entry = new TagMapEntry(stream);
-				this._tagMapEntries.Add(entry.TagID, entry);
+				_tagMapEntries.Add(entry.TagID, entry);
 			}
 		}
 
@@ -233,49 +233,49 @@ namespace DiIiS_NA.GameServer.Core.Types.TagMap
 
 		public TagMapEntry(MpqFileStream stream)
 		{
-			this.Type = stream.ReadValueS32();
-			this.TagID = stream.ReadValueS32();
+			Type = stream.ReadValueS32();
+			TagID = stream.ReadValueS32();
 
-			switch (this.Type)
+			switch (Type)
 			{
 				case 0:
-					this.Int = stream.ReadValueS32();
+					Int = stream.ReadValueS32();
 					break;
 				case 1:
 					Float = stream.ReadValueF32();
 					break;
 				case 2: // SNO
-					this.Int = stream.ReadValueS32();
+					Int = stream.ReadValueS32();
 					break;
 
 				// TODO: Create strong type for gbid (at least i think they are)
 				case 3:
-					this.Int = stream.ReadValueS32();
+					Int = stream.ReadValueS32();
 					break;
 
 				case 4:
-					this.ScriptFormula = new ScriptFormula(stream);
+					ScriptFormula = new ScriptFormula(stream);
 					break;
 
 				// TODO: Strong type for group hashes
 				case 5:
-					this.Int = stream.ReadValueS32();
+					Int = stream.ReadValueS32();
 					break;
 
 				// Todo: Strong type for ... hmmm.. is that a gameattributeindex?
 				case 6:
-					this.Int = stream.ReadValueS32();
+					Int = stream.ReadValueS32();
 					break;
 
 				// Todo: Strong type fo StartingLocationID
 				case 7:
-					this.Int = stream.ReadValueS32();
+					Int = stream.ReadValueS32();
 					break;
 
 				default:
 					// if this break hits, blizz introduced a new key type and most likey we should have to react to it
 					System.Diagnostics.Debugger.Break();
-					this.Int = stream.ReadValueS32();
+					Int = stream.ReadValueS32();
 					break;
 			}
 		}

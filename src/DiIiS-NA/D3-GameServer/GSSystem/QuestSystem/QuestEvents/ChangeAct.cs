@@ -9,7 +9,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 		public ChangeAct(int actId)
 			: base(0)
 		{
-			this.ActId = actId;
+			ActId = actId;
 		}
 
 		public override void Execute(MapSystem.World world)
@@ -18,7 +18,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
                 plr.ShowConfirmation(world.GetActorBySNO(GetChangeActor()).DynamicID(plr), (() =>
                 {
                     world.Game.QuestManager.Advance();
-                    world.Game.ChangeAct(this.ActId);
+                    world.Game.ChangeAct(ActId);
                 }));
         }
 

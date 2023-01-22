@@ -145,7 +145,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			get
 			{
-				return this._worlds.Values.ToList();
+				return _worlds.Values.ToList();
 			}
 		}
 
@@ -198,7 +198,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			get
 			{
-				return GetWorld(this.StartingWorldSNO);
+				return GetWorld(StartingWorldSNO);
 			}
 		}
 
@@ -258,7 +258,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			get
 			{
-				switch (this.CurrentAct)
+				switch (CurrentAct)
 				{
 					case 0:
 						return 70015;
@@ -360,12 +360,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			get
 			{
-				if (this.CurrentAct == 3000) return 0x0000ffff;
+				if (CurrentAct == 3000) return 0x0000ffff;
 				int flags = 0;
 				for (int i = 16; i >= 0; i--)
 				{
 					flags = flags << 1;
-					if (this.OpenedWaypoints.Contains(i)) flags++;
+					if (OpenedWaypoints.Contains(i)) flags++;
 				}
 				return flags;
 			}
@@ -375,22 +375,22 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			get
 			{
-				switch (this.CurrentAct)
+				switch (CurrentAct)
 				{
 					case 0:
-						return this.StartingWorld.GetStartingPointById(24).Position;
+						return StartingWorld.GetStartingPointById(24).Position;
 					case 100:
-						return this.StartingWorld.GetStartingPointById(59).Position;
+						return StartingWorld.GetStartingPointById(59).Position;
 					case 200:
-						return this.StartingWorld.GetStartingPointById(172).Position;
+						return StartingWorld.GetStartingPointById(172).Position;
 					case 300:
-						return this.StartingWorld.GetStartingPointById(172).Position;
+						return StartingWorld.GetStartingPointById(172).Position;
 					case 400:
-						return this.StartingWorld.GetStartingPointById(172).Position;
+						return StartingWorld.GetStartingPointById(172).Position;
 					case 3000:
-						return this.StartingWorld.GetStartingPointById(24).Position;
+						return StartingWorld.GetStartingPointById(24).Position;
 					default:
-						return this.StartingWorld.StartingPoints.First().Position;
+						return StartingWorld.StartingPoints.First().Position;
 				}
 			}
 		}
@@ -420,36 +420,36 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// <param name="gameId"></param>
 		public Game(int gameId, int initalLevel, bool endless = false)
 		{
-			this.GameId = gameId;
-			this._lastObjectID = (uint)gameId * 100000;
-			this.Empty = true;
-			this.Players = new ConcurrentDictionary<GameClient, Player>();
-			this._worlds = new ConcurrentDictionary<WorldSno, World>();
-			this.StartingWorldSNO = WorldSno.pvp_caout_arena_01;// FIXME: track the player's save point and toss this stuff. 
-			this.InitialMonsterLevel = initalLevel;
-			this.MonsterLevel = initalLevel;
-			this.QuestManager = new QuestManager(this);
-			this.CurrentAct = -1;
-			this.QuestsOrder = null;
-			this.CurrentQuest = -1;
-			this.CurrentStep = -1;
-			this.CurrentSideQuest = -1;
-			this.CurrentSideStep = -1;
-			this.QuestProgress = null;
-			this.SideQuestProgress = new Events(this);
+			GameId = gameId;
+			_lastObjectID = (uint)gameId * 100000;
+			Empty = true;
+			Players = new ConcurrentDictionary<GameClient, Player>();
+			_worlds = new ConcurrentDictionary<WorldSno, World>();
+			StartingWorldSNO = WorldSno.pvp_caout_arena_01;// FIXME: track the player's save point and toss this stuff. 
+			InitialMonsterLevel = initalLevel;
+			MonsterLevel = initalLevel;
+			QuestManager = new QuestManager(this);
+			CurrentAct = -1;
+			QuestsOrder = null;
+			CurrentQuest = -1;
+			CurrentStep = -1;
+			CurrentSideQuest = -1;
+			CurrentSideStep = -1;
+			QuestProgress = null;
+			SideQuestProgress = new Events(this);
 
 			var loopThread = new Thread(Update) { Name = "GameLoopThread", IsBackground = true }; ; // create the game update thread.
 			loopThread.Start();
 
-			this.WorldGenerator = new WorldGenerator(this);
-			this.GameDBSession = new GameDBSession();
-			this.LockdownTimer = TickTimer.WaitSeconds(this, 60f, new Action<int>((q) =>
+			WorldGenerator = new WorldGenerator(this);
+			GameDBSession = new GameDBSession();
+			LockdownTimer = TickTimer.WaitSeconds(this, 60f, new Action<int>((q) =>
 			{
-				if (this.Empty || Players.IsEmpty)
+				if (Empty || Players.IsEmpty)
 				{
 					Logger.Info("All players disconnected, closing game session.");
-					this.Dispose();
-					GameManager.Games.Remove(this.GameId);
+					Dispose();
+					GameManager.Games.Remove(GameId);
 				}
 			}));
 
@@ -467,33 +467,33 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// </summary>
 		public void Update()
 		{
-			while (this.Working)
+			while (Working)
 			{
 				Stopwatch _tickWatch = new Stopwatch();
 				_tickWatch.Restart();
-				if (this.Players.Count == 0 && !this.Empty)
+				if (Players.Count == 0 && !Empty)
 				{
 					Logger.Info("Все игроки отключены, сессия игры завершена");
-					this.Dispose();
-					GameSystem.GameManager.Games.Remove(this.GameId);
+					Dispose();
+					GameManager.Games.Remove(GameId);
 					return;
 				}
 
 
-				Interlocked.Add(ref this._tickCounter, (this.TickRate + this.MissedTicks)); // +6 ticks per 100ms. Verified by setting LogoutTickTimeMessage.Ticks to 600 which eventually renders a 10 sec logout timer on client. /raist
-				this.MissedTicks = 0;
+				Interlocked.Add(ref _tickCounter, (TickRate + MissedTicks)); // +6 ticks per 100ms. Verified by setting LogoutTickTimeMessage.Ticks to 600 which eventually renders a 10 sec logout timer on client. /raist
+				MissedTicks = 0;
 
-				if (this.UpdateEnabled && !this.Paused)
+				if (UpdateEnabled && !Paused)
 				{
 					// Lock Game instance to prevent incoming messages from modifying state while updating
 					// only update worlds with active players in it - so mob brain()'s in empty worlds doesn't get called and take actions for nothing. /raist.
-					lock (this.updateLock)
+					lock (updateLock)
 					{
-						foreach (var pair in this._worlds.Where(pair => pair.Value.HasPlayersIn))
+						foreach (var pair in _worlds.Where(pair => pair.Value.HasPlayersIn))
 						{
 							try
 							{
-								pair.Value.Update(this._tickCounter);
+								pair.Value.Update(_tickCounter);
 							}
 							catch (Exception e)
 							{
@@ -502,29 +502,29 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						}
 
 						if (PvPTimer != null)
-							PvPTimer.Update(this._tickCounter);
+							PvPTimer.Update(_tickCounter);
 
 						if (GlobalPvPTimer != null)
-							GlobalPvPTimer.Update(this._tickCounter);
+							GlobalPvPTimer.Update(_tickCounter);
 
 						if (LockdownTimer != null)
-							LockdownTimer.Update(this._tickCounter);
+							LockdownTimer.Update(_tickCounter);
 
 						if (QuestTimer != null)
-							QuestTimer.Update(this._tickCounter);
+							QuestTimer.Update(_tickCounter);
 					}
 				}
 				_tickWatch.Stop();
 
 				Stopwatch _calcWatch = new Stopwatch();
 				_calcWatch.Restart();
-				var compensation = (int)(this.UpdateFrequency - _tickWatch.ElapsedMilliseconds); // the compensation value we need to sleep in order to get consistent 100 ms Game.Update().
+				var compensation = (int)(UpdateFrequency - _tickWatch.ElapsedMilliseconds); // the compensation value we need to sleep in order to get consistent 100 ms Game.Update().
 
-				if (_tickWatch.ElapsedMilliseconds > this.UpdateFrequency)
+				if (_tickWatch.ElapsedMilliseconds > UpdateFrequency)
 				{
-					Logger.Trace("Game.Update() took [{0}ms] more than Game.UpdateFrequency [{1}ms].", _tickWatch.ElapsedMilliseconds, this.UpdateFrequency);
-					compensation = (int)(this.UpdateFrequency - (_tickWatch.ElapsedMilliseconds % this.UpdateFrequency));
-					this.MissedTicks = this.TickRate * (int)(_tickWatch.ElapsedMilliseconds / this.UpdateFrequency);
+					Logger.Trace("Game.Update() took [{0}ms] more than Game.UpdateFrequency [{1}ms].", _tickWatch.ElapsedMilliseconds, UpdateFrequency);
+					compensation = (int)(UpdateFrequency - (_tickWatch.ElapsedMilliseconds % UpdateFrequency));
+					MissedTicks = TickRate * (int)(_tickWatch.ElapsedMilliseconds / UpdateFrequency);
 				}
 				_calcWatch.Stop();
 				Thread.Sleep(Math.Max(0, compensation - (int)_calcWatch.ElapsedMilliseconds)); // sleep until next Update().
@@ -540,13 +540,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// <param name="message"></param>
 		public void Route(GameClient client, GameMessage message)
 		{
-			this.UpdateEnabled = false;
+			UpdateEnabled = false;
 			try
 			{
 				switch (message.Consumer)
 				{
 					case Consumers.Game:
-						this.Consume(client, message);
+						Consume(client, message);
 						break;
 					case Consumers.Inventory:
 						client.Player.Inventory.Consume(client, message);
@@ -571,13 +571,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 			finally
 			{
-				this.UpdateEnabled = true;
+				UpdateEnabled = true;
 			}
 		}
 
 		public void Consume(GameClient client, GameMessage message)
 		{
-			lock (this.updateLock)
+			lock (updateLock)
 			{
 				if (message is PauseGameMessage) OnPause(client, (PauseGameMessage)message);
 				else if (message is RaiseGameDifficulty) RaiseDifficulty(client, (RaiseGameDifficulty)message);
@@ -591,17 +591,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void LowDifficulty(GameClient client, LowGameDifficulty message)
 		{
-			this.Difficulty--;
+			Difficulty--;
 			SetDifficulty(Difficulty);
-			foreach (var plr in this.Players.Values)
+			foreach (var plr in Players.Values)
 				plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage) { Difficulty = (uint)Difficulty });
 		}
 
 		public void RaiseDifficulty(GameClient client, RaiseGameDifficulty message)
 		{
-			this.Difficulty++;
+			Difficulty++;
 			SetDifficulty(Difficulty);
-			foreach (var plr in this.Players.Values)
+			foreach (var plr in Players.Values)
 				plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage) { Difficulty = (uint)Difficulty });
 		}
 
@@ -611,27 +611,27 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// <param name="joinedPlayer">The new player.</param>
 		public void Enter(Player joinedPlayer)
 		{
-			if (this.IsHardcore && !joinedPlayer.Toon.DBToon.isHardcore)
+			if (IsHardcore && !joinedPlayer.Toon.DBToon.isHardcore)
 			{
 				return;
 			}
 
 			Task.Run(() =>
 			{
-				lock (this.Players)
+				lock (Players)
 				{
-					this.Players.TryAdd(joinedPlayer.InGameClient, joinedPlayer);
+					Players.TryAdd(joinedPlayer.InGameClient, joinedPlayer);
 
 					// send all players in the game to new player that just joined (including him)
-					foreach (var pair in this.Players)
+					foreach (var pair in Players)
 					{
 						if (pair.Value.PlayerGroupIndex == joinedPlayer.PlayerGroupIndex)
-							this.SendNewPlayerMessage(joinedPlayer, pair.Value);
+							SendNewPlayerMessage(joinedPlayer, pair.Value);
 					}
-					foreach (var pair in this.Players.Where(pair => pair.Value != joinedPlayer))
+					foreach (var pair in Players.Where(pair => pair.Value != joinedPlayer))
 					{
 						if (pair.Value.PlayerGroupIndex == joinedPlayer.PlayerGroupIndex)
-							this.SendNewPlayerMessage(pair.Value, joinedPlayer);
+							SendNewPlayerMessage(pair.Value, joinedPlayer);
 					}
 					joinedPlayer.LoadShownTutorials();
 					joinedPlayer.LoadCrafterData();
@@ -639,7 +639,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					//joinedPlayer.LoadMailData();
 					joinedPlayer.LoadStashIconsData();
 
-					if (!this.PvP)
+					if (!PvP)
 					{
 						joinedPlayer.InGameClient.TickingEnabled = true; // it seems bnet-servers only start ticking after player is completely in-game. /raist
 						joinedPlayer.InGameClient.SendMessage(new GameSyncedDataMessage
@@ -647,11 +647,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							SyncedData = new GameSyncedData
 							{
 								GameSyncedFlags = 6,
-								Act = this.CurrentAct,       //act id
-								InitialMonsterLevel = this.InitialMonsterLevel, //InitialMonsterLevel
+								Act = CurrentAct,       //act id
+								InitialMonsterLevel = InitialMonsterLevel, //InitialMonsterLevel
 								MonsterLevel = 0x6FEA8DF5, //MonsterLevel
 								RandomWeatherSeed = 0, //RandomWeatherSeed
-								OpenWorldMode = this.CurrentAct == 3000 ? -1 : 0, //OpenWorldMode
+								OpenWorldMode = CurrentAct == 3000 ? -1 : 0, //OpenWorldMode
 								OpenWorldModeAct = -1, //OpenWorldModeAct
 								OpenWorldModeParam = -1, //OpenWorldModeParam
 								OpenWorldTransitionTime = 0, //OpenWorldTransitionTime
@@ -679,24 +679,24 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								TiredRiftPaticipatingHeroID = new long[] { 0x0, 0x0, 0x0, 0x0 }, //TiredRiftPaticipatingHeroID
 							}
 						});
-						if ((this.CurrentStep == -1 || this.CurrentAct == 400) && (this.CurrentQuest == this.QuestsOrder[0]) && this.CurrentAct != 3000)
+						if ((CurrentStep == -1 || CurrentAct == 400) && (CurrentQuest == QuestsOrder[0]) && CurrentAct != 3000)
 						{
-							switch (this.CurrentAct)
+							switch (CurrentAct)
 							{
 								case 0:
-									joinedPlayer.EnterWorld(this.StartingWorld.GetStartingPointById(0).Position);
+									joinedPlayer.EnterWorld(StartingWorld.GetStartingPointById(0).Position);
 									break;
 								case 100:
-									joinedPlayer.EnterWorld(this.StartingWorld.GetStartingPointById(130).Position);
+									joinedPlayer.EnterWorld(StartingWorld.GetStartingPointById(130).Position);
 									break;
 								case 200:
-									joinedPlayer.ChangeWorld(this.GetWorld(WorldSno.a3dun_hub_adria_tower_intro), this.GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206).Position);
+									joinedPlayer.ChangeWorld(GetWorld(WorldSno.a3dun_hub_adria_tower_intro), GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206).Position);
 									break;
 								case 300:
-									joinedPlayer.ChangeWorld(this.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance), this.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints.First().Position);
+									joinedPlayer.ChangeWorld(GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance), GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints.First().Position);
 									break;
 								case 400:
-									joinedPlayer.ChangeWorld(this.GetWorld(WorldSno.x1_westmarch_overlook_d), this.GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
+									joinedPlayer.ChangeWorld(GetWorld(WorldSno.x1_westmarch_overlook_d), GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
 									break;
 								default:
 									break;
@@ -705,21 +705,21 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						}
 						else
 						{
-							joinedPlayer.EnterWorld(this.StartPosition);
+							joinedPlayer.EnterWorld(StartPosition);
 						}
 					}
 					else
 					{
-						joinedPlayer.EnterWorld(this.StartingWorld.GetStartingPointById(288 + joinedPlayer.PlayerIndex).Position);
+						joinedPlayer.EnterWorld(StartingWorld.GetStartingPointById(288 + joinedPlayer.PlayerIndex).Position);
 					}
-					this.Empty = false;
+					Empty = false;
 
-					foreach (var portal in this.StartingWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal, ActorSno._x1_openworld_tiered_rifts_challenge_portal))
+					foreach (var portal in StartingWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal, ActorSno._x1_openworld_tiered_rifts_challenge_portal))
 					{
 						portal.Destroy();
 					}
 
-					ClientSystem.GameServer.GSBackend.PlayerJoined(this.GameId);
+					ClientSystem.GameServer.GSBackend.PlayerJoined(GameId);
 
 
 					//joinedPlayer.InGameClient.SendTick();
@@ -772,7 +772,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					else
 					/**/
 					{
-						foreach (var plr in this.Players.Values)
+						foreach (var plr in Players.Values)
 							if (plr.ActiveHireling != null)
 							{
 								plr.ActiveHireling.Dismiss();
@@ -781,13 +781,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					}
 					/**/
 					
-					if (!this.PvP && !((this.CurrentStep == -1) && (this.CurrentQuest == this.QuestsOrder[0])))
+					if (!PvP && !((CurrentStep == -1) && (CurrentQuest == QuestsOrder[0])))
 					{
 						joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage()
 						{
-							snoQuest = this.CurrentQuest,
+							snoQuest = CurrentQuest,
 							snoLevelArea = -1,
-							StepID = this.CurrentStep,
+							StepID = CurrentStep,
 							DisplayButton = true,
 							Failed = false
 						});
@@ -797,15 +797,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					if (joinedPlayer.PlayerIndex == 0)
 						joinedPlayer.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage)
 						{
-							Difficulty = (uint)this.Difficulty
+							Difficulty = (uint)Difficulty
 						});
 
 					
 
-					this.UpdateLevel();
+					UpdateLevel();
 					joinedPlayer.NotifyMaintenance();
 
-					if (this.CurrentAct == 3000 && !joinedPlayer.InGameClient.OpenWorldDefined)
+					if (CurrentAct == 3000 && !joinedPlayer.InGameClient.OpenWorldDefined)
 					{
 						joinedPlayer.InGameClient.OpenWorldDefined = true;
 						joinedPlayer.InGameClient.SendMessage(new ActTransitionMessage
@@ -814,7 +814,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							OnJoin = true
 						});
 
-						foreach (var bounty in this.QuestManager.Bounties)
+						foreach (var bounty in QuestManager.Bounties)
 						{
 							joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage()
 							{
@@ -825,7 +825,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								Failed = false
 							});
 						}
-						this.CurrentQuest = 0x0004C46D;
+						CurrentQuest = 0x0004C46D;
 						QuestManager.Advance();
 
 						joinedPlayer.InGameClient.SendMessage(new IntDataMessage(Opcodes.DungeonFinderSeedMessage)
@@ -853,7 +853,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							snoLevelArea = joinedPlayer.CurrentScene.Specification.SNOLevelAreas[0],//102362,
 						});
 
-						joinedPlayer.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Quest.QuestUpdateMessage
+						joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage
 						{
 							snoQuest = 0x0005727C,
 							snoLevelArea = -1,
@@ -861,7 +861,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							DisplayButton = true,
 							Failed = false
 						});
-						joinedPlayer.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Quest.QuestUpdateMessage
+						joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage
 						{
 							snoQuest = 0x00057282,
 							snoLevelArea = -1,
@@ -869,7 +869,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							DisplayButton = true,
 							Failed = false
 						});
-						joinedPlayer.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Quest.QuestUpdateMessage
+						joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage
 						{
 							snoQuest = 0x00057284,
 							snoLevelArea = -1,
@@ -877,7 +877,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							DisplayButton = true,
 							Failed = false
 						});
-						joinedPlayer.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Quest.QuestUpdateMessage
+						joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage
 						{
 							snoQuest = 0x00057287,
 							snoLevelArea = -1,
@@ -885,7 +885,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							DisplayButton = true,
 							Failed = false
 						});
-						joinedPlayer.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Quest.QuestUpdateMessage
+						joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage
 						{
 							snoQuest = 0x00057289,
 							snoLevelArea = -1,
@@ -900,10 +900,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void UpdateLevel()
 		{
-			if (this.Players.Count < 1)
+			if (Players.Count < 1)
 				return;
-			this.MonsterLevel = this.Players.Values.Select(p => p.Level).Max();
-			foreach (var wld in this._worlds)
+			MonsterLevel = Players.Values.Select(p => p.Level).Max();
+			foreach (var wld in _worlds)
 				foreach (var monster in wld.Value.Monsters)
 					monster.UpdateStats();
 		}
@@ -930,95 +930,95 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public void SetQuestProgress(int currQuest, int step)
 		{
 
-			if (this.PvP) return;
+			if (PvP) return;
 			if (!QuestSetuped)
 			{
-				this.QuestManager.SetQuests();
-				this.DestinationEnterQuest = currQuest;
-				this.DestinationEnterQuestStep = step;
+				QuestManager.SetQuests();
+				DestinationEnterQuest = currQuest;
+				DestinationEnterQuestStep = step;
 
 				Logger.Trace("SetQuestProgress: quest {0}, step {1}", currQuest, step);
-				this.CurrentQuest = this.QuestsOrder[0];
-				this.CurrentStep = -1;
+				CurrentQuest = QuestsOrder[0];
+				CurrentStep = -1;
 
-				if (this.CurrentAct == 3000)
+				if (CurrentAct == 3000)
 				{
-					this.QuestManager.Quests[this.CurrentQuest].Steps[-1].OnAdvance.Invoke();
+					QuestManager.Quests[CurrentQuest].Steps[-1].OnAdvance.Invoke();
 					return;
 				}
 
-				if (!(currQuest == this.QuestsOrder[0] && step == -1))
-					this.QuestManager.AdvanceTo(currQuest, step);
+				if (!(currQuest == QuestsOrder[0] && step == -1))
+					QuestManager.AdvanceTo(currQuest, step);
 
-				if (this.CurrentQuest == this.QuestsOrder[0] && this.CurrentStep == -1)
-					this.QuestManager.Quests[this.CurrentQuest].Steps[-1].OnAdvance.Invoke();
+				if (CurrentQuest == QuestsOrder[0] && CurrentStep == -1)
+					QuestManager.Quests[CurrentQuest].Steps[-1].OnAdvance.Invoke();
 			}
 
 		}
 		public void SetGameMode(Mode mode)
 		{
-			this.GameMode = mode;
+			GameMode = mode;
 
 			switch (GameMode)
 			{
-				case Game.Mode.Portals:
-					this.QuestsOrder = new int[] { -1 };
-					this.StartingWorldSNO = WorldSno.weekly_challenge_hub;
-					this.QuestProgress = new QuestRegistry(this);
+				case Mode.Portals:
+					QuestsOrder = new int[] { -1 };
+					StartingWorldSNO = WorldSno.weekly_challenge_hub;
+					QuestProgress = new QuestRegistry(this);
 					break;
 			}
 		}
 		public void SetAct(int act)
 		{
-			if (this.PvP)
+			if (PvP)
 			{
-				this.CurrentAct = 0;
-				this.QuestsOrder = questsOrder_a1;
-				this.QuestProgress = new QuestRegistry(this);
-				this.StartingWorldSNO = WorldSno.pvp_caout_arena_01;
+				CurrentAct = 0;
+				QuestsOrder = questsOrder_a1;
+				QuestProgress = new QuestRegistry(this);
+				StartingWorldSNO = WorldSno.pvp_caout_arena_01;
 				return;
 			}
 			if (CurrentAct != act)
 			{
-				this.CurrentAct = act;
+				CurrentAct = act;
 
 				switch (act)
 				{
 					case 0:
-						this.QuestsOrder = questsOrder_a1;
-						this.StartingWorldSNO = WorldSno.trout_town;
-						this.QuestProgress = new ActI(this);
+						QuestsOrder = questsOrder_a1;
+						StartingWorldSNO = WorldSno.trout_town;
+						QuestProgress = new ActI(this);
 						break;
 					case 100:
-						this.QuestsOrder = questsOrder_a2;
-						this.StartingWorldSNO = WorldSno.caout_refugeecamp;
-						this.QuestProgress = new ActII(this);
+						QuestsOrder = questsOrder_a2;
+						StartingWorldSNO = WorldSno.caout_refugeecamp;
+						QuestProgress = new ActII(this);
 						break;
 					case 200:
-						this.QuestsOrder = questsOrder_a3;
-						this.StartingWorldSNO = WorldSno.a3dun_hub_keep;
-						this.QuestProgress = new ActIII(this);
+						QuestsOrder = questsOrder_a3;
+						StartingWorldSNO = WorldSno.a3dun_hub_keep;
+						QuestProgress = new ActIII(this);
 						break;
 					case 300:
-						this.QuestsOrder = questsOrder_a4;
-						this.StartingWorldSNO = WorldSno.a4dun_heaven_hub_keep;
-						this.QuestProgress = new ActIV(this);
+						QuestsOrder = questsOrder_a4;
+						StartingWorldSNO = WorldSno.a4dun_heaven_hub_keep;
+						QuestProgress = new ActIV(this);
 						break;
 					case 400:
-						this.QuestsOrder = questsOrder_a5;
-						this.StartingWorldSNO = WorldSno.x1_westmarch_hub;
-						this.QuestProgress = new ActV(this);
+						QuestsOrder = questsOrder_a5;
+						StartingWorldSNO = WorldSno.x1_westmarch_hub;
+						QuestProgress = new ActV(this);
 						break;
 					case 3000:
-						this.QuestsOrder = questsOrder_openWorld;
-						this.StartingWorldSNO = WorldSno.x1_tristram_adventure_mode_hub;
-						this.QuestProgress = new OpenWorld(this);
-						this.QuestManager.SetBounties();
+						QuestsOrder = questsOrder_openWorld;
+						StartingWorldSNO = WorldSno.x1_tristram_adventure_mode_hub;
+						QuestProgress = new OpenWorld(this);
+						QuestManager.SetBounties();
 						break;
 					default:
-						this.QuestsOrder = questsOrder_a1;
-						this.StartingWorldSNO = WorldSno.trout_town;
-						this.QuestProgress = new QuestRegistry(this);
+						QuestsOrder = questsOrder_a1;
+						StartingWorldSNO = WorldSno.trout_town;
+						QuestProgress = new QuestRegistry(this);
 						break;
 				}
 			}
@@ -1026,14 +1026,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void ChangeAct(int act)
 		{
-			foreach(var plr in this.Players.Values)
+			foreach(var plr in Players.Values)
 				plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
-			this.SetAct(act);
-			this.CurrentQuest = this.QuestsOrder[0];
-			this.CurrentStep = -1;
-			this.QuestManager.ReloadQuests();
-			this.OpenedWaypoints = new List<int>() { };
-			foreach (var plr in this.Players)
+			SetAct(act);
+			CurrentQuest = QuestsOrder[0];
+			CurrentStep = -1;
+			QuestManager.ReloadQuests();
+			OpenedWaypoints = new List<int>() { };
+			foreach (var plr in Players)
 			{
 				plr.Key.SendMessage(new ActTransitionMessage
 				{
@@ -1068,12 +1068,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				{
 					SyncedData = new GameSyncedData
 					{
-						GameSyncedFlags = this.IsSeasoned == true ? this.IsHardcore == true ? 6 : 6 : this.IsHardcore == true ? 4 : 4,
-						Act = Math.Min(this.CurrentAct, 3000),       //act id
-						InitialMonsterLevel = this.InitialMonsterLevel, //InitialMonsterLevel
+						GameSyncedFlags = IsSeasoned == true ? IsHardcore == true ? 6 : 6 : IsHardcore == true ? 4 : 4,
+						Act = Math.Min(CurrentAct, 3000),       //act id
+						InitialMonsterLevel = InitialMonsterLevel, //InitialMonsterLevel
 						MonsterLevel = 0x7044248F, //MonsterLevel
 						RandomWeatherSeed = 0, //RandomWeatherSeed
-						OpenWorldMode = this.CurrentAct == 3000 ? -1 : 0, //OpenWorldMode
+						OpenWorldMode = CurrentAct == 3000 ? -1 : 0, //OpenWorldMode
 						OpenWorldModeAct = -1, //OpenWorldModeAct
 						OpenWorldModeParam = -1, //OpenWorldModeParam
 						OpenWorldTransitionTime = 200, //OpenWorldTransitionTime
@@ -1104,19 +1104,19 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				switch (act)
 				{
 					case 0:
-						plr.Value.ChangeWorld(this.StartingWorld, this.StartingWorld.GetStartingPointById(0).Position);
+						plr.Value.ChangeWorld(StartingWorld, StartingWorld.GetStartingPointById(0).Position);
 						break;
 					case 100:
-						plr.Value.ChangeWorld(this.StartingWorld, this.StartingWorld.GetStartingPointById(130).Position);
+						plr.Value.ChangeWorld(StartingWorld, StartingWorld.GetStartingPointById(130).Position);
 						break;
 					case 200:
-						plr.Value.ChangeWorld(this.GetWorld(WorldSno.a3dun_hub_adria_tower_intro), this.GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206).Position);
+						plr.Value.ChangeWorld(GetWorld(WorldSno.a3dun_hub_adria_tower_intro), GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206).Position);
 						break;
 					case 300:
-						plr.Value.ChangeWorld(this.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance), this.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints.First().Position);
+						plr.Value.ChangeWorld(GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance), GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints.First().Position);
 						break;
 					case 400:
-						plr.Value.ChangeWorld(this.GetWorld(WorldSno.x1_westmarch_overlook_d), this.GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
+						plr.Value.ChangeWorld(GetWorld(WorldSno.x1_westmarch_overlook_d), GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
 						break;
 					default:
 						break;
@@ -1157,7 +1157,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 			try
 			{
-				this.QuestManager.Quests[this.QuestsOrder[0]].Steps[-1].OnAdvance.Invoke();
+				QuestManager.Quests[QuestsOrder[0]].Steps[-1].OnAdvance.Invoke();
 			}
 			catch (Exception e)
 			{
@@ -1167,53 +1167,53 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void UpdateLevel(int level)
 		{
-			this.MonsterLevel = level;
-			foreach (var wld in this._worlds)
+			MonsterLevel = level;
+			foreach (var wld in _worlds)
 				foreach (var monster in wld.Value.Monsters)
 					monster.UpdateStats();
 		}
 
 		public void SetDifficulty(int diff)
 		{
-			this.Difficulty = diff;
+			Difficulty = diff;
 			diff++;
 			if (diff > 0)
 			{
-				var handicapLevels = (GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.GameBalance][256027].Data;
-				this.HPModifier = handicapLevels.HandicapLevelTables[diff].HPMod;
-				this.DmgModifier = handicapLevels.HandicapLevelTables[diff].DmgMod;
-				this.XPModifier = (1f + handicapLevels.HandicapLevelTables[diff].XPMod);
-				this.GoldModifier = (1f + handicapLevels.HandicapLevelTables[diff].GoldMod);
+				var handicapLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][256027].Data;
+				HPModifier = handicapLevels.HandicapLevelTables[diff].HPMod;
+				DmgModifier = handicapLevels.HandicapLevelTables[diff].DmgMod;
+				XPModifier = (1f + handicapLevels.HandicapLevelTables[diff].XPMod);
+				GoldModifier = (1f + handicapLevels.HandicapLevelTables[diff].GoldMod);
 			}
-			foreach (var wld in this._worlds)
+			foreach (var wld in _worlds)
 				foreach (var monster in wld.Value.Monsters)
 					monster.UpdateStats();
-			foreach(var plr in this.Players.Values)
+			foreach(var plr in Players.Values)
 				plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage) { Difficulty = (uint)Difficulty });
 		}
 
 		public void UnlockTeleport(int waypointId)
 		{
-			this.OpenedWaypoints.Add(waypointId);
+			OpenedWaypoints.Add(waypointId);
 		}
 
 		public Actor GetHearthPortal()
 		{
-			return this.StartingWorld.Actors.Values.Where(x => x.SNO == ActorSno._hearthportal).First();
+			return StartingWorld.Actors.Values.Where(x => x.SNO == ActorSno._hearthportal).First();
 		}
 
 		private void OnPause(GameClient client, PauseGameMessage message)
 		{
-			if (this.Players.Count == 1)
+			if (Players.Count == 1)
 			{
 				Logger.Trace("Game state is paused: {0}", message.Field0);
-				this.Players.First().Value.Attributes[GameAttribute.Disabled] = message.Field0;
-				this.Players.First().Value.Attributes[GameAttribute.Immobolize] = message.Field0;
+				Players.First().Value.Attributes[GameAttribute.Disabled] = message.Field0;
+				Players.First().Value.Attributes[GameAttribute.Immobolize] = message.Field0;
 				//this.Players.First().Value.Attributes[GameAttribute.Stunned] = message.Field0;
-				this.Players.First().Value.Attributes.BroadcastChangedIfRevealed();
+				Players.First().Value.Attributes.BroadcastChangedIfRevealed();
 				//this.Players.First().Key.TickingEnabled = !message.Field0;
-				this.Paused = message.Field0;
-				this.Players.First().Key.SendMessage(new FreezeGameMessage
+				Paused = message.Field0;
+				Players.First().Key.SendMessage(new FreezeGameMessage
 				{
 					Field0 = message.Field0
 				});
@@ -1245,7 +1245,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				ActorID = joinedPlayer.DynamicID(target),
 			});
 
-			if (this.PvP)
+			if (PvP)
 				target.InGameClient.SendMessage(new RevealTeamMessage
 				{
 					Team = joinedPlayer.PlayerIndex + 2,
@@ -1258,82 +1258,82 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void BroadcastMessage(string message)
 		{
-			lock (this.Players)
+			lock (Players)
 			{
-				foreach (var plr in this.Players.Keys)
+				foreach (var plr in Players.Keys)
 					plr.SendMessage(new BroadcastTextMessage() { Field0 = message });
 			}
 		}
 
 		public void StartPvPRound()
 		{
-			this.CurrentPvPRound++;
+			CurrentPvPRound++;
 
-			var winner = this.Players.Values.Where(p => !p.Dead).FirstOrDefault();
-			if (winner != null && this.CurrentPvPRound > 1)
+			var winner = Players.Values.Where(p => !p.Dead).FirstOrDefault();
+			if (winner != null && CurrentPvPRound > 1)
 			{
-				this.BroadcastMessage("Round is over! Winner: " + winner.Toon.Name);
+				BroadcastMessage("Round is over! Winner: " + winner.Toon.Name);
 				if (winner.Attributes[GameAttribute.TeamID] == 2)
-					this.RedTeamWins++;
+					RedTeamWins++;
 				else
-					this.BlueTeamWins++;
+					BlueTeamWins++;
 			}
 
-			if (this.CurrentPvPRound > 5 || Math.Abs(this.RedTeamWins - this.BlueTeamWins) > (5 - this.CurrentPvPRound))
+			if (CurrentPvPRound > 5 || Math.Abs(RedTeamWins - BlueTeamWins) > (5 - CurrentPvPRound))
 			{
-				this.BroadcastMessage("Battle is over!");
+				BroadcastMessage("Battle is over!");
 				try
 				{
-					var totalWinner = this.Players.Values.Where(p => p.Attributes[GameAttribute.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
-					this.BroadcastMessage("Winner: " + totalWinner.Toon.Name);
+					var totalWinner = Players.Values.Where(p => p.Attributes[GameAttribute.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
+					BroadcastMessage("Winner: " + totalWinner.Toon.Name);
 				}
 				catch { Logger.Warn("Exception on FindWinner()"); }
 
 				//foreach (var player in this.Players.Values)
 				//player.World.BuffManager.AddBuff(player, player, new Mooege.Core.GS.Powers.Implementations.PVPRoundEndBuff(TickTimer.WaitSeconds(this, 1200.0f)));
-				foreach (var plr in this.Players.Keys)
+				foreach (var plr in Players.Keys)
 					plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin) { Field0 = (RedTeamWins == BlueTeamWins ? 0 : (RedTeamWins < BlueTeamWins ? 2 : 3)) });
 				return;
 			}
 
-			if (this.CurrentPvPRound == 1)
+			if (CurrentPvPRound == 1)
 			{
-				this.GlobalPvPTimer = TickTimer.WaitSeconds(this, 600f, new Action<int>((z) =>
+				GlobalPvPTimer = TickTimer.WaitSeconds(this, 600f, new Action<int>((z) =>
 				{
-					this.BroadcastMessage("Time is up, battle is over!");
+					BroadcastMessage("Time is up, battle is over!");
 					if (RedTeamWins == BlueTeamWins)
 					{
-						this.BroadcastMessage("Draw!");
+						BroadcastMessage("Draw!");
 
 					}
 					else
 					{
-						var TotalWinner = this.Players.Values.Where(p => p.Attributes[GameAttribute.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
-						this.BroadcastMessage("Winner: " + TotalWinner.Toon.Name);
+						var TotalWinner = Players.Values.Where(p => p.Attributes[GameAttribute.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
+						BroadcastMessage("Winner: " + TotalWinner.Toon.Name);
 					}
 
 					//foreach (var player in this.Players.Values)
 					//player.World.BuffManager.AddBuff(player, player, new Mooege.Core.GS.Powers.Implementations.PVPRoundEndBuff(TickTimer.WaitSeconds(this, 1200.0f)));
-					foreach (var plr in this.Players.Keys)
+					foreach (var plr in Players.Keys)
 						plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin) { Field0 = (RedTeamWins == BlueTeamWins ? 0 : (RedTeamWins < BlueTeamWins ? 2 : 3)) });
 				}));
 			}
 
 
-			this.PvPTimer = TickTimer.WaitSeconds(this, 3f, new Action<int>((x) =>
+			PvPTimer = TickTimer.WaitSeconds(this, 3f, new Action<int>((x) =>
 			{
-				foreach (var player in this.Players.Values)
+				foreach (var player in Players.Values)
 				{
 					player.Revive(player.CheckPointPosition);
 					player.GeneratePrimaryResource(player.Attributes[GameAttribute.Resource_Max_Total, player.Attributes[GameAttribute.Resource_Type_Primary]]);
 					player.World.BuffManager.AddBuff(player, player, new PowerSystem.Implementations.PVPSkirmishBuff(TickTimer.WaitSeconds(this, 15.0f)));
 				}
-				this.BroadcastMessage("Round " + this.CurrentPvPRound + ". Battle will commence in 15 seconds!");
-				this.BroadcastMessage("Score: " + this.RedTeamWins + ":" + this.BlueTeamWins);
-				this.PvPTimer = TickTimer.WaitSeconds(this, 15f, new Action<int>((y) =>
+				BroadcastMessage("Round " + CurrentPvPRound + ". Battle will commence in 15 seconds!");
+				BroadcastMessage("Score: " + RedTeamWins + ":" + BlueTeamWins);
+				PvPTimer = TickTimer.WaitSeconds(this, 15f, new Action<int>((y) =>
 				{
-					this.BroadcastMessage("Fight!");
-					foreach (var player in this.Players.Keys)
+					BroadcastMessage("Fight!");
+					foreach (var player in Players.Keys)
 					{
 						//player.SendMessage(new FightAnnounceMessage());
 					}
@@ -1347,22 +1347,22 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public void Dispose()
 		{
 			Working = false;
-			if (this.Players.Count > 0)
-				foreach (var plr in this.Players.Keys)
+			if (Players.Count > 0)
+				foreach (var plr in Players.Keys)
 					plr.Connection.Disconnect();
-			this._worlds.Clear();
+			_worlds.Clear();
 			Thread.Sleep(1000);
-			this.GameDBSession.SessionDispose();
-			GameManager.Games.Remove(this.GameId);
+			GameDBSession.SessionDispose();
+			GameManager.Games.Remove(GameId);
 		}
 
 		public void TeleportToBossEncounter(int snoId)
 		{
-			foreach (var player in this.Players.Values)
+			foreach (var player in Players.Values)
 			{
 				player.ClearDoorAnimations();
 			}
-			this.Paused = true;
+			Paused = true;
 
 			/*foreach (var player in this.Players.Values)
 			{
@@ -1378,7 +1378,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}*/
 
 			var encAsset = (DiIiS_NA.Core.MPQ.FileFormats.BossEncounter)MPQStorage.Data.Assets[SNOGroup.BossEncounter][snoId].Data;
-			World encWorld = this.GetWorld((WorldSno)encAsset.Worlds[0]);
+			World encWorld = GetWorld((WorldSno)encAsset.Worlds[0]);
 			Logger.Debug("TeleportToBossEncounter, worldId: {0}", encAsset.Worlds[0]);
 			Vector3D startPoint = null;
 			switch (snoId)
@@ -1434,7 +1434,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 			var levelArea = scene.Specification.SNOLevelAreas[0];
 
-			foreach (var g_player in this.Players)
+			foreach (var g_player in Players)
 			{
 				if (g_player.Value.World == encWorld)
 					g_player.Value.Teleport(startPoint);
@@ -1443,13 +1443,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 			
 			
-			this.Paused = false;
+			Paused = false;
 			
 			
 			//handling quest triggers
-			if (this.QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
+			if (QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
 			{
-				var trigger = this.QuestProgress.QuestTriggers[levelArea];
+				var trigger = QuestProgress.QuestTriggers[levelArea];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 				{
 					try
@@ -1463,19 +1463,19 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				}
 			}
 			//Исполнение скриптов катсцены
-			if (this.GameMode == Mode.Campaign)
+			if (GameMode == Mode.Campaign)
 				switch (snoId)
 				{
 					case 168925: //CainIntro
 								 //if (this.CurrentAct == 0)
 						Task.Delay(1000).ContinueWith(delegate
 						{
-							foreach (var plr in this.Players.Values)
+							foreach (var plr in Players.Values)
 								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
 
 							Task.Delay(1000).ContinueWith(delegate
 							{
-								foreach (var plr in this.Players.Values)
+								foreach (var plr in Players.Values)
 									plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage()
 									{
 										ActorID = (int)encWorld.GetActorBySNO(ActorSno._test_cainintro_greybox_bridge_trout_tempworking).DynamicID(plr), Duration = 1f, Snap = false
@@ -1488,13 +1488,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 									if (Cain.Position.Y > 140)
 									{
 										Cain.SetVisible(false);
-										foreach (var plr in this.Players.Values) Cain.Unreveal(plr);
+										foreach (var plr in Players.Values) Cain.Unreveal(plr);
 										CainQuest = Cain;
 									}
 									else
 									{
 										Cain.SetVisible(true);
-										foreach (var plr in this.Players.Values) Cain.Reveal(plr);
+										foreach (var plr in Players.Values) Cain.Reveal(plr);
 										CainRun = Cain;
 									}
 
@@ -1522,7 +1522,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								Task.Delay(3000).ContinueWith(delegate
 									{
 										CainRun.Move(FirstPoint, FirstfacingAngle);
-										foreach (var plr in this.Players.Values)
+										foreach (var plr in Players.Values)
 											plr.Conversations.StartConversation(80920);//Запуск диалога - 80920 //Фраза Каина, бежит первым до начала мостика, оглядывается. //"Cain_Run_CainIntro", 81080 - Анимация 
 									Task.Delay(5000).ContinueWith(delegate
 											{
@@ -1539,7 +1539,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 													//{[1013103213, {[Actor] [Type: Gizmo] SNOId:78439 GlobalId: 1013103213 Position: x:119.54008 y:140.65799 z:-4.535186 Name: Test_CainIntro_greybox_bridge_trOut_TempWorking}]}
 													//Обрушиваем мостик //EffectGroup "CainIntro_shake", 81546
 													var bridge = encWorld.GetActorBySNO(ActorSno._test_cainintro_greybox_bridge_trout_tempworking);
-													bridge.PlayAnimation(5, bridge.AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault]);
+													bridge.PlayAnimation(5, bridge.AnimationSet.Animations[AnimationSetKeys.DeathDefault.ID]);
 													//}
 													foreach (var skeleton in Skeletons)
 													{
@@ -1553,19 +1553,19 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 												//(Должен быть диалог Король скилет.)
 												var Leoric = encWorld.SpawnMonster(ActorSno._skeletonking_ghost, FakeLeoricPosition);
-													Leoric.PlayActionAnimation(668);
+													Leoric.PlayActionAnimation(AnimationSno.skeletonking_ghost_spawn);
 													Task.Delay(1000).ContinueWith(delegate
 													{
-														foreach (var plr in this.Players.Values)
+														foreach (var plr in Players.Values)
 															plr.Conversations.StartConversation(17692); //Фраза Леорика
-													Task.Delay(14000).ContinueWith(delegate
+															Task.Delay(14000).ContinueWith(delegate
 															{
 															//Leoric.PlayActionAnimation(9854); //Леорик призывает скелетов
 
-															Leoric.PlayActionAnimation(9848); //Себаса
+															Leoric.PlayActionAnimation(AnimationSno.skeletonking_ghost_despawn); //Себаса
 															Task.Delay(1000).ContinueWith(delegate
 																	{
-																		foreach (var plr in this.Players.Values)
+																		foreach (var plr in Players.Values)
 																		{
 																			plr.InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });
 																			plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
@@ -1605,23 +1605,23 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						Task.Delay(1000).ContinueWith(delegate
 						{
 							//Butcher - 3526
-							foreach (var plr in this.Players.Values)
+							foreach (var plr in Players.Values)
 								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
 
 							Task.Delay(1000).ContinueWith(delegate
 							{
 								if (Butcher != null)
 									(Butcher as Monster).Brain.DeActivate();
-								foreach (var plr in this.Players.Values)
+								foreach (var plr in Players.Values)
 									plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)Butcher.DynamicID(plr), Duration = 1f, Snap = false });
 
 
-								foreach (var plr in this.Players.Values)
+								foreach (var plr in Players.Values)
 									plr.Conversations.StartConversation(211980); //ФРЭШ МИТ
 																				 //	StartConversation(ButcherLair, 211980);
 								Task.Delay(3000).ContinueWith(delegate
 									{
-										foreach (var plr in this.Players.Values)
+										foreach (var plr in Players.Values)
 										{
 											plr.InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });
 											plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
@@ -1638,24 +1638,24 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						break;
 				}
 
-			foreach (var bounty in this.QuestManager.Bounties)
+			foreach (var bounty in QuestManager.Bounties)
 				bounty.CheckLevelArea(levelArea);
 
-			this.CurrentEncounter.acceptedPlayers = 0;
-			this.CurrentEncounter.activated = false;
+			CurrentEncounter.acceptedPlayers = 0;
+			CurrentEncounter.activated = false;
 		}
 
 		public void AcceptBossEncounter()
 		{
-			this.CurrentEncounter.acceptedPlayers++;
-			if (this.CurrentEncounter.acceptedPlayers >= this.Players.Count)
-				TeleportToBossEncounter(this.CurrentEncounter.SnoId);
+			CurrentEncounter.acceptedPlayers++;
+			if (CurrentEncounter.acceptedPlayers >= Players.Count)
+				TeleportToBossEncounter(CurrentEncounter.SnoId);
 		}
 
 		public void DeclineBossEncounter()
 		{
-			this.CurrentEncounter.activated = false;
-			this.CurrentEncounter.acceptedPlayers = 0;
+			CurrentEncounter.activated = false;
+			CurrentEncounter.acceptedPlayers = 0;
 		}
 
 		public void AddOnLoadWorldAction(WorldSno worldSNO, Action action)
@@ -1667,20 +1667,20 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 			else
 			{
-				if (!this.OnLoadWorldActions.ContainsKey(worldSNO))
-					this.OnLoadWorldActions.Add(worldSNO, new List<Action>());
+				if (!OnLoadWorldActions.ContainsKey(worldSNO))
+					OnLoadWorldActions.Add(worldSNO, new List<Action>());
 
-				this.OnLoadWorldActions[worldSNO].Add(action);
+				OnLoadWorldActions[worldSNO].Add(action);
 			}
 		}
 
 		public void AddOnLoadSceneAction(int sceneSNO, Action action)
         {
 			Logger.Trace("AddOnLoadSceneAction: {0}", sceneSNO);
-			if (!this.OnLoadSceneActions.ContainsKey(sceneSNO))
-					this.OnLoadSceneActions.Add(sceneSNO, new List<Action>());
+			if (!OnLoadSceneActions.ContainsKey(sceneSNO))
+					OnLoadSceneActions.Add(sceneSNO, new List<Action>());
 
-				this.OnLoadSceneActions[sceneSNO].Add(action);
+				OnLoadSceneActions[sceneSNO].Add(action);
 		}
 
 #endregion
@@ -1692,7 +1692,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			if (world.SNO == WorldSno.__NONE || WorldExists(world.SNO))
 				Logger.Error(String.Format("World has an invalid SNO or was already being tracked (ID = {0}, SNO = {1})", world.GlobalID, world.SNO));
 			else
-				this._worlds.TryAdd(world.SNO, world);
+				_worlds.TryAdd(world.SNO, world);
 		}
 
 		public void RemoveWorld(World world)
@@ -1701,7 +1701,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			if (world.SNO == WorldSno.__NONE || !WorldExists(world.SNO))
 				Logger.Error(String.Format("World has an invalid SNO or was not being tracked (ID = {0}, SNO = {1})", world.GlobalID, world.SNO));
 			else
-				this._worlds.TryRemove(world.SNO, out removed);
+				_worlds.TryRemove(world.SNO, out removed);
 		}
 
 		public World GetWorld(WorldSno worldSNO)
@@ -1711,7 +1711,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 			World world;
 
-			if (this.CurrentAct != 3000 && worldSNO == WorldSno.x1_tristram_adventure_mode_hub) //fix for a1 Tristram
+			if (CurrentAct != 3000 && worldSNO == WorldSno.x1_tristram_adventure_mode_hub) //fix for a1 Tristram
 				worldSNO = WorldSno.trout_town;
 
 			if (!WorldExists(worldSNO)) // If it doesn't exist, try to load it
@@ -1733,21 +1733,21 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				timer.Start();*/
 				//Task.Delay(1000).ContinueWith(t => { if (!this.WorldGenerator.Actions.Contains(action)) loaded = true; }).Wait();
 				//}
-				world = this.WorldGenerator.Generate(worldSNO);
+				world = WorldGenerator.Generate(worldSNO);
 				if (world == null) Logger.Warn("Failed to generate world with sno: {0}", worldSNO);
 			}
-			this._worlds.TryGetValue(worldSNO, out world);
+			_worlds.TryGetValue(worldSNO, out world);
 			return world;
 		}
 
 		public bool WorldExists(WorldSno worldSNO)
 		{
-			return this._worlds.ContainsKey(worldSNO);
+			return _worlds.ContainsKey(worldSNO);
 		}
 
 		public bool WorldCleared(WorldSno worldSNO)
 		{
-			return this._worlds[worldSNO].Actors.Values.OfType<Monster>().Where(m => m.OriginalLevelArea != -1 && !m.Dead).Count() < 5;
+			return _worlds[worldSNO].Actors.Values.OfType<Monster>().Where(m => m.OriginalLevelArea != -1 && !m.Dead).Count() < 5;
 		}
 
 		/// <summary>
@@ -1757,8 +1757,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// <returns><see cref="World"/></returns>
 		public World GetWayPointWorldById(int id)
 		{
-			bool isOpenWorld = this.CurrentAct == 3000;
-			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][this.CurrentActSNOid].Data).WayPointInfo.ToList();
+			bool isOpenWorld = CurrentAct == 3000;
+			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][CurrentActSNOid].Data).WayPointInfo.ToList();
 			if (isOpenWorld)
 				actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70015].Data).WayPointInfo
 							.Union(((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70016].Data).WayPointInfo)

@@ -26,7 +26,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
 	class NecromancerSkeleton_A : Minion
 	{
-		public NecromancerSkeleton_A(MapSystem.World world, ActorSno sno, ActorSystem.Actor master)
+		public NecromancerSkeleton_A(MapSystem.World world, ActorSno sno, Actor master)
 			: base(world, sno, master, null)
 		{
 			Scale = 1.35f;
@@ -36,22 +36,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			context.World = master.World;
 			context.PowerSNO = 453801;
 
-			this.WalkSpeed *= 3;
-			this.DamageCoefficient = context.ScriptFormula(14) * 2f;
+			WalkSpeed *= 3;
+			DamageCoefficient = context.ScriptFormula(14) * 2f;
 			SetBrain(new MinionBrain(this));
 			
-			this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Item] = 1;
-			this.Attributes[GameAttribute.Hitpoints_Max_Bonus] = 1;
-			this.Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 1f;
-			this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = 0;
+			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Item] = 1;
+			Attributes[GameAttribute.Hitpoints_Max_Bonus] = 1;
+			Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 1f;
+			Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = 0;
 
-			this.Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
+			Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
 			Attributes[GameAttribute.Hitpoints_Max] = 20f * (Master as Player).Toon.Level;
 			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
 			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
 
 			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-			this.Attributes[GameAttribute.Summoned_By_SNO] = 453801;
+			Attributes[GameAttribute.Summoned_By_SNO] = 453801;
 			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
 
 			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 0.5f * context.User.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];

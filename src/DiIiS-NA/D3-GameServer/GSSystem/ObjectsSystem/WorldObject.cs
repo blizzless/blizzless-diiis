@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 {
-	public abstract class WorldObject : DynamicObject, IRevealable
+	public abstract class WorldObject : DynamicObject, IRevealable, IDisposable
 	{
 		/// <summary>
 		/// The world object belongs to.
@@ -35,12 +35,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		/// </summary>
 		public Vector3D Position
 		{
-			get { return _position; }
+			get => _position;
 			set
 			{
 				_position = value;
 				if (_position == null) return;
-				this.Bounds = new RectangleF(this.Position.X, this.Position.Y, this.Size.Width, this.Size.Height);
+				Bounds = new RectangleF(Position.X, Position.Y, Size.Width, Size.Height);
 				var handler = PositionChanged;
 				if (handler != null) handler(this, EventArgs.Empty);
 			}
@@ -81,10 +81,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 			if (world == null) return;
 			//if (dynamicID == 0)
 			//this.DynamicID = world.NewActorID;
-			this.World = world;
+			World = world;
 			//this.World.StartTracking(this); // track the object.
-			this.RotationAxis = new Vector3D(); 
-			this._position = new Vector3D();
+			RotationAxis = new Vector3D(); 
+			_position = new Vector3D();
 		}
 
 		/// <summary>
@@ -108,14 +108,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		{
 			try
 			{
-				if (this is Actor)
-					if (this.World != null)
-						this.World.Leave(this as Actor);
+				if (this is Actor actor)
+					if (World != null)
+						World.Leave(actor);
 
 				//this.World.EndTracking(this);
 			}
 			catch { }
-			this.World = null;
+			World = null;
+		}
+
+
+		public void Dispose()
+		{
+			Destroy();
 		}
 	}
 }

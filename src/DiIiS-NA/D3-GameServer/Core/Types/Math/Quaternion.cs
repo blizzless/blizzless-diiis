@@ -22,8 +22,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public Quaternion(Vector3D V, float inW)
 		{
-			this.Vector3D = V;
-			this.W = inW;
+			Vector3D = V;
+			W = inW;
 		}
 		/// <summary>
 		/// Creates an quaternion that rotates along the Z-axis by the specified "facing" angle. 
@@ -45,8 +45,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 		/// <param name="stream">The MPQFileStream to read from.</param>
 		public Quaternion(MpqFileStream stream)
 		{
-			this.Vector3D = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
-			this.W = stream.ReadValueF32();
+			Vector3D = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
+			W = stream.ReadValueF32();
 		}
 
 		/// <summary>

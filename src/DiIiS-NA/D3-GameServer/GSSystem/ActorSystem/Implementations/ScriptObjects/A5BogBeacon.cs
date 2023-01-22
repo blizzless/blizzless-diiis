@@ -29,11 +29,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			if (!base.Reveal(player))
 				return false;
 
-			if (this.isOpened == true)
+			if (isOpened == true)
 			{
 				player.InGameClient.SendMessage(new SetIdleAnimationMessage
 				{
-					ActorID = this.DynamicID(player),
+					ActorID = DynamicID(player),
 					AnimationSNO = AnimationSetKeys.Open.ID
 				});
 			}
@@ -44,26 +44,26 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		{
 			World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimationSNO = AnimationSetKeys.Open.ID
 			}, this);
 
-			this.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			this.Attributes[GameAttribute.Gizmo_State] = 1;
-			this.CollFlags = 0;
-			this.isOpened = true;
+			Attributes[GameAttribute.Gizmo_State] = 1;
+			CollFlags = 0;
+			isOpened = true;
 
 			Attributes.BroadcastChangedIfRevealed();
 		}
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (this.Attributes[GameAttribute.Disabled]) return;
-			this.Open();
+			if (Attributes[GameAttribute.Disabled]) return;
+			Open();
 
 			base.OnTargeted(player, message);
-			this.Attributes[GameAttribute.Disabled] = true;
+			Attributes[GameAttribute.Disabled] = true;
 		}
 	}
 }

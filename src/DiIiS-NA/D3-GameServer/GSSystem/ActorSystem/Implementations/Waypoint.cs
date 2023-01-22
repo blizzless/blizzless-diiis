@@ -54,18 +54,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			: base(world, sno, tags)
 		{
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 129569;
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.MinimapActive] = true;
 		}
 
 		public override void OnEnter(World world)
 		{
-			this.ReadWaypointId();
+			ReadWaypointId();
 		}
 
 		private void ReadWaypointId()
 		{
-			bool isOpenWorld = this.World.Game.CurrentAct == 3000;
-			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][this.World.Game.CurrentActSNOid].Data).WayPointInfo.ToList();
+			bool isOpenWorld = World.Game.CurrentAct == 3000;
+			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][World.Game.CurrentActSNOid].Data).WayPointInfo.ToList();
 			if (isOpenWorld)
 				actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70015].Data).WayPointInfo
 							.Union(((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70016].Data).WayPointInfo)
@@ -75,8 +75,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 							.Where(w => w.SNOWorld != -1).ToList();
 			var wayPointInfo = actData.Where(w => w.Flags == 3 || (isOpenWorld ? (w.Flags == 2) : (w.Flags == 1))).ToList();
 
-			var proximity = new RectangleF(this.Position.X - 1f, this.Position.Y - 1f, 2f, 2f);
-			var scenes = this.World.QuadTree.Query<Scene>(proximity);
+			var proximity = new RectangleF(Position.X - 1f, Position.Y - 1f, 2f, 2f);
+			var scenes = World.QuadTree.Query<Scene>(proximity);
 			if (scenes.Count == 0) return; // TODO: fixme! /raist
 
 			var scene = scenes[0]; // Parent scene /fasbat
@@ -95,11 +95,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				if (scene.Specification == null) continue;
 				foreach (var area in scene.Specification.SNOLevelAreas)
 				{
-					if (wayPointInfo[i].SNOWorld != (int)this.World.SNO || wayPointInfo[i].SNOLevelArea != area)
+					if (wayPointInfo[i].SNOWorld != (int)World.SNO || wayPointInfo[i].SNOLevelArea != area)
 						continue;
 
-					this.SNOLevelArea = wayPointInfo[i].SNOLevelArea;
-					this.WaypointId = i;
+					SNOLevelArea = wayPointInfo[i].SNOLevelArea;
+					WaypointId = i;
 					break;
 				}
 			}
@@ -111,7 +111,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			world.BroadcastIfRevealed(plr => new PlayAnimationMessage()
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimReason = 5,
 				UnitAniimStartTime = 0f,
 				tAnim = new[]
@@ -129,22 +129,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenWaypointSelectionWindowMessage)
 			{
-				ActorID = this.DynamicID(player)
+				ActorID = DynamicID(player)
 			});
 
 			//this.Attributes[Net.GS.Message.GameAttribute.Gizmo_Has_Been_Operated] = true;
 
 			//handling quest triggers (special for Waypoints)
-			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)this.SNO))
+			if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
-				var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO];
+				var trigger = World.Game.QuestProgress.QuestTriggers[(int)SNO];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 				{
-					this.World.Game.QuestProgress.UpdateCounter((int)this.SNO);
-					if (trigger.count == this.World.Game.QuestProgress.QuestTriggers[(int)this.SNO * (-1)].counter)
+					World.Game.QuestProgress.UpdateCounter((int)SNO);
+					if (trigger.count == World.Game.QuestProgress.QuestTriggers[(int)SNO * (-1)].counter)
 						try
 						{
-							trigger.questEvent.Execute(this.World); // launch a questEvent
+							trigger.questEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -153,7 +153,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				}
 			}
 
-			if (this.World.Game.CurrentAct == 3000 && !player.InGameClient.OpenWorldDefined)
+			if (World.Game.CurrentAct == 3000 && !player.InGameClient.OpenWorldDefined)
 			{
 				player.InGameClient.OpenWorldDefined = true;
 				player.InGameClient.SendMessage(new ActTransitionMessage
@@ -166,7 +166,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				{
 					SyncedData = new GameSyncedData
 					{
-						GameSyncedFlags = this.World.Game.IsSeasoned == true ? this.World.Game.IsHardcore == true ? 3 : 2 : this.World.Game.IsHardcore == true ? 1 : 0,
+						GameSyncedFlags = World.Game.IsSeasoned ? World.Game.IsHardcore ? 3 : 2 : World.Game.IsHardcore ? 1 : 0,
 						Act = 3000,       //act id
 						InitialMonsterLevel = player.InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
 						MonsterLevel = 0x0000000, //MonsterLevel
@@ -178,7 +178,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						OpenWorldDefaultAct = 1, //OpenWorldDefaultAct
 						OpenWorldBonusAct = 0, //OpenWorldBonusAct
 						SNODungeonFinderLevelArea = 0, //SNODungeonFinderLevelArea
-						LootRunOpen = -1, //LootRunOpen //0 - Великий Портал
+						LootRunOpen = -1, //LootRunOpen //0 - Great Portal
 						OpenLootRunLevel = -1, //OpenLootRunLevel
 						LootRunBossDead = 0, //LootRunBossDead
 						HunterPlayerIdx = 0, //HunterPlayerIdx
@@ -201,7 +201,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					}
 				});
 
-				foreach (var bounty in this.World.Game.QuestManager.Bounties)
+				foreach (var bounty in World.Game.QuestManager.Bounties)
 				{
 					player.InGameClient.SendMessage(new QuestUpdateMessage()
 					{
@@ -217,7 +217,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenWaypointSelectionWindowMessage)
 				{
-					ActorID = this.DynamicID(player)
+					ActorID = DynamicID(player)
 				});
 			}
 		}
@@ -229,12 +229,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			player.InGameClient.SendMessage(new MapMarkerInfoMessage
 			{
-				HashedName = StringHashHelper.HashItemName(string.Format("{0}-{1}", this.Name, this.GlobalID)),
-				Place = new WorldPlace { Position = this.Position, WorldID = this.World.GlobalID },
+				HashedName = StringHashHelper.HashItemName($"{Name}-{GlobalID}"),
+				Place = new WorldPlace { Position = Position, WorldID = World.GlobalID },
 				ImageInfo = 129569,
 				Label = -1,
 				snoStringList = -1,
-				snoKnownActorOverride = (int)this.SNO,
+				snoKnownActorOverride = (int)SNO,
 				snoQuestSource = -1,
 				Image = -1,
 				Active = true,
@@ -248,25 +248,25 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnPlayerApproaching(Player player)
 		{
-			if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale * this.Scale && !_activated)
+			if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale * Scale && !_activated)
 			{
 				_activated = true;
 
-				if (this.World.Game.OpenedWaypoints.Contains(this.WaypointId) || this.World.Game.CurrentAct == 3000) return;
+				if (World.Game.OpenedWaypoints.Contains(WaypointId) || World.Game.CurrentAct == 3000) return;
 
 				Logger.Debug("(OnTargeted) Waypoint has been activated: {0}, levelArea: {1}", WaypointId, SNOLevelArea);
 
-				this.World.BroadcastIfRevealed(plr => new WaypointActivatedMessage
+				World.BroadcastIfRevealed(plr => new WaypointActivatedMessage
 				{
-					WaypointDyID = this.DynamicID(plr),
+					WaypointDyID = DynamicID(plr),
 					PlayerDyID = player.DynamicID(plr),
 					SNOLevelArea = SNOLevelArea,
 					Announce = true
 				}, this);
 
-				this.World.Game.UnlockTeleport(this.WaypointId);
+				World.Game.UnlockTeleport(WaypointId);
 
-				foreach (var game_player in this.World.Game.Players)
+				foreach (var game_player in World.Game.Players)
 					game_player.Value.UpdateHeroState();
 
 			}

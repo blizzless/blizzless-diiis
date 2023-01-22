@@ -88,20 +88,19 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             Init.SetHeroDigests(d);
             Init.SetAccountDigest(Client.Account.GameAccount.Digest);
             Init.SetSyncedVars(
-                " OnlineService.Season.Num=1" + //Номер сезона
-                " OnlineService.Season.State=1" + //Статус сезона, 1 - Активирован, 0 - Деактивирован
+                " OnlineService.Season.Num=1" + //Season number
+                " OnlineService.Season.State=1" + //Season status, 1 - Activated, 0 - Deactivated
                 " OnlineService.Leaderboard.Era=1" +
-                " OnlineService.AnniversaryEvent.Status=1" + //Событие юбилея, 1-Старый Тристам
-                " ChallengeRift.ChallengeNumber=1" + //Номер портала дерзаний.
-                " OnlineService.FreeToPlay=true" + //Магазин за платину
-                " OnlineService.Store.Status=0" + //Статус Магазина, 0 - Включен, 1 - Отключен
+                " OnlineService.AnniversaryEvent.Status=1" + //Anniversary Event, 1st Old Tristam
+                " ChallengeRift.ChallengeNumber=1" + //Rift portal number.
+                " OnlineService.FreeToPlay=true" + //Shop for Platinum
+                " OnlineService.Store.Status=0" + //Store Status, 0 - Enabled, 1 - Disabled
                 " OnlineService.Store.ProductCatalogDigest=C42DC6117A7008EDA2006542D6C07EAD096DAD90" + //China
-                " OnlineService.Store.ProductCatalogVersion=633565800390338000" + //Китайский каталог
+                " OnlineService.Store.ProductCatalogVersion=633565800390338000" + //Chinese Catalog
                                                                                   //" OnlineService.Store.ProductCatalogDigest=79162283AFACCBA5DA989BD341F7B782860AC1F4" + //Euro
                                                                                   //" OnlineService.Store.ProductCatalogVersion=635984100169931000" + //Euro
-                " OnlineService.Region.Id=1"); //Регион
-            
-            
+                " OnlineService.Region.Id=1"); //Region
+
             Init.SetSeenTutorials(ByteString.CopyFrom(Client.Account.GameAccount.DBGameAccount.SeenTutorials));
             Init.SetMatchmakingPool("Default");
             
@@ -168,7 +167,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             //licences.AddLicenses(ContentLicense.CreateBuilder().SetId(16).SetQuantity(1));  // Blue Booster
             //licences.AddLicenses(ContentLicense.CreateBuilder().SetId(17).SetQuantity(1));  // Gold Booster
             //licences.AddLicenses(ContentLicense.CreateBuilder().SetId(18).SetQuantity(5));  // Red Booster
-            //.SetExpireTime(900000) - Просрочка)
+            //.SetExpireTime(900000) - Delay in milliseconds)
 
             Init.SetContentLicenses(licences);
 
@@ -224,32 +223,32 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             if (messageId != 270)
                 Logger.Info("ProcessClientRequest() ID: {0}", messageId);
 #endif
-            switch ((controller as HandlerController).Client.Account.GameAccount.ProgramField.Value)
+            switch (((HandlerController)controller).Client.Account.GameAccount.ProgramField.Value)
             {
                 case "D3":
                     switch (messageId)
                     {
                         case 0:  // HeroDigestListRequest
-                            ByteString digest = OnHeroDigestListRequest((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString digest = OnHeroDigestListRequest(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(digest));
                             break;
                         case 1:  // CreateHero
-                            ByteString hero = OnHeroCreateParams((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString hero = OnHeroCreateParams(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             if (hero != null)
                                 attr.SetValue(Variant.CreateBuilder().SetMessageValue(hero));
                             else
-                                (controller as HandlerController).Status = 17;
+                                ((HandlerController)controller).Status = 17;
                             break;
                         case 2:  // DeleteHero
-                            ByteString hero1 = OnHeroDeleteParams((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString hero1 = OnHeroDeleteParams(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(hero1));
                             break;
                         case 3:  // Выбор Персонажа
-                            ByteString SwitchHero = SwitchCharRequest((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString SwitchHero = SwitchCharRequest(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(SwitchHero));
                             break;
                         case 4: //D3.GameMessages.SaveBannerConfiguration -> return MessageId with no Message
-                            SaveBanner((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            SaveBanner(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             var attrId = bgs.protocol.Attribute.CreateBuilder()
                                 .SetName("CustomMessageId")
                                 .SetValue(bgs.protocol.Variant.CreateBuilder().SetIntValue(5).Build())
@@ -257,55 +256,55 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             builder.AddAttribute(attrId);
                             break;
                         case 6:  // InitialLoginDataRequest -> InitialLoginDataQueuedResponse
-                            ByteString loginData = OnInitialLoginDataRequest((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString loginData = OnInitialLoginDataRequest(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(loginData));
                             break;
                         case 7:
-                            var getAccountSettings = GetGameAccountSettings((controller as HandlerController).Client);
+                            var getAccountSettings = GetGameAccountSettings(((HandlerController)controller).Client);
                             attr.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(getAccountSettings).Build());
                             break;
                         case 8:  
-                            var setAccountSettings = SetGameAccountSettings(D3.GameMessage.SetGameAccountSettings.ParseFrom(request.GetAttribute(2).Value.MessageValue), (controller as HandlerController).Client);
+                            var setAccountSettings = SetGameAccountSettings(D3.GameMessage.SetGameAccountSettings.ParseFrom(request.GetAttribute(2).Value.MessageValue), ((HandlerController)controller).Client);
                             attr.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(setAccountSettings).Build());
                             break;
                         case 9:  // GetToonSettings -> ToonSettings
-                            ByteString toonSettings = OnGetToonSettings((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString toonSettings = OnGetToonSettings(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(toonSettings));
                             break;
                         case 10: // SetToonSettings -> Empty Message???
-                            ByteString Current = GetAchievements((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString Current = GetAchievements(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(Current));
                             // attr.SetValue(Variant.CreateBuilder().SetMessageValue(ByteString.Empty));
                             break;
                         case 14: //D3.GameMessage.GetAccountProfiles
-                            var getprofile1 = CollectProfiles((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            var getprofile1 = CollectProfiles(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(getprofile1));
                             //CollectHeroesProfiles
                             break;
                         case 15: //D3.GameMessage.GetHeroProfiles -> D3.Profile.HeroProfileList
                             //var gettoon = SelectToon(Client.Connect, request.GetAttribute(2).Value.MessageValue);
-                            var heroprofs = GetHeroProfs((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            var heroprofs = GetHeroProfs(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(heroprofs));
                             break;
                         case 16:  // GetAccountPrefs -> (D3.Client.)Preferences
-                            ByteString prefs = OnGetAccountPrefs((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString prefs = OnGetAccountPrefs(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(prefs));
                             break;
                         case 18: // 
-                            //ByteString TestNB = TestRequest((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            //ByteString TestNB = TestRequest(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             //attr.SetValue(Variant.CreateBuilder().SetMessageValue(TestNB));
                             break;
-                        case 19: // Получение всей косметики
-                            ByteString CurrentToon = GetCollectionAccout((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 19: // Getting all cosmetics
+                            ByteString CurrentToon = GetCollectionAccout(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(CurrentToon));
                             break;
-                        case 23: //Информация о погибших персонажах
-                            var herodeadprofs = GetDeadedHeroProfs((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 23: //Information about dead characters
+                            var herodeadprofs = GetDeadedHeroProfs(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(herodeadprofs));
 
                             var attr2 = bgs.protocol.Attribute.CreateBuilder();
-                            var herodeaddigests = GetDeadedHeroDigests((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr2.SetValue(Variant.CreateBuilder().SetMessageValue(herodeaddigests));
+                            var heroAddedDigests = GetDeadedHeroDigests(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr2.SetValue(Variant.CreateBuilder().SetMessageValue(heroAddedDigests));
                             attr2.SetName("CustomMessage2");
                             builder.AddAttribute(attr2);
                             break;
@@ -314,132 +313,132 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             //attr.SetValue(Variant.CreateBuilder().SetMessageValue(ClearActsResponse));
                             break;
                         case 29: //Set Cosmetic
-                            ByteString Current1 = SetCollection((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString Current1 = SetCollection(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(Current1));
                             break;
                         case 32: //ChallengeRift Fetch HeroData
-                            ByteString ChallengeRift = GetChallengeRift((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString ChallengeRift = GetChallengeRift(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(ChallengeRift));
                             break;
                         case 33: //Rebirth
-                            ByteString RebirthResponse = RebirthMethod((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                            ByteString RebirthResponse = RebirthMethod(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(RebirthResponse));
                             break;
-                        case 120: //Создание гильдии
-                            ByteString CreatedGuild = CreateGuild((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 120: //Creation of a guild
+                            ByteString CreatedGuild = CreateGuild(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(CreatedGuild));
                             break;
-                        case 121: //TODO: Приглашение в клан
-                            ByteString GSuggest = GuildInvit((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 121: //TODO: Clan invitation
+                            ByteString GSuggest = GuildInvit(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(GSuggest).Build());
                             break;
-                        case 122: //Вступление в гильдию
-                            ByteString InvitedToGuild = AcceptInviteToGuild((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 122: //Joining a Guild
+                            ByteString InvitedToGuild = AcceptInviteToGuild(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(InvitedToGuild));
                             break;
-                        case 124: //TODO: Сообщение дня в клане
-                            GuildSetMOTD((controller as HandlerController).Client, D3.GameMessage.GuildSetMotd.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 124: //TODO: Clan message of the day
+                            GuildSetMOTD(((HandlerController)controller).Client, D3.GameMessage.GuildSetMotd.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             break;
-                        case 125: //TODO: Добавить новость в клане
-                            GuildSetNews((controller as HandlerController).Client, D3.GameMessage.GuildSetNews.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 125: //TODO: Add clan news
+                            GuildSetNews(((HandlerController)controller).Client, D3.GameMessage.GuildSetNews.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             break;
-                        case 127: //Изменения в ранге
+                        case 127: //Rank changes
                             break;
-                        case 129: //Повышение в звании
-                            var promote = GuildPromoteMember((controller as HandlerController).Client, D3.GameMessage.GuildPromoteMember.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 129: //Rank promotion
+                            var promote = GuildPromoteMember(((HandlerController)controller).Client, D3.GameMessage.GuildPromoteMember.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(promote).Build());
                             break;
-                        case 130: //Понижение в звании
-                            var demote = GuildDemoteMember((controller as HandlerController).Client, D3.GameMessage.GuildDemoteMember.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 130: //Rank demotion
+                            var demote = GuildDemoteMember(((HandlerController)controller).Client, D3.GameMessage.GuildDemoteMember.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(demote).Build());
                             break;
-                        case 132: //Выход из гильдии
-                            ByteString ExitFrGuild = ExitFromGuild((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 132: //Guild kick
+                            ByteString ExitFrGuild = ExitFromGuild(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(ExitFrGuild));
                             break;
-                        case 133: //Кик из клана
-                            GuildKickMemberP((controller as HandlerController).Client, D3.GameMessage.GuildKickMember.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 133: //Kick from the clan
+                            GuildKickMemberP(((HandlerController)controller).Client, D3.GameMessage.GuildKickMember.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             break;
-                        case 134: //Роспуск клана
-                            GuildDisband((controller as HandlerController).Client, D3.GameMessage.GuildId.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 134: //Disbanding a clan
+                            GuildDisband(((HandlerController)controller).Client, D3.GameMessage.GuildId.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             break;
-                        case 138: //Создание гильдии
-                            ByteString CreatedComm = CreateCommunity((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(CreatedComm));
+                        case 138: //Guild creation
+                            ByteString createCommunity = CreateCommunity(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(createCommunity));
                             break;
-                        case 144: //TODO: Информация о клане
-                            GuildSetDescription((controller as HandlerController).Client, D3.GameMessage.GuildSetDescription.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 144: //TODO: Guild information
+                            GuildSetDescription(((HandlerController)controller).Client, D3.GameMessage.GuildSetDescription.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             break;
                         case 146: //TODO: 
-                            var inviteList = GetInviteList((controller as HandlerController).Client, D3.GameMessage.GuildId.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                            var inviteList = GetInviteList(((HandlerController)controller).Client, D3.GameMessage.GuildId.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(inviteList).Build());
                             break;
-                        case 148: //Запрос на вступление в гильдию
-                            ByteString Suggest = GuildSuggest((controller as HandlerController).Client, D3.GameMessage.GuildSuggest.ParseFrom(request.GetAttribute(2).Value.MessageValue));
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(Suggest));
-                            //ByteString Invite = InviteToGuild((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 148: //Request to join the guild
+                            ByteString guildSuggest = GuildSuggest(((HandlerController)controller).Client, D3.GameMessage.GuildSuggest.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(guildSuggest));
+                            //ByteString Invite = InviteToGuild(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             //attr.SetValue(Variant.CreateBuilder().SetMessageValue(Invite));
                             break;
                         case 149:
-                            GuildSuggestionResponse((controller as HandlerController).Client, D3.GameMessage.GuildSuggestionResponse.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                            GuildSuggestionResponse(((HandlerController)controller).Client, D3.GameMessage.GuildSuggestionResponse.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             break;
-                        case 150:// Новости клана
-                            ByteString news = GuildFetchNews((controller as HandlerController).Client, D3.GameMessage.GuildFetchNews.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 150:// Clan news
+                            ByteString news = GuildFetchNews(((HandlerController)controller).Client, D3.GameMessage.GuildFetchNews.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(news).Build());
-                            //GetInviteList((controller as HandlerController).Client, D3.GameMessage.GuildId.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                            //GetInviteList(((HandlerController)controller).Client, D3.GameMessage.GuildId.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             break;
-                        case 152: //Отмена запроса на вступление в гильду
-                            GuildCancelInvite((controller as HandlerController).Client, D3.GameMessage.GuildCancelInvite.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 152: //Cancel request to join the guild
+                            GuildCancelInvite(((HandlerController)controller).Client, D3.GameMessage.GuildCancelInvite.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             break;
-                        case 156: //Изменение настроек гильдии
-                            GuildLFM((controller as HandlerController).Client, D3.GameMessage.GuildSetLFM.ParseFrom(request.GetAttribute(2).Value.MessageValue));
+                        case 156: //Guild settings change
+                            GuildLFM(((HandlerController)controller).Client, D3.GameMessage.GuildSetLFM.ParseFrom(request.GetAttribute(2).Value.MessageValue));
                             break;
-                        case 190: //Поиск гильдии
-                            ByteString GuildSearch = SearchGuilds((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(GuildSearch));
+                        case 190: //Search Guild
+                            ByteString guildSearch = SearchGuilds(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(guildSearch));
                             break;
-                        case 200: //Рейтинг
-                            ByteString Rating = GetRating((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(Rating));
+                        case 200: //Rating
+                            ByteString rating = GetRating(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(rating));
                             break;
-                        case 201: //Рейтинг1
-                            ByteString Rating1 = GetRatingAlt((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(Rating1));
+                        case 201: //Rating1
+                            ByteString ratingAlt = GetRatingAlt(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(ratingAlt));
                             break;
-                        case 202: //Рейтинг1
-                            ByteString Rating2 = GetRatingPersonal((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(Rating2));
+                        case 202: //personal rating
+                            ByteString personalRating = GetRatingPersonal(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(personalRating));
                             break;
                         case 210:
-                            ByteString StoreResponse = CurrentStore((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(StoreResponse));
+                            ByteString storeResponse = CurrentStore(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(storeResponse));
                             break;
                         case 211:
-                            ByteString StoreResponse1 = CurrentStore1((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(StoreResponse1));
+                            ByteString storeResponse1 = CurrentStore1(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(storeResponse1));
                             break;
-                        case 212: //Покупка
-                            ByteString CurrentWalletResponse = CurrentWallet((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(CurrentWalletResponse));
+                        case 212: //Purchase
+                            ByteString currentWalletResponse = CurrentWallet(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(currentWalletResponse));
                             break;
-                        case 213: //Реальная валюта
-                            ByteString CurrentPrimaryWalletResponse = CurrentPrimaryWallet((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(CurrentPrimaryWalletResponse));
+                        case 213: //Real currency
+                            ByteString currentPrimaryWalletResponse = CurrentPrimaryWallet(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(currentPrimaryWalletResponse));
                             break;
-                        case 216: //Коллекция
-                            ByteString Test = TestRequest((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(Test));
+                        case 216: //Collection
+                            ByteString test = TestRequest(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(test));
                             break;
-                        case 230: //GetAchievemntSnapshot
-                            var GetAchievementsSnapshot = CollectAchivementsSnapshot((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 230: //GetAchievementSnapshot
+                            var GetAchievementsSnapshot = CollectAchivementsSnapshot(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(GetAchievementsSnapshot));
                             break;
-                        case 250: //Покупка
-                            ByteString SwitchParams = SwitchParametrs((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 250: //Purchase
+                            ByteString SwitchParams = SwitchParameters(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(SwitchParams));
                             break;
-                        case 270: //Покупка
-                            ByteString TestResponse = SendWarden3Custom((controller as HandlerController).Client, request.GetAttribute(2).Value.MessageValue);
+                        case 270: //Purchase
+                            ByteString TestResponse = SendWarden3Custom(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(TestResponse));
                             break;
                     }
@@ -455,13 +454,13 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
             if (messageId == 6)
             {
-                var LogTask = new InitialLoginTask((controller as HandlerController).Client);
+                var LogTask = new InitialLoginTask(((HandlerController)controller).Client);
                 LogTask.run();
             }
 
         }
 
-        #region Методы сервиса
+        #region Service Methods
         public override void GetAchievementsFile(IRpcController controller, GetAchievementsFileRequest request, Action<GetAchievementsFileResponse> done)
         {
             throw new NotImplementedException();
@@ -493,8 +492,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         #endregion
 
         #region Diablo 3
-        #region Система рейтинга
-        private ByteString GetRatingPersonal(BattleClient Client, ByteString data)
+        #region Rating system
+        private ByteString GetRatingPersonal(BattleClient client, ByteString data)
         {
             var request = D3.GameMessage.LeaderboardGetHeroSnapshot.ParseFrom(data);
             var response = D3.GameMessage.LeaderboardGetHeroSnapshotResponse.CreateBuilder();
@@ -505,49 +504,53 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             {
                 case 1:
                     break;
-                case 2: NeededClass = ToonClass.Barbarian; break; // Варвар
-                case 3: NeededClass = ToonClass.Crusader; break; // Крестоносец
-                case 4: NeededClass = ToonClass.DemonHunter; break; // Охотник на демонов
-                case 5: NeededClass = ToonClass.Monk; break; // Монах
-                case 6: NeededClass = ToonClass.WitchDoctor; break; // Колдун
-                case 7: NeededClass = ToonClass.Wizard; break; // Чародей
-                case 8: NeededClass = ToonClass.Necromancer; break; // Некромант
+                case 2: NeededClass = ToonClass.Barbarian; break; // Barbarian
+                case 3: NeededClass = ToonClass.Crusader; break; // Crusader
+                case 4: NeededClass = ToonClass.DemonHunter; break; // Demon Hunter
+                case 5: NeededClass = ToonClass.Monk; break; // Monk
+                case 6: NeededClass = ToonClass.WitchDoctor; break; // Witch Doctor
+                case 7: NeededClass = ToonClass.Wizard; break; // Wizard
+                case 8: NeededClass = ToonClass.Necromancer; break; // Necromancer
 
-                case 10: // Двойки
+                case 10: // deuces
                     break;
-                case 11: // Тройки
+                case 11: // threes
                     break;
-                case 12: // Четверки
+                case 12: // Fours
                     break;
-                case 30: //Портал Дерзаний - 1 Игрок
-                case 31: //Портал Дерзаний - 2 Игрока
-                case 32: //Портал Дерзаний - 3 Игрока
-                case 33: //Портал Дерзаний - 4 Игрока
+                case 30: //Portal of Daring - 1 Player
+                    break;
+                case 31: //Portal of Daring - 2 Players
+                    break;
+                case 32: //Portal of Daring - 3 Players
+                    break;
+                case 33: //Portal of Daring - 4 Players
+                    break;
                 default:
                     break;
             }
             switch (request.ScopeId)
             {
-                case 3: break; //Обычный режим
-                case 2: Hardcore = true; break; //Героический режим
-                case 5: Season = true; break; //Сезонный
-                case 4: Season = true; Hardcore = true; break; //Сезонный героический
+                case 3: break; //Normal
+                case 2: Hardcore = true; break; //Hardcore
+                case 5: Season = true; break; //Seasonal
+                case 4: Season = true; Hardcore = true; break; //Hardcore and Seasonal
             }
 
             List<DBGameAccount> GA = DBSessions.SessionQuery<DBGameAccount>().Where(a => a.Id == request.GameAccountId).ToList();
             var Heroes = ToonManager.GetToonsForGameAccount(GameAccountManager.GetGameAccountByDBGameAccount(GA[0]));
             Toon Hero = null;
-            byte uplvl = 0;
+            byte upLevel = 0;
             int idx = -1;
             if (Heroes.Count > 0)
             {
                 for (int i = 0; i < Heroes.Count; i++)
                 {
-                    if (Season == true && !Heroes[i].isSeassoned) continue;
-                    if (Hardcore == true && !Heroes[i].IsHardcore) continue;
+                    if (Season && !Heroes[i].isSeassoned) continue;
+                    if (Hardcore && !Heroes[i].IsHardcore) continue;
                     if (Heroes[i].Class != NeededClass && (uint)NeededClass != 0) continue;
-                    if (uplvl > Heroes[i].Level) continue;
-                    uplvl = Heroes[i].Level;
+                    if (upLevel > Heroes[i].Level) continue;
+                    upLevel = Heroes[i].Level;
                     idx = i;
                 }
                 if (idx > -1)
@@ -575,15 +578,15 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     int pos = 0;
                     switch ((item.ItemSlot - 272) / 16)
                     {
-                        case 1: pos = 0; break; //0 - Шлем
-                        case 2: pos = 1; break; //1 - Торс
-                        case 3: pos = 5; break; //5 - Вспомогательная рука
-                        case 4: pos = 4; break; //4 - Основная рука
-                        case 5: pos = 3; break; //3 - Перчатки
-                        //case 6: pos = 8; break; // - Пояс
-                        case 7: pos = 2; break; //2 - Ботинки
-                        case 8: pos = 6; break; //6 - Наплечники
-                        case 9: pos = 7; break; //7 - Штаны
+                        case 1: pos = 0; break; //0 - Helmet
+                        case 2: pos = 1; break; //1 - Armor
+                        case 3: pos = 5; break; //5 - Shield
+                        case 4: pos = 4; break; //4 - Main hand
+                        case 5: pos = 3; break; //3 - Gloves
+                        //case 6: pos = 8; break; // - belt
+                        case 7: pos = 2; break; //2 - Boots
+                        case 8: pos = 6; break; //6 - Shoulders
+                        case 9: pos = 7; break; //7 - Pants
                          default:
                             int s = (item.ItemSlot - 272) / 16;
                             pos = 9;
@@ -602,12 +605,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             }
             return response.Build().ToByteString();
         }
-        private ByteString GetRatingAlt(BattleClient Client, ByteString data)
+        private ByteString GetRatingAlt(BattleClient client, ByteString data)
         {
             var request = D3.GameMessage.LeaderboardFetchScores.ParseFrom(data);
             var response = LeaderboardFetchScoresResponse.CreateBuilder();
-            bool Season = false;
-            bool Hardcore = false;
+            bool season = false;
+            bool hardcore = false;
             ToonClass NeededClass = ToonClass.Unknown;
             switch (request.LeaderboardId)
             {
@@ -627,44 +630,44 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     break;
                 case 12: // Fours.
                     break;
-                case 30: // Portal of Endeavors - 1 Player.
-                case 31: // Portal of Endeavor - 2 Players.
-                case 32: // Portal of Daring - 3 Player.
-                case 33: // Portal of Daring - 4 Player.
+                case 30: //Daring Portal - 1 Player
+                case 31: //Daring Portal - 2 Players
+                case 32: //Daring Portal - 3 Players
+                case 33: //Daring Portal - 4 Players
                 default:
                     break;
             }
             switch (request.ScopeId)
             {
-                case 3: break; // Normal mode.
-                case 2: Hardcore = true; break; // Hardcore mode.
-                case 5: Season = true; break; // Seasonal mode.
-                case 4: Season = true; Hardcore = true; break; // Hardcore mode.
+                case 3: break; //Normal
+                case 2: hardcore = true; break; //Hardcore
+                case 5: season = true; break; //Seasonal
+                case 4: season = true; hardcore = true; break; //Seasonal Hardcore
             }
             //foreach (var gameaccount in request.GameAccountIdsList)
             
             //var DBGA = DBSessions.SessionQuery<DBGameAccount>().Where(a => a.Id == gameaccount).First();
-            List<DBGameAccount> PregameAccounts = DBSessions.SessionQuery<DBGameAccount>().ToList();
+            List<DBGameAccount> preGameAccounts = DBSessions.SessionQuery<DBGameAccount>().ToList();
             
             
-            foreach (var gameaccount in request.GameAccountIdsList)
+            foreach (var gameAccountId in request.GameAccountIdsList)
             {
 
-                DBGameAccount Gacount = DBSessions.SessionQuery<DBGameAccount>().Where(a => a.Id == gameaccount).First();
+                DBGameAccount gameAccount = DBSessions.SessionQuery<DBGameAccount>().First(a => a.Id == gameAccountId);
 
-                var Heroes = ToonManager.GetToonsForGameAccount(GameAccountManager.GetGameAccountByDBGameAccount(Gacount));
+                var Heroes = ToonManager.GetToonsForGameAccount(GameAccountManager.GetGameAccountByDBGameAccount(gameAccount));
                 Toon Hero = null;
-                byte uplvl = 0;
+                byte upLevel = 0;
                 int idx = -1;
                 if (Heroes.Count > 0)
                 {
                     for (int i = 0; i < Heroes.Count; i++)
                     {
-                        if (Season == true && !Heroes[i].isSeassoned) continue;
-                        if (Hardcore == true && !Heroes[i].IsHardcore) continue;
+                        if (season && !Heroes[i].isSeassoned) continue;
+                        if (hardcore && !Heroes[i].IsHardcore) continue;
                         if (Heroes[i].Class != NeededClass && NeededClass !=  ToonClass.Unknown) continue;
-                        if (uplvl > Heroes[i].Level) continue;
-                        uplvl = Heroes[i].Level;
+                        if (upLevel > Heroes[i].Level) continue;
+                        upLevel = Heroes[i].Level;
                         idx = i;
                     }
                     if (idx > -1)
@@ -673,7 +676,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 if (Hero != null)
                     try
                     {
-                        GameAccount Gaccount = GameAccountManager.GetGameAccountByDBGameAccount(Gacount);
+                        GameAccount Gaccount = GameAccountManager.GetGameAccountByDBGameAccount(gameAccount);
                         Account account = AccountManager.GetAccountByPersistentID(Gaccount.AccountId);
                         var Memb = D3.Leaderboard.Member.CreateBuilder()
                                                 .SetAccountId(Gaccount.AccountId)
@@ -732,7 +735,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             }
             return response.Build().ToByteString();
         }
-        private ByteString GetRating(BattleClient Client, ByteString data)
+        private ByteString GetRating(BattleClient client, ByteString data)
         {
             LeaderboardList request = LeaderboardList.ParseFrom(data);
             bool Season = false;
@@ -742,139 +745,144 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             {
                 case 1: 
                     break;
-                case 2: NeededClass = ToonClass.Barbarian; break; // Варвар
-                case 3: NeededClass = ToonClass.Crusader; break; // Крестоносец
-                case 4: NeededClass = ToonClass.DemonHunter; break; // Охотник на демонов
-                case 5: NeededClass = ToonClass.Monk; break; // Монах
-                case 6: NeededClass = ToonClass.WitchDoctor; break; // Колдун
-                case 7: NeededClass = ToonClass.Wizard; break; // Чародей
-                case 8: NeededClass = ToonClass.Necromancer; break; // Некромант
+                case 2: NeededClass = ToonClass.Barbarian; break; // Barbarian
+                case 3: NeededClass = ToonClass.Crusader; break; // Crusader
+                case 4: NeededClass = ToonClass.DemonHunter; break; // Demon Hunter
+                case 5: NeededClass = ToonClass.Monk; break; // Monk
+                case 6: NeededClass = ToonClass.WitchDoctor; break; // Witch Doctor
+                case 7: NeededClass = ToonClass.Wizard; break; // Wizard
+                case 8: NeededClass = ToonClass.Necromancer; break; // Necromancer
 
-                case 10: // Двойки
+                case 10: // Duples
                     break;
-                case 11: // Тройки
+                case 11: // Tripples
                     break;
-                case 12: // Четверки
+                case 12: // Quads
                     break;
-                case 30: //Портал Дерзаний - 1 Игрок
-                case 31: //Портал Дерзаний - 2 Игрока
-                case 32: //Портал Дерзаний - 3 Игрока
-                case 33: //Портал Дерзаний - 4 Игрока
+                case 30: //Daring portal - 1 Player
+                case 31: //Daring portal - 2 Players
+                case 32: //Daring portal - 3 Players
+                case 33: //Daring portal - 4 Players
                 default:
                     break;
             }
             switch (request.ScopeId)
             {
-                case 3: break; //Обычный режим
-                case 2: Hardcore = true; break; //Героический режим
-                case 5: Season = true; break; //Сезонный
-                case 4: Season = true; Hardcore = true; break; //Сезонный героический
+                case 3: break; //Normal
+                case 2: Hardcore = true; break; //Hardcore
+                case 5: Season = true; break; //Seasonal
+                case 4: Season = true; Hardcore = true; break; //Seasonal + Harcore
             }
 
-            var Result = LeaderboardListResponse.CreateBuilder()
+            var result = LeaderboardListResponse.CreateBuilder()
                 .SetLimit(request.Limit)
                 .SetOffset(request.Offset)
                 .SetVersion(request.Version)
                 ;
 
             List<DBGameAccount> gameAccounts = DBSessions.SessionQuery<DBGameAccount>().ToList();
-            foreach (var Gacount in gameAccounts)
+            foreach (var gameAccountId in gameAccounts)
             {
-                var Heroes = ToonManager.GetToonsForGameAccount(GameAccountManager.GetGameAccountByDBGameAccount(Gacount));
+                var toons = ToonManager.GetToonsForGameAccount(
+                    GameAccountManager.GetGameAccountByDBGameAccount(gameAccountId));
                 Toon Hero = null;
                 byte uplvl = 0;
                 int idx = -1;
-                if (Heroes.Count > 0)
+                if (toons.Count > 0)
                 {
-                    for (int i = 0; i < Heroes.Count; i++)
+                    for (int i = 0; i < toons.Count; i++)
                     {
-                        if (Season == true && !Heroes[i].isSeassoned) continue;
-                        if (Hardcore == true && !Heroes[i].IsHardcore) continue;
-                        if (Heroes[i].Class != NeededClass && NeededClass != ToonClass.Unknown) continue;
-                        if (uplvl > Heroes[i].Level) continue;
-                        uplvl = Heroes[i].Level;
+                        if (Season && !toons[i].isSeassoned) continue;
+                        if (Hardcore && !toons[i].IsHardcore) continue;
+                        if (toons[i].Class != NeededClass && NeededClass != ToonClass.Unknown) continue;
+                        if (uplvl > toons[i].Level) continue;
+                        uplvl = toons[i].Level;
                         idx = i;
                     }
+
                     if (idx > -1)
-                        Hero = Heroes[idx];
+                        Hero = toons[idx];
                 }
+
                 if (Hero != null)
-                try
-                {
-                        GameAccount Gaccount = GameAccountManager.GetGameAccountByDBGameAccount(Gacount);
-                        Account account = AccountManager.GetAccountByPersistentID(Gaccount.AccountId);
-                        var Memb = D3.Leaderboard.Member.CreateBuilder()
-                                                .SetAccountId((uint)Gaccount.D3GameAccountId.IdLow)
-                                                .SetHeroSeasonCreated((uint)Hero.SeasonCreated)
-                                                .SetBattleTag(account.BattleTagName)
-                                                .SetHeroAltLevel((uint)Gaccount.DBGameAccount.ParagonLevel)
-                                                .SetHeroFlags((uint)Hero.Flags)
-                                                .SetHeroLevel((uint)Hero.Level)
-                                                .SetHeroGbidClass((uint)Hero.ClassID)
-                                                .SetHeroName(Hero.Name)
-                                                .SetHeroSnapshotAvailable(true)
-                                                .SetHeroVisualEquipment(Gaccount.Toons[0].Digest.VisualEquipment);
-                        if (Gaccount.Clan != null)
+                    try
+                    {
+                        GameAccount gameAccount = GameAccountManager.GetGameAccountByDBGameAccount(gameAccountId);
+                        Account account = AccountManager.GetAccountByPersistentID(gameAccount.AccountId);
+                        var member = D3.Leaderboard.Member.CreateBuilder()
+                            .SetAccountId((uint)gameAccount.D3GameAccountId.IdLow)
+                            .SetHeroSeasonCreated((uint)Hero.SeasonCreated)
+                            .SetBattleTag(account.BattleTagName)
+                            .SetHeroAltLevel((uint)gameAccount.DBGameAccount.ParagonLevel)
+                            .SetHeroFlags((uint)Hero.Flags)
+                            .SetHeroLevel((uint)Hero.Level)
+                            .SetHeroGbidClass((uint)Hero.ClassID)
+                            .SetHeroName(Hero.Name)
+                            .SetHeroSnapshotAvailable(true)
+                            .SetHeroVisualEquipment(gameAccount.Toons[0].Digest.VisualEquipment);
+                        if (gameAccount.Clan != null)
                         {
-                            Memb.SetClanId(Gaccount.Clan.GuildId.GuildId_).SetClanTag(Gaccount.Clan.Prefix).SetClanName(Gaccount.Clan.Name); 
+                            member.SetClanId(gameAccount.Clan.GuildId.GuildId_).SetClanTag(gameAccount.Clan.Prefix)
+                                .SetClanName(gameAccount.Clan.Name);
                         }
 
-                        Result
+                        result
                             .AddEntry(D3.Leaderboard.Slot.CreateBuilder()
-                            .SetGameAccountId(Gaccount.AccountId)
-                            //TODO: Нужно реализовать расчёт от времени прохождения портала!
-                            .SetScore((ulong)Hero.Level + (ulong)Gaccount.DBGameAccount.ParagonLevel) //Временное разделение
-                            .SetTimestamp(DateTimeExtensions.ToUnixTime(DateTime.UtcNow))
-                            .SetMetadata(D3.Leaderboard.Metadata.CreateBuilder()
-                                .SetAct1TimeMs(0)
-                                .SetAct2TimeMs(0)
-                                .SetAct3TimeMs(0)
-                                .SetAct4TimeMs(0)
-                                .SetAct5TimeMs(0)
-                                .SetLevelSeed(1)
-                                
-                                .SetChallengeData(D3.Leaderboard.WeeklyChallengeData.CreateBuilder()
-                                    .SetBnetAccountId(unchecked((uint)account.BnetEntityId.Low))
-                                    .SetGameAccountId(GameAccountHandle.CreateBuilder().SetId(unchecked((uint)Gaccount.BnetEntityId.Low)).SetProgram(17459).SetRegion(1))
-                                    .SetHeroSnapshot(D3.Hero.SavedDefinition.CreateBuilder().SetVersion(905)
+                                .SetGameAccountId(gameAccount.AccountId)
+                                //TODO: Need to implement the calculation from the time of passage of the portal!
+                                .SetScore((ulong)Hero.Level +
+                                          (ulong)gameAccount.DBGameAccount.ParagonLevel) //temporary separation
+                                .SetTimestamp(DateTime.UtcNow.ToUnixTime())
+                                .SetMetadata(D3.Leaderboard.Metadata.CreateBuilder()
+                                    .SetAct1TimeMs(0)
+                                    .SetAct2TimeMs(0)
+                                    .SetAct3TimeMs(0)
+                                    .SetAct4TimeMs(0)
+                                    .SetAct5TimeMs(0)
+                                    .SetLevelSeed(1)
+
+                                    .SetChallengeData(D3.Leaderboard.WeeklyChallengeData.CreateBuilder()
+                                        .SetBnetAccountId(unchecked((uint)account.BnetEntityId.Low))
+                                        .SetGameAccountId(GameAccountHandle.CreateBuilder()
+                                            .SetId(unchecked((uint)gameAccount.BnetEntityId.Low)).SetProgram(17459)
+                                            .SetRegion(1))
+                                        .SetHeroSnapshot(D3.Hero.SavedDefinition.CreateBuilder().SetVersion(905)
                                             .SetDigest(Hero.Digest)
                                             .SetSavedAttributes(D3.AttributeSerializer.SavedAttributes.CreateBuilder()))
-                                    .SetAccountSnapshot(D3.Account.SavedDefinition.CreateBuilder().SetVersion(905)
-                                        .SetDigest(Gaccount.Digest)
+                                        .SetAccountSnapshot(D3.Account.SavedDefinition.CreateBuilder().SetVersion(905)
+                                            .SetDigest(gameAccount.Digest)
                                         )
-                                    .SetRiftSnapshot(D3.Leaderboard.RiftSnapshot.CreateBuilder()
-                                        .SetRiftSeed(2342341)
-                                        .SetRiftTier(1)
-                                        .SetSnoDungeonFinder(1)
-                                        .SetSnoBoss(1)
-                                        .SetNumDeaths(1)
-                                        .SetCompletionMilliseconds(5000)
-                                        .SetDeprecatedCompletionSeconds(500)
-                                        .AddFloors(D3.Leaderboard.RiftFloor.CreateBuilder().SetSnoWorld(-1).SetPopulationHash(10))
+                                        .SetRiftSnapshot(D3.Leaderboard.RiftSnapshot.CreateBuilder()
+                                            .SetRiftSeed(2342341)
+                                            .SetRiftTier(1)
+                                            .SetSnoDungeonFinder(1)
+                                            .SetSnoBoss(1)
+                                            .SetNumDeaths(1)
+                                            .SetCompletionMilliseconds(5000)
+                                            .SetDeprecatedCompletionSeconds(500)
+                                            .AddFloors(D3.Leaderboard.RiftFloor.CreateBuilder().SetSnoWorld(-1)
+                                                .SetPopulationHash(10))
                                         )
                                     )
-                                //*/
-                                .SetCheated(false)
-                                .AddTeamMember(Memb)
-
+                                    //*/
+                                    .SetCheated(false)
+                                    .AddTeamMember(member)
                                 ));
-                        
-
-                }
+                    }
                     catch
-                { 
-                }
+                    {
+                    }
             }
 
 
-            Result.SetLimit(1004).SetTotalLeaderboardEntries((uint)Result.EntryCount);
+            result.SetLimit(1004).SetTotalLeaderboardEntries((uint)result.EntryCount);
 
-            Result.SetTotalLeaderboardEntries((uint)gameAccounts.Count);
-            return Result.Build().ToByteString();
+            result.SetTotalLeaderboardEntries((uint)gameAccounts.Count);
+            return result.Build().ToByteString();
         }
         #endregion
-        #region Запрос списка персонажей
-        private ByteString OnHeroDigestListRequest(BattleClient Client, ByteString data)
+        #region Character List Request
+        private ByteString OnHeroDigestListRequest(BattleClient client, ByteString data)
         {
             HeroDigestListRequest request = HeroDigestListRequest.ParseFrom(data);
             HeroDigestListResponse.Builder builder = HeroDigestListResponse.CreateBuilder();
@@ -885,8 +893,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             return builder.Build().ToByteString();
         }
         #endregion
-        #region Создание/Удаление/Переключение персонажа
-        private ByteString OnHeroCreateParams(BattleClient Client, ByteString data)
+        #region Create/Delete/Switch Character
+        private ByteString OnHeroCreateParams(BattleClient client, ByteString data)
         {
             HeroCreateParams createParams = HeroCreateParams.ParseFrom(data);
 
@@ -895,27 +903,27 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             //        return null;
 
             //var newToon = ToonManager.CreateNewToon(createPrams.Name, createPrams.GbidClass, createPrams.IsHardcore, createPrams.IsFemale ? 0x02 : (uint)0x00, 1, Client.Account.GameAccount, createPrams.IsSeason ? (uint)1 : (uint)0);
-            var newToon = ToonManager. CreateNewToon(createParams.Name, createParams.GbidClass, createParams.IsFemale ? ToonFlags.Female : ToonFlags.Male, 1, createParams.IsHardcore, Client.Account.GameAccount, createParams.IsSeason ? 1 : 0);
+            var newToon = ToonManager. CreateNewToon(createParams.Name, createParams.GbidClass, createParams.IsFemale ? ToonFlags.Female : ToonFlags.Male, 1, createParams.IsHardcore, client.Account.GameAccount, createParams.IsSeason ? 1 : 0);
             return CreateHeroResponse.CreateBuilder().SetHeroId(newToon.D3EntityID.IdLow).Build().ToByteString();
         }
-        private ByteString OnHeroDeleteParams(BattleClient Client, ByteString data)
+        private ByteString OnHeroDeleteParams(BattleClient client, ByteString data)
         {
             var DeleteParams = DeleteHero.ParseFrom(data);
             var toon = ToonManager.GetToonByLowID(DeleteParams.HeroId);
             ToonManager.DeleteToon(toon);
             return ByteString.Empty;
         }
-        private ByteString SwitchCharRequest(BattleClient Client, ByteString data)
+        private ByteString SwitchCharRequest(BattleClient client, ByteString data)
         {
             var request = D3.GameMessage.GetToonSettings.ParseFrom(data);
 
-            var oldToon = Client.Account.GameAccount.CurrentToon;
+            var oldToon = client.Account.GameAccount.CurrentToon;
             var newtoon = ToonManager.GetToonByLowID(request.HeroId);
 
             if (oldToon != newtoon)
             {
-                Client.Account.GameAccount.CurrentToon = newtoon;
-                Client.Account.GameAccount.NotifyUpdate();
+                client.Account.GameAccount.CurrentToon = newtoon;
+                client.Account.GameAccount.NotifyUpdate();
                 //AccountManager.SaveToDB(Client.Account);
                 //Client.Account.GameAccount.Setted = true;
             }
@@ -924,8 +932,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             return response.Build().ToByteString();
         }
         #endregion
-        #region Инициализация логина
-        private ByteString OnInitialLoginDataRequest(BattleClient Client, ByteString data)
+        #region Login initialization
+        private ByteString OnInitialLoginDataRequest(BattleClient client, ByteString data)
         {
             var req = InitialLoginDataRequest.ParseFrom(data);
 
@@ -936,31 +944,31 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             return res.Build().ToByteString();
         }
         #endregion
-        #region Редактирование баннера
-        private bool SaveBanner(BattleClient Client, ByteString data)
+        #region Banner editing
+        private bool SaveBanner(BattleClient client, ByteString data)
         {
             Logger.Trace("SaveBannerConfiguration()");
             //var bannerConfig = HeroDigestBanner.ParseFrom(data);
             var bannerConfig = SaveBannerConfiguration.ParseFrom(data);
 
-            if (Client.Account.GameAccount.BannerConfigurationField.Value == bannerConfig.Banner)
+            if (client.Account.GameAccount.BannerConfigurationField.Value == bannerConfig.Banner)
                 return false;
             else
             {
-                Client.Account.GameAccount.BannerConfiguration = bannerConfig.Banner;
-                Client.Account.GameAccount.NotifyUpdate();
+                client.Account.GameAccount.BannerConfiguration = bannerConfig.Banner;
+                client.Account.GameAccount.NotifyUpdate();
             }
 
             return true;
 
         }
         #endregion
-        #region Система гильдии
+        #region Guild system
 
-        private ByteString CreateGuild(BattleClient Client, ByteString data)
+        private ByteString CreateGuild(BattleClient client, ByteString data)
         {
             GuildCreate request = GuildCreate.ParseFrom(data);
-            var guild = GuildManager.CreateNewGuild(Client.Account.GameAccount, request.Name, request.Tag, true, 0, request.LookingForMembers, request.Language);
+            var guild = GuildManager.CreateNewGuild(client.Account.GameAccount, request.Name, request.Tag, true, 0, request.LookingForMembers, request.Language);
             if (guild != null)
             {
                 return guild.GuildId.ToByteString();
@@ -968,23 +976,19 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             else
                 return ByteString.Empty;
         }
-        private ByteString SearchGuilds(BattleClient Client, ByteString data)
+        private ByteString SearchGuilds(BattleClient client, ByteString data)
         {
             GuildSearch request = GuildSearch.ParseFrom(data);
             Logger.Trace("GuildSearch(): {0}", request.ToString());
             var builder = D3.Guild.GuildSearchResultList.CreateBuilder();
 
-            List<Guild> all_guilds = null;
-            if (request.ClanOrGroup == 1)
-                all_guilds = GuildManager.GetCommunities();
-            else
-                all_guilds = GuildManager.GetClans();
-            foreach (var guild in all_guilds)
+            List<Guild> allGuilds = request.ClanOrGroup == 1 ? GuildManager.GetCommunities() : GuildManager.GetClans();
+            foreach (var guild in allGuilds)
             {
                 if (guild.Disbanded) continue;
                 if (request.HasName && !guild.Name.ToLower().Contains(request.Name.ToLower())) continue;
 
-                var guild_data = D3.Guild.GuildSearchResult.CreateBuilder()
+                var guildData = D3.Guild.GuildSearchResult.CreateBuilder()
                     .SetGuildId(guild.PersistentId)
                     .SetGuildName(guild.FullName)
                     .SetCategory(guild.Category)
@@ -995,20 +999,20 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     .SetLanguage(guild.Language);
 
                 if (guild.Prefix != "")
-                    guild_data.SetGuildTag(guild.Prefix);
+                    guildData.SetGuildTag(guild.Prefix);
 
-                builder.AddResults(guild_data);
+                builder.AddResults(guildData);
             }
 
             return builder.Build().ToByteString();
         }
 
-        private ByteString AcceptInviteToGuild(BattleClient Client, ByteString data)
+        private ByteString AcceptInviteToGuild(BattleClient client, ByteString data)
         {
             GuildInviteResponse request = GuildInviteResponse.ParseFrom(data);
 
             var guild = GuildManager.GetGuildById(request.GuildId);
-            var gameAccount = Client.Account.GameAccount;
+            var gameAccount = client.Account.GameAccount;
             if (guild != null)
             {
                 if (request.Result == false)
@@ -1027,10 +1031,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
             return ByteString.Empty;
         }
-        private void AcceptInviteToGuild(BattleClient Client, GuildInviteResponse request)
+        private void AcceptInviteToGuild(BattleClient client, GuildInviteResponse request)
         {
             var guild = GuildManager.GetGuildById(request.GuildId);
-            var gameAccount = Client.Account.GameAccount;
+            var gameAccount = client.Account.GameAccount;
             if (guild != null)
             {
                 if (request.Result == false)
@@ -1059,22 +1063,22 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             }
 
         }
-        private void GuildDisband(BattleClient Client, D3.GameMessage.GuildId request)
+        private void GuildDisband(BattleClient client, D3.GameMessage.GuildId request)
         {
             Logger.Trace("GuildDisband(): {0}", request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId_);
-            if (guild != null && Client.Account.GameAccount.PersistentID == guild.Owner.PersistentID)
+            if (guild != null && client.Account.GameAccount.PersistentID == guild.Owner.PersistentID)
             {
                 guild.Disband();
             }
         }
-        private ByteString ExitFromGuild(BattleClient Client, ByteString data)
+        private ByteString ExitFromGuild(BattleClient client, ByteString data)
         {
             
             return ByteString.Empty;
         }
-        private ByteString GuildFetchNews(BattleClient Client, D3.GameMessage.GuildFetchNews request)
+        private ByteString GuildFetchNews(BattleClient client, D3.GameMessage.GuildFetchNews request)
         {
             Logger.Trace("GuildFetchNews(): {0}", request.ToString());
             var builder = D3.Guild.NewsList.CreateBuilder();
@@ -1109,13 +1113,13 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 return ByteString.Empty;
         }
 
-        private ByteString GuildPromoteMember(BattleClient Сlient, D3.GameMessage.GuildPromoteMember request)
+        private ByteString GuildPromoteMember(BattleClient client, D3.GameMessage.GuildPromoteMember request)
         {
             Logger.Trace("GuildPromoteMember(): {0}", request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId);
             var account = GameAccountManager.GetAccountByPersistentID(request.MemberId);
-            if (guild != null && guild.HasMember(account) && guild.HasMember(Сlient.Account.GameAccount))
+            if (guild != null && guild.HasMember(account) && guild.HasMember(client.Account.GameAccount))
             {
                 guild.PromoteMember(account);
                 var builder = D3.Guild.Member.CreateBuilder()
@@ -1130,13 +1134,13 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 return ByteString.Empty;
         }
 
-        private ByteString GuildDemoteMember(BattleClient Сlient, D3.GameMessage.GuildDemoteMember request)
+        private ByteString GuildDemoteMember(BattleClient client, D3.GameMessage.GuildDemoteMember request)
         {
             Logger.Trace("GuildDemoteMember(): {0}", request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId);
             var account = GameAccountManager.GetAccountByPersistentID(request.MemberId);
-            if (guild != null && guild.HasMember(account) && guild.HasMember(Сlient.Account.GameAccount))
+            if (guild != null && guild.HasMember(account) && guild.HasMember(client.Account.GameAccount))
             {
                 guild.DemoteMember(account);
                 var builder = D3.Guild.Member.CreateBuilder()
@@ -1151,7 +1155,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 return ByteString.Empty;
         }
 
-        private ByteString InviteToGuild(BattleClient Client, ByteString data)
+        private ByteString InviteToGuild(BattleClient client, ByteString data)
         {
             GuildInvite request = GuildInvite.ParseFrom(data);
             
@@ -1160,34 +1164,34 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             if (guild != null)
             {
                 var gameAccount = GameAccountManager.GetAccountByPersistentID(request.InviteeId);
-                gameAccount.InviteToGuild(guild, Client.Account.GameAccount);
+                gameAccount.InviteToGuild(guild, client.Account.GameAccount);
             }
 
             return ByteString.Empty;
         }
-        private void GuildSetMOTD(BattleClient Client, D3.GameMessage.GuildSetMotd request)
+        private void GuildSetMOTD(BattleClient client, D3.GameMessage.GuildSetMotd request)
         {
             var guild = GuildManager.GetGuildById(request.GuildId);
-            if (guild != null && guild.HasMember(Client.Account.GameAccount))
+            if (guild != null && guild.HasMember(client.Account.GameAccount))
             {
                 guild.MOTD = request.Motd;
                 var dbGuild = guild.DBGuild;
                 dbGuild.MOTD = request.Motd;
                 DBSessions.SessionUpdate(dbGuild);
-                guild.AddNews(Client.Account.GameAccount, 5);
+                guild.AddNews(client.Account.GameAccount, 5);
             }
         }
 
-        private void GuildSetNews(BattleClient Client, D3.GameMessage.GuildSetNews request)
+        private void GuildSetNews(BattleClient client, D3.GameMessage.GuildSetNews request)
         {
              var guild = GuildManager.GetGuildById(request.GuildId);
-            if (guild != null && guild.HasMember(Client.Account.GameAccount))
+            if (guild != null && guild.HasMember(client.Account.GameAccount))
             {
-                guild.AddNews(Client.Account.GameAccount, 8, request.NewsData.ToByteArray());
+                guild.AddNews(client.Account.GameAccount, 8, request.NewsData.ToByteArray());
             }
             
         }
-        private ByteString GuildInvit(BattleClient Client, ByteString data)
+        private ByteString GuildInvit(BattleClient client, ByteString data)
         {
             var test = GuildInvite.ParseFrom(data);
             var guild = GuildManager.GetGuildById(test.GuildId);
@@ -1198,43 +1202,43 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     acc = AccountManager.GetAccountByEmail(test.BattleTagOrEmail);
 
                 var gameAccount = GameAccountManager.GetAccountByPersistentID(acc.CurrentGameAccountId);
-                gameAccount.InviteToGuild(guild, Client.Account.GameAccount);
+                gameAccount.InviteToGuild(guild, client.Account.GameAccount);
             }
             return ByteString.Empty;
         }
-        private ByteString GuildSuggest(BattleClient Client, D3.GameMessage.GuildSuggest request)
+        private ByteString GuildSuggest(BattleClient client, D3.GameMessage.GuildSuggest request)
         {
             var gameAccount = GameAccountManager.GetAccountByPersistentID(request.OtherAccountId);
 
             var guild = GuildManager.GetGuildById(request.GuildId);
             if (guild != null && guild.IsLFM)
             {
-                guild.AddSuggestion(gameAccount, Client.Account.GameAccount);
-                gameAccount.InviteToGuild(guild, Client.Account.GameAccount);
+                guild.AddSuggestion(gameAccount, client.Account.GameAccount);
+                gameAccount.InviteToGuild(guild, client.Account.GameAccount);
                 return D3.Guild.InviteInfo.CreateBuilder()
                     .SetGuildId(guild.PersistentId)
                     .SetGuildName(guild.Name)
-                    .SetInviterId(Client.Account.GameAccount.PersistentID)
+                    .SetInviterId(client.Account.GameAccount.PersistentID)
                     .SetCategory(guild.Category)
                     .SetInviteType(1U)
                     .SetExpireTime(3600).Build().ToByteString();
             }
             return ByteString.Empty;
         }
-        private void GuildSetDescription(BattleClient Client, D3.GameMessage.GuildSetDescription request)
+        private void GuildSetDescription(BattleClient client, D3.GameMessage.GuildSetDescription request)
         {
       
             var guild = GuildManager.GetGuildById(request.GuildId);
-            if (guild != null && guild.HasMember(Client.Account.GameAccount))
+            if (guild != null && guild.HasMember(client.Account.GameAccount))
             {
                 guild.Description = request.Description;
                 var dbGuild = guild.DBGuild;
                 dbGuild.Description = request.Description;
                 DBSessions.SessionUpdate(dbGuild);
-                guild.AddNews(Client.Account.GameAccount, 6);
+                guild.AddNews(client.Account.GameAccount, 6);
             }
         }
-        private void GuildSuggestionResponse(BattleClient Client, D3.GameMessage.GuildSuggestionResponse request)
+        private void GuildSuggestionResponse(BattleClient client, D3.GameMessage.GuildSuggestionResponse request)
         {
             var builder = D3.GameMessage.GuildSuggestionResponse.CreateBuilder();
             var gameAccount = GameAccountManager.GetAccountByPersistentID(request.InviteeId);
@@ -1244,16 +1248,16 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             {
                 guild.RemoveSuggestion(gameAccount);
                 gameAccount.GuildInvites.RemoveAll(i => i.GuildId == guild.PersistentId);
-                if (request.Result == true)
-                    gameAccount.InviteToGuild(guild, Client.Account.GameAccount);
+                if (request.Result)
+                    gameAccount.InviteToGuild(guild, client.Account.GameAccount);
             }
         }
-        private ByteString GetInviteList(BattleClient Client, D3.GameMessage.GuildId guild_id)
+        private ByteString GetInviteList(BattleClient client, D3.GameMessage.GuildId guild_id)
         {
             var builder = D3.Guild.InviteList.CreateBuilder();
 
             var guild = GuildManager.GetGuildById(guild_id.GuildId_);
-            if (guild != null && guild.HasMember(Client.Account.GameAccount))
+            if (guild != null && guild.HasMember(client.Account.GameAccount))
             {
                 foreach (var invite in guild.GuildSuggestions)
                     builder.AddInvites(invite);
@@ -1262,7 +1266,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             else
                 return ByteString.Empty;
         }
-        private void GuildCancelInvite(BattleClient Сlient, D3.GameMessage.GuildCancelInvite request)
+        private void GuildCancelInvite(BattleClient client, D3.GameMessage.GuildCancelInvite request)
         {
             
             var guild = GuildManager.GetGuildById(request.GuildId);
@@ -1287,12 +1291,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             }
             
         }
-        private ByteString CreateCommunity(BattleClient Client, ByteString data)
+        private ByteString CreateCommunity(BattleClient client, ByteString data)
         {
             var request = GroupCreate.ParseFrom(data);
             Logger.Trace("CreateCommunity(): {0}", request.ToString());
 
-            var guild = GuildManager.CreateNewGuild(Client.Account.GameAccount, request.Name, "", false, request.SearchCategory, false, request.Language);
+            var guild = GuildManager.CreateNewGuild(client.Account.GameAccount, request.Name, "", false, request.SearchCategory, false, request.Language);
             if (guild != null)
             {
                 return guild.GuildId.ToByteString();
@@ -1301,8 +1305,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 return ByteString.Empty;
         }
         #endregion
-        #region Статистика аккаунтов
-        private ByteString CollectProfiles(BattleClient Client, ByteString data)
+        #region Account statistics
+        private ByteString CollectProfiles(BattleClient client, ByteString data)
         {
             var request = D3.GameMessage.GetAccountProfile.ParseFrom(data);
             var account = GameAccountManager.GetAccountByPersistentID(request.AccountId.Id);
@@ -1317,12 +1321,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             }
 
         }
-        private ByteString CollectAchivementsSnapshot(BattleClient Client, ByteString data)
+        private ByteString CollectAchivementsSnapshot(BattleClient client, ByteString data)
         {
             var request = D3.GameMessage.AchievementsGetSnapshot.ParseFrom(data);
             var snapshot = D3.Achievements.Snapshot.CreateBuilder();
 
-            foreach (var achievement in Client.Account.GameAccount.Achievements)
+            foreach (var achievement in client.Account.GameAccount.Achievements)
             {
                 if (achievement.AchievementId == 1)
                 {
@@ -1336,11 +1340,11 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 }
                 snapshot.AddAchievementSnapshot(achievement);
             }
-            foreach (var criteria in Client.Account.GameAccount.AchievementCriteria)
+            foreach (var criteria in client.Account.GameAccount.AchievementCriteria)
             {
-                uint countofTravels = 0;
+                uint countOfTravels = 0;
                 if (criteria.CriteriaId32AndFlags8 == 3367569)
-                    countofTravels++;
+                    countOfTravels++;
                 snapshot.AddCriteriaSnapshot(criteria);
             }
 
@@ -1349,11 +1353,11 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         }
 
         #endregion
-        #region Коллекция и магазин
-        private ByteString GetCollectionAccout(BattleClient Client, ByteString data)
+        #region Collection and store
+        private ByteString GetCollectionAccout(BattleClient client, ByteString data)
         {
             var C = D3.CosmeticItems.CosmeticItems.CreateBuilder();
-            #region Все вещи
+            #region All items
             C.AddCosmeticItems_(D3.CosmeticItems.CosmeticItem.CreateBuilder().SetGbid(unchecked((int)2431587061))); // Angelic
             C.AddCosmeticItems_(D3.CosmeticItems.CosmeticItem.CreateBuilder().SetGbid(unchecked((int)2431587101))); // Aranea
             C.AddCosmeticItems_(D3.CosmeticItems.CosmeticItem.CreateBuilder().SetGbid(unchecked((int)2586361111))); // Barbarian
@@ -1600,7 +1604,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
             //1514497706
 
-            //Флаги
+            //Flags
             C.AddCosmeticItems_(D3.CosmeticItems.CosmeticItem.CreateBuilder().SetGbid(unchecked((int)1428615110))); // Barbarian
             C.AddCosmeticItems_(D3.CosmeticItems.CosmeticItem.CreateBuilder().SetGbid(unchecked((int)895083523))); // Barbarian Ascendant
             C.AddCosmeticItems_(D3.CosmeticItems.CosmeticItem.CreateBuilder().SetGbid(unchecked((int)3194995136))); // BlizzCon 2015
@@ -1646,7 +1650,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             return C.Build().ToByteString();
         }
 
-        private ByteString CurrentPrimaryWallet(BattleClient Client, ByteString data)
+        private ByteString CurrentPrimaryWallet(BattleClient client, ByteString data)
         {
             var test = D3.Store.GetPrimaryCurrency.ParseFrom(data);
             var testresp = D3.Store.GetPrimaryCurrencyResponse.CreateBuilder().SetCurrency(3600);
@@ -1678,7 +1682,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             return testresp2.Build().ToByteString();
         }
 
-        private ByteString CurrentWallet(BattleClient Client, ByteString data)
+        private ByteString CurrentWallet(BattleClient client, ByteString data)
         {
             var test = D3.Store.GetPaymentMethods.ParseFrom(data);
             var request = D3.Store.GetCurrency.ParseFrom(data);
@@ -1687,32 +1691,32 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
             return testresp.Build().ToByteString();
         }
-        private ByteString CurrentStore(BattleClient Client, ByteString data)
+        private ByteString CurrentStore(BattleClient client, ByteString data)
         {
 
             var test = D3.Store.GetProductCategories.ParseFrom(data);
             var responseCategoriese = D3.Store.GetProductCategoriesResponse.CreateBuilder();
-            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(0).SetNewestProductTime(0x6E1199DE92C0000)); //Популярное
-            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(1).SetNewestProductTime(0)); //Платина
+            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(0).SetNewestProductTime(0x6E1199DE92C0000)); //Popular
+            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(1).SetNewestProductTime(0)); //Platinum
             //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(2).SetNewestProductTime(0)); //?
-            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(3).SetNewestProductTime(0)); //Дополнение
-            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(4).SetNewestProductTime(0x72A0D8B7AD90000)); //Некромант
+            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(3).SetNewestProductTime(0)); //Addition
+            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(4).SetNewestProductTime(0x72A0D8B7AD90000)); //Necromancer
             //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(5).SetNewestProductTime(0)); //?
             //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(6).SetNewestProductTime(0)); //?
-            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(7).SetNewestProductTime(0)); //Элитные комплекты
-            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(8).SetNewestProductTime(0)); //Крестоносец
-            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(9).SetNewestProductTime(0)); //Пропуск искателя приключений
-            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(10).SetNewestProductTime(0x72A0D8B7AD90000));//Крылья
-            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(11).SetNewestProductTime(0x725C16B88870000));//Питомцы
-            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(12).SetNewestProductTime(0));//Рамки
-            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(13).SetNewestProductTime(0));//Флаги
-            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(14).SetNewestProductTime(0));//Усиление Героя
-            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(15).SetNewestProductTime(0));//Ячейки Героев
-            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(16).SetNewestProductTime(0));//Вкладки Тайника
+            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(7).SetNewestProductTime(0)); //Elite kits
+            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(8).SetNewestProductTime(0)); //Crusader
+            //responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(9).SetNewestProductTime(0)); //Adventurer's Pass
+            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(10).SetNewestProductTime(0x72A0D8B7AD90000));//Wings
+            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(11).SetNewestProductTime(0x725C16B88870000));//Pets
+            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(12).SetNewestProductTime(0));//Framework
+            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(13).SetNewestProductTime(0));//Flags
+            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(14).SetNewestProductTime(0));//Strengthening the Hero
+            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(15).SetNewestProductTime(0));//Hero Cells
+            responseCategoriese.AddCategories(D3.Store.ProductCategory.CreateBuilder().SetCategory(16).SetNewestProductTime(0));//Stash Tabs
 
             return responseCategoriese.Build().ToByteString();
         }
-        private ByteString CurrentStore1(BattleClient Client, ByteString data)
+        private ByteString CurrentStore1(BattleClient client, ByteString data)
         {
             var request = D3.Store.GetProductList.ParseFrom(data);
             var store = D3.Store.GetProductListResponse.CreateBuilder();
@@ -1720,398 +1724,398 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             {
                 store
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2036418836))) // Wings of Mastery
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(50000000).SetFixedPointRetailPrice(50000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(50000000).SetFixedPointRetailPrice(50000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(4))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)3194995136))) // Blizzcon 2015
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(1).SetBundleLabel("")
                             .SetProductId(130002))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)1514497706))) // MalGanis
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(70000000).SetFixedPointRetailPrice(80000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(70000000).SetFixedPointRetailPrice(80000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(11).SetFeatured(2).SetBundleLabel("")
                                 .SetProductId(11000))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2431587061))) // Angelic
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(2000000).SetFixedPointRetailPrice(5000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(2000000).SetFixedPointRetailPrice(5000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(12).SetFeatured(3).SetBundleLabel("")
                                 .SetProductId(12000))
                 ;
             }
-            #region Платина
+            #region Platinum
             if (request.Category == 1)
             {
                 store
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetPlatinumAmount(500))
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(50000).SetFixedPointRetailPrice(50000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(50000).SetFixedPointRetailPrice(50000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(1).SetFeatured(0).SetBundleLabel("")
                                 .SetProductId(11383))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetPlatinumAmount(1000))
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(80000).SetFixedPointRetailPrice(80000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(80000).SetFixedPointRetailPrice(80000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(1).SetFeatured(1).SetBundleLabel("")
                                 .SetProductId(11384))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetPlatinumAmount(5000))
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(299900).SetFixedPointRetailPrice(350000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(299900).SetFixedPointRetailPrice(350000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(1).SetFeatured(1).SetBundleLabel("")
                                 .SetProductId(11385))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetPlatinumAmount(10000))
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(499900).SetFixedPointRetailPrice(499900)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(499900).SetFixedPointRetailPrice(499900)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(1).SetFeatured(1).SetBundleLabel("")
                                 .SetProductId(11386))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetPlatinumAmount(50000))
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(0).SetFixedPointRetailPrice(990000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(15).SetFixedPointCost(0).SetFixedPointRetailPrice(990000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(1).SetFeatured(1).SetBundleLabel("")
                                 .SetProductId(11387))
                                 ;
             }
             #endregion
-            #region Крылья
+            #region Wings
             if (request.Category == 10)
             {
                 store
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1905890383))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(1))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1905890380))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(2))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1905890381))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(3))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(2036418836)) // Wings of Mastery
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(50000000).SetFixedPointRetailPrice(50000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(50000000).SetFixedPointRetailPrice(50000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(4))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(550271607))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(5))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1185806158))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(1).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(6))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2590476058)))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(7))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(671128753))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(8))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)4188235898)))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(9))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)1030142027)))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(10))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(721772994))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(11))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(567892925))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(12))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1464422747))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(13))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1905890384))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(14))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1081297790))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(15))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1905890379))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(16))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1905890378))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(17))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2764892181)))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(18))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(2029657407))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(19))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(721772994))
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(10).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(20));
             }
 
             #endregion
-            #region Питомцы
+            #region Pets
             if (request.Category == 11)
             {
                 store
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)1514497706))) // MalGanis
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(70000000).SetFixedPointRetailPrice(80000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(70000000).SetFixedPointRetailPrice(80000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(11).SetBundleLabel("")
                                 .SetProductId(11000));
             }
             #endregion
-            #region Рамки
+            #region Framework
             if (request.Category == 12)
             {
                 store
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2431587061))) // Angelic
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(2000000).SetFixedPointRetailPrice(5000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(2000000).SetFixedPointRetailPrice(5000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(12).SetBundleLabel("")
                                 .SetProductId(12000))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)604200072))) // OverWatch
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(3000000).SetFixedPointRetailPrice(5000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(3000000).SetFixedPointRetailPrice(5000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(12).SetBundleLabel("")
                                 .SetProductId(12001))
                                 ;
 
             }
             #endregion
-            #region Флаги
+            #region Flags
             if (request.Category == 13)
             {
                 store
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1428615110)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130000))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(895083523)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130001))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)3194995136))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130002))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)3484863475))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130003))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(522011784)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130004))
                          .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(938178597)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130005))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(566077307)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130006))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(28429688)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130007))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(177825848)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130008))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(177825849)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130009))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(177825850)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130010))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(2113242414)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130011))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(218434287)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130012))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(590649887)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130013))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(895083523)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130014))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)4211285172))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130015))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(127020830)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130016))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2644729685))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130017))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(177825852)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130018))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1156357301)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130019))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)3269693700))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130020))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(895493953)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130021))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(1375359175)) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130022))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)3269693700))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130023))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)3829241798))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130024))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)671111717))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130025))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)1769352763))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130026))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2575751604))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130027))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)4233838312))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130028))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2645002203))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130029))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)177825851))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130030))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)455845058))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130031))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)3124785508))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130032))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2732665546))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130033))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)1329910150))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130034))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)3359438927))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130035))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2885511819))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130036))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)3532272868))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130037))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)2626988266))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130038))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)28430311))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130039))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)1114884937))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130040))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetGbid(unchecked((int)938200550))) // 
-                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Тип стоимости, скидочная цена, обычная цена
+                            .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(15000000).SetFixedPointRetailPrice(15000000)) //Value Type, Discount Price, Regular Price
                             .SetCategory(13).SetFeatured(0).SetBundleLabel("")
                             .SetProductId(130041))
 
                             ;
             }
             #endregion
-            #region Бусты
+            #region Boosts
             if (request.Category == 14)
             {
                 store
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(16)) // 
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(60000000).SetFixedPointRetailPrice(60000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(60000000).SetFixedPointRetailPrice(60000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(14).SetDurationSecs(2592000)
                                 .SetProductId(12101))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(16)) // 
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(0).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(0).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(14).SetDurationSecs(604800)
                                 .SetProductId(12102))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(17)) // 
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(60000000).SetFixedPointRetailPrice(60000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(60000000).SetFixedPointRetailPrice(60000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(14).SetDurationSecs(2592000)
                                 .SetProductId(12103))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(17)) // 
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(14).SetDurationSecs(604800)
                                 .SetProductId(12104))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(18)) // 
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(60000000).SetFixedPointRetailPrice(60000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(60000000).SetFixedPointRetailPrice(60000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(14).SetDurationSecs(2592000)
                                 .SetProductId(12105))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(18)) // 
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(14).SetDurationSecs(604800)
                                 .SetProductId(12106))
                         ;
             }
             #endregion
-            #region Ячейки героев
+            #region Hero Cells
             if (request.Category == 15)
             {
                 store
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(11).SetMaxStackCount(10))
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(100000000).SetFixedPointRetailPrice(100000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(100000000).SetFixedPointRetailPrice(100000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(15)
                                 .SetProductId(15000))
                                 ;
             }
             #endregion
-            #region Вкладки тайника
+            #region Stash Tabs
             if (request.Category == 16)
             {
                 store
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(14).SetMaxStackCount(5)).AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetPlatinumAmount(0))
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(20000000).SetFixedPointRetailPrice(20000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(16)
                                 .AddMaxContentlicensesAllowed(D3.Store.ContentLicenseRestriction.CreateBuilder().SetContentLicenseId(14).SetCount(0))
                                 .SetProductId(160))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(14).SetMaxStackCount(5))
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(40000000).SetFixedPointRetailPrice(40000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(40000000).SetFixedPointRetailPrice(40000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(16)
                                 .AddMaxContentlicensesAllowed(D3.Store.ContentLicenseRestriction.CreateBuilder().SetContentLicenseId(14).SetCount(1))
                                 .AddMinContentlicensesRequired(D3.Store.ContentLicenseRestriction.CreateBuilder().SetContentLicenseId(14).SetCount(1))
                                 .SetProductId(161))
                         .AddProducts(D3.Store.Product.CreateBuilder().AddEntitlements(D3.Store.ProductEntitlement.CreateBuilder().SetContentLicenseId(14).SetMaxStackCount(5))
-                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(80000000).SetFixedPointRetailPrice(80000000)) //Тип стоимости, скидочная цена, обычная цена
+                                .AddPrices(D3.Store.ProductPrice.CreateBuilder().SetCurrency(26).SetFixedPointCost(80000000).SetFixedPointRetailPrice(80000000)) //Value Type, Discount Price, Regular Price
                                 .SetCategory(16)
                                 .AddMinContentlicensesRequired(D3.Store.ContentLicenseRestriction.CreateBuilder().SetContentLicenseId(14).SetCount(2))
                                 .SetProductId(162))
@@ -2120,7 +2124,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             }
             #endregion
 
-            //Валюты
+            //Currencies
             store
                 
                 .AddCurrencies(D3.Store.Currency.CreateBuilder().SetCode("GBP").SetId(826).SetSymbol("GBP").SetName("Pound Sterling"))
@@ -2143,7 +2147,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 ;
             return store.Build().ToByteString();
         }
-        private ByteString SetCollection(BattleClient Client, ByteString data)
+        private ByteString SetCollection(BattleClient client, ByteString data)
         {
             var request = D3.GameMessage.EquipCosmeticItem.ParseFrom(data);
             
@@ -2151,57 +2155,57 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             switch (request.CosmeticItemType)
             {
                 case 1:
-                    Client.Account.GameAccount.CurrentToon.Cosmetic1 = request.Gbid;
+                    client.Account.GameAccount.CurrentToon.Cosmetic1 = request.Gbid;
                     break;
                 case 2:
-                    Client.Account.GameAccount.CurrentToon.Cosmetic2 = request.Gbid;
+                    client.Account.GameAccount.CurrentToon.Cosmetic2 = request.Gbid;
                     break;
                 case 3:
-                    Client.Account.GameAccount.CurrentToon.Cosmetic3 = request.Gbid;
+                    client.Account.GameAccount.CurrentToon.Cosmetic3 = request.Gbid;
                     break;
                 case 4:
-                    Client.Account.GameAccount.CurrentToon.Cosmetic4 = request.Gbid;
+                    client.Account.GameAccount.CurrentToon.Cosmetic4 = request.Gbid;
                     break;
             }
 
             var RangeCosmetic = new[]
             {
-                D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Client.Account.GameAccount.CurrentToon.Cosmetic1).Build(), // Wings
-                D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Client.Account.GameAccount.CurrentToon.Cosmetic2).Build(), // Flag
-                D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Client.Account.GameAccount.CurrentToon.Cosmetic3).Build(), // Pet
-                D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Client.Account.GameAccount.CurrentToon.Cosmetic4).Build(), // Frame
+                D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(client.Account.GameAccount.CurrentToon.Cosmetic1).Build(), // Wings
+                D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(client.Account.GameAccount.CurrentToon.Cosmetic2).Build(), // Flag
+                D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(client.Account.GameAccount.CurrentToon.Cosmetic3).Build(), // Pet
+                D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(client.Account.GameAccount.CurrentToon.Cosmetic4).Build(), // Frame
             };
 
-            Client.Account.GameAccount.CurrentToon.StateChanged();
+            client.Account.GameAccount.CurrentToon.StateChanged();
 
             var NewVisual = D3.Hero.VisualEquipment.CreateBuilder()
-                .AddRangeVisualItem(Client.Account.GameAccount.CurrentToon.HeroVisualEquipmentField.Value.VisualItemList).AddRangeCosmeticItem(RangeCosmetic).Build();
+                .AddRangeVisualItem(client.Account.GameAccount.CurrentToon.HeroVisualEquipmentField.Value.VisualItemList).AddRangeCosmeticItem(RangeCosmetic).Build();
 
-            Client.Account.GameAccount.CurrentToon.HeroVisualEquipmentField.Value = NewVisual;
-            Client.Account.GameAccount.ChangedFields.SetPresenceFieldValue(Client.Account.GameAccount.CurrentToon.HeroVisualEquipmentField);
-            Client.Account.GameAccount.NotifyUpdate();
+            client.Account.GameAccount.CurrentToon.HeroVisualEquipmentField.Value = NewVisual;
+            client.Account.GameAccount.ChangedFields.SetPresenceFieldValue(client.Account.GameAccount.CurrentToon.HeroVisualEquipmentField);
+            client.Account.GameAccount.NotifyUpdate();
 
             return NewVisual.ToByteString();
         }
-        private ByteString StoreRequest(BattleClient Client, ByteString data)
+        private ByteString StoreRequest(BattleClient client, ByteString data)
         {
             var req = GetHeroIds.ParseFrom(data);
 
             var Status = CheatModifyStoreState.CreateBuilder().SetEnable(false);
             return Status.Build().ToByteString();
         }
-        private ByteString TestRequest(BattleClient Client, ByteString data)
+        private ByteString TestRequest(BattleClient client, ByteString data)
         {
             var req = CSPullSnapshot.ParseFrom(data);
 
             var HeroDigestList = D3.Hero.DigestList.CreateBuilder();
-            foreach (Toon t in Client.Account.GameAccount.Toons) HeroDigestList.AddDigests(t.Digest);
+            foreach (Toon t in client.Account.GameAccount.Toons) HeroDigestList.AddDigests(t.Digest);
             var Snap = D3.CS.HeroesList.CreateBuilder().SetCurrentSeasonNum(1).SetCurrentSeasonState(1).SetDigests(HeroDigestList);
             return Snap.Build().ToByteString();
         }
         #endregion
-        #region Изменение параметров сессии
-        private ByteString SwitchParametrs(BattleClient Client, ByteString data)
+        #region Changing session parameters
+        private ByteString SwitchParameters(BattleClient client, ByteString data)
         {
 
             var request = D3.GameMessage.MatchmakingGetStats.ParseFrom(data);
@@ -2213,19 +2217,19 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         }
         #endregion
 
-        private ByteString OnGetToonSettings(BattleClient Client, ByteString data)
+        private ByteString OnGetToonSettings(BattleClient client, ByteString data)
         {
             var request = GetToonSettings.ParseFrom(data);
             var response = D3.Client.ToonSettings.CreateBuilder();
             return response.Build().ToByteString();
         }
-        private ByteString CurrentToon(BattleClient Client, ByteString data)
+        private ByteString CurrentToon(BattleClient client, ByteString data)
         {
             SelectHero req = SelectHero.ParseFrom(data);
             D3.Client.ToonSettings.Builder res = D3.Client.ToonSettings.CreateBuilder();
             return req.ToByteString();
         }
-        private ByteString GetHeroProfs(BattleClient Client, ByteString data)
+        private ByteString GetHeroProfs(BattleClient client, ByteString data)
         {
             var testRequest = GetHeroProfiles.ParseFrom(data);
 
@@ -2251,18 +2255,18 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
             return profileList.Build().ToByteString();
         }
-        private ByteString GetDeadedHeroDigests(BattleClient Client, ByteString data)
+        private ByteString GetDeadedHeroDigests(BattleClient client, ByteString data)
         {
             var HeroDigestList = D3.Hero.DigestList.CreateBuilder();
-            foreach (Toon t in Client.Account.GameAccount.Toons)
+            foreach (Toon t in client.Account.GameAccount.Toons)
             {
-                if (t.IsHardcore == true)
-                    if (t.Dead == true)
+                if (t.IsHardcore)
+                    if (t.Dead)
                         HeroDigestList.AddDigests(t.Digest);
             }
             return HeroDigestList.Build().ToByteString();
         }
-        private ByteString GetDeadedHeroProfs(BattleClient Client, ByteString data)
+        private ByteString GetDeadedHeroProfs(BattleClient client, ByteString data)
         {
             var testRequest = GetFallenHeros.ParseFrom(data);
 
@@ -2306,24 +2310,24 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         }
 
-        private ByteString SendWarden3Custom(BattleClient Client, ByteString data)
+        private ByteString SendWarden3Custom(BattleClient client, ByteString data)
         {
-            byte[] response270 = new byte[] { 8, 137, 249, 159, 185, 12, 16, 136, 14 };
+            byte[] response270 = { 8, 137, 249, 159, 185, 12, 16, 136, 14 };
             return ByteString.CopyFrom(response270);
         }
-        private ByteString GetAchievements(BattleClient Client, ByteString data)
+        private ByteString GetAchievements(BattleClient client, ByteString data)
         {
             var HeroDigestList = D3.Hero.DigestList.CreateBuilder();
-            foreach (Toon t in Client.Account.GameAccount.Toons) HeroDigestList.AddDigests(t.Digest);
+            foreach (Toon t in client.Account.GameAccount.Toons) HeroDigestList.AddDigests(t.Digest);
             var Snap = D3.CS.HeroesList.CreateBuilder().SetCurrentSeasonNum(1).SetCurrentSeasonState(1).SetDigests(HeroDigestList);
 
             return Snap.Build().ToByteString();
         }
-        private ByteString RebirthMethod(BattleClient Client, ByteString data)
+        private ByteString RebirthMethod(BattleClient client, ByteString data)
         {
             RebirthHeroRequest Request = RebirthHeroRequest.ParseFrom(data);
             var Response = RebirthHeroResponse.CreateBuilder();
-            foreach (Toon t in Client.Account.GameAccount.Toons)
+            foreach (Toon t in client.Account.GameAccount.Toons)
             {
                 if (t.D3EntityID.IdLow == Request.HeroId)
                 {
@@ -2335,7 +2339,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
             return Response.Build().ToByteString();
         }
-        private ByteString GetChallengeRift(BattleClient Client, ByteString data)
+        private ByteString GetChallengeRift(BattleClient client, ByteString data)
         {
             var request = ChallengeRiftFetchHeroData.ParseFrom(data);
 
@@ -3760,7 +3764,7 @@ challenge_end_time_unix_seconds: 1583200800
 
             return response.Build().ToByteString();
         }
-        private ByteString ClearMissions(BattleClient Client, ByteString data)
+        private ByteString ClearMissions(BattleClient client, ByteString data)
         {
             var request = ResetHeroStoryProgress.ParseFrom(data);
             return request.ToByteString();
@@ -3814,10 +3818,8 @@ challenge_end_time_unix_seconds: 1583200800
 
             return new BNetPacket(header, payload);
         }
-        private ByteString OnGetAccountPrefs(BattleClient Client, ByteString data)
-        {
-            return ByteString.Empty;
-        }
+        private ByteString OnGetAccountPrefs(BattleClient client, ByteString data) => ByteString.Empty;
+
         #endregion
 
     }

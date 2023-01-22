@@ -22,10 +22,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			: base(world, sno, tags)
 		{
 			this.playerIndex = playerIndex;
-			this.Attributes[GameAttribute.MinimapActive] = true;
-			this.Attributes[GameAttribute.Headstone_Player_ANN] = 1;
-			this.Attributes[GameAttribute.TeamID] = 1;
-			if (this.World.Game.PvP) this.Attributes[GameAttribute.Disabled] = true;
+			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.Headstone_Player_ANN] = 1;
+			Attributes[GameAttribute.TeamID] = 1;
+			if (World.Game.PvP) Attributes[GameAttribute.Disabled] = true;
 		}
 
 
@@ -39,8 +39,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public override void OnTargeted(PlayerSystem.Player player, TargetMessage message)
 		{
 			base.OnTargeted(player, message);
-			if (this.playerIndex > -1)
-				this.GetPlayersInRange(100f).Where(p => p.PlayerIndex == this.playerIndex).First().Resurrect();
+			if (playerIndex > -1)
+				GetPlayersInRange(100f).Where(p => p.PlayerIndex == playerIndex).First().Resurrect();
 			//this.Destroy();
 		}
 	}

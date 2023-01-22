@@ -28,38 +28,38 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			//this.Field2 = 0x9;//16;
 			//this.Field7 = 0x00000001;
-			this.CollFlags = 0;
-			float DamageMin = this.World.Game.MonsterLevel * 10f;
+			CollFlags = 0;
+			float DamageMin = World.Game.MonsterLevel * 10f;
 
-			if (this.World.Game.MonsterLevel > 30)
-				DamageMin = this.World.Game.MonsterLevel * 50f;
+			if (World.Game.MonsterLevel > 30)
+				DamageMin = World.Game.MonsterLevel * 50f;
 
-			if (this.World.Game.MonsterLevel > 60)
-				DamageMin = this.World.Game.MonsterLevel * 120f;
+			if (World.Game.MonsterLevel > 60)
+				DamageMin = World.Game.MonsterLevel * 120f;
 
-			float DamageDelta = DamageMin * 0.3f * this.World.Game.DmgModifier;
-			this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * this.World.Game.DmgModifier;
-			this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta;
+			float DamageDelta = DamageMin * 0.3f * World.Game.DmgModifier;
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * World.Game.DmgModifier;
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta;
 
-			this.Attributes[GameAttribute.Team_Override] = 2;
-			this.Attributes[GameAttribute.Untargetable] = true;
-			this.Attributes[GameAttribute.NPC_Is_Operatable] = false;
-			this.Attributes[GameAttribute.Operatable] = false;
-			this.Attributes[GameAttribute.Operatable_Story_Gizmo] = false;
-			this.Attributes[GameAttribute.Immunity] = true;
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes[GameAttribute.Team_Override] = 2;
+			Attributes[GameAttribute.Untargetable] = true;
+			Attributes[GameAttribute.NPC_Is_Operatable] = false;
+			Attributes[GameAttribute.Operatable] = false;
+			Attributes[GameAttribute.Operatable_Story_Gizmo] = false;
+			Attributes[GameAttribute.Immunity] = true;
+			Attributes.BroadcastChangedIfRevealed();
 		}
 
 		public override void OnPlayerApproaching(PlayerSystem.Player player)
 		{
 			try
 			{
-			 	if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale * this.Scale && !_collapsed)
+			 	if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale * Scale && !_collapsed)
 				{
 					               
 					_collapsed = true;
 
-					this.PlayActionAnimation(10264);
+					this.PlayActionAnimation(AnimationSno.trdun_cath_lever_type2_closing);
 					this.World.PowerManager.RunPower(this, 153000);
 
 					Task.Delay(RandomHelper.Next(5,10) * 1000).ContinueWith(delegate { _collapsed = false; });

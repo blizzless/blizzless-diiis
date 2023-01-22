@@ -58,11 +58,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public BossPortal(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Field2 = 0x9;//16;
+			Field2 = 0x9;//16;
 
-			this.Attributes[GameAttribute.MinimapActive] = true;
-			this.Attributes[GameAttribute.Untargetable] = false;
-            var bossEncounter = ((this.ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter);
+			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.Untargetable] = false;
+            var bossEncounter = ((ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter);
 			DestWorld = bossEncounter.Worlds[0];
 			switch (DestWorld)
 			{
@@ -73,7 +73,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				case 109143:
 					DestArea = 109149; break;
 				case 182976:
-					DestArea = 62726; this.Scale = 0.75f; break;
+					DestArea = 62726; Scale = 0.75f; break;
 				case 159580:
 					DestArea = 58494; break;
 				case 58493:
@@ -113,83 +113,83 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
             DestPoint = bossEncounter.I11;
 			//get EncounterSNO
-			switch (this.SNO)
+			switch (SNO)
 			{
 				case ActorSno._boss_portal_cainintro: //CainIntro
-					this.Encounter = 168925;
+					Encounter = 168925;
 					break;
 				case ActorSno._boss_portal_skeletonking: //Leoric
-					this.Encounter = 159592;
+					Encounter = 159592;
 					break;
 				case ActorSno._boss_portal_spiderqueen: //SpiderQueen
-					this.Encounter = 181436;
+					Encounter = 181436;
 					break;
 				case ActorSno._boss_portal_butcher: //Butcher
-					this.Encounter = 158915;
+					Encounter = 158915;
 					break;
 				case ActorSno._boss_portal_maghda: //Maghda
-					this.Encounter = 195226;
+					Encounter = 195226;
 					break;
 				case ActorSno._boss_portal_binkleshulkout: //Cain Death
-					this.Encounter = 159591;
+					Encounter = 159591;
 					break;
 				//case 159578: //Belial Audience
 				//this.Encounter = 162231;
 				//break;
 				case ActorSno._boss_portal_adriasewer: //Adria Rescue
-					this.Encounter = 159584;
+					Encounter = 159584;
 					break;
 				case ActorSno._boss_portal_blacksoulstone: //Zoltun Kulle
-					this.Encounter = 159586;
+					Encounter = 159586;
 					break;
 				case ActorSno._boss_portal_belial: //Belial
-					this.Encounter = 159585;
+					Encounter = 159585;
 					break;
 				case ActorSno._boss_portal_siegebreaker: //SiegeBreaker
-					this.Encounter = 226716;
+					Encounter = 226716;
 					break;
 				case ActorSno._boss_portal_mistressofpain: //Cydaea
-					this.Encounter = 161246;
+					Encounter = 161246;
 					break;
 				case ActorSno._boss_portal_azmodan: //Azmodan
-					this.Encounter = 159582;
+					Encounter = 159582;
 					break;
 				case ActorSno._boss_portal_adriabetrayal: //Adria_Betrayal
-					this.Encounter = 159583;
+					Encounter = 159583;
 					break;
 				case ActorSno._boss_portal_1000monsterfight: //Iskatu
-					this.Encounter = 182960;
+					Encounter = 182960;
 				    break;
 				case ActorSno._boss_portal_despair: //Rakanoth
-					this.Encounter = 161247;
+					Encounter = 161247;
 					break;
 				case ActorSno._bossportal_imperius_spirebase: //Imperius_Spire
-					this.Encounter = 220541;
+					Encounter = 220541;
 					break;
 				case ActorSno._boss_portal_diablo: //Diablo
-					this.Encounter = 161280;
+					Encounter = 161280;
 					break;
 				case ActorSno._x1_urzael_bossportal: //Urzael
-					this.Encounter = 298128;
+					Encounter = 298128;
 					break;
 				case ActorSno._x1_boss_portal_adria: //Adria
-					this.Encounter = 293007;
+					Encounter = 293007;
 					break;
 				case ActorSno._x1_boss_portal_batteringram: //BatteringRam
-					this.Encounter = 296315;
+					Encounter = 296315;
 					break;
 				case ActorSno._x1_fortress_malthael_boss_portal: //Malthael
-					this.Encounter = 278965;
+					Encounter = 278965;
 					break;
 				case ActorSno._boss_portal_greed:
-					this.Encounter = 380760;
+					Encounter = 380760;
 					break;
 				default:
-					this.Encounter = 0;
+					Encounter = 0;
 					break;
 			}
 
-			this.Destination = new ResolvedPortalDestination
+			Destination = new ResolvedPortalDestination
             {
 				WorldSNO = DestWorld,
 				DestLevelAreaSNO = DestArea,
@@ -215,7 +215,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		}
 		public override bool Reveal(Player player)
 		{
-			if (eventPortals.Contains(this.SNO)) return false;
+			if (eventPortals.Contains(SNO)) return false;
 			if (!base.Reveal(player))
 				return false;
 			/*
@@ -232,8 +232,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			//*/
 			player.InGameClient.SendMessage(new PortalSpecifierMessage()
 			{
-				ActorID = this.DynamicID(player),
-				Destination = this.Destination
+				ActorID = DynamicID(player),
+				Destination = Destination
 			});
 			return true;
 		}
@@ -245,18 +245,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			Logger.Trace("(OnTargeted) BossPortal has been activated, Id: {0}", this.SNO);
-			if (this.Encounter == 0) return;
+			Logger.Trace("(OnTargeted) BossPortal has been activated, Id: {0}", SNO);
+			if (Encounter == 0) return;
 			//if (this.World.Game.CurrentEncounter.activated) return;
 
-			this.World.Game.CurrentEncounter.activated = true;
-			this.World.Game.CurrentEncounter.SnoId = this.Encounter;
+			World.Game.CurrentEncounter.activated = true;
+			World.Game.CurrentEncounter.SnoId = Encounter;
 
-			foreach (Player plr in this.World.Game.Players.Values)
+			foreach (Player plr in World.Game.Players.Values)
 				plr.InGameClient.SendMessage(new BossEncounterMessage(Opcodes.BossJoinEncounterMessage)
 				{
 					PlayerIndex = plr.PlayerIndex,
-					snoEncounter = this.Encounter
+					snoEncounter = Encounter
 				});
 		}
 	}

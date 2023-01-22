@@ -78,9 +78,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public QuestRegistry(Game game)
 		{
-			this.Game = game;
-			this.QuestTriggers = new Dictionary<int, QuestTrigger>();
-			this.GlobalQuestTriggers = new Dictionary<int, QuestTrigger>();
+			Game = game;
+			QuestTriggers = new Dictionary<int, QuestTrigger>();
+			GlobalQuestTriggers = new Dictionary<int, QuestTrigger>();
 		}
 
 		public virtual void SetQuests()
@@ -89,31 +89,31 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		}
 
 
-		protected void SetRiftTimer(float duration, MapSystem.World world, QuestEvent qevent, int idSNO = 0)
+		protected void SetRiftTimer(float duration, World world, QuestEvent qevent, int idSNO = 0)
 		{
-			this.Game.QuestManager.LaunchRiftQuestTimer(duration, new Action<int>((q) => { qevent.Execute(world); }), idSNO);
+			Game.QuestManager.LaunchRiftQuestTimer(duration, new Action<int>((q) => { qevent.Execute(world); }), idSNO);
 		}
 
-		protected void SetQuestTimer(int questId, float duration, MapSystem.World world, QuestEvent qevent, int Meterid = 0)
+		protected void SetQuestTimer(int questId, float duration, World world, QuestEvent qevent, int Meterid = 0)
 		{
-			this.Game.QuestManager.LaunchQuestTimer(questId, duration, new Action<int>((q) => { qevent.Execute(world); }), Meterid);
+			Game.QuestManager.LaunchQuestTimer(questId, duration, new Action<int>((q) => { qevent.Execute(world); }), Meterid);
 		}
 
 		protected void ListenConversation(int convId, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd(convId,
+			QuestTriggers.TryAdd(convId,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, count = 1, counter = 0, questEvent = qevent });
 		}
 
 		protected void GlobalListenConversation(int convId, QuestEvent qevent)
 		{
-			this.GlobalQuestTriggers.TryAdd(convId,
+			GlobalQuestTriggers.TryAdd(convId,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, count = 1, counter = 0, questEvent = qevent });
 		}
 
 		protected void ListenKill(ActorSno monsterSno, int monsterCount, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd((int)monsterSno,
+			QuestTriggers.TryAdd((int)monsterSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster, count = monsterCount, counter = 0, questEvent = qevent });
 		}
 
@@ -203,76 +203,76 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		protected void ListenKillBonus(ActorSno monsterSno, int monsterCount, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd((int)monsterSno,
+			QuestTriggers.TryAdd((int)monsterSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup, count = monsterCount, counter = 0, questEvent = qevent });
 		}
 
 		protected void ListenTeleport(int laId, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd(laId,
+			QuestTriggers.TryAdd(laId,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, count = 1, counter = 0, questEvent = qevent });
 		}
 		protected void GlobalListenTeleport(int laId, QuestEvent qevent)
 		{
-			this.GlobalQuestTriggers.TryAdd(laId,
+			GlobalQuestTriggers.TryAdd(laId,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, count = 1, counter = 0, questEvent = qevent });
 		}
 
 		protected void ListenProximity(ActorSno actorSno, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd((int)actorSno,
+			QuestTriggers.TryAdd((int)actorSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, count = 1, counter = 0, questEvent = qevent });
 		}
 
 		protected void ListenInteract(ActorSno actorSno, int actorCount, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd((int)actorSno,
+			QuestTriggers.TryAdd((int)actorSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = 0, questEvent = qevent });
 		}
 		protected void ListenInteractBonus(ActorSno actorSno, int actorCount, int counter, QuestEvent qevent)
 		{
-			this.QuestTriggers.TryAdd((int)actorSno,
+			QuestTriggers.TryAdd((int)actorSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = counter, questEvent = qevent });
 		}
 		protected void GlobalListenInteract(ActorSno actorSno, int actorCount, QuestEvent qevent)
 		{
-			this.GlobalQuestTriggers.TryAdd((int)actorSno,
+			GlobalQuestTriggers.TryAdd((int)actorSno,
 				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = 0, questEvent = qevent });
 		}
 
 		protected void UnlockTeleport(int waypointId)
 		{
-			this.Game.UnlockTeleport(waypointId);
+			Game.UnlockTeleport(waypointId);
 		}
 
 		public void UpdateCounter(int dataId)
 		{
-			var trigger = this.QuestTriggers[dataId];
+			var trigger = QuestTriggers[dataId];
 			trigger.counter++;
-			this.QuestTriggers[dataId] = trigger;
+			QuestTriggers[dataId] = trigger;
 			if (trigger.counter <= trigger.count)
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
-					this.Game.QuestManager.NotifyBonus(trigger.counter, (trigger.counter >= trigger.count));
+					Game.QuestManager.NotifyBonus(trigger.counter, (trigger.counter >= trigger.count));
 				else if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor && dataId == 3628)
-					this.Game.QuestManager.NotifyBonus(trigger.counter, (trigger.counter >= trigger.count));
+					Game.QuestManager.NotifyBonus(trigger.counter, (trigger.counter >= trigger.count));
 				else
-					this.Game.QuestManager.NotifyQuest(trigger.counter, (trigger.counter >= trigger.count));
+					Game.QuestManager.NotifyQuest(trigger.counter, (trigger.counter >= trigger.count));
 		}
 
 		public void UpdateSideCounter(int dataId)
 		{
-			var trigger = this.QuestTriggers[dataId];
+			var trigger = QuestTriggers[dataId];
 			trigger.counter++;
-			this.QuestTriggers[dataId] = trigger;
+			QuestTriggers[dataId] = trigger;
 			if (trigger.counter <= trigger.count)
-				this.Game.QuestManager.NotifySideQuest(trigger.counter, (trigger.counter >= trigger.count));
+				Game.QuestManager.NotifySideQuest(trigger.counter, (trigger.counter >= trigger.count));
 		}
 
 		public void UpdateGlobalCounter(int dataId)
 		{
-			var trigger = this.GlobalQuestTriggers[dataId];
+			var trigger = GlobalQuestTriggers[dataId];
 			trigger.counter++;
-			this.GlobalQuestTriggers[dataId] = trigger;
+			GlobalQuestTriggers[dataId] = trigger;
 		}
 
 		//Launch Conversations.
@@ -285,20 +285,20 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public void AddFollower(World world, ActorSno sno)
 		{
-			if (this.Game.Players.Count > 0)
-				this.Game.Players.Values.First().AddFollower(world.GetActorBySNO(sno));
+			if (Game.Players.Count > 0)
+				Game.Players.Values.First().AddFollower(world.GetActorBySNO(sno));
 		}
 
 		public void DestroyFollower(ActorSno sno)
 		{
-			if (this.Game.Players.Count > 0)
-				this.Game.Players.Values.First().DestroyFollower(sno);
+			if (Game.Players.Count > 0)
+				Game.Players.Values.First().DestroyFollower(sno);
 		}
 
 		protected void PlayCutscene(Int32 cutsceneId)
 		{
-			if (!this.Game.Empty)
-				foreach (var player in this.Game.Players)
+			if (!Game.Empty)
+				foreach (var player in Game.Players)
 				{
 					player.Value.PlayCutscene(cutsceneId);
 				}
@@ -343,8 +343,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public void Advance(int questId)
 		{
-			if (this.Game.Players.Count > 0)
-				this.Game.QuestManager.Advance();
+			if (Game.Players.Count > 0)
+				Game.QuestManager.Advance();
 		}
 	}
 
@@ -357,7 +357,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public QuestEvent(uint conversationSNOId)
 		{
-			this.ConversationSNOId = conversationSNOId;
+			ConversationSNOId = conversationSNOId;
 		}
 
 		public abstract void Execute(World world);

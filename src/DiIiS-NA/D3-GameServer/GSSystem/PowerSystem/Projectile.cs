@@ -67,32 +67,32 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			//this.Field2 = 0x0;
 			//this.Field7 = -1;  // TODO: test if this is necessary
 
-			this.Field2 = 0x8;
-			this.Field7 = -1;
-			this.GBHandle.Type = (int)ActorType.Projectile; this.GBHandle.GBID = -1;
+			Field2 = 0x8;
+			Field7 = -1;
+			GBHandle.Type = (int)ActorType.Projectile; GBHandle.GBID = -1;
 
-			this.CollFlags = 0;
+			CollFlags = 0;
 
-			if (this.Scale == 0f)
-				this.Scale = 1.00f;
+			if (Scale == 0f)
+				Scale = 1.00f;
 
-			this.Context = context;
-			this.Position = new Vector3D(position);
+			Context = context;
+			Position = new Vector3D(position);
 			// offset position by mpq collision data
-			this.Position.Z += this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
+			Position.Z += ActorData.Cylinder.Ax1 - ActorData.Cylinder.Position.Z;
 			// 2 second default timeout for projectiles
-			this.Timeout = new SecondsTickTimer(context.World.Game, 3f);
+			Timeout = new SecondsTickTimer(context.World.Game, 3f);
 
 			// copy in important effect params from user
-			this.Attributes[GameAttribute.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_A, context.PowerSNO];
-			this.Attributes[GameAttribute.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_B, context.PowerSNO];
-			this.Attributes[GameAttribute.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_C, context.PowerSNO];
-			this.Attributes[GameAttribute.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_D, context.PowerSNO];
-			this.Attributes[GameAttribute.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_E, context.PowerSNO];
+			Attributes[GameAttribute.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_A, context.PowerSNO];
+			Attributes[GameAttribute.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_B, context.PowerSNO];
+			Attributes[GameAttribute.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_C, context.PowerSNO];
+			Attributes[GameAttribute.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_D, context.PowerSNO];
+			Attributes[GameAttribute.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_E, context.PowerSNO];
 
 
-			if (this.Context.User.Attributes[GameAttribute.Displays_Team_Effect] == true)
-				this.Attributes[GameAttribute.Displays_Team_Effect] = true;
+			if (Context.User.Attributes[GameAttribute.Displays_Team_Effect] == true)
+				Attributes[GameAttribute.Displays_Team_Effect] = true;
 
 			_prevUpdatePosition = null;
 			_launchPosition = null;
@@ -105,33 +105,33 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			_onArrivalCalled = false;
 			OnArrival = AArrival;
 
-			_prevUpdatePosition = this.Position;
-			_launchPosition = this.Position;
+			_prevUpdatePosition = Position;
+			_launchPosition = Position;
 
-			this.Attributes[GameAttribute.Projectile_Speed] = speed * 0.75f;
+			Attributes[GameAttribute.Projectile_Speed] = speed * 0.75f;
 
-			this.TranslateFacing(targetPosition, true);
+			TranslateFacing(targetPosition, true);
 			targetPosition = new Vector3D(targetPosition);
 			//targetPosition.Z = this.Context.User.Position.Z + 5f + this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
-			targetPosition.Z += this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
+			targetPosition.Z += ActorData.Cylinder.Ax1 - ActorData.Cylinder.Position.Z;
 
-			if (this.Attributes[GameAttribute.Projectile_Speed] <= 0)
+			if (Attributes[GameAttribute.Projectile_Speed] <= 0)
 			{
-				this.Destroy();
+				Destroy();
 				return;
 			}
 
-			this.Attributes[GameAttribute.DestroyWhenPathBlocked] = true;
+			Attributes[GameAttribute.DestroyWhenPathBlocked] = true;
 
 			if (!_spawned)
 			{
-				this.EnterWorld(this.Position);
+				EnterWorld(Position);
 				_spawned = true;
 			}
 
-			_lastSpeed = this.Attributes[GameAttribute.Projectile_Speed];
+			_lastSpeed = Attributes[GameAttribute.Projectile_Speed];
 
-			_mover.MoveFixed(targetPosition, this.Attributes[GameAttribute.Projectile_Speed], new MessageSystem.Message.Definitions.ACD.ACDTranslateFixedMessage
+			_mover.MoveFixed(targetPosition, Attributes[GameAttribute.Projectile_Speed], new MessageSystem.Message.Definitions.ACD.ACDTranslateFixedMessage
 			{
 				MoveFlags = 0x7fffffff,
 				AnimationTag = AnimationSetKeys.IdleDefault.ID,
@@ -144,34 +144,34 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		public void Launch(Vector3D targetPosition, float speed)
 		{
 			_onArrivalCalled = false;
-			_prevUpdatePosition = this.Position;
-			_launchPosition = this.Position;
+			_prevUpdatePosition = Position;
+			_launchPosition = Position;
 
-			this.Attributes[GameAttribute.Projectile_Speed] = speed * 0.75f;
+			Attributes[GameAttribute.Projectile_Speed] = speed * 0.75f;
 
-			this.TranslateFacing(targetPosition, true);
+			TranslateFacing(targetPosition, true);
 			targetPosition = new Vector3D(targetPosition);
 			//targetPosition.Z = this.Context.User.Position.Z + 5f + this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
 			
-			targetPosition.Z += this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
+			targetPosition.Z += ActorData.Cylinder.Ax1 - ActorData.Cylinder.Position.Z;
 
-			if (this.Attributes[GameAttribute.Projectile_Speed] <= 0)
+			if (Attributes[GameAttribute.Projectile_Speed] <= 0)
 			{
-				this.Destroy();
+				Destroy();
 				return;
 			}
 
-			this.Attributes[GameAttribute.DestroyWhenPathBlocked] = true;
+			Attributes[GameAttribute.DestroyWhenPathBlocked] = true;
 
 			if (!_spawned)
 			{
-				this.EnterWorld(this.Position);
+				EnterWorld(Position);
 				_spawned = true;
 			}
 
-			_lastSpeed = this.Attributes[GameAttribute.Projectile_Speed];
+			_lastSpeed = Attributes[GameAttribute.Projectile_Speed];
 
-			_mover.MoveFixed(targetPosition, this.Attributes[GameAttribute.Projectile_Speed], new MessageSystem.Message.Definitions.ACD.ACDTranslateFixedMessage
+			_mover.MoveFixed(targetPosition, Attributes[GameAttribute.Projectile_Speed], new MessageSystem.Message.Definitions.ACD.ACDTranslateFixedMessage
 			{
 				MoveFlags = 0x7fffffff,
 				AnimationTag = AnimationSetKeys.IdleDefault.ID,
@@ -183,34 +183,34 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public void LaunchCircle(Vector3D centerPosition, float radius, float speed, float duration)
 		{
-			this.Position.X += radius;
+			Position.X += radius;
 			_onArrivalCalled = false;
-			_prevUpdatePosition = this.Position;
-			_launchPosition = this.Position;
+			_prevUpdatePosition = Position;
+			_launchPosition = Position;
 
-			this.Attributes[GameAttribute.Projectile_Speed] = speed;
+			Attributes[GameAttribute.Projectile_Speed] = speed;
 
 			//targetPosition = new Vector3D(targetPosition);
 			//targetPosition.Z = this.Context.User.Position.Z + 5f + this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
 			//targetPosition.Z += this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
 
-			if (this.Attributes[GameAttribute.Projectile_Speed] <= 0)
+			if (Attributes[GameAttribute.Projectile_Speed] <= 0)
 			{
-				this.Destroy();
+				Destroy();
 				return;
 			}
 
-			this.Attributes[GameAttribute.DestroyWhenPathBlocked] = false;
+			Attributes[GameAttribute.DestroyWhenPathBlocked] = false;
 
 			if (!_spawned)
 			{
-				this.EnterWorld(this.Position);
+				EnterWorld(Position);
 				_spawned = true;
 			}
 
-			_lastSpeed = this.Attributes[GameAttribute.Projectile_Speed];
+			_lastSpeed = Attributes[GameAttribute.Projectile_Speed];
 
-			_mover.MoveCircle(centerPosition, radius, this.Attributes[GameAttribute.Projectile_Speed], duration, new MessageSystem.Message.Definitions.ACD.ACDTranslateDetPathSpiralMessage
+			_mover.MoveCircle(centerPosition, radius, Attributes[GameAttribute.Projectile_Speed], duration, new MessageSystem.Message.Definitions.ACD.ACDTranslateDetPathSpiralMessage
 			{
 				AnimTag = AnimationSetKeys.IdleDefault.ID
 			});
@@ -221,13 +221,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		public void LaunchArc(Vector3D destination, float arcHeight, float arcGravity, float visualBounce = 0f)
 		{
 			_onArrivalCalled = false;
-			_prevUpdatePosition = this.Position;
-			_launchPosition = this.Position;
+			_prevUpdatePosition = Position;
+			_launchPosition = Position;
 
-			this.TranslateFacing(destination, true);
+			TranslateFacing(destination, true);
 			if (!_spawned)
 			{
-				this.EnterWorld(this.Position);
+				EnterWorld(Position);
 				_spawned = true;
 			}
 
@@ -236,90 +236,90 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				Field3 = 0x00800000,
 				FlyingAnimationTagID = AnimationSetKeys.IdleDefault.ID,
 				LandingAnimationTagID = -1,
-				PowerSNO = this.Context.PowerSNO,
+				PowerSNO = Context.PowerSNO,
 				Bounce = visualBounce
 			});
 		}
 
 		public void LaunchChain(Actor Caster, Vector3D TargetPos, Action<Actor, int> OnTargetHit, float Speed = 1f, int numTargets = 0, float ChainRadius = 10f)
 		{
-			this.Position.Z += 5f;  // fix height
-			this.ChainCurrent = Caster;
-			this.ChainTargetsRemain = numTargets;
+			Position.Z += 5f;  // fix height
+			ChainCurrent = Caster;
+			ChainTargetsRemain = numTargets;
 
-			this.OnCollision = (hit) =>
+			OnCollision = (hit) =>
 			{
-				if (hit == this.ChainCurrent) return;
-				else this.ChainCurrent = hit;
+				if (hit == ChainCurrent) return;
+				else ChainCurrent = hit;
 
-				OnTargetHit(this.ChainCurrent, this.ChainIteration);
+				OnTargetHit(ChainCurrent, ChainIteration);
 
-				this.ChainTargetsRemain--;
-				if (this.ChainTargetsRemain <= 0)
+				ChainTargetsRemain--;
+				if (ChainTargetsRemain <= 0)
 				{
-					this.Destroy();
+					Destroy();
 					return;
 				}
 
-				if (this.ChainCurrent == null)
+				if (ChainCurrent == null)
 				{
-					this.Destroy();
+					Destroy();
 					return;
 				}
 
-				var targets = this.Context.GetEnemiesInRadius(this.ChainCurrent.Position, ChainRadius);
-				targets.Actors.Remove(this.ChainCurrent);
+				var targets = Context.GetEnemiesInRadius(ChainCurrent.Position, ChainRadius);
+				targets.Actors.Remove(ChainCurrent);
 				if (targets.Actors.Count() == 0)
 				{
-					this.Destroy();
+					Destroy();
 					return;
 				}
 
-				var nextProj = new Projectile(this.Context, this.SNO, this.ChainCurrent.Position);
+				var nextProj = new Projectile(Context, SNO, ChainCurrent.Position);
 				nextProj.Position.Z += 5f;
 
-				nextProj.ChainCurrent = this.ChainCurrent;
+				nextProj.ChainCurrent = ChainCurrent;
 				nextProj.ChainNextPos = targets.Actors[PowerContext.Rand.Next(targets.Actors.Count())].Position;
 
-				nextProj.ChainTargetsRemain = this.ChainTargetsRemain;
-				nextProj.ChainIteration = this.ChainIteration + 1;
+				nextProj.ChainTargetsRemain = ChainTargetsRemain;
+				nextProj.ChainIteration = ChainIteration + 1;
 
-				nextProj.OnCollision = this.OnCollision;
-				this.Destroy();
+				nextProj.OnCollision = OnCollision;
+				Destroy();
 				nextProj.Launch(nextProj.ChainNextPos, Speed);
 			};
-			this.Launch(TargetPos, Speed);
+			Launch(TargetPos, Speed);
 		}
 
 		private void _CheckCollisions()
 		{
 			if (OnCollision == null) return;
 
-			if (this.World != this.Context.User.World)
+			if (World != Context.User.World)
 			{
-				this.Destroy();
+				Destroy();
 				return;
 			}
 			if (MovementHelpers.GetDistance(_launchPosition, _prevUpdatePosition) >= 60.0f)
 			{
-				this.Destroy();
+				Destroy();
 				return;
 			}
-			if (!(this.World.CheckLocationForFlag(_prevUpdatePosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk) || this.World.CheckLocationForFlag(_prevUpdatePosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowProjectile)))
+			if (!(World.CheckLocationForFlag(_prevUpdatePosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk) || World.CheckLocationForFlag(_prevUpdatePosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowProjectile)))
 			{
-				this.Destroy();
+				Destroy();
 				return;
 			}
 
 			// check if we collided with anything since last update
 
-			float radius = this.ActorData.Cylinder.Ax2 * RadiusMod;
+			float radius = ActorData.Cylinder.Ax2 * RadiusMod;
 			Circle startCircle = new Circle(_prevUpdatePosition.X, _prevUpdatePosition.Y, radius);
 			// make a velocity representing the change to the current position
-			Vector2F velocity = PowerMath.VectorWithoutZ(this.Position - _prevUpdatePosition);
+			Vector2F velocity = PowerMath.VectorWithoutZ(Position - _prevUpdatePosition);
 
 			Actor hit = null;
-			TargetList targets = this.Context.GetEnemiesInRadius(this.Position, radius + 45f);
+			TargetList targets = Context.GetEnemiesInRadius(Position, radius + 45f);
 			if (CollisionFilter != null)
 				targets.Actors.RemoveAll(actor => !CollisionFilter(actor));
 			targets.SortByDistanceFrom(_prevUpdatePosition);
@@ -334,11 +334,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				}
 			}
 
-			if (hit != null && !this.CollidedActors.Contains(hit) && hit != this.Context.User && hit.Visible && !(hit is Door && (hit as Door).isOpened))
+			if (hit != null && !CollidedActors.Contains(hit) && hit != Context.User && hit.Visible && !(hit is Door && (hit as Door).isOpened))
 			{
 				{
 					FirstTimeCollided = true;
-					this.CollidedActors.Add(hit);
+					CollidedActors.Add(hit);
 					OnCollision(hit);
 				}
 				//Logger.Trace("Projectile collided, actor: {0}", hit.ActorSNO.Name);
@@ -353,41 +353,41 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 			// gotta make sure the actor hasn't been deleted after processing each handler
 
-			if (_lastSpeed != this.Attributes[GameAttribute.Projectile_Speed])
+			if (_lastSpeed != Attributes[GameAttribute.Projectile_Speed])
 			{
 				if (_mover.IsFixedMove())
 				{
-					this.Launch(_mover.GetDestination(), this.Attributes[GameAttribute.Projectile_Speed]);
+					Launch(_mover.GetDestination(), Attributes[GameAttribute.Projectile_Speed]);
 					return;
 				}
 			}
 
-			if (this.World != null)
+			if (World != null)
 				_CheckCollisions();
 
 			// doing updates after collision tests
-			if (this.World != null)
+			if (World != null)
 			{
-				_prevUpdatePosition = this.Position;
+				_prevUpdatePosition = Position;
 				_mover.Update();
 			}
 
 			if (OnUpdate != null)
 				OnUpdate();
 
-			if (this.World != null && this.Arrived)
+			if (World != null && Arrived)
 			{
 				if (OnArrival != null && _onArrivalCalled == false)
 				{
 					_onArrivalCalled = true;
 					OnArrival();
 				}
-				if (this.World != null && this.DestroyOnArrival &&
-					this.Arrived) // double check arrival in case OnArrival() re-launched
+				if (World != null && DestroyOnArrival &&
+					Arrived) // double check arrival in case OnArrival() re-launched
 					Destroy();
 			}
 
-			if (this.World != null)
+			if (World != null)
 			{
 				if (Timeout.TimedOut)
 				{

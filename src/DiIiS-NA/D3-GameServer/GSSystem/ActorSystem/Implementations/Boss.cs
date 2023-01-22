@@ -77,19 +77,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Boss(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			if (sno == ActorSno._zoltunkulle && world.SNO == WorldSno.a2dun_zolt_lobby) this.SetVisible(false);
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			if (sno == ActorSno._zoltunkulle && world.SNO == WorldSno.a2dun_zolt_lobby) SetVisible(false);
+			Attributes[GameAttribute.MinimapActive] = true;
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
-			this.Attributes[GameAttribute.//Blizzless Project 2022 
+			Attributes[GameAttribute.//Blizzless Project 2022 
 using_Bossbar] = true;
-			this.Attributes[GameAttribute.InBossEncounter] = true;
-			this.Attributes[GameAttribute.Hitpoints_Max] *= 10.0f;
-			this.Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 7.8f;
-			this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 7.8f;
-			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-			this.Attributes[GameAttribute.TeamID] = 10;
+			Attributes[GameAttribute.InBossEncounter] = true;
+			Attributes[GameAttribute.Hitpoints_Max] *= 10.0f;
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 7.8f;
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 7.8f;
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttribute.TeamID] = 10;
 			
-			this.WalkSpeed *= 0.5f;
+			WalkSpeed *= 0.5f;
             MonsterBrain monsterBrain = (Brain as MonsterBrain);
             switch (sno)
 			{
@@ -167,7 +167,7 @@ using_Bossbar] = true;
                     monsterBrain.AddPresetPower(83008);
 					break;
 				case ActorSno._belial_trueform://Belial (small)
-					this.HasLoot = false;
+					HasLoot = false;
 					break;
 				case ActorSno._belial://Belial (big)
                     monsterBrain.AddPresetPower(152540);
@@ -203,9 +203,9 @@ using_Bossbar] = true;
 
 		public override bool Reveal(PlayerSystem.Player player)
 		{
-			if (this.SNO == ActorSno._terrordemon_a_unique_1000monster)
+			if (SNO == ActorSno._terrordemon_a_unique_1000monster)
 			{
-				this.Destroy();
+				Destroy();
 				return false;
 			}
 

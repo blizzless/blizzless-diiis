@@ -43,15 +43,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			this.Target.Attributes[GameAttribute.Invulnerable] = true;
-			this.Target.Attributes[GameAttribute.Has_Look_Override] = true;//0x0782CAC5;
+			Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttribute.Has_Look_Override] = true;//0x0782CAC5;
 			return true;
 		}
 
 		public override void Remove()
 		{
-			this.Target.Attributes[GameAttribute.Invulnerable] = false;
-			this.Target.Attributes[GameAttribute.Has_Look_Override] = false;
+			Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttribute.Has_Look_Override] = false;
 			base.Remove();
 		}
 	}
@@ -70,7 +70,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			this.Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttribute.Invulnerable] = true;
 			return true;
 		}
 
@@ -102,7 +102,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override void Remove()
 		{
-			this.Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttribute.Invulnerable] = false;
 			base.Remove();
 		}
 	}
@@ -121,16 +121,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			: base()
 		{
 			Timeout = timeout;
-			this.Radius = radius;
-			this.Monsters = mobs;
-			this.LastMob = lastMob;
-			this.LastSolo = lastSolo;
+			Radius = radius;
+			Monsters = mobs;
+			LastMob = lastMob;
+			LastSolo = lastSolo;
 		}
 
 		public override bool Apply()
 		{
 			base.Apply();
-			this.Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttribute.Invulnerable] = true;
 			return true;
 		}
 
@@ -141,11 +141,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (_tickTimer == null || _tickTimer.TimedOut)
 			{
-				var monster = ActorFactory.Create(Target.World, this.Monsters[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, this.Monsters.Count())], new TagMap());
-				monster.EnterWorld(RandomDirection(Target.Position, 5f, this.Radius));
+				var monster = ActorFactory.Create(Target.World, Monsters[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, Monsters.Count())], new TagMap());
+				monster.EnterWorld(RandomDirection(Target.Position, 5f, Radius));
 				monster.HasLoot = (Target.World.Game.CurrentAct == 3000);
 				monster.Unstuck();
-				monster.Teleport(new Vector3D(monster.Position.X, monster.Position.Y, monster.World.GetZForLocation(monster.Position, this.Target.Position.Z)));
+				monster.Teleport(new Vector3D(monster.Position.X, monster.Position.Y, monster.World.GetZForLocation(monster.Position, Target.Position.Z)));
 				_tickTimer = WaitSeconds(0.5f);
 			}
 			return false;
@@ -153,36 +153,36 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override void Remove()
 		{
-			if (this.LastMob != ActorSno.__NONE)
+			if (LastMob != ActorSno.__NONE)
 			{
 				Monster leaderMob = null;
 				List<Affix> packAffixes = new List<Affix>();
-				for (int n = 0; n < (this.LastSolo ? 1 : 4); n++)
+				for (int n = 0; n < (LastSolo ? 1 : 4); n++)
 				{
 					if (n == 0)
 					{
-						if (this.LastSolo)
-							leaderMob = new Unique(Target.World, this.LastMob, new TagMap());
+						if (LastSolo)
+							leaderMob = new Unique(Target.World, LastMob, new TagMap());
 						else
-							leaderMob = new Rare(Target.World, this.LastMob, new TagMap());
+							leaderMob = new Rare(Target.World, LastMob, new TagMap());
 						leaderMob.EnterWorld(Target.Position);
 						leaderMob.Unstuck();
-						leaderMob.Teleport(new Vector3D(leaderMob.Position.X, leaderMob.Position.Y, leaderMob.World.GetZForLocation(leaderMob.Position, this.Target.Position.Z)));
+						leaderMob.Teleport(new Vector3D(leaderMob.Position.X, leaderMob.Position.Y, leaderMob.World.GetZForLocation(leaderMob.Position, Target.Position.Z)));
 						packAffixes = MonsterAffixGenerator.Generate(leaderMob, Math.Min(Target.World.Game.Difficulty + 1, 5));
 					}
 					else
 					{
-						var minion = new RareMinion(Target.World, this.LastMob, new TagMap());
+						var minion = new RareMinion(Target.World, LastMob, new TagMap());
 						minion.EnterWorld(RandomDirection(leaderMob.Position, 5f, 10f));
 						minion.Unstuck();
-						minion.Teleport(new Vector3D(minion.Position.X, minion.Position.Y, minion.World.GetZForLocation(minion.Position, this.Target.Position.Z)));
+						minion.Teleport(new Vector3D(minion.Position.X, minion.Position.Y, minion.World.GetZForLocation(minion.Position, Target.Position.Z)));
 						MonsterAffixGenerator.CopyAffixes(minion, packAffixes);
 					}
 				}
 			}
-			this.Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttribute.Invulnerable] = false;
 			base.Remove();
-			this.Target.Destroy();
+			Target.Destroy();
 		}
 	}
 	[ImplementsPowerBuff(2)]
@@ -197,9 +197,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public WavedInvasionBuff(List<ActorSno> mobs, float radius, ActorSno lastMob)
 			: base()
 		{
-			this.Radius = radius;
-			this.Monsters = mobs;
-			this.LastMob = lastMob;
+			Radius = radius;
+			Monsters = mobs;
+			LastMob = lastMob;
 		}
 
 		public override void Init()
@@ -211,7 +211,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			this.Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttribute.Invulnerable] = true;
 			return true;
 		}
 
@@ -224,11 +224,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				for (int i = 0; i < 10; i++)
 				{
-					var monster = ActorFactory.Create(Target.World, this.Monsters[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, this.Monsters.Count())], new TagMap());
-					monster.EnterWorld(RandomDirection(Target.Position, 5f, this.Radius));
+					var monster = ActorFactory.Create(Target.World, Monsters[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, Monsters.Count())], new TagMap());
+					monster.EnterWorld(RandomDirection(Target.Position, 5f, Radius));
 					monster.HasLoot = (Target.World.Game.CurrentAct == 3000);
 					monster.Unstuck();
-					monster.Teleport(new Vector3D(monster.Position.X, monster.Position.Y, monster.World.GetZForLocation(monster.Position, this.Target.Position.Z)));
+					monster.Teleport(new Vector3D(monster.Position.X, monster.Position.Y, monster.World.GetZForLocation(monster.Position, Target.Position.Z)));
 				}
 				_tickTimer = WaitSeconds(4f);
 			}
@@ -237,7 +237,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override void Remove()
 		{
-			if (this.LastMob != ActorSno.__NONE)
+			if (LastMob != ActorSno.__NONE)
 			{
 				Monster leaderMob = null;
 				List<Affix> packAffixes = new List<Affix>();
@@ -245,25 +245,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				{
 					if (n == 0)
 					{
-						leaderMob = new Rare(Target.World, this.LastMob, new TagMap());
+						leaderMob = new Rare(Target.World, LastMob, new TagMap());
 						leaderMob.EnterWorld(Target.Position);
 						leaderMob.Unstuck();
-						leaderMob.Teleport(new Vector3D(leaderMob.Position.X, leaderMob.Position.Y, leaderMob.World.GetZForLocation(leaderMob.Position, this.Target.Position.Z)));
+						leaderMob.Teleport(new Vector3D(leaderMob.Position.X, leaderMob.Position.Y, leaderMob.World.GetZForLocation(leaderMob.Position, Target.Position.Z)));
 						packAffixes = MonsterAffixGenerator.Generate(leaderMob, Math.Min(Target.World.Game.Difficulty + 1, 5));
 					}
 					else
 					{
-						var minion = new RareMinion(Target.World, this.LastMob, new TagMap());
+						var minion = new RareMinion(Target.World, LastMob, new TagMap());
 						minion.EnterWorld(RandomDirection(leaderMob.Position, 5f, 10f));
 						minion.Unstuck();
-						minion.Teleport(new Vector3D(minion.Position.X, minion.Position.Y, minion.World.GetZForLocation(minion.Position, this.Target.Position.Z)));
+						minion.Teleport(new Vector3D(minion.Position.X, minion.Position.Y, minion.World.GetZForLocation(minion.Position, Target.Position.Z)));
 						MonsterAffixGenerator.CopyAffixes(minion, packAffixes);
 					}
 				}
 			}
-			this.Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttribute.Invulnerable] = false;
 			base.Remove();
-			this.Target.Destroy();
+			Target.Destroy();
 		}
 	}
 }

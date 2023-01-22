@@ -11,7 +11,7 @@
 		public override void OnTargeted(PlayerSystem.Player player, MessageSystem.Message.Definitions.World.TargetMessage message)
 		{
 			player.EnableStoneOfRecall();
-			this.Destroy();
+			Destroy();
 		}
 	}
 }

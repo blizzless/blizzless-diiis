@@ -50,12 +50,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (this.World.Game.CurrentQuest == 121792 && this.World.Game.CurrentStep == 21)
+			if (World.Game.CurrentQuest == 121792 && World.Game.CurrentStep == 21)
 			{
 				base.OnTargeted(player, message);
-				player.AddFollower(this.World.GetActorBySNO(ActorSno._caldeumpoor_male_f_ambient));
-				this.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
-				this.Attributes[GameAttribute.Disabled] = true;
+				player.AddFollower(World.GetActorBySNO(ActorSno._caldeumpoor_male_f_ambient));
+				Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+				Attributes[GameAttribute.Disabled] = true;
 				Attributes.BroadcastChangedIfRevealed();
 			}
 		}

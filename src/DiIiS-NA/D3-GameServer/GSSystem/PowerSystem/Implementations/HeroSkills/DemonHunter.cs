@@ -940,7 +940,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override IEnumerable<TickTimer> Main()
 		{
-			var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[DiIiS_NA.GameServer.Core.Types.SNO.SNOGroup.Power][131192].Data;
+			var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Power][131192].Data;
 			var proj1 = new Projectile(
 				this,
 				RuneSelect(
@@ -1370,7 +1370,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							if ((User as Player).SkillSet.HasPassive(218398)) //NumbingTraps (DH)
 							{
 								foreach (var tgt in GetEnemiesInRadius(GroundSpot.Position, ScriptFormula(5)).Actors)
-									if (tgt.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.DamageReduceDebuff>(tgt) == null)
+									if (tgt.World.BuffManager.GetFirstBuff<DamageReduceDebuff>(tgt) == null)
 										AddBuff(tgt, new DamageReduceDebuff(0.25f, WaitSeconds(3f)));
 							}
 						}
@@ -2168,7 +2168,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				proj.Position.Z += 2f;
 				proj.Launch(TargetPosition, 0.2f);
-				this.World.PlayZigAnimation(proj, User, PowerSNO, TargetPosition);
+				World.PlayZigAnimation(proj, User, PowerSNO, TargetPosition);
 				proj.OnCollision = (hit) =>
 				{
 					WeaponDamage(hit, ScriptFormula(0), RuneSelect(DamageType.Physical, DamageType.Fire, DamageType.Lightning, DamageType.Poison, DamageType.Physical, DamageType.Physical));
@@ -2179,7 +2179,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				proj.Position.Z += 2f;
 				proj.Launch(TargetPosition, 0.2f);
-				this.World.PlaySpiralAnimation(proj, User, PowerSNO, TargetPosition);
+				World.PlaySpiralAnimation(proj, User, PowerSNO, TargetPosition);
 				proj.OnCollision = (hit) =>
 				{
 					WeaponDamage(hit, ScriptFormula(0), RuneSelect(DamageType.Physical, DamageType.Fire, DamageType.Lightning, DamageType.Poison, DamageType.Physical, DamageType.Physical));
@@ -2189,7 +2189,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var dproj = new Projectile(this, runeActorSno, User.Position);
 					dproj.Position.Z += 2f;
 					dproj.Launch(TargetPosition, 0.2f);
-					this.World.PlayReverSpiralAnimation(dproj, User, PowerSNO, TargetPosition);
+					World.PlayReverSpiralAnimation(dproj, User, PowerSNO, TargetPosition);
 					dproj.OnCollision = (hit) =>
 					{
 						WeaponDamage(hit, ScriptFormula(0), RuneSelect(DamageType.Physical, DamageType.Fire, DamageType.Lightning, DamageType.Poison, DamageType.Physical, DamageType.Physical));
@@ -2541,7 +2541,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply()) return false;
 
-				if (this.companion != null) return false;
+				if (companion != null) return false;
 				if (User.World == null) return false;
 				var minionID = ActorSno._dh_companion;  //Raven
 				if (User.Attributes[GameAttribute.Rune_A, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
@@ -2555,16 +2555,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (User.Attributes[GameAttribute.Rune_E, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
 					minionID = ActorSno._dh_companion_runee;  //Ferret
 
-				this.companion = new CompanionMinion(this.World, this, minionID);
-				this.companion.Brain.DeActivate();
-				this.companion.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-				this.companion.Attributes[GameAttribute.Untargetable] = true;
-				this.companion.EnterWorld(this.companion.Position);
+				companion = new CompanionMinion(World, this, minionID);
+				companion.Brain.DeActivate();
+				companion.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+				companion.Attributes[GameAttribute.Untargetable] = true;
+				companion.EnterWorld(companion.Position);
 				//Logger.Debug("companion spawned");
 
-				(this.companion as Minion).Brain.Activate();
-				this.companion.Attributes[GameAttribute.Untargetable] = false;
-				this.companion.Attributes.BroadcastChangedIfRevealed();
+				(companion as Minion).Brain.Activate();
+				companion.Attributes[GameAttribute.Untargetable] = false;
+				companion.Attributes.BroadcastChangedIfRevealed();
 
 				if (User.Attributes[GameAttribute.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Boar
 				{
@@ -2593,10 +2593,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 
-				if (this.companion != null)
+				if (companion != null)
 				{
-					this.companion.Destroy();
-					this.companion = null;
+					companion.Destroy();
+					companion = null;
 				}
 
 				if (User.Attributes[GameAttribute.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Boar
@@ -2782,7 +2782,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 							if ((User as Player).SkillSet.HasPassive(218398)) //NumbingTraps (DH)
 							{
-								if (hit.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.DamageReduceDebuff>(hit) == null)
+								if (hit.World.BuffManager.GetFirstBuff<DamageReduceDebuff>(hit) == null)
 									AddBuff(hit, new DamageReduceDebuff(0.25f, WaitSeconds(3f)));
 							}
 
@@ -2817,7 +2817,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if ((User as Player).SkillSet.HasPassive(218398)) //NumbingTraps (DH)
 				{
 					foreach (var tgt in targets.Actors)
-						if (tgt.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.DamageReduceDebuff>(tgt) == null)
+						if (tgt.World.BuffManager.GetFirstBuff<DamageReduceDebuff>(tgt) == null)
 							AddBuff(tgt, new DamageReduceDebuff(0.25f, WaitSeconds(3f)));
 				}
 			}
@@ -2857,7 +2857,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if ((User as Player).SkillSet.HasPassive(218398)) //NumbingTraps (DH)
 					{
 						foreach (var tgt in targets.Actors)
-							if (tgt.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.DamageReduceDebuff>(tgt) == null)
+							if (tgt.World.BuffManager.GetFirstBuff<DamageReduceDebuff>(tgt) == null)
 								AddBuff(tgt, new DamageReduceDebuff(0.25f, WaitSeconds(3f)));
 					}
 					base.Remove();

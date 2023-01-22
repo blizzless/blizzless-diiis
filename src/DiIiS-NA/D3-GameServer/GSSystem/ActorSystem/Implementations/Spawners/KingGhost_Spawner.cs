@@ -30,12 +30,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
         }
         public override void OnPlayerApproaching(Player player)
         {
-            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 1.5 * this.Scale * this.Scale && !_collapsed)
-                if (this.World.SNO == WorldSno.a1trdun_level07)
+            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 1.5 * Scale * Scale && !_collapsed)
+                if (World.SNO == WorldSno.a1trdun_level07)
                 {
                     _collapsed = true;
 
-                    var KingGhost = World.SpawnMonster(ActorSno._skeletonking_ghost, this.Position);
+                    var KingGhost = World.SpawnMonster(ActorSno._skeletonking_ghost, Position);
                     KingGhost.Attributes[MessageSystem.GameAttribute.Untargetable] = true;
                     KingGhost.Attributes.BroadcastChangedIfRevealed();
                     StartConversation(World, 17921);

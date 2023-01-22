@@ -22,10 +22,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		{
 			get
 			{
-				if (this.GlobalIDOverride > 0)
-					return this.GlobalIDOverride;
+				if (GlobalIDOverride > 0)
+					return GlobalIDOverride;
 				else
-					return this._globalID;
+					return _globalID;
 			}
 			private set
 			{ }
@@ -42,7 +42,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 			if (this is Player && (!(this as Player).IsInPvPWorld || this == plr))
 				return (uint)(this as Player).PlayerIndex;
 			//if(plr.RevealedObjects.ContainsKey(this.))
-			return plr.RevealedObjects[this.GlobalID];
+			return plr.RevealedObjects[GlobalID];
 		}
 
 		/// <summary>
@@ -51,8 +51,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		/// <param name="dynamicID">The dynamic ID to initialize with.</param>
 		protected DynamicObject(uint globalID)
 		{
-			this._globalID = globalID;
-			this.GlobalIDOverride = 0;
+			_globalID = globalID;
+			GlobalIDOverride = 0;
 		}
 
 		/// <summary>

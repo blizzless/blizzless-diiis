@@ -35,11 +35,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			: base(world, sno, tags)
 		{
 			//this.Attributes[GameAttribute.MinimapActive] = true;
-			this.Attributes[GameAttribute.Untargetable] = false;
-			this.Attributes[GameAttribute.Operatable] = true;
-			this.Attributes[GameAttribute.Disabled] = false;
-			this.Attributes[GameAttribute.TeamID] = 0;
-			this.WalkSpeed = 0.5f;
+			Attributes[GameAttribute.Untargetable] = false;
+			Attributes[GameAttribute.Operatable] = true;
+			Attributes[GameAttribute.Disabled] = false;
+			Attributes[GameAttribute.TeamID] = 0;
+			WalkSpeed = 0.5f;
 		}
 
 	}

@@ -19,10 +19,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		protected override void ReadTags()
 		{
-			if (this.Tags == null) return;
+			if (Tags == null) return;
 
-			if (this.Tags.ContainsKey(MarkerKeys.ActorTag))
-				this.TargetId = this.Tags[MarkerKeys.ActorTag];
+			if (Tags.ContainsKey(MarkerKeys.ActorTag))
+				TargetId = Tags[MarkerKeys.ActorTag];
 		}
 
 		public override bool Reveal(Player player)

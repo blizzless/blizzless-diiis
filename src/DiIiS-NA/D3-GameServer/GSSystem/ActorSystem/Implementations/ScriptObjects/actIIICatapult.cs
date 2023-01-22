@@ -36,8 +36,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public ActIIICatapult(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.MinimapActive] = true;
-			this.Attributes[GameAttribute.MinimapDisableArrow] = true;
+			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.MinimapDisableArrow] = true;
 		}
 
 
@@ -46,11 +46,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			if (!base.Reveal(player))
 				return false;
 
-			if (this.activated)
+			if (activated)
 			{
 				player.InGameClient.SendMessage(new SetIdleAnimationMessage
 				{
-					ActorID = this.DynamicID(player),
+					ActorID = DynamicID(player),
 					AnimationSNO = AnimationSetKeys.Open.ID
 				});
 			}
@@ -60,11 +60,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public void Raise()
 		{
-			if (this.activated) return;
+			if (activated) return;
 
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimReason = 5,
 				UnitAniimStartTime = 0,
 				tAnim = new PlayAnimationMessageSpec[]
@@ -72,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 					new PlayAnimationMessageSpec()
 					{
 						Duration = 1000,
-						AnimationSNO = AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening],
+						AnimationSNO = (int)AnimationSet.Animations[AnimationSetKeys.Opening.ID],
 						PermutationIndex = 0,
 						AnimationTag = 0,
 						Speed = 1
@@ -83,11 +83,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 			World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimationSNO = AnimationSetKeys.Open.ID
 			}, this);
 
-			this.activated = true;
+			activated = true;
 		}
 
 		public override bool Unreveal(Player player)
