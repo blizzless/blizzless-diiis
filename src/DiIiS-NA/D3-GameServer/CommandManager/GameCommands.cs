@@ -37,11 +37,37 @@ using System.Linq;
 using System.Text;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
+using DiIiS_NA.LoginServer.AccountsSystem;
 //Blizzless Project 2022 
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 
 namespace DiIiS_NA.GameServer.CommandManager
 {
+    [CommandGroup("Invulnerable", "Makes you invulnerable")]
+    public class InvulnerableCommand : CommandGroup
+    {
+        [DefaultCommand]
+        public string Invulnerable(string[] @params, BattleClient invokerClient)
+        {
+            if (invokerClient?.InGameClient?.Player is not { } player)
+                return "You can not invoke this command from console.";
+
+            if (player.Attributes.FixedMap.Contains(FixedAttribute.Invulnerable))
+            {
+                player.Attributes.FixedMap.Remove(FixedAttribute.Invulnerable);
+                player.Attributes[GameAttribute.Invulnerable] = false;
+                player.Attributes.BroadcastChangedIfRevealed();
+                return "You are no longer invulnerable.";
+            }
+
+            player.Attributes.FixedMap.Add(FixedAttribute.Invulnerable,
+                attributes => { attributes[GameAttribute.Invulnerable] = true; });
+            player.Attributes.BroadcastChangedIfRevealed();
+            return "You are now invulnerable.";
+        }
+    }
+
     [CommandGroup("spawn", "Spawns a mob.\nUsage: spawn [actorSNO] [amount]")]
     public class SpawnCommand : CommandGroup
     {

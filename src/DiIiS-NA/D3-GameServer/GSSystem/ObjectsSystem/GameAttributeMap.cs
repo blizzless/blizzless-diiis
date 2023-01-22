@@ -29,9 +29,11 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 {
+
 	public class GameAttributeMap
 	{
 		private static Logger Logger = LogManager.CreateLogger();
+		public FixedMap FixedMap { get; } = new();
 
 		public struct KeyId
 		{
@@ -233,6 +235,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		/// </summary>
 		public void BroadcastIfRevealed()
 		{
+			FixedMap.Apply(this);
 			if (_parent.World != null)
 				SendMessage(_parent.World.Players.Values
 					.Where(@player => @player.RevealedObjects.ContainsKey(_parent.GlobalID))
@@ -244,6 +247,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		/// </summary>
 		public void BroadcastChangedIfRevealed()
 		{
+			FixedMap.Apply(this);
 			if (_parent.World != null)
 				SendChangedMessage(_parent.World.Players.Values
 					.Where(@player => @player.RevealedObjects.ContainsKey(_parent.GlobalID))

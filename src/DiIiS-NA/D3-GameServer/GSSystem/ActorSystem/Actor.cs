@@ -681,19 +681,21 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					UnitAniimStartTime = 0,
 					tAnim = new PlayAnimationMessageSpec[]
 					{
-					new PlayAnimationMessageSpec
-					{
-						Duration = -2,
-						AnimationSNO = (int)animationSNO,
-						PermutationIndex = 0x0,
-						AnimationTag = 0,
-						Speed = 1.0f,
+						new PlayAnimationMessageSpec
+						{
+							Duration = -2,
+							AnimationSNO = (int)animationSNO,
+							PermutationIndex = 0x0,
+							AnimationTag = 0,
+							Speed = 1.0f,
+						}
 					}
-				}, this);
+					},
+					this);
+				}
 			}
-		}
 
-		public void PlayAnimation(int animationType, AnimationSno animationSNO, float speed = 1.0f, int? ticksToPlay = null, int type2 = 0)
+			public void PlayAnimation(int animationType, AnimationSno animationSNO, float speed = 1.0f, int? ticksToPlay = null, int type2 = 0)
 		{
 			if (this.World == null || animationSNO == AnimationSno._NONE) return;
 
