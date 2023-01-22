@@ -18,7 +18,7 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
 		public ConnectionDataEventArgs(IConnection connection, IEnumerable<byte> data)
 			: base(connection)
 		{
-			this.Data = data ?? new byte[0];
+			Data = data ?? new byte[0];
 		}
 
 		public override string ToString()

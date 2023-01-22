@@ -21,7 +21,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Tick
         public GameTickMessage(int tick)
             : base(Opcodes.GameTickMessage)
         {
-            this.Tick = tick;
+            Tick = tick;
         }
 
         public override void Parse(GameBitBuffer buffer)

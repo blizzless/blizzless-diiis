@@ -33,8 +33,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public Vector2D(int x, int y)
 		{
-			this.X = x;
-			this.Y = y;
+			X = x;
+			Y = y;
 		}
 
 		/// <summary>

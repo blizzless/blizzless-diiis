@@ -19,7 +19,7 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
         {
             if (connection == null)
                 throw new ArgumentNullException("connection");
-            this.Connection = connection;
+            Connection = connection;
         }
 
         public override string ToString()

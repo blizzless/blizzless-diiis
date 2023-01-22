@@ -88,7 +88,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			if (user.Attributes[GameAttribute.Disabled] == true) return false;
 
 			if (user is Player && targetPosition != null)
-				this.CheckItemProcs(user as Player);
+				CheckItemProcs(user as Player);
 
 			//break stun if possible
 			if (PowerTagHelper.FindTagMapWithKey(power.PowerSNO, PowerKeys.BreaksStun) != null)
@@ -284,7 +284,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			{
 				_deletingActors.Add(actor, new SecondsTickTimer(actor.World.Game, 10f));
 			}
-			catch (System.ArgumentException) { }
+			catch (ArgumentException) { }
 		}
 
 		public bool IsDeletingActor(Actor actor)

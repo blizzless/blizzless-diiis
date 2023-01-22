@@ -10,12 +10,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 		public AskBossEncounter(int encSNOid)
 			: base(0)
 		{
-			this.Encounter = encSNOid;
+			Encounter = encSNOid;
 		}
 
 		public override void Execute(MapSystem.World world)
 		{
-			world.Game.TeleportToBossEncounter(this.Encounter);
+			world.Game.TeleportToBossEncounter(Encounter);
 		}
 	}
 }

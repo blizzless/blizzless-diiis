@@ -62,10 +62,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 		public DRLGEmuScene(int _SnoID, int _Weather, int _Music, int _LevelArea)
 		{
-			this.SnoID = _SnoID;
-			this.Weather = _Weather;
-			this.Music = _Music;
-			this.LevelArea = _LevelArea;
+			SnoID = _SnoID;
+			Weather = _Weather;
+			Music = _Music;
+			LevelArea = _LevelArea;
 		}
 	}
 
@@ -88,7 +88,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 		public WorldGenerator(Game game)
 		{
-			this.Game = game;
+			Game = game;
 		}
 
 		public static Dictionary<int, int> DefaultConversationLists = new Dictionary<int, int>();
@@ -98,12 +98,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		public void CheckLevelArea(World world, int levelAreaSNO)
 		{
 			if (SpawnGenerator.Spawns.ContainsKey(levelAreaSNO) && SpawnGenerator.Spawns[levelAreaSNO].lazy_load == true)
-				if (!this.LoadedLevelAreas.Contains(levelAreaSNO))
+				if (!LoadedLevelAreas.Contains(levelAreaSNO))
 				{
-					this.LoadedLevelAreas.Add(levelAreaSNO);
+					LoadedLevelAreas.Add(levelAreaSNO);
 
 					// Load monsters for level area
-					foreach (var scene in this.LazyLevelAreas[levelAreaSNO])
+					foreach (var scene in LazyLevelAreas[levelAreaSNO])
 					{
 						LoadMonstersLayout(world, levelAreaSNO, scene);
 					}
@@ -120,7 +120,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 			var worldAsset = MPQStorage.Data.Assets[SNOGroup.Worlds][(int)worldSNO];
 			Dictionary<int, List<Scene>> levelAreas = new Dictionary<int, List<Scene>>();
-			World world = new World(this.Game, worldSNO);
+			World world = new World(Game, worldSNO);
 			bool DRLGEmuActive = false;
 			world.worldData = (DiIiS_NA.Core.MPQ.FileFormats.World)worldAsset.Data;
 			if (worldSNO == WorldSno.a2dun_swr_swr_to_oasis_level01)
@@ -129,11 +129,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			//445736 - p4_forest_snow_icecave_01
 			if (world.worldData.DynamicWorld && !worldSNO.IsNotDynamicWorld()) //Gardens of Hope - 2 lvl is NOT random
 			{
-				if (!GameServer.Config.Instance.DRLGemu)
+				if (!Config.Instance.DRLGemu)
 					Logger.Warn("DRLG-Emu деактивирован.");
 				string DRLGVersion = "1.8";
 				var WorldContainer = DBSessions.WorldSession.Query<DRLG_Container>().Where(dbt => dbt.WorldSNO == (int)worldSNO).ToList();
-				if (WorldContainer.Count > 0 && worldSNO != WorldSno.a1trdun_level05_templar && GameServer.Config.Instance.DRLGemu)
+				if (WorldContainer.Count > 0 && worldSNO != WorldSno.a1trdun_level05_templar && Config.Instance.DRLGemu)
 				{
 					DRLGEmuActive = true;
 					Logger.Warn("Мир - {0} [{1}] динамический! Найден контейнер, DRLG-Emu v{2} Активирован!", worldAsset.Name, worldAsset.SNOId, DRLGVersion);
@@ -246,7 +246,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				Logger.Info("DRLG work - Completed");
 			}
 
-			var clusters = new Dictionary<int, DiIiS_NA.Core.MPQ.FileFormats.SceneCluster>();
+			var clusters = new Dictionary<int, SceneCluster>();
 			if (world.worldData.SceneClusterSet != null)
 			{
 				foreach (var cluster in world.worldData.SceneClusterSet.SceneClusters)
@@ -273,10 +273,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			}
 
 			// For each cluster generate a list of randomly selected subcenes /fasbat
-			var clusterSelected = new Dictionary<int, List<DiIiS_NA.Core.MPQ.FileFormats.SubSceneEntry>>();
+			var clusterSelected = new Dictionary<int, List<SubSceneEntry>>();
 			foreach (var cID in clusterCount.Keys)
 			{
-				var selected = new List<DiIiS_NA.Core.MPQ.FileFormats.SubSceneEntry>();
+				var selected = new List<SubSceneEntry>();
 				clusterSelected[cID] = selected;
 				var count = clusterCount[cID];
 				foreach (var group in clusters[cID].SubSceneGroups) // First select from each subscene group /fasbat
@@ -327,11 +327,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						else
 						{
 							var entries = clusterSelected[sceneChunk.SceneSpecification.ClusterID];
-							DiIiS_NA.Core.MPQ.FileFormats.SubSceneEntry subSceneEntry = null;
+							SubSceneEntry subSceneEntry = null;
 
 							if (entries.Count > 0)
 							{
-								subSceneEntry = RandomHelper.RandomItem<DiIiS_NA.Core.MPQ.FileFormats.SubSceneEntry>(entries, entry => 1);
+								subSceneEntry = RandomHelper.RandomItem<SubSceneEntry>(entries, entry => 1);
 								entries.Remove(subSceneEntry);
 							}
 							else
@@ -442,7 +442,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					foreach (var door in world.GetActorsBySNO(ActorSno._house_door_trout_newtristram))
 						door.Destroy();
-					if (this.Game.CurrentAct == 3000)
+					if (Game.CurrentAct == 3000)
 					{
 						var TownDoor = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
 						TownDoor.Attributes[GameAttribute.Team_Override] = 2;
@@ -485,7 +485,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					break;
 
 				case WorldSno.a2dun_swr_swr_to_oasis_level01: //Убиваем ненужный портал в локации если игра не в режиме приключений
-					if (this.Game.CurrentAct != 3000)
+					if (Game.CurrentAct != 3000)
 						foreach (var wayp in world.GetActorsBySNO(ActorSno._waypoint)) wayp.Destroy();
 					break;
 				case WorldSno.a2dun_zolt_head_random01: //Убираем кровь кула
@@ -498,7 +498,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								port.Destroy();
 					break;
 				case WorldSno.a3dun_keep_level04: //Убиваем ненужный портал в локации если игра не в режиме приключений
-					if (this.Game.CurrentAct != 3000)
+					if (Game.CurrentAct != 3000)
 						foreach (var wayp in world.GetActorsBySNO(ActorSno._waypoint)) wayp.Destroy();
 					break;
 				#region Убиваем все порталы в демонические разломы на первом этаже садов(теперь и на втором этаже), а то чет дохера их), создавать будет скрипт уничтожения скверны. Добалвяем голос Дьябло на несколько участков
@@ -2075,7 +2075,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			Dictionary<int, TileInfo> acceptedTiles = new Dictionary<int, TileInfo>();
 			//By default use all tiles
 			acceptedTiles = tiles;
-			foreach (TileExits exit in System.Enum.GetValues(typeof(TileExits)))
+			foreach (TileExits exit in Enum.GetValues(typeof(TileExits)))
 			{
 				if (exitStatus[exit] == ExitStatus.Open) mustHaveExits += (int)exit;
 
@@ -2094,7 +2094,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			else
 				return GetTileInfo(acceptedTiles.Where(
 					pair => pair.Value.TileType == tileType &&
-					!System.Enum.IsDefined(typeof(TileExits), pair.Value.ExitDirectionBits)
+					!Enum.IsDefined(typeof(TileExits), pair.Value.ExitDirectionBits)
 				).ToDictionary(pair => pair.Key, pair => pair.Value), mustHaveExits);
 		}
 
@@ -2341,7 +2341,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						if (!SpawnGenerator.Spawns.ContainsKey(wid)) break;
 						if (SpawnGenerator.Spawns[wid].lazy_load == true)
 						{
-							this.LazyLevelAreas.Add(wid, levelAreas.First().Value);
+							LazyLevelAreas.Add(wid, levelAreas.First().Value);
 							break;
 						}
 						else
@@ -2378,7 +2378,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2421,7 +2421,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2438,7 +2438,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						if (!SpawnGenerator.Spawns.ContainsKey(la)) break;
 						if (SpawnGenerator.Spawns[la].lazy_load == true)
 						{
-							this.LazyLevelAreas.Add(la, levelAreas[la]);
+							LazyLevelAreas.Add(la, levelAreas[la]);
 							break;
 						}
 						else
@@ -2475,7 +2475,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2518,7 +2518,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 									Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 								},
-								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+								Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 							},
 							world,
 							new TagMap()
@@ -2538,7 +2538,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 			List<Affix> packAffixes = new List<Affix>();
 			int packs_count = world.worldData.DynamicWorld ? 5 : 4;
-			packs_count += (this.Game.Difficulty / 3);
+			packs_count += (Game.Difficulty / 3);
 
 			if (world.worldData.DRLGParams != null && world.worldData.DRLGParams.Count > 0)
 			{
@@ -2548,7 +2548,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					packs_count += 2;
 			}
 
-			if (this.Game.Difficulty > 4)
+			if (Game.Difficulty > 4)
 				packs_count += SpawnGenerator.Spawns[la].additional_density;
 
 			var groupId = 0;
@@ -2589,7 +2589,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 											Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 											Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 										},
-										Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+										Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 									},
 									world,
 									new TagMap(),
@@ -2632,7 +2632,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 												Y = (float)(y * 2.4 + scene.Position.Y) + (float)(FastRandom.Instance.NextDouble() * 20 - 10),
 												Z = scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Z + scene.Position.Z
 											},
-											Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * System.Math.PI * 2))
+											Quaternion = Quaternion.FacingRotation((float)(FastRandom.Instance.NextDouble() * Math.PI * 2))
 										},
 										world,
 										new TagMap(),
@@ -2775,15 +2775,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		/// <summary>
 		/// Loads all markersets of a scene and looks for the one with the subscene position
 		/// </summary>
-		private Vector3D FindSubScenePosition(DiIiS_NA.Core.MPQ.FileFormats.SceneChunk sceneChunk)
+		private Vector3D FindSubScenePosition(SceneChunk sceneChunk)
 		{
 			var mpqScene = MPQStorage.Data.Assets[SNOGroup.Scene][sceneChunk.SNOHandle.Id].Data as DiIiS_NA.Core.MPQ.FileFormats.Scene;
 
 			foreach (var markerSet in mpqScene.MarkerSets)
 			{
-				var mpqMarkerSet = MPQStorage.Data.Assets[SNOGroup.MarkerSet][markerSet].Data as DiIiS_NA.Core.MPQ.FileFormats.MarkerSet;
+				var mpqMarkerSet = MPQStorage.Data.Assets[SNOGroup.MarkerSet][markerSet].Data as MarkerSet;
 				foreach (var marker in mpqMarkerSet.Markers)
-					if (marker.Type == DiIiS_NA.Core.MPQ.FileFormats.MarkerType.SubScenePosition)
+					if (marker.Type == MarkerType.SubScenePosition)
 						return marker.PRTransform.Vector3D;
 			}
 			return null;

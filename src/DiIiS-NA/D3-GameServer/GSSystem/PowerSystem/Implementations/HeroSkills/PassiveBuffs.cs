@@ -186,8 +186,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			base.Stack(buff);
 
 			if (!stacked) return true;
-			HPTreshold = User.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.02f * this.StackCount;
-			this.Extend(30);
+			HPTreshold = User.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.02f * StackCount;
+			Extend(30);
 
 			return true;
 		}
@@ -227,7 +227,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			_currentBonus = 0.01f * this.StackCount;
+			_currentBonus = 0.01f * StackCount;
 			Target.Attributes[GameAttribute.Strength_Bonus_Percent] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
@@ -245,7 +245,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			Target.Attributes[GameAttribute.Strength_Bonus_Percent] -= _currentBonus;
 
-			_currentBonus = 0.01f * this.StackCount;
+			_currentBonus = 0.01f * StackCount;
 			Target.Attributes[GameAttribute.Strength_Bonus_Percent] += _currentBonus;
 			User.Attributes.BroadcastChangedIfRevealed();
 
@@ -277,7 +277,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			_currentBonus = 0.05f * this.StackCount;
+			_currentBonus = 0.05f * StackCount;
 			Target.Attributes[GameAttribute.Amplify_Damage_Percent] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
@@ -297,7 +297,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			Target.Attributes[GameAttribute.Amplify_Damage_Percent] -= _currentBonus;
 
-			_currentBonus = 0.05f * this.StackCount;
+			_currentBonus = 0.05f * StackCount;
 			Target.Attributes[GameAttribute.Amplify_Damage_Percent] += _currentBonus;
 			User.Attributes.BroadcastChangedIfRevealed();
 
@@ -841,7 +841,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			_currentBonus = IntBonus * this.StackCount;
+			_currentBonus = IntBonus * StackCount;
 			Target.Attributes[GameAttribute.Intelligence] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
@@ -853,7 +853,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				return false;
 
 			Target.Attributes[GameAttribute.Intelligence] -= _currentBonus;
-			_currentBonus = IntBonus * this.StackCount;
+			_currentBonus = IntBonus * StackCount;
 			Target.Attributes[GameAttribute.Intelligence] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
@@ -1060,7 +1060,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			_currentBonus = 0.04f * this.StackCount;
+			_currentBonus = 0.04f * StackCount;
 			Target.Attributes[GameAttribute.Weapon_Crit_Chance] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
@@ -1094,7 +1094,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			Target.Attributes[GameAttribute.Weapon_Crit_Chance] -= _currentBonus;
 
-			_currentBonus = 0.04f * this.StackCount;
+			_currentBonus = 0.04f * StackCount;
 			Target.Attributes[GameAttribute.Weapon_Crit_Chance] += _currentBonus;
 			User.Attributes.BroadcastChangedIfRevealed();
 
@@ -1126,7 +1126,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			_currentBonus = 0.06f * this.StackCount;
+			_currentBonus = 0.06f * StackCount;
 			Target.Attributes[GameAttribute.Dodge_Chance_Bonus] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
@@ -1160,7 +1160,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			Target.Attributes[GameAttribute.Dodge_Chance_Bonus] -= _currentBonus;
 
-			_currentBonus = 0.06f * this.StackCount;
+			_currentBonus = 0.06f * StackCount;
 			Target.Attributes[GameAttribute.Dodge_Chance_Bonus] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 

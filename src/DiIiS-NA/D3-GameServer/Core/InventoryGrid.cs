@@ -45,10 +45,10 @@ namespace DiIiS_NA.GameServer.Core
 
 		public InventoryGrid(Actor owner, int rows, int columns, int slot = 0)
 		{
-			this._backpack = new uint[rows, columns];
-			this._owner = owner;
-			this.Items = new Dictionary<uint, Item>();
-			this.EquipmentSlot = slot;
+			_backpack = new uint[rows, columns];
+			_owner = owner;
+			Items = new Dictionary<uint, Item>();
+			EquipmentSlot = slot;
 		}
 
 		public void ResizeGrid(int rows, int columns)
@@ -63,7 +63,7 @@ namespace DiIiS_NA.GameServer.Core
 			Items.Clear();
 			int r = Rows;
 			int c = Columns;
-			this._backpack = new uint[r, c];
+			_backpack = new uint[r, c];
 		}
 
 		// This should be in the database#
@@ -165,13 +165,13 @@ namespace DiIiS_NA.GameServer.Core
 				}
 			}
 
-			foreach (var plr in this._owner.World.Players.Values)
+			foreach (var plr in _owner.World.Players.Values)
 				item.Unreveal(plr);
 		}
 
 		public bool HaveEnough(int GBid, int count)
 		{
-			List<Item> baseItems = this.Items.Values.Where(i => i.GBHandle.GBID == GBid).ToList();
+			List<Item> baseItems = Items.Values.Where(i => i.GBHandle.GBID == GBid).ToList();
 			int have = 0;
 			foreach (var itm in baseItems)
 				have += itm.Attributes[GameAttribute.ItemStackQuantityLo];
@@ -183,7 +183,7 @@ namespace DiIiS_NA.GameServer.Core
 
 		public int TotalItemCount(int GBid)
 		{
-			List<Item> baseItems = this.Items.Values.Where(i => i.GBHandle.GBID == GBid).ToList();
+			List<Item> baseItems = Items.Values.Where(i => i.GBHandle.GBID == GBid).ToList();
 			int have = 0;
 			foreach (var itm in baseItems)
 				have += itm.Attributes[GameAttribute.ItemStackQuantityLo];
@@ -193,7 +193,7 @@ namespace DiIiS_NA.GameServer.Core
 
 		public void GrabSomeItems(int GBid, int count) //only for stackable!
 		{
-			List<Item> baseItems = this.Items.Values.Where(i => i.GBHandle.GBID == GBid).ToList();
+			List<Item> baseItems = Items.Values.Where(i => i.GBHandle.GBID == GBid).ToList();
 			int estimate = count;
 			List<Item> consumed = new List<Item>();
 			foreach (var itm in baseItems)
@@ -211,7 +211,7 @@ namespace DiIiS_NA.GameServer.Core
 			}
 			foreach (var itm in consumed)
 			{
-				this.RemoveItem(itm);
+				RemoveItem(itm);
 				itm.Unreveal(itm.Owner as Player);
 				//itm.Destroy();
 			}
@@ -267,7 +267,7 @@ namespace DiIiS_NA.GameServer.Core
 			if (item.IsStackable() && _owner is Player)
 			{
 				// Find items of same type (GBID) and try to add it to one of them
-				List<Item> baseItems = this.Items.Values.Where(i => i.GBHandle.GBID == item.GBHandle.GBID).ToList();
+				List<Item> baseItems = Items.Values.Where(i => i.GBHandle.GBID == item.GBHandle.GBID).ToList();
 				foreach (Item baseItem in baseItems)
 				{
 					if (baseItem.Attributes[GameAttribute.ItemStackQuantityLo] + item.Attributes[GameAttribute.ItemStackQuantityLo] <= baseItem.ItemDefinition.MaxStackSize)
@@ -361,7 +361,7 @@ namespace DiIiS_NA.GameServer.Core
 		{
 			if (GetItemInventorySize(item).Height > 1)
 			{
-				if (this.EquipmentSlot == 0 && row > 4) return false;
+				if (EquipmentSlot == 0 && row > 4) return false;
 				bool a = (_backpack[row, column] == 0 || _backpack[row, column] == item.GlobalID);
 				bool b = (_backpack[row + 1, column] == 0 || _backpack[row + 1, column] == item.GlobalID);
 				if (!((_backpack[row, column] == 0 || _backpack[row, column] == item.GlobalID) && (_backpack[row + 1, column] == 0 || _backpack[row + 1, column] == item.GlobalID)))
@@ -410,7 +410,7 @@ namespace DiIiS_NA.GameServer.Core
 
 		public Item GetItem(int row, int column)
 		{
-			return this.GetItem(_backpack[row, column]);
+			return GetItem(_backpack[row, column]);
 		}
 
 		public bool Reveal(Player player)
@@ -445,8 +445,8 @@ namespace DiIiS_NA.GameServer.Core
 
 		public Item GetItemByDynId(Player plr, uint dynId)
 		{
-			if (this.Items.Values.Where(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId).Count() > 0)
-				return this.Items.Values.Single(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
+			if (Items.Values.Where(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId).Count() > 0)
+				return Items.Values.Single(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
 			else
 				return null;
 		}

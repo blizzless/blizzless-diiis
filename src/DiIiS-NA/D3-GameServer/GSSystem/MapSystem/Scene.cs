@@ -71,9 +71,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				if (!MPQStorage.Data.Assets[SNOGroup.Scene].ContainsKey(this.SceneSNO.Id))
-					Logger.Debug("AssetsForScene not found in MPQ Storage:Scene:{0}, Asset:{1}", SNOGroup.Scene, this.SceneSNO.Id);
-				return MPQStorage.Data.Assets[SNOGroup.Scene][this.SceneSNO.Id].Data as DiIiS_NA.Core.MPQ.FileFormats.Scene;
+				if (!MPQStorage.Data.Assets[SNOGroup.Scene].ContainsKey(SceneSNO.Id))
+					Logger.Debug("AssetsForScene not found in MPQ Storage:Scene:{0}, Asset:{1}", SNOGroup.Scene, SceneSNO.Id);
+				return MPQStorage.Data.Assets[SNOGroup.Scene][SceneSNO.Id].Data as DiIiS_NA.Core.MPQ.FileFormats.Scene;
 			}
 		}
 		/// <summary>
@@ -96,7 +96,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		public uint ParentChunkID
 		{
-			get { return (this.Parent != null) ? this.Parent.GlobalID : 0xFFFFFFFF; }
+			get { return (Parent != null) ? Parent.GlobalID : 0xFFFFFFFF; }
 		}
 
 		/// <summary>
@@ -122,7 +122,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		public PRTransform Transform
 		{
-			get { return new PRTransform { Quaternion = new Quaternion { W = this.RotationW, Vector3D = this.RotationAxis }, Vector3D = this.Position }; }
+			get { return new PRTransform { Quaternion = new Quaternion { W = RotationW, Vector3D = RotationAxis }, Vector3D = Position }; }
 		}
 
 		/// <summary>
@@ -132,7 +132,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return this.SceneData.AABBBounds;
+				return SceneData.AABBBounds;
 			}
 		}
 		/// <summary>
@@ -142,7 +142,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return this.SceneData.AABBMarketSetBounds;
+				return SceneData.AABBMarketSetBounds;
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return this.SceneData.NavMesh;
+				return SceneData.NavMesh;
 			}
 		}
 
@@ -164,7 +164,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return this.SceneData.MarkerSets;
+				return SceneData.MarkerSets;
 			}
 		}
 
@@ -175,7 +175,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return this.SceneData.LookLink;
+				return SceneData.LookLink;
 			}
 		}
 
@@ -188,7 +188,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				return this.SceneData.NavZone;
+				return SceneData.NavZone;
 			}
 		}
 
@@ -207,42 +207,42 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public Scene(World world, Vector3D position, int snoId, Scene parent)
 			: base(world, world.NewSceneID)
 		{
-			this.SceneSNO = new SNOHandle(SNOGroup.Scene, snoId);
-			this.Parent = parent;
-			this.Subscenes = new List<Scene>();
-			this.Scale = 1.0f;
-			this.AppliedLabels = new int[0];
-			this.Field8 = new int[0];
-			this.Size = new Size(this.NavZone.V0.X * (int)this.NavZone.Float0, this.NavZone.V0.Y * (int)this.NavZone.Float0);
-			this.Position = position;
-			this.World.AddScene(this); // add scene to the world.
+			SceneSNO = new SNOHandle(SNOGroup.Scene, snoId);
+			Parent = parent;
+			Subscenes = new List<Scene>();
+			Scale = 1.0f;
+			AppliedLabels = new int[0];
+			Field8 = new int[0];
+			Size = new Size(NavZone.V0.X * (int)NavZone.Float0, NavZone.V0.Y * (int)NavZone.Float0);
+			Position = position;
+			World.AddScene(this); // add scene to the world.
 		}
 
 		#region range-queries
 
 		public List<Player> Players
 		{
-			get { return this.GetObjects<Player>(); }
+			get { return GetObjects<Player>(); }
 		}
 
 		public bool HasPlayers
 		{
-			get { return this.Players.Count > 0; }
+			get { return Players.Count > 0; }
 		}
 
 		public List<Actor> Actors
 		{
-			get { return this.GetObjects<Actor>(); }
+			get { return GetObjects<Actor>(); }
 		}
 
 		public bool HasActors
 		{
-			get { return this.Actors.Count > 0; }
+			get { return Actors.Count > 0; }
 		}
 
 		public List<T> GetObjects<T>() where T : WorldObject
 		{
-			return this.World.QuadTree.Query<T>(this.Bounds);
+			return World.QuadTree.Query<T>(Bounds);
 		}
 
 		#endregion
@@ -254,22 +254,22 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		public void LoadMarkers()
 		{
-			this.GizmoSpawningLocations = new List<PRTransform>[26]; // LocationA to LocationZ
+			GizmoSpawningLocations = new List<PRTransform>[26]; // LocationA to LocationZ
 
-			if (!PreCachedMarkers.ContainsKey(this.SceneSNO.Id)) return;
+			if (!PreCachedMarkers.ContainsKey(SceneSNO.Id)) return;
 
-			foreach (var marker in PreCachedMarkers[this.SceneSNO.Id])
+			foreach (var marker in PreCachedMarkers[SceneSNO.Id])
 			{
 				switch (marker.Type)
 				{
 					case MarkerType.Actor:
-						var actor = ActorFactory.Create(this.World, (ActorSno)marker.SNOHandle.Id, marker.TagMap); // try to create it.
+						var actor = ActorFactory.Create(World, (ActorSno)marker.SNOHandle.Id, marker.TagMap); // try to create it.
 																										 //Logger.Debug("not-lazy spawned {0}", actor.GetType().Name);
 						if (actor == null) continue;
-						if (this.World.SNO == WorldSno.a3_battlefields_02 && this.SceneSNO.Id == 145392 && actor is StartingPoint) continue; //arreat crater hack
-						if (this.World.SNO == WorldSno.x1_westm_intro && this.SceneSNO.Id == 311310 && actor is StartingPoint) continue; //A5 start location hack
+						if (World.SNO == WorldSno.a3_battlefields_02 && SceneSNO.Id == 145392 && actor is StartingPoint) continue; //arreat crater hack
+						if (World.SNO == WorldSno.x1_westm_intro && SceneSNO.Id == 311310 && actor is StartingPoint) continue; //A5 start location hack
 
-						var position = marker.PRTransform.Vector3D + this.Position; // calculate the position for the actor.
+						var position = marker.PRTransform.Vector3D + Position; // calculate the position for the actor.
 						actor.RotationW = marker.PRTransform.Quaternion.W;
 						actor.RotationAxis = marker.PRTransform.Quaternion.Vector3D;
 						actor.AdjustPosition = false;
@@ -287,10 +287,10 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 							{
 								Logger.Trace("Encounter option {0} - {1} - {2} - {3}", option.SNOSpawn, option.Probability, option.I1, option.I2);
 							}*/ //only for debugging purposes
-							var actor2 = ActorFactory.Create(this.World, (ActorSno)actorsno.SNOSpawn, marker.TagMap); // try to create it.
+							var actor2 = ActorFactory.Create(World, (ActorSno)actorsno.SNOSpawn, marker.TagMap); // try to create it.
 							if (actor2 == null) continue;
 
-							var position2 = marker.PRTransform.Vector3D + this.Position; // calculate the position for the actor.
+							var position2 = marker.PRTransform.Vector3D + Position; // calculate the position for the actor.
 							actor2.RotationW = marker.PRTransform.Quaternion.W;
 							actor2.RotationAxis = marker.PRTransform.Quaternion.Vector3D;
 							actor2.AdjustPosition = false;
@@ -302,14 +302,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 					default:
 						// Save gizmo locations. They are used to spawn loots and gizmos randomly in a level area
-						if ((int)marker.Type >= (int)DiIiS_NA.Core.MPQ.FileFormats.MarkerType.GizmoLocationA && (int)marker.Type <= (int)DiIiS_NA.Core.MPQ.FileFormats.MarkerType.GizmoLocationZ)
+						if ((int)marker.Type >= (int)MarkerType.GizmoLocationA && (int)marker.Type <= (int)MarkerType.GizmoLocationZ)
 						{
 							int index = (int)marker.Type - 50; // LocationA has id 50...
 
 							if (GizmoSpawningLocations[index] == null)
 								GizmoSpawningLocations[index] = new List<PRTransform>();
 
-							marker.PRTransform.Vector3D += this.Position;
+							marker.PRTransform.Vector3D += Position;
 							GizmoSpawningLocations[index].Add(marker.PRTransform);
 						}
 						//else
@@ -391,7 +391,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <returns><see cref="bool"/></returns>
 		public bool IsRevealedToPlayer(Player player)
 		{
-			return player.RevealedObjects.ContainsKey(this.GlobalID);
+			return player.RevealedObjects.ContainsKey(GlobalID);
 		}
 
 		/// <summary>
@@ -403,19 +403,19 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			lock (player.RevealedObjects)
 			{
-				if (player.RevealedObjects.ContainsKey(this.GlobalID)) return false;
+				if (player.RevealedObjects.ContainsKey(GlobalID)) return false;
 
-				player.RevealedObjects.Add(this.GlobalID, this.GlobalID);
+				player.RevealedObjects.Add(GlobalID, GlobalID);
 
-				RevealSceneMessage message = this.RevealMessage(player);
+				RevealSceneMessage message = RevealMessage(player);
 				if (player.EventWeatherEnabled)
 					//message.SceneSpec.SNOWeather = 50549; //Halloween
 					message.SceneSpec.SNOWeather = 75198; //New Year
 				
 				player.InGameClient.SendMessage(message);// reveal the scene itself.
-				player.InGameClient.SendMessage(this.MapRevealMessage(player));
+				player.InGameClient.SendMessage(MapRevealMessage(player));
 
-				foreach (var sub in this.Subscenes)
+				foreach (var sub in Subscenes)
 					sub.Reveal(player);
 
 				return true;
@@ -431,9 +431,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			lock (player.RevealedObjects)
 			{
-				if (!player.RevealedObjects.ContainsKey(this.GlobalID)) return false;
+				if (!player.RevealedObjects.ContainsKey(GlobalID)) return false;
 
-				foreach (var actor in this.Actors) actor.Unreveal(player);
+				foreach (var actor in Actors) actor.Unreveal(player);
 				/*
 				player.InGameClient.SendMessage(new PreloadSceneDataMessage(Opcodes.PreloadRemoveSceneMessage)
 				{
@@ -442,11 +442,11 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 					SnoLevelAreas = this.Specification.SNOLevelAreas
 				});
 				//*/
-				player.InGameClient.SendMessage(new DestroySceneMessage() { WorldID = this.World.GlobalID, SceneID = this.GlobalID });
+				player.InGameClient.SendMessage(new DestroySceneMessage() { WorldID = World.GlobalID, SceneID = GlobalID });
 
-				foreach (var subScene in this.Subscenes) subScene.Unreveal(player);
+				foreach (var subScene in Subscenes) subScene.Unreveal(player);
 
-				player.RevealedObjects.Remove(this.GlobalID);
+				player.RevealedObjects.Remove(GlobalID);
 				return true;
 			}
 		}
@@ -460,14 +460,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		public RevealSceneMessage RevealMessage(Player plr)
 		{
-			SceneSpecification specification = this.Specification;
+			SceneSpecification specification = Specification;
 			if (World.DRLGEmuActive)
 			{
 				specification.SNOMusic = World.Environment.snoMusic;
 				specification.SNOCombatMusic = -1;//World.Environment.snoCombatMusic;
 				specification.SNOAmbient = World.Environment.snoAmbient;
 				specification.SNOReverb = World.Environment.snoReverb;
-				specification.SNOPresetWorld = (int)this.World.SNO;
+				specification.SNOPresetWorld = (int)World.SNO;
 			}
 			else if (World.Environment != null)
 			{
@@ -476,7 +476,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				specification.SNOAmbient = World.Environment.snoAmbient;
 				specification.SNOReverb = World.Environment.snoReverb;
 				specification.SNOWeather = World.Environment.snoWeather;
-				specification.SNOPresetWorld = (int)this.World.SNO;
+				specification.SNOPresetWorld = (int)World.SNO;
 
 			}
 			else
@@ -487,13 +487,13 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				specification.SNOReverb = -1;
 				if (specification.SNOWeather == -1)
 					specification.SNOWeather = 0x00013220;
-				specification.SNOPresetWorld = (int)this.World.SNO;
+				specification.SNOPresetWorld = (int)World.SNO;
 			}
 
-			if (this.World.Game.NephalemGreater && this.World.SNO.IsDungeon())
+			if (World.Game.NephalemGreater && World.SNO.IsDungeon())
 				specification.SNOLevelAreas[0] = 332339;
 
-			switch (this.World.SNO)
+			switch (World.SNO)
 			{
 				case WorldSno.p43_ad_oldtristram: specification.SNOLevelAreas[0] = 455466; break; //p43_ad_oldtristram 
 				case WorldSno.p43_ad_cathedral_level_01: specification.SNOLevelAreas[0] = 452986; break; //p43_ad_cathedral_level_01 
@@ -521,15 +521,15 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			}
 			return new RevealSceneMessage
 			{
-				WorldID = this.World.GlobalID,
+				WorldID = World.GlobalID,
 				SceneSpec = specification,
-				ChunkID = this.GlobalID,
-				Transform = this.Transform,
-				SceneSNO = this.SceneSNO.Id,
-				ParentChunkID = this.ParentChunkID,
-				SceneGroupSNO = this.SceneGroupSNO,
-				arAppliedLabels = this.AppliedLabels,
-				snoActors = this.Field8,
+				ChunkID = GlobalID,
+				Transform = Transform,
+				SceneSNO = SceneSNO.Id,
+				ParentChunkID = ParentChunkID,
+				SceneGroupSNO = SceneGroupSNO,
+				arAppliedLabels = AppliedLabels,
+				snoActors = Field8,
 				Vista = 0
 			};
 		}
@@ -541,80 +541,80 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			if (
 			#region Город первого акта
-					this.SceneSNO.Id == 1904 ||
-				   this.SceneSNO.Id == 33342 ||
-				   this.SceneSNO.Id == 33343 ||
+					SceneSNO.Id == 1904 ||
+				   SceneSNO.Id == 33342 ||
+				   SceneSNO.Id == 33343 ||
 
-				   this.SceneSNO.Id == 33347 ||
-				   this.SceneSNO.Id == 33348 ||
-				   this.SceneSNO.Id == 33349 ||
-				   this.SceneSNO.Id == 414798
+				   SceneSNO.Id == 33347 ||
+				   SceneSNO.Id == 33348 ||
+				   SceneSNO.Id == 33349 ||
+				   SceneSNO.Id == 414798
 			#endregion
 					||
 			#region Город второго акта
-					this.SceneSNO.Id == 161516 ||
-				   this.SceneSNO.Id == 161510 ||
-				   this.SceneSNO.Id == 185542 ||
+					SceneSNO.Id == 161516 ||
+				   SceneSNO.Id == 161510 ||
+				   SceneSNO.Id == 185542 ||
 
-				   this.SceneSNO.Id == 161507 ||
-				   this.SceneSNO.Id == 161513 ||
-				   this.SceneSNO.Id == 185545
+				   SceneSNO.Id == 161507 ||
+				   SceneSNO.Id == 161513 ||
+				   SceneSNO.Id == 185545
 			#endregion
 					||
 			#region Город третьего акта
-					this.SceneSNO.Id == 172892 ||
-				   this.SceneSNO.Id == 172880 ||
-				   this.SceneSNO.Id == 172868 ||
+					SceneSNO.Id == 172892 ||
+				   SceneSNO.Id == 172880 ||
+				   SceneSNO.Id == 172868 ||
 
-				   this.SceneSNO.Id == 172888 ||
-				   this.SceneSNO.Id == 172876 ||
-				   this.SceneSNO.Id == 172863 ||
+				   SceneSNO.Id == 172888 ||
+				   SceneSNO.Id == 172876 ||
+				   SceneSNO.Id == 172863 ||
 
-				   this.SceneSNO.Id == 172884 ||
-				   this.SceneSNO.Id == 172872 ||
-				   this.SceneSNO.Id == 172908
+				   SceneSNO.Id == 172884 ||
+				   SceneSNO.Id == 172872 ||
+				   SceneSNO.Id == 172908
 			#endregion
 					||
 			#region Город четвертого акта
-					this.SceneSNO.Id == 183555 ||
-				   this.SceneSNO.Id == 183556 ||
-				   this.SceneSNO.Id == 183557 ||
+					SceneSNO.Id == 183555 ||
+				   SceneSNO.Id == 183556 ||
+				   SceneSNO.Id == 183557 ||
 
-				   this.SceneSNO.Id == 183502 ||
-				   this.SceneSNO.Id == 183505 ||
-				   this.SceneSNO.Id == 183557 ||
+				   SceneSNO.Id == 183502 ||
+				   SceneSNO.Id == 183505 ||
+				   SceneSNO.Id == 183557 ||
 
-				   this.SceneSNO.Id == 183519 ||
-				   this.SceneSNO.Id == 183545 ||
-				   this.SceneSNO.Id == 183553
+				   SceneSNO.Id == 183519 ||
+				   SceneSNO.Id == 183545 ||
+				   SceneSNO.Id == 183553
 			#endregion
 					||
 			#region Город пятого акта
-					this.SceneSNO.Id == 315706 ||
-				   this.SceneSNO.Id == 311307 ||
-				   this.SceneSNO.Id == 311295 ||
+					SceneSNO.Id == 315706 ||
+				   SceneSNO.Id == 311307 ||
+				   SceneSNO.Id == 311295 ||
 
-				   this.SceneSNO.Id == 313849 ||
-				   this.SceneSNO.Id == 311316 ||
-				   this.SceneSNO.Id == 313845 ||
+				   SceneSNO.Id == 313849 ||
+				   SceneSNO.Id == 311316 ||
+				   SceneSNO.Id == 313845 ||
 
-				   this.SceneSNO.Id == 315710 ||
-				   this.SceneSNO.Id == 311310 ||
-				   this.SceneSNO.Id == 311298 ||
+				   SceneSNO.Id == 315710 ||
+				   SceneSNO.Id == 311310 ||
+				   SceneSNO.Id == 311298 ||
 
-				   this.SceneSNO.Id == 313853 ||
-				   this.SceneSNO.Id == 311313 ||
-				   this.SceneSNO.Id == 311301 ||
-				   this.SceneSNO.Id == 313857
+				   SceneSNO.Id == 313853 ||
+				   SceneSNO.Id == 311313 ||
+				   SceneSNO.Id == 311301 ||
+				   SceneSNO.Id == 313857
 			#endregion
 					)
 			{
 				return new MapRevealSceneMessage
 				{
-					ChunkID = this.GlobalID,
-					SceneSNO = this.SceneSNO.Id,
-					Transform = this.Transform,
-					WorldID = this.World.GlobalID,
+					ChunkID = GlobalID,
+					SceneSNO = SceneSNO.Id,
+					Transform = Transform,
+					WorldID = World.GlobalID,
 					MiniMapVisibility = true
 				};
 			}
@@ -622,10 +622,10 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			{
 				return new MapRevealSceneMessage
 				{
-					ChunkID = this.GlobalID,
-					SceneSNO = this.SceneSNO.Id,
-					Transform = this.Transform,
-					WorldID = this.World.GlobalID,
+					ChunkID = GlobalID,
+					SceneSNO = SceneSNO.Id,
+					Transform = Transform,
+					WorldID = World.GlobalID,
 					MiniMapVisibility = false
 				};
 			}
@@ -635,7 +635,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public override string ToString()
 		{
-			return string.Format("[Scene] SNOId: {0} DynamicId: {1} Name: {2}", this.SceneSNO.Id, this.GlobalID, this.SceneSNO.Name);
+			return string.Format("[Scene] SNOId: {0} DynamicId: {1} Name: {2}", SceneSNO.Id, GlobalID, SceneSNO.Name);
 		}
 	}
 

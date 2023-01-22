@@ -36,7 +36,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		static AffixGenerator()
 		{
-			foreach (var asset in DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
+			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
 			{
 				GameBalance data = asset.Data as GameBalance;
 				if (data != null && data.Type == BalanceType.AffixList)
@@ -324,7 +324,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				for (int i = 0; i < 6; i++)
 				{
 					if (item.ItemDefinition.LegendaryAffixFamily[i] != -1)
-						AffixGenerator.AddAffix(item, AffixGenerator.FindSuitableAffix(item, item.ItemDefinition.LegendaryAffixFamily[i], item.ItemDefinition.MaxAffixLevel[i], (item.ItemDefinition.I38[i] == 1)));
+						AddAffix(item, FindSuitableAffix(item, item.ItemDefinition.LegendaryAffixFamily[i], item.ItemDefinition.MaxAffixLevel[i], (item.ItemDefinition.I38[i] == 1)));
 				}
 			}
 		}

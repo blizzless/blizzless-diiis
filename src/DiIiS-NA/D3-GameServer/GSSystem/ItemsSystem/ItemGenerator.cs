@@ -107,7 +107,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Quest].Values)
 			{
-				DiIiS_NA.Core.MPQ.FileFormats.Quest data = asset.Data as DiIiS_NA.Core.MPQ.FileFormats.Quest;
+				Quest data = asset.Data as Quest;
 				if (data != null && data.QuestType == QuestType.Bounty)
 				{
 					if (data.BountyData0.ActData == BountyData.ActT.Invalid)
@@ -124,13 +124,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 							data.BountyData0.ActData = BountyData.ActT.A5;
 					}
 					//fixes for bugged bounties
-					if (data.BountyData0.Type != BountyData.BountyType.CompleteEvent && data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.CompleteQuest))
+					if (data.BountyData0.Type != BountyData.BountyType.CompleteEvent && data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o => o.ObjectiveType == QuestStepObjectiveType.CompleteQuest))
 						data.BountyData0.Type = BountyData.BountyType.CompleteEvent;
-					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillAll))
+					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o => o.ObjectiveType == QuestStepObjectiveType.KillAll))
 						data.BountyData0.Type = BountyData.BountyType.ClearDungeon;
-					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && !data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillAny))
+					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && !data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o => o.ObjectiveType == QuestStepObjectiveType.KillAny))
 						continue;
-					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Where(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster).Count() > 1)
+					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Where(o => o.ObjectiveType == QuestStepObjectiveType.KillMonster).Count() > 1)
 						continue;
 
 					Bounties.Add(data.Header.SNOId, data);
@@ -324,7 +324,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//Logger.Info("LoadItems()");
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Quest].Values)
 			{
-				DiIiS_NA.Core.MPQ.FileFormats.Quest data = asset.Data as DiIiS_NA.Core.MPQ.FileFormats.Quest;
+				Quest data = asset.Data as Quest;
 				if (data != null)
 				{
 					Logger.Info("-------------");
@@ -356,7 +356,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						Recipes.TryAdd(recipeDefinition.Hash, recipeDefinition);
 						if (recipeDefinition.SNORecipe > 0 && MPQStorage.Data.Assets[SNOGroup.Recipe].ContainsKey(recipeDefinition.SNORecipe))
 						{
-							var reward = (MPQStorage.Data.Assets[SNOGroup.Recipe][recipeDefinition.SNORecipe].Data as DiIiS_NA.Core.MPQ.FileFormats.Recipe).ItemSpecifierData.ItemGBId;
+							var reward = (MPQStorage.Data.Assets[SNOGroup.Recipe][recipeDefinition.SNORecipe].Data as Recipe).ItemSpecifierData.ItemGBId;
 							if (!CraftOnlyItems.Contains(reward))
 								CraftOnlyItems.Add(reward);
 						}
@@ -434,7 +434,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Actor].Values)
 			{
-				DiIiS_NA.Core.MPQ.FileFormats.Actor data = asset.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor;
+				Actor data = asset.Data as Actor;
 				if (data != null && data.TagMap.ContainsKey(ActorKeys.Lore))
 				{
 					if (Lore.ContainsKey(data.TagMap[ActorKeys.Lore].Id)) continue;
@@ -562,7 +562,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			}*/
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Power].Values)
 			{
-				DiIiS_NA.Core.MPQ.FileFormats.Power data = asset.Data as DiIiS_NA.Core.MPQ.FileFormats.Power;
+				Power data = asset.Data as Power;
 				Logger.Info("{0} => array(\"name\" => \"{1}\", \"desc\" => \"{2}\"),", data.Header.SNOId, asset.Name, data.LuaName);
 				/*Logger.Info("---------------------------------------------------------");
 				Logger.Info("asset name: {0}", asset.Name);
@@ -1497,9 +1497,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			owner.World.CachedItems[instance.Id] = itm;
 
-			if (instance.FirstGem != -1) itm.Gems.Add(ItemGenerator.CookFromDefinition(owner.World, ItemGenerator.GetItemDefinition(instance.FirstGem), 1));
-			if (instance.SecondGem != -1) itm.Gems.Add(ItemGenerator.CookFromDefinition(owner.World, ItemGenerator.GetItemDefinition(instance.SecondGem), 1));
-			if (instance.ThirdGem != -1) itm.Gems.Add(ItemGenerator.CookFromDefinition(owner.World, ItemGenerator.GetItemDefinition(instance.ThirdGem), 1));
+			if (instance.FirstGem != -1) itm.Gems.Add(CookFromDefinition(owner.World, GetItemDefinition(instance.FirstGem), 1));
+			if (instance.SecondGem != -1) itm.Gems.Add(CookFromDefinition(owner.World, GetItemDefinition(instance.SecondGem), 1));
+			if (instance.ThirdGem != -1) itm.Gems.Add(CookFromDefinition(owner.World, GetItemDefinition(instance.ThirdGem), 1));
 
 			for (int i = 0; i < itm.Gems.Count; i++)
 			{

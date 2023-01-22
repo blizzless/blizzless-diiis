@@ -48,11 +48,11 @@ namespace DiIiS_NA.GameServer.ClientSystem
 		{
 			get
 			{
-				return this._tickingEnabled;
+				return _tickingEnabled;
 			}
 			set
 			{
-				this._tickingEnabled = value;
+				_tickingEnabled = value;
 				//if (value == true)
 				//this.SendTick();
 			}
@@ -64,8 +64,8 @@ namespace DiIiS_NA.GameServer.ClientSystem
 
 		public GameClient(IConnection connection)
 		{
-			this.TickingEnabled = false;
-			this.Connection = connection;
+			TickingEnabled = false;
+			Connection = connection;
 			_outgoingBuffer.WriteInt(32, 0);
 		}
 
@@ -87,12 +87,12 @@ namespace DiIiS_NA.GameServer.ClientSystem
 
 						_incomingBuffer.AppendData(e.Data.ToArray());
 
-						while (this.Connection.IsOpen() && _incomingBuffer.IsPacketAvailable())
+						while (Connection.IsOpen() && _incomingBuffer.IsPacketAvailable())
 						{
 							int end = _incomingBuffer.Position;
 							end += _incomingBuffer.ReadInt(32) * 8;
 
-							while ((end - _incomingBuffer.Position) >= 9 && this.Connection.IsOpen())
+							while ((end - _incomingBuffer.Position) >= 9 && Connection.IsOpen())
 							{
 								var message = _incomingBuffer.ParseMessage();
 								//217
@@ -106,7 +106,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 									if (message.Consumer != Consumers.None)
 									{
 										if (message.Consumer == Consumers.ClientManager) ClientManager.Instance.Consume(this, message); // Client should be greeted by ClientManager and sent initial game-setup messages.
-										else this.Game.Route(this, message);
+										else Game.Route(this, message);
 									}
 
 									else if (message is ISelfHandler) (message as ISelfHandler).Handle(this); // if message is able to handle itself, let it do so.
@@ -143,9 +143,9 @@ namespace DiIiS_NA.GameServer.ClientSystem
 		public virtual void SendMessage(GameMessage message)
 		{
 			//System.Threading.Thread.Sleep(50);
-			lock (this._outgoingBuffer)
+			lock (_outgoingBuffer)
 			{
-				if (this.Game.TickCounter > this.LastReplicatedTick && this.TickingEnabled && !(message is GameTickMessage) /*&& !(message is EndOfTickMessage)*/ && !this.Player.BetweenWorlds)
+				if (Game.TickCounter > LastReplicatedTick && TickingEnabled && !(message is GameTickMessage) /*&& !(message is EndOfTickMessage)*/ && !Player.BetweenWorlds)
 				{
 					/*var endMessage = new EndOfTickMessage()
 					{
@@ -156,8 +156,8 @@ namespace DiIiS_NA.GameServer.ClientSystem
 					_outgoingBuffer.EncodeMessage(endMessage);
 					Connection.Send(_outgoingBuffer.GetPacketAndReset());*/
 
-					this.LastReplicatedTick = this.Game.TickCounter;
-					var tickMessage = new GameTickMessage(this.Game.TickCounter);
+					LastReplicatedTick = Game.TickCounter;
+					var tickMessage = new GameTickMessage(Game.TickCounter);
 					Logger.LogOutgoingPacket(tickMessage);
 					_outgoingBuffer.EncodeMessage(tickMessage);
 					Connection.Send(_outgoingBuffer.GetPacketAndReset());
@@ -168,7 +168,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 				Logger.LogOutgoingPacket(message);
 				_outgoingBuffer.EncodeMessage(message); // change ConsoleTarget's level to Level.Dump in program.cs if u want to see messages on console.
 
-				if (this.TickingEnabled)
+				if (TickingEnabled)
 				{
 					var data = _outgoingBuffer.GetPacketAndReset();
 					Connection.Send(data);
@@ -190,19 +190,19 @@ namespace DiIiS_NA.GameServer.ClientSystem
 		public void SendTick()
 		{
 			//if (_outgoingBuffer.Length <= 32) return;
-			lock (this._outgoingBuffer)
+			lock (_outgoingBuffer)
 			{
 				if (!dataSent) return;
 
-				if (this.TickingEnabled && this.Game.TickCounter > this.LastReplicatedTick)
+				if (TickingEnabled && Game.TickCounter > LastReplicatedTick)
 				{
 					/*this.SendMessage(new EndOfTickMessage()
 					{
 						Field0 = this.Game.TickCounter,
 						Field1 = this.LastReplicatedTick
 					}); // send the tick end.*/
-					this.SendMessage(new GameTickMessage(this.Game.TickCounter)); // send the tick.
-					this.LastReplicatedTick = this.Game.TickCounter;
+					SendMessage(new GameTickMessage(Game.TickCounter)); // send the tick.
+					LastReplicatedTick = Game.TickCounter;
 					//this.SendMessage(new GameTickMessage(0)); //before client enters game causes freeze with PvP scoreboard
 					/*this.SendMessage(new EndOfTickMessage()
 					{
@@ -210,14 +210,14 @@ namespace DiIiS_NA.GameServer.ClientSystem
 						Field1 = 0
 					}); // send the tick end*/
 					dataSent = false;
-					this.FlushOutgoingBuffer();
+					FlushOutgoingBuffer();
 				}
 			}
 		}
 
 		public virtual void FlushOutgoingBuffer()
 		{
-			lock (this._outgoingBuffer)
+			lock (_outgoingBuffer)
 			{
 				if (_outgoingBuffer.Length <= 32) return;
 

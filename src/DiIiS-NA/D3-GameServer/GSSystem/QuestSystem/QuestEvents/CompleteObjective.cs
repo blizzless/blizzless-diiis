@@ -19,7 +19,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 		public CompleteObjective(int objId)
 			: base(0)
 		{
-			this.objectiveId = objId;
+			objectiveId = objId;
 		}
 
 		public override void Execute(MapSystem.World world)
@@ -27,7 +27,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 			if (!outplayed)
 			{
 				outplayed = true;
-				world.Game.QuestManager.CompleteObjective(this.objectiveId);
+				world.Game.QuestManager.CompleteObjective(objectiveId);
 			}
 		}
 	}

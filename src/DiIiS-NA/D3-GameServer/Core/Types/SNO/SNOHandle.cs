@@ -182,9 +182,9 @@ namespace DiIiS_NA.GameServer.Core.Types.SNO
 		public override string ToString()
 		{
 			if (IsValid)
-				return string.Format("[{0}] {1} - {2}", this.Group, this.Id, this.Name);
+				return string.Format("[{0}] {1} - {2}", Group, Id, Name);
 			else
-				return string.Format("[{0}] {1} - Invalid handle", _group, this.Id);
+				return string.Format("[{0}] {1} - Invalid handle", _group, Id);
 		}
 	}
 }

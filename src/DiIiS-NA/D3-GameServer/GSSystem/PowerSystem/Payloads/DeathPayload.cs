@@ -890,16 +890,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 							float seed = (float)FastRandom.Instance.NextDouble();
 							foreach (float rate in dropRates)
-								if (seed < (rate * (1f + plr.Attributes[GameAttribute.Magic_Find]) * Config.Instance.RateDrop))
+							{
+								// if seed is less than the drop rate, drop the item
+								if (seed < (rate * (1f 
+								                    + plr.Attributes[GameAttribute.Magic_Find]) 
+								                    * Config.Instance.RateDrop))
 								{
 									//Logger.Debug("rate: {0}", rate);
-									var lootQuality = Target.World.Game.IsHardcore ? LootManager.GetSeasonalLootQuality((int)Target.Quality, Target.World.Game.Difficulty) : LootManager.GetLootQuality((int)Target.Quality, Target.World.Game.Difficulty);
+									var lootQuality = Target.World.Game.IsHardcore
+										? LootManager.GetSeasonalLootQuality((int)Target.Quality,
+											Target.World.Game.Difficulty)
+										: LootManager.GetLootQuality((int)Target.Quality, Target.World.Game.Difficulty);
 									Target.World.SpawnRandomEquip(Target, plr, lootQuality);
 									if (Target is Goblin)
 										Target.World.SpawnRandomGem(Target, plr);
 								}
 								else
 									break;
+							}
+
 							if ((int)Target.Quality >= 4 && plr.AdditionalLootItems > 0)
 								for (int d = 0; d < plr.AdditionalLootItems; d++)
 								{
@@ -907,7 +916,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 									Target.World.SpawnRandomEquip(Target, plr, lootQuality);
 								}
 
-							if (Target is Champion || Target is Rare || Target is Unique || Target is Boss)
+							if (Target is Champion or Rare or Unique or Boss)
 							{
 								//if (FastRandom.Instance.NextDouble() < LootManager.GetEssenceDropChance(this.Target.World.Game.Difficulty))
 								//	this.Target.World.SpawnEssence(this.Target, plr);

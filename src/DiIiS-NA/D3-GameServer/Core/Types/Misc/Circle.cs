@@ -22,8 +22,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Misc
 		/// </summary> 
 		public Circle(Vector2F position, float radius)
 		{
-			this.Center = position;
-			this.Radius = radius;
+			Center = position;
+			Radius = radius;
 		}
 
 		/// <summary> 
@@ -40,31 +40,31 @@ namespace DiIiS_NA.GameServer.Core.Types.Misc
 		public bool Intersects(Rectangle rectangle)
 		{
 			// Find the closest point to the circle within the rectangle
-			float closestX = Clamp(this.Center.X, (float)rectangle.Left, (float)rectangle.Right);
-			float closestY = Clamp(this.Center.Y, (float)rectangle.Top, (float)rectangle.Bottom);
+			float closestX = Clamp(Center.X, (float)rectangle.Left, (float)rectangle.Right);
+			float closestY = Clamp(Center.Y, (float)rectangle.Top, (float)rectangle.Bottom);
 
 			// Calculate the distance between the circle's center and this closest point
-			float distanceX = this.Center.X - closestX;
-			float distanceY = this.Center.Y - closestY;
+			float distanceX = Center.X - closestX;
+			float distanceY = Center.Y - closestY;
 
 			// If the distance is less than the circle's radius, an intersection occurs
 			float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
-			return distanceSquared < (this.Radius * this.Radius);
+			return distanceSquared < (Radius * Radius);
 		}
 
 		public bool Intersects(RectangleF rectangle)
 		{
 			// Find the closest point to the circle within the rectangle
-			float closestX = Clamp(this.Center.X, (float)rectangle.Left, (float)rectangle.Right);
-			float closestY = Clamp(this.Center.Y, (float)rectangle.Top, (float)rectangle.Bottom);
+			float closestX = Clamp(Center.X, (float)rectangle.Left, (float)rectangle.Right);
+			float closestY = Clamp(Center.Y, (float)rectangle.Top, (float)rectangle.Bottom);
 
 			// Calculate the distance between the circle's center and this closest point
-			float distanceX = this.Center.X - closestX;
-			float distanceY = this.Center.Y - closestY;
+			float distanceX = Center.X - closestX;
+			float distanceY = Center.Y - closestY;
 
 			// If the distance is less than the circle's radius, an intersection occurs
 			float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
-			return distanceSquared < (this.Radius * this.Radius);
+			return distanceSquared < (Radius * Radius);
 		}
 
 		public static float Clamp(float value, float min, float max)

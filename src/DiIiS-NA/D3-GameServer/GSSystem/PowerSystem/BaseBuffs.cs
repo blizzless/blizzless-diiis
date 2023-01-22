@@ -39,7 +39,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				Target.Attributes[GameAttribute.Buff_Exclusive_Type_Active, PowerSNO] = false;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
-			this.Removed = true;
+			Removed = true;
 		}
 
 		public virtual void Init() { }
@@ -57,18 +57,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		{
 			if (Target.World == null)
 			{
-				this.Remove();
+				Remove();
 				return true;
 			}
-			return (this.Timeout != null && this.Timeout.TimedOut) || this.Removed;
+			return (Timeout != null && Timeout.TimedOut) || Removed;
 		}
 
 		public override bool Stack(Buff buff)
 		{
 			TimedBuff newbuff = (TimedBuff)buff;
 			// update buff if new timeout is longer than current one, or if new buff has no timeout
-			if (newbuff.Timeout == null || this.Timeout != null && newbuff.Timeout.TimeoutTick > this.Timeout.TimeoutTick)
-				this.Timeout = newbuff.Timeout;
+			if (newbuff.Timeout == null || Timeout != null && newbuff.Timeout.TimeoutTick > Timeout.TimeoutTick)
+				Timeout = newbuff.Timeout;
 
 			return true;
 		}
@@ -77,8 +77,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		{
 			TimedBuff newbuff = (TimedBuff)buff;
 			// update buff if new timeout is longer than current one, or if new buff has no timeout
-			if (newbuff.Timeout == null || this.Timeout != null && newbuff.Timeout.TimeoutTick > this.Timeout.TimeoutTick)
-				this.Timeout = newbuff.Timeout;
+			if (newbuff.Timeout == null || Timeout != null && newbuff.Timeout.TimeoutTick > Timeout.TimeoutTick)
+				Timeout = newbuff.Timeout;
 
 			return true;
 		}
@@ -96,7 +96,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		public PowerBuff()
 		{
 			// try to load buff options from attribute
-			var attributes = (ImplementsPowerBuff[])this.GetType().GetCustomAttributes(typeof(ImplementsPowerBuff), true);
+			var attributes = (ImplementsPowerBuff[])GetType().GetCustomAttributes(typeof(ImplementsPowerBuff), true);
 			foreach (var attr in attributes)
 			{
 				BuffSlot = attr.BuffSlot;
@@ -108,19 +108,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		{
 			base.Apply();
 
-			if (this.StartTick == 0)
-				this.StartTick = this.Target.World.Game.TickCounter;
+			if (StartTick == 0)
+				StartTick = Target.World.Game.TickCounter;
 
 			Target.Attributes[_Power_Buff_N_VisualEffect_R, PowerSNO] = true;
-			if (this.Timeout != null)
+			if (Timeout != null)
 			{
-				Target.Attributes[_Buff_Icon_Start_TickN, PowerSNO] = this.StartTick;
-				Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = this.Timeout.TimeoutTick;
+				Target.Attributes[_Buff_Icon_Start_TickN, PowerSNO] = StartTick;
+				Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = Timeout.TimeoutTick;
 				Target.Attributes[_Buff_Icon_CountN, PowerSNO] = 1;
 			}
 			Target.Attributes.BroadcastChangedIfRevealed();
 
-			this.StackCount = 1;
+			StackCount = 1;
 
 			return true;
 		}
@@ -130,7 +130,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			base.Remove();
 
 			Target.Attributes[_Power_Buff_N_VisualEffect_R, PowerSNO] = false;
-			if (this.Timeout != null)
+			if (Timeout != null)
 			{
 				Target.Attributes[_Buff_Icon_Start_TickN, PowerSNO] = 0;
 				Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = 0;
@@ -145,20 +145,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		{
 			base.Stack(buff);
 
-			bool canStack = this.IsCountingStacks && StackCount != MaxStackCount;
+			bool canStack = IsCountingStacks && StackCount != MaxStackCount;
 
-			if (this.Timeout != null)
+			if (Timeout != null)
 			{
-				this.StartTick = this.Target.World.Game.TickCounter;
-				Target.Attributes[_Buff_Icon_Start_TickN, PowerSNO] = this.StartTick;
-				Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = this.Timeout.TimeoutTick;
+				StartTick = Target.World.Game.TickCounter;
+				Target.Attributes[_Buff_Icon_Start_TickN, PowerSNO] = StartTick;
+				Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = Timeout.TimeoutTick;
 				if (canStack)
 					Target.Attributes[_Buff_Icon_CountN, PowerSNO] += 1;
 			}
 			Target.Attributes.BroadcastChangedIfRevealed();
 
 			if (canStack)
-				this.StackCount += 1;
+				StackCount += 1;
 
 			return true;
 		}
@@ -167,38 +167,38 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		{
 			base.DeStack(buff);
 
-			bool canDeStack = this.IsCountingStacks && StackCount > 1;
+			bool canDeStack = IsCountingStacks && StackCount > 1;
 
-			if (this.Timeout != null)
+			if (Timeout != null)
 			{
-				Target.Attributes[_Buff_Icon_Start_TickN, PowerSNO] = this.Timeout.TimeoutTick;
-				Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = this.Timeout.TimeoutTick;
+				Target.Attributes[_Buff_Icon_Start_TickN, PowerSNO] = Timeout.TimeoutTick;
+				Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = Timeout.TimeoutTick;
 				if (canDeStack)
 					Target.Attributes[_Buff_Icon_CountN, PowerSNO] -= 1;
 			}
 			Target.Attributes.BroadcastChangedIfRevealed();
 
-			if (canDeStack) this.StackCount -= 1;
+			if (canDeStack) StackCount -= 1;
 
 			return true;
 		}
 
 		public void Extend(int ticks)
 		{
-			this.Timeout.TimeoutTick += ticks;
-			Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = this.Timeout.TimeoutTick;
+			Timeout.TimeoutTick += ticks;
+			Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = Timeout.TimeoutTick;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 
 		public void Reduce(int ticks)
 		{
-			this.Timeout.TimeoutTick -= ticks;
+			Timeout.TimeoutTick -= ticks;
 			if (this is CooldownBuff)
 			{
 				Target.Attributes[GameAttribute.Power_Cooldown_Start, (this as CooldownBuff).TargetPowerSNO] -= ticks;
-				Target.Attributes[GameAttribute.Power_Cooldown, (this as CooldownBuff).TargetPowerSNO] = this.Timeout.TimeoutTick;
+				Target.Attributes[GameAttribute.Power_Cooldown, (this as CooldownBuff).TargetPowerSNO] = Timeout.TimeoutTick;
 			}
-			Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = this.Timeout.TimeoutTick;
+			Target.Attributes[_Buff_Icon_End_TickN, PowerSNO] = Timeout.TimeoutTick;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 

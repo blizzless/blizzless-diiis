@@ -84,12 +84,12 @@ namespace DiIiS_NA.GameServer.MessageSystem
 
 		protected GameMessage(int id)
 		{
-			this.Id = id;
+			Id = id;
 		}
 
 		protected GameMessage(Opcodes opcode)
 		{
-			this.Id = (int)opcode;
+			Id = (int)opcode;
 		}
 
 		public int Id { get; set; }
