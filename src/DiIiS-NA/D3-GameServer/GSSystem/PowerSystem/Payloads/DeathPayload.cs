@@ -429,17 +429,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				}
 
 				//achievements here
-				if (Target is Monster)
+				if (Target is Monster monster)
 				{
 					if (plr.Toon.Class == ToonClass.DemonHunter)
 					{
-						if ((Target as Monster).MonsterType == (int)DiIiS_NA.Core.MPQ.FileFormats.Monster.MonsterType.Demon)
+						if (monster.MonsterType == (int)DiIiS_NA.Core.MPQ.FileFormats.Monster.MonsterType.Demon)
 							plr.AddAchievementCounter(74987243307065, 1);
 
-						if (PowerMath.Distance2D(plr.Position, Target.Position) >= 45f)
+						if (PowerMath.Distance2D(plr.Position, monster.Position) >= 45f)
 							plr.AddAchievementCounter(74987243307061, 1);
 
-						if (Target.Attributes[GameAttribute.Feared])
+						if (monster.Attributes[GameAttribute.Feared])
 							plr.AddAchievementCounter(74987243307064, 1);
 
 						if (Context.PowerSNO == 75301)
@@ -458,7 +458,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					}
 					if (plr.Toon.Class == ToonClass.Wizard)
 					{
-						if (Target.Attributes[GameAttribute.Frozen])
+						if (monster.Attributes[GameAttribute.Frozen])
 							plr.AddAchievementCounter(74987243307585, 1);
 					}
 					if (plr.Toon.Class == ToonClass.WitchDoctor)
@@ -467,16 +467,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							plr.AddAchievementCounter(74987243307564, 1);
 					}
 
-					switch (Target)
+					switch (monster)
 					{
 						case Champion:
-							plr.CheckKillMonsterCriteria(Target.SNO, 1);
+							plr.CheckKillMonsterCriteria(monster.SNO, 1);
 							break;
 						case Rare:
-							plr.CheckKillMonsterCriteria(Target.SNO, 2);
+							plr.CheckKillMonsterCriteria(monster.SNO, 2);
 							break;
 						case Unique:
-							plr.CheckKillMonsterCriteria(Target.SNO, 4);
+							plr.CheckKillMonsterCriteria(monster.SNO, 4);
 							break;
 					}
 				}
