@@ -44,7 +44,7 @@ using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 
 namespace DiIiS_NA.GameServer.CommandManager
 {
-    [CommandGroup("Invulnerable", "Makes you invulnerable")]
+    [CommandGroup("invulnerable", "Makes you invulnerable")]
     public class InvulnerableCommand : CommandGroup
     {
         [DefaultCommand]
@@ -119,7 +119,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 var monster = player.World.SpawnMonster((ActorSno)actorSNO, position);
 
             }
-            return string.Format("Spawned {0} mobs with ActorSNO: {1}", amount, actorSNO);
+            return $"Spawned {amount} mobs with ActorSNO: {actorSNO}";
         }
 
     }
@@ -166,9 +166,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 
             player.Toon.GameAccount.NotifyUpdate();
             if (player.Level >= 70)
-                return string.Format("New paragon level: {0}", player.ParagonLevel);
+                return $"New paragon level: {player.ParagonLevel}";
             else
-                return string.Format("New level: {0}", player.Toon.Level);
+                return $"New level: {player.Toon.Level}";
         }
     }
 
@@ -286,7 +286,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 
             player.Inventory.AddGoldAmount(amount);
 
-            return string.Format("Added Gold {0}", amount);
+            return $"Added Gold {amount}";
         }
     }
 
@@ -351,7 +351,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 
             player.PlayEffectGroup(id);
 
-            return string.Format("PlayEffectGroup {0}", id);
+            return $"PlayEffectGroup {id}";
         }
     }
 
@@ -396,7 +396,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 item.EnterWorld(position);
             }
 
-            return string.Format("Spawned {0} items with name: {1}", amount, name);
+            return $"Spawned {amount} items with name: {name}";
 
         }
 
@@ -439,7 +439,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 item.EnterWorld(position);
             }
 
-            return string.Format("Spawned {0} items with type: {1}", amount, name);
+            return $"Spawned {amount} items with type: {name}";
         }
 
         [Command("dropall", "Drops all items in Backpack.\nUsage: item dropall")]
@@ -461,7 +461,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 var msg = new InventoryDropItemMessage { ItemID = item.DynamicID(player) };
                 player.Inventory.Consume(invokerClient.InGameClient, msg);
             }
-            return string.Format("Dropped {0} Items for you", bpItems.Count);
+            return $"Dropped {bpItems.Count} Items for you";
         }
     }
 
@@ -524,7 +524,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 }
                 foreach (var bounty in invokerClient.InGameClient.Player.World.Game.QuestManager.Bounties)
                     bounty.CheckLevelArea(levelArea);
-                return string.Format("Teleported to: {0} [id: {1}]", MPQStorage.Data.Assets[SNOGroup.Worlds][worldId].Name, worldId);
+                return $"Teleported to: {MPQStorage.Data.Assets[SNOGroup.Worlds][worldId].Name} [id: {worldId}]";
             }
 
             return "Invalid arguments. Type 'help tp' to get help.";
@@ -550,7 +550,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             {
                 var conversation = MPQStorage.Data.Assets[SNOGroup.Conversation][Int32.Parse(@params[0])];
                 invokerClient.InGameClient.Player.Conversations.StartConversation(Int32.Parse(@params[0]));
-                return String.Format("Started conversation {0}", conversation.FileName);
+                return $"Started conversation {conversation.FileName}";
             }
             catch (Exception e)
             {
@@ -597,13 +597,13 @@ namespace DiIiS_NA.GameServer.CommandManager
             if (SpeedValue > MaxSpeed)
             {
                 playerSpeed[GameAttribute.Running_Rate] = MaxSpeed;
-                return string.Format("MaxSpeed {0}", MaxSpeed);
+                return $"MaxSpeed {MaxSpeed}";
             }
             else
                 playerSpeed[GameAttribute.Running_Rate] = SpeedValue;
 
             playerSpeed.BroadcastChangedIfRevealed();
-            return string.Format("Speed changed to {0}", SpeedValue);
+            return $"Speed changed to {SpeedValue}";
         }
     }
 
@@ -716,7 +716,8 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "Matches:\n" : "No matches found.",
-                                     (current, match) => current + string.Format("[{0}] [{1}] {2}\n", match.SNOId.ToString("D6"), match.Group, match.Name));
+                                     (current, match) => current +
+                                                         $"[{match.SNOId.ToString("D6")}] [{match.Group}] {match.Name}\n");
         }
 
         [Command("actor", "Allows you to search for an actor.\nUsage: lookup actor <pattern>")]
@@ -736,12 +737,8 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "Actor Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} ({2} {3})\n",
-                                        match.SNOId.ToString("D6"),
-                                        match.Name,
-                                        (match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type,
-                                        (((match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type == ActorType.Gizmo) ? ((int)(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[ActorKeys.GizmoGroup]).ToString() : "")
-                                        ));
+                                     (current, match) => current +
+                                                         $"[{match.SNOId.ToString("D6")}] {match.Name} ({(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type} {(((match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type == ActorType.Gizmo) ? ((int)(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[ActorKeys.GizmoGroup]).ToString() : "")})\n");
         }
 
         [Command("rope", "Allows you to search for an rope.\nUsage: lookup rope <pattern>")]
@@ -761,7 +758,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "Rope Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
+                                     (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
         }
 
         [Command("conv", "Allows you to search for an conversation.\nUsage: lookup conv <pattern>")]
@@ -781,7 +778,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "Conversation Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
+                                     (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
         }
 
         [Command("power", "Allows you to search for a power.\nUsage: lookup power <pattern>")]
@@ -812,7 +809,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "Power Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
+                                     (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
         }
 
         [Command("world", "Allows you to search for a world.\nUsage: lookup world <pattern> OR lookup world id <snoId>")]
@@ -843,7 +840,8 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "World Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.SNOId.ToString("D6"), match.Name, (match.Data as World).DynamicWorld));
+                                     (current, match) => current +
+                                                         $"[{match.SNOId.ToString("D6")}] {match.Name} - {(match.Data as World).DynamicWorld}\n");
         }
 
         [Command("qr", "Show QuestRange of an actor.\nUsage: lookup qr <id>")]
@@ -866,7 +864,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 }
             }
 
-            return String.Format("[{0}] {1}", qr_id, qr_name);
+            return $"[{qr_id}] {qr_name}";
         }
 
         public static int GetExitBits(Asset scene)
@@ -906,7 +904,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "LevelArea Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
+                                     (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
         }
 
         [Command("sp", "List all Starting Points in world.\nUsage: lookup sp")]
@@ -915,7 +913,8 @@ namespace DiIiS_NA.GameServer.CommandManager
             var matches = invokerClient.InGameClient.Player.World.StartingPoints;
 
             return matches.Aggregate(matches.Count >= 1 ? "Starting Points:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.GlobalID.ToString("D6"), match.Name, match.TargetId));
+                                     (current, match) => current +
+                                                         $"[{match.GlobalID.ToString("D6")}] {match.Name} - {match.TargetId}\n");
         }
 
         [Command("weather", "Allows you to search for a Weather.\nUsage: lookup weather <pattern>")]
@@ -935,7 +934,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "Weather Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
+                                     (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
         }
 
         [Command("scene", "Allows you to search for a scene.\nUsage: lookup scene <pattern>")]
@@ -955,7 +954,8 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "Scene Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.SNOId.ToString("D6"), match.Name, GetExitBits(match)));
+                                     (current, match) => current +
+                                                         $"[{match.SNOId.ToString("D6")}] {match.Name} - {GetExitBits(match)}\n");
         }
 
         [Command("eg", "Allows you to search for an EffectGroup.\nUsage: lookup eg <pattern>")]
@@ -975,7 +975,8 @@ namespace DiIiS_NA.GameServer.CommandManager
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "EffectGroup Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.SNOId.ToString("D6"), match.Name, GetExitBits(match)));
+                                     (current, match) => current +
+                                                         $"[{match.SNOId.ToString("D6")}] {match.Name} - {GetExitBits(match)}\n");
         }
 
         [Command("item", "Allows you to search for an item.\nUsage: lookup item <pattern>")]
@@ -1000,7 +1001,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 }
             }
             return matches.Aggregate(matches.Count >= 1 ? "Item Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOActor.ToString("D6"), match.Name));
+                                     (current, match) => current + $"[{match.SNOActor.ToString("D6")}] {match.Name}\n");
         }
     }
 }
