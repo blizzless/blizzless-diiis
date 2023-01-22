@@ -119,7 +119,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (payload.Target == User && payload is DeathPayload)
 				{
 					if (User.GetActorsInRange(80f).Count > 100) return;
-					User.PlayAnimation(11, User.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Explode]);
+					User.PlayAnimation(11, User.AnimationSet.Animations[AnimationSetKeys.Explode.ID]);
 					for (int i = 0; i < 3; i++)
 					{
 						var monster = ActorFactory.Create(User.World, (User as Monster).SNOSummons[0], new TagMap());
@@ -170,7 +170,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					SuicideTimer = null;
 					var dmgTargets = GetEnemiesInRadius(User.Position, 6f);
 					WeaponDamage(dmgTargets, 5.0f, DamageType.Physical);
-					User.PlayAnimation(11, User.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Attack]);
+					User.PlayAnimation(11, User.AnimationSet.Animations[AnimationSetKeys.Attack.ID]);
 					WeaponDamage(User, 1000.0f, DamageType.Physical);
 					//(User as Living).Kill();
 					//foreach (var anim in Target.AnimationSet.TagMapAnimDefault)

@@ -256,25 +256,30 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			switch (Target.SNO)
 			{
 				//Boss-A1 Q2
-				case ActorSno._skeleton_a_cain_unique: Target.PlayAnimation(11, 199484, 1f); break;
+				case ActorSno._skeleton_a_cain_unique:
 				//Йондар
-				case ActorSno._adventurer_d_templarintrounique: Target.PlayAnimation(11, 199484, 1f); break;
-				//Разнощик чумы
-				case ActorSno._fleshpitflyer_b: Target.PlayAnimation(11, 8535, 1f); break;
+				case ActorSno._adventurer_d_templarintrounique:
 				//Темные жрецы
-				case ActorSno._triunevessel_event31: Target.PlayAnimation(11, 199484, 1f); break;
+				case ActorSno._triunevessel_event31:
+				//Падшие
+				case ActorSno._fallengrunt_a: 
+                    Target.PlayAnimation(11, AnimationSno.triunesummoner_death_02_persistentblood, 1f);
+                    break;
+				//Разнощик чумы
+				case ActorSno._fleshpitflyer_b:
 				//Пчелы
 				case ActorSno._sandwasp_a:
 				case ActorSno._fleshpitflyer_leoric_inferno:
 					Target.PlayAnimation(11, 8535, 1f);
 					break;
 				//X1_LR_Boss_Angel_Corrupt_A
-				case ActorSno._x1_lr_boss_angel_corrupt_a: Target.PlayAnimation(11, 142005, 1f); break;
-				//Падшие
-				case ActorSno._fallengrunt_a: Target.PlayAnimation(11, 199484, 1f); break;
+				case ActorSno._x1_lr_boss_angel_corrupt_a: 
+                    Target.PlayAnimation(11, AnimationSno.angel_corrupt_death_01, 1f);
+                    break;
 				default:
-					if (FindBestDeathAnimationSNO() != -1)
-						Target.PlayAnimation(11, FindBestDeathAnimationSNO(), 1f);
+					var animation = FindBestDeathAnimationSNO();
+					if (animation != AnimationSno._NONE)
+						Target.PlayAnimation(11, animation, 1f);
 					else
 					{
 						Logger.Warn("Анимация смерти не обнаружена: ActorSNOId = {0}", Target.SNO);
@@ -527,7 +532,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 							avatar.EnterWorld(avatar.Position);
 
-							Task.Delay(1000).ContinueWith(d =>
+                            Task.Delay(1000).ContinueWith(d =>
 							{
 								(avatar as Minion).Brain.Activate();
 								avatar.Attributes[GameAttribute.Untargetable] = false;
@@ -542,15 +547,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					dog.Position = PowerContext.RandomDirection(plr.Position, 3f, 8f);
 					dog.Attributes[GameAttribute.Untargetable] = true;
 					dog.EnterWorld(dog.Position);
-					dog.PlayActionAnimation(11437);
+					dog.PlayActionAnimation(AnimationSno.zombiedog_summon_01);
 					Context.DogsSummoned++;
 
-					Task.Delay(1000).ContinueWith(d =>
+                    Task.Delay(1000).ContinueWith(d =>
 					{
 						dog.Brain.Activate();
 						dog.Attributes[GameAttribute.Untargetable] = false;
 						dog.Attributes.BroadcastChangedIfRevealed();
-						dog.PlayActionAnimation(11431);
+						dog.PlayActionAnimation(AnimationSno.zombiedog_idle_01);
 					});
 				}
 
@@ -1169,49 +1174,47 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			//}
 		}
 
-		private int FindBestDeathAnimationSNO()
+		private AnimationSno FindBestDeathAnimationSNO()
 		{
 			if (Context != null)
-			{
-				// check if power has special death animation, and roll chance to use it
-				TagKeyInt specialDeathTag = GetTagForSpecialDeath(Context.EvalTag(PowerKeys.SpecialDeathType));
-				if (specialDeathTag != null)
-				{
-					float specialDeathChance = Context.EvalTag(PowerKeys.SpecialDeathChance);
-					if (PowerContext.Rand.NextDouble() < specialDeathChance)
-					{
-						int specialSNO = GetSnoFromTag(specialDeathTag);
-						if (specialSNO != -1)
-						{
-							return specialSNO;
-						}
-					}
-					// decided not to use special death or actor doesn't have it, just fall back to normal death anis
-				}
+                return AnimationSno._NONE;
 
-				int sno = GetSnoFromTag(DeathDamageType.DeathAnimationTag);
-				if (sno != -1)
-					return sno;
+            // check if power has special death animation, and roll chance to use it
+            TagKeyInt specialDeathTag = GetTagForSpecialDeath(Context.EvalTag(PowerKeys.SpecialDeathType));
+            if (specialDeathTag != null)
+            {
+                float specialDeathChance = Context.EvalTag(PowerKeys.SpecialDeathChance);
+                if (PowerContext.Rand.NextDouble() < specialDeathChance)
+                {
+                    var specialSNO = GetSNOFromTag(specialDeathTag);
+                    if (specialSNO != AnimationSno._NONE)
+                    {
+                        return specialSNO;
+                    }
+                }
+                // decided not to use special death or actor doesn't have it, just fall back to normal death anis
+            }
 
-				//if (this.Target.ActorSNO.Name.Contains("Spiderling")) return _GetSNOFromTag(new TagKeyInt(69764));
+            var sno = GetSNOFromTag(this.DeathDamageType.DeathAnimationTag);
+            if (sno != AnimationSno._NONE)
+                return sno;
 
-				//Logger.Debug("monster animations:");
-				//foreach (var anim in this.Target.AnimationSet.TagMapAnimDefault)
-				//	Logger.Debug("animation: {0}", anim.ToString());
+            //if (this.Target.ActorSNO.Name.Contains("Spiderling")) return _GetSNOFromTag(new TagKeyInt(69764));
 
-				// load default ani if all else fails
-				return GetSnoFromTag(AnimationSetKeys.DeathDefault);
-			}
-			else
-				return -1;
-		}
+            //Logger.Debug("monster animations:");
+            //foreach (var anim in this.Target.AnimationSet.TagMapAnimDefault)
+            //	Logger.Debug("animation: {0}", anim.ToString());
 
-		private int GetSnoFromTag(TagKeyInt tag)
+            // load default ani if all else fails
+            return GetSNOFromTag(AnimationSetKeys.DeathDefault);
+        }
+
+		private AnimationSno GetSNOFromTag(TagKeyInt tag)
 		{
-			if (Target.AnimationSet != null && Target.AnimationSet.TagMapAnimDefault.ContainsKey(tag))
-				return Target.AnimationSet.TagMapAnimDefault[tag];
+			if (Target.AnimationSet != null && Target.AnimationSet.Animations.ContainsKey(tag.ID))
+				return (AnimationSno)Target.AnimationSet.Animations[tag.ID];
 			else
-				return -1;
+				return AnimationSno._NONE;
 		}
 
 		private static TagKeyInt GetTagForSpecialDeath(int specialDeathType)

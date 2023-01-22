@@ -59,7 +59,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                                         ActorSno._x1_westmarchfemale_deathmaidenkill
                                         ))
                                     {
-                                        if (man.CurrentScene.SceneSNO.Id == CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                        if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(AnimationSno.x1_westmhub_guard_wispkilled_transform_01);
                                     }
                                 }
                                 break;
@@ -85,7 +85,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                                         ActorSno._x1_westm_intro_human_female
                                         ))
                                     {
-                                        if (man.CurrentScene.SceneSNO.Id == CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                        if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(AnimationSno.x1_westmhub_guard_wispkilled_transform_01);
                                     }
                                     
                                     

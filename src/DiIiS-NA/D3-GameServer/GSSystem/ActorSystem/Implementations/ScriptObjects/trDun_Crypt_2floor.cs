@@ -23,7 +23,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
         public override bool Reveal(Player player)
         {
             if (!_collapsed)
-                PlayAnimation(5, 130011); //- shaking
+                this.PlayAnimation(5, AnimationSno.trdun_skeletonking_sealed_door_1000_pounder_idle); //- Тряска
 
             //this.PlayAnimation(5, 116098); //- Fault
             return base.Reveal(player);
@@ -34,8 +34,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
             if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 3f * Scale && !_collapsed)
             {
                 _collapsed = true;
-                PlayAnimation(5, 116098); //- Fault
-                World.SpawnMonster(ActorSno._unburied_a_unique, Position);
+                this.PlayAnimation(5, AnimationSno.trdun_skeletonking_sealed_door_1000_pounder_death); //- Разлом
+                this.World.SpawnMonster(ActorSno._unburied_a_unique, this.Position);
             }
         }
 

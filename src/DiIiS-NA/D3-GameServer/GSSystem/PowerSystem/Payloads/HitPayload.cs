@@ -821,10 +821,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				if (Target.World.BuffManager.GetFirstBuff<KnockbackBuff>(Target) == null &&
 					Target.AnimationSet != null)
 				{
-					if (Target.AnimationSet.TagMapAnimDefault.ContainsKey(AnimationSetKeys.GetHit) && FastRandom.Instance.Next(100) < 33)
+					if (Target.AnimationSet.Animations.ContainsKey(AnimationSetKeys.GetHit.ID) && FastRandom.Instance.Next(100) < 33)
 					{
-						int hitAni = Target.AnimationSet.TagMapAnimDefault[AnimationSetKeys.GetHit];
-						if (hitAni != -1)
+						var hitAni = Target.AnimationSet.Animations[AnimationSetKeys.GetHit.ID];
+						if (hitAni != AnimationSno._NONE)
 						{
 							// HACK: hardcoded animation speed/ticks, need to base those off hit recovery speed
 							Target.PlayAnimation(6, hitAni, 1.0f, 40);

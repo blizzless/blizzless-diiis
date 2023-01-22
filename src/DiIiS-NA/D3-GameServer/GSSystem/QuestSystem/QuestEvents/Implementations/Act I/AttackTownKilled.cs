@@ -35,7 +35,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			Maghda.EnterWorld(Maghda.Position);
 			Maghda.Attributes[GameAttribute.Untargetable] = true;
 			Maghda.Attributes.BroadcastChangedIfRevealed();
-			Maghda.PlayAnimation(5, 193535);
+			Maghda.PlayAnimation(5, AnimationSno.maghdaprojection_transition_in_01);
 
 			StartConversation(AttackedTown, 194933);
 		}
