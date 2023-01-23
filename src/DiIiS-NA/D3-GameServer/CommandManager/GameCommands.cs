@@ -119,7 +119,6 @@ namespace DiIiS_NA.GameServer.CommandManager
                 var monster = player.World.SpawnMonster((ActorSno)actorSNO, position);
 
             }
-
             return $"Spawned {amount} mobs with ActorSNO: {actorSNO}";
         }
 
@@ -464,7 +463,6 @@ namespace DiIiS_NA.GameServer.CommandManager
                 var msg = new InventoryDropItemMessage { ItemID = item.DynamicID(player) };
                 player.Inventory.Consume(invokerClient.InGameClient, msg);
             }
-
             return $"Dropped {bpItems.Count} Items for you";
         }
     }
@@ -696,6 +694,10 @@ namespace DiIiS_NA.GameServer.CommandManager
 
                 return String.Format("Message sended.");
             }
+
+            return matches.Aggregate(matches.Count >= 1 ? "Actor Matches:\n" : "No match found.",
+                                     (current, match) => current +
+                                                         $"[{match.SNOId.ToString("D6")}] {match.Name} ({(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type} {(((match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type == ActorType.Gizmo) ? ((int)(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[ActorKeys.GizmoGroup]).ToString() : "")})\n");
         }
 
         [CommandGroup("lookup",
@@ -817,9 +819,10 @@ namespace DiIiS_NA.GameServer.CommandManager
                     }
                 }
 
-                return matches.Aggregate(matches.Count >= 1 ? "Power Matches:\n" : "No match found.",
-                    (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
-            }
+            return matches.Aggregate(matches.Count >= 1 ? "World Matches:\n" : "No match found.",
+                                     (current, match) => current +
+                                                         $"[{match.SNOId.ToString("D6")}] {match.Name} - {(match.Data as World).DynamicWorld}\n");
+        }
 
             [Command("world",
                 "Allows you to search for a world.\nUsage: lookup world <pattern> OR lookup world id <snoId>")]
@@ -951,7 +954,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             public string Scene(string[] @params, BattleClient invokerClient)
             {
                 var matches = new List<Asset>();
-
+                
                 if (@params.Count() < 1)
                     return "Invalid arguments. Type 'help lookup scene' to get help.";
 
