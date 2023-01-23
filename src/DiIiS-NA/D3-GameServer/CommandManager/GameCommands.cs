@@ -1,4 +1,4 @@
-﻿//Blizzless Project 2022 
+//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
