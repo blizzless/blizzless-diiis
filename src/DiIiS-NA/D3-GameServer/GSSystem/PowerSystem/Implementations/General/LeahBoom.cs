@@ -4,7 +4,17 @@ using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 //Blizzless Project 2022 
+using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+//Blizzless Project 2022 
+using System;
+//Blizzless Project 2022 
 using System.Collections.Generic;
+//Blizzless Project 2022 
+using System.Linq;
+//Blizzless Project 2022 
+using System.Text;
+//Blizzless Project 2022 
+using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -18,7 +28,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             foreach (var Summoner in Summoners)
                 targets.Actors.Add(Summoner);
             WeaponDamage(targets, 100.00f, DamageType.Physical);
-            User.PlayAnimation(5, AnimationSno.leah_hulkout_spellcast);
+            User.PlayAnimation(5, 147622);
 
             User.World.BroadcastInclusive(plr => new SetIdleAnimationMessage
             {

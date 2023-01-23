@@ -1,11 +1,12 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 //Blizzless Project 2022 
 using System;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
-    class LeahTransformation_Line11 : QuestEvent
+	class LeahTransformation_Line11 : QuestEvent
 	{
 		public bool raised = false;
 
@@ -18,7 +19,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		{
 			StartConversation(world, 195767);
 			var Leah = world.GetActorBySNO(ActorSno._leah_event47);
-			Leah.PlayActionAnimation(AnimationSno.leah_bss_event_lvlup);
+			Leah.PlayActionAnimation(201990);
 		}
 
 		private bool StartConversation(MapSystem.World world, Int32 conversationId)

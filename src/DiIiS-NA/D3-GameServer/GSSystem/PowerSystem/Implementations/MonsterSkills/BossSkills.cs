@@ -70,7 +70,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Init()
 			{
 				Timeout = WaitSeconds(7f);
-				User.PlayAnimation(5, AnimationSno.skeletonking_whirlwind_start);
+				User.PlayAnimation(5, 9865);
 			}
 
 			//This needs to be added into whirlwind, because your walking speed does become slower once whirlwind is active.
@@ -93,7 +93,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Remove()
 			{
 				base.Remove();
-				User.PlayActionAnimation(AnimationSno.skeletonking_whirlwind_end);
+				User.PlayActionAnimation(9863);
 				User.Attributes[GameAttribute.Running_Rate] = User.Attributes[GameAttribute.Running_Rate] / EvalTag(PowerKeys.WalkingSpeedMultiplier);
 				User.Attributes.BroadcastChangedIfRevealed();
 			}
@@ -105,7 +105,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (_AnimTimer == null || _AnimTimer.TimedOut)
 				{
 					_AnimTimer = WaitSeconds(4f);
-					User.PlayActionAnimation(AnimationSno.skeletonking_whirlwind_loop_fx);
+					User.PlayActionAnimation(81880);
 				}
 
 				if (_damageTimer == null || _damageTimer.TimedOut)
@@ -329,7 +329,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][136223].Data;
-			User.PlayActionAnimation(AnimationSno.diablo_ring_of_fire);
+			User.PlayActionAnimation(128843);
 			yield return WaitSeconds(0.5f);
 			//User.PlayEffectGroup(196518);
 			var Point = SpawnEffect(ActorSno._diablo_ringoffire_damagearea, TargetPosition, 0, WaitSeconds(1.5f));
@@ -356,7 +356,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 
 			var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][136226].Data;
-			User.PlayActionAnimation(AnimationSno.diablo_ring_of_fire);
+			User.PlayActionAnimation(128843);
 			//RandomDirection(User.Position, 5, 45)
 
 			if (Target != null)
@@ -384,7 +384,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				if (Target.Attributes[GameAttribute.Root_Immune] == false)
 				{
-					eff.PlayActionAnimation(AnimationSno.a4dun_diablo_bone_prison_closing);
+					eff.PlayActionAnimation(197689);
 					Target.Attributes[GameAttribute.IsRooted] = true;
 					Target.Attributes.BroadcastChangedIfRevealed();
 				}
@@ -393,7 +393,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			public override void Remove()
 			{
-				eff.PlayActionAnimation(AnimationSno.a4dun_diablo_bone_prison_opening);
+				eff.PlayActionAnimation(197691);
 				base.Remove();
 				Target.Attributes[GameAttribute.IsRooted] = false;
 				Target.Attributes.BroadcastChangedIfRevealed();

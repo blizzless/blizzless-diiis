@@ -89,7 +89,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 					foreach (var plant in Plants)
 					{
 						var Demon = world.SpawnMonster(ActorSno._bigred_a, plant);
-						Demon.PlayAnimation(11, AnimationSno.bigred_hole_spawn_02, 1, 6);
+						Demon.PlayAnimation(11, 159227, 1, 6);
 						Demons.Add(Demon);
 					}
 					Task.Delay(3000).ContinueWith(delegate
@@ -100,9 +100,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 							Hope.SetVisible(true); Hope.Hidden = false; Hope.Reveal(plr);
 							Fate.SetVisible(true); Fate.Hidden = false; Fate.Reveal(plr);
 						}
-						Imperius.PlayActionAnimation(AnimationSno.omninpc_male_imperius_tyreal_purpose_fall_to_knee);
-						Fate.PlayActionAnimation(AnimationSno.omninpc_male_fate_spawn_01);
-						Hope.PlayActionAnimation(AnimationSno.omninpc_male_fate_spawn_01);
+						Imperius.PlayActionAnimation(205702);
+						Fate.PlayActionAnimation(204712);
+						Hope.PlayActionAnimation(204712);
 						//Fate.PlayAnimation(11, 204712, 1);
 						Task.Delay(3000).ContinueWith(delegate
 						{

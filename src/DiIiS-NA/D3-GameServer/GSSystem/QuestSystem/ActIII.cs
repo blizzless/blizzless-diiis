@@ -321,7 +321,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						{
 							float facingAngle = MovementHelpers.GetFacingAngle(atr, NStone);
 
-							atr.PlayActionAnimation(AnimationSno.leah_channel_01);
+							atr.PlayActionAnimation(139775);
 							
 							//atr.PlayEffectGroup(205460); //Add Rope channel to NStone
 							atr.SetFacingRotation(facingAngle);
@@ -867,8 +867,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					//ListenTeleport(201250, new LaunchConversationWithCutScene(195719, Tyrael.ActorSNO.Id));
 					ListenConversation(195719, new LeahTransformation_Line2());
 					//Смерть охраника PlayAnimation 206664(Отлёт)->211841(СМЕРТ)
-					Guardian.PlayActionAnimation(AnimationSno.omninpc_stranger_bss_event_crouching_knockback_intro);
-					Guardian.PlayActionAnimation(AnimationSno.omninpc_male_hth_crawl_event47_death_01);
+					Guardian.PlayActionAnimation(206664);
+					Guardian.PlayActionAnimation(211841);
 					ListenConversation(195721, new LeahTransformation_Line3());
 					ListenConversation(195723, new LaunchConversation(195725)); // Line4
 					ListenConversation(195725, new LaunchConversation(195739)); // Line5

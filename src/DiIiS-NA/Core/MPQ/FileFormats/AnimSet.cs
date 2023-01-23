@@ -17,55 +17,44 @@ using System.Linq;
 using System;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
 {
     [FileFormat(SNOGroup.AnimSet)]
     public class AnimSet : FileFormat
     {
-        private static readonly AnimationTags[] deathTags = new AnimationTags[]
-        {
-            AnimationTags.DeathArcane,
-            AnimationTags.DeathFire,
-            AnimationTags.DeathLightning,
-            AnimationTags.DeathPoison,
-            AnimationTags.DeathPlague,
-            AnimationTags.DeathDismember,
-            AnimationTags.DeathDefault,
-            AnimationTags.DeathPulverise,
-            AnimationTags.DeathCold,
-            AnimationTags.DeathLava,
-            AnimationTags.DeathHoly,
-            AnimationTags.DeathSpirit,
-            AnimationTags.DeathFlyingOrDefault
-        };
         public Header Header { get; private set; }
         public int SNOParentAnimSet { get; private set; }
-        private TagMap TagMapAnimDefault;
-        private TagMap[] AnimSetTagMaps;
+        public TagMap TagMapAnimDefault { get; private set; }
+        public TagMap[] AnimSetTagMaps;
 
 
-        private Dictionary<int, AnimationSno> _animations;
-        public Dictionary<int, AnimationSno> Animations
+        private Dictionary<int, int> _animations;
+        public Dictionary<int, int> Animations
         {
             get
             {
-                return _animations ??= InitAnimations();
-            }
-        }
+                if (_animations == null)
+                {
+                    _animations = new Dictionary<int, int>();
+                    foreach (var x in TagMapAnimDefault.TagMapEntries)
+                    {
+                        _animations.Add(x.TagID, x.Int);
+                    }
+                    //not sure how better to do this, cant load parents anims on init as they may not be loaded first. - DarkLotus
+                    if (SNOParentAnimSet != -1)
+                    {
+                        var ani = (FileFormats.AnimSet)MPQStorage.Data.Assets[SNOGroup.AnimSet][SNOParentAnimSet].Data;
+                        foreach (var x in ani.Animations)
+                        {
+                            if (!_animations.ContainsKey(x.Key))
+                                _animations.Add(x.Key, x.Value);
+                        }
+                    }
 
-        private Dictionary<int, AnimationSno> InitAnimations()
-        {
-            var defaultAnimations = TagMapAnimDefault.TagMapEntries.ToDictionary(x => x.TagID, x => (AnimationSno)x.Int);
-
-            //not sure how better to do this, cant load parents anims on init as they may not be loaded first. - DarkLotus
-            if (SNOParentAnimSet != -1)
-            {
-                var ani = (AnimSet)MPQStorage.Data.Assets[SNOGroup.AnimSet][SNOParentAnimSet].Data;
-                return defaultAnimations.Union(ani.Animations.Where(x => !defaultAnimations.ContainsKey(x.Key))).ToDictionary(x => x.Key, x => (AnimationSno)x.Value);
+                }
+                return _animations;
             }
-            return defaultAnimations;
         }
 
         public AnimSet(MpqFile file)
@@ -85,17 +74,24 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             stream.Close();
         }
 
-        public AnimationSno GetAniSNO(AnimationTags type)
+        public int GetAniSNO(AnimationTags type)
         {
             if (Animations.Keys.Contains((int)type))
             {
-                return Animations[(int)type];
+                if (Animations[(int)type] != -1)
+                {
+                    return Animations[(int)type];
+                }
             }
-            return AnimationSno._NONE;
+            return -1;
         }
         public bool TagExists(AnimationTags type)
         {
-            return Animations.Keys.Contains((int)type);
+            if (Animations.Keys.Contains((int)type))
+            {
+                return true;
+            }
+            return false;
         }
         public int GetAnimationTag(AnimationTags type)
         {
@@ -105,13 +101,32 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             }
             return -1;
         }
-        public AnimationSno GetRandomDeath()
+        public int GetRandomDeath()
         {
-            if (!TagExists(AnimationTags.DeathDefault))
+            int ani = -1;
+            if (!TagExists(AnimationTags.DeathDefault)) { return -1; }
+            while (ani == -1)
             {
-                return AnimationSno._NONE;
+                Array values = Enum.GetValues(typeof(DeathTags));
+                ani = GetAniSNO((AnimationTags)values.GetValue(RandomHelper.Next(0, values.Length - 1)));
             }
-            return deathTags.Select(x => GetAniSNO(x)).Where(x => x != AnimationSno._NONE).OrderBy(x => RandomHelper.Next()).First();
+            return ani;
+        }
+        private enum DeathTags
+        {
+            Arcane = 73776,
+            Fire = 73744,
+            Lightning = 73760,
+            Poison = 73792,
+            Plague = 73856,
+            Dismember = 73872,
+            Default = 69712,
+            Pulverise = 73824,
+            Cold = 74016,
+            Lava = 74032,
+            Holy = 74048,
+            Spirit = 74064,
+            FlyingOrDefault = 71424
         }
     }
     public enum AnimationTags

@@ -1,5 +1,4 @@
 ﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 //Blizzless Project 2022 
 using System;
@@ -24,28 +23,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			}
 		}
 
-		public override AnimationSno GetActionAnimationSNO()
+		public override int GetActionAnimationSNO()
 		{
 			int tag;
 			switch (ComboIndex)
 			{
-				case 0:
-					tag = EvalTag(PowerKeys.ComboAnimation1);
-					break;
-				case 1:
-					tag = EvalTag(PowerKeys.ComboAnimation2); 
-					break;
-				case 2:
-					tag = EvalTag(PowerKeys.ComboAnimation3);
-					break;
-				default: 
-					return AnimationSno._NONE;
+				case 0: tag = EvalTag(PowerKeys.ComboAnimation1); break;
+				case 1: tag = EvalTag(PowerKeys.ComboAnimation2); break;
+				case 2: tag = EvalTag(PowerKeys.ComboAnimation3); break;
+				default: return -1;
 			}
 
 			if (User.AnimationSet.Animations.ContainsKey(tag))
 				return User.AnimationSet.Animations[tag];
 			else
-				return AnimationSno._NONE;
+				return -1;
 		}
 
 		public override float GetActionSpeed()

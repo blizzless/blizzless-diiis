@@ -65,7 +65,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 					
 					StartConversation(world, 17923);
 
-					SkeletonKing_Bridge.PlayAnimation(5, SkeletonKing_Bridge.AnimationSet.Animations[AnimationSetKeys.Opening.ID], 1f);
+					SkeletonKing_Bridge.PlayAnimation(5, SkeletonKing_Bridge.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening], 1f);
 
 					world.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 					{
