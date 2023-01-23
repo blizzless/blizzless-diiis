@@ -1,4 +1,4 @@
-﻿//Blizzless Project 2022 
+//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
