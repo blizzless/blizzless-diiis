@@ -413,12 +413,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         var world = Game.GetWorld(WorldSno.trout_adriascellar);
                         CapitanDaltyn = world.SpawnMonster(ActorSno._unique_captaindaltyn, new Vector3D { X = 52.587f, Y = 103.368f, Z = 0.1f });
                         CapitanDaltyn.Attributes[GameAttribute.Quest_Monster] = true;
-                        CapitanDaltyn.PlayAnimation(5, 11523);
+                        CapitanDaltyn.PlayAnimation(5, AnimationSno.zombie_male_skinny_spawn);
                         foreach (Vector3D point in Zombies)
                         {
                             var Zombie = world.SpawnMonster(ActorSno._zombieskinny_a, point);
                             Zombie.Attributes[GameAttribute.Quest_Monster] = true;
-                            Zombie.PlayAnimation(5, 11523);
+                            Zombie.PlayAnimation(5, AnimationSno.zombie_male_skinny_spawn);
                         }
                     });
                     ListenKill(ActorSno._unique_captaindaltyn, 1, new Advance());
@@ -918,8 +918,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             {       //act.AddRopeEffect(182614, Kormak_Imprisoned); //[111529] triuneSummoner_Summon_rope
                                 Kormak_Imprisoned.AddRopeEffect(182614, act); //[111529] triuneSummoner_Summon_rope
                                 act.SetFacingRotation(ActorSystem.Movement.MovementHelpers.GetFacingAngle(act, Kormak_Imprisoned));
-                                act.PlayActionAnimation(158306);
-                                act.SetIdleAnimation(158306);
+                                act.PlayActionAnimation(AnimationSno.triunecultist_emote_outraisedhands);
+                                act.SetIdleAnimation(AnimationSno.triunecultist_emote_outraisedhands);
                             }
                         }
                         catch { }
@@ -1000,7 +1000,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         }
                         foreach (var Wall in world.GetActorsBySNO(ActorSno._trdun_cath_bonewall_a_door))
                         {
-                            Wall.PlayAnimation(11, 108568);
+                            Wall.PlayAnimation(11, AnimationSno.trdun_cath_bonewall_a_death);
                             Wall.Attributes[GameAttribute.Deleted_On_Server] = true;
                             Wall.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
                             Wall.Attributes.BroadcastChangedIfRevealed();
@@ -1220,7 +1220,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     ListenProximity(ActorSno._woodfencee_fields_trout, new Advance()); //if going through graveyard
                     var Gate = world.GetActorBySNO(ActorSno._cemetary_gate_trout_wilderness_no_lock);
                     Gate.Field2 = 16;
-                    Gate.PlayAnimation(5, Gate.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+                    var animation = Gate.AnimationSet.Animations[AnimationSetKeys.Opening.ID];
+                    Gate.PlayAnimation(5, animation);
                     world.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDCollFlagsMessage
                     {
                         ActorID = Gate.DynamicID(plr),
@@ -1895,7 +1896,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         var world = Game.GetWorld(WorldSno.trout_townattack_chapelcellar_a);
                         foreach (var Table in world.GetActorsBySNO(ActorSno._trout_townattack_cellar_altar)) {
                             Table.SetUsable(false);
-                            Table.SetIdleAnimation(Table.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]); 
+                            var animation = Table.AnimationSet.Animations[AnimationSetKeys.Open.ID];
+                            Table.SetIdleAnimation(animation); 
                         }
                         foreach (var Maghda in world.GetActorsBySNO(ActorSno._maghda_a_tempprojection)) Maghda.Destroy();
                     });

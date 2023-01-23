@@ -283,8 +283,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					var Hope = Library.SpawnMonster(ActorSno._hope, new Vector3D(Hope_Bound.Position.X - 0.3854f, Hope_Bound.Position.Y + 0.44201f, Hope_Bound.Position.Z));
                     var Fate = Library.SpawnMonster(ActorSno._fate, new Vector3D(Hope_Bound.Position.X - 18.6041f, Hope_Bound.Position.Y + 2.35458f, Hope_Bound.Position.Z));
                     
-                    Hope.PlayAnimation(11,201931,1);
-                    Fate.PlayAnimation(11, 204712, 1);
+                    Hope.PlayAnimation(11, AnimationSno.omninpc_female_hope_spawn_01, 1);
+                    Fate.PlayAnimation(11, AnimationSno.omninpc_male_fate_spawn_01, 1);
 
 					Hope.Attributes[GameAttribute.MinimapActive] = true;
                     (Hope as InteractiveNPC).Conversations.Clear();

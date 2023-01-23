@@ -1,12 +1,5 @@
 ﻿//Blizzless Project 2022 
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 //Blizzless Project 2022 
 using System;
 //Blizzless Project 2022 
@@ -30,25 +23,25 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			var RitualCircle = world.GetActorBySNO(ActorSno._event47_groundrune);
 			var Leah = world.GetActorBySNO(ActorSno._leah_event47);
 			var NStone = world.GetActorBySNO(ActorSno._a2dun_zolt_black_soulstone);
-			RitualCircle.PlayActionAnimation(194705); // stage1
+			RitualCircle.PlayActionAnimation(AnimationSno.emitter_event47_groundrune_stage01); // stage1
 			Task.Delay(1500).ContinueWith(delegate
 			{
-				RitualCircle.PlayActionAnimation(194706); // stage2
-				Leah.PlayActionAnimation(205941);
+				RitualCircle.PlayActionAnimation(AnimationSno.emitter_event47_groundrune_stage02); // stage2
+				Leah.PlayActionAnimation(AnimationSno.leah_bss_event_bound_shake);
 				Task.Delay(1500).ContinueWith(delegate
 				{
-					RitualCircle.PlayActionAnimation(194707); // stage3
+					RitualCircle.PlayActionAnimation(AnimationSno.emitter_event47_groundrune_stage03); // stage3
 
 					Task.Delay(1500).ContinueWith(delegate
 					{
-						RitualCircle.PlayActionAnimation(194709); // stage4
+						RitualCircle.PlayActionAnimation(AnimationSno.emitter_event47_groundrune_stage04); // stage4
 
 						Task.Delay(1500).ContinueWith(delegate
 						{
 							RitualCircle.PlayEffectGroup(199076);
 							NStone.Destroy();
 							StartConversation(world, 195749);
-							Leah.PlayActionAnimation(194492);
+							Leah.PlayActionAnimation(AnimationSno.leah_bss_event_kneel_to_getup);
 						});
 					});
 				});

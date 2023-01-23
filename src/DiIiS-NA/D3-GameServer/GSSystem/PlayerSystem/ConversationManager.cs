@@ -57,6 +57,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 //Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Platinum;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.Core.Types.TagMap;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 {
@@ -529,10 +530,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				var HubWorld = player.InGameClient.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
 				var NStone = HubWorld.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 				bool Activated = true;
-				NStone.SetIdleAnimation(
-					NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.IdleDefault]);
-				NStone.PlayActionAnimation(
-					NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.Closing]);
+				NStone.SetIdleAnimation(NStone.AnimationSet.Animations[AnimationSetKeys.IdleDefault.ID]);
+				NStone.PlayActionAnimation(NStone.AnimationSet.Animations[AnimationSetKeys.Closing.ID]);
 				NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 				NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 				NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -802,7 +801,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						foreach (var wall in wrld.GetActorsBySNO(ActorSno._trdun_cath_bonewall_a_door))
 							if (wall.Position.Z > -23f)
 							{
-								wall.PlayAnimation(11, 108568);
+								wall.PlayAnimation(11, AnimationSno.trdun_cath_bonewall_a_death);
 								wall.Attributes[GameAttribute.Deleted_On_Server] = true;
 								wall.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
 								wall.Attributes.BroadcastChangedIfRevealed();

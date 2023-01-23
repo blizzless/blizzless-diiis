@@ -656,24 +656,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}, target);
 		}
 
-		public void SetIdleAnimation(int animationSNO)
+		public void SetIdleAnimation(AnimationSno animationSNO)
 		{
-			if (World == null || animationSNO == -1) return;
+			if (this.World == null || animationSNO == AnimationSno._NONE) return;
 
 			World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
-				ActorID = DynamicID(plr),
-				AnimationSNO = animationSNO
+				ActorID = this.DynamicID(plr),
+				AnimationSNO = (int)animationSNO
 			}, this);
 		}
 
-		public void PlayAnimationAsSpawn(int animationSNO)
+		public void PlayAnimationAsSpawn(AnimationSno animationSNO)
 		{
 			if (this is Monster)
 			{
-				var anim =
-					(DiIiS_NA.Core.MPQ.FileFormats.Anim)MPQStorage.Data.Assets[SNOGroup.Anim][
-						animationSNO].Data;
+				// unused
+				//var Anim = (DiIiS_NA.Core.MPQ.FileFormats.Anim)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Anim][animationSNO].Data;
 
 				World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 				{
@@ -696,9 +695,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				}
 			}
 
-		public void PlayAnimation(int animationType, int animationSNO, float speed = 1.0f, int? ticksToPlay = null, int type2 = 0)
+			public void PlayAnimation(int animationType, AnimationSno animationSNO, float speed = 1.0f, int? ticksToPlay = null, int type2 = 0)
 		{
-			if (World == null || animationSNO == -1) return;
+			if (this.World == null || animationSNO == AnimationSno._NONE) return;
 
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
@@ -710,7 +709,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					new()
 					{
 						Duration = ticksToPlay ?? -2,  // -2 = play animation once through
-						AnimationSNO = animationSNO,
+						AnimationSNO = (int)animationSNO,
 						PermutationIndex = 0x0,  // TODO: implement variations?
 						AnimationTag = 0,
 						Speed = speed,
@@ -719,7 +718,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}, this);
 		}
 
-		public void PlayActionAnimation(int animationSNO, float speed = 1.0f, int? ticksToPlay = null)
+		public void PlayActionAnimation(AnimationSno animationSNO, float speed = 1.0f, int? ticksToPlay = null)
 		{
 			PlayAnimation(3, animationSNO, speed, ticksToPlay);
 		}
@@ -969,11 +968,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					if (Tags != null)
 						if (Tags.ContainsKey(MarkerKeys.Group1Hash))
 							if (Tags[MarkerKeys.Group1Hash] == -1248096796)
-								PlayActionAnimation(11514);
+								PlayActionAnimation(AnimationSno.zombie_male_skinny_eating);
 				}
 				// set idle animation for workers
 				else if (World.SNO == WorldSno.trout_tristram_inn && SNO == ActorSno._omninpc_tristram_male_a)
-					PlayActionAnimation(102329);
+					PlayActionAnimation(AnimationSno.omninpc_male_hth_injured);
 				else if (SNO == ActorSno._leah)
 					player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Inventory.VisualInventoryMessage()
 					{
