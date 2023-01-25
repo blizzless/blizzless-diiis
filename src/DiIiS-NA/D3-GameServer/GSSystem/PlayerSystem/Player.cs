@@ -2487,7 +2487,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
 
 #if DEBUG
-				Logger.Warn("Местоположение игрока {0}, Scene: {1} SNO: {2} LevelArea: {3}", Toon.Name, CurrentScene.SceneSNO.Name, CurrentScene.SceneSNO.Id, CurrentScene.Specification.SNOLevelAreas[0]);
+				Logger.Warn("Player Location {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
 #else
 
 #endif
@@ -2964,12 +2964,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			// Check the gold
 			if (InGameClient.Game.TickCounter % 120 == 0 && World != null && GoldCollectedTempCount > 0)
 			{
-				if (World.Game.IsHardcore)
-					Toon.GameAccount.HardcoreGold += (ulong)GoldCollectedTempCount;
-				else
-					Toon.GameAccount.Gold += (ulong)GoldCollectedTempCount;
-
-				Toon.CollectedGold += (ulong)GoldCollectedTempCount;
+				this.Toon.GameAccount.Gold += (ulong)this.GoldCollectedTempCount;
+				this.Toon.CollectedGold += (ulong)this.GoldCollectedTempCount;
 
 				if (World.Game.IsHardcore)
 					Toon.CollectedGoldSeasonal += GoldCollectedTempCount;
@@ -2982,14 +2978,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			// Check the blood shards
 			if (InGameClient.Game.TickCounter % 120 == 0 && World != null && BloodShardsCollectedTempCount > 0)
 			{
-				if (World.Game.IsHardcore)
-					Toon.GameAccount.HardcoreBloodShards += BloodShardsCollectedTempCount;
-				else
-					Toon.GameAccount.BloodShards += BloodShardsCollectedTempCount;
-
-				Toon.GameAccount.TotalBloodShards += BloodShardsCollectedTempCount;
-
-				BloodShardsCollectedTempCount = 0;
+				this.Toon.GameAccount.BloodShards += this.BloodShardsCollectedTempCount;
+				this.Toon.GameAccount.TotalBloodShards += this.BloodShardsCollectedTempCount;
+				this.BloodShardsCollectedTempCount = 0;
 			}
 
 			if (World != null && SkillSet.HasPassive(298038) && (InGameClient.Game.TickCounter - LastMovementTick) > 90)
@@ -3107,29 +3098,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				if (KilledMonstersTempCount != 0)
 				{
-					Toon.KilledMonsters += (ulong)KilledMonstersTempCount;
-					KilledMonstersTempCount = 0;
+					this.Toon.TotalKilled += (ulong)this.KilledMonstersTempCount;
+					this.KilledMonstersTempCount = 0;
 
 					if (KilledElitesTempCount != 0)
 					{
-						Toon.KilledElites += (ulong)KilledElitesTempCount;
-						if (World.Game.IsHardcore)
-							Toon.KilledElitesSeasonal += KilledElitesTempCount;
-						KilledElitesTempCount = 0;
+						this.Toon.ElitesKilled += (ulong)this.KilledElitesTempCount;
+						this.KilledElitesTempCount = 0;
 					}
 
 					if (KilledSeasonalTempCount != 0)
 					{
-						if (World.Game.IsHardcore)
-							Toon.SeasonalKills += KilledSeasonalTempCount;
-						KilledSeasonalTempCount = 0;
+						this.Toon.SeasonalKills += this.KilledSeasonalTempCount;
+						this.KilledSeasonalTempCount = 0;
 					}
 				}
 
 				CheckAchievementCounters();
 			}
 
-			#region Призывы некроманта
+			#region Necromancer summons
 			bool switchertobool = false;
 			bool switchertoboolTwo = false;
 			ActiveSkillSavedData NowSkillGolem = null;
@@ -4428,13 +4416,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void LoadCurrencyData()
 		{
 			int bloodShards = 0;
-			if (World.Game.IsHardcore)
-				bloodShards = Toon.GameAccount.HardcoreBloodShards;
-			else
-				bloodShards = Toon.GameAccount.BloodShards;
-
-			Inventory.UpdateCurrencies();
-
+			bloodShards = this.Toon.GameAccount.BloodShards;
+			this.Inventory.UpdateCurrencies();
 		}
 
 		public void LoadMailData()
@@ -5377,7 +5360,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						Type = (FloatingAmountMessage.FloatType)22,
 					});
 					//*/
-					Toon.CraftItem4++;
+					Toon.GameAccount.CraftItem4++;
 					Inventory.UpdateCurrencies();
 					item.Destroy();
 				}
