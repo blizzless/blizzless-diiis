@@ -18,14 +18,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Gharbad(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			CollFlags = 0;
+			WalkSpeed = 0;
+			Attributes[GameAttribute.Invulnerable] = true;
 		}
 
 		public override bool Reveal(Player player)
 		{
-			this.NotifyConversation(2);
+			NotifyConversation(2);
 
 			if (!base.Reveal(player))
 				return false;
@@ -37,7 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			base.OnTargeted(player, message);
 
-			if (this.World.Game.CurrentSideQuest != 225253)
+			if (World.Game.CurrentSideQuest != 225253)
 				player.Conversations.StartConversation(81069);
 			else
 				player.Conversations.StartConversation(81099);
@@ -45,8 +45,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void Resurrect()
 		{
-			this.World.SpawnMonster(ActorSno._goatmutant_melee_a_unique_gharbad, this.Position);
-			this.Destroy();
+			World.SpawnMonster(ActorSno._goatmutant_melee_a_unique_gharbad, Position);
+			Destroy();
 		}
 	}
 }

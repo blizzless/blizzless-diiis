@@ -26,10 +26,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 1.2f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.
-			this.WalkSpeed *= 5;
-			this.DamageCoefficient = context.ScriptFormula(11) * 2f;
+			WalkSpeed *= 5;
+			DamageCoefficient = context.ScriptFormula(11) * 2f;
 			SetBrain(new MinionBrain(this));
-			this.Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
 			(Brain as MinionBrain).AddPresetPower(118442); //fetisharmy_shaman.pow
 														   //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
 														   //Attributes[GameAttribute.Hitpoints_Max] = 20f;

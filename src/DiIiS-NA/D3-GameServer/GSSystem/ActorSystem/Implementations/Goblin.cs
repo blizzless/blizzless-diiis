@@ -29,24 +29,24 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			: base(world, sno, tags)
 		{
 			// Override minimap icon in markerset tags
-			this.WalkSpeed = 0;
-			this.Brain = new MonsterBrain(this);
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			WalkSpeed = 0;
+			Brain = new MonsterBrain(this);
+			Attributes[GameAttribute.MinimapActive] = true;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 123152;
-			this.Attributes[GameAttribute.Hitpoints_Max] *= 3f;
-			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttribute.Hitpoints_Max] *= 3f;
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
-			this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = 0f;
-			this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 0f;
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 0f;
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 0f;
 			//(this.Brain as MonsterBrain).AddPresetPower(54055); //TreasureGoblinPause
-			(this.Brain as MonsterBrain).AddPresetPower(105371); //TreasureGoblin_Escape
+			(Brain as MonsterBrain).AddPresetPower(105371); //TreasureGoblin_Escape
 		}
 
 		public override bool Reveal(Player player)
 		{
-			if (this.World.SNO == WorldSno.a1dun_spidercave_01 || this.World.SNO == WorldSno.trout_oldtistram_cellar_3)
+			if (World.SNO == WorldSno.a1dun_spidercave_01 || World.SNO == WorldSno.trout_oldtistram_cellar_3)
 			{
-				this.Destroy();
+				Destroy();
 				return false;
 			}
 

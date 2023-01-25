@@ -24,8 +24,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public CowBones(World world, TagMap tags)
 			: base(world, ActorSno._caout_oasis_bonepile_a, false, tags)
 		{
-			this.Scale *= 1.5f;
-			this.Hidden = true;
+			Scale *= 1.5f;
+			Hidden = true;
 		}
 	}
 }

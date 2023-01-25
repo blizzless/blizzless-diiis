@@ -31,7 +31,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 			Task.Delay(7000).ContinueWith(delegate 
 			{
-				Leah.PlayActionAnimation(201990);
+				Leah.PlayActionAnimation(AnimationSno.leah_bss_event_lvlup);
 				BPortal.Hidden = false;
 				BPortal.SetVisible(true);
 				foreach (var plr in world.Players.Values)
@@ -39,7 +39,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 				Task.Delay(2000).ContinueWith(delegate
 				{
-					Leah.PlayActionAnimation(208444);
+					Leah.PlayActionAnimation(AnimationSno.leah_bss_event_open_portal_out);
 					Task.Delay(3000).ContinueWith(delegate
 					{
 						

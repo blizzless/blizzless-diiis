@@ -28,14 +28,14 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 		public void Register(CommandGroupAttribute attributes)
 		{
-			this.Attributes = attributes;
-			this.RegisterDefaultCommand();
-			this.RegisterCommands();
+			Attributes = attributes;
+			RegisterDefaultCommand();
+			RegisterCommands();
 		}
 
 		private void RegisterCommands()
 		{
-			foreach (var method in this.GetType().GetMethods())
+			foreach (var method in GetType().GetMethods())
 			{
 				object[] attributes = method.GetCustomAttributes(typeof(CommandAttribute), true);
 				if (attributes.Length == 0) continue;
@@ -43,8 +43,8 @@ namespace DiIiS_NA.GameServer.CommandManager
 				var attribute = (CommandAttribute)attributes[0];
 				if (attribute is DefaultCommand) continue;
 
-				if (!this._commands.ContainsKey(attribute))
-					this._commands.Add(attribute, method);
+				if (!_commands.ContainsKey(attribute))
+					_commands.Add(attribute, method);
 				else
 					Logger.Warn("There exists an already registered command '{0}'.", attribute.Name);
 			}
@@ -52,38 +52,38 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 		private void RegisterDefaultCommand()
 		{
-			foreach (var method in this.GetType().GetMethods())
+			foreach (var method in GetType().GetMethods())
 			{
 				object[] attributes = method.GetCustomAttributes(typeof(DefaultCommand), true);
 				if (attributes.Length == 0) continue;
 				if (method.Name.ToLower() == "fallback") continue;
 
-				this._commands.Add(new DefaultCommand(this.Attributes.MinUserLevel), method);
+				_commands.Add(new DefaultCommand(Attributes.MinUserLevel), method);
 				return;
 			}
 
 			// set the fallback command if we couldn't find a defined DefaultCommand.
-			this._commands.Add(new DefaultCommand(this.Attributes.MinUserLevel), this.GetType().GetMethod("Fallback"));
+			_commands.Add(new DefaultCommand(Attributes.MinUserLevel), GetType().GetMethod("Fallback"));
 		}
 
 		public virtual string Handle(string parameters, BattleClient invokerClient = null)
 		{
 			// check if the user has enough privileges to access command group.
 			// check if the user has enough privileges to invoke the command.
-			if (invokerClient != null && this.Attributes.MinUserLevel > invokerClient.Account.UserLevel)
+			if (invokerClient != null && Attributes.MinUserLevel > invokerClient.Account.UserLevel)
 				return "You don't have enough privileges to invoke that command.";
 
 			string[] @params = null;
 			CommandAttribute target = null;
 
 			if (parameters == string.Empty)
-				target = this.GetDefaultSubcommand();
+				target = GetDefaultSubcommand();
 			else
 			{
 				@params = parameters.Split(' ');
-				target = this.GetSubcommand(@params[0]) ?? this.GetDefaultSubcommand();
+				target = GetSubcommand(@params[0]) ?? GetDefaultSubcommand();
 
-				if (target != this.GetDefaultSubcommand())
+				if (target != GetDefaultSubcommand())
 					@params = @params.Skip(1).ToArray();
 			}
 
@@ -91,12 +91,12 @@ namespace DiIiS_NA.GameServer.CommandManager
 			if (invokerClient != null && target.MinUserLevel > invokerClient.Account.UserLevel)
 				return "You don't have enough privileges to invoke that command.";
 
-			return (string)this._commands[target].Invoke(this, new object[] { @params, invokerClient });
+			return (string)_commands[target].Invoke(this, new object[] { @params, invokerClient });
 		}
 
 		public string GetHelp(string command)
 		{
-			foreach (var pair in this._commands)
+			foreach (var pair in _commands)
 			{
 				if (command != pair.Key.Name) continue;
 				return pair.Key.Help;
@@ -109,7 +109,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		public virtual string Fallback(string[] @params = null, BattleClient invokerClient = null)
 		{
 			var output = "Available subcommands: ";
-			foreach (var pair in this._commands)
+			foreach (var pair in _commands)
 			{
 				if (pair.Key.Name.Trim() == string.Empty) continue; // skip fallback command.
 				if (invokerClient != null && pair.Key.MinUserLevel > invokerClient.Account.UserLevel) continue;
@@ -121,12 +121,12 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 		protected CommandAttribute GetDefaultSubcommand()
 		{
-			return this._commands.Keys.First();
+			return _commands.Keys.First();
 		}
 
 		protected CommandAttribute GetSubcommand(string name)
 		{
-			return this._commands.Keys.FirstOrDefault(command => command.Name == name);
+			return _commands.Keys.FirstOrDefault(command => command.Name == name);
 		}
 	}
 }

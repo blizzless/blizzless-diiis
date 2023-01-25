@@ -35,11 +35,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 
 			//this.Field2 = 0x9;//16;
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.MinimapActive] = true;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 218394;
-			if (this.World.SNO.IsDungeon())
+			if (World.SNO.IsDungeon())
 			{
-				this.Destination = new ResolvedPortalDestination()
+				Destination = new ResolvedPortalDestination()
 				{
 					DestLevelAreaSNO = 332339,
 					WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub,
@@ -60,29 +60,29 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					if (actor is Portal)
 						Exit = actor as Portal;
 				if (Exit != null)
-					this.Destination = Exit.Destination;
+					Destination = Exit.Destination;
 			}
 			else if (Destination == null)
-				this.Destination = this.World.PrevLocation;
+				Destination = World.PrevLocation;
 
 			player.InGameClient.SendMessage(new PortalSpecifierMessage()
 			{
-				ActorID = this.DynamicID(player),
-				Destination = this.Destination
+				ActorID = DynamicID(player),
+				Destination = Destination
 			});
 
 			return true;
 		}
 		public StartingPoint GetSmartStartingPoint(World world)
 		{
-			if (this.Destination.StartingPointActorTag != 0)
+			if (Destination.StartingPointActorTag != 0)
 			{
-				StartingPoint NeededStartingPoint = world.GetStartingPointById(this.Destination.StartingPointActorTag);
-				var DestWorld = world.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
+				StartingPoint NeededStartingPoint = world.GetStartingPointById(Destination.StartingPointActorTag);
+				var DestWorld = world.Game.GetWorld((WorldSno)Destination.WorldSNO);
 				var StartingPoints = DestWorld.GetActorsBySNO(ActorSno._start_location_0);
 				foreach (var ST in StartingPoints)
 				{
-					if (ST.CurrentScene.SceneSNO.Id == this.Destination.StartingPointActorTag)
+					if (ST.CurrentScene.SceneSNO.Id == Destination.StartingPointActorTag)
 						NeededStartingPoint = (ST as StartingPoint);
 				}
 				if (NeededStartingPoint != null)
@@ -97,22 +97,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			Logger.Debug("(OnTargeted) Portal has been activated ");
 
-			if (this.World.SNO.IsDungeon())
+			if (World.SNO.IsDungeon())
 			{
-				this.Destination.DestLevelAreaSNO = 332339;
-				this.Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
-				this.Destination.StartingPointActorTag = 24;
+				Destination.DestLevelAreaSNO = 332339;
+				Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
+				Destination.StartingPointActorTag = 24;
 			}
 
-			var world = this.World.Game.GetWorld((WorldSno)this.Destination.WorldSNO);
+			var world = World.Game.GetWorld((WorldSno)Destination.WorldSNO);
 
 			if (world == null)
 			{
-				Logger.Warn("Portal's destination world does not exist (WorldSNO = {0})", this.Destination.WorldSNO);
+				Logger.Warn("Portal's destination world does not exist (WorldSNO = {0})", Destination.WorldSNO);
 				return;
 			}
 
-			var startingPoint = world.GetStartingPointById(this.Destination.StartingPointActorTag);
+			var startingPoint = world.GetStartingPointById(Destination.StartingPointActorTag);
 
 			if (startingPoint == null)
 				startingPoint = GetSmartStartingPoint(world);
@@ -120,9 +120,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (startingPoint != null)
 			{
 
-				player.ShowConfirmation(this.DynamicID(player), (() => {
+				player.ShowConfirmation(DynamicID(player), (() => {
 					player.StartCasting(150, new Action(() => {
-						if (world == this.World)
+						if (world == World)
 							player.Teleport(startingPoint.Position);
 						else
 							player.ChangeWorld(world, startingPoint);
@@ -131,7 +131,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			}
 			else
-				Logger.Warn("Portal's tagged starting point does not exist (Tag = {0})", this.Destination.StartingPointActorTag);
+				Logger.Warn("Portal's tagged starting point does not exist (Tag = {0})", Destination.StartingPointActorTag);
 		}
 	}
 }

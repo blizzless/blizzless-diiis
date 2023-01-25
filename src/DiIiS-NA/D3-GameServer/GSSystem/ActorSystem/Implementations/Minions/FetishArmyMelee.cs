@@ -1,6 +1,4 @@
 ﻿//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -9,11 +7,8 @@ using DiIiS_NA.GameServer.GSSystem.PowerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 //Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 //Blizzless Project 2022 
-using System.Collections.Generic;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
@@ -26,10 +21,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 1.2f; //they look cooler bigger :)
 						  //TODO: get a proper value for this.
-			this.WalkSpeed *= 5;
-			this.DamageCoefficient = context.ScriptFormula(22) * 2f;
+			WalkSpeed *= 5;
+			DamageCoefficient = context.ScriptFormula(22) * 2f;
 			SetBrain(new MinionBrain(this));
-			this.Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
 			//TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
 			//Attributes[GameAttribute.Hitpoints_Max] = 20f;
 			//Attributes[GameAttribute.Hitpoints_Cur] = 20f;

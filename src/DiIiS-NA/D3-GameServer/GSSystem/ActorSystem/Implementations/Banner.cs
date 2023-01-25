@@ -49,7 +49,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Banner(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.BannerPlayerIndex = bannerActors.FirstOrDefault(x => x.Value.Contains(this.SNO)).Key;
+			BannerPlayerIndex = bannerActors.FirstOrDefault(x => x.Value.Contains(SNO)).Key;
 		}
 
 		public int BannerPlayerIndex = 0;
@@ -63,13 +63,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			Logger.Trace("(OnTargeted) Banner has been activated ");
 
-			if (this.World.Game.Players.Count == 1 || this.BannerPlayerIndex == 0)
+			if (World.Game.Players.Count == 1 || BannerPlayerIndex == 0)
 			{
                 player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.SimpleMessage(Opcodes.OpenBannerCustomizationMessage));
                 return;
 			}
 			
-			var banner_player = this.World.Game.Players.Values.Single(p => p.PlayerIndex == this.BannerPlayerIndex);
+			var banner_player = World.Game.Players.Values.Single(p => p.PlayerIndex == BannerPlayerIndex);
 
 			if (banner_player == null || banner_player.World == null)
 			{
@@ -78,23 +78,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			}
 
 			//if banner has been disabled for events like active greater active swarm  /advocaite
-			if(!player.Attributes[GameAttributeB.Banner_Usable])
+			if(!player.Attributes[GameAttribute.Banner_Usable])
 			{
 				return;
 			}
 
-			player.ShowConfirmation(this.DynamicID(player), (() => {
+			player.ShowConfirmation(DynamicID(player), (() => {
 				player.StartCasting(150, new Action(() => {
 					if (banner_player.PlayerDirectBanner == null)
 					{
-						if (banner_player.World == this.World)
+						if (banner_player.World == World)
 							player.Teleport(banner_player.Position);
 						else
 							player.ChangeWorld(banner_player.World, banner_player.Position);
 					}
 					else
 					{
-						if (banner_player.PlayerDirectBanner.World == this.World)
+						if (banner_player.PlayerDirectBanner.World == World)
 							player.Teleport(banner_player.PlayerDirectBanner.Position);
 						else
 							player.ChangeWorld(banner_player.PlayerDirectBanner.World, banner_player.PlayerDirectBanner.Position);

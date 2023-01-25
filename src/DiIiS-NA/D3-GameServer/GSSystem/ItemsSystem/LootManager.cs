@@ -49,61 +49,61 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						case 2:
 						case 3:
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9984f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 4: //T1
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9982f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 5: //T2
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9979f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 6: //T3
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9976f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 7: //T4
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9972f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 8: //T5
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9968f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 9: //T6
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9963f)
-								return LootManager.Rare;
-							return LootManager.Epic;
-						default: return LootManager.Common;
+								return Rare;
+							return Epic;
+						default: return Common;
 					}
 				case 1: //Champion
 					switch (difficulty)
@@ -113,61 +113,61 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						case 2:
 						case 3:
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9984f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 4: //T1
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9982f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 5: //T2
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9979f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 6: //T3
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9976f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 7: //T4
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9972f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 8: //T5
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9968f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 9: //T6
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9963f)
-								return LootManager.Rare;
-							return LootManager.Epic;
-						default: return LootManager.Common;
+								return Rare;
+							return Epic;
+						default: return Common;
 					}
 				case 2: //Rare (Elite)
 				case 4: //Unique
@@ -178,61 +178,61 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						case 2:
 						case 3:
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9984f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 4: //T1
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9982f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 5: //T2
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9979f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 6: //T3
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9976f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 7: //T4
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9972f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 8: //T5
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9968f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 9: //T6
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9963f)
-								return LootManager.Rare;
-							return LootManager.Epic;
-						default: return LootManager.Common;
+								return Rare;
+							return Epic;
+						default: return Common;
 					}
 				case 7: //Boss
 					switch (difficulty)
@@ -242,64 +242,64 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						case 2:
 						case 3:
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.995f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 4: //T1
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9942f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 5: //T2
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9934f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 6: //T3
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9924f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 7: //T4
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9913f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 8: //T5
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.985f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 9: //T6
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.98f)
-								return LootManager.Rare;
-							return LootManager.Epic;
-						default: return LootManager.Common;
+								return Rare;
+							return Epic;
+						default: return Common;
 					}
 				default:
-					return LootManager.Common;
+					return Common;
 			}
 		}
 
@@ -316,61 +316,61 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						case 2:
 						case 3:
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9952f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 4: //T1
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9945f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 5: //T2
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9938f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 6: //T3
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9927f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 7: //T4
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9916f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 8: //T5
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9904f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 9: //T6
 							if (roll < 0.2f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9889f)
-								return LootManager.Rare;
-							return LootManager.Epic;
-						default: return LootManager.Common;
+								return Rare;
+							return Epic;
+						default: return Common;
 					}
 				case 1: //Champion
 					switch (difficulty)
@@ -380,61 +380,61 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						case 2:
 						case 3:
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9952f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 4: //T1
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9945f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 5: //T2
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9938f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 6: //T3
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9927f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 7: //T4
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9916f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 8: //T5
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9904f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 9: //T6
 							if (roll < 0.08f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.5f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9889f)
-								return LootManager.Rare;
-							return LootManager.Epic;
-						default: return LootManager.Common;
+								return Rare;
+							return Epic;
+						default: return Common;
 					}
 				case 2: //Rare (Elite)
 				case 4: //Unique
@@ -445,61 +445,61 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						case 2:
 						case 3:
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9952f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 4: //T1
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9945f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 5: //T2
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9938f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 6: //T3
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9927f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 7: //T4
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9916f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 8: //T5
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9904f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 9: //T6
 							if (roll < 0.05f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.35f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9889f)
-								return LootManager.Rare;
-							return LootManager.Epic;
-						default: return LootManager.Common;
+								return Rare;
+							return Epic;
+						default: return Common;
 					}
 				case 7: //Boss
 					switch (difficulty)
@@ -509,64 +509,64 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						case 2:
 						case 3:
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.985f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 4: //T1
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9827f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 5: //T2
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9802f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 6: //T3
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9772f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 7: //T4
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9737f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 8: //T5
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9698f)
-								return LootManager.Rare;
-							return LootManager.Epic;
+								return Rare;
+							return Epic;
 						case 9: //T6
 							if (roll < 0.03f)
-								return LootManager.Common;
+								return Common;
 							if (roll < 0.29f)
-								return LootManager.Uncommon;
+								return Uncommon;
 							if (roll < 0.9653f)
-								return LootManager.Rare;
-							return LootManager.Epic;
-						default: return LootManager.Common;
+								return Rare;
+							return Epic;
+						default: return Common;
 					}
 				default:
-					return LootManager.Common;
+					return Common;
 			}
 		}
 
@@ -615,16 +615,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			switch (MonsterQuality)
 			{
 				case 0: //Normal
-					return new List<float> { 0.18f * DiIiS_NA.GameServer.Config.Instance.RateChangeDrop };
+					return new List<float> { 0.18f * Config.Instance.RateChangeDrop };
 				case 1: //Champion
-					return new List<float> { 1f, 1f, 1f, 1f, 0.75f * DiIiS_NA.GameServer.Config.Instance.RateChangeDrop };
+					return new List<float> { 1f, 1f, 1f, 1f, 0.75f * Config.Instance.RateChangeDrop };
 				case 2: //Rare (Elite)
 				case 4: //Unique
 					return new List<float> { 1f, 1f, 1f, 1f, 1f };
 				case 7: //Boss
-					return new List<float> { 1f, 1f, 1f, 1f, 1f, 0.75f * DiIiS_NA.GameServer.Config.Instance.RateChangeDrop, 0.4f * DiIiS_NA.GameServer.Config.Instance.RateChangeDrop };
+					return new List<float> { 1f, 1f, 1f, 1f, 1f, 0.75f * Config.Instance.RateChangeDrop, 0.4f * Config.Instance.RateChangeDrop };
 				default:
-					return new List<float> { 0.12f * DiIiS_NA.GameServer.Config.Instance.RateChangeDrop };
+					return new List<float> { 0.12f * Config.Instance.RateChangeDrop };
 			}
 		}
 

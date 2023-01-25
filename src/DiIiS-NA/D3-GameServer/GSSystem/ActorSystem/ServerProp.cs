@@ -42,9 +42,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public ServerProp(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Field2 = 0x9;
-			this.Field7 = 0x00000001;
-			this.CollFlags = 1; // this.CollFlags = 0; a hack for passing through blockers /fasbat
+			Field2 = 0x9;
+			Field7 = 0x00000001;
+			CollFlags = 1; // this.CollFlags = 0; a hack for passing through blockers /fasbat
 								//this.Attributes[GameAttribute.MinimapActive] = true;
 
 		}
@@ -53,17 +53,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override bool Reveal(Player player)
 		{
-			if (hidden.Contains(this.SNO) ||
-				(this.SNO == ActorSno._x1_westm_door_cloister_locked && this.World.Game.CurrentQuest != 251355) ||   //A5_closedDoor
-				((this.SNO == ActorSno._trout_newtristram_blocking_cart || this.SNO == ActorSno._cain_intro_bridge_invisi_wall) && this.World.Game.CurrentQuest != 87700))          //Tristram invis wall
+			if (hidden.Contains(SNO) ||
+				(SNO == ActorSno._x1_westm_door_cloister_locked && World.Game.CurrentQuest != 251355) ||   //A5_closedDoor
+				((SNO == ActorSno._trout_newtristram_blocking_cart || SNO == ActorSno._cain_intro_bridge_invisi_wall) && World.Game.CurrentQuest != 87700))          //Tristram invis wall
 				return false;
 
-			if (!this.triggered)
+			if (!triggered)
 			{
-				this.triggered = true;
-				if (this.SNO == ActorSno._invisboxcollision_leorlogs && FastRandom.Instance.Next(100) < 30) //invisBoxCollision_LeorLogs
+				triggered = true;
+				if (SNO == ActorSno._invisboxcollision_leorlogs && FastRandom.Instance.Next(100) < 30) //invisBoxCollision_LeorLogs
 				{
-					this.World.SpawnMonster(ActorSno._trout_highlands_manor_firewood, this.Position);
+					World.SpawnMonster(ActorSno._trout_highlands_manor_firewood, Position);
 				}
 			}
 

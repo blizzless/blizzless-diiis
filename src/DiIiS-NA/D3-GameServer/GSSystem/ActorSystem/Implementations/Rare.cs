@@ -19,17 +19,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Rare(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.Hitpoints_Max] *= 5f;
-			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total]; 
-			this.Attributes[GameAttribute.Immune_To_Charm] = true;
-			this.Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 3.5f;
-			this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 3.5f;
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = this.Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			Attributes[GameAttribute.Hitpoints_Max] *= 5f;
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total]; 
+			Attributes[GameAttribute.Immune_To_Charm] = true;
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 3.5f;
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 3.5f;
+			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
+			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
 			
-			this.NamePrefix = MonsterAffixGenerator.GeneratePrefixName();
-			this.NameSuffix = MonsterAffixGenerator.GenerateSuffixName();
+			NamePrefix = MonsterAffixGenerator.GeneratePrefixName();
+			NameSuffix = MonsterAffixGenerator.GenerateSuffixName();
 		}
 
 		private int NamePrefix = -1;
@@ -48,7 +48,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			player.InGameClient.SendMessage(new RareMonsterNamesMessage()
 			{
 				ann = DynamicID(player),
-				RareNames = new int[2] { this.NamePrefix, this.NameSuffix },
+				RareNames = new int[2] { NamePrefix, NameSuffix },
 				MonsterAffixes = affixGbids
 			});
 

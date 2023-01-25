@@ -12,8 +12,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		public Payload(PowerContext context, Actor target)
 		{
-			this.Context = context;
-			this.Target = target;
+			Context = context;
+			Target = target;
 		}
 	}
 }

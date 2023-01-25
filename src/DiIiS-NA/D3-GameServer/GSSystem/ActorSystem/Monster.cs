@@ -52,7 +52,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			get
 			{
-				if(this.SNO == ActorSno._x1_lr_boss_mistressofpain)
+				if(SNO == ActorSno._x1_lr_boss_mistressofpain)
 					return 7;
 				return (int)DiIiS_NA.Core.MPQ.FileFormats.SpawnType.Normal;
 				//return (int)Mooege.Common.MPQ.FileFormats.SpawnType.Champion;
@@ -115,17 +115,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public Monster(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Field2 = 0x8;
-			this.GBHandle.Type = (int)ActorType.Monster; this.GBHandle.GBID = 1;
-			this.Attributes[GameAttribute.TeamID] = 9;
+			Field2 = 0x8;
+			GBHandle.Type = (int)ActorType.Monster; GBHandle.GBID = 1;
+			Attributes[GameAttribute.TeamID] = 9;
 			if (Monster.Id != -1)
-				this.WalkSpeed = (Monster.Target as MonsterFF).AttributeModifiers[129];  
+				WalkSpeed = (Monster.Target as MonsterFF).AttributeModifiers[129];  
 			//WalkSpeed /= 2f;
 			
-			this.Brain = new MonsterBrain(this);
-			this.Attributes[GameAttribute.Attacks_Per_Second] = 1.2f;
+			Brain = new MonsterBrain(this);
+			Attributes[GameAttribute.Attacks_Per_Second] = 1.2f;
 
-			this.UpdateStats();
+			UpdateStats();
 		}
 
 		public override void OnTargeted(Player player, TargetMessage message)
@@ -136,47 +136,47 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public void UpdateStats()
 		{
 			var monsterLevels = (GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.GameBalance][19760].Data;
-			bool full_hp = (this.Attributes[GameAttribute.Hitpoints_Cur] == this.Attributes[GameAttribute.Hitpoints_Max_Total]);
-			this.Attributes[GameAttribute.Level] = this.World.Game.MonsterLevel;
+			bool full_hp = (Attributes[GameAttribute.Hitpoints_Cur] == Attributes[GameAttribute.Hitpoints_Max_Total]);
+			Attributes[GameAttribute.Level] = World.Game.MonsterLevel;
 			//this.Attributes[GameAttribute.Hitpoints_Max] = (int)monsterLevels.MonsterLevel[this.World.Game.MonsterLevel - 1].HPMin * (int)this.HPMultiplier * (int)this.World.Game.HPModifier;
 			int MonsterLevel = 1;
-			if (this.World.Game.ConnectedPlayers.Count > 1)
-				MonsterLevel = this.World.Game.ConnectedPlayers[0].Level;
+			if (World.Game.ConnectedPlayers.Count > 1)
+				MonsterLevel = World.Game.ConnectedPlayers[0].Level;
 			else
-				MonsterLevel = this.World.Game.InitialMonsterLevel;
+				MonsterLevel = World.Game.InitialMonsterLevel;
 
 
-			this.Attributes[GameAttribute.Hitpoints_Max] = (int)((int)monsterLevels.MonsterLevel[MonsterLevel].HPMin + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, (int)monsterLevels.MonsterLevel[MonsterLevel].HPDelta) * this.HPMultiplier * this.World.Game.HPModifier);
-			this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = ((int)this.World.Game.ConnectedPlayers.Count + 1) * 1.5f;
-			this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] *= DiIiS_NA.GameServer.Config.Instance.RateMonsterHP;
-			if (this.World.Game.ConnectedPlayers.Count > 1)
-				this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative];// / 2f;
-			var HPM = this.Attributes[GameAttribute.Hitpoints_Max];
-			var HPMT = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-			float DamageMin = monsterLevels.MonsterLevel[this.World.Game.MonsterLevel].Dmg * this.DmgMultiplier;// * 0.5f;
+			Attributes[GameAttribute.Hitpoints_Max] = (int)((int)monsterLevels.MonsterLevel[MonsterLevel].HPMin + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, (int)monsterLevels.MonsterLevel[MonsterLevel].HPDelta) * HPMultiplier * World.Game.HPModifier);
+			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = ((int)World.Game.ConnectedPlayers.Count + 1) * 1.5f;
+			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] *= Config.Instance.RateMonsterHP;
+			if (World.Game.ConnectedPlayers.Count > 1)
+				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative];// / 2f;
+			var HPM = Attributes[GameAttribute.Hitpoints_Max];
+			var HPMT = Attributes[GameAttribute.Hitpoints_Max_Total];
+			float DamageMin = monsterLevels.MonsterLevel[World.Game.MonsterLevel].Dmg * DmgMultiplier;// * 0.5f;
 			float DamageDelta = DamageMin;
-			this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * this.World.Game.DmgModifier * DiIiS_NA.GameServer.Config.Instance.RateMonsterDMG;
-			this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta;
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * World.Game.DmgModifier * Config.Instance.RateMonsterDMG;
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta;
 
 			if (MonsterLevel > 30)
 			{
-				this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative];// * 0.5f;
-				this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * this.World.Game.DmgModifier * DiIiS_NA.GameServer.Config.Instance.RateMonsterDMG;// * 0.2f;
-				this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta;
+				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative];// * 0.5f;
+				Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * World.Game.DmgModifier * Config.Instance.RateMonsterDMG;// * 0.2f;
+				Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta;
 			}
 			if (MonsterLevel > 60)
 			{
-				this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative];// * 0.7f;
-				this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * this.World.Game.DmgModifier * DiIiS_NA.GameServer.Config.Instance.RateMonsterDMG;// * 0.15f;
+				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative];// * 0.7f;
+				Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * World.Game.DmgModifier * Config.Instance.RateMonsterDMG;// * 0.15f;
 				//this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta * 0.5f;
 			}
 
-			this._nativeHP = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-			this._nativeDmg = this.Attributes[GameAttribute.Damage_Weapon_Min, 0];
+			_nativeHP = Attributes[GameAttribute.Hitpoints_Max_Total];
+			_nativeDmg = Attributes[GameAttribute.Damage_Weapon_Min, 0];
 			//if (full_hp)
-			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
 
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes.BroadcastChangedIfRevealed();
 		}
 
 		int _BleedFirstTick = 0;
@@ -184,48 +184,48 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void Update(int tickCounter)
 		{
-			if (this.DestroyTimer != null)
+			if (DestroyTimer != null)
 			{
 				Logger.Trace("Killed monster destroy timer update");
-				this.DestroyTimer.Update(tickCounter);
+				DestroyTimer.Update(tickCounter);
 			}
 
-			if (this.Brain == null)
+			if (Brain == null)
 				return;
-			if (this.World == null)
+			if (World == null)
 				return;
-			this.Brain.Update(tickCounter);
+			Brain.Update(tickCounter);
 			
-			if (this.World.SNO == WorldSno.a4dun_diablo_arena)
-				if (this.SNO == ActorSno._diablo)
-					if (this.Attributes[GameAttribute.Hitpoints_Cur] < (this.Attributes[GameAttribute.Hitpoints_Max_Total] / 2))
+			if (World.SNO == WorldSno.a4dun_diablo_arena)
+				if (SNO == ActorSno._diablo)
+					if (Attributes[GameAttribute.Hitpoints_Cur] < (Attributes[GameAttribute.Hitpoints_Max_Total] / 2))
 					{
-						this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-						this.World.Game.QuestManager.Advance();//advancing United Evil quest
-						var nextWorld = this.World.Game.GetWorld(WorldSno.a4dun_diablo_shadowrealm_01);
-						foreach (var plr in this.World.Players.Values)
+						Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+						World.Game.QuestManager.Advance();//advancing United Evil quest
+						var nextWorld = World.Game.GetWorld(WorldSno.a4dun_diablo_shadowrealm_01);
+						foreach (var plr in World.Players.Values)
 							plr.ChangeWorld(nextWorld, nextWorld.GetStartingPointById(172).Position);
 					}
 
 			if (this is Boss)
 			{
-				if (!this.World.BuffManager.HasBuff<PowerSystem.Implementations.Caltrops.ActiveCalTrops>(this))
+				if (!World.BuffManager.HasBuff<PowerSystem.Implementations.Caltrops.ActiveCalTrops>(this))
 					_CaltropsFirstTick = tickCounter;
 
 				if ((tickCounter - _CaltropsFirstTick) >= 2400)
 				{
-					var buff_owner = this.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.Caltrops.ActiveCalTrops>(this).User;
+					var buff_owner = World.BuffManager.GetFirstBuff<PowerSystem.Implementations.Caltrops.ActiveCalTrops>(this).User;
 					if (buff_owner is Player)
 						(buff_owner as Player).GrantAchievement(74987243307067);
 				}
 
 			}
-			if (!this.World.BuffManager.HasBuff<PowerSystem.Implementations.Rend.RendDebuff>(this))
+			if (!World.BuffManager.HasBuff<PowerSystem.Implementations.Rend.RendDebuff>(this))
 				_BleedFirstTick = tickCounter;
 
 			if ((tickCounter - _BleedFirstTick) >= 1200)
 			{
-				var buff_owner = this.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.Rend.RendDebuff>(this).User;
+				var buff_owner = World.BuffManager.GetFirstBuff<PowerSystem.Implementations.Rend.RendDebuff>(this).User;
 				if (buff_owner is Player)
 					(buff_owner as Player).GrantAchievement(74987243307052);
 			}
@@ -238,16 +238,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			
 
-			lock (this.adjustLock)
+			lock (adjustLock)
 			{
 				int count = player.World.Game.Players.Count;
-				if (count > 0 && this.AdjustedPlayers != count)
+				if (count > 0 && AdjustedPlayers != count)
 				{
-					this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = this._nativeDmg * (1f + (0.05f * (count - 1) * player.World.Game.Difficulty));
-					this.Attributes[GameAttribute.Hitpoints_Max] = this._nativeHP * (1f + ((0.75f + (0.1f * player.World.Game.Difficulty)) * (count - 1)));
-					this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-					this.Attributes.BroadcastChangedIfRevealed();
-					this.AdjustedPlayers = count;
+					Attributes[GameAttribute.Damage_Weapon_Min, 0] = _nativeDmg * (1f + (0.05f * (count - 1) * player.World.Game.Difficulty));
+					Attributes[GameAttribute.Hitpoints_Max] = _nativeHP * (1f + ((0.75f + (0.1f * player.World.Game.Difficulty)) * (count - 1)));
+					Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+					Attributes.BroadcastChangedIfRevealed();
+					AdjustedPlayers = count;
 				}
 			}
 
@@ -263,12 +263,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (basePoint == null)
 					basePoint = position;
 
-			if (this.SNO == ActorSno._a3_battlefield_demonic_ballista) //ballistas hack
+			if (SNO == ActorSno._a3_battlefield_demonic_ballista) //ballistas hack
 			{
-				var ballistas = this.GetActorsInRange<Monster>(5f).Where(monster => monster.SNO == ActorSno._a3_battlefield_demonic_ballista);
+				var ballistas = GetActorsInRange<Monster>(5f).Where(monster => monster.SNO == ActorSno._a3_battlefield_demonic_ballista);
 				if (ballistas.Count() >= 2)
 				{
-					this.Destroy();
+					Destroy();
 				}
 			}
 		}
@@ -280,7 +280,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			if (LoreSNOId != -1)
 			{
-				var players = this.GetPlayersInRange();
+				var players = GetPlayersInRange();
 				if (players != null)
 				{
 					foreach (var player in players.Where(player => !player.HasLore(LoreSNOId)))

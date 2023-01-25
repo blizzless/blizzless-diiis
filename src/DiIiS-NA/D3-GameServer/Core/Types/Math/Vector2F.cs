@@ -36,25 +36,25 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public Vector2F(float x, float y)
 		{
-			this.X = x;
-			this.Y = y;
+			X = x;
+			Y = y;
 		}
 
 		public Vector2F(float value)
 		{
-			this.X = this.Y = value;
+			X = Y = value;
 		}
 
 		public override string ToString()
 		{
 			CultureInfo currentCulture = CultureInfo.CurrentCulture;
 			return string.Format(currentCulture, "{{X:{0} Y:{1}}}",
-								 new object[] { this.X.ToString(currentCulture), this.Y.ToString(currentCulture) });
+								 new object[] { X.ToString(currentCulture), Y.ToString(currentCulture) });
 		}
 
 		public bool Equals(Vector2F other)
 		{
-			return ((this.X == other.X) && (this.Y == other.Y));
+			return ((X == other.X) && (Y == other.Y));
 		}
 
 		public override bool Equals(object obj)
@@ -62,25 +62,25 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 			bool flag = false;
 			if (obj is Vector2F)
 			{
-				flag = this.Equals((Vector2F)obj);
+				flag = Equals((Vector2F)obj);
 			}
 			return flag;
 		}
 
 		public override int GetHashCode()
 		{
-			return (this.X.GetHashCode() + this.Y.GetHashCode());
+			return (X.GetHashCode() + Y.GetHashCode());
 		}
 
 		public float Length()
 		{
-			float num = (this.X * this.X) + (this.Y * this.Y);
+			float num = (X * X) + (Y * Y);
 			return (float)System.Math.Sqrt((double)num);
 		}
 
 		public float LengthSquared()
 		{
-			return ((this.X * this.X) + (this.Y * this.Y));
+			return ((X * X) + (Y * Y));
 		}
 
 		public static float Distance(Vector2F value1, Vector2F value2)
@@ -125,10 +125,10 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public void Normalize()
 		{
-			float num2 = (this.X * this.X) + (this.Y * this.Y);
+			float num2 = (X * X) + (Y * Y);
 			float num = 1f / ((float)System.Math.Sqrt((double)num2));
-			this.X *= num;
-			this.Y *= num;
+			X *= num;
+			Y *= num;
 		}
 
 		public static Vector2F Normalize(Vector2F value)
@@ -166,7 +166,7 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 		/// <returns></returns>
 		public float Rotation()
 		{
-			return Angle(Vector2F.UnitY) > Angle(-Vector2F.UnitY) ? -Angle(Vector2F.UnitX) : Angle(Vector2F.UnitX);
+			return Angle(UnitY) > Angle(-UnitY) ? -Angle(UnitX) : Angle(UnitX);
 		}
 
 

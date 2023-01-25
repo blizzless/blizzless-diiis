@@ -31,11 +31,11 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 
 		public SkillSet(Player player, ToonClass @class, Toon toon)
 		{
-			this.@Class = @class;
-			this.Player = player;
+			@Class = @class;
+			Player = player;
 			var dbToon = player.Toon.DBToon;
 			var dbActiveSkills = player.Toon.DBActiveSkills;
-			this.ActiveSkills = new ActiveSkillSavedData[6] {
+			ActiveSkills = new ActiveSkillSavedData[6] {
 				new ActiveSkillSavedData {  snoSkill = dbActiveSkills.Skill0, 
 											snoRune  = dbActiveSkills.Rune0 },
 				new ActiveSkillSavedData {  snoSkill = dbActiveSkills.Skill1, 
@@ -50,7 +50,7 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 											snoRune  = dbActiveSkills.Rune5 },
 			};
 
-			this.PassiveSkills = new int[4] {
+			PassiveSkills = new int[4] {
 				dbActiveSkills.Passive0,
 				dbActiveSkills.Passive1,
 				dbActiveSkills.Passive2,
@@ -58,7 +58,7 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 			};
 			//}
 
-			this.HotBarSkills = new HotbarButtonData[6] {
+			HotBarSkills = new HotbarButtonData[6] {
 				new HotbarButtonData { SNOSkill = ActiveSkills[0].snoSkill, ItemAnn = ActiveSkills[0].snoRune, ItemGBId = -1, RuneType = -1 }, // left-click
 				new HotbarButtonData { SNOSkill = ActiveSkills[1].snoSkill, ItemAnn = ActiveSkills[1].snoRune, ItemGBId = -1, RuneType = -1 }, // right-click
 				new HotbarButtonData { SNOSkill = ActiveSkills[2].snoSkill, ItemAnn = ActiveSkills[2].snoRune, ItemGBId = -1, RuneType = -1 }, // bar-1
@@ -71,7 +71,7 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 		public void UpdateSkills(int hotBarIndex, int SNOSkill, int SNORune, Toon toon)
 		{
 			Logger.Debug("Update index {0} skill {1} rune {2}", hotBarIndex, SNOSkill, SNORune);
-			var dbActiveSkills = this.Player.Toon.DBActiveSkills;
+			var dbActiveSkills = Player.Toon.DBActiveSkills;
 			switch (hotBarIndex)
 			{
 				case 0:
@@ -99,9 +99,9 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 					dbActiveSkills.Rune5 = SNORune;
 					break;
 			}
-			if (!this.Player.World.Game.PvP)
+			if (!Player.World.Game.PvP)
 			{
-				this.Player.World.Game.GameDBSession.SessionUpdate(dbActiveSkills);
+				Player.World.Game.GameDBSession.SessionUpdate(dbActiveSkills);
 			}
 
 		}
@@ -109,21 +109,21 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 		public void SwitchUpdateSkills(int SkillIndex, int SNOSkill, int SNORune, Toon toon)
 		{
 			Logger.Debug("SkillSet: SwitchUpdateSkill skillindex {0} Newskill {1}", SkillIndex, SNOSkill);
-			this.HotBarSkills[SkillIndex].SNOSkill = SNOSkill;
-			this.UpdateSkills(SkillIndex, SNOSkill, SNORune, toon);
+			HotBarSkills[SkillIndex].SNOSkill = SNOSkill;
+			UpdateSkills(SkillIndex, SNOSkill, SNORune, toon);
 		}
 
 		public void UpdatePassiveSkills(Toon toon)
 		{
 			Logger.Debug("Update passive to {0} {1} {2} {3}", PassiveSkills[0], PassiveSkills[1], PassiveSkills[2], PassiveSkills[3]);
-			var dbActiveSkills = this.Player.Toon.DBActiveSkills;
+			var dbActiveSkills = Player.Toon.DBActiveSkills;
 			dbActiveSkills.Passive0 = PassiveSkills[0];
 			dbActiveSkills.Passive1 = PassiveSkills[1];
 			dbActiveSkills.Passive2 = PassiveSkills[2];
 			dbActiveSkills.Passive3 = PassiveSkills[3];
-			if (!this.Player.World.Game.PvP)
+			if (!Player.World.Game.PvP)
 			{
-				this.Player.World.Game.GameDBSession.SessionUpdate(dbActiveSkills);
+				Player.World.Game.GameDBSession.SessionUpdate(dbActiveSkills);
 			}
 		}
 
@@ -137,18 +137,18 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 
 		public bool HasSkill(int skillId)
 		{
-			return this.ActiveSkills.Any(s => s.snoSkill == skillId);
+			return ActiveSkills.Any(s => s.snoSkill == skillId);
 		}
 
 		public bool HasSkillWithRune(int skillId, int runeId)
 		{
-			return this.ActiveSkills.Any(s => s.snoSkill == skillId && s.snoRune == runeId);
+			return ActiveSkills.Any(s => s.snoSkill == skillId && s.snoRune == runeId);
 		}
 
 
 		public bool HasItemPassiveProc(int passiveId)
 		{
-			if ((float)FastRandom.Instance.NextDouble() < this.Player.Attributes[GameAttribute.Item_Power_Passive, passiveId])
+			if ((float)FastRandom.Instance.NextDouble() < Player.Attributes[GameAttribute.Item_Power_Passive, passiveId])
 				return true;
 			else
 				return false;

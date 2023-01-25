@@ -40,29 +40,29 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		public EffectActor(PowerContext context, ActorSno actorSNO, Vector3D position)
 			: base(context.World, actorSNO)
 		{
-			this.Context = context;
+			Context = context;
 
-			this.Field2 = 0x8;
-			if (this.Scale == 0f)
-				this.Scale = 1f;
-			this.Position = position;
+			Field2 = 0x8;
+			if (Scale == 0f)
+				Scale = 1f;
+			Position = position;
 
 			// copy in important effect params from user
 			if (context != null)
 				if (context.PowerSNO != 0)
 				{
-					this.Attributes[GameAttribute.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_A, context.PowerSNO];
-					this.Attributes[GameAttribute.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_B, context.PowerSNO];
-					this.Attributes[GameAttribute.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_C, context.PowerSNO];
-					this.Attributes[GameAttribute.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_D, context.PowerSNO];
-					this.Attributes[GameAttribute.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_E, context.PowerSNO];
+					Attributes[GameAttribute.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_A, context.PowerSNO];
+					Attributes[GameAttribute.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_B, context.PowerSNO];
+					Attributes[GameAttribute.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_C, context.PowerSNO];
+					Attributes[GameAttribute.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_D, context.PowerSNO];
+					Attributes[GameAttribute.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_E, context.PowerSNO];
 				}
 		}
 
 		public void Spawn(float facingAngle = 0)
 		{
-			this.SetFacingRotation(facingAngle);
-			this.World.Enter(this);
+			SetFacingRotation(facingAngle);
+			World.Enter(this);
 		}
 
 		public virtual void Update(int tickCounter)
@@ -72,15 +72,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				if (OnTimeout != null)
 					OnTimeout();
 
-				this.Destroy();
+				Destroy();
 			}
 			else if (OnUpdate != null)
 			{
 				if (_updateTimer == null || _updateTimer.TimedOut)
 				{
 					OnUpdate();
-					if (this.UpdateDelay > 0f)
-						_updateTimer = new SecondsTickTimer(this.Context.World.Game, this.UpdateDelay);
+					if (UpdateDelay > 0f)
+						_updateTimer = new SecondsTickTimer(Context.World.Game, UpdateDelay);
 					else
 						_updateTimer = null;
 				}

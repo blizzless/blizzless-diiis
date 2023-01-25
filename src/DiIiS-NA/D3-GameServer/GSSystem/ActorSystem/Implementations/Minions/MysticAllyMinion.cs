@@ -27,10 +27,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 1.35f; //they look cooler bigger :)
 						   //TODO: get a proper value for this.
-			this.WalkSpeed *= 5;
-			this.DamageCoefficient = 5f;
+			WalkSpeed *= 5;
+			DamageCoefficient = 5f;
 			SetBrain(new MinionBrain(this));
-			this.Attributes[GameAttribute.Summoned_By_SNO] = 0x00058676;
+			Attributes[GameAttribute.Summoned_By_SNO] = 0x00058676;
 			(Brain as MinionBrain).AddPresetPower(169081); //melee_instant
 
 

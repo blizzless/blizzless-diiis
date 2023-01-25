@@ -26,11 +26,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			: base(world, ActorSno._fallenlunatic_a, master, null)
 		{
 			Scale = 0.75f;
-			this.WalkSpeed *= 5;
-			this.CollFlags = 0;
-			this.DamageCoefficient = 0;
-			this.Attributes[GameAttribute.Invulnerable] = true;
-			this.Attributes[GameAttribute.Is_Helper] = true;
+			WalkSpeed *= 5;
+			CollFlags = 0;
+			DamageCoefficient = 0;
+			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Is_Helper] = true;
 			SetBrain(new LooterBrain(this, true));
 
 			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
@@ -40,7 +40,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 
 		public override bool Reveal(Player player)
 		{
-			if (this.World.IsPvP)
+			if (World.IsPvP)
 				return false;
 			return base.Reveal(player);
 		}

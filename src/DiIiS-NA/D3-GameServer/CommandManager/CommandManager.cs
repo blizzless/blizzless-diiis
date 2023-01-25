@@ -171,7 +171,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 			public override string Handle(string parameters, BattleClient invokerClient = null)
 			{
 				if (parameters == string.Empty)
-					return this.Fallback();
+					return Fallback();
 
 				string output = string.Empty;
 				bool found = false;

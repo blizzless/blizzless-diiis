@@ -36,8 +36,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Collision
 		/// <param name="stream">The MPQFileStream to read from.</param>
 		public AABB(MpqFileStream stream)
 		{
-			this.Min = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
-			this.Max = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
+			Min = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
+			Max = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
 		}
 
 		/// <summary>
@@ -64,8 +64,8 @@ namespace DiIiS_NA.GameServer.Core.Types.Collision
 
 		public bool IsWithin(Vector3D v)
 		{
-			if (v >= this.Min &&
-				v <= this.Max)
+			if (v >= Min &&
+				v <= Max)
 			{
 				return true;
 			}
@@ -75,13 +75,13 @@ namespace DiIiS_NA.GameServer.Core.Types.Collision
 		public bool Intersects(AABB other)
 		{
 			if (// Max < o.Min
-				this.Max.X < other.Min.X ||
-				this.Max.Y < other.Min.Y ||
-				this.Max.Z < other.Min.Z ||
+				Max.X < other.Min.X ||
+				Max.Y < other.Min.Y ||
+				Max.Z < other.Min.Z ||
 				// Min > o.Max
-				this.Min.X > other.Max.X ||
-				this.Min.Y > other.Max.Y ||
-				this.Min.Z > other.Max.Z)
+				Min.X > other.Max.X ||
+				Min.Y > other.Max.Y ||
+				Min.Z > other.Max.Z)
 			{
 				return false;
 			}
@@ -102,7 +102,7 @@ namespace DiIiS_NA.GameServer.Core.Types.Collision
 
 		public override string ToString()
 		{
-			return string.Format("AABB: min:{0} max:{1}", this.Min, this.Max);
+			return string.Format("AABB: min:{0} max:{1}", Min, Max);
 		}
 	}
 }

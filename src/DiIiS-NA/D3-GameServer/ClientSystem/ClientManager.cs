@@ -133,18 +133,18 @@ namespace DiIiS_NA.GameServer.ClientSystem
 					OnJoin = true, //without cutscenes
 				});
 
-				if (client.Player.PlayerIndex > 0)
-        {
-          //make sure toons Difficulty is set
-          toon.CurrentDifficulty = (int)game.Difficulty;
-					client.SendMessage(new HandicapMessage(Opcodes.HandicapMessage)
-					{
-						Difficulty = (uint)game.Difficulty
-					});
-        }
+                if (client.Player.PlayerIndex > 0)
+                {
+                    //make sure toons Difficulty is set
+                    toon.CurrentDifficulty = game.Difficulty;
+                    client.SendMessage(new HandicapMessage(Opcodes.HandicapMessage)
+                    {
+                        Difficulty = (uint)game.Difficulty
+                    });
+                }
 
 
-				toon.LoginTime = DateTimeExtensions.ToUnixTime(DateTime.UtcNow);
+                toon.LoginTime = DateTimeExtensions.ToUnixTime(DateTime.UtcNow);
 				Logger.Debug("Log in time:" + toon.LoginTime.ToString());
 
 				game.Enter(client.Player);

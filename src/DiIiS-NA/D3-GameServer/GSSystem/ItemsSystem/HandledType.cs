@@ -18,8 +18,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public HandledTypeAttribute(params string[] types)
         {
-            this.Types = new List<string>();
-            this.Types.AddRange(types);
+            Types = new List<string>();
+            Types.AddRange(types);
         }
     }
 }

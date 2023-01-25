@@ -44,21 +44,21 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public Living(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Monster = new SNOHandle(SNOGroup.Monster, (ActorData.MonsterSNO));
-			this.Field2 = 0x9;//16;
+			Monster = new SNOHandle(SNOGroup.Monster, (ActorData.MonsterSNO));
+			Field2 = 0x9;//16;
 
 			// FIXME: This is hardcoded crap
-			this.SetFacingRotation((float)(RandomHelper.NextDouble() * 2.0f * Math.PI));
-			this.GBHandle.Type = -1; this.GBHandle.GBID = -1;
-			this.Field7 = 0x00000001;
-			this.Field10 = 0x0;
+			SetFacingRotation((float)(RandomHelper.NextDouble() * 2.0f * Math.PI));
+			GBHandle.Type = -1; GBHandle.GBID = -1;
+			Field7 = 0x00000001;
+			Field10 = 0x0;
 
 			//scripted //this.Attributes[GameAttribute.Hitpoints_Max_Total] = 4.546875f;
-			this.Attributes[GameAttribute.Hitpoints_Max] = 4.546875f;
+			Attributes[GameAttribute.Hitpoints_Max] = 4.546875f;
 			//scripted //this.Attributes[GameAttribute.Hitpoints_Total_From_Level] = 0f;
-			this.Attributes[GameAttribute.Hitpoints_Cur] = 4.546875f;
+			Attributes[GameAttribute.Hitpoints_Cur] = 4.546875f;
 
-			this.Attributes[GameAttribute.Level] = 1;
+			Attributes[GameAttribute.Level] = 1;
 		}
 
 		public override bool Reveal(Player player)
@@ -68,12 +68,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				return false;
 			if (AnimationSet != null)
 			{
-				if (this.AnimationSet.GetAnimationTag(DiIiS_NA.Core.MPQ.FileFormats.AnimationTags.Idle) != -1)
+				if (AnimationSet.GetAnimationTag(DiIiS_NA.Core.MPQ.FileFormats.AnimationTags.Idle) != -1)
 				{
 					player.InGameClient.SendMessage(new SetIdleAnimationMessage
 					{
-						ActorID = this.DynamicID(player),
-						AnimationSNO = this.AnimationSet.GetAnimationTag(DiIiS_NA.Core.MPQ.FileFormats.AnimationTags.Idle)
+						ActorID = DynamicID(player),
+						AnimationSNO = AnimationSet.GetAnimationTag(DiIiS_NA.Core.MPQ.FileFormats.AnimationTags.Idle)
 					});
 				}
 			}

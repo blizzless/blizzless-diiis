@@ -172,7 +172,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
             var AllTablets = DrownedTempleWorld.GetActorsBySNO(ActorSno._a1dun_caves_nephalem_altar_tablet_a);
             foreach (var Tablet in AllTablets)
             {
-                Tablet.PlayAnimation(5, Tablet.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+                Tablet.PlayAnimation(5, Tablet.AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
                 DrownedTempleWorld.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
                 {
                     ActorID = Tablet.DynamicID(plr),

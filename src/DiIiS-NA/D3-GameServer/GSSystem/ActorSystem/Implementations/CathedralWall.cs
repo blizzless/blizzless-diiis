@@ -35,19 +35,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void ReceiveDamage(Actor source, float damage)
 		{
-			if (this.SNO == ActorSno._trout_highlands_goatman_totem_gharbad && this.World.Game.CurrentSideQuest != 225253) return;
+			if (SNO == ActorSno._trout_highlands_goatman_totem_gharbad && World.Game.CurrentSideQuest != 225253) return;
 
 			World.BroadcastIfRevealed(plr => new FloatingNumberMessage
 			{
 				Number = damage,
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				Type = FloatingNumberMessage.FloatType.White
 			}, this);
 
 			Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(Attributes[GameAttribute.Hitpoints_Cur] - damage, 0);
 			Attributes.BroadcastChangedIfRevealed();
 
-			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !this.SNO.IsUndestroyable())
+			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !SNO.IsUndestroyable())
 				Die(source);
 		}
 
@@ -55,12 +55,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			base.OnTargeted(null, null);
 
-			Logger.Trace("Breaked barricade, id: {0}", this.SNO);
+			Logger.Trace("Breaked barricade, id: {0}", SNO);
 
-			if (this.AnimationSet.TagMapAnimDefault.ContainsKey(AnimationSetKeys.DeathDefault))
+			if (this.AnimationSet.Animations.ContainsKey(AnimationSetKeys.DeathDefault.ID))
 				World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 				{
-					ActorID = this.DynamicID(plr),
+					ActorID = DynamicID(plr),
 					AnimReason = 11,
 					UnitAniimStartTime = 0,
 					tAnim = new PlayAnimationMessageSpec[]
@@ -68,7 +68,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						new PlayAnimationMessageSpec()
 						{
 							Duration = 10,
-							AnimationSNO = AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault],
+							AnimationSNO = (int)AnimationSet.Animations[AnimationSetKeys.DeathDefault.ID],
 							PermutationIndex = 0,
 							AnimationTag = 0,
 							Speed = 1
@@ -77,17 +77,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				}, this);
 
-			this.Attributes[GameAttribute.Deleted_On_Server] = true;
-			this.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
-			this.Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-			this.Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
-			this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
+			Attributes[GameAttribute.Deleted_On_Server] = true;
+			Attributes[GameAttribute.Could_Have_Ragdolled] = true;
+			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
 			Attributes.BroadcastChangedIfRevealed();
 
 			Task.Delay(1400).ContinueWith(delegate
 			{
-				this.World.PowerManager.RunPower(this, 186216);
-				this.Destroy();
+				World.PowerManager.RunPower(this, 186216);
+				Destroy();
 			});
 		}
 

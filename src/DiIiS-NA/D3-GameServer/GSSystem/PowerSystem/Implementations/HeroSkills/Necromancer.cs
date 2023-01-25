@@ -260,7 +260,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
     {
         public override IEnumerable<TickTimer> Main()
         {
-            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
 
             TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 7f);
             DamageType DType = DamageType.Physical;
@@ -492,7 +492,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
         public override void OnChannelOpen()
         {
-            this.EffectsPerSecond = 0.5f;
+            EffectsPerSecond = 0.5f;
 
             {
                 _beamEnd = SpawnEffect(ActorSno._p6_necro_siphonblood_a_target_attractchunks, User.Position, 0, WaitInfinite());
@@ -515,7 +515,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
         public override IEnumerable<TickTimer> Main()
         {
-            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             AttackPayload attack = new AttackPayload(this);
             {
                 if (attack.Targets == null)
@@ -692,7 +692,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         #endregion
         public override IEnumerable<TickTimer> Main()
         {
-            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
            
             UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
             if (Rune_E > 0)
@@ -945,7 +945,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             
             if (Rune_B > 0)
             {
-                Count = this.User.Attributes[GameAttribute.Resource_Cur, (int)(this.User as PlayerSystem.Player).Toon.HeroTable.PrimaryResource];
+                Count = User.Attributes[GameAttribute.Resource_Cur, (int)(User as PlayerSystem.Player).Toon.HeroTable.PrimaryResource];
                 UsePrimaryResource(Count);
             }
             else if (Rune_C > 0)
@@ -956,10 +956,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             else
                 UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
             
-             var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+             var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             
             var Mage = new SkeletalMage(
-                this.World,
+                World,
                 this,
                 0,
                 RuneSelect(
@@ -1279,7 +1279,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 BoomEffect = 472863;
                 DType = DamageType.Poison;
-                var Proxy = SpawnProxy(User.Position, new TickTimer(this.User.World.Game, 300));
+                var Proxy = SpawnProxy(User.Position, new TickTimer(User.World.Game, 300));
                 Proxy.PlayEffectGroup(471115);
                 foreach (var act in GetEnemiesInRadius(TargetPosition, 25f).Actors)
                 {
@@ -1317,7 +1317,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             float Radius = 20f;
             float Damage = 10.5f;
             DamageType DType = DamageType.Physical;
-            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             var Point = SpawnEffect(ActorSno._p6_necro_bonespikes, TargetPosition, 0, WaitSeconds(0.2f));
             Point.PlayEffect(Effect.PlayEffectGroup, RuneSelect(459954, 473926, 459954, 473907, 459954//D
                 , 473864));
@@ -1336,7 +1336,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                 if (Rune_B > 0)
                 {
-                    var Bomb = this.World.GetActorByGlobalId(actor);
+                    var Bomb = World.GetActorByGlobalId(actor);
                     var NearEnemy = Bomb.GetActorsInRange(20f).First();
                     if (NearEnemy != null)
                         Bomb.Teleport(NearEnemy.Position);
@@ -1345,8 +1345,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     
                 var Explosion = SpawnEffect(
                     ActorSno._p6_necro_corpseexplosion_projectile_spawn,
-                    this.World.GetActorByGlobalId(actor).Position,
-                    ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, this.World.GetActorByGlobalId(actor)),
+                    World.GetActorByGlobalId(actor).Position,
+                    ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, World.GetActorByGlobalId(actor)),
                     WaitSeconds(0.2f)
                 );
                 Explosion.PlayEffect(Effect.PlayEffectGroup, RuneSelect(457183, 471539, 471258, 471249, 471247, 471236));
@@ -1368,7 +1368,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     };
                     attack.Apply();
                 };
-                this.World.GetActorByGlobalId(actor).Destroy();
+                World.GetActorByGlobalId(actor).Destroy();
             }
 
 
@@ -1386,7 +1386,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
     {
         private Actor _beamEnd;
 
-        private bool WaitTo(TickerSystem.TickTimer timer)
+        private bool WaitTo(TickTimer timer)
         {
             while (timer.TimedOut != true)
             {
@@ -1420,15 +1420,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             Actor Flesh = null;
             if (User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] == true)
             {
-                Flesh = this.User;
+                Flesh = User;
             }
             else
-                Flesh = this.User.GetActorsInRange<ActorSystem.Implementations.NecromancerFlesh>(60f).First();
-            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+                Flesh = User.GetActorsInRange<ActorSystem.Implementations.NecromancerFlesh>(60f).First();
+            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             DamageType DType = DamageType.Physical;
             var Explosion = SpawnEffect(ActorSno._p6_necro_corpseexplosion_projectile, Flesh.Position, 0, WaitSeconds(0.2f));
             Explosion.PlayEffect(Effect.PlayEffectGroup, 457183);
-            var Proxy = SpawnProxy(Flesh.Position, new TickTimer(this.User.World.Game, 300));
+            var Proxy = SpawnProxy(Flesh.Position, new TickTimer(User.World.Game, 300));
             if (User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] == false)
                 Flesh.Destroy();
             //1, 2, 3, 4
@@ -1437,29 +1437,29 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             if (Rune_B > 0)
                 DType = DamageType.Cold;
 
-            foreach (var plr in this.User.World.Players.Values)
+            foreach (var plr in User.World.Players.Values)
             {
                 plr.InGameClient.SendMessage(new EffectGroupACDToACDMessage()
                 {
                     //A, D, E?
                     EffectSNOId = RuneSelect(468032, 468032, 468240, 467966, 468032, 474474),//468032,
                     ActorID = Proxy.DynamicID(plr),
-                    TargetID = this.Target.DynamicID(plr)
+                    TargetID = Target.DynamicID(plr)
                 });
                 plr.InGameClient.SendMessage(new EffectGroupACDToACDMessage()
                 {
                     EffectSNOId = 474690,
-                    ActorID = this.Target.DynamicID(plr),
+                    ActorID = Target.DynamicID(plr),
                     TargetID = Proxy.DynamicID(plr)
                 });
             }
 
             if (Rune_C > 0)
             {
-                var NewProxy = SpawnProxy(User.Position, new TickTimer(this.User.World.Game, 300));
+                var NewProxy = SpawnProxy(User.Position, new TickTimer(User.World.Game, 300));
 
 
-                foreach (var plr in this.User.World.Players.Values)
+                foreach (var plr in User.World.Players.Values)
                 {
                     plr.InGameClient.SendMessage(new EffectGroupACDToACDMessage()
                     {
@@ -1476,7 +1476,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     });
                 }
 
-                TickTimer Timeout1 = new SecondsTickTimer(this.Target.World.Game, 0.4f);
+                TickTimer Timeout1 = new SecondsTickTimer(Target.World.Game, 0.4f);
                 var Boom1 = Task<bool>.Factory.StartNew(() => WaitTo(Timeout1));
                 Boom1.ContinueWith(delegate
                 {
@@ -1486,7 +1486,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             }
 
-            TickTimer Timeout = new SecondsTickTimer(this.Target.World.Game, 0.4f);
+            TickTimer Timeout = new SecondsTickTimer(Target.World.Game, 0.4f);
             var Boom = Task<bool>.Factory.StartNew(() => WaitTo(Timeout));
             Boom.ContinueWith(delegate
             {
@@ -1495,7 +1495,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                 if (Rune_A > 0)// && RandomHelper.Next(1,100) > 80) 
                 {
-                    var NewProxy = SpawnProxy(Target.Position, new TickTimer(this.User.World.Game, 300));
+                    var NewProxy = SpawnProxy(Target.Position, new TickTimer(User.World.Game, 300));
                     Actor NewTarget = null;
                     var NearTargets = GetEnemiesInRadius(Target.Position, 24f).Actors;
 
@@ -1503,7 +1503,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                     if (NewTarget != null)
                     {
-                        foreach (var plr in this.User.World.Players.Values)
+                        foreach (var plr in User.World.Players.Values)
                         {
                             plr.InGameClient.SendMessage(new EffectGroupACDToACDMessage()
                             {
@@ -1520,7 +1520,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                             });
                         }
 
-                        TickTimer Timeout1 = new SecondsTickTimer(this.Target.World.Game, 0.3f);
+                        TickTimer Timeout1 = new SecondsTickTimer(Target.World.Game, 0.3f);
                         var Boom = Task<bool>.Factory.StartNew(() => WaitTo(Timeout1));
                         Boom.ContinueWith(delegate
                         {
@@ -1670,14 +1670,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         #endregion
         public override IEnumerable<TickTimer> Main()
         {
-            var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+            var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             //454066
-            var Flesh = this.User.GetActorsInRange<ActorSystem.Implementations.NecromancerFlesh>(60f);
+            var Flesh = User.GetActorsInRange<ActorSystem.Implementations.NecromancerFlesh>(60f);
             foreach (var act in Flesh)
             {
-                var Proxy = SpawnProxy(User.Position, new TickTimer(this.User.World.Game, 300));
+                var Proxy = SpawnProxy(User.Position, new TickTimer(User.World.Game, 300));
 
-                foreach (var plr in this.User.World.Players.Values)
+                foreach (var plr in User.World.Players.Values)
                 {
                     plr.InGameClient.SendMessage(new EffectGroupACDToACDMessage()
                     {
@@ -1688,7 +1688,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 }
                 act.PlayEffectGroup(RuneSelect(467200, 462756, 467230, 470482, 470549, 470574));
                 act.Destroy();
-                this.User.Attributes[GameAttribute.Resource_Cur, (int)(this.User as PlayerSystem.Player).Toon.HeroTable.PrimaryResource] += 10f;
+                User.Attributes[GameAttribute.Resource_Cur, (int)(User as PlayerSystem.Player).Toon.HeroTable.PrimaryResource] += 10f;
 
                 if (Rune_A > 0)
                     (User as PlayerSystem.Player).AddPercentageHP(3);
@@ -1704,10 +1704,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         else
                         {
                             minion.Destroy();
-                            this.User.Attributes[GameAttribute.Resource_Cur, (int)(this.User as PlayerSystem.Player).Toon.HeroTable.PrimaryResource] += 10f;
+                            User.Attributes[GameAttribute.Resource_Cur, (int)(User as PlayerSystem.Player).Toon.HeroTable.PrimaryResource] += 10f;
                         }
                     }
-                this.User.Attributes.BroadcastChangedIfRevealed();
+                User.Attributes.BroadcastChangedIfRevealed();
 
             }
 
@@ -1843,9 +1843,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         #endregion
         public override IEnumerable<TickTimer> Main()
         {
-            var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][this.PowerSNO].Data;
+            var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             //454066
-            var Proxy = SpawnProxy(TargetPosition, new TickTimer(this.User.World.Game, 300));
+            var Proxy = SpawnProxy(TargetPosition, new TickTimer(User.World.Game, 300));
             var Flesh = Proxy.GetActorsInRange<ActorSystem.Implementations.NecromancerFlesh>(20f);
             bool Resurrected = false;
 
@@ -1889,7 +1889,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             if (Resurrected)
                 if (Rune_E > 0)
                 {
-                    var Enemys = Proxy.GetActorsInRange<ActorSystem.Monster>(20f);
+                    var Enemys = Proxy.GetActorsInRange<Monster>(20f);
                     foreach (var Enemy in Enemys)
                         AddBuff(Enemy, new DebuffFeared(WaitSeconds(3f)));
                 }
@@ -2035,7 +2035,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
     [ImplementsPowerSNO(SkillsSystem.Skills.Necromancer.ExtraSkills.CommandGolem)]
     public class RaiseGolem : Skill
     {
-        private bool WaitTo(TickerSystem.TickTimer timer)
+        private bool WaitTo(TickTimer timer)
         {
             while (timer.TimedOut != true)
             {
@@ -2061,7 +2061,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             //AddBuff(User, new TBuff());
             //AddBuff(User, new FrBuff());
             //*/
-            var Golem = (this.User as PlayerSystem.Player).ActiveGolem;
+            var Golem = (User as PlayerSystem.Player).ActiveGolem;
             int countofFlesh = 5;
             float cooldown = 5f;
             if (Rune_D > 0)
@@ -2071,7 +2071,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             if (Rune_E > 0)
             {
                 ((this.User as PlayerSystem.Player).ActiveGolem as Minion).Brain.DeActivate();
-                (this.User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(474026);
+                (this.User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(AnimationSno.p6_icegolem_generic_cast);
                 var proxy = SpawnProxy(TargetPosition, WaitSeconds(3f));
                 proxy.PlayEffectGroup(474839);
 
@@ -2084,7 +2084,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 };
                 attack.Apply();
                 yield return WaitSeconds(1f);
-                ((this.User as PlayerSystem.Player).ActiveGolem as Minion).Brain.Activate();
+                ((User as PlayerSystem.Player).ActiveGolem as Minion).Brain.Activate();
             }
             else if (Rune_A > 0)
             {
@@ -2100,7 +2100,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 yield return WaitSeconds(targetDistance * 0.024f);
                 
                 //Индикация зоны
-                (this.User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(466348);
+                (this.User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(AnimationSno.p6_bonegolem_active_01);
                 var proxy = SpawnProxy(TargetPosition, WaitSeconds(2f));
                 //Рывок
                 proxy.PlayEffectGroup(466735); //[466735] p6_necro_golem_bone_areaIndicator
@@ -2211,7 +2211,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                         (Golem as Minion).Kill(this);
                         Golem.Destroy();
-                        (this.User as PlayerSystem.Player).ActiveGolem = null;
+                        (User as PlayerSystem.Player).ActiveGolem = null;
 
 
                     });
@@ -2226,13 +2226,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             public PlayerHasGolemBuff(List<Actor> dogs)
             {
-                this.golem = dogs;
+                golem = dogs;
             }
             public override bool Apply()
             {
                 if (!base.Apply())
                     return false;
-                this.User.Attributes[GameAttribute.Skill_Toggled_State, SkillsSystem.Skills.Necromancer.ExtraSkills.CommandGolem] = true;
+                User.Attributes[GameAttribute.Skill_Toggled_State, SkillsSystem.Skills.Necromancer.ExtraSkills.CommandGolem] = true;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2541,7 +2541,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         public override IEnumerable<TickTimer> Main()
         {
             StartCooldown(EvalTag(PowerKeys.CooldownTime));
-            var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][460358].Data;
+            var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][460358].Data;
 
             var EffectSNO = ActorSno._necro_aotd_a_emitter;
             float Range = 15f;
@@ -2563,7 +2563,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 DType = DamageType.Cold;
                 Damage = 5.2f;
-                var Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(this.User, TargetPosition);
+                var Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, TargetPosition);
                 var E = SpawnEffect(ActorSno._necro_aotd_b_north_emitter, TargetPosition, Angle);
 
                 E.UpdateDelay = 0.2f;
@@ -2652,7 +2652,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         public override IEnumerable<TickTimer> Main()
         {
             StartCooldown(EvalTag(PowerKeys.CooldownTime));
-            var DataOfSkill = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][465839].Data;
+            var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][465839].Data;
 
             AddBuff(User, new ZBuff());
             if (Rune_A > 0)
@@ -3201,7 +3201,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         alr.Destroy();
 
                 var proxy = SpawnEffect(ActorSno._p6_necro_leech_e_proxyactor, TargetPosition,
-                ActorSystem.Movement.MovementHelpers.GetFacingAngle(this.User, TargetPosition),
+                ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, TargetPosition),
                 WaitSeconds(30f));
                 proxy.Attributes[GameAttribute.Summoner_ID] = (User as PlayerSystem.Player).PlayerIndex;
                 AddBuff(User, new Rune_DBuff(proxy));
@@ -3218,7 +3218,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         ActorSno._p6_necro_leech_f_groundarea
                     ),
                     TargetPosition,
-                    ActorSystem.Movement.MovementHelpers.GetFacingAngle(this.User, TargetPosition),
+                    ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, TargetPosition),
                     WaitSeconds(0.2f)
                 );
 
@@ -4590,43 +4590,43 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             else
             {
-                var StartTP = SpawnProxy(User.Position, new TickTimer(this.User.World.Game, 500));
-                var PointTP = SpawnProxy(TargetPosition, new TickTimer(this.User.World.Game, 500));
+                var StartTP = SpawnProxy(User.Position, new TickTimer(User.World.Game, 500));
+                var PointTP = SpawnProxy(TargetPosition, new TickTimer(User.World.Game, 500));
 
-                foreach (var plr in this.User.World.Players.Values)
+                foreach (var plr in User.World.Players.Values)
                 {
                     //473 637
                     plr.InGameClient.SendMessage(new ACDTranslateSyncMessage()
                     {
-                        ActorId = this.User.DynamicID(plr),
-                        Position = this.User.Position,
+                        ActorId = User.DynamicID(plr),
+                        Position = User.Position,
                         Snap = true,
                         Field3 = 0xE56D
                     });
                     plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Actor.ActorLookOverrideChangedMessage()
                     {
-                        Field0 = (int)this.User.DynamicID(plr),
+                        Field0 = (int)User.DynamicID(plr),
                         Field1 = -1,
                         Field2 = unchecked((int)0xD8A4C675)
                     });
 
-                    (this.User as PlayerSystem.Player).InGameClient.SendMessage(new ACDTranslateSnappedMessage()
+                    (User as PlayerSystem.Player).InGameClient.SendMessage(new ACDTranslateSnappedMessage()
                     {
-                        ActorId = (int)this.User.DynamicID(this.User as PlayerSystem.Player),
+                        ActorId = (int)User.DynamicID(User as PlayerSystem.Player),
                         Position = PointTP.Position,
-                        Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(this.User, PointTP),
+                        Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, PointTP),
                         Field3 = true,
                         Field4 = 0x90,
                         CameraSmoothingTime = 0x30,
                         Field6 = 0x100
                     });
                     //*/
-                    this.User.Position = PointTP.Position;
+                    User.Position = PointTP.Position;
 
                     plr.InGameClient.SendMessage(new ACDTranslateSyncMessage()
                     {
-                        ActorId = this.User.DynamicID(plr),
-                        Position = this.User.Position,
+                        ActorId = User.DynamicID(plr),
+                        Position = User.Position,
                         Snap = true,
                         Field3 = 0xE56D
                     });
@@ -4637,7 +4637,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Type = 0,
                         EffectSNO = 0x00073E50,
                         SourceActorId = (int)PointTP.DynamicID(plr),
-                        TargetActorId = (int)this.User.DynamicID(plr),
+                        TargetActorId = (int)User.DynamicID(plr),
                         Param1 = 0,
                         Param2 = 0
 
@@ -4654,7 +4654,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Type = 0,
                         EffectSNO = 0x00073E50,
                         SourceActorId = (int)PointTP.DynamicID(plr),
-                        TargetActorId = (int)this.User.DynamicID(plr),
+                        TargetActorId = (int)User.DynamicID(plr),
                         Param1 = 0,
                         Param2 = 0
 

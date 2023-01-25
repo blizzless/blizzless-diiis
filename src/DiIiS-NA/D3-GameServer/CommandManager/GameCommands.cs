@@ -1,4 +1,4 @@
-﻿//Blizzless Project 2022 
+//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
@@ -37,11 +37,37 @@ using System.Linq;
 using System.Text;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
+using DiIiS_NA.LoginServer.AccountsSystem;
 //Blizzless Project 2022 
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 
 namespace DiIiS_NA.GameServer.CommandManager
 {
+    [CommandGroup("invulnerable", "Makes you invulnerable")]
+    public class InvulnerableCommand : CommandGroup
+    {
+        [DefaultCommand]
+        public string Invulnerable(string[] @params, BattleClient invokerClient)
+        {
+            if (invokerClient?.InGameClient?.Player is not { } player)
+                return "You can not invoke this command from console.";
+
+            if (player.Attributes.FixedMap.Contains(FixedAttribute.Invulnerable))
+            {
+                player.Attributes.FixedMap.Remove(FixedAttribute.Invulnerable);
+                player.Attributes[GameAttribute.Invulnerable] = false;
+                player.Attributes.BroadcastChangedIfRevealed();
+                return "You are no longer invulnerable.";
+            }
+
+            player.Attributes.FixedMap.Add(FixedAttribute.Invulnerable,
+                attributes => { attributes[GameAttribute.Invulnerable] = true; });
+            player.Attributes.BroadcastChangedIfRevealed();
+            return "You are now invulnerable.";
+        }
+    }
+
     [CommandGroup("spawn", "Spawns a mob.\nUsage: spawn [actorSNO] [amount]")]
     public class SpawnCommand : CommandGroup
     {
@@ -87,13 +113,13 @@ namespace DiIiS_NA.GameServer.CommandManager
             for (int i = 0; i < amount; i++)
             {
                 var position = new Vector3D(player.Position.X + (float)RandomHelper.NextDouble() * 20f,
-                                            player.Position.Y + (float)RandomHelper.NextDouble() * 20f,
-                                            player.Position.Z);
+                    player.Position.Y + (float)RandomHelper.NextDouble() * 20f,
+                    player.Position.Z);
 
                 var monster = player.World.SpawnMonster((ActorSno)actorSNO, position);
 
             }
-            return string.Format("Spawned {0} mobs with ActorSNO: {1}", amount, actorSNO);
+            return $"Spawned {amount} mobs with ActorSNO: {actorSNO}";
         }
 
     }
@@ -140,9 +166,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 
             player.Toon.GameAccount.NotifyUpdate();
             if (player.Level >= 70)
-                return string.Format("New paragon level: {0}", player.ParagonLevel);
+                return $"New paragon level: {player.ParagonLevel}";
             else
-                return string.Format("New level: {0}", player.Toon.Level);
+                return $"New level: {player.Toon.Level}";
         }
     }
 
@@ -159,7 +185,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 return "You can only invoke this command while ingame.";
 
             var player = invokerClient.InGameClient.Player;
-            
+
             player.BlacksmithUnlocked = true;
             player.JewelerUnlocked = true;
             player.MysticUnlocked = true;
@@ -183,7 +209,8 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("platinum", "Platinum for your character.\nOptionally specify the number of levels: !platinum [count]")]
+    [CommandGroup("platinum",
+        "Platinum for your character.\nOptionally specify the number of levels: !platinum [count]")]
     public class PlatinumCommand : CommandGroup
     {
         [DefaultCommand]
@@ -230,7 +257,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 return "You can only invoke this command while ingame.";
 
             var player = invokerClient.InGameClient.Player;
-            
+
             player.Inventory.OnBuySharedStashSlots(null);
 
             return string.Format("Stash Upgraded");
@@ -260,11 +287,12 @@ namespace DiIiS_NA.GameServer.CommandManager
 
             player.Inventory.AddGoldAmount(amount);
 
-            return string.Format("Added Gold {0}", amount);
+            return $"Added Gold {amount}";
         }
     }
 
-    [CommandGroup("achiplatinum", "Platinum for your character.\nOptionally specify the number of levels: !platinum [count]")]
+    [CommandGroup("achiplatinum",
+        "Platinum for your character.\nOptionally specify the number of levels: !platinum [count]")]
     public class PlatinumAchiCommand : CommandGroup
     {
         [DefaultCommand]
@@ -325,7 +353,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 
             player.PlayEffectGroup(id);
 
-            return string.Format("PlayEffectGroup {0}", id);
+            return $"PlayEffectGroup {id}";
         }
     }
 
@@ -347,7 +375,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 
             if (@params == null)
-                return this.Fallback();
+                return Fallback();
 
             name = @params[0];
 
@@ -363,14 +391,14 @@ namespace DiIiS_NA.GameServer.CommandManager
             for (int i = 0; i < amount; i++)
             {
                 var position = new Vector3D(player.Position.X + (float)RandomHelper.NextDouble() * 20f,
-                                            player.Position.Y + (float)RandomHelper.NextDouble() * 20f,
-                                            player.Position.Z);
+                    player.Position.Y + (float)RandomHelper.NextDouble() * 20f,
+                    player.Position.Z);
 
                 var item = ItemGenerator.Cook(player, name);
                 item.EnterWorld(position);
             }
 
-            return string.Format("Spawned {0} items with name: {1}", amount, name);
+            return $"Spawned {amount} items with name: {name}";
 
         }
 
@@ -406,14 +434,14 @@ namespace DiIiS_NA.GameServer.CommandManager
             for (int i = 0; i < amount; i++)
             {
                 var position = new Vector3D(player.Position.X + (float)RandomHelper.NextDouble() * 20f,
-                                            player.Position.Y + (float)RandomHelper.NextDouble() * 20f,
-                                            player.Position.Z);
+                    player.Position.Y + (float)RandomHelper.NextDouble() * 20f,
+                    player.Position.Z);
 
                 var item = ItemGenerator.GenerateRandom(player, type);
                 item.EnterWorld(position);
             }
 
-            return string.Format("Spawned {0} items with type: {1}", amount, name);
+            return $"Spawned {amount} items with type: {name}";
         }
 
         [Command("dropall", "Drops all items in Backpack.\nUsage: item dropall")]
@@ -435,7 +463,7 @@ namespace DiIiS_NA.GameServer.CommandManager
                 var msg = new InventoryDropItemMessage { ItemID = item.DynamicID(player) };
                 player.Inventory.Consume(invokerClient.InGameClient, msg);
             }
-            return string.Format("Dropped {0} Items for you", bpItems.Count);
+            return $"Dropped {bpItems.Count} Items for you";
         }
     }
 
@@ -469,8 +497,10 @@ namespace DiIiS_NA.GameServer.CommandManager
 
                 invokerClient.InGameClient.Player.ChangeWorld(world, world.StartingPoints.First().Position);
 
-                var proximity = new System.Drawing.RectangleF(invokerClient.InGameClient.Player.Position.X - 1f, invokerClient.InGameClient.Player.Position.Y - 1f, 2f, 2f);
-                var scenes = invokerClient.InGameClient.Player.World.QuadTree.Query<GSSystem.MapSystem.Scene>(proximity);
+                var proximity = new System.Drawing.RectangleF(invokerClient.InGameClient.Player.Position.X - 1f,
+                    invokerClient.InGameClient.Player.Position.Y - 1f, 2f, 2f);
+                var scenes =
+                    invokerClient.InGameClient.Player.World.QuadTree.Query<GSSystem.MapSystem.Scene>(proximity);
                 if (scenes.Count == 0) return ""; // cork (is it real?)
 
                 var scene = scenes[0]; // Parent scene /fasbat
@@ -484,21 +514,26 @@ namespace DiIiS_NA.GameServer.CommandManager
                 var levelArea = scene.Specification.SNOLevelAreas[0];
 
                 //handling quest triggers
-                if (invokerClient.InGameClient.Player.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
+                if (invokerClient.InGameClient.Player.World.Game.SideQuestProgress.GlobalQuestTriggers
+                    .ContainsKey(levelArea)) //EnterLevelArea
                 {
-                    var trigger = invokerClient.InGameClient.Player.World.Game.SideQuestProgress.GlobalQuestTriggers[levelArea];
-                    if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+                    var trigger =
+                        invokerClient.InGameClient.Player.World.Game.SideQuestProgress.GlobalQuestTriggers[levelArea];
+                    if (trigger.triggerType == QuestStepObjectiveType.EnterLevelArea)
                     {
                         try
                         {
                             trigger.questEvent.Execute(invokerClient.InGameClient.Player.World); // launch a questEvent
                         }
-                        catch { }
+                        catch
+                        {
+                        }
                     }
                 }
+
                 foreach (var bounty in invokerClient.InGameClient.Player.World.Game.QuestManager.Bounties)
                     bounty.CheckLevelArea(levelArea);
-                return string.Format("Teleported to: {0} [id: {1}]", MPQStorage.Data.Assets[SNOGroup.Worlds][worldId].Name, worldId);
+                return $"Teleported to: {MPQStorage.Data.Assets[SNOGroup.Worlds][worldId].Name} [id: {worldId}]";
             }
 
             return "Invalid arguments. Type 'help tp' to get help.";
@@ -524,7 +559,7 @@ namespace DiIiS_NA.GameServer.CommandManager
             {
                 var conversation = MPQStorage.Data.Assets[SNOGroup.Conversation][Int32.Parse(@params[0])];
                 invokerClient.InGameClient.Player.Conversations.StartConversation(Int32.Parse(@params[0]));
-                return String.Format("Started conversation {0}", conversation.FileName);
+                return $"Started conversation {conversation.FileName}";
             }
             catch (Exception e)
             {
@@ -533,448 +568,455 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("speed", "Modify speed walk of you character.")]
+    [CommandGroup("speed", "Modify speed walk of you character.\nUsage: !speed <value>\nReset: !speed")]
     public class ModifySpeedCommand : CommandGroup
     {
         [DefaultCommand]
         public string ModifySpeed(string[] @params, BattleClient invokerClient)
         {
-            if (invokerClient == null)
-                return "You can not invoke this command from console.";
-
-            if (invokerClient.InGameClient == null)
-                return "You can only invoke this command while ingame.";
+            if (invokerClient?.InGameClient == null)
+                return "This command can only be used in-game.";
 
             if (@params == null)
-                return "Change the movement speed. Min 0 (Base), Max 2.\n You can use decimal values like 1,3 for example.";
+                return
+                    "Change the movement speed. Min 0 (Base), Max 2.\n You can use decimal values like 1,3 for example.";
+            float speedValue;
 
-            foreach (char ch in @params[0])
+            const float maxSpeed = 3; // 2;
+            const float baseSpeed = 0.36f;
+
+            if (@params.Any())
             {
-                if (Char.IsLetter(ch))
-                    return "Only Numbers";
-            }
-
-            if (@params[0].Contains(","))
-                return "jojo";
-
-            float SpeedValue = float.Parse(@params[0]);
-            float MaxSpeed = 2;
-            float BaseSpeed = 0.36f;
-            var playerSpeed = invokerClient.InGameClient.Player.Attributes;
-
-            if (SpeedValue <= BaseSpeed) // Base Run Speed [Necrosummon]
-            {
-                playerSpeed[GameAttribute.Running_Rate] = BaseSpeed;
-                return "Speed changed to Base Speed";
-            }
-
-            if (SpeedValue > MaxSpeed)
-            {
-                playerSpeed[GameAttribute.Running_Rate] = MaxSpeed;
-                return string.Format("MaxSpeed {0}", MaxSpeed);
+                if (!float.TryParse(@params[0], out speedValue) || speedValue < 0 || speedValue > maxSpeed)
+                    return ("Invalid speed value. Must be a number between 0 and 3.");
             }
             else
-                playerSpeed[GameAttribute.Running_Rate] = SpeedValue;
+            {
+                speedValue = 0;
+            }
 
+            var playerSpeed = invokerClient.InGameClient.Player.Attributes;
+
+            if (playerSpeed.FixedMap.Contains(FixedAttribute.Speed))
+                playerSpeed.FixedMap.Remove(FixedAttribute.Speed);
+
+            if (speedValue <= baseSpeed) // Base Run Speed [Necrosummon]
+            {
+                playerSpeed[GameAttribute.Running_Rate] = baseSpeed;
+                return $"Speed reset to Base Speed ({baseSpeed:0.000}).";
+            }
+
+            playerSpeed.FixedMap.Add(FixedAttribute.Speed, attr => attr[GameAttribute.Running_Rate] = speedValue);
             playerSpeed.BroadcastChangedIfRevealed();
-            return string.Format("Speed changed to {0}", SpeedValue);
-        }
-    }
-
-    [CommandGroup("quest", "Retrieves information about quest states and manipulates quest progress.\n Usage: quest [triggers | trigger eventType eventValue | advance snoQuest]")]
-    public class QuestCommand : CommandGroup
-    {
-        [DefaultCommand]
-        public string Quest(string[] @params, BattleClient invokerClient)
-        {
-            if (invokerClient == null)
-                return "You can not invoke this command from console.";
-
-            if (invokerClient.InGameClient == null)
-                return "You can only invoke this command while ingame.";
-
-            return "";
+            return $"Speed changed to {speedValue}";
         }
 
-        [Command("advance", "Advances a quest by a single step\n Usage: advance")]
-        public string Advance(string[] @params, BattleClient invokerClient)
+        [CommandGroup("quest",
+            "Retrieves information about quest states and manipulates quest progress.\n Usage: quest [triggers | trigger eventType eventValue | advance snoQuest]")]
+        public class QuestCommand : CommandGroup
         {
-            try
+            [DefaultCommand]
+            public string Quest(string[] @params, BattleClient invokerClient)
             {
-                invokerClient.InGameClient.Game.QuestManager.Advance();
-                return String.Format("Advancing main quest line");
+                if (invokerClient == null)
+                    return "You can not invoke this command from console.";
+
+                if (invokerClient.InGameClient == null)
+                    return "You can only invoke this command while ingame.";
+
+                return "";
             }
-            catch (Exception e)
+
+            [Command("advance", "Advances a quest by a single step\n Usage: advance")]
+            public string Advance(string[] @params, BattleClient invokerClient)
             {
-                return e.Message;
-            }
-        }
-
-        [Command("sideadvance", "Advances a side-quest by a single step\n Usage: sideadvance")]
-        public string SideAdvance(string[] @params, BattleClient invokerClient)
-        {
-            try
-            {
-                invokerClient.InGameClient.Game.QuestManager.SideAdvance();
-                return String.Format("Advancing side quest line");
-            }
-            catch (Exception e)
-            {
-                return e.Message;
-            }
-        }
-
-        [Command("event", "Launches chosen side-quest by snoID\n Usage: event snoId")]
-        public string Event(string[] @params, BattleClient invokerClient)
-        {
-            if (@params == null)
-                return this.Fallback();
-
-            if (@params.Count() != 1)
-                return "Invalid arguments. Type 'help text public' to get help.";
-
-            int questId = Int32.Parse(@params[0]);
-
-            try
-            {
-                invokerClient.InGameClient.Game.QuestManager.LaunchSideQuest(questId, true);
-                return String.Format("Advancing side quest line");
-            }
-            catch (Exception e)
-            {
-                return e.Message;
-            }
-        }
-
-        [Command("timer", "Send broadcasted text message.\n Usage: public 'message'")]
-        public string Timer(string[] @params, BattleClient invokerClient)
-        {
-            if (@params == null)
-                return this.Fallback();
-
-            if (@params.Count() != 2)
-                return "Invalid arguments. Type 'help text public' to get help.";
-
-            int eventId = Int32.Parse(@params[0]);
-            int duration = Int32.Parse(@params[1]);
-
-            invokerClient.InGameClient.Game.QuestManager.LaunchQuestTimer(eventId, (float)duration, new Action<int>((q) => { }));
-
-            return String.Format("Message sended.");
-        }
-    }
-
-    [CommandGroup("lookup", "Searches in sno databases.\nUsage: lookup [actor|conv|power|scene|la|sp|weather] <pattern>")]
-    public class LookupCommand : CommandGroup
-    {
-        [DefaultCommand]
-        public string Search(string[] @params, BattleClient invokerClient)
-        {
-            if (@params == null)
-                return this.Fallback();
-
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup actor' to get help.";
-
-            var pattern = @params[0].ToLower();
-
-            foreach (var groupPair in MPQStorage.Data.Assets)
-            {
-                foreach (var pair in groupPair.Value)
+                try
                 {
-                    if (pair.Value.Name.ToLower().Contains(pattern))
-                        matches.Add(pair.Value);
+                    invokerClient.InGameClient.Game.QuestManager.Advance();
+                    return String.Format("Advancing main quest line");
+                }
+                catch (Exception e)
+                {
+                    return e.Message;
                 }
             }
 
-            return matches.Aggregate(matches.Count >= 1 ? "Matches:\n" : "No matches found.",
-                                     (current, match) => current + string.Format("[{0}] [{1}] {2}\n", match.SNOId.ToString("D6"), match.Group, match.Name));
-        }
-
-        [Command("actor", "Allows you to search for an actor.\nUsage: lookup actor <pattern>")]
-        public string Actor(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup actor' to get help.";
-
-            var pattern = @params[0].ToLower();
-
-            foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Actor])
+            [Command("sideadvance", "Advances a side-quest by a single step\n Usage: sideadvance")]
+            public string SideAdvance(string[] @params, BattleClient invokerClient)
             {
-                if (pair.Value.Name.ToLower().Contains(pattern))
-                    matches.Add(pair.Value);
+                try
+                {
+                    invokerClient.InGameClient.Game.QuestManager.SideAdvance();
+                    return String.Format("Advancing side quest line");
+                }
+                catch (Exception e)
+                {
+                    return e.Message;
+                }
+            }
+
+            [Command("event", "Launches chosen side-quest by snoID\n Usage: event snoId")]
+            public string Event(string[] @params, BattleClient invokerClient)
+            {
+                if (@params == null)
+                    return Fallback();
+
+                if (@params.Count() != 1)
+                    return "Invalid arguments. Type 'help text public' to get help.";
+
+                int questId = Int32.Parse(@params[0]);
+
+                try
+                {
+                    invokerClient.InGameClient.Game.QuestManager.LaunchSideQuest(questId, true);
+                    return String.Format("Advancing side quest line");
+                }
+                catch (Exception e)
+                {
+                    return e.Message;
+                }
+            }
+
+            [Command("timer", "Send broadcasted text message.\n Usage: public 'message'")]
+            public string Timer(string[] @params, BattleClient invokerClient)
+            {
+                if (@params == null)
+                    return Fallback();
+
+                if (@params.Count() != 2)
+                    return "Invalid arguments. Type 'help text public' to get help.";
+
+                int eventId = Int32.Parse(@params[0]);
+                int duration = Int32.Parse(@params[1]);
+
+                invokerClient.InGameClient.Game.QuestManager.LaunchQuestTimer(eventId, (float)duration,
+                    new Action<int>((q) => { }));
+
+                return String.Format("Message sended.");
             }
 
             return matches.Aggregate(matches.Count >= 1 ? "Actor Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} ({2} {3})\n",
-                                        match.SNOId.ToString("D6"),
-                                        match.Name,
-                                        (match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type,
-                                        (((match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type == ActorType.Gizmo) ? ((int)(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[ActorKeys.GizmoGroup]).ToString() : "")
-                                        ));
+                                     (current, match) => current +
+                                                         $"[{match.SNOId.ToString("D6")}] {match.Name} ({(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type} {(((match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type == ActorType.Gizmo) ? ((int)(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[ActorKeys.GizmoGroup]).ToString() : "")})\n");
         }
 
-        [Command("rope", "Allows you to search for an rope.\nUsage: lookup rope <pattern>")]
-        public string Rope(string[] @params, BattleClient invokerClient)
+        [CommandGroup("lookup",
+            "Searches in sno databases.\nUsage: lookup [actor|conv|power|scene|la|sp|weather] <pattern>")]
+        public class LookupCommand : CommandGroup
         {
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup actor' to get help.";
-
-            var pattern = @params[0].ToLower();
-
-            foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Rope])
+            [DefaultCommand]
+            public string Search(string[] @params, BattleClient invokerClient)
             {
-                if (pair.Value.Name.ToLower().Contains(pattern))
-                    matches.Add(pair.Value);
-            }
+                if (@params == null)
+                    return Fallback();
 
-            return matches.Aggregate(matches.Count >= 1 ? "Rope Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
-        }
+                var matches = new List<Asset>();
 
-        [Command("conv", "Allows you to search for an conversation.\nUsage: lookup conv <pattern>")]
-        public string Conversation(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<Asset>();
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup actor' to get help.";
 
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup actor' to get help.";
-
-            var pattern = @params[0].ToLower();
-
-            foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Conversation])
-            {
-                if (pair.Value.Name.ToLower().Contains(pattern))
-                    matches.Add(pair.Value);
-            }
-
-            return matches.Aggregate(matches.Count >= 1 ? "Conversation Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
-        }
-
-        [Command("power", "Allows you to search for a power.\nUsage: lookup power <pattern>")]
-        public string Power(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup power' to get help.";
-
-            if (@params[0].ToLower() == "id")
-            {
-                var num = Int32.Parse(@params[1]);
-                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Power])
-                {
-                    if (pair.Value.SNOId == num)
-                        matches.Add(pair.Value);
-                }
-            }
-            else
-            {
                 var pattern = @params[0].ToLower();
-                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Power])
+
+                foreach (var groupPair in MPQStorage.Data.Assets)
+                {
+                    foreach (var pair in groupPair.Value)
+                    {
+                        if (pair.Value.Name.ToLower().Contains(pattern))
+                            matches.Add(pair.Value);
+                    }
+                }
+
+                return matches.Aggregate(matches.Count >= 1 ? "Matches:\n" : "No matches found.",
+                    (current, match) => current +
+                                        $"[{match.SNOId.ToString("D6")}] [{match.Group}] {match.Name}\n");
+            }
+
+            [Command("actor", "Allows you to search for an actor.\nUsage: lookup actor <pattern>")]
+            public string Actor(string[] @params, BattleClient invokerClient)
+            {
+                var matches = new List<Asset>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup actor' to get help.";
+
+                var pattern = @params[0].ToLower();
+
+                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Actor])
                 {
                     if (pair.Value.Name.ToLower().Contains(pattern))
                         matches.Add(pair.Value);
                 }
+
+                return matches.Aggregate(matches.Count >= 1 ? "Actor Matches:\n" : "No match found.",
+                    (current, match) => current +
+                                        $"[{match.SNOId.ToString("D6")}] {match.Name} ({(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type} {(((match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type == ActorType.Gizmo) ? ((int)(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[ActorKeys.GizmoGroup]).ToString() : "")})\n");
             }
 
-            return matches.Aggregate(matches.Count >= 1 ? "Power Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
-        }
-
-        [Command("world", "Allows you to search for a world.\nUsage: lookup world <pattern> OR lookup world id <snoId>")]
-        public string World(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup world' to get help.";
-
-            if (@params[0].ToLower() == "id")
+            [Command("rope", "Allows you to search for an rope.\nUsage: lookup rope <pattern>")]
+            public string Rope(string[] @params, BattleClient invokerClient)
             {
-                var num = Int32.Parse(@params[1]);
-                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Worlds])
-                {
-                    if (pair.Value.SNOId == num)
-                        matches.Add(pair.Value);
-                }
-            }
-            else
-            {
+                var matches = new List<Asset>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup actor' to get help.";
+
                 var pattern = @params[0].ToLower();
-                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Worlds])
+
+                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Rope])
                 {
                     if (pair.Value.Name.ToLower().Contains(pattern))
                         matches.Add(pair.Value);
                 }
+
+                return matches.Aggregate(matches.Count >= 1 ? "Rope Matches:\n" : "No match found.",
+                    (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
             }
+
+            [Command("conv", "Allows you to search for an conversation.\nUsage: lookup conv <pattern>")]
+            public string Conversation(string[] @params, BattleClient invokerClient)
+            {
+                var matches = new List<Asset>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup actor' to get help.";
+
+                var pattern = @params[0].ToLower();
+
+                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Conversation])
+                {
+                    if (pair.Value.Name.ToLower().Contains(pattern))
+                        matches.Add(pair.Value);
+                }
+
+                return matches.Aggregate(matches.Count >= 1 ? "Conversation Matches:\n" : "No match found.",
+                    (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
+            }
+
+            [Command("power", "Allows you to search for a power.\nUsage: lookup power <pattern>")]
+            public string Power(string[] @params, BattleClient invokerClient)
+            {
+                var matches = new List<Asset>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup power' to get help.";
+
+                if (@params[0].ToLower() == "id")
+                {
+                    var num = Int32.Parse(@params[1]);
+                    foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Power])
+                    {
+                        if (pair.Value.SNOId == num)
+                            matches.Add(pair.Value);
+                    }
+                }
+                else
+                {
+                    var pattern = @params[0].ToLower();
+                    foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Power])
+                    {
+                        if (pair.Value.Name.ToLower().Contains(pattern))
+                            matches.Add(pair.Value);
+                    }
+                }
 
             return matches.Aggregate(matches.Count >= 1 ? "World Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.SNOId.ToString("D6"), match.Name, (match.Data as DiIiS_NA.Core.MPQ.FileFormats.World).DynamicWorld));
+                                     (current, match) => current +
+                                                         $"[{match.SNOId.ToString("D6")}] {match.Name} - {(match.Data as World).DynamicWorld}\n");
         }
 
-        [Command("qr", "Show QuestRange of an actor.\nUsage: lookup qr <id>")]
-        public string QuestRange(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup world' to get help.";
-
-            var num = Int32.Parse(@params[0]);
-            string qr_id = "-1";
-            string qr_name = "None";
-            foreach (var pair in MPQStorage.Data.Assets[SNOGroup.QuestRange])
+            [Command("world",
+                "Allows you to search for a world.\nUsage: lookup world <pattern> OR lookup world id <snoId>")]
+            public string World(string[] @params, BattleClient invokerClient)
             {
-                if (pair.Value.SNOId == num)
+                var matches = new List<Asset>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup world' to get help.";
+
+                if (@params[0].ToLower() == "id")
                 {
-                    qr_id = pair.Value.SNOId.ToString("D6");
-                    qr_name = pair.Value.Name;
+                    var num = Int32.Parse(@params[1]);
+                    foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Worlds])
+                    {
+                        if (pair.Value.SNOId == num)
+                            matches.Add(pair.Value);
+                    }
                 }
-            }
-
-            return String.Format("[{0}] {1}", qr_id, qr_name);
-        }
-
-        public static int GetExitBits(Asset scene)
-        {
-            if (scene.Name.Contains("_N_")) return 1;
-            else if (scene.Name.Contains("_S_")) return 2;
-            else if (scene.Name.Contains("_NS_")) return 3;
-            else if (scene.Name.Contains("_E_")) return 4;
-            else if (scene.Name.Contains("_NE_")) return 5;
-            else if (scene.Name.Contains("_SE_")) return 6;
-            else if (scene.Name.Contains("_NSE_")) return 7;
-            else if (scene.Name.Contains("_W_")) return 8;
-            else if (scene.Name.Contains("_NW_")) return 9;
-            else if (scene.Name.Contains("_SW_")) return 10;
-            else if (scene.Name.Contains("_NSW_")) return 11;
-            else if (scene.Name.Contains("_EW_")) return 12;
-            else if (scene.Name.Contains("_NEW_")) return 13;
-            else if (scene.Name.Contains("_SEW_")) return 14;
-            else if (scene.Name.Contains("_NSEW_")) return 15;
-            else return 0;
-        }
-
-        [Command("la", "Allows you to search for a LevelArea.\nUsage: lookup la <pattern>")]
-        public string LevelArea(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup la' to get help.";
-
-            var pattern = @params[0].ToLower();
-
-            foreach (var pair in MPQStorage.Data.Assets[SNOGroup.LevelArea])
-            {
-                if (pair.Value.Name.ToLower().Contains(pattern))
-                    matches.Add(pair.Value);
-            }
-
-            return matches.Aggregate(matches.Count >= 1 ? "LevelArea Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
-        }
-
-        [Command("sp", "List all Starting Points in world.\nUsage: lookup sp")]
-        public string StartingPoint(string[] @params, BattleClient invokerClient)
-        {
-            var matches = invokerClient.InGameClient.Player.World.StartingPoints;
-
-            return matches.Aggregate(matches.Count >= 1 ? "Starting Points:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.GlobalID.ToString("D6"), match.Name, match.TargetId));
-        }
-
-        [Command("weather", "Allows you to search for a Weather.\nUsage: lookup weather <pattern>")]
-        public string Weather(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup weather' to get help.";
-
-            var pattern = @params[0].ToLower();
-
-            foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Weather])
-            {
-                if (pair.Value.Name.ToLower().Contains(pattern))
-                    matches.Add(pair.Value);
-            }
-
-            return matches.Aggregate(matches.Count >= 1 ? "Weather Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOId.ToString("D6"), match.Name));
-        }
-
-        [Command("scene", "Allows you to search for a scene.\nUsage: lookup scene <pattern>")]
-        public string Scene(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup scene' to get help.";
-
-            var pattern = @params[0].ToLower();
-
-            foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Scene])
-            {
-                if (pair.Value.Name.ToLower().Contains(pattern))
-                    matches.Add(pair.Value);
-            }
-
-            return matches.Aggregate(matches.Count >= 1 ? "Scene Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.SNOId.ToString("D6"), match.Name, GetExitBits(match)));
-        }
-
-        [Command("eg", "Allows you to search for an EffectGroup.\nUsage: lookup eg <pattern>")]
-        public string EffectGroup(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<Asset>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup eg' to get help.";
-
-            var pattern = @params[0].ToLower();
-
-            foreach (var pair in MPQStorage.Data.Assets[SNOGroup.EffectGroup])
-            {
-                if (pair.Value.Name.ToLower().Contains(pattern))
-                    matches.Add(pair.Value);
-            }
-
-            return matches.Aggregate(matches.Count >= 1 ? "EffectGroup Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1} - {2}\n", match.SNOId.ToString("D6"), match.Name, GetExitBits(match)));
-        }
-
-        [Command("item", "Allows you to search for an item.\nUsage: lookup item <pattern>")]
-        public string Item(string[] @params, BattleClient invokerClient)
-        {
-            var matches = new List<ItemTable>();
-
-            if (@params.Count() < 1)
-                return "Invalid arguments. Type 'help lookup item' to get help.";
-
-            var pattern = @params[0].ToLower();
-
-            foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
-            {
-                var data = asset.Data as GameBalance;
-                if (data == null || data.Type != BalanceType.Items) continue;
-
-                foreach (var itemDefinition in data.Item)
+                else
                 {
-                    if (itemDefinition.Name.ToLower().Contains(pattern))
-                        matches.Add(itemDefinition);
+                    var pattern = @params[0].ToLower();
+                    foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Worlds])
+                    {
+                        if (pair.Value.Name.ToLower().Contains(pattern))
+                            matches.Add(pair.Value);
+                    }
                 }
+
+                return matches.Aggregate(matches.Count >= 1 ? "World Matches:\n" : "No match found.",
+                    (current, match) => current +
+                                        $"[{match.SNOId.ToString("D6")}] {match.Name} - {(match.Data as World).DynamicWorld}\n");
             }
-            return matches.Aggregate(matches.Count >= 1 ? "Item Matches:\n" : "No match found.",
-                                     (current, match) => current + string.Format("[{0}] {1}\n", match.SNOActor.ToString("D6"), match.Name));
+
+            [Command("qr", "Show QuestRange of an actor.\nUsage: lookup qr <id>")]
+            public string QuestRange(string[] @params, BattleClient invokerClient)
+            {
+                var matches = new List<Asset>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup world' to get help.";
+
+                var num = Int32.Parse(@params[0]);
+                string qr_id = "-1";
+                string qr_name = "None";
+                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.QuestRange])
+                {
+                    if (pair.Value.SNOId == num)
+                    {
+                        qr_id = pair.Value.SNOId.ToString("D6");
+                        qr_name = pair.Value.Name;
+                    }
+                }
+
+                return $"[{qr_id}] {qr_name}";
+            }
+
+            public static int GetExitBits(Asset scene)
+            {
+                if (scene.Name.Contains("_N_")) return 1;
+                else if (scene.Name.Contains("_S_")) return 2;
+                else if (scene.Name.Contains("_NS_")) return 3;
+                else if (scene.Name.Contains("_E_")) return 4;
+                else if (scene.Name.Contains("_NE_")) return 5;
+                else if (scene.Name.Contains("_SE_")) return 6;
+                else if (scene.Name.Contains("_NSE_")) return 7;
+                else if (scene.Name.Contains("_W_")) return 8;
+                else if (scene.Name.Contains("_NW_")) return 9;
+                else if (scene.Name.Contains("_SW_")) return 10;
+                else if (scene.Name.Contains("_NSW_")) return 11;
+                else if (scene.Name.Contains("_EW_")) return 12;
+                else if (scene.Name.Contains("_NEW_")) return 13;
+                else if (scene.Name.Contains("_SEW_")) return 14;
+                else if (scene.Name.Contains("_NSEW_")) return 15;
+                else return 0;
+            }
+
+            [Command("la", "Allows you to search for a LevelArea.\nUsage: lookup la <pattern>")]
+            public string LevelArea(string[] @params, BattleClient invokerClient)
+            {
+                var matches = new List<Asset>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup la' to get help.";
+
+                var pattern = @params[0].ToLower();
+
+                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.LevelArea])
+                {
+                    if (pair.Value.Name.ToLower().Contains(pattern))
+                        matches.Add(pair.Value);
+                }
+
+                return matches.Aggregate(matches.Count >= 1 ? "LevelArea Matches:\n" : "No match found.",
+                    (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
+            }
+
+            [Command("sp", "List all Starting Points in world.\nUsage: lookup sp")]
+            public string StartingPoint(string[] @params, BattleClient invokerClient)
+            {
+                var matches = invokerClient.InGameClient.Player.World.StartingPoints;
+
+                return matches.Aggregate(matches.Count >= 1 ? "Starting Points:\n" : "No match found.",
+                    (current, match) => current +
+                                        $"[{match.GlobalID.ToString("D6")}] {match.Name} - {match.TargetId}\n");
+            }
+
+            [Command("weather", "Allows you to search for a Weather.\nUsage: lookup weather <pattern>")]
+            public string Weather(string[] @params, BattleClient invokerClient)
+            {
+                var matches = new List<Asset>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup weather' to get help.";
+
+                var pattern = @params[0].ToLower();
+
+                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Weather])
+                {
+                    if (pair.Value.Name.ToLower().Contains(pattern))
+                        matches.Add(pair.Value);
+                }
+
+                return matches.Aggregate(matches.Count >= 1 ? "Weather Matches:\n" : "No match found.",
+                    (current, match) => current + $"[{match.SNOId.ToString("D6")}] {match.Name}\n");
+            }
+
+            [Command("scene", "Allows you to search for a scene.\nUsage: lookup scene <pattern>")]
+            public string Scene(string[] @params, BattleClient invokerClient)
+            {
+                var matches = new List<Asset>();
+                
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup scene' to get help.";
+
+                var pattern = @params[0].ToLower();
+
+                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.Scene])
+                {
+                    if (pair.Value.Name.ToLower().Contains(pattern))
+                        matches.Add(pair.Value);
+                }
+
+                return matches.Aggregate(matches.Count >= 1 ? "Scene Matches:\n" : "No match found.",
+                    (current, match) => current +
+                                        $"[{match.SNOId.ToString("D6")}] {match.Name} - {GetExitBits(match)}\n");
+            }
+
+            [Command("eg", "Allows you to search for an EffectGroup.\nUsage: lookup eg <pattern>")]
+            public string EffectGroup(string[] @params, BattleClient invokerClient)
+            {
+                var matches = new List<Asset>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup eg' to get help.";
+
+                var pattern = @params[0].ToLower();
+
+                foreach (var pair in MPQStorage.Data.Assets[SNOGroup.EffectGroup])
+                {
+                    if (pair.Value.Name.ToLower().Contains(pattern))
+                        matches.Add(pair.Value);
+                }
+
+                return matches.Aggregate(matches.Count >= 1 ? "EffectGroup Matches:\n" : "No match found.",
+                    (current, match) => current +
+                                        $"[{match.SNOId.ToString("D6")}] {match.Name} - {GetExitBits(match)}\n");
+            }
+
+            [Command("item", "Allows you to search for an item.\nUsage: lookup item <pattern>")]
+            public string Item(string[] @params, BattleClient invokerClient)
+            {
+                var matches = new List<ItemTable>();
+
+                if (@params.Count() < 1)
+                    return "Invalid arguments. Type 'help lookup item' to get help.";
+
+                var pattern = @params[0].ToLower();
+
+                foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
+                {
+                    var data = asset.Data as GameBalance;
+                    if (data == null || data.Type != BalanceType.Items) continue;
+
+                    foreach (var itemDefinition in data.Item)
+                    {
+                        if (itemDefinition.Name.ToLower().Contains(pattern))
+                            matches.Add(itemDefinition);
+                    }
+                }
+
+                return matches.Aggregate(matches.Count >= 1 ? "Item Matches:\n" : "No match found.",
+                    (current, match) => current + $"[{match.SNOActor.ToString("D6")}] {match.Name}\n");
+            }
         }
     }
 }

@@ -19,18 +19,18 @@ namespace DiIiS_NA.GameServer.MessageSystem
 
         public MessageAttribute(Opcodes opcode, Consumers consumer = Consumers.None)
         {
-            this.Opcodes = new List<Opcodes> { opcode };
-            this.Consumer = consumer;
+            Opcodes = new List<Opcodes> { opcode };
+            Consumer = consumer;
         }
 
         public MessageAttribute(Opcodes[] opcodes, Consumers consumer = Consumers.None)
         {
-            this.Opcodes = new List<Opcodes>();
-            this.Consumer = consumer;
+            Opcodes = new List<Opcodes>();
+            Consumer = consumer;
 
             foreach (var opcode in opcodes)
             {
-                this.Opcodes.Add(opcode);
+                Opcodes.Add(opcode);
             }
         }
     }

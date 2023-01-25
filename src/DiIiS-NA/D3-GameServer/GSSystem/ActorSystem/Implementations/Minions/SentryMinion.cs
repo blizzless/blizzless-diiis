@@ -38,8 +38,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 1.2f;
 			//TODO: get a proper value for this.
-			this.WalkSpeed = 0f;
-			this.DamageCoefficient = context.ScriptFormula(2);
+			WalkSpeed = 0f;
+			DamageCoefficient = context.ScriptFormula(2);
 			SetBrain(new MinionBrain(this));
 			(Brain as MinionBrain).AddPresetPower(129661); //DemonHunter_Sentry_TurretAttack.pow
 														   //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
@@ -53,16 +53,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			Attributes[GameAttribute.Pet_Type] = 0x8;
 			//Pet_Owner and Pet_Creator seems to be 0
 
-			if (this.Master != null)
+			if (Master != null)
 			{
-				if (this.Master is Player)
+				if (Master is Player)
 				{
 					var rem = new List<uint>();
-					foreach (var fol in (this.Master as Player).Followers)
-						if (Sentries.Contains(fol.Value) && fol.Key != this.GlobalID)
+					foreach (var fol in (Master as Player).Followers)
+						if (Sentries.Contains(fol.Value) && fol.Key != GlobalID)
 							rem.Add(fol.Key);
 					foreach (var rm in rem)
-						(this.Master as Player).DestroyFollowerById(rm);
+						(Master as Player).DestroyFollowerById(rm);
 				}
 			}
 

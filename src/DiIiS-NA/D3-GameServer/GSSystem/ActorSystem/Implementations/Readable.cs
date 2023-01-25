@@ -33,7 +33,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Readable(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.TeamID] = 1;
+			Attributes[GameAttribute.TeamID] = 1;
 		}
 
 
@@ -42,9 +42,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (ActorData.TagMap.ContainsKey(ActorKeys.Lore))
 				Logger.Debug("Lore detected: {0}", ActorData.TagMap[ActorKeys.Lore].Id);
 
-			if (LoreRegistry.Lore.ContainsKey(this.World.SNO) && LoreRegistry.Lore[this.World.SNO].chests_lore.ContainsKey(this.SNO))
-				foreach (var p in this.GetPlayersInRange(30))
-					foreach (int loreId in LoreRegistry.Lore[this.World.SNO].chests_lore[this.SNO])
+			if (LoreRegistry.Lore.ContainsKey(World.SNO) && LoreRegistry.Lore[World.SNO].chests_lore.ContainsKey(SNO))
+				foreach (var p in GetPlayersInRange(30))
+					foreach (int loreId in LoreRegistry.Lore[World.SNO].chests_lore[SNO])
 						if (!p.HasLore(loreId))
 						{
 							World.DropItem(this, null, ItemGenerator.CreateLore(p, loreId));
@@ -53,7 +53,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimReason = 5,
 				UnitAniimStartTime = 0,
 				tAnim = new PlayAnimationMessageSpec[]
@@ -61,7 +61,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					new PlayAnimationMessageSpec()
 					{
 						Duration = 50,
-						AnimationSNO = AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening],
+						AnimationSNO = (int)AnimationSet.Animations[AnimationSetKeys.Opening.ID],
 						PermutationIndex = 0,
 						AnimationTag = 0, 
 						Speed = 1
@@ -72,19 +72,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimationSNO = AnimationSetKeys.Open.ID
 			}, this);
 
-			this.used = true;
-			this.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
-			this.Attributes[GameAttribute.TeamID] = 2;
-			this.Attributes[GameAttribute.Untargetable] = true;
-			this.Attributes[GameAttribute.Operatable] = false;
-			this.Attributes[GameAttribute.Operatable_Story_Gizmo] = false;
-			this.Attributes[GameAttribute.Disabled] = true;
+			used = true;
+			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttribute.TeamID] = 2;
+			Attributes[GameAttribute.Untargetable] = true;
+			Attributes[GameAttribute.Operatable] = false;
+			Attributes[GameAttribute.Operatable_Story_Gizmo] = false;
+			Attributes[GameAttribute.Disabled] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			this.Attributes[GameAttribute.Chest_Open, 0xFFFFFF] = true;
+			Attributes[GameAttribute.Chest_Open, 0xFFFFFF] = true;
 			Attributes.BroadcastChangedIfRevealed();
 
 			base.OnTargeted(player, message);
@@ -92,7 +92,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override bool Reveal(Player player)
 		{
-			if (this.used)
+			if (used)
 				return false;
 			else
 				return base.Reveal(player);

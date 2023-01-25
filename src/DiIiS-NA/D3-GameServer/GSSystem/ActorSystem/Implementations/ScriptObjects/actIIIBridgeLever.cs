@@ -50,7 +50,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		{
 			try
 			{
-				(this.World.FindAt(ActorSno._a3dun_keep_bridge, this.Position, 60.0f) as Door).Open();
+				(World.FindAt(ActorSno._a3dun_keep_bridge, Position, 60.0f) as Door).Open();
 			}
 			catch { }
 		}

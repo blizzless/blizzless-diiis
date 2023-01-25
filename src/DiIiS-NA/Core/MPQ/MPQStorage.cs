@@ -32,11 +32,11 @@ namespace DiIiS_NA.Core.MPQ
 
             if (!Directory.Exists(MpqRoot))
             {
-                Logger.Error("MPQ арихивы не найдены: {0}.", MpqRoot);
+                Logger.Error("MPQ archives not found: {0}.", MpqRoot);
                 return;
             }
 
-            Logger.Info("Initializating of data..");
+            Logger.Info("Initializing of data..");
             MPQList = FileHelpers.GetFilesByExtensionRecursive(MpqRoot, ".mpq");
 
             Data = new Data();

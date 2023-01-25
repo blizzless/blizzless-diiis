@@ -63,7 +63,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
 
         public void WriterRaw(byte[] bytes)
         {
-            this.WriterRaw(bytes);
+            WriterRaw(bytes);
             //buffer.WriteBytes
         }
 

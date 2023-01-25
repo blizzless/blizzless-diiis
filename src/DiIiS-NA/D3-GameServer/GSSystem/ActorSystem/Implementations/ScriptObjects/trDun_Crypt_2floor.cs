@@ -23,18 +23,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
         public override bool Reveal(Player player)
         {
             if (!_collapsed)
-                this.PlayAnimation(5, 130011); //- Тряска
+                this.PlayAnimation(5, AnimationSno.trdun_skeletonking_sealed_door_1000_pounder_idle); //- Тряска
 
-            //this.PlayAnimation(5, 116098); //- Разлом
+            //this.PlayAnimation(5, 116098); //- Fault
             return base.Reveal(player);
         }
 
         public override void OnPlayerApproaching(Player player)
         {
-            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 3f * this.Scale && !_collapsed)
+            if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * 3f * Scale && !_collapsed)
             {
                 _collapsed = true;
-                this.PlayAnimation(5, 116098); //- Разлом
+                this.PlayAnimation(5, AnimationSno.trdun_skeletonking_sealed_door_1000_pounder_death); //- Разлом
                 this.World.SpawnMonster(ActorSno._unburied_a_unique, this.Position);
             }
         }
@@ -52,7 +52,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
                     }
                     else
                     {
-                        Logger.Debug(monstersAlive[i] + " убит");
+                        Logger.Debug(monstersAlive[i] + " killed");
                         monstersAlive.RemoveAt(i);
                         monstersKilled++;
                     }

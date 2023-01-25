@@ -47,6 +47,7 @@ using Npgsql;
 using System;
 //Blizzless Project 2022 
 using System.Data.Common;
+using System.Diagnostics;
 //Blizzless Project 2022 
 using System.Globalization;
 //Blizzless Project 2022 
@@ -99,14 +100,50 @@ namespace DiIiS_NA
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             
-            string Name = $"Blizzless: Build {Build}, Stage: {Stage} - {TypeBuild}";
-            Console.WriteLine("                 " + Name);
+            string name = $"Blizzless: Build {Build}, Stage: {Stage} - {TypeBuild}";
+            Console.WriteLine("                 " + name);
             Console.WriteLine("Connected Module: 0x00 - Diablo 3 RoS 2.7.4.84161");
             Console.WriteLine("------------------------------------------------------------------------");
             Console.ResetColor();
-            Console.Title = Name;
+            Console.Title = name;
 
             InitLoggers();
+            
+#pragma warning disable CS4014
+            Task.Run(async () =>
+#pragma warning restore CS4014
+            {
+                Logger.Info("Started Background Monitor!");
+                while (true)
+                {
+                    try
+                    {
+                        var uptime = (DateTime.Now - StartupTime).ToText();
+                        // get total memory from process
+                        var totalMemory =
+                            (double)((double)Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024 / 1024);
+                        // get CPU time
+                        using var proc = Process.GetCurrentProcess();
+                        var cpuTime = proc.TotalProcessorTime;
+                        var text =
+                            $"{name} | {PlayerManager.OnlinePlayers.Count()} onlines in {PlayerManager.OnlinePlayers.Count(s => s.InGameClient.Player.World != null)} worlds | Memory: {totalMemory:0.000} GB | CPU Time: {cpuTime.ToSmallText()} | Uptime: {uptime}";
+                        try
+                        {
+                            Console.Title = text;
+                            await Task.Delay(1000);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Info(text);
+                            await Task.Delay(60000);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                }
+            });
+            
             AchievementManager.Initialize();
             Core.Storage.AccountDataBase.SessionProvider.RebuildSchema();
 #if DEBUG
@@ -221,10 +258,10 @@ namespace DiIiS_NA
             if (e.IsTerminating)
             {
                 Logger.Error(ex.StackTrace);
-                Logger.FatalException(ex, "Была обнаружена корневая ошибка сервера, отключение.");
+                Logger.FatalException(ex, "A root error of the server was detected, disconnection.");
             }
             else
-                Logger.ErrorException(ex, "Перехвачена корневая ошибка, но была предотвращена.");
+                Logger.ErrorException(ex, "A root error of the server was detected but was handled.");
 
             Console.ReadLine();
         }

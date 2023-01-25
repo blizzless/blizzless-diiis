@@ -28,18 +28,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 		public Invasion(Vector3D center, float radius, List<ActorSno> mobs, float duration, ActorSno lastMob, bool lastSolo)
 			: base(0)
 		{
-			this.Radius = radius;
-			this.Center = center;
-			this.Monsters = mobs;
-			this.Duration = duration;
-			this.LastMob = lastMob;
-			this.LastSolo = lastSolo;
+			Radius = radius;
+			Center = center;
+			Monsters = mobs;
+			Duration = duration;
+			LastMob = lastMob;
+			LastSolo = lastSolo;
 		}
 
 		public override void Execute(MapSystem.World world)
 		{
-			var marker = world.SpawnMonster(ActorSno._generic_proxy_normal, this.Center);
-			world.BuffManager.AddBuff(marker, marker, new PowerSystem.Implementations.InvasionBuff(TickTimer.WaitSeconds(world.Game, this.Duration), this.Monsters, this.Radius, this.LastMob, this.LastSolo));
+			var marker = world.SpawnMonster(ActorSno._generic_proxy_normal, Center);
+			world.BuffManager.AddBuff(marker, marker, new PowerSystem.Implementations.InvasionBuff(TickTimer.WaitSeconds(world.Game, Duration), Monsters, Radius, LastMob, LastSolo));
 		}
 	}
 }

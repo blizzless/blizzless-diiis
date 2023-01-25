@@ -20,8 +20,8 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 {
 	public class ChannelInvitationManager : RPCObject
 	{
-		public readonly Dictionary<ulong, bgs.protocol.Invitation> _onGoingInvitations = new Dictionary<ulong, bgs.protocol.Invitation>();
-		public static Dictionary<ulong, bgs.protocol.Invitation> GoingInvitations = new Dictionary<ulong, bgs.protocol.Invitation>();
+		public readonly Dictionary<ulong, Invitation> _onGoingInvitations = new Dictionary<ulong, Invitation>();
+		public static Dictionary<ulong, Invitation> GoingInvitations = new Dictionary<ulong, Invitation>();
 
 		public static ulong InvitationIdCounter = 1;
 
@@ -29,13 +29,13 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 		{
 			// TODO: Hardcoded 1 as channel persistent id in this case...
 			
-			this.BnetEntityId = bgs.protocol.EntityId.CreateBuilder().SetHigh((ulong)EntityIdHelper.HighIdType.ChannelId).SetLow(10000000000).Build();
+			BnetEntityId = EntityId.CreateBuilder().SetHigh((ulong)EntityIdHelper.HighIdType.ChannelId).SetLow(10000000000).Build();
 		}
 
-		public bgs.protocol.Invitation GetInvitationById(ulong Id)
+		public Invitation GetInvitationById(ulong Id)
 		{
 
-			if (!this._onGoingInvitations.ContainsKey(Id))
+			if (!_onGoingInvitations.ContainsKey(Id))
 			{
 				foreach (var inv in _onGoingInvitations.Values)
 					if (inv.GetExtension(bgs.protocol.channel.v1.ChannelInvitation.ChannelInvitationProp).ChannelDescription.ChannelId.Low == Id)
@@ -44,20 +44,20 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			}
 
 			else
-				return this._onGoingInvitations[Id];
+				return _onGoingInvitations[Id];
 		}
 
 		public void ClearInvitations()
 		{
-			this._onGoingInvitations.Clear();
+			_onGoingInvitations.Clear();
 		}
 
-		public void HandleInvitation(BattleClient client, bgs.protocol.Invitation invitation)
+		public void HandleInvitation(BattleClient client, Invitation invitation)
 		{
-			var invitee = this.Subscribers.FirstOrDefault(subscriber => subscriber.Key.Account.GameAccount.BnetEntityId.Low == invitation.InviteeIdentity.GameAccountId.Low).Key;
+			var invitee = Subscribers.FirstOrDefault(subscriber => subscriber.Key.Account.GameAccount.BnetEntityId.Low == invitation.InviteeIdentity.GameAccountId.Low).Key;
 			if (invitee == null) return;
 
-			this._onGoingInvitations.Add(invitation.Id, invitation);
+			_onGoingInvitations.Add(invitation.Id, invitation);
 			GoingInvitations.Add(invitation.Id, invitation);
 
 			var notification = bgs.protocol.channel.v1.InvitationAddedNotification.CreateBuilder().SetInvitation(invitation);
@@ -69,7 +69,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 		public Channel HandleAccept(BattleClient client, bgs.protocol.channel.v1.AcceptInvitationRequest request)
 		{
 			Invitation invitation = null;
-			if (!this._onGoingInvitations.ContainsKey(request.InvitationId))
+			if (!_onGoingInvitations.ContainsKey(request.InvitationId))
 			{
 				foreach (var inv in _onGoingInvitations.Values)
 					if(inv.GetExtension(bgs.protocol.channel.v1.ChannelInvitation.ChannelInvitationProp).ChannelDescription.ChannelId.Low == request.InvitationId)
@@ -80,12 +80,12 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			}
 
 			if (invitation == null)
-				invitation = this._onGoingInvitations[request.InvitationId];
+				invitation = _onGoingInvitations[request.InvitationId];
 			
 			var channel = ChannelManager.GetChannelByEntityId(invitation.GetExtension(bgs.protocol.channel.v1.ChannelInvitation.ChannelInvitationProp).ChannelDescription.ChannelId);
 
 			var notification = bgs.protocol.channel.v1.InvitationRemovedNotification.CreateBuilder().SetInvitation(invitation.ToBuilder()).SetReason((uint)InvitationRemoveReason.Accepted);
-			this._onGoingInvitations.Remove(invitation.Id);
+			_onGoingInvitations.Remove(invitation.Id);
 			GoingInvitations.Remove(request.InvitationId);
 
 			client.MakeTargetedRPC(this, (lid) =>
@@ -94,7 +94,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			channel.Join(client, request.ObjectId); 
 
 			var stateNotification = bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder()
-				.SetAgentId(bgs.protocol.EntityId.CreateBuilder().SetHigh(0).SetLow(0).Build())
+				.SetAgentId(EntityId.CreateBuilder().SetHigh(0).SetLow(0).Build())
 				.SetStateChange(bgs.protocol.channel.v1.ChannelState.CreateBuilder().AddInvitation(invitation).SetReason(0).Build())
 				.Build();
 
@@ -109,12 +109,12 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 		public void HandleHardJoin(BattleClient client, bgs.protocol.channel.v1.AcceptInvitationRequest request)
 		{
-			if (!this._onGoingInvitations.ContainsKey(request.InvitationId)) return;
+			if (!_onGoingInvitations.ContainsKey(request.InvitationId)) return;
 
-			var invitation = this._onGoingInvitations[request.InvitationId];
+			var invitation = _onGoingInvitations[request.InvitationId];
 			var channel = ChannelManager.GetChannelByEntityId(invitation.GetExtension(bgs.protocol.channel.v1.ChannelInvitation.ChannelInvitationProp).ChannelDescription.ChannelId);
 
-			this._onGoingInvitations.Remove(invitation.Id);
+			_onGoingInvitations.Remove(invitation.Id);
 			var a = GameAccountManager.GetAccountByPersistentID(invitation.InviteeIdentity.GameAccountId.Low);
 
 			var JoinClient = a.LoggedInClient;
@@ -132,10 +132,10 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 			var notification = bgs.protocol.matchmaking.v1.MatchmakingResultNotification.CreateBuilder();
 			var connectInfo = bgs.protocol.matchmaking.v1.ConnectInfo.CreateBuilder();
-			connectInfo.SetAddress(bgs.protocol.Address.CreateBuilder().SetAddress_(GAME_SERVER_IP).SetPort(GAME_SERVER_PORT));
+			connectInfo.SetAddress(Address.CreateBuilder().SetAddress_(GAME_SERVER_IP).SetPort(GAME_SERVER_PORT));
 			connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("GameAccount").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetBlobValue(member.Build().ToByteString())));
 			connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("Token").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetUintValue(0xEEF4364684EE186E))); // FIXME
-			//connectInfo.AddAttribute(AttributeOfServer); // Настройки игры
+			//connectInfo.AddAttribute(AttributeOfServer); // Game settings
 
 			var gh = bgs.protocol.matchmaking.v1.GameHandle.CreateBuilder();
 			gh.SetMatchmaker(bgs.protocol.matchmaking.v1.MatchmakerHandle.CreateBuilder()
@@ -155,9 +155,9 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			if (JoinClient.CurrentChannel != null)
 			{
 				var channelStatePermission = bgs.protocol.channel.v1.ChannelState.CreateBuilder()
-				   .AddAttribute(bgs.protocol.Attribute.CreateBuilder()
+				   .AddAttribute(Attribute.CreateBuilder()
 				   .SetName("D3.Party.JoinPermissionPreviousToLock")
-				   .SetValue(bgs.protocol.Variant.CreateBuilder().SetIntValue(1).Build())
+				   .SetValue(Variant.CreateBuilder().SetIntValue(1).Build())
 				   .Build()).Build();
 
 				var notificationPermission = bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder()
@@ -174,9 +174,9 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 				.SetSenderId(client.Account.GameAccount.BnetEntityId)
 				.SetTargetId(JoinClient.Account.GameAccount.BnetEntityId)
 				.SetType("GO_ENTRY");
-			var attrF = bgs.protocol.Attribute.CreateBuilder()
+			var attrF = Attribute.CreateBuilder()
 				.SetName("game_request_id")
-				.SetValue(bgs.protocol.Variant.CreateBuilder().SetUintValue(gameFound.RequestId).Build());
+				.SetValue(Variant.CreateBuilder().SetUintValue(gameFound.RequestId).Build());
 			notificationFound.AddAttribute(attrF);
 
 			JoinClient.MakeRPC((lid) =>
@@ -234,7 +234,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			channel.Join(client, request.ObjectId);
 
 			var stateNotification = bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder()
-				.SetAgentId(bgs.protocol.EntityId.CreateBuilder().SetHigh(0).SetLow(0).Build())
+				.SetAgentId(EntityId.CreateBuilder().SetHigh(0).SetLow(0).Build())
 				.SetStateChange(bgs.protocol.channel.v1.ChannelState.CreateBuilder().AddInvitation(invitation).SetReason(0).Build())
 				.Build();
 
@@ -256,13 +256,13 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 		public Channel HandleAcceptAnother(BattleClient client, bgs.protocol.channel.v1.AcceptInvitationRequest request)
 		{
-			if (!this._onGoingInvitations.ContainsKey(request.InvitationId)) return null;
+			if (!_onGoingInvitations.ContainsKey(request.InvitationId)) return null;
 
-			var invitation = this._onGoingInvitations[request.InvitationId];
+			var invitation = _onGoingInvitations[request.InvitationId];
 			var channel = ChannelManager.GetChannelByEntityId(invitation.GetExtension(bgs.protocol.channel.v1.ChannelInvitation.ChannelInvitationProp).ChannelDescription.ChannelId);
 
 			var notification = bgs.protocol.channel.v1.InvitationRemovedNotification.CreateBuilder().SetInvitation(invitation.ToBuilder()).SetReason((uint)InvitationRemoveReason.Accepted);
-			this._onGoingInvitations.Remove(invitation.Id);
+			_onGoingInvitations.Remove(invitation.Id);
 			var a = GameAccountManager.GetAccountByPersistentID(invitation.InviteeIdentity.GameAccountId.Low);
 
 			//client.MakeTargetedRPC(this, (lid) =>
@@ -280,7 +280,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			var inviter = GameAccountManager.GetAccountByPersistentID(invitation.InviterIdentity.GameAccountId.Low);
 
 			var stateNotification = bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder()
-				.SetAgentId(bgs.protocol.EntityId.CreateBuilder().SetHigh(0).SetLow(0).Build())
+				.SetAgentId(EntityId.CreateBuilder().SetHigh(0).SetLow(0).Build())
 				.SetStateChange(bgs.protocol.channel.v1.ChannelState.CreateBuilder().AddInvitation(invitation).SetReason(0).Build())
 				.Build();
 
@@ -298,19 +298,19 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 		public void HandleDecline(BattleClient client, bgs.protocol.channel.v1.DeclineInvitationRequest request)
 		{
-			if (!this._onGoingInvitations.ContainsKey(request.InvitationId)) return;
-			var invitation = this._onGoingInvitations[request.InvitationId];
+			if (!_onGoingInvitations.ContainsKey(request.InvitationId)) return;
+			var invitation = _onGoingInvitations[request.InvitationId];
 
 			var inviter = GameAccountManager.GetAccountByPersistentID(invitation.InviterIdentity.GameAccountId.Low);
 			if (inviter == null || inviter.LoggedInClient == null) return;
 
 			var notification =
 				bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder()
-				.SetAgentId(bgs.protocol.EntityId.CreateBuilder().SetHigh(0).SetLow(0)) // caps have this set to high: 0 low: 0 /raist.
+				.SetAgentId(EntityId.CreateBuilder().SetHigh(0).SetLow(0)) // caps have this set to high: 0 low: 0 /raist.
 				.SetStateChange(bgs.protocol.channel.v1.ChannelState.CreateBuilder().AddInvitation(invitation)
 				.SetReason((uint)InvitationRemoveReason.Declined));
 
-			this._onGoingInvitations.Remove(invitation.Id);
+			_onGoingInvitations.Remove(invitation.Id);
 			GoingInvitations.Remove(request.InvitationId);
 
 			inviter.LoggedInClient.MakeTargetedRPC(inviter.LoggedInClient.CurrentChannel, (lid) =>
@@ -319,9 +319,9 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 		public void Revoke(BattleClient client, bgs.protocol.channel.v1.RevokeInvitationRequest request)
 		{
-			if (!this._onGoingInvitations.ContainsKey(request.InvitationId)) return;
-			this.CheckSubscribers();
-			var invitation = this._onGoingInvitations[request.InvitationId];
+			if (!_onGoingInvitations.ContainsKey(request.InvitationId)) return;
+			CheckSubscribers();
+			var invitation = _onGoingInvitations[request.InvitationId];
 			var inviter = GameAccountManager.GetAccountByPersistentID(invitation.InviterIdentity.GameAccountId.Low);
 
 			var channel = ChannelManager.GetChannelByEntityId(request.ChannelId);
@@ -329,11 +329,11 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			//notify inviter about revoke
 			var updateChannelNotification =
 				bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder()
-				.SetAgentId(bgs.protocol.EntityId.CreateBuilder().SetHigh(0).SetLow(0)) // caps have this set to high: 0 low: 0 /dustin
+				.SetAgentId(EntityId.CreateBuilder().SetHigh(0).SetLow(0)) // caps have this set to high: 0 low: 0 /dustin
 				.SetStateChange(bgs.protocol.channel.v1.ChannelState.CreateBuilder().AddInvitation(invitation)
 				.SetReason((uint)InvitationRemoveReason.Revoked));
 
-			this._onGoingInvitations.Remove(request.InvitationId);
+			_onGoingInvitations.Remove(request.InvitationId);
 			GoingInvitations.Remove(request.InvitationId);
 
 			inviter.LoggedInClient.MakeTargetedRPC(inviter.LoggedInClient.CurrentChannel, (lid) =>
@@ -345,7 +345,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 				.SetInvitation(invitation);
 			//.SetReason((uint)InvitationRemoveReason.Declined);
 
-			if (!this.Subscribers.Any(subscriber => subscriber.Key.Account.GameAccount.BnetEntityId.Low == invitation.InviteeIdentity.AccountId.Low)) return;
+			if (Subscribers.All(subscriber => subscriber.Key.Account.GameAccount.BnetEntityId.Low != invitation.InviteeIdentity.AccountId.Low)) return;
 
 			client.MakeTargetedRPC(this, (lid) =>
 				bgs.protocol.channel.v1.ChannelInvitationListener.CreateStub(client).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, invitationRemoved.Build(), callback => { }));

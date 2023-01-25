@@ -169,7 +169,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				return (this.World != null && this.World.IsPvP);
+				return (World != null && World.IsPvP);
 			}
 			set { }
 		}
@@ -188,10 +188,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				if (this.Inventory == null)
+				if (Inventory == null)
 					return 0;
 				else
-					return this.Inventory.GetGearScore();
+					return Inventory.GetGearScore();
 			}
 			private set { }
 		}
@@ -200,13 +200,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public uint NewDynamicID(uint globalId, int pIndex = -1)
 		{
-			lock (this.RevealedObjects)
+			lock (RevealedObjects)
 			{
 				if (pIndex > -1)
 					return (uint)pIndex;
 				for (uint i = 9; i < 4123; i++)
 				{
-					if (!this.RevealedObjects.ContainsValue(i))
+					if (!RevealedObjects.ContainsValue(i))
 					{
 						//Logger.Trace("adding GlobalId {0} -> DynID {1} to player {2}", globalId, i, this.Toon.Name);
 						return i;
@@ -264,9 +264,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			set
 			{
 				_spiritGenHit = value;
-				if (this.SkillSet.HasPassive(315271) && _spiritGenHit >= 3) //Mythic Rhythm
+				if (SkillSet.HasPassive(315271) && _spiritGenHit >= 3) //Mythic Rhythm
 				{
-					this.World.BuffManager.AddBuff(this, this, new MythicRhythmBuff());
+					World.BuffManager.AddBuff(this, this, new MythicRhythmBuff());
 					_spiritGenHit = 0;
 				}
 			}
@@ -286,20 +286,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				if (value == null)
 				{
-					this.HirelingId = null;
-					lock (this.Toon.DBToon)
+					HirelingId = null;
+					lock (Toon.DBToon)
 					{
-						var dbToon = this.Toon.DBToon;
+						var dbToon = Toon.DBToon;
 						dbToon.ActiveHireling = null;
 						DBSessions.SessionUpdate(dbToon);
 					}
 				}
 				else if (value != _activeHireling)
 				{
-					this.HirelingId = value.Attributes[GameAttribute.Hireling_Class];
-					lock (this.Toon.DBToon)
+					HirelingId = value.Attributes[GameAttribute.Hireling_Class];
+					lock (Toon.DBToon)
 					{
-						var dbToon = this.Toon.DBToon;
+						var dbToon = Toon.DBToon;
 						dbToon.ActiveHireling = value.Attributes[GameAttribute.Hireling_Class];
 						DBSessions.SessionUpdate(dbToon);
 					}
@@ -316,7 +316,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				_activeHireling = value;
 			}
 		}
-		public Hireling SetQuestHireling
+		public Hireling QuestHireling
 		{
 			get { return _questHireling; }
 			set
@@ -353,88 +353,88 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public Player(World world, GameClient client, Toon bnetToon)
 			: base(world, bnetToon.Gender == 0 ? (ActorSno)bnetToon.HeroTable.SNOMaleActor : (ActorSno)bnetToon.HeroTable.SNOFemaleActor)
 		{
-			this.InGameClient = client;
-			this.PlayerIndex = Interlocked.Increment(ref this.InGameClient.Game.PlayerIndexCounter);
-			this.PlayerGroupIndex = this.InGameClient.Game.PlayerGroupIndexCounter;
-			this.Toon = bnetToon;
-			this.LevelingBoosted = this.Toon.LevelingBoosted;
-			var dbToon = this.Toon.DBToon;
-			this.HirelingId = dbToon.ActiveHireling;
-			this.GBHandle.Type = (int)ActorType.Player;
-			this.GBHandle.GBID = this.Toon.ClassID;
-			this.Level = dbToon.Level;
-			this.ParagonLevel = this.Toon.ParagonLevel;
-			this.ExperienceNext = this.Toon.ExperienceNext;
-			this.ParagonBonuses = dbToon.ParagonBonuses;
-			this.CurrentWingsPowerId = dbToon.WingsActive;
+			InGameClient = client;
+			PlayerIndex = Interlocked.Increment(ref InGameClient.Game.PlayerIndexCounter);
+			PlayerGroupIndex = InGameClient.Game.PlayerGroupIndexCounter;
+			Toon = bnetToon;
+			LevelingBoosted = Toon.LevelingBoosted;
+			var dbToon = Toon.DBToon;
+			HirelingId = dbToon.ActiveHireling;
+			GBHandle.Type = (int)ActorType.Player;
+			GBHandle.GBID = Toon.ClassID;
+			Level = dbToon.Level;
+			ParagonLevel = Toon.ParagonLevel;
+			ExperienceNext = Toon.ExperienceNext;
+			ParagonBonuses = dbToon.ParagonBonuses;
+			CurrentWingsPowerId = dbToon.WingsActive;
 
-			this.Field2 = 0x00000009;
-			this.Scale = this.ModelScale;
-			this.RotationW = 0.05940768f;
-			this.RotationAxis = new Vector3D(0f, 0f, 0.9982339f);
-			this.Field7 = -1;
-			this.NameSNO = ActorSno.__NONE;
-			this.Field10 = 0x0;
-			this.Dead = false;
-			this.EventWeatherEnabled = false;
+			Field2 = 0x00000009;
+			Scale = ModelScale;
+			RotationW = 0.05940768f;
+			RotationAxis = new Vector3D(0f, 0f, 0.9982339f);
+			Field7 = -1;
+			NameSNO = ActorSno.__NONE;
+			Field10 = 0x0;
+			Dead = false;
+			EventWeatherEnabled = false;
 
-			var achievements = this.InGameClient.Game.GameDBSession.SessionQueryWhere<DBAchievements>(dba => dba.DBGameAccount.Id == this.Toon.GameAccount.PersistentID);
+			var achievements = InGameClient.Game.GameDBSession.SessionQueryWhere<DBAchievements>(dba => dba.DBGameAccount.Id == Toon.GameAccount.PersistentID);
 
-			this.BlacksmithUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307766).Count() > 0;
-			this.JewelerUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307780).Count() > 0;
-			this.MysticUnlocked = achievements.Where(dba => dba.AchievementId == 74987247205955).Count() > 0;
+			BlacksmithUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307766).Count() > 0;
+			JewelerUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307780).Count() > 0;
+			MysticUnlocked = achievements.Where(dba => dba.AchievementId == 74987247205955).Count() > 0;
 
-			this.KanaiUnlocked = false;
+			KanaiUnlocked = false;
 			foreach (var achi in achievements.Where(dba => dba.AchievementId == 74987254626662).ToList())
 				foreach (var crit in AchievementSystem.AchievementManager.UnserializeBytes(achi.Criteria))
 					if (crit == unchecked((uint)74987252674266))
 						KanaiUnlocked = true;
 
 			if (Level >= 70)
-				this.GrantCriteria(74987254853541);
+				GrantCriteria(74987254853541);
 
-			this.HirelingTemplarUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307073).Count() > 0;
-			this.HirelingScoundrelUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307147).Count() > 0;
-			this.HirelingEnchantressUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307145).Count() > 0;
-			this.SkillSet = new SkillSet(this, this.Toon.Class, this.Toon);
-			this.GroundItems = new Dictionary<uint, Item>();
-			this.Followers = new Dictionary<uint, ActorSno>();
-			this.Conversations = new ConversationManager(this);
-			this.ExpBonusData = new ExpBonusData(this);
-			this.SelectedNPC = null;
+			HirelingTemplarUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307073).Count() > 0;
+			HirelingScoundrelUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307147).Count() > 0;
+			HirelingEnchantressUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307145).Count() > 0;
+			SkillSet = new SkillSet(this, Toon.Class, Toon);
+			GroundItems = new Dictionary<uint, Item>();
+			Followers = new Dictionary<uint, ActorSno>();
+			Conversations = new ConversationManager(this);
+			ExpBonusData = new ExpBonusData(this);
+			SelectedNPC = null;
 
-			this._lastResourceUpdateTick = 0;
-			this.SavePointData = new SavePointData() { snoWorld = -1, SavepointId = -1 };
+			_lastResourceUpdateTick = 0;
+			SavePointData = new SavePointData() { snoWorld = -1, SavepointId = -1 };
 
 			// Attributes
-			if (this.World.Game.PvP)
-				this.Attributes[GameAttribute.TeamID] = this.PlayerIndex + 2;
+			if (World.Game.PvP)
+				Attributes[GameAttribute.TeamID] = PlayerIndex + 2;
 			else
-				this.Attributes[GameAttribute.TeamID] = 2;
+				Attributes[GameAttribute.TeamID] = 2;
 
 				//make sure if greater is not active enable banner.
-				if (!this.World.Game.NephalemGreater)
+				if (!World.Game.NephalemGreater)
 				{
-					this.Attributes[GameAttributeB.Banner_Usable] = true;
+					Attributes[GameAttribute.Banner_Usable] = true;
 				}
 			SetAllStatsInCorrectOrder();
 			// Enabled stone of recall
-			if (!this.World.Game.PvP & this.Toon.StoneOfPortal)
+			if (!World.Game.PvP & Toon.StoneOfPortal)
 				EnableStoneOfRecall();
-			else if (this.InGameClient.Game.CurrentAct == 3000)
+			else if (InGameClient.Game.CurrentAct == 3000)
 				EnableStoneOfRecall();
 
-			List<int> lores = UnserializeBytes(this.Toon.DBToon.Lore);
+			List<int> lores = UnserializeBytes(Toon.DBToon.Lore);
 			int num = 0;
 			foreach (int lore in lores)
 			{
-				this.LearnedLore.m_snoLoreLearned[num] = lore;
+				LearnedLore.m_snoLoreLearned[num] = lore;
 				num++;
 			}
-			this.LearnedLore.Count = lores.Count();
+			LearnedLore.Count = lores.Count();
 
-			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes.BroadcastChangedIfRevealed();
 		}
 
 		#region Attribute Setters
@@ -448,14 +448,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			SetAttributesMovement();
 			SetAttributesMisc();
 			SetAttributesOther();
-			if (this.Inventory == null)
-				this.Inventory = new Inventory(this);
+			if (Inventory == null)
+				Inventory = new Inventory(this);
 			SetAttributesByItems();//needs the Inventory
 			SetAttributesByItemProcs();
 			SetAttributesByGems();
 			SetAttributesByItemSets();
-			if (this.SkillSet == null)
-				this.SkillSet = new SkillSet(this, this.Toon.Class, this.Toon);
+			if (SkillSet == null)
+				SkillSet = new SkillSet(this, Toon.Class, Toon);
 			SetAttributesByPassives();//needs the SkillSet
 			SetAttributesByParagon();
 			SetNewAttributes();
@@ -465,7 +465,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void SetAttributesSkills()
 		{
 			//Skills
-			this.Attributes[GameAttribute.SkillKit] = Toon.HeroTable.SNOSKillKit0;
+			Attributes[GameAttribute.SkillKit] = Toon.HeroTable.SNOSKillKit0;
 
 			Attributes[GameAttribute.Buff_Icon_Start_Tick0, 0x00033C40] = 153;
 			Attributes[GameAttribute.Buff_Icon_End_Tick0, 0x00033C40] = 3753;
@@ -475,9 +475,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			Attributes[GameAttribute.Currencies_Discovered] = 0x0011FFF8;
 
-			this.Attributes[GameAttribute.Skill, 30592] = 1;
-			this.Attributes[GameAttribute.Resource_Degeneration_Prevented] = false;
-			this.Attributes[GameAttribute.Resource_Degeneration_Stop_Point] = 0;
+			Attributes[GameAttribute.Skill, 30592] = 1;
+			Attributes[GameAttribute.Resource_Degeneration_Prevented] = false;
+			Attributes[GameAttribute.Resource_Degeneration_Stop_Point] = 0;
 			//scripted //this.Attributes[GameAttribute.Skill_Total, 0x7545] = 1; //Axe Operate Gizmo
 			//scripted //this.Attributes[GameAttribute.Skill_Total, 0x76B7] = 1; //Punch!
 			//scripted //this.Attributes[GameAttribute.Skill_Total, 0x6DF] = 1; //Use Item
@@ -489,95 +489,95 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void SetAttributesBuffs()
 		{
 			//Buffs
-			this.Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0x33C40] = true;
-			this.Attributes[GameAttribute.Buff_Icon_End_Tick0, 0x00033C40] = 0x000003FB;
-			this.Attributes[GameAttribute.Buff_Icon_Start_Tick0, 0x00033C40] = 0x00000077;
-			this.Attributes[GameAttribute.Buff_Icon_Count0, 0x00033C40] = 1;
-			this.Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0xCE11] = true;
-			this.Attributes[GameAttribute.Buff_Icon_Count0, 0x0000CE11] = 1;
-			this.Attributes[GameAttribute.Buff_Visual_Effect, 0xFFFFF] = true;
+			Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0x33C40] = true;
+			Attributes[GameAttribute.Buff_Icon_End_Tick0, 0x00033C40] = 0x000003FB;
+			Attributes[GameAttribute.Buff_Icon_Start_Tick0, 0x00033C40] = 0x00000077;
+			Attributes[GameAttribute.Buff_Icon_Count0, 0x00033C40] = 1;
+			Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0xCE11] = true;
+			Attributes[GameAttribute.Buff_Icon_Count0, 0x0000CE11] = 1;
+			Attributes[GameAttribute.Buff_Visual_Effect, 0xFFFFF] = true;
 			//Wings
-			if (this.CurrentWingsPowerId != -1)
+			if (CurrentWingsPowerId != -1)
 			{
-				this.Attributes[GameAttribute.Buff_Exclusive_Type_Active, this.CurrentWingsPowerId] = true;
-				this.Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, this.CurrentWingsPowerId] = true;
-				this.Attributes[GameAttribute.Buff_Icon_Start_Tick0, this.CurrentWingsPowerId] = 0;
-				this.Attributes[GameAttribute.Buff_Icon_End_Tick0, this.CurrentWingsPowerId] = 100;
-				this.Attributes[GameAttribute.Buff_Icon_Count0, this.CurrentWingsPowerId] = 1;
+				Attributes[GameAttribute.Buff_Exclusive_Type_Active, CurrentWingsPowerId] = true;
+				Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, CurrentWingsPowerId] = true;
+				Attributes[GameAttribute.Buff_Icon_Start_Tick0, CurrentWingsPowerId] = 0;
+				Attributes[GameAttribute.Buff_Icon_End_Tick0, CurrentWingsPowerId] = 100;
+				Attributes[GameAttribute.Buff_Icon_Count0, CurrentWingsPowerId] = 1;
 			}
 		}
 
 		public void SetAttributesDamage()
 		{
-			this.Attributes[GameAttribute.Primary_Damage_Attribute] = (int)Toon.HeroTable.CoreAttribute + 1;
-			this.Attributes[GameAttribute.Attacks_Per_Second_Percent_Cap] = 4f;
+			Attributes[GameAttribute.Primary_Damage_Attribute] = (int)Toon.HeroTable.CoreAttribute + 1;
+			Attributes[GameAttribute.Attacks_Per_Second_Percent_Cap] = 4f;
 		}
 
 		public void SetAttributesRessources()
 		{
-			this.Attributes[GameAttribute.Resource_Type_Primary] = (int)Toon.HeroTable.PrimaryResource + 1;
-			this.Attributes[GameAttribute.Resource_Max, this.Attributes[GameAttribute.Resource_Type_Primary] - 1] = Toon.HeroTable.PrimaryResourceBase;
-			this.Attributes[GameAttribute.Resource_Max_Bonus, this.Attributes[GameAttribute.Resource_Type_Primary] - 1] = 0;
-			this.Attributes[GameAttribute.Resource_Factor_Level, this.Attributes[GameAttribute.Resource_Type_Primary] - 1] = Toon.HeroTable.PrimaryResourceFactorLevel;
-			this.Attributes[GameAttribute.Resource_Percent, this.Attributes[GameAttribute.Resource_Type_Primary] - 1] = 0;
-			this.Attributes[GameAttribute.Resource_Cur, (int)this.Attributes[GameAttribute.Resource_Type_Primary]] = GetMaxResource((int)this.Attributes[GameAttribute.Resource_Type_Primary] - 1);
+			Attributes[GameAttribute.Resource_Type_Primary] = (int)Toon.HeroTable.PrimaryResource + 1;
+			Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Primary] - 1] = Toon.HeroTable.PrimaryResourceBase;
+			Attributes[GameAttribute.Resource_Max_Bonus, Attributes[GameAttribute.Resource_Type_Primary] - 1] = 0;
+			Attributes[GameAttribute.Resource_Factor_Level, Attributes[GameAttribute.Resource_Type_Primary] - 1] = Toon.HeroTable.PrimaryResourceFactorLevel;
+			Attributes[GameAttribute.Resource_Percent, Attributes[GameAttribute.Resource_Type_Primary] - 1] = 0;
+			Attributes[GameAttribute.Resource_Cur, (int)Attributes[GameAttribute.Resource_Type_Primary]] = GetMaxResource((int)Attributes[GameAttribute.Resource_Type_Primary] - 1);
 
 
-			var max = this.Attributes[GameAttribute.Resource_Max, (int)this.Attributes[GameAttribute.Resource_Type_Primary] - 1];
-			var cur = this.Attributes[GameAttribute.Resource_Cur, (int)this.Attributes[GameAttribute.Resource_Type_Primary] - 1];
+			var max = Attributes[GameAttribute.Resource_Max, (int)Attributes[GameAttribute.Resource_Type_Primary] - 1];
+			var cur = Attributes[GameAttribute.Resource_Cur, (int)Attributes[GameAttribute.Resource_Type_Primary] - 1];
 
 
-			this.Attributes[GameAttribute.Resource_Regen_Per_Second, (int)this.Attributes[GameAttribute.Resource_Type_Primary] - 1] = Toon.HeroTable.PrimaryResourceRegen;
-			this.Attributes[GameAttribute.Resource_Regen_Stop_Regen] = false;
-			if (this.Toon.Class == ToonClass.Barbarian)
-				this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = 0;
+			Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Attributes[GameAttribute.Resource_Type_Primary] - 1] = Toon.HeroTable.PrimaryResourceRegen;
+			Attributes[GameAttribute.Resource_Regen_Stop_Regen] = false;
+			if (Toon.Class == ToonClass.Barbarian)
+				Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = 0;
 			else
-				this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = (int)GetMaxResource((int)Toon.HeroTable.PrimaryResource + 1) * 100;
+				Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = (int)GetMaxResource((int)Toon.HeroTable.PrimaryResource + 1) * 100;
 
-			if (Toon.HeroTable.SecondaryResource != DiIiS_NA.Core.MPQ.FileFormats.GameBalance.HeroTable.Resource.None)
+			if (Toon.HeroTable.SecondaryResource != GameBalance.HeroTable.Resource.None)
 			{
-				this.Attributes[GameAttribute.Resource_Type_Secondary] = (int)Toon.HeroTable.SecondaryResource + 1;
-				this.Attributes[GameAttribute.Resource_Max, (int)this.Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Toon.HeroTable.SecondaryResourceBase;
-				this.Attributes[GameAttribute.Resource_Max_Bonus, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1] = 0;
-				this.Attributes[GameAttribute.Resource_Percent, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1] = 0;
-				this.Attributes[GameAttribute.Resource_Factor_Level, (int)this.Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Toon.HeroTable.SecondaryResourceFactorLevel;
-				this.Attributes[GameAttribute.Resource_Cur, (int)this.Attributes[GameAttribute.Resource_Type_Secondary] - 1] = GetMaxResource((int)Toon.HeroTable.SecondaryResource + 1);
-				this.Attributes[GameAttribute.Resource_Regen_Per_Second, (int)this.Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Toon.HeroTable.SecondaryResourceRegen;
+				Attributes[GameAttribute.Resource_Type_Secondary] = (int)Toon.HeroTable.SecondaryResource + 1;
+				Attributes[GameAttribute.Resource_Max, (int)Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Toon.HeroTable.SecondaryResourceBase;
+				Attributes[GameAttribute.Resource_Max_Bonus, Attributes[GameAttribute.Resource_Type_Secondary] - 1] = 0;
+				Attributes[GameAttribute.Resource_Percent, Attributes[GameAttribute.Resource_Type_Secondary] - 1] = 0;
+				Attributes[GameAttribute.Resource_Factor_Level, (int)Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Toon.HeroTable.SecondaryResourceFactorLevel;
+				Attributes[GameAttribute.Resource_Cur, (int)Attributes[GameAttribute.Resource_Type_Secondary] - 1] = GetMaxResource((int)Toon.HeroTable.SecondaryResource + 1);
+				Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Toon.HeroTable.SecondaryResourceRegen;
 			}
 
-			this.Attributes[GameAttribute.Get_Hit_Recovery_Per_Level] = (int)Toon.HeroTable.GetHitRecoveryPerLevel;
-			this.Attributes[GameAttribute.Get_Hit_Recovery_Base] = (int)Toon.HeroTable.GetHitRecoveryBase;
+			Attributes[GameAttribute.Get_Hit_Recovery_Per_Level] = (int)Toon.HeroTable.GetHitRecoveryPerLevel;
+			Attributes[GameAttribute.Get_Hit_Recovery_Base] = (int)Toon.HeroTable.GetHitRecoveryBase;
 
-			this.Attributes[GameAttribute.Get_Hit_Max_Per_Level] = (int)Toon.HeroTable.GetHitMaxPerLevel;
-			this.Attributes[GameAttribute.Get_Hit_Max_Base] = (int)Toon.HeroTable.GetHitMaxBase;
+			Attributes[GameAttribute.Get_Hit_Max_Per_Level] = (int)Toon.HeroTable.GetHitMaxPerLevel;
+			Attributes[GameAttribute.Get_Hit_Max_Base] = (int)Toon.HeroTable.GetHitMaxBase;
 		}
 
 		public void SetAttributesClassSpecific()
 		{
 			// Class specific
-			switch (this.Toon.Class)
+			switch (Toon.Class)
 			{
 				case ToonClass.Barbarian:
 					//scripted //this.Attributes[GameAttribute.Skill_Total, 30078] = 1;  //Fury Trait
-					this.Attributes[GameAttribute.Skill, 30078] = 1;
-					this.Attributes[GameAttribute.Trait, 30078] = 1;
-					this.Attributes[GameAttribute.Buff_Exclusive_Type_Active, 30078] = true;
-					this.Attributes[GameAttribute.Buff_Icon_Count0, 30078] = 1;
+					Attributes[GameAttribute.Skill, 30078] = 1;
+					Attributes[GameAttribute.Trait, 30078] = 1;
+					Attributes[GameAttribute.Buff_Exclusive_Type_Active, 30078] = true;
+					Attributes[GameAttribute.Buff_Icon_Count0, 30078] = 1;
 					break;
 				case ToonClass.DemonHunter:
 					break;
 				case ToonClass.Crusader:
-					this.Attributes[GameAttribute.Skill, 0x000418F2] = 1;
-					this.Attributes[GameAttribute.Skill, 0x00045CCF] = 1;
-					this.Attributes[GameAttribute.Skill, 0x000564D4] = 1;
+					Attributes[GameAttribute.Skill, 0x000418F2] = 1;
+					Attributes[GameAttribute.Skill, 0x00045CCF] = 1;
+					Attributes[GameAttribute.Skill, 0x000564D4] = 1;
 
 					break;
 				case ToonClass.Monk:
 					//scripted //this.Attributes[GameAttribute.Skill_Total, 0x0000CE11] = 1;  //Spirit Trait
-					this.Attributes[GameAttribute.Skill, 0x0000CE11] = 1;
-					this.Attributes[GameAttribute.Trait, 0x0000CE11] = 1;
-					this.Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0xCE11] = true;
-					this.Attributes[GameAttribute.Buff_Icon_Count0, 0x0000CE11] = 1;
+					Attributes[GameAttribute.Skill, 0x0000CE11] = 1;
+					Attributes[GameAttribute.Trait, 0x0000CE11] = 1;
+					Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0xCE11] = true;
+					Attributes[GameAttribute.Buff_Icon_Count0, 0x0000CE11] = 1;
 					break;
 				case ToonClass.WitchDoctor:
 					break;
@@ -588,13 +588,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void SetAttributesMovement()
 		{
-			this.Attributes[GameAttribute.Movement_Scalar_Cap] = 3f;
-			this.Attributes[GameAttribute.Movement_Scalar] = 1f;
-			this.Attributes[GameAttribute.Walking_Rate] = Toon.HeroTable.WalkingRate;
-			this.Attributes[GameAttribute.Running_Rate] = Toon.HeroTable.RunningRate;
-			this.Attributes[GameAttribute.Experience_Bonus] = 0f;
-			this.Attributes[GameAttribute.Sprinting_Rate] = Toon.HeroTable.SprintRate * 2;
-			this.Attributes[GameAttribute.Strafing_Rate] = Toon.HeroTable.SprintRate * 2;
+			Attributes[GameAttribute.Movement_Scalar_Cap] = 3f;
+			Attributes[GameAttribute.Movement_Scalar] = 1f;
+			Attributes[GameAttribute.Walking_Rate] = Toon.HeroTable.WalkingRate;
+			Attributes[GameAttribute.Running_Rate] = Toon.HeroTable.RunningRate;
+			Attributes[GameAttribute.Experience_Bonus] = 0f;
+			Attributes[GameAttribute.Sprinting_Rate] = Toon.HeroTable.SprintRate * 2;
+			Attributes[GameAttribute.Strafing_Rate] = Toon.HeroTable.SprintRate * 2;
 		}
 
 		public void SetAttributesMisc()
@@ -615,53 +615,53 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.Attributes[GameAttribute.Backpack_Slots] = 60;
 			this.Attributes[GameAttribute.General_Cooldown] = 0;
 			//*/
-			this.Attributes[GameAttribute.Disabled] = true; // we should be making use of these ones too /raist.
-			this.Attributes[GameAttribute.Loading] = true;
-			this.Attributes[GameAttribute.Loading_Player_ACD] = this.PlayerIndex;
-			this.Attributes[GameAttribute.Invulnerable] = true;
-			this.Attributes[GameAttribute.Hidden] = false;
-			this.Attributes[GameAttribute.Immobolize] = true;
-			this.Attributes[GameAttribute.Untargetable] = true;
-			this.Attributes[GameAttribute.CantStartDisplayedPowers] = true;
-			this.Attributes[GameAttribute.IsContentRestrictedActor] = true;
-			this.Attributes[GameAttribute.Cannot_Dodge] = false;
-			this.Attributes[GameAttribute.Trait, 0x0000CE11] = 1;
-			this.Attributes[GameAttribute.TeamID] = 2;
-			this.Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5;			// what do these do?
-			this.Attributes[GameAttribute.Stash_Tabs_Rewarded_By_Achievements] = 5;
-			this.Attributes[GameAttribute.Backpack_Slots] = 60;
-			this.Attributes[GameAttribute.General_Cooldown] = 0;
+			Attributes[GameAttribute.Disabled] = true; // we should be making use of these ones too /raist.
+			Attributes[GameAttribute.Loading] = true;
+			Attributes[GameAttribute.Loading_Player_ACD] = PlayerIndex;
+			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Hidden] = false;
+			Attributes[GameAttribute.Immobolize] = true;
+			Attributes[GameAttribute.Untargetable] = true;
+			Attributes[GameAttribute.CantStartDisplayedPowers] = true;
+			Attributes[GameAttribute.IsContentRestrictedActor] = true;
+			Attributes[GameAttribute.Cannot_Dodge] = false;
+			Attributes[GameAttribute.Trait, 0x0000CE11] = 1;
+			Attributes[GameAttribute.TeamID] = 2;
+			Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5;			// what do these do?
+			Attributes[GameAttribute.Stash_Tabs_Rewarded_By_Achievements] = 5;
+			Attributes[GameAttribute.Backpack_Slots] = 60;
+			Attributes[GameAttribute.General_Cooldown] = 0;
 		}
 
 		public void SetAttributesByParagon()
 		{
 			// Until the Paragon 800 should be distributed on the 4 tabs,
 			// after that only in the first Core tab.
-			var baseParagonPoints = Math.Min(this.Toon.ParagonLevel, 800);
-			var extraParagonPoints = Math.Max(0, this.Toon.ParagonLevel - 800);
+			var baseParagonPoints = Math.Min(Toon.ParagonLevel, 800);
+			var extraParagonPoints = Math.Max(0, Toon.ParagonLevel - 800);
 			for (int i = 0; i < 4; i++)
 			{
-				this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, i] = baseParagonPoints / 4;
+				Attributes[GameAttribute.Paragon_Bonus_Points_Available, i] = baseParagonPoints / 4;
 				// Process remainder only for base points.
 				if (i < baseParagonPoints % 4)
 				{
-					this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, i]++;
+					Attributes[GameAttribute.Paragon_Bonus_Points_Available, i]++;
 				}
 			}
 			// First tab of Paragon (Core) - pos 0.
-			this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, 0] += extraParagonPoints;
+			Attributes[GameAttribute.Paragon_Bonus_Points_Available, 0] += extraParagonPoints;
 
-			var assigned_bonuses = this.ParagonBonuses;
+			var assigned_bonuses = ParagonBonuses;
 
-			var bonus_ids = ItemGenerator.GetParagonBonusTable(this.Toon.Class);
+			var bonus_ids = ItemGenerator.GetParagonBonusTable(Toon.Class);
 
 			foreach (var bonus in bonus_ids)
 			{
 				int slot_index = (bonus.Category * 4) + bonus.Index - 1;
 
-                this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category] -= assigned_bonuses[slot_index];
+                Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category] -= assigned_bonuses[slot_index];
 
-				this.Attributes[GameAttribute.Paragon_Bonus, bonus.Hash] = assigned_bonuses[slot_index];
+				Attributes[GameAttribute.Paragon_Bonus, bonus.Hash] = assigned_bonuses[slot_index];
 
 				float result;
 				if (FormulaScript.Evaluate(bonus.AttributeSpecifiers[0].Formula.ToArray(), new ItemRandomHelper(0), out result))
@@ -670,7 +670,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					{
 						foreach (var damageType in DamageType.AllTypes)
 						{
-							this.Attributes[GameAttribute.Resistance, damageType.AttributeKey] += (result * assigned_bonuses[slot_index]);
+							Attributes[GameAttribute.Resistance, damageType.AttributeKey] += (result * assigned_bonuses[slot_index]);
 						}
 					}
 					else
@@ -683,18 +683,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						{
 							var attr = GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeF;
 							if (bonus.AttributeSpecifiers[0].SNOParam != -1)
-								this.Attributes[attr, bonus.AttributeSpecifiers[0].SNOParam] += (result * assigned_bonuses[slot_index]);
+								Attributes[attr, bonus.AttributeSpecifiers[0].SNOParam] += (result * assigned_bonuses[slot_index]);
 							else
-								this.Attributes[attr] += (result * assigned_bonuses[slot_index]);
+								Attributes[attr] += (result * assigned_bonuses[slot_index]);
 						}
 						else if (GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] is GameAttributeI)
 						{
 
 							var attr = GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeI;
 							if (bonus.AttributeSpecifiers[0].SNOParam != -1)
-								this.Attributes[attr, bonus.AttributeSpecifiers[0].SNOParam] += (int)(result * assigned_bonuses[slot_index]);
+								Attributes[attr, bonus.AttributeSpecifiers[0].SNOParam] += (int)(result * assigned_bonuses[slot_index]);
 							else
-								this.Attributes[attr] += (int)(result * assigned_bonuses[slot_index]);
+								Attributes[attr] += (int)(result * assigned_bonuses[slot_index]);
 						}
 					}
 				}
@@ -705,9 +705,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void SetAttributesByItems()
 		{
 			const float nonPhysDefault = 0f; //was 3.051758E-05f
-			var MaxHPOld = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-			var PercentOfOld = this.Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
-			PercHPbeforeChange = this.Attributes[GameAttribute.Hitpoints_Cur] / (this.Attributes[GameAttribute.Hitpoints_Max_Total] / 100);
+			var MaxHPOld = Attributes[GameAttribute.Hitpoints_Max_Total];
+			var PercentOfOld = Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+			PercHPbeforeChange = Attributes[GameAttribute.Hitpoints_Cur] / (Attributes[GameAttribute.Hitpoints_Max_Total] / 100);
 			;
 
 			var damageAttributeMinValues = new Dictionary<DamageType, float[]>
@@ -727,38 +727,38 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				//var weaponDamageMin = damageType.AttributeKey == 0 ? this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min, 0) : (this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min, 0) + Math.Max(this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min, damageType.AttributeKey), damageAttributeMinValues[damageType][0]));
 				//var weaponDamageDelta = damageType.AttributeKey == 0 ? this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min, 0) : (this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta, 0) + Math.Max(this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta, damageType.AttributeKey), damageAttributeMinValues[damageType][1]));
 
-				this.Attributes[GameAttribute.Damage_Weapon_Min, damageType.AttributeKey] = Math.Max(this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min_Total, damageType.AttributeKey), damageAttributeMinValues[damageType][0]) + this.Inventory.GetItemBonus(GameAttribute.Damage_Min, damageType.AttributeKey);
-				this.Attributes[GameAttribute.Damage_Weapon_Min, damageType.AttributeKey] -= this.Inventory.AdjustDualWieldMin(damageType); //Damage on weapons should not add when dual-wielding
-				this.Attributes[GameAttribute.Damage_Weapon_Delta, damageType.AttributeKey] = Math.Max(this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta_Total, damageType.AttributeKey), damageAttributeMinValues[damageType][1]) + this.Inventory.GetItemBonus(GameAttribute.Damage_Delta, damageType.AttributeKey);
-				this.Attributes[GameAttribute.Damage_Weapon_Delta, damageType.AttributeKey] -= this.Inventory.AdjustDualWieldDelta(damageType); //Damage on weapons should not add when dual-wielding
+				Attributes[GameAttribute.Damage_Weapon_Min, damageType.AttributeKey] = Math.Max(Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min_Total, damageType.AttributeKey), damageAttributeMinValues[damageType][0]) + Inventory.GetItemBonus(GameAttribute.Damage_Min, damageType.AttributeKey);
+				Attributes[GameAttribute.Damage_Weapon_Min, damageType.AttributeKey] -= Inventory.AdjustDualWieldMin(damageType); //Damage on weapons should not add when dual-wielding
+				Attributes[GameAttribute.Damage_Weapon_Delta, damageType.AttributeKey] = Math.Max(Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta_Total, damageType.AttributeKey), damageAttributeMinValues[damageType][1]) + Inventory.GetItemBonus(GameAttribute.Damage_Delta, damageType.AttributeKey);
+				Attributes[GameAttribute.Damage_Weapon_Delta, damageType.AttributeKey] -= Inventory.AdjustDualWieldDelta(damageType); //Damage on weapons should not add when dual-wielding
 
-				this.Attributes[GameAttribute.Damage_Weapon_Bonus_Min, damageType.AttributeKey] = 0f;
-				this.Attributes[GameAttribute.Damage_Weapon_Bonus_Min_X1, damageType.AttributeKey] = 0f;
-				this.Attributes[GameAttribute.Damage_Weapon_Bonus_Delta, damageType.AttributeKey] = 0f;
-				this.Attributes[GameAttribute.Damage_Weapon_Bonus_Delta_X1, damageType.AttributeKey] = 0f;
-				this.Attributes[GameAttribute.Damage_Weapon_Bonus_Flat, damageType.AttributeKey] = 0f;
+				Attributes[GameAttribute.Damage_Weapon_Bonus_Min, damageType.AttributeKey] = 0f;
+				Attributes[GameAttribute.Damage_Weapon_Bonus_Min_X1, damageType.AttributeKey] = 0f;
+				Attributes[GameAttribute.Damage_Weapon_Bonus_Delta, damageType.AttributeKey] = 0f;
+				Attributes[GameAttribute.Damage_Weapon_Bonus_Delta_X1, damageType.AttributeKey] = 0f;
+				Attributes[GameAttribute.Damage_Weapon_Bonus_Flat, damageType.AttributeKey] = 0f;
 
-				this.Attributes[GameAttribute.Damage_Type_Percent_Bonus, damageType.AttributeKey] = this.Inventory.GetItemBonus(GameAttribute.Damage_Type_Percent_Bonus, damageType.AttributeKey);
-				this.Attributes[GameAttribute.Damage_Dealt_Percent_Bonus, damageType.AttributeKey] = this.Inventory.GetItemBonus(GameAttribute.Damage_Dealt_Percent_Bonus, damageType.AttributeKey);
+				Attributes[GameAttribute.Damage_Type_Percent_Bonus, damageType.AttributeKey] = Inventory.GetItemBonus(GameAttribute.Damage_Type_Percent_Bonus, damageType.AttributeKey);
+				Attributes[GameAttribute.Damage_Dealt_Percent_Bonus, damageType.AttributeKey] = Inventory.GetItemBonus(GameAttribute.Damage_Dealt_Percent_Bonus, damageType.AttributeKey);
 
-				this.Attributes[GameAttribute.Resistance, damageType.AttributeKey] = this.Inventory.GetItemBonus(GameAttribute.Resistance, damageType.AttributeKey);
-				this.Attributes[GameAttribute.Damage_Percent_Reduction_From_Type, damageType.AttributeKey] = this.Inventory.GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Type, damageType.AttributeKey);
-				this.Attributes[GameAttribute.Amplify_Damage_Type_Percent, damageType.AttributeKey] = this.Inventory.GetItemBonus(GameAttribute.Amplify_Damage_Type_Percent, damageType.AttributeKey);
+				Attributes[GameAttribute.Resistance, damageType.AttributeKey] = Inventory.GetItemBonus(GameAttribute.Resistance, damageType.AttributeKey);
+				Attributes[GameAttribute.Damage_Percent_Reduction_From_Type, damageType.AttributeKey] = Inventory.GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Type, damageType.AttributeKey);
+				Attributes[GameAttribute.Amplify_Damage_Type_Percent, damageType.AttributeKey] = Inventory.GetItemBonus(GameAttribute.Amplify_Damage_Type_Percent, damageType.AttributeKey);
 			}
 
 			for (int i = 0; i < 4; i++)
-				this.Attributes[GameAttribute.Damage_Percent_Bonus_Vs_Monster_Type, i] = this.Inventory.GetItemBonus(GameAttribute.Damage_Percent_Bonus_Vs_Monster_Type, i);
+				Attributes[GameAttribute.Damage_Percent_Bonus_Vs_Monster_Type, i] = Inventory.GetItemBonus(GameAttribute.Damage_Percent_Bonus_Vs_Monster_Type, i);
 
 
-			this.Attributes[GameAttribute.Resistance_All] = this.Inventory.GetItemBonus(GameAttribute.Resistance_All);
-			this.Attributes[GameAttribute.Resistance_Percent_All] = this.Inventory.GetItemBonus(GameAttribute.Resistance_Percent_All);
-			this.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] = this.Inventory.GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Melee);
-			this.Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] = this.Inventory.GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Ranged);
+			Attributes[GameAttribute.Resistance_All] = Inventory.GetItemBonus(GameAttribute.Resistance_All);
+			Attributes[GameAttribute.Resistance_Percent_All] = Inventory.GetItemBonus(GameAttribute.Resistance_Percent_All);
+			Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] = Inventory.GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Melee);
+			Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] = Inventory.GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Ranged);
 
-			this.Attributes[GameAttribute.Thorns_Fixed, 0] = this.Inventory.GetItemBonus(GameAttribute.Thorns_Fixed, 0);
+			Attributes[GameAttribute.Thorns_Fixed, 0] = Inventory.GetItemBonus(GameAttribute.Thorns_Fixed, 0);
 
 			//this.Attributes[GameAttribute.Armor_Item_Percent] = this.Inventory.GetItemBonus(GameAttribute.Armor_Item_Percent);
-			float allStatsBonus = this.Inventory.GetItemBonus(GameAttribute.Stats_All_Bonus);// / 1065353216;
+			float allStatsBonus = Inventory.GetItemBonus(GameAttribute.Stats_All_Bonus);// / 1065353216;
 			/*
 			this.Attributes[GameAttribute.Armor_Item] = this.Inventory.GetItemBonus(GameAttribute.Armor_Item_Total);
 			this.Attributes[GameAttribute.Strength_Item] = this.Inventory.GetItemBonus(GameAttribute.Dexterity_Item);// / 1065353216;
@@ -771,200 +771,200 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			this.Attributes[GameAttribute.Vitality_Item] += allStatsBonus;
 			//*/
 			//*
-			this.Attributes[GameAttribute.Strength_Item] = this.Inventory.GetItemBonus(GameAttribute.Strength_Item);// / 1065353216;
-			this.Attributes[GameAttribute.Strength_Item] += allStatsBonus;
-			this.Attributes[GameAttribute.Vitality_Item] = this.Inventory.GetItemBonus(GameAttribute.Vitality_Item);// / 1065353216;
-			this.Attributes[GameAttribute.Vitality_Item] += allStatsBonus;
-			this.Attributes[GameAttribute.Dexterity_Item] = this.Inventory.GetItemBonus(GameAttribute.Dexterity_Item);// / 1065353216;
-			this.Attributes[GameAttribute.Dexterity_Item] += allStatsBonus;
-			this.Attributes[GameAttribute.Intelligence_Item] = this.Inventory.GetItemBonus(GameAttribute.Intelligence_Item);// / 1065353216; //I know that's wild, but client can't display it properly...
-			this.Attributes[GameAttribute.Intelligence_Item] += allStatsBonus;
+			Attributes[GameAttribute.Strength_Item] = Inventory.GetItemBonus(GameAttribute.Strength_Item);// / 1065353216;
+			Attributes[GameAttribute.Strength_Item] += allStatsBonus;
+			Attributes[GameAttribute.Vitality_Item] = Inventory.GetItemBonus(GameAttribute.Vitality_Item);// / 1065353216;
+			Attributes[GameAttribute.Vitality_Item] += allStatsBonus;
+			Attributes[GameAttribute.Dexterity_Item] = Inventory.GetItemBonus(GameAttribute.Dexterity_Item);// / 1065353216;
+			Attributes[GameAttribute.Dexterity_Item] += allStatsBonus;
+			Attributes[GameAttribute.Intelligence_Item] = Inventory.GetItemBonus(GameAttribute.Intelligence_Item);// / 1065353216; //I know that's wild, but client can't display it properly...
+			Attributes[GameAttribute.Intelligence_Item] += allStatsBonus;
 			//*/
 
 			//this.Attributes[GameAttribute.Cube_Enchanted_Strength_Item] = 0;
-			this.Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
+			Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
 
 
-			this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus] = this.Inventory.GetItemBonus(GameAttribute.Hitpoints_Max_Percent_Bonus);
-			this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Item] = this.Inventory.GetItemBonus(GameAttribute.Hitpoints_Max_Percent_Bonus_Item);
-			this.Attributes[GameAttribute.Hitpoints_Max_Bonus] = this.Inventory.GetItemBonus(GameAttribute.Hitpoints_Max_Bonus);
+			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus] = Inventory.GetItemBonus(GameAttribute.Hitpoints_Max_Percent_Bonus);
+			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Item] = Inventory.GetItemBonus(GameAttribute.Hitpoints_Max_Percent_Bonus_Item);
+			Attributes[GameAttribute.Hitpoints_Max_Bonus] = Inventory.GetItemBonus(GameAttribute.Hitpoints_Max_Bonus);
 
 
 
-			this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] = this.Inventory.GetItemBonus(GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource);
+			Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] = Inventory.GetItemBonus(GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource);
 
-			this.Attributes[GameAttribute.Attacks_Per_Second] = this.Inventory.GetAPS();
+			Attributes[GameAttribute.Attacks_Per_Second] = Inventory.GetAPS();
 
-			this.Attributes[GameAttribute.Attacks_Per_Second_Percent] = this.Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Item_Percent) + this.Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Percent);
-			this.Attributes[GameAttribute.Attacks_Per_Second_Bonus] = this.Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Item_Bonus);
-			this.Attributes[GameAttribute.Attacks_Per_Second_Item] = this.Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Item);
-			var a = this.Attributes[GameAttribute.Attacks_Per_Second];
-			var b = this.Attributes[GameAttribute.Attacks_Per_Second_Percent];
-			var c = this.Attributes[GameAttribute.Attacks_Per_Second_Bonus];
-			var d = this.Attributes[GameAttribute.Attacks_Per_Second_Item];
-			var e = this.Attributes[GameAttribute.Attacks_Per_Second_Item_CurrentHand];
-			var f = this.Attributes[GameAttribute.Attacks_Per_Second_Item_Bonus];
-			var g = this.Attributes[GameAttribute.Attacks_Per_Second_Percent_Subtotal];
-			var h = this.Attributes[GameAttribute.Attacks_Per_Second_Percent_Cap];
-			var j = this.Attributes[GameAttribute.Attacks_Per_Second_Percent_Uncapped];
-			var k = this.Attributes[GameAttribute.Attacks_Per_Second_Percent_Reduction];
-			var o = this.Attributes[GameAttribute.Attacks_Per_Second_Total];
+			Attributes[GameAttribute.Attacks_Per_Second_Percent] = Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Item_Percent) + Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Percent);
+			Attributes[GameAttribute.Attacks_Per_Second_Bonus] = Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Item_Bonus);
+			Attributes[GameAttribute.Attacks_Per_Second_Item] = Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Item);
+			var a = Attributes[GameAttribute.Attacks_Per_Second];
+			var b = Attributes[GameAttribute.Attacks_Per_Second_Percent];
+			var c = Attributes[GameAttribute.Attacks_Per_Second_Bonus];
+			var d = Attributes[GameAttribute.Attacks_Per_Second_Item];
+			var e = Attributes[GameAttribute.Attacks_Per_Second_Item_CurrentHand];
+			var f = Attributes[GameAttribute.Attacks_Per_Second_Item_Bonus];
+			var g = Attributes[GameAttribute.Attacks_Per_Second_Percent_Subtotal];
+			var h = Attributes[GameAttribute.Attacks_Per_Second_Percent_Cap];
+			var j = Attributes[GameAttribute.Attacks_Per_Second_Percent_Uncapped];
+			var k = Attributes[GameAttribute.Attacks_Per_Second_Percent_Reduction];
+			var o = Attributes[GameAttribute.Attacks_Per_Second_Total];
 
-			if (this.Attributes[GameAttribute.Attacks_Per_Second_Total] < 1)
-				this.Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-			this.Attributes[GameAttribute.Crit_Percent_Bonus_Capped] = this.Inventory.GetItemBonus(GameAttribute.Crit_Percent_Bonus_Capped);
-			this.Attributes[GameAttribute.Weapon_Crit_Chance] = 0.05f + this.Inventory.GetItemBonus(GameAttribute.Weapon_Crit_Chance);
-			this.Attributes[GameAttribute.Crit_Damage_Percent] = 0.5f + this.Inventory.GetItemBonus(GameAttribute.Crit_Damage_Percent);
+			if (Attributes[GameAttribute.Attacks_Per_Second_Total] < 1)
+				Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+			Attributes[GameAttribute.Crit_Percent_Bonus_Capped] = Inventory.GetItemBonus(GameAttribute.Crit_Percent_Bonus_Capped);
+			Attributes[GameAttribute.Weapon_Crit_Chance] = 0.05f + Inventory.GetItemBonus(GameAttribute.Weapon_Crit_Chance);
+			Attributes[GameAttribute.Crit_Damage_Percent] = 0.5f + Inventory.GetItemBonus(GameAttribute.Crit_Damage_Percent);
 
-			this.Attributes[GameAttribute.Splash_Damage_Effect_Percent] = this.Inventory.GetItemBonus(GameAttribute.Splash_Damage_Effect_Percent);
+			Attributes[GameAttribute.Splash_Damage_Effect_Percent] = Inventory.GetItemBonus(GameAttribute.Splash_Damage_Effect_Percent);
 
-			this.Attributes[GameAttribute.On_Hit_Fear_Proc_Chance] = this.Inventory.GetItemBonus(GameAttribute.On_Hit_Fear_Proc_Chance) + this.Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Fear_Proc_Chance);
-			this.Attributes[GameAttribute.On_Hit_Stun_Proc_Chance] = this.Inventory.GetItemBonus(GameAttribute.On_Hit_Stun_Proc_Chance) + this.Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Stun_Proc_Chance);
-			this.Attributes[GameAttribute.On_Hit_Blind_Proc_Chance] = this.Inventory.GetItemBonus(GameAttribute.On_Hit_Blind_Proc_Chance) + this.Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Blind_Proc_Chance);
-			this.Attributes[GameAttribute.On_Hit_Freeze_Proc_Chance] = this.Inventory.GetItemBonus(GameAttribute.On_Hit_Freeze_Proc_Chance) + this.Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Freeze_Proc_Chance);
-			this.Attributes[GameAttribute.On_Hit_Chill_Proc_Chance] = this.Inventory.GetItemBonus(GameAttribute.On_Hit_Chill_Proc_Chance) + this.Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Chill_Proc_Chance);
-			this.Attributes[GameAttribute.On_Hit_Slow_Proc_Chance] = this.Inventory.GetItemBonus(GameAttribute.On_Hit_Slow_Proc_Chance) + this.Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Slow_Proc_Chance);
-			this.Attributes[GameAttribute.On_Hit_Immobilize_Proc_Chance] = this.Inventory.GetItemBonus(GameAttribute.On_Hit_Immobilize_Proc_Chance) + this.Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Immobilize_Proc_Chance);
-			this.Attributes[GameAttribute.On_Hit_Knockback_Proc_Chance] = this.Inventory.GetItemBonus(GameAttribute.On_Hit_Knockback_Proc_Chance) + this.Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Knockback_Proc_Chance);
-			this.Attributes[GameAttribute.On_Hit_Bleed_Proc_Chance] = this.Inventory.GetItemBonus(GameAttribute.On_Hit_Bleed_Proc_Chance) + this.Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Bleed_Proc_Chance);
+			Attributes[GameAttribute.On_Hit_Fear_Proc_Chance] = Inventory.GetItemBonus(GameAttribute.On_Hit_Fear_Proc_Chance) + Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Fear_Proc_Chance);
+			Attributes[GameAttribute.On_Hit_Stun_Proc_Chance] = Inventory.GetItemBonus(GameAttribute.On_Hit_Stun_Proc_Chance) + Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Stun_Proc_Chance);
+			Attributes[GameAttribute.On_Hit_Blind_Proc_Chance] = Inventory.GetItemBonus(GameAttribute.On_Hit_Blind_Proc_Chance) + Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Blind_Proc_Chance);
+			Attributes[GameAttribute.On_Hit_Freeze_Proc_Chance] = Inventory.GetItemBonus(GameAttribute.On_Hit_Freeze_Proc_Chance) + Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Freeze_Proc_Chance);
+			Attributes[GameAttribute.On_Hit_Chill_Proc_Chance] = Inventory.GetItemBonus(GameAttribute.On_Hit_Chill_Proc_Chance) + Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Chill_Proc_Chance);
+			Attributes[GameAttribute.On_Hit_Slow_Proc_Chance] = Inventory.GetItemBonus(GameAttribute.On_Hit_Slow_Proc_Chance) + Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Slow_Proc_Chance);
+			Attributes[GameAttribute.On_Hit_Immobilize_Proc_Chance] = Inventory.GetItemBonus(GameAttribute.On_Hit_Immobilize_Proc_Chance) + Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Immobilize_Proc_Chance);
+			Attributes[GameAttribute.On_Hit_Knockback_Proc_Chance] = Inventory.GetItemBonus(GameAttribute.On_Hit_Knockback_Proc_Chance) + Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Knockback_Proc_Chance);
+			Attributes[GameAttribute.On_Hit_Bleed_Proc_Chance] = Inventory.GetItemBonus(GameAttribute.On_Hit_Bleed_Proc_Chance) + Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Bleed_Proc_Chance);
 
-			this.Attributes[GameAttribute.Running_Rate] = Toon.HeroTable.RunningRate + this.Inventory.GetItemBonus(GameAttribute.Running_Rate);
-			this.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] = this.Inventory.GetItemBonus(GameAttribute.Movement_Scalar_Uncapped_Bonus);
-			this.Attributes[GameAttribute.Movement_Scalar] = this.Inventory.GetItemBonus(GameAttribute.Movement_Scalar) + 1.0f;
+			Attributes[GameAttribute.Running_Rate] = Toon.HeroTable.RunningRate + Inventory.GetItemBonus(GameAttribute.Running_Rate);
+			Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] = Inventory.GetItemBonus(GameAttribute.Movement_Scalar_Uncapped_Bonus);
+			Attributes[GameAttribute.Movement_Scalar] = Inventory.GetItemBonus(GameAttribute.Movement_Scalar) + 1.0f;
 
 			//this.Attributes[GameAttribute.Magic_Find] = this.Inventory.GetItemBonus(GameAttribute.Magic_Find);
-			this.Attributes[GameAttribute.Magic_Find] = this.Inventory.GetMagicFind();
+			Attributes[GameAttribute.Magic_Find] = Inventory.GetMagicFind();
 			//this.Attributes[GameAttribute.Gold_Find] = this.Inventory.GetItemBonus(GameAttribute.Gold_Find);
-			this.Attributes[GameAttribute.Gold_Find] = this.Inventory.GetGoldFind();
+			Attributes[GameAttribute.Gold_Find] = Inventory.GetGoldFind();
 
-			this.Attributes[GameAttribute.Gold_PickUp_Radius] = (5f + this.Inventory.GetItemBonus(GameAttribute.Gold_PickUp_Radius));
+			Attributes[GameAttribute.Gold_PickUp_Radius] = (5f + Inventory.GetItemBonus(GameAttribute.Gold_PickUp_Radius));
 
-			this.Attributes[GameAttribute.Experience_Bonus] = this.Inventory.GetItemBonus(GameAttribute.Experience_Bonus);
-			this.Attributes[GameAttribute.Experience_Bonus_Percent] = this.Inventory.GetItemBonus(GameAttribute.Experience_Bonus_Percent);
+			Attributes[GameAttribute.Experience_Bonus] = Inventory.GetItemBonus(GameAttribute.Experience_Bonus);
+			Attributes[GameAttribute.Experience_Bonus_Percent] = Inventory.GetItemBonus(GameAttribute.Experience_Bonus_Percent);
 
-			this.Attributes[GameAttribute.Resistance_Freeze] = this.Inventory.GetItemBonus(GameAttribute.Resistance_Freeze);
-			this.Attributes[GameAttribute.Resistance_Penetration] = this.Inventory.GetItemBonus(GameAttribute.Resistance_Penetration);
-			this.Attributes[GameAttribute.Resistance_Percent] = this.Inventory.GetItemBonus(GameAttribute.Resistance_Percent);
-			this.Attributes[GameAttribute.Resistance_Root] = this.Inventory.GetItemBonus(GameAttribute.Resistance_Root);
-			this.Attributes[GameAttribute.Resistance_Stun] = this.Inventory.GetItemBonus(GameAttribute.Resistance_Stun);
-			this.Attributes[GameAttribute.Resistance_StunRootFreeze] = this.Inventory.GetItemBonus(GameAttribute.Resistance_StunRootFreeze);
+			Attributes[GameAttribute.Resistance_Freeze] = Inventory.GetItemBonus(GameAttribute.Resistance_Freeze);
+			Attributes[GameAttribute.Resistance_Penetration] = Inventory.GetItemBonus(GameAttribute.Resistance_Penetration);
+			Attributes[GameAttribute.Resistance_Percent] = Inventory.GetItemBonus(GameAttribute.Resistance_Percent);
+			Attributes[GameAttribute.Resistance_Root] = Inventory.GetItemBonus(GameAttribute.Resistance_Root);
+			Attributes[GameAttribute.Resistance_Stun] = Inventory.GetItemBonus(GameAttribute.Resistance_Stun);
+			Attributes[GameAttribute.Resistance_StunRootFreeze] = Inventory.GetItemBonus(GameAttribute.Resistance_StunRootFreeze);
 
-			this.Attributes[GameAttribute.Dodge_Chance_Bonus] = this.Inventory.GetItemBonus(GameAttribute.Dodge_Chance_Bonus);
+			Attributes[GameAttribute.Dodge_Chance_Bonus] = Inventory.GetItemBonus(GameAttribute.Dodge_Chance_Bonus);
 
-			this.Attributes[GameAttribute.Block_Amount_Item_Min] = this.Inventory.GetItemBonus(GameAttribute.Block_Amount_Item_Min);
-			this.Attributes[GameAttribute.Block_Amount_Item_Delta] = this.Inventory.GetItemBonus(GameAttribute.Block_Amount_Item_Delta);
-			this.Attributes[GameAttribute.Block_Amount_Bonus_Percent] = this.Inventory.GetItemBonus(GameAttribute.Block_Amount_Bonus_Percent);
-			this.Attributes[GameAttribute.Block_Chance] = this.Inventory.GetItemBonus(GameAttribute.Block_Chance_Item_Total);
+			Attributes[GameAttribute.Block_Amount_Item_Min] = Inventory.GetItemBonus(GameAttribute.Block_Amount_Item_Min);
+			Attributes[GameAttribute.Block_Amount_Item_Delta] = Inventory.GetItemBonus(GameAttribute.Block_Amount_Item_Delta);
+			Attributes[GameAttribute.Block_Amount_Bonus_Percent] = Inventory.GetItemBonus(GameAttribute.Block_Amount_Bonus_Percent);
+			Attributes[GameAttribute.Block_Chance] = Inventory.GetItemBonus(GameAttribute.Block_Chance_Item_Total);
 
-			this.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent] = 0;
-			this.Attributes[GameAttribute.Health_Globe_Bonus_Health] = this.Inventory.GetItemBonus(GameAttribute.Health_Globe_Bonus_Health);
+			Attributes[GameAttribute.Power_Cooldown_Reduction_Percent] = 0;
+			Attributes[GameAttribute.Health_Globe_Bonus_Health] = Inventory.GetItemBonus(GameAttribute.Health_Globe_Bonus_Health);
 
-			this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = this.Inventory.GetItemBonus(GameAttribute.Hitpoints_Regen_Per_Second) + this.Toon.HeroTable.GetHitRecoveryBase + (this.Toon.HeroTable.GetHitRecoveryPerLevel * this.Level);
+			Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = Inventory.GetItemBonus(GameAttribute.Hitpoints_Regen_Per_Second) + Toon.HeroTable.GetHitRecoveryBase + (Toon.HeroTable.GetHitRecoveryPerLevel * Level);
 
-			this.Attributes[GameAttribute.Resource_Cost_Reduction_Percent_All] = this.Inventory.GetItemBonus(GameAttribute.Resource_Cost_Reduction_Percent_All);
-			this.Attributes[GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.PrimaryResource] = this.Inventory.GetItemBonus(GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.PrimaryResource);
-			this.Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceRegen + this.Inventory.GetItemBonus(GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource);
-			this.Attributes[GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.PrimaryResource] = this.Inventory.GetItemBonus(GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.PrimaryResource);
+			Attributes[GameAttribute.Resource_Cost_Reduction_Percent_All] = Inventory.GetItemBonus(GameAttribute.Resource_Cost_Reduction_Percent_All);
+			Attributes[GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.PrimaryResource] = Inventory.GetItemBonus(GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.PrimaryResource);
+			Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceRegen + Inventory.GetItemBonus(GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource);
+			Attributes[GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.PrimaryResource] = Inventory.GetItemBonus(GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.PrimaryResource);
 
-			this.Attributes[GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.SecondaryResource] = this.Inventory.GetItemBonus(GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.SecondaryResource);
-			this.Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.SecondaryResource] = Toon.HeroTable.SecondaryResourceRegen + this.Inventory.GetItemBonus(GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.SecondaryResource);
-			this.Attributes[GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.SecondaryResource] = this.Inventory.GetItemBonus(GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.SecondaryResource);
+			Attributes[GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.SecondaryResource] = Inventory.GetItemBonus(GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.SecondaryResource);
+			Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.SecondaryResource] = Toon.HeroTable.SecondaryResourceRegen + Inventory.GetItemBonus(GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.SecondaryResource);
+			Attributes[GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.SecondaryResource] = Inventory.GetItemBonus(GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.SecondaryResource);
 
-			this.Attributes[GameAttribute.Resource_On_Hit] = 0;
-			this.Attributes[GameAttribute.Resource_On_Hit, 0] = this.Inventory.GetItemBonus(GameAttribute.Resource_On_Hit, 0);
-			this.Attributes[GameAttribute.Resource_On_Crit, 1] = this.Inventory.GetItemBonus(GameAttribute.Resource_On_Crit, 1);
+			Attributes[GameAttribute.Resource_On_Hit] = 0;
+			Attributes[GameAttribute.Resource_On_Hit, 0] = Inventory.GetItemBonus(GameAttribute.Resource_On_Hit, 0);
+			Attributes[GameAttribute.Resource_On_Crit, 1] = Inventory.GetItemBonus(GameAttribute.Resource_On_Crit, 1);
 
-			this.Attributes[GameAttribute.Steal_Health_Percent] = this.Inventory.GetItemBonus(GameAttribute.Steal_Health_Percent) * 0.1f;
-			this.Attributes[GameAttribute.Hitpoints_On_Hit] = this.Inventory.GetItemBonus(GameAttribute.Hitpoints_On_Hit);
-			this.Attributes[GameAttribute.Hitpoints_On_Kill] = this.Inventory.GetItemBonus(GameAttribute.Hitpoints_On_Kill);
-			this.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] = this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Percent_Bonus);
-			this.Attributes[GameAttribute.Damage_Percent_Bonus_Vs_Elites] = this.Inventory.GetItemBonus(GameAttribute.Damage_Percent_Bonus_Vs_Elites);
+			Attributes[GameAttribute.Steal_Health_Percent] = Inventory.GetItemBonus(GameAttribute.Steal_Health_Percent) * 0.1f;
+			Attributes[GameAttribute.Hitpoints_On_Hit] = Inventory.GetItemBonus(GameAttribute.Hitpoints_On_Hit);
+			Attributes[GameAttribute.Hitpoints_On_Kill] = Inventory.GetItemBonus(GameAttribute.Hitpoints_On_Kill);
+			Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] = Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Percent_Bonus);
+			Attributes[GameAttribute.Damage_Percent_Bonus_Vs_Elites] = Inventory.GetItemBonus(GameAttribute.Damage_Percent_Bonus_Vs_Elites);
 			//this.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All_Capped] = 0.5f;
 			//this.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_Cap] = 0.5f;
-			this.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent] = 0.5f;
-			this.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All] = this.Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction_Percent_All);
-			this.Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped] = this.Inventory.GetItemBonus(GameAttribute.Crit_Percent_Bonus_Uncapped);
+			Attributes[GameAttribute.Power_Cooldown_Reduction_Percent] = 0.5f;
+			Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All] = Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction_Percent_All);
+			Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped] = Inventory.GetItemBonus(GameAttribute.Crit_Percent_Bonus_Uncapped);
 
 			//this.Attributes[GameAttribute.Projectile_Speed] = 0.3f;
 
-			switch (this.Toon.Class)
+			switch (Toon.Class)
 			{
 				case ToonClass.Barbarian:
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 80028] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 80028);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 70472] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 70472);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 79242] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 79242);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 80263] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 80263);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 78548] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 78548);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 93885] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 93885);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 86989] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 86989);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 96296] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 96296);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 109342] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 109342);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 159169] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 159169);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 93885] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 93885);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 69979] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 69979);
+					Attributes[GameAttribute.Power_Resource_Reduction, 80028] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 80028);
+					Attributes[GameAttribute.Power_Resource_Reduction, 70472] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 70472);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 79242] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 79242);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 80263] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 80263);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 78548] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 78548);
+					Attributes[GameAttribute.Power_Resource_Reduction, 93885] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 93885);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 86989] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 86989);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 96296] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 96296);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 109342] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 109342);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 159169] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 159169);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 93885] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 93885);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 69979] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 69979);
 					break;
 				case ToonClass.DemonHunter:
-					this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.SecondaryResource] = this.Inventory.GetItemBonus(GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.SecondaryResource);
-					this.Attributes[GameAttribute.Bow] = this.Inventory.GetItemBonus(GameAttribute.Bow);
-					this.Attributes[GameAttribute.Crossbow] = this.Inventory.GetItemBonus(GameAttribute.Crossbow);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 129215] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 129215);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 134209] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 134209);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 77552] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 77552);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 75873] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 75873);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 86610] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 86610);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 131192] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 131192);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 131325] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 131325);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 77649] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 77649);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 134030] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 134030);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 129214] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 129214);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 75301] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 75301);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 131366] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 131366);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 129213] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 129213);
+					Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.SecondaryResource] = Inventory.GetItemBonus(GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.SecondaryResource);
+					Attributes[GameAttribute.Bow] = Inventory.GetItemBonus(GameAttribute.Bow);
+					Attributes[GameAttribute.Crossbow] = Inventory.GetItemBonus(GameAttribute.Crossbow);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 129215] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 129215);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 134209] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 134209);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 77552] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 77552);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 75873] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 75873);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 86610] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 86610);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 131192] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 131192);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 131325] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 131325);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 77649] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 77649);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 134030] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 134030);
+					Attributes[GameAttribute.Power_Resource_Reduction, 129214] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 129214);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 75301] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 75301);
+					Attributes[GameAttribute.Power_Resource_Reduction, 131366] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 131366);
+					Attributes[GameAttribute.Power_Resource_Reduction, 129213] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 129213);
 					break;
 				case ToonClass.Monk:
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 95940] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 95940);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 96019] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 96019);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 96311] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 96311);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 97328] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 97328);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 96090] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 96090);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 97110] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 97110);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 121442] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 121442);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 111676] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 111676);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 223473] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 223473);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 96033] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 96033);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 95940] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 95940);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 96019] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 96019);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 96311] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 96311);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 97328] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 97328);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 96090] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 96090);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 97110] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 97110);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 121442] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 121442);
+					Attributes[GameAttribute.Power_Resource_Reduction, 111676] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 111676);
+					Attributes[GameAttribute.Power_Resource_Reduction, 223473] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 223473);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 96033] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 96033);
 					break;
 				case ToonClass.WitchDoctor:
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 105963] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 105963);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 103181] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 103181);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 106465] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 106465);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 83602] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 83602);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 108506] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 108506);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 69866] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 69866);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 69867] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 69867);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 74003] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 74003);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 70455] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 103181);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 67567] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 67567);
-					this.Attributes[GameAttribute.Power_Cooldown_Reduction, 134837] = this.Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 134837);
-					this.Attributes[GameAttribute.Power_Cooldown_Reduction, 67600] = this.Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 67600);
-					this.Attributes[GameAttribute.Power_Cooldown_Reduction, 102573] = this.Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 102573);
-					this.Attributes[GameAttribute.Power_Cooldown_Reduction, 30624] = this.Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 30624);
+					Attributes[GameAttribute.Power_Resource_Reduction, 105963] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 105963);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 103181] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 103181);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 106465] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 106465);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 83602] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 83602);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 108506] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 108506);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 69866] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 69866);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 69867] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 69867);
+					Attributes[GameAttribute.Power_Resource_Reduction, 74003] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 74003);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 70455] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 103181);
+					Attributes[GameAttribute.Power_Resource_Reduction, 67567] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 67567);
+					Attributes[GameAttribute.Power_Cooldown_Reduction, 134837] = Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 134837);
+					Attributes[GameAttribute.Power_Cooldown_Reduction, 67600] = Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 67600);
+					Attributes[GameAttribute.Power_Cooldown_Reduction, 102573] = Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 102573);
+					Attributes[GameAttribute.Power_Cooldown_Reduction, 30624] = Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 30624);
 					break;
 				case ToonClass.Wizard:
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 30744] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 30744);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 30783] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 30783);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 71548] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 71548);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 1765] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 1765);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 30668] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 30668);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 77113] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 77113);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 91549] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 91549);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 87525] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 87525);
-					this.Attributes[GameAttribute.Power_Crit_Percent_Bonus, 93395] = this.Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 93395);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 134456] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 134456);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 30725] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 30725);
-					this.Attributes[GameAttribute.Power_Duration_Increase, 30680] = this.Inventory.GetItemBonus(GameAttribute.Power_Duration_Increase, 30680);
-					this.Attributes[GameAttribute.Power_Resource_Reduction, 69190] = this.Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 69190);
-					this.Attributes[GameAttribute.Power_Cooldown_Reduction, 168344] = this.Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 168344);
-					this.Attributes[GameAttribute.Power_Damage_Percent_Bonus, 71548] = this.Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 71548);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 30744] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 30744);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 30783] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 30783);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 71548] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 71548);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 1765] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 1765);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 30668] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 30668);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 77113] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 77113);
+					Attributes[GameAttribute.Power_Resource_Reduction, 91549] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 91549);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 87525] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 87525);
+					Attributes[GameAttribute.Power_Crit_Percent_Bonus, 93395] = Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 93395);
+					Attributes[GameAttribute.Power_Resource_Reduction, 134456] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 134456);
+					Attributes[GameAttribute.Power_Resource_Reduction, 30725] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 30725);
+					Attributes[GameAttribute.Power_Duration_Increase, 30680] = Inventory.GetItemBonus(GameAttribute.Power_Duration_Increase, 30680);
+					Attributes[GameAttribute.Power_Resource_Reduction, 69190] = Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 69190);
+					Attributes[GameAttribute.Power_Cooldown_Reduction, 168344] = Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 168344);
+					Attributes[GameAttribute.Power_Damage_Percent_Bonus, 71548] = Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 71548);
 					break;
 			}
 
@@ -972,9 +972,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void UpdatePercentageHP(float percent)
 		{
-			var m = this.Attributes[GameAttribute.Hitpoints_Max_Total];
-			this.Attributes[GameAttribute.Hitpoints_Cur] = percent * this.Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
-			this.Attributes.BroadcastChangedIfRevealed();
+			var m = Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttribute.Hitpoints_Cur] = percent * Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+			Attributes.BroadcastChangedIfRevealed();
 		}
 		public void UpdatePercentageHP()
 		{
@@ -982,75 +982,75 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void SetAttributesByGems()
 		{
-			this.Inventory.SetGemBonuses();
+			Inventory.SetGemBonuses();
 		}
 
 		public void SetAttributesByItemProcs()
 		{
-			this.Attributes[GameAttribute.Item_Power_Passive, 248776] = this.Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 248776); //cluck
-			this.Attributes[GameAttribute.Item_Power_Passive, 248629] = this.Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 248629); //death laugh
-			this.Attributes[GameAttribute.Item_Power_Passive, 247640] = this.Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 247640); //gore1
-			this.Attributes[GameAttribute.Item_Power_Passive, 249963] = this.Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 249963); //gore2
-			this.Attributes[GameAttribute.Item_Power_Passive, 249954] = this.Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 249954); //gore3
-			this.Attributes[GameAttribute.Item_Power_Passive, 246116] = this.Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 246116); //butcher
-			this.Attributes[GameAttribute.Item_Power_Passive, 247724] = this.Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 247724); //plum!
-			this.Attributes[GameAttribute.Item_Power_Passive, 245741] = this.Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 245741); //weee!
+			Attributes[GameAttribute.Item_Power_Passive, 248776] = Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 248776); //cluck
+			Attributes[GameAttribute.Item_Power_Passive, 248629] = Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 248629); //death laugh
+			Attributes[GameAttribute.Item_Power_Passive, 247640] = Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 247640); //gore1
+			Attributes[GameAttribute.Item_Power_Passive, 249963] = Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 249963); //gore2
+			Attributes[GameAttribute.Item_Power_Passive, 249954] = Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 249954); //gore3
+			Attributes[GameAttribute.Item_Power_Passive, 246116] = Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 246116); //butcher
+			Attributes[GameAttribute.Item_Power_Passive, 247724] = Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 247724); //plum!
+			Attributes[GameAttribute.Item_Power_Passive, 245741] = Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 245741); //weee!
 		}
 
 		public void SetAttributesByItemSets()
 		{
-			this.Attributes[GameAttribute.Strength] = this.Strength;
-			this.Attributes[GameAttribute.Dexterity] = this.Dexterity;
-			this.Attributes[GameAttribute.Vitality] = this.Vitality;
-			this.Attributes[GameAttribute.Intelligence] = this.Intelligence;
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes[GameAttribute.Strength] = Strength;
+			Attributes[GameAttribute.Dexterity] = Dexterity;
+			Attributes[GameAttribute.Vitality] = Vitality;
+			Attributes[GameAttribute.Intelligence] = Intelligence;
+			Attributes.BroadcastChangedIfRevealed();
 
-			this.Inventory.SetItemSetBonuses();
+			Inventory.SetItemSetBonuses();
 		}
 
 		public void SetAttributesByPassives()       //also reapplies synergy buffs
 		{
 			// Class specific
-			this.Attributes[GameAttribute.Damage_Percent_All_From_Skills] = 0;
-			this.Attributes[GameAttribute.Allow_2H_And_Shield] = false;
-			this.Attributes[GameAttribute.Cannot_Dodge] = false;
+			Attributes[GameAttribute.Damage_Percent_All_From_Skills] = 0;
+			Attributes[GameAttribute.Allow_2H_And_Shield] = false;
+			Attributes[GameAttribute.Cannot_Dodge] = false;
 
-			foreach (int passiveId in this.SkillSet.PassiveSkills)
-				switch (this.Toon.Class)
+			foreach (int passiveId in SkillSet.PassiveSkills)
+				switch (Toon.Class)
 				{
 					case ToonClass.Barbarian:
 						switch (passiveId)
 						{
 							case 217819: //NervesOfSteel
-								this.Attributes[GameAttribute.Armor_Item] += this.Attributes[GameAttribute.Vitality_Total] * 0.50f;
+								Attributes[GameAttribute.Armor_Item] += Attributes[GameAttribute.Vitality_Total] * 0.50f;
 								break;
 							case 205228: //Animosity
-								this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 20;
-								this.Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] = this.Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] * 1.1f;
-								this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceBase + this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
+								Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 20;
+								Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] = Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] * 1.1f;
+								Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
 								break;
 							case 205848: //ToughAsNails
-								this.Attributes[GameAttribute.Armor_Item] *= 1.25f;
+								Attributes[GameAttribute.Armor_Item] *= 1.25f;
 								break;
 							case 205707: //Juggernaut
-								this.Attributes[GameAttribute.CrowdControl_Reduction] += 0.3f;
+								Attributes[GameAttribute.CrowdControl_Reduction] += 0.3f;
 								break;
 							case 206147: //WeaponsMaster
-								var weapon = this.Inventory.GetEquippedWeapon();
+								var weapon = Inventory.GetEquippedWeapon();
 								if (weapon != null)
 								{
 									string name = weapon.ItemDefinition.Name.ToLower();
 									if (name.Contains("sword") || name.Contains("dagger"))
-										this.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += 0.08f;
+										Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += 0.08f;
 									else
 										if (name.Contains("axe") || name.Contains("mace"))
-										this.Attributes[GameAttribute.Weapon_Crit_Chance] += 0.05f;
+										Attributes[GameAttribute.Weapon_Crit_Chance] += 0.05f;
 									else
 											if (name.Contains("spear") || name.Contains("polearm"))
-										this.Attributes[GameAttribute.Attacks_Per_Second] *= 1.08f;
+										Attributes[GameAttribute.Attacks_Per_Second] *= 1.08f;
 									else
 												if (name.Contains("mighty"))
-										this.Attributes[GameAttribute.Resource_On_Hit] += 1f;
+										Attributes[GameAttribute.Resource_On_Hit] += 1f;
 								}
 								break;
 						}
@@ -1059,44 +1059,44 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						switch (passiveId)
 						{
 							case 155714: //Blood Vengeance
-								this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 25;
-								this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceBase + this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
+								Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 25;
+								Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
 								break;
 							case 210801: //Brooding
-								this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] += (this.Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
+								Attributes[GameAttribute.Hitpoints_Regen_Per_Second] += (Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
 								break;
 							case 155715: //Sharpshooter
-								this.World.BuffManager.RemoveBuffs(this, 155715);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.SharpshooterBuff());
+								World.BuffManager.RemoveBuffs(this, 155715);
+								World.BuffManager.AddBuff(this, this, new SharpshooterBuff());
 								break;
 							case 324770: //Awareness
-								this.World.BuffManager.RemoveBuffs(this, 324770);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.AwarenessBuff());
+								World.BuffManager.RemoveBuffs(this, 324770);
+								World.BuffManager.AddBuff(this, this, new AwarenessBuff());
 								break;
 							case 209734: //Archery
-								var weapon = this.Inventory.GetEquippedWeapon();
+								var weapon = Inventory.GetEquippedWeapon();
 								if (weapon != null)
 								{
 									string name = weapon.ItemDefinition.Name.ToLower();
 									if (name.Contains("xbow"))
-										this.Attributes[GameAttribute.Crit_Damage_Percent] += 0.5f;
+										Attributes[GameAttribute.Crit_Damage_Percent] += 0.5f;
 									if (name.Contains("handxbow"))
-										this.Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped] += 0.05f;
+										Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped] += 0.05f;
 									else
 										if (name.Contains("xbow"))
-										this.Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] += 1f;
+										Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] += 1f;
 									else
 											if (name.Contains("bow"))
 									{
-										this.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += 0.08f;
-										this.Attributes[GameAttribute.Damage_Percent_All_From_Skills] = 0.08f;
+										Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += 0.08f;
+										Attributes[GameAttribute.Damage_Percent_All_From_Skills] = 0.08f;
 									}
 								}
 								break;
 							case 155722: //Perfectionist
-								this.Attributes[GameAttribute.Armor_Item] *= 1.1f;
-								this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus] += 0.1f;
-								this.Attributes[GameAttribute.Resistance_Percent_All] += 0.1f;
+								Attributes[GameAttribute.Armor_Item] *= 1.1f;
+								Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus] += 0.1f;
+								Attributes[GameAttribute.Resistance_Percent_All] += 0.1f;
 								break;
 						}
 						break;
@@ -1104,51 +1104,51 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						switch (passiveId)
 						{
 							case 209029: //FleetFooted
-								this.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] += 0.1f;
+								Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] += 0.1f;
 								break;
 							case 209027: //ExaltedSoul
-								this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 100;
+								Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 100;
 								//this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceMax + this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
-								this.Attributes[GameAttribute.Resource_Regen_Per_Second, 3] += 2f;
+								Attributes[GameAttribute.Resource_Regen_Per_Second, 3] += 2f;
 								break;
 							case 209628: //SeizeTheInitiative
-								this.Attributes[GameAttribute.Armor_Item] += (this.Attributes[GameAttribute.Dexterity_Total] * 0.3f);
+								Attributes[GameAttribute.Armor_Item] += (Attributes[GameAttribute.Dexterity_Total] * 0.3f);
 								break;
 							case 209622: //SixthSense
-								this.Attributes[GameAttribute.Dodge_Chance_Bonus] += Math.Min(((this.Attributes[GameAttribute.Weapon_Crit_Chance] + this.Attributes[GameAttribute.Crit_Percent_Bonus_Capped] + this.Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped]) * 0.425f), 0.15f);
+								Attributes[GameAttribute.Dodge_Chance_Bonus] += Math.Min(((Attributes[GameAttribute.Weapon_Crit_Chance] + Attributes[GameAttribute.Crit_Percent_Bonus_Capped] + Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped]) * 0.425f), 0.15f);
 								break;
 							case 209104: //BeaconOfYtar
-								this.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All] += 0.20f;
+								Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All] += 0.20f;
 								break;
 							case 209656: //OneWithEverything
 								var maxResist = Math.Max(
-									Math.Max(Math.Max(this.Attributes[GameAttribute.Resistance, DamageType.Physical.AttributeKey], this.Attributes[GameAttribute.Resistance, DamageType.Cold.AttributeKey]), this.Attributes[GameAttribute.Resistance, DamageType.Fire.AttributeKey]),
-									Math.Max(Math.Max(this.Attributes[GameAttribute.Resistance, DamageType.Arcane.AttributeKey], this.Attributes[GameAttribute.Resistance, DamageType.Holy.AttributeKey]), Math.Max(this.Attributes[GameAttribute.Resistance, DamageType.Lightning.AttributeKey], this.Attributes[GameAttribute.Resistance, DamageType.Poison.AttributeKey]))
+									Math.Max(Math.Max(Attributes[GameAttribute.Resistance, DamageType.Physical.AttributeKey], Attributes[GameAttribute.Resistance, DamageType.Cold.AttributeKey]), Attributes[GameAttribute.Resistance, DamageType.Fire.AttributeKey]),
+									Math.Max(Math.Max(Attributes[GameAttribute.Resistance, DamageType.Arcane.AttributeKey], Attributes[GameAttribute.Resistance, DamageType.Holy.AttributeKey]), Math.Max(Attributes[GameAttribute.Resistance, DamageType.Lightning.AttributeKey], Attributes[GameAttribute.Resistance, DamageType.Poison.AttributeKey]))
 								);
 								foreach (var damageType in DamageType.AllTypes)
-									this.Attributes[GameAttribute.Resistance, damageType.AttributeKey] = maxResist;
+									Attributes[GameAttribute.Resistance, damageType.AttributeKey] = maxResist;
 								break;
 							case 209812: //TheGuardiansPath
 								try
 								{
-									var weapon = this.Inventory.GetEquippedWeapon();
-									if (weapon != null && this.Inventory.GetEquippedOffHand() != null)
-										this.Attributes[GameAttribute.Dodge_Chance_Bonus] += 0.15f;
+									var weapon = Inventory.GetEquippedWeapon();
+									if (weapon != null && Inventory.GetEquippedOffHand() != null)
+										Attributes[GameAttribute.Dodge_Chance_Bonus] += 0.15f;
 									else
 										if (weapon.ItemDefinition.Name.ToLower().Contains("2h"))
 									{
-										this.World.BuffManager.RemoveBuffs(this, 209812);
-										this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.GuardiansPathBuff());
+										World.BuffManager.RemoveBuffs(this, 209812);
+										World.BuffManager.AddBuff(this, this, new GuardiansPathBuff());
 									}
 								}
 								catch { }
 								break;
 							case 341559: //Momentum
-								this.World.BuffManager.RemoveBuffs(this, 341559);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.MomentumCheckBuff());
+								World.BuffManager.RemoveBuffs(this, 341559);
+								World.BuffManager.AddBuff(this, this, new MomentumCheckBuff());
 								break;
 							case 209813: //Provocation
-								this.Attributes[GameAttribute.CrowdControl_Reduction] += 0.25f;
+								Attributes[GameAttribute.CrowdControl_Reduction] += 0.25f;
 								break;
 						}
 						break;
@@ -1156,23 +1156,23 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						switch (passiveId)
 						{
 							case 208569: //SpiritualAttunement
-								this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += this.Attributes[GameAttribute.Resource_Max, (int)Toon.HeroTable.PrimaryResource] * 0.2f;
-								this.Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceRegen + ((Toon.HeroTable.PrimaryResourceBase + this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource]) / 100);
-								this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceBase + this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
+								Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += Attributes[GameAttribute.Resource_Max, (int)Toon.HeroTable.PrimaryResource] * 0.2f;
+								Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceRegen + ((Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource]) / 100);
+								Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
 								break;
 							case 340910: //PhysicalAttunement
-								this.World.BuffManager.RemoveBuffs(this, 340910);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.PhysicalAttunementBuff());
+								World.BuffManager.RemoveBuffs(this, 340910);
+								World.BuffManager.AddBuff(this, this, new PhysicalAttunementBuff());
 								break;
 							case 208568: //BloodRitual
-								this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] += (this.Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
+								Attributes[GameAttribute.Hitpoints_Regen_Per_Second] += (Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
 								break;
 							case 208639: //FierceLoyalty
-								foreach (var minionId in this.Followers.Keys)
+								foreach (var minionId in Followers.Keys)
 								{
-									var minion = this.World.GetActorByGlobalId(minionId);
+									var minion = World.GetActorByGlobalId(minionId);
 									if (minion != null)
-										minion.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = this.Inventory.GetItemBonus(GameAttribute.Hitpoints_Regen_Per_Second);
+										minion.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = Inventory.GetItemBonus(GameAttribute.Hitpoints_Regen_Per_Second);
 								}
 								break;
 						}
@@ -1181,19 +1181,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						switch (passiveId)
 						{
 							case 208541: //Galvanizing Ward
-								this.World.BuffManager.RemoveBuffs(this, 208541);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.GalvanizingBuff());
+								World.BuffManager.RemoveBuffs(this, 208541);
+								World.BuffManager.AddBuff(this, this, new GalvanizingBuff());
 								break;
 							case 208473: //Evocation
-								this.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All] += 0.20f;
+								Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All] += 0.20f;
 								break;
 							case 208472: //AstralPresence
-								this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 20;
-								this.Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceRegen + 2;
-								this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceBase + this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
+								Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 20;
+								Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceRegen + 2;
+								Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
 								break;
 							case 208468: //Blur (Wizard)
-								this.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += 0.17f;
+								Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += 0.17f;
 								break;
 						}
 						break;
@@ -1201,48 +1201,48 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						switch (passiveId)
 						{
 							case 286177: //HeavenlyStrength
-								this.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] -= 0.15f;
-								this.Attributes[GameAttribute.Allow_2H_And_Shield] = true;
+								Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] -= 0.15f;
+								Attributes[GameAttribute.Allow_2H_And_Shield] = true;
 								break;
 							case 310626: //Vigilant
-								this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] += (10 + 0.008f * (float)Math.Pow(this.Attributes[GameAttribute.Level], 3));
+								Attributes[GameAttribute.Hitpoints_Regen_Per_Second] += (10 + 0.008f * (float)Math.Pow(Attributes[GameAttribute.Level], 3));
 								break;
 							case 356147: //Righteousness
-								this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 30;
+								Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 30;
 								break;
 							case 310804: //HolyCause
-								this.Attributes[GameAttribute.Damage_Weapon_Min, 6] *= 1.1f;
+								Attributes[GameAttribute.Damage_Weapon_Min, 6] *= 1.1f;
 								break;
 							case 356176: //DivineFortress
-								this.World.BuffManager.RemoveBuffs(this, 356176);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.DivineFortressBuff());
+								World.BuffManager.RemoveBuffs(this, 356176);
+								World.BuffManager.AddBuff(this, this, new DivineFortressBuff());
 								break;
 							case 302500: //HoldYourGround
-								this.Attributes[GameAttribute.Cannot_Dodge] = true;
-								this.Attributes[GameAttribute.Block_Chance] += 0.15f;
+								Attributes[GameAttribute.Cannot_Dodge] = true;
+								Attributes[GameAttribute.Block_Chance] += 0.15f;
 								break;
 							case 310783: //IronMaiden
-								this.Attributes[GameAttribute.Thorns_Fixed, 0] += (87.17f * this.Attributes[GameAttribute.Level]);
+								Attributes[GameAttribute.Thorns_Fixed, 0] += (87.17f * Attributes[GameAttribute.Level]);
 								break;
 							case 311629: //Finery
-								this.World.BuffManager.RemoveBuffs(this, 311629);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.FineryBuff());
+								World.BuffManager.RemoveBuffs(this, 311629);
+								World.BuffManager.AddBuff(this, this, new FineryBuff());
 								break;
 							case 310640: //Insurmountable
-								this.World.BuffManager.RemoveBuffs(this, 310640);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.InsurmountableBuff());
+								World.BuffManager.RemoveBuffs(this, 310640);
+								World.BuffManager.AddBuff(this, this, new InsurmountableBuff());
 								break;
 							case 309830: //Indesctructible
-								this.World.BuffManager.RemoveBuffs(this, 309830);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.IndestructibleBuff());
+								World.BuffManager.RemoveBuffs(this, 309830);
+								World.BuffManager.AddBuff(this, this, new IndestructibleBuff());
 								break;
 							case 356173: //Renewal
-								this.World.BuffManager.RemoveBuffs(this, 356173);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.RenewalBuff());
+								World.BuffManager.RemoveBuffs(this, 356173);
+								World.BuffManager.AddBuff(this, this, new RenewalBuff());
 								break;
 							case 356052: //Towering Shield
-								this.World.BuffManager.RemoveBuffs(this, 356052);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.ToweringShieldBuff());
+								World.BuffManager.RemoveBuffs(this, 356052);
+								World.BuffManager.AddBuff(this, this, new ToweringShieldBuff());
 								break;
 						}
 						break;
@@ -1250,11 +1250,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						switch (passiveId)
 						{
 							case 470764: //HugeEssense
-								this.Attributes[GameAttribute.Resource_Max_Bonus, this.Attributes[GameAttribute.Resource_Type_Primary] - 1] += 40;
+								Attributes[GameAttribute.Resource_Max_Bonus, Attributes[GameAttribute.Resource_Type_Primary] - 1] += 40;
 								break;
 							case 470725:
-								this.World.BuffManager.RemoveBuffs(this, 470725);
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.OnlyOne());
+								World.BuffManager.RemoveBuffs(this, 470725);
+								World.BuffManager.AddBuff(this, this, new OnlyOne());
 								break;
 						}
 
@@ -1267,98 +1267,98 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void SetAttributesSkillSets()
 		{
 			// unlocking assigned skills
-			for (int i = 0; i < this.SkillSet.ActiveSkills.Length; i++)
+			for (int i = 0; i < SkillSet.ActiveSkills.Length; i++)
 			{
-				if (this.SkillSet.ActiveSkills[i].snoSkill != -1)
+				if (SkillSet.ActiveSkills[i].snoSkill != -1)
 				{
-					this.Attributes[GameAttribute.Skill, this.SkillSet.ActiveSkills[i].snoSkill] = 1;
+					Attributes[GameAttribute.Skill, SkillSet.ActiveSkills[i].snoSkill] = 1;
 					//scripted //this.Attributes[GameAttribute.Skill_Total, this.SkillSet.ActiveSkills[i].snoSkill] = 1;
 					// update rune attributes for new skill
-					this.Attributes[GameAttribute.Rune_A, this.SkillSet.ActiveSkills[i].snoSkill] = this.SkillSet.ActiveSkills[i].snoRune == 0 ? 1 : 0;
-					this.Attributes[GameAttribute.Rune_B, this.SkillSet.ActiveSkills[i].snoSkill] = this.SkillSet.ActiveSkills[i].snoRune == 1 ? 1 : 0;
-					this.Attributes[GameAttribute.Rune_C, this.SkillSet.ActiveSkills[i].snoSkill] = this.SkillSet.ActiveSkills[i].snoRune == 2 ? 1 : 0;
-					this.Attributes[GameAttribute.Rune_D, this.SkillSet.ActiveSkills[i].snoSkill] = this.SkillSet.ActiveSkills[i].snoRune == 3 ? 1 : 0;
-					this.Attributes[GameAttribute.Rune_E, this.SkillSet.ActiveSkills[i].snoSkill] = this.SkillSet.ActiveSkills[i].snoRune == 4 ? 1 : 0;
+					Attributes[GameAttribute.Rune_A, SkillSet.ActiveSkills[i].snoSkill] = SkillSet.ActiveSkills[i].snoRune == 0 ? 1 : 0;
+					Attributes[GameAttribute.Rune_B, SkillSet.ActiveSkills[i].snoSkill] = SkillSet.ActiveSkills[i].snoRune == 1 ? 1 : 0;
+					Attributes[GameAttribute.Rune_C, SkillSet.ActiveSkills[i].snoSkill] = SkillSet.ActiveSkills[i].snoRune == 2 ? 1 : 0;
+					Attributes[GameAttribute.Rune_D, SkillSet.ActiveSkills[i].snoSkill] = SkillSet.ActiveSkills[i].snoRune == 3 ? 1 : 0;
+					Attributes[GameAttribute.Rune_E, SkillSet.ActiveSkills[i].snoSkill] = SkillSet.ActiveSkills[i].snoRune == 4 ? 1 : 0;
 
-					PowerScript power = PowerLoader.CreateImplementationForPowerSNO(this.SkillSet.ActiveSkills[i].snoSkill);
+					PowerScript power = PowerLoader.CreateImplementationForPowerSNO(SkillSet.ActiveSkills[i].snoSkill);
 					if (power != null && power.EvalTag(PowerKeys.SynergyPower) != -1)
 					{
-						this.World.PowerManager.RunPower(this, power.EvalTag(PowerKeys.SynergyPower)); //SynergyPower buff
+						World.PowerManager.RunPower(this, power.EvalTag(PowerKeys.SynergyPower)); //SynergyPower buff
 					}
 				}
 			}
-			for (int i = 0; i < this.SkillSet.PassiveSkills.Length; ++i)
+			for (int i = 0; i < SkillSet.PassiveSkills.Length; ++i)
 			{
-				if (this.SkillSet.PassiveSkills[i] != -1)
+				if (SkillSet.PassiveSkills[i] != -1)
 				{
 					// switch on passive skill
-					this.Attributes[GameAttribute.Trait, this.SkillSet.PassiveSkills[i]] = 1;
-					this.Attributes[GameAttribute.Skill, this.SkillSet.PassiveSkills[i]] = 1;
+					Attributes[GameAttribute.Trait, SkillSet.PassiveSkills[i]] = 1;
+					Attributes[GameAttribute.Skill, SkillSet.PassiveSkills[i]] = 1;
 					//scripted //this.Attributes[GameAttribute.Skill_Total, this.SkillSet.PassiveSkills[i]] = 1;
 				}
 			}
-			if (this.Toon.Class == ToonClass.Monk)      //Setting power range override
+			if (Toon.Class == ToonClass.Monk)      //Setting power range override
 			{
-				this.Attributes[GameAttribute.PowerBonusAttackRadius, 0x000176C4] = 20f;     //Fists of Thunder
-				if (this.Attributes[GameAttribute.Rune_A, 0x00017B56] > 0)      //Way of the Hundred Fists -> Fists of Fury
-					this.Attributes[GameAttribute.PowerBonusAttackRadius, 0x00017B56] = 15f;
+				Attributes[GameAttribute.PowerBonusAttackRadius, 0x000176C4] = 20f;     //Fists of Thunder
+				if (Attributes[GameAttribute.Rune_A, 0x00017B56] > 0)      //Way of the Hundred Fists -> Fists of Fury
+					Attributes[GameAttribute.PowerBonusAttackRadius, 0x00017B56] = 15f;
 			}
 		}
 
 		public void SetAttributesOther()
 		{
 			//Bonus stats
-			this.Attributes[GameAttribute.Hit_Chance] = 1f;
+			Attributes[GameAttribute.Hit_Chance] = 1f;
 
-			this.Attributes[GameAttribute.Attacks_Per_Second] = 1.2f;
+			Attributes[GameAttribute.Attacks_Per_Second] = 1.2f;
 			//this.Attributes[GameAttribute.Attacks_Per_Second_Item] = 1.199219f;
-			this.Attributes[GameAttribute.Crit_Percent_Cap] = Toon.HeroTable.CritPercentCap;
+			Attributes[GameAttribute.Crit_Percent_Cap] = Toon.HeroTable.CritPercentCap;
 			//scripted //this.Attributes[GameAttribute.Casting_Speed_Total] = 1f;
-			this.Attributes[GameAttribute.Casting_Speed] = 1f;
+			Attributes[GameAttribute.Casting_Speed] = 1f;
 
 			//Basic stats
-			this.Attributes[GameAttribute.Level_Cap] = Program.MaxLevel;
-			this.Attributes[GameAttribute.Level] = this.Level;
-			this.Attributes[GameAttribute.Alt_Level] = this.ParagonLevel;
-			if (this.Level == Program.MaxLevel)
+			Attributes[GameAttribute.Level_Cap] = Program.MaxLevel;
+			Attributes[GameAttribute.Level] = Level;
+			Attributes[GameAttribute.Alt_Level] = ParagonLevel;
+			if (Level == Program.MaxLevel)
 			{
-				this.Attributes[GameAttribute.Alt_Experience_Next_Lo] = (int)(this.ExperienceNext % UInt32.MaxValue);
-				this.Attributes[GameAttribute.Alt_Experience_Next_Hi] = (int)(this.ExperienceNext / UInt32.MaxValue);
+				Attributes[GameAttribute.Alt_Experience_Next_Lo] = (int)(ExperienceNext % UInt32.MaxValue);
+				Attributes[GameAttribute.Alt_Experience_Next_Hi] = (int)(ExperienceNext / UInt32.MaxValue);
 			}
 			else
 			{
-				this.Attributes[GameAttribute.Experience_Next_Lo] = (int)(this.ExperienceNext % UInt32.MaxValue);
-				this.Attributes[GameAttribute.Experience_Next_Hi] = (int)(this.ExperienceNext / UInt32.MaxValue);
+				Attributes[GameAttribute.Experience_Next_Lo] = (int)(ExperienceNext % UInt32.MaxValue);
+				Attributes[GameAttribute.Experience_Next_Hi] = (int)(ExperienceNext / UInt32.MaxValue);
 				//this.Attributes[GameAttribute.Alt_Experience_Next] = 0;
 			}
 
-			this.Attributes[GameAttribute.Experience_Granted_Low] = 1000;
-			this.Attributes[GameAttribute.Armor] = Toon.HeroTable.Armor;
-			this.Attributes[GameAttribute.Damage_Min, 0] = Toon.HeroTable.Dmg;
+			Attributes[GameAttribute.Experience_Granted_Low] = 1000;
+			Attributes[GameAttribute.Armor] = Toon.HeroTable.Armor;
+			Attributes[GameAttribute.Damage_Min, 0] = Toon.HeroTable.Dmg;
 			//scripted //this.Attributes[GameAttribute.Armor_Total]
 
 
-			this.Attributes[GameAttribute.Strength] = (int)this.Strength;
-			this.Attributes[GameAttribute.Dexterity] = (int)this.Dexterity;
-			this.Attributes[GameAttribute.Vitality] = (int)this.Vitality;
-			this.Attributes[GameAttribute.Intelligence] = (int)this.Intelligence;
-			this.Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
+			Attributes[GameAttribute.Strength] = (int)Strength;
+			Attributes[GameAttribute.Dexterity] = (int)Dexterity;
+			Attributes[GameAttribute.Vitality] = (int)Vitality;
+			Attributes[GameAttribute.Intelligence] = (int)Intelligence;
+			Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
 
 			//Hitpoints have to be calculated after Vitality
-			this.Attributes[GameAttribute.Hitpoints_Factor_Level] = Toon.HeroTable.HitpointsFactorLevel;
-			this.Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f + Math.Max(this.Level - 35, 0);
+			Attributes[GameAttribute.Hitpoints_Factor_Level] = Toon.HeroTable.HitpointsFactorLevel;
+			Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f + Math.Max(Level - 35, 0);
 			//this.Attributes[GameAttribute.Hitpoints_Max] = 276f;
 
-			this.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = (int)1;
-			this.Attributes[GameAttribute.Hitpoints_Factor_Level] = (int)Toon.HeroTable.HitpointsFactorLevel;
-			this.Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f;// + Math.Max(this.Level - 35, 0);
-			this.Attributes[GameAttribute.Hitpoints_Max] = (int)Toon.HeroTable.HitpointsMax;
+			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = (int)1;
+			Attributes[GameAttribute.Hitpoints_Factor_Level] = (int)Toon.HeroTable.HitpointsFactorLevel;
+			Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f;// + Math.Max(this.Level - 35, 0);
+			Attributes[GameAttribute.Hitpoints_Max] = (int)Toon.HeroTable.HitpointsMax;
 
-			this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
 
-			this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;
+			Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;
 			//TestOutPutItemAttributes(); //Activate this only for finding item stats.
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes.BroadcastChangedIfRevealed();
 
 		}
 
@@ -1450,18 +1450,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 		public void JewelUpgrade(GameClient client, JewelUpgradeMessage message)
 		{
-			var Jewel = this.Inventory.GetItemByDynId(this, message.ActorID);
+			var Jewel = Inventory.GetItemByDynId(this, message.ActorID);
 			Jewel.Attributes[GameAttribute.Jewel_Rank]++;
 			Jewel.Attributes.BroadcastChangedIfRevealed();
-			this.Attributes[GameAttribute.Jewel_Upgrades_Used]++;
-			this.Attributes.BroadcastChangedIfRevealed();
-			if (this.Attributes[GameAttribute.Jewel_Upgrades_Used] == this.Attributes[GameAttribute.Jewel_Upgrades_Max] + this.Attributes[GameAttribute.Jewel_Upgrades_Bonus])
+			Attributes[GameAttribute.Jewel_Upgrades_Used]++;
+			Attributes.BroadcastChangedIfRevealed();
+			if (Attributes[GameAttribute.Jewel_Upgrades_Used] == Attributes[GameAttribute.Jewel_Upgrades_Max] + Attributes[GameAttribute.Jewel_Upgrades_Bonus])
 			{
-				this.Attributes[GameAttribute.Jewel_Upgrades_Max] = 0;
-				this.Attributes[GameAttribute.Jewel_Upgrades_Bonus] = 0;
-				this.Attributes[GameAttribute.Jewel_Upgrades_Used] = 0;
+				Attributes[GameAttribute.Jewel_Upgrades_Max] = 0;
+				Attributes[GameAttribute.Jewel_Upgrades_Bonus] = 0;
+				Attributes[GameAttribute.Jewel_Upgrades_Used] = 0;
 			}
-			this.InGameClient.SendMessage(new JewelUpgradeResultsMessage()
+			InGameClient.SendMessage(new JewelUpgradeResultsMessage()
 			{
 				ActorID = message.ActorID,
 				Field1 = 1
@@ -1471,28 +1471,28 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			Hireling hireling = null;
 			DiIiS_NA.Core.MPQ.FileFormats.Actor Data = null;
-			if (this.World.Game.Players.Count > 1) return;
+			if (World.Game.Players.Count > 1) return;
 
 
-			switch (this.InGameClient.Game.CurrentQuest)
+			switch (InGameClient.Game.CurrentQuest)
 			{
 				case 72061:
 					//Templar
 					Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][52693].Data;
-					hireling = new Templar(this.World, ActorSno._hireling_templar, Data.TagMap);
+					hireling = new Templar(World, ActorSno._hireling_templar, Data.TagMap);
 					hireling.GBHandle.GBID = StringHashHelper.HashItemName("Templar");
 
 					break;
 				case 72738:
 					//Scoundrel
 					Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][52694].Data;
-					hireling = new Templar(this.World, ActorSno._hireling_scoundrel, Data.TagMap);
+					hireling = new Templar(World, ActorSno._hireling_scoundrel, Data.TagMap);
 					hireling.GBHandle.GBID = StringHashHelper.HashItemName("Scoundrel");
 					break;
 				case 0:
 					//Enchantress
 					Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][4482].Data;
-					hireling = new Templar(this.World, ActorSno._hireling_enchantress, Data.TagMap);
+					hireling = new Templar(World, ActorSno._hireling_enchantress, Data.TagMap);
 					hireling.GBHandle.GBID = StringHashHelper.HashItemName("Enchantress");
 					break;
 
@@ -1500,16 +1500,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			hireling.SetUpAttributes(this);
 			hireling.GBHandle.Type = 4;
-			hireling.Attributes[GameAttribute.Pet_Creator] = this.PlayerIndex + 1;
+			hireling.Attributes[GameAttribute.Pet_Creator] = PlayerIndex + 1;
 			hireling.Attributes[GameAttribute.Pet_Type] = 1;
-			hireling.Attributes[GameAttribute.Pet_Owner] = this.PlayerIndex + 1;
+			hireling.Attributes[GameAttribute.Pet_Owner] = PlayerIndex + 1;
 			hireling.Attributes[GameAttribute.Untargetable] = false;
 			hireling.Attributes[GameAttribute.NPC_Is_Escorting] = true;
 
-			hireling.EnterWorld(RandomDirection(this.Position, 3, 10)); //Random
+			hireling.EnterWorld(RandomDirection(Position, 3, 10)); //Random
 			hireling.Brain = new HirelingBrain(hireling, this);
-			this.ActiveHireling = hireling;
-			this.SelectedNPC = null;
+			ActiveHireling = hireling;
+			SelectedNPC = null;
 		}
 
 		public static Vector3D RandomDirection(Vector3D position, float minRadius, float maxRadius)
@@ -1527,18 +1527,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 		public void DeactivateCamera(GameClient client, DeActivateCameraCutsceneMode message)
 		{
-			this.InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });
-			this.InGameClient.SendMessage(new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
+			InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });
+			InGameClient.SendMessage(new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
 			//this.InGameClient.SendMessage(new ActivateCameraCutsceneMode() { Activate = true });
 		}
 		public void AcceptBossEncounter()
 		{
-			this.ArtisanInteraction = "QueueAccepted";
-			this.InGameClient.Game.AcceptBossEncounter();
+			ArtisanInteraction = "QueueAccepted";
+			InGameClient.Game.AcceptBossEncounter();
 		}
 		public void DeclineBossEncounter()
 		{
-			this.InGameClient.Game.CurrentEncounter.activated = false;
+			InGameClient.Game.CurrentEncounter.activated = false;
 		}
 		public void TransumteItemsPlayer(GameClient client, TransmuteItemsMessage message)
 		{
@@ -1558,7 +1558,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 			foreach (var it in message.annItems)
 			{
-				var a = this.Inventory.GetItemByDynId(this, (uint)it);
+				var a = Inventory.GetItemByDynId(this, (uint)it);
 			}
 
 			Item ItemPortalToCows = null;
@@ -1576,7 +1576,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			if (ItemPortalToCows != null)
 			{
-				this.InGameClient.SendMessage(new TransmuteResultsMessage()
+				InGameClient.SendMessage(new TransmuteResultsMessage()
 				{
 					annItem = -1,
 					Type = -1,
@@ -1585,12 +1585,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					FakeItemStackCount = -1
 				});
 
-				this.Inventory.DestroyInventoryItem(ItemPortalToCows);
-				this.World.SpawnMonster(ActorSno._p2_totallynotacowlevel_portal, new Vector3D(this.Position.X + 5, this.Position.Y + 5, this.Position.Z));
+				Inventory.DestroyInventoryItem(ItemPortalToCows);
+				World.SpawnMonster(ActorSno._p2_totallynotacowlevel_portal, new Vector3D(Position.X + 5, Position.Y + 5, Position.Z));
 			}
 			else
 			{
-				this.InGameClient.SendMessage(new TransmuteResultsMessage()
+				InGameClient.SendMessage(new TransmuteResultsMessage()
 				{
 					annItem = (int)Items[0].DynamicID(this),
 					Type = 0,
@@ -1598,8 +1598,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					GBIDPower = (int)Items[0].ItemDefinition.Hash,
 					FakeItemStackCount = -1
 				});
-				this.GrantCriteria(74987245494264);
-				this.GrantCriteria(74987258962046);
+				GrantCriteria(74987245494264);
+				GrantCriteria(74987258962046);
 			}
 		}
 		private bool WaitToSpawn(TickTimer timer)
@@ -1647,23 +1647,23 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					Logger.Debug("Вызов нефалемского портала (Обычный)");
 					Activated = false;
 
-					foreach (var oldp in this.World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }
+					foreach (var oldp in World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }
 
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
 					//map = 288823;
-					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //Мир
-					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
-					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Точка входа
-					this.InGameClient.Game.WorldOfPortalNephalem = map;
+					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //World
+					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Zone
+					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Entry-Pointа
+					InGameClient.Game.WorldOfPortalNephalem = map;
 
 					while (true)
 					{
 						map = Maps[RandomHelper.Next(0, Maps.Length)];
-						if (map != this.InGameClient.Game.WorldOfPortalNephalem) break;
+						if (map != InGameClient.Game.WorldOfPortalNephalem) break;
 					}
-					this.InGameClient.Game.WorldOfPortalNephalemSec = map;
+					InGameClient.Game.WorldOfPortalNephalemSec = map;
 
-					NephalemPWorld = this.InGameClient.Game.GetWorld(this.InGameClient.Game.WorldOfPortalNephalem);
+					NephalemPWorld = InGameClient.Game.GetWorld(InGameClient.Game.WorldOfPortalNephalem);
 
 					int ExitSceneSNO = -1;
 					foreach (var scene in NephalemPWorld.Scenes.Values)
@@ -1681,10 +1681,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								else if (!ExitSetted)
 								{
 									p.Destination.DestLevelAreaSNO = 288684;
-									p.Destination.WorldSNO = (int)this.InGameClient.Game.WorldOfPortalNephalemSec;
+									p.Destination.WorldSNO = (int)InGameClient.Game.WorldOfPortalNephalemSec;
 									ExitSetted = true;
 
-									var NephalemPWorldS2 = this.InGameClient.Game.GetWorld(this.InGameClient.Game.WorldOfPortalNephalemSec);
+									var NephalemPWorldS2 = InGameClient.Game.GetWorld(InGameClient.Game.WorldOfPortalNephalemSec);
 									foreach (var atr in NephalemPWorldS2.Actors.Values)
 										if (atr is Portal)
 										{
@@ -1715,7 +1715,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					#region Активация
 					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
-					NStone.PlayAnimation(5, NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+					NStone.PlayAnimation(5, NStone.AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 					NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -1731,16 +1731,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						ActorID = NStone.DynamicID(plr),
 						CollFlags = 0
 					}, NStone);
-					portal = new Portal(this.World, ActorSno._x1_openworld_lootrunportal, NewTagMap);
+					portal = new Portal(World, ActorSno._x1_openworld_lootrunportal, NewTagMap);
 
-					TickTimer Timeout = new SecondsTickTimer(this.World.Game, 3.5f);
+					TickTimer Timeout = new SecondsTickTimer(World.Game, 3.5f);
 					var Boom = System.Threading.Tasks.Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
 					Boom.ContinueWith(delegate
 					{
 						portal.EnterWorld(NStone.Position);
 						//Quest - 382695 - Великий Нефалемский
 						//Quest - 337492 - Просто Нефалемский
-						foreach (var plr in this.InGameClient.Game.Players.Values)
+						foreach (var plr in InGameClient.Game.Players.Values)
 						{
 							plr.InGameClient.SendMessage(new QuestUpdateMessage()
 							{
@@ -1778,9 +1778,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								{
 									GameSyncedFlags = 6,
 									Act = 3000,       //act id
-									InitialMonsterLevel = this.InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
+									InitialMonsterLevel = InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
 									MonsterLevel = 0x64E4425E, //MonsterLevel
-									RandomWeatherSeed = this.InGameClient.Game.WeatherSeed, //RandomWeatherSeed
+									RandomWeatherSeed = InGameClient.Game.WeatherSeed, //RandomWeatherSeed
 									OpenWorldMode = -1, //OpenWorldMode
 									OpenWorldModeAct = -1, //OpenWorldModeAct
 									OpenWorldModeParam = -1, //OpenWorldModeParam
@@ -1819,23 +1819,23 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				#endregion
 				#region Великий портал
 				default:
-					this.InGameClient.Game.NephalemGreaterLevel = message.Field0;
+					InGameClient.Game.NephalemGreaterLevel = message.Field0;
 
-					Logger.Debug("Вызов нефалемского портала (Уровень: {0})", message.Field0);
+					Logger.Debug("Calling Nephalem Portal (Level: {0})", message.Field0);
 					Activated = false;
-					foreach (var oldp in this.World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }
+					foreach (var oldp in World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }
 
-					this.InGameClient.Game.ActiveNephalemPortal = true;
-					this.InGameClient.Game.NephalemGreater = true;
+					InGameClient.Game.ActiveNephalemPortal = true;
+					InGameClient.Game.NephalemGreater = true;
 					//disable banner while greater is active enable once boss is killed or portal is closed /advocaite
-					this.Attributes[GameAttributeB.Banner_Usable] = false;
+					Attributes[GameAttribute.Banner_Usable] = false;
 					map = Maps[RandomHelper.Next(0, Maps.Length)];
-					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //Мир
-					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Зона
-					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Точка входа
-					this.InGameClient.Game.WorldOfPortalNephalem = map;
+					NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //World
+					NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Zone
+					NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Entry-Pointа
+					InGameClient.Game.WorldOfPortalNephalem = map;
 
-					NephalemPWorld = this.InGameClient.Game.GetWorld(map);
+					NephalemPWorld = InGameClient.Game.GetWorld(map);
 					foreach (var actor in NephalemPWorld.Actors.Values)
 						if (actor is Portal)
 						{
@@ -1852,7 +1852,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							actor.Destroy();
 					#region Активация
 					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
-					NStone.PlayAnimation(5, NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+					NStone.PlayAnimation(5, NStone.AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 					NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -1868,9 +1868,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						ActorID = NStone.DynamicID(plr),
 						CollFlags = 0
 					}, NStone);
-					portal = new Portal(this.World, ActorSno._x1_openworld_tiered_rifts_portal, NewTagMap);
+					portal = new Portal(World, ActorSno._x1_openworld_tiered_rifts_portal, NewTagMap);
 
-					TickTimer AltTimeout = new SecondsTickTimer(this.World.Game, 3.5f);
+					TickTimer AltTimeout = new SecondsTickTimer(World.Game, 3.5f);
 					var AltBoom = System.Threading.Tasks.Task<bool>.Factory.StartNew(() => WaitToSpawn(AltTimeout));
 					AltBoom.ContinueWith(delegate
 					{
@@ -1880,7 +1880,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					//this.ChangeWorld(NephalemPWorld, NephalemPWorld.GetStartingPointById(172).Position);
 
-					foreach (var plr in this.InGameClient.Game.Players.Values)
+					foreach (var plr in InGameClient.Game.Players.Values)
 						{
 							plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.RiftStartedMessage));
 							plr.InGameClient.SendMessage(new QuestUpdateMessage()
@@ -1913,9 +1913,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								{
 									GameSyncedFlags = 6,
 									Act = 3000,       //act id
-								InitialMonsterLevel = this.InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
+								InitialMonsterLevel = InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
 								MonsterLevel = 0x64E4425E, //MonsterLevel
-								RandomWeatherSeed = this.InGameClient.Game.WeatherSeed, //RandomWeatherSeed
+								RandomWeatherSeed = InGameClient.Game.WeatherSeed, //RandomWeatherSeed
 								OpenWorldMode = -1, //OpenWorldMode
 								OpenWorldModeAct = -1, //OpenWorldModeAct
 								OpenWorldModeParam = -1, //OpenWorldModeParam
@@ -1982,14 +1982,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			// does not have to see them over and over...
 			int index = ItemGenerator.Tutorials.IndexOf(message.SNOTutorial);
 			if (index == -1) return;
-			var seenTutorials = this.Toon.GameAccount.DBGameAccount.SeenTutorials;
+			var seenTutorials = Toon.GameAccount.DBGameAccount.SeenTutorials;
 			if(seenTutorials.Length <= 34)
 				seenTutorials = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 			seenTutorials[index / 8] |= (byte)(1 << (index % 8));
 
-			lock (this.Toon.GameAccount.DBGameAccount)
+			lock (Toon.GameAccount.DBGameAccount)
 			{
-				var dbGAcc = this.Toon.GameAccount.DBGameAccount;
+				var dbGAcc = Toon.GameAccount.DBGameAccount;
 				dbGAcc.SeenTutorials = seenTutorials;
 				DBSessions.SessionUpdate(dbGAcc);
 			}
@@ -1998,52 +1998,52 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnConfirm(GameClient client, AcceptConfirmMessage message)
 		{
-			if (this.ConfirmationResult != null)
+			if (ConfirmationResult != null)
 			{
-				this.ConfirmationResult.Invoke();
-				this.ConfirmationResult = null;
+				ConfirmationResult.Invoke();
+				ConfirmationResult = null;
 			}
 		}
 
 		private void OnSpendParagonPointsMessage(GameClient client, SpendParagonPointsMessage message)
 		{
-			var bonus = ItemGenerator.GetParagonBonusTable(this.Toon.Class).Where(b => b.Hash == message.BonusGBID).FirstOrDefault();
+			var bonus = ItemGenerator.GetParagonBonusTable(Toon.Class).Where(b => b.Hash == message.BonusGBID).FirstOrDefault();
 
             if (bonus == null) return;
-			if (message.Amount > this.Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category]) return;
+			if (message.Amount > Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category]) return;
 			//if (this.ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] + (byte)message.Amount > bonus.Limit) return;
 
 			// message.Amount have the value send to add on attr of Paragon tabs.
-			this.ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] += (ushort)message.Amount;
+			ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] += (ushort)message.Amount;
 
-			var dbToon = this.Toon.DBToon;
-			dbToon.ParagonBonuses = this.ParagonBonuses;
-			this.World.Game.GameDBSession.SessionUpdate(dbToon);
+			var dbToon = Toon.DBToon;
+			dbToon.ParagonBonuses = ParagonBonuses;
+			World.Game.GameDBSession.SessionUpdate(dbToon);
 
-			this.SetAttributesByItems();
-			this.SetAttributesByItemProcs();
-			this.SetAttributesByGems();
-			this.SetAttributesByItemSets();
-			this.SetAttributesByPassives();
-			this.SetAttributesByParagon();
-			this.Attributes.BroadcastChangedIfRevealed();
+			SetAttributesByItems();
+			SetAttributesByItemProcs();
+			SetAttributesByGems();
+			SetAttributesByItemSets();
+			SetAttributesByPassives();
+			SetAttributesByParagon();
+			Attributes.BroadcastChangedIfRevealed();
 			UpdatePercentageHP(PercHPbeforeChange);
 
 		}
 		private void OnResetParagonPointsMessage(GameClient client, ResetParagonPointsMessage message)
 		{
-			this.ParagonBonuses = new ushort[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-			var dbToon = this.Toon.DBToon;
-			dbToon.ParagonBonuses = this.ParagonBonuses;
-			this.World.Game.GameDBSession.SessionUpdate(dbToon);
+			ParagonBonuses = new ushort[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			var dbToon = Toon.DBToon;
+			dbToon.ParagonBonuses = ParagonBonuses;
+			World.Game.GameDBSession.SessionUpdate(dbToon);
 
-			this.SetAttributesByItems();
-			this.SetAttributesByItemProcs();
-			this.SetAttributesByGems();
-			this.SetAttributesByItemSets();
-			this.SetAttributesByPassives();
-			this.SetAttributesByParagon();
-			this.Attributes.BroadcastChangedIfRevealed();
+			SetAttributesByItems();
+			SetAttributesByItemProcs();
+			SetAttributesByGems();
+			SetAttributesByItemSets();
+			SetAttributesByPassives();
+			SetAttributesByParagon();
+			Attributes.BroadcastChangedIfRevealed();
 			UpdatePercentageHP(PercHPbeforeChange);
 
 		}
@@ -2055,23 +2055,23 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnMailRetrieve(GameClient client, MailRetrieveMessage message)
 		{
-			var dbMail = this.World.Game.GameDBSession.SessionGet<DBMail>((ulong)message.MailId);
-			if (dbMail == null || dbMail.DBToon.Id != this.Toon.PersistentID) return;
+			var dbMail = World.Game.GameDBSession.SessionGet<DBMail>((ulong)message.MailId);
+			if (dbMail == null || dbMail.DBToon.Id != Toon.PersistentID) return;
 			dbMail.Claimed = true;
-			this.World.Game.GameDBSession.SessionUpdate(dbMail);
+			World.Game.GameDBSession.SessionUpdate(dbMail);
 
 			if (dbMail.ItemGBID != -1)
-				this.Inventory.PickUp(ItemGenerator.CookFromDefinition(this.World, ItemGenerator.GetItemDefinition(dbMail.ItemGBID), -1, true));
+				Inventory.PickUp(ItemGenerator.CookFromDefinition(World, ItemGenerator.GetItemDefinition(dbMail.ItemGBID), -1, true));
 
-			this.LoadMailData();
+			LoadMailData();
 		}
 
 		private void OnStashIconsAssign(GameClient client, StashIconStateAssignMessage message)
 		{
 			if (message.StashIcons.Length != 4) return;
-			lock (this.Toon.GameAccount.DBGameAccount)
+			lock (Toon.GameAccount.DBGameAccount)
 			{
-				var dbGAcc = this.Toon.GameAccount.DBGameAccount;
+				var dbGAcc = Toon.GameAccount.DBGameAccount;
 				dbGAcc.StashIcons = message.StashIcons;
 				DBSessions.SessionUpdate(dbGAcc);
 			}
@@ -2080,7 +2080,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void PlayCutscene(int cutsceneId)
 		{
-			this.InGameClient.SendMessage(new PlayCutsceneMessage()
+			InGameClient.SendMessage(new PlayCutsceneMessage()
 			{
 				Index = cutsceneId
 			});
@@ -2088,67 +2088,67 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnTranslateFacing(GameClient client, PlayerTranslateFacingMessage message)
 		{
-			this.SetFacingRotation(message.Angle);
+			SetFacingRotation(message.Angle);
 
 			World.BroadcastExclusive(plr => new ACDTranslateFacingMessage
 			{
-				ActorId = this.DynamicID(plr),
+				ActorId = DynamicID(plr),
 				Angle = message.Angle,
 				TurnImmediately = message.TurnImmediately
 			}, this);
 		}
 		private void OnAssignActiveSkill(GameClient client, AssignSkillMessage message)
 		{
-			var old_skills = this.SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
+			var old_skills = SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
 			foreach (var skill in old_skills)
 			{
 				PowerScript power = PowerLoader.CreateImplementationForPowerSNO(skill);
 				if (power != null && power.EvalTag(PowerKeys.SynergyPower) != -1)
 				{
-					this.World.BuffManager.RemoveBuffs(this, power.EvalTag(PowerKeys.SynergyPower));
+					World.BuffManager.RemoveBuffs(this, power.EvalTag(PowerKeys.SynergyPower));
 				}
 			}
 
-			var oldSNOSkill = this.SkillSet.ActiveSkills[message.SkillIndex].snoSkill; // find replaced skills SNO.
+			var oldSNOSkill = SkillSet.ActiveSkills[message.SkillIndex].snoSkill; // find replaced skills SNO.
 			if (oldSNOSkill != -1)
 			{
-				this.Attributes[GameAttribute.Skill, oldSNOSkill] = 0;
-				this.World.BuffManager.RemoveBuffs(this, oldSNOSkill);
+				Attributes[GameAttribute.Skill, oldSNOSkill] = 0;
+				World.BuffManager.RemoveBuffs(this, oldSNOSkill);
 
 				var rem = new List<uint>();
-				foreach (var fol in this.Followers.Where(f => this.World.GetActorByGlobalId(f.Key) == null || this.World.GetActorByGlobalId(f.Key).Attributes[GameAttribute.Summoned_By_SNO] == oldSNOSkill))
+				foreach (var fol in Followers.Where(f => World.GetActorByGlobalId(f.Key) == null || World.GetActorByGlobalId(f.Key).Attributes[GameAttribute.Summoned_By_SNO] == oldSNOSkill))
 					rem.Add(fol.Key);
 				foreach (var rm in rem)
-					this.DestroyFollowerById(rm);
+					DestroyFollowerById(rm);
 			}
 
-			this.Attributes[GameAttribute.Skill, message.SNOSkill] = 1;
+			Attributes[GameAttribute.Skill, message.SNOSkill] = 1;
 			//scripted //this.Attributes[GameAttribute.Skill_Total, message.SNOSkill] = 1;
-			this.SkillSet.ActiveSkills[message.SkillIndex].snoSkill = message.SNOSkill;
-			this.SkillSet.ActiveSkills[message.SkillIndex].snoRune = message.RuneIndex;
-			this.SkillSet.SwitchUpdateSkills(message.SkillIndex, message.SNOSkill, message.RuneIndex, this.Toon);
-			this.SetAttributesSkillSets();
+			SkillSet.ActiveSkills[message.SkillIndex].snoSkill = message.SNOSkill;
+			SkillSet.ActiveSkills[message.SkillIndex].snoRune = message.RuneIndex;
+			SkillSet.SwitchUpdateSkills(message.SkillIndex, message.SNOSkill, message.RuneIndex, Toon);
+			SetAttributesSkillSets();
 
-			this.Attributes.BroadcastChangedIfRevealed();
-			this.UpdateHeroState();
+			Attributes.BroadcastChangedIfRevealed();
+			UpdateHeroState();
 
-			var cooldownskill = this.SkillSet.ActiveSkills.GetValue(message.SkillIndex);
+			var cooldownskill = SkillSet.ActiveSkills.GetValue(message.SkillIndex);
 
-			if (this.SkillSet.HasSkill(460757))
-				foreach (var skill in this.SkillSet.ActiveSkills)
+			if (SkillSet.HasSkill(460757))
+				foreach (var skill in SkillSet.ActiveSkills)
 					if (skill.snoSkill == 460757)
 						if (skill.snoRune == 3)
-							this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.P6_Necro_Devour_Aura());
+							World.BuffManager.AddBuff(this, this, new P6_Necro_Devour_Aura());
 						else
-							this.World.BuffManager.RemoveBuffs(this, 474325);
+							World.BuffManager.RemoveBuffs(this, 474325);
 
-			if (this.SkillSet.HasSkill(460870))
-				foreach (var skill in this.SkillSet.ActiveSkills)
+			if (SkillSet.HasSkill(460870))
+				foreach (var skill in SkillSet.ActiveSkills)
 					if (skill.snoSkill == 460870)
 						if (skill.snoRune == 4)
-							this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.P6_Necro_Frailty_Aura());
+							World.BuffManager.AddBuff(this, this, new P6_Necro_Frailty_Aura());
 						else
-							this.World.BuffManager.RemoveBuffs(this, 473992);
+							World.BuffManager.RemoveBuffs(this, 473992);
 
 
 			//_StartSkillCooldown((cooldownskill as ActiveSkillSavedData).snoSkill, SkillChangeCooldownLength);
@@ -2157,70 +2157,70 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			for (int i = 0; i < message.SNOPowers.Length; ++i)
 			{
-				int oldSNOSkill = this.SkillSet.PassiveSkills[i]; // find replaced skills SNO.
+				int oldSNOSkill = SkillSet.PassiveSkills[i]; // find replaced skills SNO.
 				if (message.SNOPowers[i] != oldSNOSkill)
 				{
 					if (oldSNOSkill != -1)
 					{
-						this.World.BuffManager.RemoveAllBuffs(this);
+						World.BuffManager.RemoveAllBuffs(this);
 						// switch off old passive skill
-						this.Attributes[GameAttribute.Trait, oldSNOSkill] = 0;
-						this.Attributes[GameAttribute.Skill, oldSNOSkill] = 0;
+						Attributes[GameAttribute.Trait, oldSNOSkill] = 0;
+						Attributes[GameAttribute.Skill, oldSNOSkill] = 0;
 						//scripted //this.Attributes[GameAttribute.Skill_Total, oldSNOSkill] = 0;
 					}
 
 					if (message.SNOPowers[i] != -1)
 					{
 						// switch on new passive skill
-						this.Attributes[GameAttribute.Trait, message.SNOPowers[i]] = 1;
-						this.Attributes[GameAttribute.Skill, message.SNOPowers[i]] = 1;
+						Attributes[GameAttribute.Trait, message.SNOPowers[i]] = 1;
+						Attributes[GameAttribute.Skill, message.SNOPowers[i]] = 1;
 						//scripted //this.Attributes[GameAttribute.Skill_Total, message.SNOPowers[i]] = 1;
 					}
 
-					this.SkillSet.PassiveSkills[i] = message.SNOPowers[i];
+					SkillSet.PassiveSkills[i] = message.SNOPowers[i];
 				}
 			}
 
-			this.SkillSet.UpdatePassiveSkills(this.Toon);
+			SkillSet.UpdatePassiveSkills(Toon);
 
-			var skills = this.SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
+			var skills = SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
 			foreach (var skill in skills)
 				_StartSkillCooldown(skill, SkillChangeCooldownLength);
 
-			this.SetAttributesByItems();
-			this.SetAttributesByGems();
-			this.SetAttributesByItemSets();
-			this.SetAttributesByPassives();
-			this.SetAttributesByParagon();
-			this.SetAttributesSkillSets();
-			this.Inventory.CheckWeapons();      //Handles removal of Heavenly Strength
-			this.Attributes.BroadcastChangedIfRevealed();
-			this.UpdateHeroState();
+			SetAttributesByItems();
+			SetAttributesByGems();
+			SetAttributesByItemSets();
+			SetAttributesByPassives();
+			SetAttributesByParagon();
+			SetAttributesSkillSets();
+			Inventory.CheckWeapons();      //Handles removal of Heavenly Strength
+			Attributes.BroadcastChangedIfRevealed();
+			UpdateHeroState();
 			UpdatePercentageHP(PercHPbeforeChange);
 
 		}
 		private void OnUnassignActiveSkill(GameClient client, UnassignSkillMessage message)
 		{
-			var oldSNOSkill = this.SkillSet.ActiveSkills[message.SkillIndex].snoSkill; // find replaced skills SNO.
+			var oldSNOSkill = SkillSet.ActiveSkills[message.SkillIndex].snoSkill; // find replaced skills SNO.
 			if (oldSNOSkill != -1)
 			{
-				this.Attributes[GameAttribute.Skill, oldSNOSkill] = 0;
-				this.World.BuffManager.RemoveBuffs(this, oldSNOSkill);
+				Attributes[GameAttribute.Skill, oldSNOSkill] = 0;
+				World.BuffManager.RemoveBuffs(this, oldSNOSkill);
 
 				var rem = new List<uint>();
-				foreach (var fol in this.Followers.Where(f => this.World.GetActorByGlobalId(f.Key).Attributes[GameAttribute.Summoned_By_SNO] == oldSNOSkill))
+				foreach (var fol in Followers.Where(f => World.GetActorByGlobalId(f.Key).Attributes[GameAttribute.Summoned_By_SNO] == oldSNOSkill))
 					rem.Add(fol.Key);
 				foreach (var rm in rem)
-					this.DestroyFollowerById(rm);
+					DestroyFollowerById(rm);
 			}
 
-			this.SkillSet.ActiveSkills[message.SkillIndex].snoSkill = -1;
-			this.SkillSet.ActiveSkills[message.SkillIndex].snoRune = -1;
-			this.SkillSet.SwitchUpdateSkills(message.SkillIndex, -1, -1, this.Toon);
-			this.SetAttributesSkillSets();
+			SkillSet.ActiveSkills[message.SkillIndex].snoSkill = -1;
+			SkillSet.ActiveSkills[message.SkillIndex].snoRune = -1;
+			SkillSet.SwitchUpdateSkills(message.SkillIndex, -1, -1, Toon);
+			SetAttributesSkillSets();
 
-			this.Attributes.BroadcastChangedIfRevealed();
-			this.UpdateHeroState();
+			Attributes.BroadcastChangedIfRevealed();
+			UpdateHeroState();
 		}
 		public void SetNewAttributes()
 		{
@@ -2228,10 +2228,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			//this.Attributes[GameAttribute.Attacks_Per_Second_Bonus] = 1.0f;
 			//this.Attributes[GameAttribute.Gold] = 1;
 			//[GameAttribute.Damage_Weapon_Min_Total, 0]
-			this.Attributes[GameAttribute.Attacks_Per_Second_Percent] = 0;
-			this.Attributes[GameAttribute.Attacks_Per_Second_Percent_Uncapped] = 0;
-			this.Attributes[GameAttribute.Attacks_Per_Second_Percent_Reduction] = 0;
-			this.Attributes[GameAttribute.Attacks_Per_Second_Percent_Cap] = 0;
+			Attributes[GameAttribute.Attacks_Per_Second_Percent] = 0;
+			Attributes[GameAttribute.Attacks_Per_Second_Percent_Uncapped] = 0;
+			Attributes[GameAttribute.Attacks_Per_Second_Percent_Reduction] = 0;
+			Attributes[GameAttribute.Attacks_Per_Second_Percent_Cap] = 0;
 			//this.Attributes[GameAttribute.Gold_PickUp_Radius] = 5f;
 			/*
 			this.Attributes[GameAttribute.Experience_Bonus_Percent_Anniversary_Buff] = 100;
@@ -2253,8 +2253,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 		private void _StartSkillCooldown(int snoPower, float seconds)
 		{
-			this.World.BuffManager.AddBuff(this, this,
-				new PowerSystem.Implementations.CooldownBuff(snoPower, seconds));
+			World.BuffManager.AddBuff(this, this,
+				new CooldownBuff(snoPower, seconds));
 		}
 
 		//private void OnPlayerChangeHotbarButtonMessage(GameClient client, PlayerChangeHotbarButtonMessage message)
@@ -2265,17 +2265,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		private void OnObjectTargeted(GameClient client, TargetMessage message)
 		{
 			if (message.TargetID != 0xffffffff)
-				message.TargetID = this.World.GetGlobalId(this, message.TargetID);
+				message.TargetID = World.GetGlobalId(this, message.TargetID);
 
-			if (this.Toon.Class == ToonClass.Crusader)
-				if (this.World.BuffManager.HasBuff<CrusaderSteedCharge.PonyBuff>(this))     //Crusader -> cancel Steed Charge
-					this.World.BuffManager.RemoveBuffs(this, 243853);
+			if (Toon.Class == ToonClass.Crusader)
+				if (World.BuffManager.HasBuff<CrusaderSteedCharge.PonyBuff>(this))     //Crusader -> cancel Steed Charge
+					World.BuffManager.RemoveBuffs(this, 243853);
 
-			bool powerHandled = this.World.PowerManager.RunPower(this, message.PowerSNO, message.TargetID, message.Place.Position, message);
+			bool powerHandled = World.PowerManager.RunPower(this, message.PowerSNO, message.TargetID, message.Place.Position, message);
 
 			if (!powerHandled)
 			{
-				Actor actor = this.World.GetActorByGlobalId(message.TargetID);
+				Actor actor = World.GetActorByGlobalId(message.TargetID);
 				if (actor == null) return;
 
 
@@ -2287,14 +2287,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 #endif
 				if ((actor.GBHandle.Type == 1) && (actor.Attributes[GameAttribute.TeamID] == 10))
 				{
-					this.ExpBonusData.MonsterAttacked(this.InGameClient.Game.TickCounter);
+					ExpBonusData.MonsterAttacked(InGameClient.Game.TickCounter);
 				}
 				actor.OnTargeted(this, message);
 
 
 			}
 
-			this.ExpBonusData.Check(2);
+			ExpBonusData.Check(2);
 		}
 
 		private int _hackCounter = 0;
@@ -2312,8 +2312,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnPlayerMovement(GameClient client, ACDClientTranslateMessage message)
 		{
-			this.Attributes.BroadcastChangedIfRevealed();
-			var a = this.GetActorsInRange(15f);
+			Attributes.BroadcastChangedIfRevealed();
+			var a = GetActorsInRange(15f);
 
 			#region
 			//UpdateExp(5000000);
@@ -2372,55 +2372,55 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			});
 			//*/
 			#endregion
-			if (this.World == null) return;
+			if (World == null) return;
 
-			if (this.Dead)
+			if (Dead)
 			{
-				this.World.BroadcastIfRevealed(this.ACDWorldPositionMessage, this);
+				World.BroadcastIfRevealed(ACDWorldPositionMessage, this);
 				return;
 			}
 
-			if (this.World.Game.Paused || this.BetweenWorlds) return;
+			if (World.Game.Paused || BetweenWorlds) return;
 
-			if (message.MovementSpeed > (this.Attributes[GameAttribute.Running_Rate_Total] * 1.5f) && !SpeedCheckDisabled)
+			if (message.MovementSpeed > (Attributes[GameAttribute.Running_Rate_Total] * 1.5f) && !SpeedCheckDisabled)
 			{
 				_hackCounter++;
-				if (this._hackCounter > 5)
+				if (_hackCounter > 5)
 				{
-					this._hackCounter = 0;
+					_hackCounter = 0;
 				}
-				this.World.BroadcastIfRevealed(this.ACDWorldPositionMessage, this);
+				World.BroadcastIfRevealed(ACDWorldPositionMessage, this);
 				return;
 			}
 
 			if (message.Position != null)
 			{
-				if (PowerMath.Distance2D(message.Position, this.Position) > 300f)
+				if (PowerMath.Distance2D(message.Position, Position) > 300f)
 				{
-					this.World.BroadcastIfRevealed(this.ACDWorldPositionMessage, this);
-					this.InGameClient.SendMessage(new ACDTranslateSyncMessage()
+					World.BroadcastIfRevealed(ACDWorldPositionMessage, this);
+					InGameClient.SendMessage(new ACDTranslateSyncMessage()
 					{
-						ActorId = this.DynamicID(this),
-						Position = this.Position
+						ActorId = DynamicID(this),
+						Position = Position
 					});
 					return;
 				}
-				this.Position = message.Position;
+				Position = message.Position;
 			}
 
-			this.SetFacingRotation(message.Angle);
+			SetFacingRotation(message.Angle);
 
-			if (this.IsCasting) StopCasting();
-			this.World.BuffManager.RemoveBuffs(this, 298038);
+			if (IsCasting) StopCasting();
+			World.BuffManager.RemoveBuffs(this, 298038);
 
-			this.RevealScenesToPlayer();
-			this.RevealPlayersToPlayer();
-			this.RevealActorsToPlayer();
+			RevealScenesToPlayer();
+			RevealPlayersToPlayer();
+			RevealActorsToPlayer();
 
-			this.World.BroadcastExclusive(plr => new ACDTranslateNormalMessage
+			World.BroadcastExclusive(plr => new ACDTranslateNormalMessage
 			{
-				ActorId = this.DynamicID(plr),
-				Position = this.Position,
+				ActorId = DynamicID(plr),
+				Position = Position,
 				Angle = message.Angle,
 				SnapFacing = false,
 				MovementSpeed = message.MovementSpeed,
@@ -2430,52 +2430,52 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			foreach (var actor in GetActorsInRange())
 				actor.OnPlayerApproaching(this);
 
-			this.VacuumPickup();
-			if (this.World.Game.OnLoadWorldActions.ContainsKey(this.World.SNO))
+			VacuumPickup();
+			if (World.Game.OnLoadWorldActions.ContainsKey(World.SNO))
 			{
-				Logger.Trace("OnLoadWorldActions: {0}", this.World.SNO);
-				lock (this.World.Game.OnLoadWorldActions[this.World.SNO])
+				Logger.Trace("OnLoadWorldActions: {0}", World.SNO);
+				lock (World.Game.OnLoadWorldActions[World.SNO])
 				{
 					try
 					{
-						foreach (var action in this.World.Game.OnLoadWorldActions[this.World.SNO])
+						foreach (var action in World.Game.OnLoadWorldActions[World.SNO])
 						{
 							action.Invoke();
 						}
 					}
 					catch { }
-					this.World.Game.OnLoadWorldActions[this.World.SNO].Clear();
+					World.Game.OnLoadWorldActions[World.SNO].Clear();
 				}
 			}
-			if (this.World.Game.OnLoadSceneActions.ContainsKey(this.CurrentScene.SceneSNO.Id))
+			if (World.Game.OnLoadSceneActions.ContainsKey(CurrentScene.SceneSNO.Id))
 			{
-				Logger.Trace("OnLoadSceneActions: {0}", this.CurrentScene.SceneSNO.Id);
-				lock (this.World.Game.OnLoadSceneActions[this.CurrentScene.SceneSNO.Id])
+				Logger.Trace("OnLoadSceneActions: {0}", CurrentScene.SceneSNO.Id);
+				lock (World.Game.OnLoadSceneActions[CurrentScene.SceneSNO.Id])
 				{
 					try
 					{
-						foreach (var action in this.World.Game.OnLoadSceneActions[this.CurrentScene.SceneSNO.Id])
+						foreach (var action in World.Game.OnLoadSceneActions[CurrentScene.SceneSNO.Id])
 						{
 							action.Invoke();
 						}
 					}
 					catch { }
-					this.World.Game.OnLoadSceneActions[this.CurrentScene.SceneSNO.Id].Clear();
+					World.Game.OnLoadSceneActions[CurrentScene.SceneSNO.Id].Clear();
 				}
 			}
 
-			if (this.CurrentScene.SceneSNO.Id != PreSceneId)
+			if (CurrentScene.SceneSNO.Id != PreSceneId)
 			{
-				PreSceneId = this.CurrentScene.SceneSNO.Id;
-				var levelArea = this.CurrentScene.Specification.SNOLevelAreas[0];
-				if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
+				PreSceneId = CurrentScene.SceneSNO.Id;
+				var levelArea = CurrentScene.Specification.SNOLevelAreas[0];
+				if (World.Game.QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
 				{
-					var trigger = this.World.Game.QuestProgress.QuestTriggers[levelArea];
+					var trigger = World.Game.QuestProgress.QuestTriggers[levelArea];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(this.World); // launch a questEvent
+							trigger.questEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -2484,7 +2484,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					}
 				}
 
-				this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
+				Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
 
 #if DEBUG
 				Logger.Warn("Player Location {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
@@ -2492,35 +2492,35 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 #endif
 			}
-			this.LastMovementTick = this.World.Game.TickCounter;
+			LastMovementTick = World.Game.TickCounter;
 		}
 
 		private void OnCancelChanneledSkill(GameClient client, CancelChanneledSkillMessage message)
 		{
-			this.World.PowerManager.CancelChanneledSkill(this, message.PowerSNO);
+			World.PowerManager.CancelChanneledSkill(this, message.PowerSNO);
 		}
 
 		private void OnRequestBuffCancel(GameClient client, RequestBuffCancelMessage message)
 		{
-			this.World.BuffManager.RemoveBuffs(this, message.PowerSNOId);
+			World.BuffManager.RemoveBuffs(this, message.PowerSNOId);
 		}
 
 		private void OnSecondaryPowerMessage(GameClient client, SecondaryAnimationPowerMessage message)
 		{
-			this.World.PowerManager.RunPower(this, message.PowerSNO, (uint)message.annTarget);
+			World.PowerManager.RunPower(this, message.PowerSNO, (uint)message.annTarget);
 		}
 
 		private void OnMiscPowerMessage(GameClient client, MiscPowerMessage message)
 		{
-			this.World.PowerManager.RunPower(this, message.PowerSNO);
+			World.PowerManager.RunPower(this, message.PowerSNO);
 		}
 
 		private void OnLoopingAnimationPowerMessage(GameClient client, LoopingAnimationPowerMessage message)
 		{
-			this.StartCasting(150, new Action(() => {
+			StartCasting(150, new Action(() => {
 				try
 				{
-					this.World.PowerManager.RunPower(this, message.snoPower);
+					World.PowerManager.RunPower(this, message.snoPower);
 				}
 				catch { }
 			}),message.snoPower);
@@ -2528,7 +2528,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnTryWaypoint(GameClient client, TryWaypointMessage tryWaypointMessage)
 		{
-			var wpWorld = this.World.Game.GetWayPointWorldById(tryWaypointMessage.nWaypoint);
+			var wpWorld = World.Game.GetWayPointWorldById(tryWaypointMessage.nWaypoint);
 			var wayPoint = wpWorld.GetWayPointById(tryWaypointMessage.nWaypoint);
 			Logger.Warn("---Waypoint Debug---");
 			var proximity = new RectangleF(wayPoint.Position.X - 1f, wayPoint.Position.Y - 1f, 2f, 2f);
@@ -2548,20 +2548,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (wayPoint == null) return;
 			Logger.Warn($"WpWorld: {wpWorld}, wayPoint: {wayPoint}");
 			InGameClient.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
-			if (wpWorld == this.World)
-				this.Teleport(wayPoint.Position);
+			if (wpWorld == World)
+				Teleport(wayPoint.Position);
 			else
-				this.ChangeWorld(wpWorld, wayPoint.Position);
+				ChangeWorld(wpWorld, wayPoint.Position);
 
 			//handling quest triggers
-			if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
+			if (World.Game.QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
 			{
-				var trigger = this.World.Game.QuestProgress.QuestTriggers[levelArea];
+				var trigger = World.Game.QuestProgress.QuestTriggers[levelArea];
 				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 				{
 					try
 					{
-						trigger.questEvent.Execute(this.World); // launch a questEvent
+						trigger.questEvent.Execute(World); // launch a questEvent
 					}
 					catch (Exception e)
 					{
@@ -2569,12 +2569,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					}
 				}
 			}
-			foreach (var bounty in this.World.Game.QuestManager.Bounties)
+			foreach (var bounty in World.Game.QuestManager.Bounties)
 				bounty.CheckLevelArea(levelArea);
 
-			this.InGameClient.SendMessage(new PortedToWaypointMessage
+			InGameClient.SendMessage(new PortedToWaypointMessage
 			{
-				PlayerIndex = this.PlayerIndex,
+				PlayerIndex = PlayerIndex,
 				LevelAreaSNO = levelArea
 			});
 			Logger.Warn("---Waypoint Debug End---");
@@ -2582,10 +2582,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void RefreshReveal()
 		{
 			float Range = 200f;
-			if (this.InGameClient.Game.CurrentEncounter.activated)
+			if (InGameClient.Game.CurrentEncounter.activated)
 				Range = 360f;
 
-			List<Actor> actors_around = this.GetActorsInRange(Range);
+			List<Actor> actors_around = GetActorsInRange(Range);
 
 			foreach (var actor in actors_around)
 				if (actor is not Player)
@@ -2594,7 +2594,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 		private void OnRequestBuyItem(GameClient client, RequestBuyItemMessage requestBuyItemMessage)
 		{
-			var vendor = this.SelectedNPC as Vendor;
+			var vendor = SelectedNPC as Vendor;
 			if (vendor == null)
 				return;
 			vendor.OnRequestBuyItem(this, requestBuyItemMessage.ItemId);
@@ -2602,7 +2602,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnRequestSellItem(GameClient client, RequestSellItemMessage requestSellItemMessage)
 		{
-			var vendor = this.SelectedNPC as Vendor;
+			var vendor = SelectedNPC as Vendor;
 			if (vendor == null)
 				return;
 			vendor.OnRequestSellItem(this, (int)requestSellItemMessage.ItemId);
@@ -2610,21 +2610,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnHirelingRetrainMessage()
 		{
-			if (this.ActiveHireling == null) return;
+			if (ActiveHireling == null) return;
 
-			switch (this.ActiveHireling.Attributes[GameAttribute.Hireling_Class])
+			switch (ActiveHireling.Attributes[GameAttribute.Hireling_Class])
 			{
 				case 1:
-					if (this.ActiveHireling is Templar)
-						(this.ActiveHireling as Templar).Retrain(this);
+					if (ActiveHireling is Templar)
+						(ActiveHireling as Templar).Retrain(this);
 					break;
 				case 2:
-					if (this.ActiveHireling is Scoundrel)
-						(this.ActiveHireling as Scoundrel).Retrain(this);
+					if (ActiveHireling is Scoundrel)
+						(ActiveHireling as Scoundrel).Retrain(this);
 					break;
 				case 3:
-					if (this.ActiveHireling is Enchantress)
-						(this.ActiveHireling as Enchantress).Retrain(this);
+					if (ActiveHireling is Enchantress)
+						(ActiveHireling as Enchantress).Retrain(this);
 					break;
 				default:
 					return;
@@ -2634,17 +2634,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		private void OnHirelingDismiss(GameClient client, PetAwayMessage message)
 		{
 			Logger.Trace("OnPetDismiss(): {0}", message.ActorID);
-			var petId = this.World.GetGlobalId(this, message.ActorID);
-			var pet = this.World.GetActorByGlobalId(petId);
+			var petId = World.GetGlobalId(this, message.ActorID);
+			var pet = World.GetActorByGlobalId(petId);
 			if (pet is Hireling)
 				ActiveHireling = null;
 			else
-				this.DestroyFollowersBySnoId(pet.SNO);
+				DestroyFollowersBySnoId(pet.SNO);
 		}
-		private void OnHirelingRequestLearnSkill(GameClient client, MessageSystem.Message.Definitions.Hireling.HirelingRequestLearnSkillMessage message)
+		private void OnHirelingRequestLearnSkill(GameClient client, HirelingRequestLearnSkillMessage message)
 		{
 			Logger.Debug("OnHirelingRequestLearnSkill(): {0} - {1}", message.HirelingID, message.PowerSNOId);
-			var hireling = this.World.GetActorByGlobalId(this.World.GetGlobalId(this, message.HirelingID));
+			var hireling = World.GetActorByGlobalId(World.GetGlobalId(this, message.HirelingID));
 			if (hireling == null) return;
 			switch (hireling.Attributes[GameAttribute.Hireling_Class])
 			{
@@ -2671,17 +2671,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			switch (message.Choice)
 			{
 				case 0:
-					this.Revive(this.Position);
-					this.ChangeWorld(this.World.Game.StartingWorld, this.World.Game.StartPosition);
+					Revive(Position);
+					ChangeWorld(World.Game.StartingWorld, World.Game.StartPosition);
 					break;
 				case 1:
-					this.Revive(this.CheckPointPosition);
+					Revive(CheckPointPosition);
 					break;
 				case 2:
-					if (this.Attributes[GameAttribute.Corpse_Resurrection_Charges] > 0)
+					if (Attributes[GameAttribute.Corpse_Resurrection_Charges] > 0)
 					{
-						this.Revive(this.Position);
-						this.Attributes[GameAttribute.Corpse_Resurrection_Charges]--;
+						Revive(Position);
+						Attributes[GameAttribute.Corpse_Resurrection_Charges]--;
 					}
 					break;
 			}
@@ -2689,16 +2689,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		//*/
 		private void OnEquipPotion(GameClient client, ChangeUsableItemMessage message)
 		{
-			var activeSkills = this.Toon.DBActiveSkills;
+			var activeSkills = Toon.DBActiveSkills;
 			activeSkills.PotionGBID = message.Field1;
-			this.World.Game.GameDBSession.SessionUpdate(activeSkills);
+			World.Game.GameDBSession.SessionUpdate(activeSkills);
 		}
 
 		public void ToonStateChanged()
 		{
 			try
 			{
-				ClientSystem.GameServer.GSBackend.ToonStateChanged(this.Toon.PersistentID);
+				ClientSystem.GameServer.GSBackend.ToonStateChanged(Toon.PersistentID);
 			}
 			catch (Exception e)
 			{
@@ -2716,48 +2716,48 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			int AnimByLevel = 0;
 			int IdleByLevel = 0;
 
-			if (this.ArtisanInteraction == "Blacksmith")
+			if (ArtisanInteraction == "Blacksmith")
 			{
 				if (blacksmith_data.Level > 55) return;
 				var recipeDefinition = ItemGenerator.GetRecipeDefinition(string.Format("BlackSmith_Train_Level{0}", Math.Min(blacksmith_data.Level, 55)));
 
 				//Logger.Trace(string.Format("BlackSmith_Train_Level{0}", Math.Min(blacksmith_data.Level, 45)));
-				if (this.Inventory.GetGoldAmount() < recipeDefinition.Gold) return;
+				if (Inventory.GetGoldAmount() < recipeDefinition.Gold) return;
 				bool haveEnoughIngredients = true;
 
 				foreach (var ingr in recipeDefinition.Ingredients) //first loop (checking)
 				{
 					if (ingr.ItemsGBID == -1) continue;
-					if (!this.Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
+					if (!Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
 				}
 
 				if (!haveEnoughIngredients) return;
-				this.Inventory.RemoveGoldAmount(recipeDefinition.Gold);
+				Inventory.RemoveGoldAmount(recipeDefinition.Gold);
 
 				foreach (var ingr in recipeDefinition.Ingredients) //second loop (getting)
 				{
 					if (ingr.ItemsGBID == -1) continue;
-					this.Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
+					Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
 				}
 
 				blacksmith_data.Level++;
-				this.World.Game.GameDBSession.SessionUpdate(blacksmith_data);
+				World.Game.GameDBSession.SessionUpdate(blacksmith_data);
 				if (blacksmith_data.Level == 2)
-					this.GrantAchievement(74987243307767);
+					GrantAchievement(74987243307767);
 				if (blacksmith_data.Level == 5)
-					this.GrantAchievement(74987243307768);
+					GrantAchievement(74987243307768);
 				if (blacksmith_data.Level == 10)
 				{
-					this.GrantAchievement(74987243307769);
-					this.GrantCriteria(74987249071497);
+					GrantAchievement(74987243307769);
+					GrantCriteria(74987249071497);
 				}
 				if (blacksmith_data.Level == 12)
 				{
-					this.GrantAchievement(74987251817289);
+					GrantAchievement(74987251817289);
 					//74987249993545
 					if (jeweler_data.Level == 12 && mystic_data.Level == 12)
 					{
-						this.GrantCriteria(74987249993545);
+						GrantCriteria(74987249993545);
 					}
 				}
 
@@ -2785,46 +2785,46 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				});
 
 			}
-			if (this.ArtisanInteraction == "Jeweler")
+			if (ArtisanInteraction == "Jeweler")
 			{
 				if (jeweler_data.Level > 12) return;
 				var recipeDefinition = ItemGenerator.GetRecipeDefinition(string.Format("Jeweler_Train_Level{0}", Math.Min(jeweler_data.Level, 11)));
 
-				if (this.Inventory.GetGoldAmount() < recipeDefinition.Gold) return;
+				if (Inventory.GetGoldAmount() < recipeDefinition.Gold) return;
 				bool haveEnoughIngredients = true;
 
 				foreach (var ingr in recipeDefinition.Ingredients) //first loop (checking)
 				{
 					if (ingr.ItemsGBID == -1) continue;
-					if (!this.Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
+					if (!Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
 				}
 
 				if (!haveEnoughIngredients) return;
-				this.Inventory.RemoveGoldAmount(recipeDefinition.Gold);
+				Inventory.RemoveGoldAmount(recipeDefinition.Gold);
 
 				foreach (var ingr in recipeDefinition.Ingredients) //second loop (getting)
 				{
 					if (ingr.ItemsGBID == -1) continue;
-					this.Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
+					Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
 				}
 
 				jeweler_data.Level++;
-				this.World.Game.GameDBSession.SessionUpdate(jeweler_data);
+				World.Game.GameDBSession.SessionUpdate(jeweler_data);
 				if (jeweler_data.Level == 2)
-					this.GrantAchievement(74987243307781);
+					GrantAchievement(74987243307781);
 				if (jeweler_data.Level == 5)
-					this.GrantAchievement(74987243307782);
+					GrantAchievement(74987243307782);
 				if (jeweler_data.Level == 10)
 				{
-					this.GrantAchievement(74987243307783);
-					this.GrantCriteria(74987245845978);
+					GrantAchievement(74987243307783);
+					GrantCriteria(74987245845978);
 				}
 				if (jeweler_data.Level == 12)
 				{
-					this.GrantAchievement(74987257153995);
+					GrantAchievement(74987257153995);
 					if (blacksmith_data.Level == 12 && mystic_data.Level == 12)
 					{
-						this.GrantCriteria(74987249993545);
+						GrantCriteria(74987249993545);
 					}
 				}
 				switch (jeweler_data.Level)
@@ -2850,46 +2850,46 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					Level = jeweler_data.Level
 				});
 			}
-			if (this.ArtisanInteraction == "Mystic")
+			if (ArtisanInteraction == "Mystic")
 			{
 				if (mystic_data.Level > 12) return;
 				var recipeDefinition = ItemGenerator.GetRecipeDefinition(string.Format("Mystic_Train_Level{0}", Math.Min(mystic_data.Level, 11)));
 
-				if (this.Inventory.GetGoldAmount() < recipeDefinition.Gold) return;
+				if (Inventory.GetGoldAmount() < recipeDefinition.Gold) return;
 				bool haveEnoughIngredients = true;
 
 				foreach (var ingr in recipeDefinition.Ingredients) //first loop (checking)
 				{
 					if (ingr.ItemsGBID == -1) continue;
-					if (!this.Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
+					if (!Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
 				}
 
 				if (!haveEnoughIngredients) return;
-				this.Inventory.RemoveGoldAmount(recipeDefinition.Gold);
+				Inventory.RemoveGoldAmount(recipeDefinition.Gold);
 
 				foreach (var ingr in recipeDefinition.Ingredients) //second loop (getting)
 				{
 					if (ingr.ItemsGBID == -1) continue;
-					this.Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
+					Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
 				}
 
 				mystic_data.Level++;
-				this.World.Game.GameDBSession.SessionUpdate(mystic_data);
+				World.Game.GameDBSession.SessionUpdate(mystic_data);
 				if (mystic_data.Level == 2)
-					this.GrantAchievement(74987253584575);
+					GrantAchievement(74987253584575);
 				if (mystic_data.Level == 5)
-					this.GrantAchievement(74987256660015);
+					GrantAchievement(74987256660015);
 				if (mystic_data.Level == 10)
 				{
-					this.GrantAchievement(74987248802163);
-					this.GrantCriteria(74987259424359);
+					GrantAchievement(74987248802163);
+					GrantCriteria(74987259424359);
 				}
 				if (mystic_data.Level == 12)
 				{
 					//this.GrantAchievement(74987256206128);
 					if (jeweler_data.Level == 12 && blacksmith_data.Level == 12)
 					{
-						this.GrantCriteria(74987249993545);
+						GrantCriteria(74987249993545);
 					}
 				}
 				switch (mystic_data.Level)
@@ -2915,22 +2915,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					Level = mystic_data.Level
 				});
 			}
-			this.LoadCrafterData();
+			LoadCrafterData();
 
 
 			/**/
 		}
 		public void UnlockTransmog(int transmogGBID)
 		{
-			if (this.learnedTransmogs.Contains(transmogGBID)) return;
-			this.InGameClient.SendMessage(new UnlockTransmogMessage() { TransmogGBID = transmogGBID });
+			if (learnedTransmogs.Contains(transmogGBID)) return;
+			InGameClient.SendMessage(new UnlockTransmogMessage() { TransmogGBID = transmogGBID });
 
 			Logger.Trace("Learning transmog #{0}", transmogGBID);
-			this.learnedTransmogs.Add(transmogGBID);
-			mystic_data.LearnedRecipes = SerializeBytes(this.learnedTransmogs);
-			this.World.Game.GameDBSession.SessionUpdate(mystic_data);
+			learnedTransmogs.Add(transmogGBID);
+			mystic_data.LearnedRecipes = SerializeBytes(learnedTransmogs);
+			World.Game.GameDBSession.SessionUpdate(mystic_data);
 
-			this.LoadCrafterData();
+			LoadCrafterData();
 		}
 		#endregion
 
@@ -2945,12 +2945,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void AddTimedAction(float seconds, Action<int> onTimeout)
 		{
-			this.TimedActions.Add(TickTimer.WaitSeconds(this.World.Game, seconds, onTimeout));
+			TimedActions.Add(TickTimer.WaitSeconds(World.Game, seconds, onTimeout));
 		}
 
 		public void Update(int tickCounter)
 		{
-			if (this.BetweenWorlds) return;
+			if (BetweenWorlds) return;
 
 #if DEBUG
 #else
@@ -2962,83 +2962,83 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 #endif
 
 			// Check the gold
-			if (this.InGameClient.Game.TickCounter % 120 == 0 && this.World != null && this.GoldCollectedTempCount > 0)
+			if (InGameClient.Game.TickCounter % 120 == 0 && World != null && GoldCollectedTempCount > 0)
 			{
 				this.Toon.GameAccount.Gold += (ulong)this.GoldCollectedTempCount;
 				this.Toon.CollectedGold += (ulong)this.GoldCollectedTempCount;
 
-				if (this.World.Game.IsHardcore)
-					this.Toon.CollectedGoldSeasonal += this.GoldCollectedTempCount;
+				if (World.Game.IsHardcore)
+					Toon.CollectedGoldSeasonal += GoldCollectedTempCount;
 
-				this.UpdateAchievementCounter(10, (uint)this.GoldCollectedTempCount);
+				UpdateAchievementCounter(10, (uint)GoldCollectedTempCount);
 
-				this.GoldCollectedTempCount = 0;
+				GoldCollectedTempCount = 0;
 			}
 
 			// Check the blood shards
-			if (this.InGameClient.Game.TickCounter % 120 == 0 && this.World != null && this.BloodShardsCollectedTempCount > 0)
+			if (InGameClient.Game.TickCounter % 120 == 0 && World != null && BloodShardsCollectedTempCount > 0)
 			{
 				this.Toon.GameAccount.BloodShards += this.BloodShardsCollectedTempCount;
 				this.Toon.GameAccount.TotalBloodShards += this.BloodShardsCollectedTempCount;
 				this.BloodShardsCollectedTempCount = 0;
 			}
 
-			if (this.World != null && this.SkillSet.HasPassive(298038) && (this.InGameClient.Game.TickCounter - this.LastMovementTick) > 90)
-				this.World.BuffManager.AddBuff(this, this, new UnwaveringWillBuff());
+			if (World != null && SkillSet.HasPassive(298038) && (InGameClient.Game.TickCounter - LastMovementTick) > 90)
+				World.BuffManager.AddBuff(this, this, new UnwaveringWillBuff());
 
 
-			if (this.World != null && this.SkillSet.HasSkill(312736) && (this.InGameClient.Game.TickCounter - this.LastMovementTick) > 90)
-				this.World.BuffManager.AddBuff(this, this, new MonkDashingStrike.DashingStrikeCountBuff());
-			else if (!this.SkillSet.HasSkill(312736))
-				this.Attributes[GameAttribute.Skill_Charges, 312736] = 0;
+			if (World != null && SkillSet.HasSkill(312736) && (InGameClient.Game.TickCounter - LastMovementTick) > 90)
+				World.BuffManager.AddBuff(this, this, new MonkDashingStrike.DashingStrikeCountBuff());
+			else if (!SkillSet.HasSkill(312736))
+				Attributes[GameAttribute.Skill_Charges, 312736] = 0;
 
-			if (this.World != null && this.SkillSet.HasSkill(129217) && (this.InGameClient.Game.TickCounter - this.LastMovementTick) > 90)
-				this.World.BuffManager.AddBuff(this, this, new Sentry.SentryCountBuff());
-			else if (!this.SkillSet.HasSkill(129217))
-				this.Attributes[GameAttribute.Skill_Charges, 129217] = 0;
+			if (World != null && SkillSet.HasSkill(129217) && (InGameClient.Game.TickCounter - LastMovementTick) > 90)
+				World.BuffManager.AddBuff(this, this, new Sentry.SentryCountBuff());
+			else if (!SkillSet.HasSkill(129217))
+				Attributes[GameAttribute.Skill_Charges, 129217] = 0;
 
-			if (this.World != null && this.SkillSet.HasSkill(75301) && (this.InGameClient.Game.TickCounter - this.LastMovementTick) > 90)
-				this.World.BuffManager.AddBuff(this, this, new SpikeTrap.SpikeCountBuff());
-			else if (!this.SkillSet.HasSkill(75301))
-				this.Attributes[GameAttribute.Skill_Charges, 75301] = 0;
+			if (World != null && SkillSet.HasSkill(75301) && (InGameClient.Game.TickCounter - LastMovementTick) > 90)
+				World.BuffManager.AddBuff(this, this, new SpikeTrap.SpikeCountBuff());
+			else if (!SkillSet.HasSkill(75301))
+				Attributes[GameAttribute.Skill_Charges, 75301] = 0;
 
-			if (this.World != null && this.SkillSet.HasSkill(464896) && (this.InGameClient.Game.TickCounter - this.LastMovementTick) > 90)
-				this.World.BuffManager.AddBuff(this, this, new BoneSpirit.SpiritCountBuff());
-			else if (!this.SkillSet.HasSkill(464896))
-				this.Attributes[GameAttribute.Skill_Charges, 464896] = 0;
+			if (World != null && SkillSet.HasSkill(464896) && (InGameClient.Game.TickCounter - LastMovementTick) > 90)
+				World.BuffManager.AddBuff(this, this, new BoneSpirit.SpiritCountBuff());
+			else if (!SkillSet.HasSkill(464896))
+				Attributes[GameAttribute.Skill_Charges, 464896] = 0;
 
-			if (this.World != null && this.SkillSet.HasSkill(97435) && (this.InGameClient.Game.TickCounter - this.LastMovementTick) > 90)
-				this.World.BuffManager.AddBuff(this, this, new FuriousCharge.FuriousChargeCountBuff());
-			else if (!this.SkillSet.HasSkill(97435))
-				this.Attributes[GameAttribute.Skill_Charges, 97435] = 0;
+			if (World != null && SkillSet.HasSkill(97435) && (InGameClient.Game.TickCounter - LastMovementTick) > 90)
+				World.BuffManager.AddBuff(this, this, new FuriousCharge.FuriousChargeCountBuff());
+			else if (!SkillSet.HasSkill(97435))
+				Attributes[GameAttribute.Skill_Charges, 97435] = 0;
 
-			this.Attributes.BroadcastChangedIfRevealed();
-			lock (this.TimedActions)
-				foreach (var timed_action in this.TimedActions)
+			Attributes.BroadcastChangedIfRevealed();
+			lock (TimedActions)
+				foreach (var timed_action in TimedActions)
 					timed_action.Update(tickCounter);
 
-			foreach (var timed_out in this.TimedActions.Where(t => t.TimedOut).ToList())
-				this.TimedActions.Remove(timed_out);
+			foreach (var timed_out in TimedActions.Where(t => t.TimedOut).ToList())
+				TimedActions.Remove(timed_out);
 
 			// Check the Killstreaks
-			this.ExpBonusData.Check(0);
-			this.ExpBonusData.Check(1);
+			ExpBonusData.Check(0);
+			ExpBonusData.Check(1);
 
 			// Check if there is an conversation to close in this tick
-			Conversations.Update(this.World.Game.TickCounter);
+			Conversations.Update(World.Game.TickCounter);
 
-			foreach (Actor proximityGizmo in this.GetObjectsInRange<Actor>(20f, true))
+			foreach (Actor proximityGizmo in GetObjectsInRange<Actor>(20f, true))
 			{
 				if (proximityGizmo == null || proximityGizmo.SNO == ActorSno.__NONE) continue;
-				if (this.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO) && proximityGizmo.Visible) //EnterTrigger
+				if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO) && proximityGizmo.Visible) //EnterTrigger
 				{
-					var trigger = this.World.Game.QuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
+					var trigger = World.Game.QuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
 					{
 						//this.World.Game.Quests.NotifyQuest(this.World.Game.CurrentQuest, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, proximityGizmo.ActorSNO.Id);
 						try
 						{
-							trigger.questEvent.Execute(this.World); // launch a questEvent
+							trigger.questEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -3046,26 +3046,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						}
 					}
 				}
-				else if (this.World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO))
+				else if (World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO))
 				{
-					var trigger = this.World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
+					var trigger = World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
 					{
-						this.World.Game.SideQuestProgress.UpdateSideCounter((int)proximityGizmo.SNO);
-						if (trigger.count == this.World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO].counter)
-							trigger.questEvent.Execute(this.World); // launch a questEvent
+						World.Game.SideQuestProgress.UpdateSideCounter((int)proximityGizmo.SNO);
+						if (trigger.count == World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO].counter)
+							trigger.questEvent.Execute(World); // launch a questEvent
 					}
 				}
-				if (this.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey((int)proximityGizmo.SNO) && proximityGizmo.Visible) //EnterTrigger
+				if (World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey((int)proximityGizmo.SNO) && proximityGizmo.Visible) //EnterTrigger
 				{
-					var trigger = this.World.Game.SideQuestProgress.GlobalQuestTriggers[(int)proximityGizmo.SNO];
+					var trigger = World.Game.SideQuestProgress.GlobalQuestTriggers[(int)proximityGizmo.SNO];
 					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
 					{
 						//this.World.Game.Quests.NotifyQuest(this.World.Game.CurrentQuest, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, proximityGizmo.ActorSNO.Id);
 						try
 						{
-							trigger.questEvent.Execute(this.World); // launch a questEvent
-							this.World.Game.SideQuestProgress.GlobalQuestTriggers.Remove((int)proximityGizmo.SNO);
+							trigger.questEvent.Execute(World); // launch a questEvent
+							World.Game.SideQuestProgress.GlobalQuestTriggers.Remove((int)proximityGizmo.SNO);
 						}
 						catch (Exception e)
 						{
@@ -3077,56 +3077,56 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			_UpdateResources();
 
-			if (this.IsCasting) UpdateCastState();
+			if (IsCasting) UpdateCastState();
 
-			if (this.InGameClient.Game.TickCounter % 60 == 0 && this.World != null)
+			if (InGameClient.Game.TickCounter % 60 == 0 && World != null)
 			{
-				var proximity = new RectangleF(this.Position.X - 1f, this.Position.Y - 1f, 2f, 2f);
-				var scenes = this.World.QuadTree.Query<Scene>(proximity);
+				var proximity = new RectangleF(Position.X - 1f, Position.Y - 1f, 2f, 2f);
+				var scenes = World.QuadTree.Query<Scene>(proximity);
 				if (scenes.Count == 0) return;
 				var scene = scenes[0];
-				if (this.PreviousLevelArea != scene.Specification.SNOLevelAreas[0])
+				if (PreviousLevelArea != scene.Specification.SNOLevelAreas[0])
 				{
-					this.PreviousLevelArea = scene.Specification.SNOLevelAreas[0];
-					this.World.Game.WorldGenerator.CheckLevelArea(this.World, this.PreviousLevelArea);
-					if (this.InGameClient.Game.TickCounter % 600 == 0)
-						this.CheckLevelAreaCriteria(this.PreviousLevelArea);
+					PreviousLevelArea = scene.Specification.SNOLevelAreas[0];
+					World.Game.WorldGenerator.CheckLevelArea(World, PreviousLevelArea);
+					if (InGameClient.Game.TickCounter % 600 == 0)
+						CheckLevelAreaCriteria(PreviousLevelArea);
 				}
 			}
 
-			if (this.InGameClient.Game.TickCounter % 600 == 0 && this.World != null)
+			if (InGameClient.Game.TickCounter % 600 == 0 && World != null)
 			{
-				if (this.KilledMonstersTempCount != 0)
+				if (KilledMonstersTempCount != 0)
 				{
 					this.Toon.TotalKilled += (ulong)this.KilledMonstersTempCount;
 					this.KilledMonstersTempCount = 0;
 
-					if (this.KilledElitesTempCount != 0)
+					if (KilledElitesTempCount != 0)
 					{
 						this.Toon.ElitesKilled += (ulong)this.KilledElitesTempCount;
 						this.KilledElitesTempCount = 0;
 					}
 
-					if (this.KilledSeasonalTempCount != 0)
+					if (KilledSeasonalTempCount != 0)
 					{
 						this.Toon.SeasonalKills += this.KilledSeasonalTempCount;
 						this.KilledSeasonalTempCount = 0;
 					}
 				}
 
-				this.CheckAchievementCounters();
+				CheckAchievementCounters();
 			}
 
 			#region Necromancer summons
 			bool switchertobool = false;
 			bool switchertoboolTwo = false;
 			ActiveSkillSavedData NowSkillGolem = null;
-			foreach (var skill in this.SkillSet.ActiveSkills)
+			foreach (var skill in SkillSet.ActiveSkills)
 			{
 				if (skill.snoSkill == 453801)
 					switchertobool = true;
 			}
-			foreach (var skill in this.SkillSet.ActiveSkills)
+			foreach (var skill in SkillSet.ActiveSkills)
 				if (skill.snoSkill == 451537)
 				{
 					switchertoboolTwo = true;
@@ -3139,18 +3139,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			PowerContext Killer = new PowerContext();
 			Killer.User = this;
-			Killer.World = this.World;
+			Killer.World = World;
 			Killer.PowerSNO = -1;
 
 			if (ActiveSkeletons)
 			{
 				while (NecroSkeletons.Count < 7)
 				{
-					var Skeleton = new NecromancerSkeleton_A(this.World, ActorSno._p6_necro_commandskeletons_a, this);
+					var Skeleton = new NecromancerSkeleton_A(World, ActorSno._p6_necro_commandskeletons_a, this);
 					Skeleton.Brain.DeActivate();
 					Skeleton.Scale = 1.2f;
 
-					Skeleton.EnterWorld(PowerContext.RandomDirection(this.Position, 3f, 8f));
+					Skeleton.EnterWorld(PowerContext.RandomDirection(Position, 3f, 8f));
 					NecroSkeletons.Add(Skeleton);
 					/*this.InGameClient.SendMessage(new PetMessage()
 					{
@@ -3167,11 +3167,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				foreach (var skel in NecroSkeletons)
 				{
-					this.InGameClient.SendMessage(new PetDetachMessage()
+					InGameClient.SendMessage(new PetDetachMessage()
 					{
 						PetId = skel.GlobalID
 					});
-					this.World.Leave(skel);
+					World.Leave(skel);
 				}
 				NecroSkeletons.Clear();
 			}
@@ -3180,12 +3180,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				var runeActorSno = RuneSelect(451537, ActorSno._p6_necro_revive_golem, ActorSno._p6_bonegolem, ActorSno._p6_bloodgolem, ActorSno._p6_consumefleshgolem, ActorSno._p6_decaygolem, ActorSno._p6_icegolem);
 				if (ActiveGolem != null)
 				{
-                    if (ActiveGolem.SNO != runeActorSno || !this.SkillSet.HasSkill(451537))
+                    if (ActiveGolem.SNO != runeActorSno || !SkillSet.HasSkill(451537))
 					{
 						if (ActiveGolem.World != null)
 						{
 							if (!(ActiveGolem.IsRevealedToPlayer(this)))
-								this.InGameClient.SendMessage(new PetDetachMessage()
+								InGameClient.SendMessage(new PetDetachMessage()
 								{
 									PetId = ActiveGolem.GlobalID
 								});
@@ -3197,7 +3197,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 				else
 				{
-					if (Attributes[GameAttribute.Power_Cooldown, 451537] > this.InGameClient.Game.TickCounter)
+					if (Attributes[GameAttribute.Power_Cooldown, 451537] > InGameClient.Game.TickCounter)
 					{
 
 					}
@@ -3206,9 +3206,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						switch (runeActorSno)
 						{
 							case ActorSno._p6_necro_revive_golem:
-								var NGolem = new BaseGolem(this.World, this);
+								var NGolem = new BaseGolem(World, this);
 								NGolem.Brain.DeActivate();
-								NGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+								NGolem.Position = RandomDirection(Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 								NGolem.Attributes[GameAttribute.Untargetable] = true;
 								NGolem.EnterWorld(NGolem.Position);
 
@@ -3219,9 +3219,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								ActiveGolem = NGolem;
 								break;
 							case ActorSno._p6_consumefleshgolem:
-								var CFGolem = new ConsumeFleshGolem(this.World, this);
+								var CFGolem = new ConsumeFleshGolem(World, this);
 								CFGolem.Brain.DeActivate();
-								CFGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+								CFGolem.Position = RandomDirection(Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 								CFGolem.Attributes[GameAttribute.Untargetable] = true;
 								CFGolem.EnterWorld(CFGolem.Position);
 
@@ -3233,9 +3233,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 								break;
 							case ActorSno._p6_icegolem:
-								var IGolem = new IceGolem(this.World, this);
+								var IGolem = new IceGolem(World, this);
 								IGolem.Brain.DeActivate();
-								IGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+								IGolem.Position = RandomDirection(Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 								IGolem.Attributes[GameAttribute.Untargetable] = true;
 								IGolem.EnterWorld(IGolem.Position);
 
@@ -3246,9 +3246,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								ActiveGolem = IGolem;
 								break;
 							case ActorSno._p6_bonegolem:
-								var BGolem = new BoneGolem(this.World, this);
+								var BGolem = new BoneGolem(World, this);
 								BGolem.Brain.DeActivate();
-								BGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+								BGolem.Position = RandomDirection(Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 								BGolem.Attributes[GameAttribute.Untargetable] = true;
 								BGolem.EnterWorld(BGolem.Position);
 
@@ -3259,9 +3259,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								ActiveGolem = BGolem;
 								break;
 							case ActorSno._p6_decaygolem:
-								var DGolem = new DecayGolem(this.World, this);
+								var DGolem = new DecayGolem(World, this);
 								DGolem.Brain.DeActivate();
-								DGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+								DGolem.Position = RandomDirection(Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 								DGolem.Attributes[GameAttribute.Untargetable] = true;
 								DGolem.EnterWorld(DGolem.Position);
 
@@ -3272,9 +3272,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								ActiveGolem = DGolem;
 								break;
 							case ActorSno._p6_bloodgolem:
-								var BlGolem = new BloodGolem(this.World, this);
+								var BlGolem = new BloodGolem(World, this);
 								BlGolem.Brain.DeActivate();
-								BlGolem.Position = RandomDirection(this.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+								BlGolem.Position = RandomDirection(Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 								BlGolem.Attributes[GameAttribute.Untargetable] = true;
 								BlGolem.EnterWorld(BlGolem.Position);
 
@@ -3289,7 +3289,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						(ActiveGolem as Minion).Brain.Activate();
 						ActiveGolem.Attributes[GameAttribute.Untargetable] = false;
 						ActiveGolem.Attributes.BroadcastChangedIfRevealed();
-						ActiveGolem.PlayActionAnimation(462828);
+						ActiveGolem.PlayActionAnimation(AnimationSno.p6_bloodgolem_spawn_01);
 					}
 				}
 			}
@@ -3308,11 +3308,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		#endregion
 		public T RuneSelect<T>(int PowerSNO, T none, T runeA, T runeB, T runeC, T runeD, T runeE)
 		{
-			int Rune_A = this.Attributes[GameAttribute.Rune_A, PowerSNO];
-			int Rune_B = this.Attributes[GameAttribute.Rune_B, PowerSNO];
-			int Rune_C = this.Attributes[GameAttribute.Rune_C, PowerSNO];
-			int Rune_D = this.Attributes[GameAttribute.Rune_D, PowerSNO];
-			int Rune_E = this.Attributes[GameAttribute.Rune_E, PowerSNO];
+			int Rune_A = Attributes[GameAttribute.Rune_A, PowerSNO];
+			int Rune_B = Attributes[GameAttribute.Rune_B, PowerSNO];
+			int Rune_C = Attributes[GameAttribute.Rune_C, PowerSNO];
+			int Rune_D = Attributes[GameAttribute.Rune_D, PowerSNO];
+			int Rune_E = Attributes[GameAttribute.Rune_E, PowerSNO];
 
 			if (Rune_A > 0) return runeA;
 			else if (Rune_B > 0) return runeB;
@@ -3329,9 +3329,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
         public void RevealScenesToPlayer()
 		{
 			//List<Scene> scenes_around = this.GetScenesInRegion(DefaultQueryProximityLenght * 2);
-			List<Scene> scenes_around = this.World.Scenes.Values.ToList();
-			if (!this.World.worldData.DynamicWorld)
-				scenes_around = this.GetScenesInRegion(DefaultQueryProximityLenght * 3);
+			List<Scene> scenes_around = World.Scenes.Values.ToList();
+			if (!World.worldData.DynamicWorld)
+				scenes_around = GetScenesInRegion(DefaultQueryProximityLenght * 3);
 
 			foreach (var scene in scenes_around) // reveal scenes in player's proximity.
 			{
@@ -3344,7 +3344,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					scene.Reveal(this);
 			}
 
-			foreach (var scene in this.World.Scenes.Values) // unreveal far scenes
+			foreach (var scene in World.Scenes.Values) // unreveal far scenes
 			{
 				if (!scene.IsRevealedToPlayer(this) || scenes_around.Contains(scene))
 					continue;
@@ -3362,7 +3362,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void RevealActorsToPlayer()
 		{
 			float Range = 200f;
-			if (this.InGameClient.Game.CurrentEncounter.activated)
+			if (InGameClient.Game.CurrentEncounter.activated)
 				Range = 360f;
 
 			var specialWorlds = new WorldSno[]
@@ -3374,17 +3374,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				WorldSno.a1trdun_level05_templar,
 			};
 
-			var actors_around = specialWorlds.Contains(this.World.SNO) ? this.World.Actors.Values.ToList() : this.GetActorsInRange(Range);
+			var actors_around = specialWorlds.Contains(World.SNO) ? World.Actors.Values.ToList() : GetActorsInRange(Range);
 
 			foreach (var actor in actors_around) // reveal actors in player's proximity.
 			{
 				if (actor is Player) // if the actors is already revealed, skip it.
 					continue;
 
-				if (this.World.SNO == WorldSno.x1_tristram_adventure_mode_hub && actor is Portal)
+				if (World.SNO == WorldSno.x1_tristram_adventure_mode_hub && actor is Portal)
 					if ((actor as Portal).Destination.WorldSNO == (int)WorldSno.x1_tristram_adventure_mode_hub)
 						continue;
-				if (this.World.SNO == WorldSno.trout_town && actor is Portal)
+				if (World.SNO == WorldSno.trout_town && actor is Portal)
 					if ((actor as Portal).Destination.WorldSNO == (int)WorldSno.trout_town && (actor as Portal).Destination.DestLevelAreaSNO == 19947)
 					{
 						(actor as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
@@ -3397,9 +3397,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 			}
 
-			foreach (var actor in this.World.Actors.Values) // unreveal far actors
+			foreach (var actor in World.Actors.Values) // unreveal far actors
 			{
-				if ((actor is Player && (!this.World.IsPvP || actor == this)) || actors_around.Contains(actor)) // if the actors is already revealed, skip it.
+				if ((actor is Player && (!World.IsPvP || actor == this)) || actors_around.Contains(actor)) // if the actors is already revealed, skip it.
 					continue;
 
 				actor.Unreveal(this);
@@ -3411,7 +3411,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// </summary>
 		public void RevealPlayersToPlayer()
 		{
-			var actors = this.GetActorsInRange<Player>(100f);
+			var actors = GetActorsInRange<Player>(100f);
 
 			foreach (var actor in actors) // reveal actors in player's proximity.
 			{
@@ -3420,14 +3420,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 				actor.Reveal(this);
 
-				if (!this.IsRevealedToPlayer(actor))
-					this.Reveal(actor);
+				if (!IsRevealedToPlayer(actor))
+					Reveal(actor);
 			}
 		}
 
 		public void ReRevealPlayersToPlayer()
 		{
-			var actors = this.GetActorsInRange<Player>(100f);
+			var actors = GetActorsInRange<Player>(100f);
 
 			foreach (var actor in actors) // reveal actors in player's proximity.
 			{
@@ -3438,23 +3438,23 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 				actor.Reveal(this);
 
-				if (!this.IsRevealedToPlayer(actor))
-					this.Reveal(actor);
+				if (!IsRevealedToPlayer(actor))
+					Reveal(actor);
 				else
 				{
-					this.Unreveal(actor);
-					this.Reveal(actor);
+					Unreveal(actor);
+					Reveal(actor);
 				}
 			}
 		}
 
 		public void ClearDoorAnimations()
 		{
-			var doors = this.GetActorsInRange<Door>(100f);
+			var doors = GetActorsInRange<Door>(100f);
 			foreach (var door in doors)
 			{
 				if (door.IsRevealedToPlayer(this))
-					this.InGameClient.SendMessage(new SetIdleAnimationMessage
+					InGameClient.SendMessage(new SetIdleAnimationMessage
 					{
 						ActorID = door.DynamicID(this),
 						AnimationSNO = AnimationSetKeys.Open.ID
@@ -3467,17 +3467,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 
 			world.Reveal(this);
-			this.Unreveal(this);
+			Unreveal(this);
 
-			if (this._CurrentHPValue == -1f)
-				this.DefaultQueryProximityRadius = 60;
+			if (_CurrentHPValue == -1f)
+				DefaultQueryProximityRadius = 60;
 
-			this.InGameClient.SendMessage(new EnterWorldMessage()
+			InGameClient.SendMessage(new EnterWorldMessage()
 			{
-				EnterPosition = this.Position,
+				EnterPosition = Position,
 				WorldID = world.GlobalID,
 				WorldSNO = (int)world.SNO,
-				PlayerIndex = this.PlayerIndex,
+				PlayerIndex = PlayerIndex,
 				EnterLookUsed = true,
 				EnterKnownLookOverrides = new EnterKnownLookOverrides { Field0 = new int[] { -1, -1, -1, -1, -1, -1 } }
 			});
@@ -3485,14 +3485,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			switch (world.SNO)
 			{
 				case WorldSno.x1_westmarch_overlook_d:
-					this.InGameClient.SendMessage(new PlayerSetCameraObserverMessage()
+					InGameClient.SendMessage(new PlayerSetCameraObserverMessage()
 					{
 						Field0 = 309026,
 						Field1 = new WorldPlace() { Position = new Vector3D(), WorldID = 0 }
 					});
 					break;
 				case WorldSno.x1_westm_intro:
-					this.InGameClient.SendMessage(new PlayerSetCameraObserverMessage()
+					InGameClient.SendMessage(new PlayerSetCameraObserverMessage()
 					{
 						Field0 = 1541,
 						Field1 = new WorldPlace() { Position = new Vector3D(), WorldID = 0 }
@@ -3500,73 +3500,73 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					break;
 			}
 
-			if (this._CurrentHPValue == -1f)
-				this.AddPercentageHP(100);
+			if (_CurrentHPValue == -1f)
+				AddPercentageHP(100);
 
-			this.DefaultQueryProximityRadius = 100;
+			DefaultQueryProximityRadius = 100;
 
-			this.RevealScenesToPlayer();
-			this.RevealPlayersToPlayer();
+			RevealScenesToPlayer();
+			RevealPlayersToPlayer();
 
 			// load all inventory items
-			if (!this.Inventory.Loaded)
+			if (!Inventory.Loaded)
 			{//why reload if already loaded?
-				this.Inventory.LoadFromDB();
-				this.Inventory.LoadStashFromDB();
+				Inventory.LoadFromDB();
+				Inventory.LoadStashFromDB();
 			}
 			else
-				this.Inventory.RefreshInventoryToClient();
+				Inventory.RefreshInventoryToClient();
 
 			// generate visual update message
 			//this.Inventory.SendVisualInventory(this);
 			SetAllStatsInCorrectOrder();
 			SetAttributesSkillSets();
-			if (this.World.IsPvP)
+			if (World.IsPvP)
 				DisableStoneOfRecall();
 			else
 				EnableStoneOfRecall();
 
-			this.Reveal(this);
+			Reveal(this);
 
 			System.Threading.Tasks.Task.Delay(3).Wait();
-			this.RevealActorsToPlayer();
+			RevealActorsToPlayer();
 
 			//
 		}
 
 		public override void OnTeleport()
 		{
-			this.Unreveal(this);
+			Unreveal(this);
 			BeforeChangeWorld();
-			this.RevealScenesToPlayer(); // reveal scenes in players proximity.
-			this.RevealPlayersToPlayer();
-			this.RevealActorsToPlayer(); // reveal actors in players proximity.
+			RevealScenesToPlayer(); // reveal scenes in players proximity.
+			RevealPlayersToPlayer();
+			RevealActorsToPlayer(); // reveal actors in players proximity.
 										 //TickTimer.WaitSeconds(this.World.Game, 5.0f, new Action<int>((x) => Logger.Debug("Timer")));
-			this.Reveal(this);
+			Reveal(this);
 			AfterChangeWorld();
 			// load all inventory items
-			if (!this.Inventory.Loaded)
+			if (!Inventory.Loaded)
 			{
 				//why reload if already loaded?
-				this.Inventory.LoadFromDB();
-				this.Inventory.LoadStashFromDB();
+				Inventory.LoadFromDB();
+				Inventory.LoadStashFromDB();
 			}
 			else
-				this.Inventory.RefreshInventoryToClient();
+				Inventory.RefreshInventoryToClient();
 
 
 		}
 
 		public override void OnLeave(World world)
 		{
-			this.Conversations.StopAll();
+			Conversations.StopAll();
 
 			// save visual equipment
-			this.Toon.HeroVisualEquipmentField.Value = this.Inventory.GetVisualEquipment();
+			Toon.HeroVisualEquipmentField.Value = Inventory.GetVisualEquipment();
 			//this.Toon.HeroLevelField.Value = this.Attributes[GameAttribute.Level];
-			this.Toon.GameAccount.ChangedFields.SetPresenceFieldValue(this.Toon.HeroVisualEquipmentField);
-			this.Toon.GameAccount.ChangedFields.SetPresenceFieldValue(this.Toon.HeroLevelField);
-			this.Toon.GameAccount.ChangedFields.SetPresenceFieldValue(this.Toon.HeroParagonLevelField);
+			Toon.GameAccount.ChangedFields.SetPresenceFieldValue(Toon.HeroVisualEquipmentField);
+			Toon.GameAccount.ChangedFields.SetPresenceFieldValue(Toon.HeroLevelField);
+			Toon.GameAccount.ChangedFields.SetPresenceFieldValue(Toon.HeroParagonLevelField);
 			world.Unreveal(this);
 		}
 
@@ -3575,28 +3575,28 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (!base.Reveal(player))
 				return false;
 
-			if (!this.World.IsPvP || this == player)
+			if (!World.IsPvP || this == player)
 			{
 				player.InGameClient.SendMessage(new PlayerEnterKnownMessage()
 				{
-					PlayerIndex = this.PlayerIndex,
-					ActorId = this.DynamicID(player),
+					PlayerIndex = PlayerIndex,
+					ActorId = DynamicID(player),
 				});
 			}
 
-			this.Inventory.SendVisualInventory(player);
+			Inventory.SendVisualInventory(player);
 
 			if (this == player) // only send this to player itself. Warning: don't remove this check or you'll make the game start crashing! /raist.
 			{
 				player.InGameClient.SendMessage(new PlayerActorSetInitialMessage()
 				{
-					ActorId = this.DynamicID(player),
-					PlayerIndex = this.PlayerIndex,
+					ActorId = DynamicID(player),
+					PlayerIndex = PlayerIndex,
 				});
 			}
 
 			if (!base.Reveal(player))
-				this.Inventory.Reveal(player);
+				Inventory.Reveal(player);
 
 			if (this == player) // only send this when player's own actor being is revealed. /raist.
 			{
@@ -3607,13 +3607,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
                 });
             }
 
-			if (this.SkillSet.HasSkill(460757))
-				foreach (var skill in this.SkillSet.ActiveSkills)
+			if (SkillSet.HasSkill(460757))
+				foreach (var skill in SkillSet.ActiveSkills)
 					if (skill.snoSkill == 460757)
 						if (skill.snoRune == 3)
-							this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.P6_Necro_Devour_Aura());
+							World.BuffManager.AddBuff(this, this, new P6_Necro_Devour_Aura());
 						else
-							this.World.BuffManager.RemoveBuffs(this, 474325);
+							World.BuffManager.RemoveBuffs(this, 474325);
 
 			return true;
 		}
@@ -3623,7 +3623,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (!base.Unreveal(player))
 				return false;
 
-			this.Inventory.Unreveal(player);
+			Inventory.Unreveal(player);
 
 			return true;
 		}
@@ -3634,11 +3634,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public override void BeforeChangeWorld()
 		{
-			this.ClearDoorAnimations();
-			this.World.Game.QuestManager.UnsetBountyMarker(this);
-			this.BetweenWorlds = true;
-			this.AllBuffs = this.World.BuffManager.GetAllBuffs(this);
-			this.World.BuffManager.RemoveAllBuffs(this);
+			ClearDoorAnimations();
+			World.Game.QuestManager.UnsetBountyMarker(this);
+			BetweenWorlds = true;
+			AllBuffs = World.BuffManager.GetAllBuffs(this);
+			World.BuffManager.RemoveAllBuffs(this);
 			//this.Inventory.Unreveal(this);
 			//this.InGameClient.TickingEnabled = false;
 			/*this.InGameClient.SendMessage(new FreezeGameMessage
@@ -3646,14 +3646,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				Field0 = true
 			});*/
 
-			this.InGameClient.SendMessage(new ACDTranslateSyncMessage()
+			InGameClient.SendMessage(new ACDTranslateSyncMessage()
 			{
-				ActorId = this.DynamicID(this),
-				Position = this.Position
+				ActorId = DynamicID(this),
+				Position = Position
 			});
 
-			this._CurrentHPValue = this.Attributes[GameAttribute.Hitpoints_Cur];
-			this._CurrentResourceValue = this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1];
+			_CurrentHPValue = Attributes[GameAttribute.Hitpoints_Cur];
+			_CurrentResourceValue = Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1];
 		}
 
 		public override void AfterChangeWorld()
@@ -3665,21 +3665,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				Field0 = false
 			});
 			*/
-			this.Inventory.Reveal(this);
+			Inventory.Reveal(this);
 
-			foreach (var buff in this.AllBuffs)
-				this.World.BuffManager.CopyBuff(this, this, buff.Key, buff.Value);
-			this.AllBuffs.Clear();
-			this.BetweenWorlds = false;
+			foreach (var buff in AllBuffs)
+				World.BuffManager.CopyBuff(this, this, buff.Key, buff.Value);
+			AllBuffs.Clear();
+			BetweenWorlds = false;
 
 			if (_CurrentHPValue != -1)
 			{
-				this.Attributes[GameAttribute.Hitpoints_Cur] = this._CurrentHPValue;
-				this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = this._CurrentResourceValue;
-				this.Attributes.BroadcastChangedIfRevealed();
-				this._CurrentHPValue = -1;
+				Attributes[GameAttribute.Hitpoints_Cur] = _CurrentHPValue;
+				Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = _CurrentResourceValue;
+				Attributes.BroadcastChangedIfRevealed();
+				_CurrentHPValue = -1;
 			}
-			this.World.Game.QuestManager.SetBountyMarker(this);
+			World.Game.QuestManager.SetBountyMarker(this);
 
 
 			//System.Threading.Tasks.Task.Delay(1000).ContinueWith(a => {this.BetweenWorlds = false;});
@@ -3775,10 +3775,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// </summary>
 		public void UpdateHeroState()
 		{
-			this.InGameClient.SendMessage(new HeroStateMessage
+			InGameClient.SendMessage(new HeroStateMessage
 			{
-				State = this.GetStateData(),
-				PlayerIndex = this.PlayerIndex
+				State = GetStateData(),
+				PlayerIndex = PlayerIndex
 			});
 		}
 
@@ -3788,8 +3788,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				LastPlayedAct = 400, //LastPlayedAct
 				HighestUnlockedAct = 400, //HighestUnlockedAct
-				PlayedFlags = (int)this.Toon.Flags,
-				PlayerSavedData = this.GetSavedData(),
+				PlayedFlags = (int)Toon.Flags,
+				PlayerSavedData = GetSavedData(),
 				//QuestRewardHistoryEntriesCount = QuestRewardHistory.Count,
 				tQuestRewardHistory = QuestRewardHistory.ToArray()
 			};
@@ -3802,45 +3802,45 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void QueueDeath(bool state)
 		{
 			//this.World.BroadcastIfRevealed(this.ACDWorldPositionMessage, this);
-			this.InGameClient.SendMessage(new ACDTranslateSyncMessage()
+			InGameClient.SendMessage(new ACDTranslateSyncMessage()
 			{
-				ActorId = this.DynamicID(this),
-				Position = this.Position
+				ActorId = DynamicID(this),
+				Position = Position
 			});
-			this.Attributes[GameAttribute.QueueDeath] = state;
-			this.Attributes[GameAttribute.Disabled] = state;
-			this.Attributes[GameAttribute.Waiting_To_Accept_Resurrection] = false;
-			this.Attributes[GameAttribute.Invulnerable] = state;
+			Attributes[GameAttribute.QueueDeath] = state;
+			Attributes[GameAttribute.Disabled] = state;
+			Attributes[GameAttribute.Waiting_To_Accept_Resurrection] = false;
+			Attributes[GameAttribute.Invulnerable] = state;
 			//this.Attributes[GameAttribute.Stunned] = state;
-			this.Attributes[GameAttribute.Immobolize] = state;
-			this.Attributes[GameAttribute.Hidden] = state;
-			this.Attributes[GameAttribute.Untargetable] = state;
-			this.Attributes[GameAttribute.CantStartDisplayedPowers] = state;
-			this.Attributes[GameAttribute.IsContentRestrictedActor] = state;
+			Attributes[GameAttribute.Immobolize] = state;
+			Attributes[GameAttribute.Hidden] = state;
+			Attributes[GameAttribute.Untargetable] = state;
+			Attributes[GameAttribute.CantStartDisplayedPowers] = state;
+			Attributes[GameAttribute.IsContentRestrictedActor] = state;
 
-			this.Attributes[GameAttribute.Rest_Experience_Lo] = 0;
-			this.Attributes[GameAttribute.Rest_Experience_Bonus_Percent] = 0;
+			Attributes[GameAttribute.Rest_Experience_Lo] = 0;
+			Attributes[GameAttribute.Rest_Experience_Bonus_Percent] = 0;
 
-			this.Attributes.BroadcastChangedIfRevealed();
-			if (this.World.Game.PvP)
+			Attributes.BroadcastChangedIfRevealed();
+			if (World.Game.PvP)
 			{
-				this.Attributes[GameAttribute.Resurrect_As_Observer] = state;
+				Attributes[GameAttribute.Resurrect_As_Observer] = state;
 				//this.Attributes[GameAttribute.Observer] = !state;
 			}
 			//this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 1;	// Enable this to allow unlimited resurrection at corpse
 			//this.Attributes[GameAttribute.Corpse_Resurrection_Allowed_Game_Time] = this.World.Game.TickCounter + 300; // Timer for auto-revive (seems to be broken?)
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes.BroadcastChangedIfRevealed();
 		}
 
 		public void Resurrect()
 		{
-			this.Attributes[GameAttribute.Waiting_To_Accept_Resurrection] = true;
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes[GameAttribute.Waiting_To_Accept_Resurrection] = true;
+			Attributes.BroadcastChangedIfRevealed();
 		}
 
 		public void Revive(Vector3D spawnPosition)
 		{
-			if (this.World == null) return;
+			if (World == null) return;
 			/*if (this.World.Game.IsHardcore)
 			{
 				this.InGameClient.SendMessage(new LogoutTickTimeMessage()
@@ -3851,50 +3851,50 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				});
 			} else
 			{*/
-			this.QueueDeath(false);
-			this.Dead = false;
-			this.AddPercentageHP(100);
+			QueueDeath(false);
+			Dead = false;
+			AddPercentageHP(100);
 
-			this.World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
+			World.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 			{
-				ActorID = this.DynamicID(plr),
+				ActorID = DynamicID(plr),
 				AnimationSNO = AnimationSetKeys.IdleDefault.ID
 			}, this);
 
 			//removing tomb
 			try
 			{
-				this.GetObjectsInRange<Headstone>(100.0f).Where(h => h.playerIndex == this.PlayerIndex).First().Destroy();
+				GetObjectsInRange<Headstone>(100.0f).Where(h => h.playerIndex == PlayerIndex).First().Destroy();
 			}
 			catch { }
-			this.Teleport(spawnPosition);
-			this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.ActorGhostedBuff());
+			Teleport(spawnPosition);
+			World.BuffManager.AddBuff(this, this, new ActorGhostedBuff());
 
-			var old_skills = this.SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
+			var old_skills = SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
 			foreach (var skill in old_skills)
 			{
 				PowerScript power = PowerLoader.CreateImplementationForPowerSNO(skill);
 				if (power != null && power.EvalTag(PowerKeys.SynergyPower) != -1)
 				{
-					this.World.BuffManager.RemoveBuffs(this, power.EvalTag(PowerKeys.SynergyPower));
+					World.BuffManager.RemoveBuffs(this, power.EvalTag(PowerKeys.SynergyPower));
 				}
 			}
 
-			this.SetAttributesByItems();
-			this.SetAttributesByItemProcs();
-			this.SetAttributesByGems();
-			this.SetAttributesByItemSets();
-			this.SetAttributesByPassives();
-			this.SetAttributesByParagon();
-			this.SetAttributesSkillSets();
+			SetAttributesByItems();
+			SetAttributesByItemProcs();
+			SetAttributesByGems();
+			SetAttributesByItemSets();
+			SetAttributesByPassives();
+			SetAttributesByParagon();
+			SetAttributesSkillSets();
 
-			this.Attributes[GameAttribute.Resource_Cur, this.PrimaryResourceID] = 0f;
-			if (this.Toon.Class == ToonClass.DemonHunter)
-				this.Attributes[GameAttribute.Resource_Cur, this.SecondaryResourceID] = 0f;
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes[GameAttribute.Resource_Cur, PrimaryResourceID] = 0f;
+			if (Toon.Class == ToonClass.DemonHunter)
+				Attributes[GameAttribute.Resource_Cur, SecondaryResourceID] = 0f;
+			Attributes.BroadcastChangedIfRevealed();
 
-			var skills = this.SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
-			var cooldowns = this.World.BuffManager.GetBuffs<CooldownBuff>(this);
+			var skills = SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
+			var cooldowns = World.BuffManager.GetBuffs<CooldownBuff>(this);
 			foreach (var skill in skills)
 			{
 				bool inCooldown = false;
@@ -3910,7 +3910,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				if (inCooldown && skillcd != null) skillcd.Extend((int)3 * 60);
 				else _StartSkillCooldown(skill, 3f);
 			}
-			this.Inventory.RefreshInventoryToClient();
+			Inventory.RefreshInventoryToClient();
 			UpdatePercentageHP(PercHPbeforeChange);
 		}
 
@@ -3921,10 +3921,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				var baseStrength = 0.0f;
 
-				if (Toon.HeroTable.CoreAttribute == DiIiS_NA.Core.MPQ.FileFormats.GameBalance.PrimaryAttribute.Strength)
-					baseStrength = Toon.HeroTable.Strength + ((this.Level - 1) * 3);
+				if (Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Strength)
+					baseStrength = Toon.HeroTable.Strength + ((Level - 1) * 3);
 				else
-					baseStrength = Toon.HeroTable.Strength + (this.Level - 1);
+					baseStrength = Toon.HeroTable.Strength + (Level - 1);
 
 				return baseStrength;
 			}
@@ -3934,7 +3934,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				return this.Attributes[GameAttribute.Strength] + this.Inventory.GetItemBonus(GameAttribute.Strength_Item);
+				return Attributes[GameAttribute.Strength] + Inventory.GetItemBonus(GameAttribute.Strength_Item);
 			}
 		}
 
@@ -3942,10 +3942,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				if (Toon.HeroTable.CoreAttribute == DiIiS_NA.Core.MPQ.FileFormats.GameBalance.PrimaryAttribute.Dexterity)
-					return Toon.HeroTable.Dexterity + ((this.Level - 1) * 3);
+				if (Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Dexterity)
+					return Toon.HeroTable.Dexterity + ((Level - 1) * 3);
 				else
-					return Toon.HeroTable.Dexterity + (this.Level - 1);
+					return Toon.HeroTable.Dexterity + (Level - 1);
 			}
 		}
 
@@ -3953,7 +3953,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				return this.Attributes[GameAttribute.Dexterity] + this.Inventory.GetItemBonus(GameAttribute.Dexterity_Item);
+				return Attributes[GameAttribute.Dexterity] + Inventory.GetItemBonus(GameAttribute.Dexterity_Item);
 			}
 		}
 
@@ -3961,7 +3961,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				return Toon.HeroTable.Vitality + ((this.Level - 1) * 2);
+				return Toon.HeroTable.Vitality + ((Level - 1) * 2);
 			}
 		}
 
@@ -3969,7 +3969,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				return this.Attributes[GameAttribute.Vitality] + this.Inventory.GetItemBonus(GameAttribute.Vitality_Item);
+				return Attributes[GameAttribute.Vitality] + Inventory.GetItemBonus(GameAttribute.Vitality_Item);
 			}
 		}
 
@@ -3977,10 +3977,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				if (Toon.HeroTable.CoreAttribute == DiIiS_NA.Core.MPQ.FileFormats.GameBalance.PrimaryAttribute.Intelligence)
-					return Toon.HeroTable.Intelligence + ((this.Level - 1) * 3);
+				if (Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Intelligence)
+					return Toon.HeroTable.Intelligence + ((Level - 1) * 3);
 				else
-					return Toon.HeroTable.Intelligence + (this.Level - 1);
+					return Toon.HeroTable.Intelligence + (Level - 1);
 			}
 		}
 
@@ -3988,7 +3988,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				return this.Attributes[GameAttribute.Intelligence] + this.Inventory.GetItemBonus(GameAttribute.Intelligence_Item);
+				return Attributes[GameAttribute.Intelligence] + Inventory.GetItemBonus(GameAttribute.Intelligence_Item);
 			}
 		}
 
@@ -3996,9 +3996,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				if (Toon.HeroTable.CoreAttribute == DiIiS_NA.Core.MPQ.FileFormats.GameBalance.PrimaryAttribute.Strength) return this.TotalStrength;
-				if (Toon.HeroTable.CoreAttribute == DiIiS_NA.Core.MPQ.FileFormats.GameBalance.PrimaryAttribute.Dexterity) return this.TotalDexterity;
-				if (Toon.HeroTable.CoreAttribute == DiIiS_NA.Core.MPQ.FileFormats.GameBalance.PrimaryAttribute.Intelligence) return this.TotalIntelligence;
+				if (Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Strength) return TotalStrength;
+				if (Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Dexterity) return TotalDexterity;
+				if (Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Intelligence) return TotalIntelligence;
 				return 0f;
 			}
 		}
@@ -4007,14 +4007,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				float dex = this.TotalDexterity;
-				float dodgeChance = dex / (250f * this.Attributes[GameAttribute.Level] + dex);
+				float dex = TotalDexterity;
+				float dodgeChance = dex / (250f * Attributes[GameAttribute.Level] + dex);
 
 				if (dex > 7500f) dodgeChance += 0.04f;
 				else if (dex > 6500f) dodgeChance += 0.02f;
 				else if (dex > 5500f) dodgeChance += 0.01f;
 
-				dodgeChance = 1f - (1f - dodgeChance) * (1f - this.Attributes[GameAttribute.Dodge_Chance_Bonus]);
+				dodgeChance = 1f - (1f - dodgeChance) * (1f - Attributes[GameAttribute.Dodge_Chance_Bonus]);
 
 				return Math.Min(dodgeChance, 0.75f);
 			}
@@ -4030,11 +4030,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			return new PlayerSavedData()
 			{
-				HotBarButtons = this.SkillSet.HotBarSkills,
+				HotBarButtons = SkillSet.HotBarSkills,
 				HotBarButton = new HotbarButtonData { SNOSkill = -1, RuneType = -1, ItemGBId = StringHashHelper.HashItemName("HealthPotionBottomless")//2142362846//this.Toon.DBActiveSkills.PotionGBID
 				, ItemAnn = -1 },
 				SkillSlotEverAssigned = 0x0F, //0xB4,
-				PlaytimeTotal = this.Toon.TimePlayed,
+				PlaytimeTotal = Toon.TimePlayed,
 #if DEBUG
 				WaypointFlags = 0x0000ffff,
 #else
@@ -4043,16 +4043,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 				HirelingData = new HirelingSavedData()
 				{
-					HirelingInfos = this.HirelingInfo,
+					HirelingInfos = HirelingInfo,
 					ActiveHireling = 0x00000000,
 					AvailableHirelings = 0x00000004,
 				},
 
 				TimeLastLevel = 0,
-				LearnedLore = this.LearnedLore,
+				LearnedLore = LearnedLore,
 
-				ActiveSkills = this.SkillSet.ActiveSkills,
-				snoTraits = this.SkillSet.PassiveSkills,
+				ActiveSkills = SkillSet.ActiveSkills,
+				snoTraits = SkillSet.PassiveSkills,
 				GBIDLegendaryPowers = new int[4] { -1, -1, -1, -1 },
 
 				SavePointData = new SavePointData { snoWorld = -1, SavepointId = -1, },
@@ -4137,28 +4137,28 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void SaveStats() //Save 6 primary stats into DB for showing on hero screen
 		{
 			//Logger.Debug("SaveStats(): Strength {0}", this.Inventory.GetItemBonus(GameAttribute.Strength_Item).ToString("F0"));
-			float damageFromWeapon = (this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min_Total, 0) + this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta_Total, 0)) * (1f + (this.PrimaryAttribute / 100f));
+			float damageFromWeapon = (Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min_Total, 0) + Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta_Total, 0)) * (1f + (PrimaryAttribute / 100f));
 
 			float totalDamage =
 				(damageFromWeapon
-				+ (damageFromWeapon * this.Inventory.GetItemBonus(GameAttribute.Weapon_Crit_Chance) * (1.5f + this.Inventory.GetItemBonus(GameAttribute.Crit_Damage_Percent))))
-				* this.Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Total);
+				+ (damageFromWeapon * Inventory.GetItemBonus(GameAttribute.Weapon_Crit_Chance) * (1.5f + Inventory.GetItemBonus(GameAttribute.Crit_Damage_Percent))))
+				* Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Total);
 
 			string serialized = "";
-			serialized += this.Inventory.GetItemBonus(GameAttribute.Strength_Item).ToString("F0");
+			serialized += Inventory.GetItemBonus(GameAttribute.Strength_Item).ToString("F0");
 			serialized += ";";
-			serialized += this.Inventory.GetItemBonus(GameAttribute.Dexterity_Item).ToString("F0");
+			serialized += Inventory.GetItemBonus(GameAttribute.Dexterity_Item).ToString("F0");
 			serialized += ";";
-			serialized += this.Inventory.GetItemBonus(GameAttribute.Intelligence_Item).ToString("F0");
+			serialized += Inventory.GetItemBonus(GameAttribute.Intelligence_Item).ToString("F0");
 			serialized += ";";
-			serialized += this.Inventory.GetItemBonus(GameAttribute.Vitality_Item).ToString("F0");
+			serialized += Inventory.GetItemBonus(GameAttribute.Vitality_Item).ToString("F0");
 			serialized += ";";
-			serialized += this.Inventory.GetItemBonus(GameAttribute.Armor_Item).ToString("F0");
+			serialized += Inventory.GetItemBonus(GameAttribute.Armor_Item).ToString("F0");
 			serialized += ";";
 			serialized += (totalDamage).ToString("F0");
-			var dbStats = this.Toon.DBToon;
+			var dbStats = Toon.DBToon;
 			dbStats.Stats = serialized;
-			this.World.Game.GameDBSession.SessionUpdate(dbStats);
+			World.Game.GameDBSession.SessionUpdate(dbStats);
 		}
 
 		public List<PlayerQuestRewardHistoryEntry> QuestRewardHistory
@@ -4166,10 +4166,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			get
 			{
 				var result = new List<PlayerQuestRewardHistoryEntry>();
-				var quests = this.InGameClient.Game.QuestManager.Quests.Where(q => q.Value.Completed == true).ToList();
+				var quests = InGameClient.Game.QuestManager.Quests.Where(q => q.Value.Completed == true).ToList();
 				foreach (var quest in quests)
 				{
-					this.InGameClient.SendMessage(new QuestUpdateMessage()
+					InGameClient.SendMessage(new QuestUpdateMessage()
 					{
 						snoQuest = quest.Key,
 						snoLevelArea = -1,
@@ -4182,7 +4182,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					{
 						snoQuest = quest.Key,
 						Field1 = 0,
-						Field2 = (PlayerQuestRewardHistoryEntry.Difficulty)this.InGameClient.Game.Difficulty
+						Field2 = (PlayerQuestRewardHistoryEntry.Difficulty)InGameClient.Game.Difficulty
 					});
 				}
 				return result;
@@ -4215,10 +4215,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void StopMoving()
 		{
-			this.World.BroadcastIfRevealed(plr => new ACDTranslateNormalMessage
+			World.BroadcastIfRevealed(plr => new ACDTranslateNormalMessage
 			{
-				ActorId = this.DynamicID(plr),
-				Position = this.Position,
+				ActorId = DynamicID(plr),
+				Position = Position,
 				SnapFacing = false,
 				MovementSpeed = 0,
 				AnimationTag = -1
@@ -4227,10 +4227,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void CheckBonusSets()
 		{
-			List<DBBonusSets> sets = this.World.Game.GameDBSession.SessionQueryWhere<DBBonusSets>(dbi => dbi.DBAccount.Id == this.Toon.GameAccount.AccountId).ToList();
+			List<DBBonusSets> sets = World.Game.GameDBSession.SessionQueryWhere<DBBonusSets>(dbi => dbi.DBAccount.Id == Toon.GameAccount.AccountId).ToList();
 			foreach (var bonusSet in sets)
 			{
-				if (this.World.Game.IsHardcore)
+				if (World.Game.IsHardcore)
 				{
 					if (bonusSet.ClaimedHardcore) continue;
 				}
@@ -4241,28 +4241,28 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 				//if (!BonusSetsList.CollectionEditions.ContainsKey(bonusSet.SetId)) continue;
 
-				if (bonusSet.SetId == 6 && this.World.Game.IsHardcore) continue;
+				if (bonusSet.SetId == 6 && World.Game.IsHardcore) continue;
 
 				//if (!(bonusSet.Claimed || bonusSet.ClaimedHardcore))
 				//	BonusSetsList.CollectionEditions[bonusSet.SetId].ClaimOnce(this);
 
-				if (this.World.Game.IsHardcore)
+				if (World.Game.IsHardcore)
 					bonusSet.ClaimedHardcore = true;
 				else
 				{
 					bonusSet.Claimed = true;
-					bonusSet.ClaimedToon = this.Toon.DBToon;
+					bonusSet.ClaimedToon = Toon.DBToon;
 				}
 
 				//BonusSetsList.CollectionEditions[bonusSet.SetId].Claim(this);
-				this.World.Game.GameDBSession.SessionUpdate(bonusSet);
+				World.Game.GameDBSession.SessionUpdate(bonusSet);
 				//this.InGameClient.SendMessage(new BroadcastTextMessage() { Field0 = "You have been granted with gifts from bonus pack!" });
 			}
 		}
 
 		public HirelingInfo GetHirelingInfo(int type)
 		{
-			var query = this.World.Game.GameDBSession.SessionQueryWhere<DBHireling>(dbh => dbh.DBToon.Id == this.Toon.PersistentID && dbh.Class == type).ToList();
+			var query = World.Game.GameDBSession.SessionQueryWhere<DBHireling>(dbh => dbh.DBToon.Id == Toon.PersistentID && dbh.Class == type).ToList();
 			if (query.Count == 0)
 			{ //returns empty data
 				var hireling_empty = new HirelingInfo { HirelingIndex = type, GbidName = 0x0000, Dead = false, Skill1SNOId = -1, Skill2SNOId = -1, Skill3SNOId = -1, Skill4SNOId = -1, annItems = -1 };
@@ -4324,33 +4324,33 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					dbi.isHardcore == this.World.Game.IsHardcore);*/
 			if (artisan == "Blacksmith")
 			{
-				this.learnedBlacksmithRecipes.Add(recipe);
-				this.blacksmith_data.LearnedRecipes = SerializeBytes(this.learnedBlacksmithRecipes);
-				this.World.Game.GameDBSession.SessionUpdate(blacksmith_data);
-				this.UpdateAchievementCounter(404, 1, 0);
+				learnedBlacksmithRecipes.Add(recipe);
+				blacksmith_data.LearnedRecipes = SerializeBytes(learnedBlacksmithRecipes);
+				World.Game.GameDBSession.SessionUpdate(blacksmith_data);
+				UpdateAchievementCounter(404, 1, 0);
 			}
 			if (artisan == "Jeweler")
 			{
-				this.learnedJewelerRecipes.Add(recipe);
-				jeweler_data.LearnedRecipes = SerializeBytes(this.learnedJewelerRecipes);
-				this.World.Game.GameDBSession.SessionUpdate(jeweler_data);
-				this.UpdateAchievementCounter(404, 1, 1);
+				learnedJewelerRecipes.Add(recipe);
+				jeweler_data.LearnedRecipes = SerializeBytes(learnedJewelerRecipes);
+				World.Game.GameDBSession.SessionUpdate(jeweler_data);
+				UpdateAchievementCounter(404, 1, 1);
 			}
 
-			this.LoadCrafterData();
+			LoadCrafterData();
 		}
 
-		public bool RecipeAvailable(DiIiS_NA.Core.MPQ.FileFormats.GameBalance.RecipeTable recipe_definition)
+		public bool RecipeAvailable(GameBalance.RecipeTable recipe_definition)
 		{
 			if (recipe_definition.Flags == 0) return true;
-			return (this.learnedBlacksmithRecipes.Contains(recipe_definition.Hash) || this.learnedJewelerRecipes.Contains(recipe_definition.Hash));
+			return (learnedBlacksmithRecipes.Contains(recipe_definition.Hash) || learnedJewelerRecipes.Contains(recipe_definition.Hash));
 		}
 
 		public PlayerBannerMessage GetPlayerBanner()
 		{
 			var playerBanner = D3.GameMessage.PlayerBanner.CreateBuilder()
-				.SetPlayerIndex((uint)this.PlayerIndex)
-				.SetBanner(this.Toon.GameAccount.BannerConfigurationField.Value)
+				.SetPlayerIndex((uint)PlayerIndex)
+				.SetBanner(Toon.GameAccount.BannerConfigurationField.Value)
 				.Build();
 
 			return new PlayerBannerMessage() { PlayerBanner = playerBanner };
@@ -4368,29 +4368,29 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			if (blacksmith_data == null)
 			{
-				List<DBCraft> craft_data = this.World.Game.GameDBSession.SessionQueryWhere<DBCraft>(dbc => dbc.DBGameAccount.Id == this.Toon.GameAccount.PersistentID);
+				List<DBCraft> craft_data = World.Game.GameDBSession.SessionQueryWhere<DBCraft>(dbc => dbc.DBGameAccount.Id == Toon.GameAccount.PersistentID);
 
-				blacksmith_data = craft_data.Single(dbc => dbc.Artisan == "Blacksmith" && dbc.isHardcore == this.World.Game.IsHardcore && dbc.isSeasoned == this.World.Game.IsSeasoned);
-				jeweler_data = craft_data.Single(dbc => dbc.Artisan == "Jeweler" && dbc.isHardcore == this.World.Game.IsHardcore && dbc.isSeasoned == this.World.Game.IsSeasoned);
-				mystic_data = craft_data.Single(dbc => dbc.Artisan == "Mystic" && dbc.isHardcore == this.World.Game.IsHardcore && dbc.isSeasoned == this.World.Game.IsSeasoned);
+				blacksmith_data = craft_data.Single(dbc => dbc.Artisan == "Blacksmith" && dbc.isHardcore == World.Game.IsHardcore && dbc.isSeasoned == World.Game.IsSeasoned);
+				jeweler_data = craft_data.Single(dbc => dbc.Artisan == "Jeweler" && dbc.isHardcore == World.Game.IsHardcore && dbc.isSeasoned == World.Game.IsSeasoned);
+				mystic_data = craft_data.Single(dbc => dbc.Artisan == "Mystic" && dbc.isHardcore == World.Game.IsHardcore && dbc.isSeasoned == World.Game.IsSeasoned);
 			}
 
 
 
 			D3.ItemCrafting.CrafterData blacksmith = D3.ItemCrafting.CrafterData.CreateBuilder()
-				.SetLevel(this.InGameClient.Game.CurrentAct == 3000 ? this.BlacksmithUnlocked == false && blacksmith_data.Level < 1 ? 1 : blacksmith_data.Level : blacksmith_data.Level)
+				.SetLevel(InGameClient.Game.CurrentAct == 3000 ? BlacksmithUnlocked == false && blacksmith_data.Level < 1 ? 1 : blacksmith_data.Level : blacksmith_data.Level)
 				.SetCooldownEnd(0)
-				.AddRangeRecipes(this.UnserializeBytes(blacksmith_data.LearnedRecipes))
+				.AddRangeRecipes(UnserializeBytes(blacksmith_data.LearnedRecipes))
 				.Build();
-			this.learnedBlacksmithRecipes = this.UnserializeBytes(blacksmith_data.LearnedRecipes);
+			learnedBlacksmithRecipes = UnserializeBytes(blacksmith_data.LearnedRecipes);
 			D3.ItemCrafting.CrafterData jeweler = D3.ItemCrafting.CrafterData.CreateBuilder()
-				.SetLevel(this.InGameClient.Game.CurrentAct == 3000 ? this.JewelerUnlocked == false && jeweler_data.Level < 1 ? 1 : jeweler_data.Level : jeweler_data.Level)
+				.SetLevel(InGameClient.Game.CurrentAct == 3000 ? JewelerUnlocked == false && jeweler_data.Level < 1 ? 1 : jeweler_data.Level : jeweler_data.Level)
 				.SetCooldownEnd(0)
-				.AddRangeRecipes(this.UnserializeBytes(jeweler_data.LearnedRecipes))
+				.AddRangeRecipes(UnserializeBytes(jeweler_data.LearnedRecipes))
 				.Build();
-			this.learnedJewelerRecipes = this.UnserializeBytes(jeweler_data.LearnedRecipes);
+			learnedJewelerRecipes = UnserializeBytes(jeweler_data.LearnedRecipes);
 			D3.ItemCrafting.CrafterData mystic = D3.ItemCrafting.CrafterData.CreateBuilder()
-				.SetLevel(this.InGameClient.Game.CurrentAct == 3000 ? this.MysticUnlocked == false && mystic_data.Level < 1 ? 1 : mystic_data.Level : mystic_data.Level)
+				.SetLevel(InGameClient.Game.CurrentAct == 3000 ? MysticUnlocked == false && mystic_data.Level < 1 ? 1 : mystic_data.Level : mystic_data.Level)
 				.SetCooldownEnd(0)
 				.Build();
 
@@ -4398,18 +4398,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				.SetTransmogData(D3.GameBalance.BitPackedGbidArray.CreateBuilder().SetBitfield(ByteString.CopyFrom(mystic_data.LearnedRecipes)))
 				//.AddRangeUnlockedTransmogs(this.UnserializeBytes(mystic_data.LearnedRecipes))
 				.Build();
-			this.learnedTransmogs = this.UnserializeBytes(mystic_data.LearnedRecipes);
+			learnedTransmogs = UnserializeBytes(mystic_data.LearnedRecipes);
 
-			if (this.BlacksmithUnlocked || this.InGameClient.Game.CurrentAct == 3000)
-				this.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataBlacksmithInitialMessage) { Data = blacksmith.ToByteArray() });
+			if (BlacksmithUnlocked || InGameClient.Game.CurrentAct == 3000)
+				InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataBlacksmithInitialMessage) { Data = blacksmith.ToByteArray() });
 
-			if (this.JewelerUnlocked || this.InGameClient.Game.CurrentAct == 3000)
-				this.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataJewelerInitialMessage) { Data = jeweler.ToByteArray() });
+			if (JewelerUnlocked || InGameClient.Game.CurrentAct == 3000)
+				InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataJewelerInitialMessage) { Data = jeweler.ToByteArray() });
 
-			if (this.MysticUnlocked || this.InGameClient.Game.CurrentAct == 3000)
+			if (MysticUnlocked || InGameClient.Game.CurrentAct == 3000)
 			{
-				this.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataMysticInitialMessage) { Data = mystic.ToByteArray() });
-				this.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataTransmogInitialMessage) { Data = transmog.ToByteArray() });
+				InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataMysticInitialMessage) { Data = mystic.ToByteArray() });
+				InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataTransmogInitialMessage) { Data = transmog.ToByteArray() });
 			}
 		}
 
@@ -4422,13 +4422,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void LoadMailData()
 		{
-			List<DBMail> mail_data = this.World.Game.GameDBSession.SessionQueryWhere<DBMail>(dbm => dbm.DBToon.Id == this.Toon.PersistentID && dbm.Claimed == false);
+			List<DBMail> mail_data = World.Game.GameDBSession.SessionQueryWhere<DBMail>(dbm => dbm.DBToon.Id == Toon.PersistentID && dbm.Claimed == false);
 			var mails = D3.Items.Mails.CreateBuilder();
 			foreach (var mail in mail_data)
 			{
 				var mail_row = D3.Items.Mail.CreateBuilder()
-					.SetAccountTo(this.Toon.D3EntityID)
-					.SetAccountFrom(this.Toon.D3EntityID)
+					.SetAccountTo(Toon.D3EntityID)
+					.SetAccountFrom(Toon.D3EntityID)
 					.SetMailId(mail.Id)
 					.SetTitle(mail.Title)
 					.SetBody(mail.Body);
@@ -4458,12 +4458,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				.SetMails(mails)
 				.Build();
 
-			this.InGameClient.SendMessage(new MailDigestMessage() { MailContents = mail_contents }) ;
+			InGameClient.SendMessage(new MailDigestMessage() { MailContents = mail_contents }) ;
 		}
 		//*/
 		public void LoadStashIconsData()
 		{
-			var dbGAcc = this.Toon.GameAccount.DBGameAccount;
+			var dbGAcc = Toon.GameAccount.DBGameAccount;
 			if (dbGAcc.StashIcons == null) return;
 
 			//this.InGameClient.SendMessage(new StashIconStateMessage() { StashIcons = dbGAcc.StashIcons });
@@ -4472,7 +4472,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void NotifyMaintenance()
 		{
 			if (GameServer.ClientSystem.GameServer.MaintenanceTime > 0 && GameServer.ClientSystem.GameServer.MaintenanceTime > (int)DateTime.Now.ToUnixTime())
-				this.InGameClient.SendMessage(new LogoutTickTimeMessage()
+				InGameClient.SendMessage(new LogoutTickTimeMessage()
 				{
 					Field0 = false, // true - logout with party?
 					Ticks = 0, // delay 1, make this equal to 0 for instant logout
@@ -4487,12 +4487,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			tutorials.Add(64);
 			for (int i = 0; i < 15; i++)
 				tutorials.Add(0);
-			var seenTutorials = this.Toon.GameAccount.DBGameAccount.SeenTutorials;
+			var seenTutorials = Toon.GameAccount.DBGameAccount.SeenTutorials;
 
 			D3.GameMessage.TutorialState state = D3.GameMessage.TutorialState.CreateBuilder()
 				.SetSeenTutorials(ByteString.CopyFrom(seenTutorials))
 				.Build();
-			this.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.TutorialStateMessage) { Data = state.ToByteArray() });
+			InGameClient.SendMessage(new GenericBlobMessage(Opcodes.TutorialStateMessage) { Data = state.ToByteArray() });
 		}
 
 		private List<ulong> _unlockedAchievements = new List<ulong>();
@@ -4506,7 +4506,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void GrantAchievement(ulong id)
 		{
 			if (_unlockedAchievements.Contains(id)) return;
-			if (this.InGameClient.BnetClient.Account.GameAccount.Achievements.Where(a => a.AchievementId == id && a.Completion != -1).Count() > 0) return;
+			if (InGameClient.BnetClient.Account.GameAccount.Achievements.Where(a => a.AchievementId == id && a.Completion != -1).Count() > 0) return;
 			if (_unlockedAchievements.Contains(id)) return;
 			_unlockedAchievements.Add(id);
 			try
@@ -4516,18 +4516,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				foreach (var attr in Achievement.AttributesList)
 					if (attr.Key == "Reward Currency Quantity")
 						Platinum = Int64.Parse(attr.Value);
-				this.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Platinum.PlatinumAchievementAwardedMessage
+				InGameClient.SendMessage(new MessageSystem.Message.Definitions.Platinum.PlatinumAchievementAwardedMessage
 				{
-					CurrentPlatinum = this.InGameClient.BnetClient.Account.GameAccount.Platinum,
+					CurrentPlatinum = InGameClient.BnetClient.Account.GameAccount.Platinum,
 					idAchievement = id,
 					PlatinumIncrement = Platinum
 				});
 				if (Platinum > 0)
 				{
-					this.InGameClient.BnetClient.Account.GameAccount.Platinum += (int)Platinum;
-					this.Inventory.UpdateCurrencies();
+					InGameClient.BnetClient.Account.GameAccount.Platinum += (int)Platinum;
+					Inventory.UpdateCurrencies();
 				}
-				ClientSystem.GameServer.GSBackend.GrantAchievement(this.Toon.GameAccount.PersistentID, id);
+				ClientSystem.GameServer.GSBackend.GrantAchievement(Toon.GameAccount.PersistentID, id);
 
 			}
 			catch (Exception e)
@@ -4538,25 +4538,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void AddAchievementCounter(ulong id, uint count)
 		{
-			lock (this.AchievementCounters)
+			lock (AchievementCounters)
 			{
-				if (!this.AchievementCounters.ContainsKey(id))
-					this.AchievementCounters.Add(id, count);
+				if (!AchievementCounters.ContainsKey(id))
+					AchievementCounters.Add(id, count);
 				else
-					this.AchievementCounters[id] += count;
+					AchievementCounters[id] += count;
 			}
 		}
 
 		public void CheckAchievementCounters()
 		{
-			lock (this.AchievementCounters)
+			lock (AchievementCounters)
 			{
-				foreach (var counter in this.AchievementCounters)
+				foreach (var counter in AchievementCounters)
 				{
 					if (counter.Value == 0) continue;
-					this.UpdateSingleAchievementCounter(counter.Key, counter.Value);
+					UpdateSingleAchievementCounter(counter.Key, counter.Value);
 				}
-				this.AchievementCounters.Clear();
+				AchievementCounters.Clear();
 			}
 		}
 
@@ -4566,7 +4566,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			_unlockedCriterias.Add(id);
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.GrantCriteria(this.Toon.GameAccount.PersistentID, id);
+				GameServer.ClientSystem.GameServer.GSBackend.GrantCriteria(Toon.GameAccount.PersistentID, id);
 			}
 			catch (Exception e)
 			{
@@ -4578,7 +4578,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.UpdateQuantity(this.Toon.GameAccount.PersistentID, id, counter);
+				GameServer.ClientSystem.GameServer.GSBackend.UpdateQuantity(Toon.GameAccount.PersistentID, id, counter);
 			}
 			catch (Exception e)
 			{
@@ -4590,7 +4590,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.UpdateAchievementCounter(this.Toon.GameAccount.PersistentID, type, addCounter, comparand, achiId);
+				GameServer.ClientSystem.GameServer.GSBackend.UpdateAchievementCounter(Toon.GameAccount.PersistentID, type, addCounter, comparand, achiId);
 			}
 			catch (Exception e)
 			{
@@ -4602,7 +4602,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.UpdateSingleAchievementCounter(this.Toon.GameAccount.PersistentID, achievementId, addCounter);
+				GameServer.ClientSystem.GameServer.GSBackend.UpdateSingleAchievementCounter(Toon.GameAccount.PersistentID, achievementId, addCounter);
 			}
 			catch (Exception e)
 			{
@@ -4614,7 +4614,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.CheckQuestCriteria(this.Toon.GameAccount.PersistentID, questId, this.World.Game.Players.Count > 1);
+				GameServer.ClientSystem.GameServer.GSBackend.CheckQuestCriteria(Toon.GameAccount.PersistentID, questId, World.Game.Players.Count > 1);
 			}
 			catch (Exception e)
 			{
@@ -4626,7 +4626,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				ClientSystem.GameServer.GSBackend.CheckKillMonsterCriteria(this.Toon.GameAccount.PersistentID, (int)actorSno, type, this.World.Game.IsHardcore);
+				ClientSystem.GameServer.GSBackend.CheckKillMonsterCriteria(Toon.GameAccount.PersistentID, (int)actorSno, type, World.Game.IsHardcore);
 			}
 			catch (Exception e)
 			{
@@ -4638,7 +4638,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.CheckLevelCap(this.Toon.GameAccount.PersistentID);
+				GameServer.ClientSystem.GameServer.GSBackend.CheckLevelCap(Toon.GameAccount.PersistentID);
 			}
 			catch (Exception e)
 			{
@@ -4650,7 +4650,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.CheckSalvageItemCriteria(this.Toon.GameAccount.PersistentID, itemId);
+				GameServer.ClientSystem.GameServer.GSBackend.CheckSalvageItemCriteria(Toon.GameAccount.PersistentID, itemId);
 			}
 			catch (Exception e)
 			{
@@ -4662,7 +4662,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.CheckConversationCriteria(this.Toon.GameAccount.PersistentID, convId);
+				GameServer.ClientSystem.GameServer.GSBackend.CheckConversationCriteria(Toon.GameAccount.PersistentID, convId);
 			}
 			catch (Exception e)
 			{
@@ -4674,7 +4674,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.CheckLevelAreaCriteria(this.Toon.GameAccount.PersistentID, laId);
+				GameServer.ClientSystem.GameServer.GSBackend.CheckLevelAreaCriteria(Toon.GameAccount.PersistentID, laId);
 			}
 			catch (Exception e)
 			{
@@ -4686,7 +4686,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.ParagonLevelUp(this.Toon.GameAccount.PersistentID);
+				GameServer.ClientSystem.GameServer.GSBackend.ParagonLevelUp(Toon.GameAccount.PersistentID);
 			}
 			catch (Exception e)
 			{
@@ -4698,7 +4698,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			try
 			{
-				GameServer.ClientSystem.GameServer.GSBackend.UniqueItemIdentified(this.Toon.GameAccount.PersistentID, itemId);
+				GameServer.ClientSystem.GameServer.GSBackend.UniqueItemIdentified(Toon.GameAccount.PersistentID, itemId);
 			}
 			catch (Exception e)
 			{
@@ -4709,14 +4709,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void SetProgress(int act, int difficulty)
 		{
 			if (act > 400) return;
-			var dbGAcc = this.World.Game.GameDBSession.SessionGet<DBGameAccount>(this.Toon.GameAccount.PersistentID);
+			var dbGAcc = World.Game.GameDBSession.SessionGet<DBGameAccount>(Toon.GameAccount.PersistentID);
 			var progress = dbGAcc.BossProgress;
 			if (progress[(act / 100)] == 0xff || progress[(act / 100)] < (byte)difficulty)
 			{
 				progress[(act / 100)] = (byte)difficulty;
 
 				dbGAcc.BossProgress = progress;
-				this.World.Game.GameDBSession.SessionUpdate(dbGAcc);
+				World.Game.GameDBSession.SessionUpdate(dbGAcc);
 			}
 		}
 
@@ -4724,52 +4724,52 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void StartCasting(int durationTicks, Action result, int skillsno = -1)
 		{
-			this.IsCasting = true;
-			this.CastResult = result;
-			this.Attributes[GameAttribute.Looping_Animation_Start_Time] = this.World.Game.TickCounter;
-			this.Attributes[GameAttribute.Looping_Animation_End_Time] = this.World.Game.TickCounter + durationTicks;
+			IsCasting = true;
+			CastResult = result;
+			Attributes[GameAttribute.Looping_Animation_Start_Time] = World.Game.TickCounter;
+			Attributes[GameAttribute.Looping_Animation_End_Time] = World.Game.TickCounter + durationTicks;
 			castingsnopower = skillsno;
 			if (castingsnopower != -1)
 			{
-				this.Attributes[GameAttribute.Buff_Icon_Start_Tick0, castingsnopower] = this.World.Game.TickCounter;
-				this.Attributes[GameAttribute.Buff_Icon_End_Tick0, castingsnopower] = this.World.Game.TickCounter + durationTicks;
-				this.Attributes[GameAttribute.Buff_Icon_Count0, castingsnopower] = 1;
-				this.Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, castingsnopower] = true;
+				Attributes[GameAttribute.Buff_Icon_Start_Tick0, castingsnopower] = World.Game.TickCounter;
+				Attributes[GameAttribute.Buff_Icon_End_Tick0, castingsnopower] = World.Game.TickCounter + durationTicks;
+				Attributes[GameAttribute.Buff_Icon_Count0, castingsnopower] = 1;
+				Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, castingsnopower] = true;
 
 			}
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes.BroadcastChangedIfRevealed();
 		}
 
 		public void StopCasting()
 		{
-			this.IsCasting = false;
-			this.Attributes[GameAttribute.Looping_Animation_Start_Time] = -1;
-			this.Attributes[GameAttribute.Looping_Animation_End_Time] = -1;
+			IsCasting = false;
+			Attributes[GameAttribute.Looping_Animation_Start_Time] = -1;
+			Attributes[GameAttribute.Looping_Animation_End_Time] = -1;
 			if (castingsnopower != -1)
 			{
-				this.Attributes[GameAttribute.Buff_Icon_Start_Tick0, castingsnopower] = -1;
-				this.Attributes[GameAttribute.Buff_Icon_End_Tick0, castingsnopower] = -1;
-				this.Attributes[GameAttribute.Buff_Icon_Count0, castingsnopower] = 0;
-				this.Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, castingsnopower] = false;
+				Attributes[GameAttribute.Buff_Icon_Start_Tick0, castingsnopower] = -1;
+				Attributes[GameAttribute.Buff_Icon_End_Tick0, castingsnopower] = -1;
+				Attributes[GameAttribute.Buff_Icon_Count0, castingsnopower] = 0;
+				Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, castingsnopower] = false;
 			}
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes.BroadcastChangedIfRevealed();
 		}
 
 		private void UpdateCastState()
 		{
-			if (this.Attributes[GameAttribute.Looping_Animation_End_Time] <= this.World.Game.TickCounter)
+			if (Attributes[GameAttribute.Looping_Animation_End_Time] <= World.Game.TickCounter)
 			{
 				StopCasting();
-				this.CastResult.Invoke();
-				this.CastResult = null;
+				CastResult.Invoke();
+				CastResult = null;
 			}
 		}
 
 		public void ShowConfirmation(uint actorId, Action result)
 		{
-			this.ConfirmationResult = result;
+			ConfirmationResult = result;
 
-			this.InGameClient.SendMessage(new ConfirmMessage()
+			InGameClient.SendMessage(new ConfirmMessage()
 			{
 				ActorID = actorId
 			});
@@ -4784,7 +4784,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			get
 			{
 
-				if (this.Toon.Gender == 0)
+				if (Toon.Gender == 0)
 				{
 					return Toon.HeroTable.SNOMaleActor;
 				}
@@ -4799,9 +4799,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				if (this.World.BuffManager.HasBuff<PowerSystem.Implementations.NephalemValorBuff>(this))
+				if (World.BuffManager.HasBuff<NephalemValorBuff>(this))
 				{
-					return Math.Max(this.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.NephalemValorBuff>(this).StackCount - 3, 0);
+					return Math.Max(World.BuffManager.GetFirstBuff<NephalemValorBuff>(this).StackCount - 3, 0);
 				}
 				else return 0;
 			}
@@ -4811,7 +4811,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			get
 			{
-				switch (this.Toon.Class)
+				switch (Toon.Class)
 				{
 					case ToonClass.Barbarian:
 						return 1.2f;
@@ -4851,8 +4851,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			get
 			{
 				var town_areas = new List<int> { 19947, 168314, 92945, 197101 };
-				var proximity = new RectangleF(this.Position.X - 1f, this.Position.Y - 1f, 2f, 2f);
-				var scenes = this.World.QuadTree.Query<Scene>(proximity);
+				var proximity = new RectangleF(Position.X - 1f, Position.Y - 1f, 2f, 2f);
+				var scenes = World.QuadTree.Query<Scene>(proximity);
 				if (scenes.Count == 0) return false;
 
 				var scene = scenes[0];
@@ -4875,7 +4875,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		private float GetMaxResource(int resourceId)
 		{
 			if (resourceId == 2) return 0;
-			return (Math.Max((this.Attributes[GameAttribute.Resource_Max, resourceId] + ((this.Attributes[GameAttribute.Level] - 1) * this.Attributes[GameAttribute.Resource_Factor_Level, resourceId]) + this.Attributes[GameAttribute.Resource_Max_Bonus, resourceId]) * (this.Attributes[GameAttribute.Resource_Max_Percent_Bonus, resourceId] + 1), 0));
+			return (Math.Max((Attributes[GameAttribute.Resource_Max, resourceId] + ((Attributes[GameAttribute.Level] - 1) * Attributes[GameAttribute.Resource_Factor_Level, resourceId]) + Attributes[GameAttribute.Resource_Max_Bonus, resourceId]) * (Attributes[GameAttribute.Resource_Max_Percent_Bonus, resourceId] + 1), 0));
 		}
 
 		public static List<long> LevelBorders = new List<long>{
@@ -4994,111 +4994,111 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void AddRestExperience()
 		{
 			long exp_needed = 0;
-			if (this.Attributes[GameAttribute.Level] == this.Attributes[GameAttribute.Level_Cap])
-				exp_needed = ParagonLevelBorders[this.Attributes[GameAttribute.Alt_Level]];
+			if (Attributes[GameAttribute.Level] == Attributes[GameAttribute.Level_Cap])
+				exp_needed = ParagonLevelBorders[Attributes[GameAttribute.Alt_Level]];
 			else
-				exp_needed = LevelBorders[this.Attributes[GameAttribute.Level]];
+				exp_needed = LevelBorders[Attributes[GameAttribute.Level]];
 
-			this.Attributes[GameAttribute.Rest_Experience_Lo] = Math.Min(this.Attributes[GameAttribute.Rest_Experience_Lo] + (int)(exp_needed / 10), (int)exp_needed);
-			this.Attributes[GameAttribute.Rest_Experience_Bonus_Percent] = 0.25f;
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes[GameAttribute.Rest_Experience_Lo] = Math.Min(Attributes[GameAttribute.Rest_Experience_Lo] + (int)(exp_needed / 10), (int)exp_needed);
+			Attributes[GameAttribute.Rest_Experience_Bonus_Percent] = 0.25f;
+			Attributes.BroadcastChangedIfRevealed();
 		}
 
 		private object _XPlock = new object();
 
 		public void UpdateExp(int addedExp)
 		{
-			lock (this._XPlock)
+			lock (_XPlock)
 			{
-				if (this.Dead) return;
-				if (this.World.Game.IsHardcore && this.Attributes[GameAttribute.Level] >= 70)
+				if (Dead) return;
+				if (World.Game.IsHardcore && Attributes[GameAttribute.Level] >= 70)
 					addedExp *= 5;
 
-				if (this.Attributes[GameAttribute.Alt_Level] >= 515)
+				if (Attributes[GameAttribute.Alt_Level] >= 515)
 				{
-					var XPcap = (91.262575239831f * Math.Pow(this.Attributes[GameAttribute.Alt_Level], 3)) - (44301.083380565047f * Math.Pow(this.Attributes[GameAttribute.Alt_Level], 2)) + (3829010.395566940308f * this.Attributes[GameAttribute.Alt_Level]) + 322795582.543823242188f;
-					addedExp = (int)((float)(ParagonLevelBorders[this.Attributes[GameAttribute.Alt_Level]] / XPcap) * addedExp);
+					var XPcap = (91.262575239831f * Math.Pow(Attributes[GameAttribute.Alt_Level], 3)) - (44301.083380565047f * Math.Pow(Attributes[GameAttribute.Alt_Level], 2)) + (3829010.395566940308f * Attributes[GameAttribute.Alt_Level]) + 322795582.543823242188f;
+					addedExp = (int)((float)(ParagonLevelBorders[Attributes[GameAttribute.Alt_Level]] / XPcap) * addedExp);
 				}
 
-				if (this.Attributes[GameAttribute.Rest_Experience_Lo] > 0)
+				if (Attributes[GameAttribute.Rest_Experience_Lo] > 0)
 				{
-					var multipliedExp = (int)Math.Min(addedExp * this.Attributes[GameAttribute.Rest_Experience_Bonus_Percent], this.Attributes[GameAttribute.Rest_Experience_Lo]);
+					var multipliedExp = (int)Math.Min(addedExp * Attributes[GameAttribute.Rest_Experience_Bonus_Percent], Attributes[GameAttribute.Rest_Experience_Lo]);
 					addedExp += multipliedExp;
-					this.Attributes[GameAttribute.Rest_Experience_Lo] -= multipliedExp;
+					Attributes[GameAttribute.Rest_Experience_Lo] -= multipliedExp;
 				}
 
-				if (this.Attributes[GameAttribute.Level] == this.Attributes[GameAttribute.Level_Cap])
-					this.Attributes[GameAttribute.Alt_Experience_Next_Lo] -= addedExp;
+				if (Attributes[GameAttribute.Level] == Attributes[GameAttribute.Level_Cap])
+					Attributes[GameAttribute.Alt_Experience_Next_Lo] -= addedExp;
 				else
-					this.Attributes[GameAttribute.Experience_Next_Lo] -= addedExp;
+					Attributes[GameAttribute.Experience_Next_Lo] -= addedExp;
 
 				// Levelup
-				while ((this.Attributes[GameAttribute.Level] >= this.Attributes[GameAttribute.Level_Cap]) ? (this.Attributes[GameAttribute.Alt_Experience_Next_Lo] <= 0) : (this.Attributes[GameAttribute.Experience_Next_Lo] <= 0))
+				while ((Attributes[GameAttribute.Level] >= Attributes[GameAttribute.Level_Cap]) ? (Attributes[GameAttribute.Alt_Experience_Next_Lo] <= 0) : (Attributes[GameAttribute.Experience_Next_Lo] <= 0))
 				{
 
 					// No more levelup at Level_Cap
-					if (this.Attributes[GameAttribute.Level] >= this.Attributes[GameAttribute.Level_Cap])
+					if (Attributes[GameAttribute.Level] >= Attributes[GameAttribute.Level_Cap])
 					{
-						this.ParagonLevel++;
-						this.Toon.ParagonLevelUp();
-						this.ParagonLevelUp();
-						this.Attributes[GameAttribute.Alt_Level]++;
-						this.InGameClient.SendMessage(new ParagonLevel()
+						ParagonLevel++;
+						Toon.ParagonLevelUp();
+						ParagonLevelUp();
+						Attributes[GameAttribute.Alt_Level]++;
+						InGameClient.SendMessage(new ParagonLevel()
 						{
-							PlayerIndex = this.PlayerIndex,
-							Level = this.ParagonLevel
+							PlayerIndex = PlayerIndex,
+							Level = ParagonLevel
 						});
-						this.Conversations.StartConversation(0x0002A777); //LevelUp Conversation
+						Conversations.StartConversation(0x0002A777); //LevelUp Conversation
 
-						this.Attributes[GameAttribute.Alt_Experience_Next_Lo] = this.Attributes[GameAttribute.Alt_Experience_Next_Lo] + (int)ParagonLevelBorders[this.Attributes[GameAttribute.Alt_Level]];
+						Attributes[GameAttribute.Alt_Experience_Next_Lo] = Attributes[GameAttribute.Alt_Experience_Next_Lo] + (int)ParagonLevelBorders[Attributes[GameAttribute.Alt_Level]];
 						// On level up, health is set to max
-						this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
+						Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
 						// set resources to max as well
-						this.Attributes[GameAttribute.Resource_Cur, this.Attributes[GameAttribute.Resource_Type_Primary] - 1] = this.Attributes[GameAttribute.Resource_Max_Total, this.Attributes[GameAttribute.Resource_Type_Primary] - 1];
-						this.Attributes[GameAttribute.Resource_Cur, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1] = this.Attributes[GameAttribute.Resource_Max_Total, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1];
+						Attributes[GameAttribute.Resource_Cur, Attributes[GameAttribute.Resource_Type_Primary] - 1] = Attributes[GameAttribute.Resource_Max_Total, Attributes[GameAttribute.Resource_Type_Primary] - 1];
+						Attributes[GameAttribute.Resource_Cur, Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Attributes[GameAttribute.Resource_Max_Total, Attributes[GameAttribute.Resource_Type_Secondary] - 1];
 
-						this.ExperienceNext = this.Attributes[GameAttribute.Alt_Experience_Next_Lo];
-						this.Attributes.BroadcastChangedIfRevealed();
+						ExperienceNext = Attributes[GameAttribute.Alt_Experience_Next_Lo];
+						Attributes.BroadcastChangedIfRevealed();
 
-						this.PlayEffect(Effect.ParagonLevelUp, null, false);
-						this.World.PowerManager.RunPower(this, 252038); //g_LevelUp_AA.pow 252038
+						PlayEffect(Effect.ParagonLevelUp, null, false);
+						World.PowerManager.RunPower(this, 252038); //g_LevelUp_AA.pow 252038
 						return;
 					}
 
-					this.Level++;
-					this.Attributes[GameAttribute.Level]++;
-					this.Toon.LevelUp();
-					if ((this.World.Game.MonsterLevel + 1) == this.Attributes[GameAttribute.Level]) //if this is suitable level to update
-						this.World.Game.UpdateLevel(this.Attributes[GameAttribute.Level]);
+					Level++;
+					Attributes[GameAttribute.Level]++;
+					Toon.LevelUp();
+					if ((World.Game.MonsterLevel + 1) == Attributes[GameAttribute.Level]) //if this is suitable level to update
+						World.Game.UpdateLevel(Attributes[GameAttribute.Level]);
 
-					this.InGameClient.SendMessage(new PlayerLevel()
+					InGameClient.SendMessage(new PlayerLevel()
 					{
-						PlayerIndex = this.PlayerIndex,
-						Level = this.Level
+						PlayerIndex = PlayerIndex,
+						Level = Level
 					});
 
 
 					//Test Update Monster Level
-					if (this.PlayerIndex == 0)
+					if (PlayerIndex == 0)
 					{
-						this.InGameClient.Game.InitialMonsterLevel = this.Level;
-						this.InGameClient.SendMessage(new GameSyncedDataMessage
+						InGameClient.Game.InitialMonsterLevel = Level;
+						InGameClient.SendMessage(new GameSyncedDataMessage
 						{
 							SyncedData = new GameSyncedData
 							{
-								GameSyncedFlags = this.InGameClient.Game.IsSeasoned == true ? this.InGameClient.Game.IsHardcore == true ? 3 : 2 : this.InGameClient.Game.IsHardcore == true ? 1 : 0,
-								Act = Math.Min(this.InGameClient.Game.CurrentAct, 3000),       //act id
-								InitialMonsterLevel = this.InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
+								GameSyncedFlags = InGameClient.Game.IsSeasoned == true ? InGameClient.Game.IsHardcore == true ? 3 : 2 : InGameClient.Game.IsHardcore == true ? 1 : 0,
+								Act = Math.Min(InGameClient.Game.CurrentAct, 3000),       //act id
+								InitialMonsterLevel = InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
 								MonsterLevel = 0x64E4425E, //MonsterLevel
-								RandomWeatherSeed = this.InGameClient.Game.WeatherSeed, //RandomWeatherSeed
-								OpenWorldMode = this.InGameClient.Game.CurrentAct == 3000 ? 1 : 0, //OpenWorldMode
+								RandomWeatherSeed = InGameClient.Game.WeatherSeed, //RandomWeatherSeed
+								OpenWorldMode = InGameClient.Game.CurrentAct == 3000 ? 1 : 0, //OpenWorldMode
 								OpenWorldModeAct = -1, //OpenWorldModeAct
 								OpenWorldModeParam = -1, //OpenWorldModeParam
 								OpenWorldTransitionTime = 0x00000064, //OpenWorldTransitionTime
 								OpenWorldDefaultAct = 100, //OpenWorldDefaultAct
 								OpenWorldBonusAct = -1, //OpenWorldBonusAct
 								SNODungeonFinderLevelArea = 0x00000001, //SNODungeonFinderLevelArea
-								LootRunOpen = this.InGameClient.Game.GameMode == Game.Mode.Portals ? 0 : -1, //LootRunOpen //0 - Великий Портал
+								LootRunOpen = InGameClient.Game.GameMode == Game.Mode.Portals ? 0 : -1, //LootRunOpen //0 - Великий Портал
 								OpenLootRunLevel = 1, //OpenLootRunLevel
 								LootRunBossDead = 0, //LootRunBossDead
 								HunterPlayerIdx = 0, //HunterPlayerIdx
@@ -5120,104 +5120,104 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							}
 						});
 					}
-					this.Conversations.StartConversation(0x0002A777); //LevelUp Conversation
+					Conversations.StartConversation(0x0002A777); //LevelUp Conversation
 
-					if (this.Attributes[GameAttribute.Level] >= this.Attributes[GameAttribute.Level_Cap])
+					if (Attributes[GameAttribute.Level] >= Attributes[GameAttribute.Level_Cap])
 					{
-						this.Attributes[GameAttribute.Alt_Experience_Next_Lo] = (int)ParagonLevelBorders[this.Toon.ParagonLevel];
-						this.Toon.ExperienceNext = (int)ParagonLevelBorders[this.Toon.ParagonLevel];
+						Attributes[GameAttribute.Alt_Experience_Next_Lo] = (int)ParagonLevelBorders[Toon.ParagonLevel];
+						Toon.ExperienceNext = (int)ParagonLevelBorders[Toon.ParagonLevel];
 					}
 					else
 					{
-						this.Attributes[GameAttribute.Experience_Next_Lo] = this.Attributes[GameAttribute.Experience_Next_Lo] + (int)LevelBorders[this.Attributes[GameAttribute.Level]];
-						this.Toon.ExperienceNext = this.Attributes[GameAttribute.Experience_Next_Lo];
+						Attributes[GameAttribute.Experience_Next_Lo] = Attributes[GameAttribute.Experience_Next_Lo] + (int)LevelBorders[Attributes[GameAttribute.Level]];
+						Toon.ExperienceNext = Attributes[GameAttribute.Experience_Next_Lo];
 					}
 
 					// 4 main attributes are incremented according to class
-					this.Attributes[GameAttribute.Strength] = this.Strength;
-					this.Attributes[GameAttribute.Intelligence] = this.Intelligence;
-					this.Attributes[GameAttribute.Vitality] = this.Vitality;
-					this.Attributes[GameAttribute.Dexterity] = this.Dexterity;
+					Attributes[GameAttribute.Strength] = Strength;
+					Attributes[GameAttribute.Intelligence] = Intelligence;
+					Attributes[GameAttribute.Vitality] = Vitality;
+					Attributes[GameAttribute.Dexterity] = Dexterity;
 
 					// On level up, health is set to max
-					this.Attributes[GameAttribute.Hitpoints_Cur] = this.Attributes[GameAttribute.Hitpoints_Max_Total];
+					Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
 
 					// force GameAttributeMap to re-calc resources for the active resource types
-					this.Attributes[GameAttribute.Resource_Max, this.Attributes[GameAttribute.Resource_Type_Primary] - 1] = this.Attributes[GameAttribute.Resource_Max, this.Attributes[GameAttribute.Resource_Type_Primary] - 1];
-					this.Attributes[GameAttribute.Resource_Max, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1] = this.Attributes[GameAttribute.Resource_Max, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1];
+					Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Primary] - 1] = Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Primary] - 1];
+					Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Secondary] - 1];
 
 					// set resources to max as well
-					this.Attributes[GameAttribute.Resource_Cur, this.Attributes[GameAttribute.Resource_Type_Primary] - 1] = this.Attributes[GameAttribute.Resource_Max_Total, this.Attributes[GameAttribute.Resource_Type_Primary] - 1];
-					this.Attributes[GameAttribute.Resource_Cur, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1] = this.Attributes[GameAttribute.Resource_Max_Total, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1];
+					Attributes[GameAttribute.Resource_Cur, Attributes[GameAttribute.Resource_Type_Primary] - 1] = Attributes[GameAttribute.Resource_Max_Total, Attributes[GameAttribute.Resource_Type_Primary] - 1];
+					Attributes[GameAttribute.Resource_Cur, Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Attributes[GameAttribute.Resource_Max_Total, Attributes[GameAttribute.Resource_Type_Secondary] - 1];
 
-					this.Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f + Math.Max(this.Level - 35, 0);
+					Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f + Math.Max(Level - 35, 0);
 
-					this.Attributes.BroadcastChangedIfRevealed();
+					Attributes.BroadcastChangedIfRevealed();
 
-					this.PlayEffect(Effect.LevelUp, null, false);
-					this.World.PowerManager.RunPower(this, 85954); //g_LevelUp.pow 85954
+					PlayEffect(Effect.LevelUp, null, false);
+					World.PowerManager.RunPower(this, 85954); //g_LevelUp.pow 85954
 
 
-					switch (this.Level)
+					switch (Level)
 					{
 						case 10:
-							if (this.World.Game.IsHardcore)
-								this.GrantAchievement(74987243307034);
+							if (World.Game.IsHardcore)
+								GrantAchievement(74987243307034);
 							else
-								this.GrantAchievement(74987243307105);
+								GrantAchievement(74987243307105);
 							break;
 						case 20:
-							if (this.World.Game.IsHardcore)
-								this.GrantAchievement(74987243307035);
+							if (World.Game.IsHardcore)
+								GrantAchievement(74987243307035);
 							else
-								this.GrantAchievement(74987243307104);
+								GrantAchievement(74987243307104);
 							break;
 						case 30:
-							if (this.World.Game.IsHardcore)
-								this.GrantAchievement(74987243307036);
+							if (World.Game.IsHardcore)
+								GrantAchievement(74987243307036);
 							else
-								this.GrantAchievement(74987243307103);
+								GrantAchievement(74987243307103);
 							break;
 						case 40:
-							if (this.World.Game.IsHardcore)
-								this.GrantAchievement(74987243307037);
+							if (World.Game.IsHardcore)
+								GrantAchievement(74987243307037);
 							else
-								this.GrantAchievement(74987243307102);
+								GrantAchievement(74987243307102);
 							break;
 						case 50:
-							if (this.World.Game.IsHardcore)
-								this.GrantAchievement(74987243307038);
+							if (World.Game.IsHardcore)
+								GrantAchievement(74987243307038);
 							else
-								this.GrantAchievement(74987243307101);
-							if (this.World.Game.IsSeasoned)
-								this.GrantCriteria(74987250038929);
+								GrantAchievement(74987243307101);
+							if (World.Game.IsSeasoned)
+								GrantCriteria(74987250038929);
 							break;
 						case 60:
-							if (this.World.Game.IsHardcore)
+							if (World.Game.IsHardcore)
 							{
-								this.GrantAchievement(74987243307039);
-								if (!this.Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.HardcoreTormentUnlocked))
-									this.Toon.GameAccount.Flags = this.Toon.GameAccount.Flags | GameAccount.GameAccountFlags.HardcoreTormentUnlocked;
+								GrantAchievement(74987243307039);
+								if (!Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.HardcoreTormentUnlocked))
+									Toon.GameAccount.Flags = Toon.GameAccount.Flags | GameAccount.GameAccountFlags.HardcoreTormentUnlocked;
 							}
 							else
 							{
-								this.GrantAchievement(74987243307100);
-								if (!this.Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.TormentUnlocked))
-									this.Toon.GameAccount.Flags = this.Toon.GameAccount.Flags | GameAccount.GameAccountFlags.TormentUnlocked;
+								GrantAchievement(74987243307100);
+								if (!Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.TormentUnlocked))
+									Toon.GameAccount.Flags = Toon.GameAccount.Flags | GameAccount.GameAccountFlags.TormentUnlocked;
 							}
-							this.CheckLevelCap();
+							CheckLevelCap();
 							break;
 						case 70:
-							this.GrantCriteria(74987254853541);
+							GrantCriteria(74987254853541);
 							break;
 						default:
 							break;
 					}
 				}
 
-				this.ExperienceNext = (this.Attributes[GameAttribute.Level] == 70 ? this.Attributes[GameAttribute.Alt_Experience_Next_Lo] : this.Attributes[GameAttribute.Experience_Next_Lo]);
-				this.Attributes.BroadcastChangedIfRevealed();
-				this.Toon.GameAccount.NotifyUpdate();
+				ExperienceNext = (Attributes[GameAttribute.Level] == 70 ? Attributes[GameAttribute.Alt_Experience_Next_Lo] : Attributes[GameAttribute.Experience_Next_Lo]);
+				Attributes.BroadcastChangedIfRevealed();
+				Toon.GameAccount.NotifyUpdate();
 
 				//this.Attributes.SendMessage(this.InGameClient, this.DynamicID); kills the player atm
 			}
@@ -5229,13 +5229,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void VacuumPickupHealthOrb(float radius = -1)
 		{
 			if (radius == -1)
-				radius = this.Attributes[GameAttribute.Gold_PickUp_Radius];
-			var itemList = this.GetItemsInRange(radius);
+				radius = Attributes[GameAttribute.Gold_PickUp_Radius];
+			var itemList = GetItemsInRange(radius);
 			foreach (Item item in itemList)
 			{
 				if (Item.IsHealthGlobe(item.ItemType))
 				{
-					var playersAffected = this.GetPlayersInRange(26f);
+					var playersAffected = GetPlayersInRange(26f);
 					foreach (Player player in playersAffected)
 					{
 						foreach (Player targetAffected in playersAffected)
@@ -5251,11 +5251,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						player.AddPercentageHP((int)item.Attributes[GameAttribute.Health_Globe_Bonus_Health]);
 						//passive abilities
 						if (player.SkillSet.HasPassive(208478)) //wizard PowerHungry
-							player.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.HungryBuff());
+							player.World.BuffManager.AddBuff(this, this, new HungryBuff());
 						if (player.SkillSet.HasPassive(208594)) //wd GruesomeFeast
 						{
 							player.GeneratePrimaryResource(player.Attributes[GameAttribute.Resource_Max_Total, (int)player.Toon.HeroTable.PrimaryResource + 1] * 0.1f);
-							player.World.BuffManager.AddBuff(player, player, new PowerSystem.Implementations.GruesomeFeastIntBuff());
+							player.World.BuffManager.AddBuff(player, player, new GruesomeFeastIntBuff());
 						}
 						if (player.SkillSet.HasPassive(205205)) //barbarian PoundOfFlesh
 							player.AddPercentageHP((int)(item.Attributes[GameAttribute.Health_Globe_Bonus_Health] * 0.5f));
@@ -5273,66 +5273,66 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void VacuumPickup()
 		{
 
-			var itemList = this.GetItemsInRange(this.Attributes[GameAttribute.Gold_PickUp_Radius]);
+			var itemList = GetItemsInRange(Attributes[GameAttribute.Gold_PickUp_Radius]);
 			foreach (Item item in itemList)
 			{
 				if (Item.IsGold(item.ItemType))
 				{
-					if (!this.GroundItems.ContainsKey(item.GlobalID)) continue;
+					if (!GroundItems.ContainsKey(item.GlobalID)) continue;
 
-					this.InGameClient.SendMessage(new FloatingAmountMessage()
+					InGameClient.SendMessage(new FloatingAmountMessage()
 					{
 						Place = new WorldPlace()
 						{
-							Position = this.Position,
-							WorldID = this.World.DynamicID(this),
+							Position = Position,
+							WorldID = World.DynamicID(this),
 						},
 
 						Amount = item.Attributes[GameAttribute.Gold],
 						Type = FloatingAmountMessage.FloatType.Gold,
 					});
-					this.InGameClient.SendMessage(new PlayEffectMessage()
+					InGameClient.SendMessage(new PlayEffectMessage()
 					{
-						ActorId = this.DynamicID(this),
+						ActorId = DynamicID(this),
 						Effect = Effect.GoldPickup,
 						PlayerId = 0
 					});
 					PlayEffect(Effect.Sound, 36726);
-					this.Inventory.PickUpGold(item);
-					this.GroundItems.Remove(item.GlobalID);
+					Inventory.PickUpGold(item);
+					GroundItems.Remove(item.GlobalID);
 					item.Destroy();
 				}
 
 				else if (Item.IsBloodShard(item.ItemType) || item.ItemDefinition.Name == "HoradricRelic")
 				{
-					if (!this.GroundItems.ContainsKey(item.GlobalID)) continue;
+					if (!GroundItems.ContainsKey(item.GlobalID)) continue;
 
-					this.InGameClient.SendMessage(new FloatingAmountMessage()
+					InGameClient.SendMessage(new FloatingAmountMessage()
 					{
 						Place = new WorldPlace()
 						{
-							Position = this.Position,
-							WorldID = this.World.DynamicID(this),
+							Position = Position,
+							WorldID = World.DynamicID(this),
 						},
 
 						Amount = item.Attributes[GameAttribute.ItemStackQuantityLo],
 						Type = FloatingAmountMessage.FloatType.BloodStone,
 					});
 
-					this.Inventory.PickUpBloodShard(item);
-					this.GroundItems.Remove(item.GlobalID);
+					Inventory.PickUpBloodShard(item);
+					GroundItems.Remove(item.GlobalID);
 					item.Destroy();
 				}
 
 				else if (item.ItemDefinition.Name == "Platinum")
 				{
 
-					this.InGameClient.SendMessage(new FloatingAmountMessage()
+					InGameClient.SendMessage(new FloatingAmountMessage()
 					{
 						Place = new WorldPlace()
 						{
-							Position = this.Position,
-							WorldID = this.World.DynamicID(this),
+							Position = Position,
+							WorldID = World.DynamicID(this),
 						},
 
 						Amount = item.Attributes[GameAttribute.ItemStackQuantityLo],
@@ -5340,8 +5340,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					});
 					PlayEffect(Effect.Sound, 433266);
 
-					this.Inventory.PickUpPlatinum(item);
-					this.GroundItems.Remove(item.GlobalID);
+					Inventory.PickUpPlatinum(item);
+					GroundItems.Remove(item.GlobalID);
 					item.Destroy();
 				}
 
@@ -5367,7 +5367,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 				else if (Item.IsHealthGlobe(item.ItemType))
 				{
-					var playersAffected = this.GetPlayersInRange(26f);
+					var playersAffected = GetPlayersInRange(26f);
 					foreach (Player player in playersAffected)
 					{
 						foreach (Player targetAffected in playersAffected)
@@ -5383,11 +5383,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						player.AddPercentageHP((int)item.Attributes[GameAttribute.Health_Globe_Bonus_Health]);
 						//passive abilities
 						if (player.SkillSet.HasPassive(208478)) //wizard PowerHungry
-							player.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.HungryBuff());
+							player.World.BuffManager.AddBuff(this, this, new HungryBuff());
 						if (player.SkillSet.HasPassive(208594)) //wd GruesomeFeast
 						{
 							player.GeneratePrimaryResource(player.Attributes[GameAttribute.Resource_Max_Total, (int)player.Toon.HeroTable.PrimaryResource + 1] * 0.1f);
-							player.World.BuffManager.AddBuff(player, player, new PowerSystem.Implementations.GruesomeFeastIntBuff());
+							player.World.BuffManager.AddBuff(player, player, new GruesomeFeastIntBuff());
 						}
 						if (player.SkillSet.HasPassive(205205)) //barbarian PoundOfFlesh
 							player.AddPercentageHP((int)(item.Attributes[GameAttribute.Health_Globe_Bonus_Health] * 0.5f));
@@ -5400,22 +5400,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					item.Destroy();
 				}
 
-				else if (item.ItemDefinition.Name == "ArcaneGlobe" && this.Toon.Class == ToonClass.Wizard)
+				else if (item.ItemDefinition.Name == "ArcaneGlobe" && Toon.Class == ToonClass.Wizard)
 				{
-					this.GeneratePrimaryResource(50f);
+					GeneratePrimaryResource(50f);
 					item.Destroy();
 				}
 
 				else if (item.ItemDefinition.Name == "p1_normal_rifts_Orb" || item.ItemDefinition.Name == "p1_tiered_rifts_Orb")
 				{
-					if (this.InGameClient.Game.ActiveNephalemTimer == true && this.InGameClient.Game.ActiveNephalemKilledMobs == false)
+					if (InGameClient.Game.ActiveNephalemTimer == true && InGameClient.Game.ActiveNephalemKilledMobs == false)
 					{
-						this.InGameClient.Game.ActiveNephalemProgress += 15f;
-						foreach (var plr in this.InGameClient.Game.Players.Values)
+						InGameClient.Game.ActiveNephalemProgress += 15f;
+						foreach (var plr in InGameClient.Game.Players.Values)
 						{
 							plr.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DunggeonFinderProgressGlyphPickUp)
 							{
-								Field0 = this.InGameClient.Game.ActiveNephalemProgress
+								Field0 = InGameClient.Game.ActiveNephalemProgress
 							});
 
 							plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.KillCounterRefresh)
@@ -5424,15 +5424,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							});
 							plr.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DungeonFinderProgressMessage)
 							{
-								Field0 = this.InGameClient.Game.ActiveNephalemProgress
+								Field0 = InGameClient.Game.ActiveNephalemProgress
 							});
 						}
-						if (this.InGameClient.Game.ActiveNephalemProgress > 650)
+						if (InGameClient.Game.ActiveNephalemProgress > 650)
 						{
-							this.InGameClient.Game.ActiveNephalemKilledMobs = true;
-							foreach (var plr in this.InGameClient.Game.Players.Values)
+							InGameClient.Game.ActiveNephalemKilledMobs = true;
+							foreach (var plr in InGameClient.Game.Players.Values)
 							{
-								if (this.InGameClient.Game.NephalemGreater)
+								if (InGameClient.Game.NephalemGreater)
 								{
 									plr.InGameClient.SendMessage(new QuestCounterMessage()
 									{
@@ -5485,8 +5485,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameTextMessage) { Message = "Messages:LR_BossSpawned" });
 
 							}
-							this.StartConversation(this.World, 366542);
-							SpawnNephalemBoss(this.World);
+							StartConversation(World, 366542);
+							SpawnNephalemBoss(World);
 							//358489
 						}
 					}
@@ -5496,36 +5496,36 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 				else if (item.ItemDefinition.Name == "PowerGlobe_v2_x1_NoFlippy")
 				{
-					this.World.BuffManager.AddBuff(this, this, new NephalemValorBuff());
+					World.BuffManager.AddBuff(this, this, new NephalemValorBuff());
 					item.Destroy();
 				}
 
 				else if (Item.IsPotion(item.ItemType))
 				{
-					if ((!this.GroundItems.ContainsKey(item.GlobalID) && this.World.Game.Players.Count > 1) || !this.Inventory.HasInventorySpace(item)) continue;
-					this.Inventory.PickUp(item);
+					if ((!GroundItems.ContainsKey(item.GlobalID) && World.Game.Players.Count > 1) || !Inventory.HasInventorySpace(item)) continue;
+					Inventory.PickUp(item);
 				}
 			}
 
 			//
-			foreach (var skill in this.SkillSet.ActiveSkills)
+			foreach (var skill in SkillSet.ActiveSkills)
 			{
 				if (skill.snoSkill == 460757 && skill.snoRune == 3)
 				{
 					//Play Aura - 472217
 					//this.PlayEffectGroup(472217);
-					var Fleshes = this.GetActorsInRange<ActorSystem.Implementations.NecromancerFlesh>(15f + (this.Attributes[GameAttribute.Gold_PickUp_Radius] * 0.5f));//454066
+					var Fleshes = GetActorsInRange<NecromancerFlesh>(15f + (Attributes[GameAttribute.Gold_PickUp_Radius] * 0.5f));//454066
 					foreach (var flesh in Fleshes)
 					{
-						this.InGameClient.SendMessage(new EffectGroupACDToACDMessage()
+						InGameClient.SendMessage(new EffectGroupACDToACDMessage()
 						{
 							EffectSNOId = 470480,
-							TargetID = this.DynamicID(this),
+							TargetID = DynamicID(this),
 							ActorID = flesh.DynamicID(this)
 						});
 						flesh.PlayEffectGroup(470482);
-						this.Attributes[GameAttribute.Resource_Cur, (int)this.Toon.HeroTable.PrimaryResource] += 11f;
-						this.Attributes.BroadcastChangedIfRevealed();
+						Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] += 11f;
+						Attributes.BroadcastChangedIfRevealed();
 						flesh.Destroy();
 					}
 				}
@@ -5534,7 +5534,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public Actor SpawnNephalemBoss(World world)
 		{
-			var Boss = world.SpawnMonster(ActorSnoExtensions.nephalemPortalBosses[RandomHelper.Next(0, ActorSnoExtensions.nephalemPortalBosses.Length - 1)], this.Position);
+			var Boss = world.SpawnMonster(ActorSnoExtensions.nephalemPortalBosses[RandomHelper.Next(0, ActorSnoExtensions.nephalemPortalBosses.Length - 1)], Position);
 			Boss.Attributes[GameAttribute.Bounty_Objective] = true;
 			Boss.Attributes[GameAttribute.Is_Loot_Run_Boss] = true;
 			Boss.Attributes.BroadcastChangedIfRevealed();
@@ -5565,44 +5565,44 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void AddPercentageHP(int percentage, bool GuidingLight = false)
 		{
-			float quantity = (percentage * this.Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
-			this.AddHP(quantity, GuidingLight);
+			float quantity = (percentage * Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
+			AddHP(quantity, GuidingLight);
 		}
 
 		public void AddPercentageHP(float percentage, bool GuidingLight = false)
 		{
-			float quantity = (percentage * this.Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
-			this.AddHP(quantity, GuidingLight);
+			float quantity = (percentage * Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
+			AddHP(quantity, GuidingLight);
 		}
 
 		public override void AddHP(float quantity, bool GuidingLight = false)
 		{
-			if (this.Dead) return;
+			if (Dead) return;
 			if (quantity == 0) return;
 			if (quantity > 0)
 			{
-				if (this.Attributes[GameAttribute.Hitpoints_Cur] < this.Attributes[GameAttribute.Hitpoints_Max_Total])
+				if (Attributes[GameAttribute.Hitpoints_Cur] < Attributes[GameAttribute.Hitpoints_Max_Total])
 				{
-					if (this.Toon.Class == ToonClass.Barbarian)
-						if (this.SkillSet.HasPassive(205217))
-							quantity += 0.01f * this.Attributes[GameAttribute.Health_Globe_Bonus_Health];
+					if (Toon.Class == ToonClass.Barbarian)
+						if (SkillSet.HasPassive(205217))
+							quantity += 0.01f * Attributes[GameAttribute.Health_Globe_Bonus_Health];
 
 					if (GuidingLight)       //Monk -> Guiding Light
 					{
-						float missingHP = (this.Attributes[GameAttribute.Hitpoints_Max_Total] - this.Attributes[GameAttribute.Hitpoints_Cur]) / this.Attributes[GameAttribute.Hitpoints_Max_Total];
+						float missingHP = (Attributes[GameAttribute.Hitpoints_Max_Total] - Attributes[GameAttribute.Hitpoints_Cur]) / Attributes[GameAttribute.Hitpoints_Max_Total];
 						if (missingHP > 0.05f)
-							if (!this.World.BuffManager.HasBuff<PowerSystem.Implementations.GuidingLightBuff>(this))
-								this.World.BuffManager.AddBuff(this, this, new PowerSystem.Implementations.GuidingLightBuff(Math.Min(missingHP, 0.3f), TickTimer.WaitSeconds(this.World.Game, 10.0f)));
+							if (!World.BuffManager.HasBuff<GuidingLightBuff>(this))
+								World.BuffManager.AddBuff(this, this, new GuidingLightBuff(Math.Min(missingHP, 0.3f), TickTimer.WaitSeconds(World.Game, 10.0f)));
 					}
 
-					this.Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
-						this.Attributes[GameAttribute.Hitpoints_Cur] + quantity,
-						this.Attributes[GameAttribute.Hitpoints_Max_Total]);
+					Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
+						Attributes[GameAttribute.Hitpoints_Cur] + quantity,
+						Attributes[GameAttribute.Hitpoints_Max_Total]);
 
-					this.Attributes.BroadcastChangedIfRevealed();
-					this.InGameClient.SendMessage(new FloatingNumberMessage
+					Attributes.BroadcastChangedIfRevealed();
+					InGameClient.SendMessage(new FloatingNumberMessage
 					{
-						ActorID = this.DynamicID(this),
+						ActorID = DynamicID(this),
 						Number = quantity,
 						Type = FloatingNumberMessage.FloatType.Green
 					});
@@ -5610,21 +5610,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 			else
 			{
-				this.Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(
-					this.Attributes[GameAttribute.Hitpoints_Cur] + quantity,
+				Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(
+					Attributes[GameAttribute.Hitpoints_Cur] + quantity,
 					0);
 
-				this.Attributes.BroadcastChangedIfRevealed();
+				Attributes.BroadcastChangedIfRevealed();
 			}
 		}
 
 		//only for WD passive
 		public void RestoreMana(float quantity, int secs)
 		{
-			this.Attributes[GameAttribute.Resource_Regen_Per_Second, 0] += quantity / secs;
+			Attributes[GameAttribute.Resource_Regen_Per_Second, 0] += quantity / secs;
 			System.Threading.Tasks.Task.Delay(1000 * secs).ContinueWith(t =>
 			{
-				this.Attributes[GameAttribute.Resource_Regen_Per_Second, 0] -= quantity / secs;
+				Attributes[GameAttribute.Resource_Regen_Per_Second, 0] -= quantity / secs;
 			});
 		}
 
@@ -5638,130 +5638,130 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void GeneratePrimaryResource(float amount)
 		{
-			if (this.Toon.Class == ToonClass.Barbarian)
-				if (this.World.BuffManager.HasBuff<PowerSystem.Implementations.WrathOfTheBerserker.BerserkerBuff>(this))
-					this.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.WrathOfTheBerserker.BerserkerBuff>(this).GainedFury += amount;
+			if (Toon.Class == ToonClass.Barbarian)
+				if (World.BuffManager.HasBuff<WrathOfTheBerserker.BerserkerBuff>(this))
+					World.BuffManager.GetFirstBuff<WrathOfTheBerserker.BerserkerBuff>(this).GainedFury += amount;
 
-			if (this.Toon.Class == ToonClass.Monk)
-				if (this.World.BuffManager.HasBuff<PowerSystem.Implementations.GuardiansPathBuff>(this))  //Monk -> The Guardian's Path 2H
+			if (Toon.Class == ToonClass.Monk)
+				if (World.BuffManager.HasBuff<GuardiansPathBuff>(this))  //Monk -> The Guardian's Path 2H
 					amount *= 1.35f;
 
-			_ModifyResourceAttribute(this.PrimaryResourceID, amount);
+			_ModifyResourceAttribute(PrimaryResourceID, amount);
 		}
 
 		public void UsePrimaryResource(float amount, bool tick = false)
 		{
-			amount = Math.Max((amount - this.Attributes[GameAttribute.Resource_Cost_Reduction_Amount]) * (1f - this.Attributes[GameAttribute.Resource_Cost_Reduction_Percent_Total, (int)Toon.HeroTable.PrimaryResource + 1]), 0);
+			amount = Math.Max((amount - Attributes[GameAttribute.Resource_Cost_Reduction_Amount]) * (1f - Attributes[GameAttribute.Resource_Cost_Reduction_Percent_Total, (int)Toon.HeroTable.PrimaryResource + 1]), 0);
 			amount = amount * (1f - DecreaseUseResourcePercent);
-			if (this.Toon.Class == ToonClass.Crusader)
+			if (Toon.Class == ToonClass.Crusader)
 			{
 				_WrathSpent += (int)amount;
-				if (!tick && this.SkillSet.HasPassive(310775))  //Wrathful passive
-					this.AddHP(_WrathSpent * 15f * this.Attributes[GameAttribute.Level]);
+				if (!tick && SkillSet.HasPassive(310775))  //Wrathful passive
+					AddHP(_WrathSpent * 15f * Attributes[GameAttribute.Level]);
 
 				//Laws of Hope -> Faith's reward
-				if (!tick && this.World.BuffManager.HasBuff<PowerSystem.Implementations.CrusaderLawsOfHope.LawsShieldBuff>(this))
-					if (this.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.CrusaderLawsOfHope.LawsShieldBuff>(this).HealPerWrath)
-						this.AddHP(_WrathSpent * 15f * this.Attributes[GameAttribute.Level]);
+				if (!tick && World.BuffManager.HasBuff<CrusaderLawsOfHope.LawsShieldBuff>(this))
+					if (World.BuffManager.GetFirstBuff<CrusaderLawsOfHope.LawsShieldBuff>(this).HealPerWrath)
+						AddHP(_WrathSpent * 15f * Attributes[GameAttribute.Level]);
 
 				if (_WrathSpent >= 20)              //Akarat Champion -> Fire Starter
-					if (!tick && this.World.BuffManager.HasBuff<PowerSystem.Implementations.CrusaderAkaratChampion.AkaratBuff>(this))
-						this.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.CrusaderAkaratChampion.AkaratBuff>(this).wrathBlast = true;
+					if (!tick && World.BuffManager.HasBuff<CrusaderAkaratChampion.AkaratBuff>(this))
+						World.BuffManager.GetFirstBuff<CrusaderAkaratChampion.AkaratBuff>(this).wrathBlast = true;
 			}
 
-			if (this.Toon.Class == ToonClass.DemonHunter)
+			if (Toon.Class == ToonClass.DemonHunter)
 			{
 				_HatredSpent += (int)amount;
 
 				if (_HatredSpent >= 150 && _DisciplineSpent >= 50)
-					this.GrantAchievement(74987243307068);
+					GrantAchievement(74987243307068);
 
-				this.AddTimedAction(6f, new Action<int>((q) => _HatredSpent -= (int)amount));
+				AddTimedAction(6f, new Action<int>((q) => _HatredSpent -= (int)amount));
 			}
 
-			if (this.Toon.Class == ToonClass.Barbarian)
+			if (Toon.Class == ToonClass.Barbarian)
 			{
-				if (this.SkillSet.HasPassive(105217) && !tick) //Bloodthirst (Burb)
-					this.AddHP(amount * 1.93f * this.Attributes[GameAttribute.Level]);
+				if (SkillSet.HasPassive(105217) && !tick) //Bloodthirst (Burb)
+					AddHP(amount * 1.93f * Attributes[GameAttribute.Level]);
 
-				if (!tick && this.World.BuffManager.HasBuff<PowerSystem.Implementations.IgnorePain.IgnorePainBuff>(this))
-					if (this.Attributes[GameAttribute.Rune_E, 79528] > 0) //IgnorePain
-						this.AddHP(amount * 13.76f * this.Attributes[GameAttribute.Level]);
+				if (!tick && World.BuffManager.HasBuff<IgnorePain.IgnorePainBuff>(this))
+					if (Attributes[GameAttribute.Rune_E, 79528] > 0) //IgnorePain
+						AddHP(amount * 13.76f * Attributes[GameAttribute.Level]);
 			}
 
-			if (this.Toon.Class == ToonClass.Wizard)
+			if (Toon.Class == ToonClass.Wizard)
 			{
-				if (this.World.BuffManager.HasBuff<HungryBuff>(this))   //Power Hungry
+				if (World.BuffManager.HasBuff<HungryBuff>(this))   //Power Hungry
 				{
 					amount = 0f;
-					this.World.BuffManager.RemoveStackFromBuff(this, this.World.BuffManager.GetFirstBuff<HungryBuff>(this));
+					World.BuffManager.RemoveStackFromBuff(this, World.BuffManager.GetFirstBuff<HungryBuff>(this));
 				}
 			}
 
-			if (this.Toon.Class == ToonClass.Monk)
+			if (Toon.Class == ToonClass.Monk)
 			{
-				if (this.SkillSet.HasPassive(209250)) //Transcendence (Monk)
-					this.AddHP(amount * (50f + (this.Attributes[GameAttribute.Health_Globe_Bonus_Health] * 0.004f)));
+				if (SkillSet.HasPassive(209250)) //Transcendence (Monk)
+					AddHP(amount * (50f + (Attributes[GameAttribute.Health_Globe_Bonus_Health] * 0.004f)));
 			}
 
-			if (this.SkillSet.HasPassive(208628)) //PierceTheVeil (WD)
+			if (SkillSet.HasPassive(208628)) //PierceTheVeil (WD)
 				amount *= 1.3f;
-			if (this.SkillSet.HasPassive(208568)) //BloodRitual (WD)
+			if (SkillSet.HasPassive(208568)) //BloodRitual (WD)
 			{
 				amount *= 0.9f;
-				this.AddHP(amount * -0.1f);
+				AddHP(amount * -0.1f);
 			}
 
-			if (this.SkillSet.HasPassive(205398) && this.Attributes[GameAttribute.Hitpoints_Cur] < (this.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.35f)) //Relentless (Barbarian)
+			if (SkillSet.HasPassive(205398) && Attributes[GameAttribute.Hitpoints_Cur] < (Attributes[GameAttribute.Hitpoints_Max_Total] * 0.35f)) //Relentless (Barbarian)
 				amount *= 0.25f;
-			_ModifyResourceAttribute(this.PrimaryResourceID, -amount);
+			_ModifyResourceAttribute(PrimaryResourceID, -amount);
 		}
 
 		public void GenerateSecondaryResource(float amount)
 		{
-			_ModifyResourceAttribute(this.SecondaryResourceID, amount);
+			_ModifyResourceAttribute(SecondaryResourceID, amount);
 		}
 
 		public void UseSecondaryResource(float amount)
 		{
-			amount = Math.Max((amount - this.Attributes[GameAttribute.Resource_Cost_Reduction_Amount]) * (1f - this.Attributes[GameAttribute.Resource_Cost_Reduction_Percent_Total, (int)Toon.HeroTable.SecondaryResource]), 0);
+			amount = Math.Max((amount - Attributes[GameAttribute.Resource_Cost_Reduction_Amount]) * (1f - Attributes[GameAttribute.Resource_Cost_Reduction_Percent_Total, (int)Toon.HeroTable.SecondaryResource]), 0);
 
-			if (this.SkillSet.HasPassive(155722)) //dh - Perfectionist
+			if (SkillSet.HasPassive(155722)) //dh - Perfectionist
 				amount *= 0.9f;
 
-			if (this.Toon.Class == ToonClass.DemonHunter)
+			if (Toon.Class == ToonClass.DemonHunter)
 			{
 				_DisciplineSpent += (int)amount;
 
 				if (_HatredSpent >= 150 && _DisciplineSpent >= 50)
-					this.GrantAchievement(74987243307068);
+					GrantAchievement(74987243307068);
 
-				this.AddTimedAction(6f, new Action<int>((q) => _DisciplineSpent -= (int)amount));
+				AddTimedAction(6f, new Action<int>((q) => _DisciplineSpent -= (int)amount));
 			}
 
-			_ModifyResourceAttribute(this.SecondaryResourceID, -amount);
+			_ModifyResourceAttribute(SecondaryResourceID, -amount);
 		}
 
 		private void _ModifyResourceAttribute(int resourceID, float amount)
 		{
 			if (resourceID == -1 || amount == 0) return;
-			float current = this.Attributes[GameAttribute.Resource_Cur, resourceID];
+			float current = Attributes[GameAttribute.Resource_Cur, resourceID];
 			if (amount > 0f)
 			{
-				this.Attributes[GameAttribute.Resource_Cur, resourceID] = Math.Min(
-					this.Attributes[GameAttribute.Resource_Cur, resourceID] + amount,
-					this.Attributes[GameAttribute.Resource_Max_Total, resourceID]);
+				Attributes[GameAttribute.Resource_Cur, resourceID] = Math.Min(
+					Attributes[GameAttribute.Resource_Cur, resourceID] + amount,
+					Attributes[GameAttribute.Resource_Max_Total, resourceID]);
 			}
 			else
 			{
-				this.Attributes[GameAttribute.Resource_Cur, resourceID] = Math.Max(
-					this.Attributes[GameAttribute.Resource_Cur, resourceID] + amount,
+				Attributes[GameAttribute.Resource_Cur, resourceID] = Math.Max(
+					Attributes[GameAttribute.Resource_Cur, resourceID] + amount,
 					0f);
 			}
 
-			if (current == this.Attributes[GameAttribute.Resource_Cur, resourceID]) return;
+			if (current == Attributes[GameAttribute.Resource_Cur, resourceID]) return;
 
-			this.Attributes.BroadcastChangedIfRevealed();
+			Attributes.BroadcastChangedIfRevealed();
 		}
 
 
@@ -5771,49 +5771,49 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		private void _UpdateResources()
 		{
 			// will crash client when loading if you try to update resources too early
-			if (this.World == null) return;
+			if (World == null) return;
 
-			if (this.InGameClient.Game.Paused) return;
+			if (InGameClient.Game.Paused) return;
 
-			if (!(this.InGameClient.Game.TickCounter % 30 == 0)) return;
+			if (!(InGameClient.Game.TickCounter % 30 == 0)) return;
 
-			if (this.InGameClient.Game.TickCounter % 60 == 0)
-				this.LastSecondCasts = 0;
+			if (InGameClient.Game.TickCounter % 60 == 0)
+				LastSecondCasts = 0;
 
-			if (this.Toon.Class == ToonClass.Barbarian)
+			if (Toon.Class == ToonClass.Barbarian)
 			{
-				if (this.Attributes[GameAttribute.Resource_Cur, 2] < this.Attributes[GameAttribute.Resource_Max_Total, 2])
-					_fullFuryFirstTick = this.InGameClient.Game.TickCounter;
+				if (Attributes[GameAttribute.Resource_Cur, 2] < Attributes[GameAttribute.Resource_Max_Total, 2])
+					_fullFuryFirstTick = InGameClient.Game.TickCounter;
 
-				if ((this.InGameClient.Game.TickCounter - _fullFuryFirstTick) >= 18000)
-					this.GrantAchievement(74987243307047);
+				if ((InGameClient.Game.TickCounter - _fullFuryFirstTick) >= 18000)
+					GrantAchievement(74987243307047);
 			}
 
-			if (this.Toon.Class == ToonClass.Wizard)
+			if (Toon.Class == ToonClass.Wizard)
 			{
-				if (!this.World.BuffManager.HasBuff<PowerSystem.Implementations.IceArmor.IceArmorBuff>(this) &&
-					!this.World.BuffManager.HasBuff<PowerSystem.Implementations.StormArmor.StormArmorBuff>(this) &&
-					!this.World.BuffManager.HasBuff<PowerSystem.Implementations.EnergyArmor.EnergyArmorBuff>(this))
-					_ArmorFirstTick = this.InGameClient.Game.TickCounter;
+				if (!World.BuffManager.HasBuff<IceArmor.IceArmorBuff>(this) &&
+					!World.BuffManager.HasBuff<StormArmor.StormArmorBuff>(this) &&
+					!World.BuffManager.HasBuff<EnergyArmor.EnergyArmorBuff>(this))
+					_ArmorFirstTick = InGameClient.Game.TickCounter;
 
-				if ((this.InGameClient.Game.TickCounter - _ArmorFirstTick) >= 72000)
-					this.GrantAchievement(74987243307588);
+				if ((InGameClient.Game.TickCounter - _ArmorFirstTick) >= 72000)
+					GrantAchievement(74987243307588);
 			}
 
 			// 1 tick = 1/60s, so multiply ticks in seconds against resource regen per-second to get the amount to update
-			float tickSeconds = 1f / 60f * (this.InGameClient.Game.TickCounter - _lastResourceUpdateTick);
-			_lastResourceUpdateTick = this.InGameClient.Game.TickCounter;
+			float tickSeconds = 1f / 60f * (InGameClient.Game.TickCounter - _lastResourceUpdateTick);
+			_lastResourceUpdateTick = InGameClient.Game.TickCounter;
 
-			GeneratePrimaryResource(Math.Max(tickSeconds * this.Attributes[GameAttribute.Resource_Regen_Total, this.Attributes[GameAttribute.Resource_Type_Primary] - 1], 0));
-			GenerateSecondaryResource(Math.Max(tickSeconds * this.Attributes[GameAttribute.Resource_Regen_Total, this.Attributes[GameAttribute.Resource_Type_Secondary] - 1], 0));
+			GeneratePrimaryResource(Math.Max(tickSeconds * Attributes[GameAttribute.Resource_Regen_Total, Attributes[GameAttribute.Resource_Type_Primary] - 1], 0));
+			GenerateSecondaryResource(Math.Max(tickSeconds * Attributes[GameAttribute.Resource_Regen_Total, Attributes[GameAttribute.Resource_Type_Secondary] - 1], 0));
 
 			float totalHPregen = //(this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] +
-				this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus]//)
-				* (1 + this.Attributes[GameAttribute.Hitpoints_Regen_Bonus_Percent]);
-			if (!this.Dead && !this.World.Game.PvP) AddHP(Math.Max(tickSeconds * totalHPregen, 0));
+				Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus]//)
+				* (1 + Attributes[GameAttribute.Hitpoints_Regen_Bonus_Percent]);
+			if (!Dead && !World.Game.PvP) AddHP(Math.Max(tickSeconds * totalHPregen, 0));
 
-			if (this.Toon.Class == ToonClass.Barbarian)
-				if (this.SkillSet.HasPassive(205300)) //barbarian fury
+			if (Toon.Class == ToonClass.Barbarian)
+				if (SkillSet.HasPassive(205300)) //barbarian fury
 					GeneratePrimaryResource(tickSeconds * 1.80f);
 				else
 					UsePrimaryResource(tickSeconds * 0.90f, true);
@@ -5850,7 +5850,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				AddLore(loreSNOId);
 				if (MPQStorage.Data.Assets[SNOGroup.Lore].ContainsKey(loreSNOId))
 				{
-					this.CheckConversationCriteria((MPQStorage.Data.Assets[SNOGroup.Lore][loreSNOId].Data as DiIiS_NA.Core.MPQ.FileFormats.Lore).SNOConversation);
+					CheckConversationCriteria((MPQStorage.Data.Assets[SNOGroup.Lore][loreSNOId].Data as DiIiS_NA.Core.MPQ.FileFormats.Lore).SNOConversation);
 				}
 			}
 		}
@@ -5861,15 +5861,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// <param name="loreSNOId"></param>
 		public void AddLore(int loreSNOId)
 		{
-			if (this.LearnedLore.Count < this.LearnedLore.m_snoLoreLearned.Length)
+			if (LearnedLore.Count < LearnedLore.m_snoLoreLearned.Length)
 			{
 				LearnedLore.m_snoLoreLearned[LearnedLore.Count] = loreSNOId;
 				LearnedLore.Count++; // Count
 				UpdateHeroState();
 				Logger.Trace("Learning lore #{0}", loreSNOId);
-				var dbToon = this.Toon.DBToon;
+				var dbToon = Toon.DBToon;
 				dbToon.Lore = SerializeBytes(LearnedLore.m_snoLoreLearned.Take(LearnedLore.Count).ToList());
-				this.World.Game.GameDBSession.SessionUpdate(dbToon);
+				World.Game.GameDBSession.SessionUpdate(dbToon);
 			}
 		}
 
@@ -5880,13 +5880,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public void EnableStoneOfRecall()
 		{
 			Attributes[GameAttribute.Skill, 0x0002EC66] = 1;
-			Attributes.SendChangedMessage(this.InGameClient);
+			Attributes.SendChangedMessage(InGameClient);
 		}
 
 		public void DisableStoneOfRecall()
 		{
 			Attributes[GameAttribute.Skill, 0x0002EC66] = 0;
-			Attributes.SendChangedMessage(this.InGameClient);
+			Attributes.SendChangedMessage(InGameClient);
 		}
 
 #endregion
@@ -5898,11 +5898,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			//Rangged Power - 30599
 			if (source == null) return;
 
-			var minion = new Minion(this.World, source.SNO, this, source.Tags, true);
+			var minion = new Minion(World, source.SNO, this, source.Tags, true);
 			minion.SetBrain(new MinionBrain(minion));
 			minion.Brain.DeActivate();
 			minion.WalkSpeed *= 4;
-			minion.Position = this.Position;
+			minion.Position = Position;
 			minion.Attributes[GameAttribute.TeamID] = Attributes[GameAttribute.TeamID];
 			minion.Attributes[GameAttribute.Untargetable] = true;
 			minion.Attributes[GameAttribute.No_Damage] = true;
@@ -5914,7 +5914,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			minion.Attributes[GameAttribute.Pet_Type] = 25;
 
 			//*/
-			minion.Attributes[GameAttribute.Effect_Owner_ANN] = (int)this.DynamicID(this);
+			minion.Attributes[GameAttribute.Effect_Owner_ANN] = (int)DynamicID(this);
 			minion.EnterWorld(minion.Position);
 			(minion as Minion).Brain.Activate();
 
@@ -5930,35 +5930,35 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
  				(minion.Brain as MinionBrain).AddPresetPower(30599);
 			}
 
-			if ((this.Followers.Count >= 6 && this.ActiveHireling != null) || (this.Followers.Count >= 7))
+			if ((Followers.Count >= 6 && ActiveHireling != null) || (Followers.Count >= 7))
 			{
-				if (this.Toon.Class == ToonClass.WitchDoctor)
+				if (Toon.Class == ToonClass.WitchDoctor)
 				{
-					this.GrantAchievement(74987243307563);
+					GrantAchievement(74987243307563);
 				}
 			}
 		}
 
 		public bool HaveFollower(ActorSno sno)
 		{
-			return this.Followers.ContainsValue(sno);
+			return Followers.ContainsValue(sno);
 		}
 
 		public void DestroyFollower(ActorSno sno)
 		{
-			if (this.Followers.ContainsValue(sno))
+			if (Followers.ContainsValue(sno))
 			{
-				var dynId = this.Followers.Where(x => x.Value == sno).First().Key;
-				var actor = this.World.GetActorByGlobalId(dynId);
+				var dynId = Followers.Where(x => x.Value == sno).First().Key;
+				var actor = World.GetActorByGlobalId(dynId);
 				if (actor != null)
 					actor.Destroy();
-				this.Followers.Remove(dynId);
+				Followers.Remove(dynId);
 			}
 		}
 
 		public void SetFollowerIndex(ActorSno sno)
 		{
-			if (!this.HaveFollower(sno))
+			if (!HaveFollower(sno))
 			{
 				for (int i = 1; i < 8; i++)
 					if (!_followerIndexes.ContainsKey(i))
@@ -5971,9 +5971,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void FreeFollowerIndex(ActorSno sno)
 		{
-			if (!this.HaveFollower(sno))
+			if (!HaveFollower(sno))
 			{
-				_followerIndexes.Remove(this.FindFollowerIndex(sno));
+				_followerIndexes.Remove(FindFollowerIndex(sno));
 			}
 		}
 
@@ -5981,7 +5981,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public int FindFollowerIndex(ActorSno sno)
 		{
-			if (this.HaveFollower(sno))
+			if (HaveFollower(sno))
 			{
 				return _followerIndexes.Where(i => i.Value == sno).FirstOrDefault().Key;
 			}
@@ -5990,23 +5990,23 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public int CountFollowers(ActorSno sno)
 		{
-			return this.Followers.Values.Where(f => f == sno).Count();
+			return Followers.Values.Where(f => f == sno).Count();
 		}
 
 		public int CountAllFollowers()
 		{
-			return this.Followers.Count();
+			return Followers.Count();
 		}
 
 		public void DestroyFollowerById(uint dynId)
 		{
-			if (this.Followers.ContainsKey(dynId))
+			if (Followers.ContainsKey(dynId))
 			{
-				var actor = this.World.GetActorByGlobalId(dynId);
-				this.Followers.Remove(dynId);
+				var actor = World.GetActorByGlobalId(dynId);
+				Followers.Remove(dynId);
 				if (actor != null)
 				{
-					this.FreeFollowerIndex(actor.SNO);
+					FreeFollowerIndex(actor.SNO);
 					actor.Destroy();
 				}
 			}
@@ -6014,9 +6014,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void DestroyFollowersBySnoId(ActorSno sno)
 		{
-			var fol_list = this.Followers.Where(f => f.Value == sno).Select(f => f.Key).ToList();
+			var fol_list = Followers.Where(f => f.Value == sno).Select(f => f.Key).ToList();
 			foreach (var fol in fol_list)
-				this.DestroyFollowerById(fol);
+				DestroyFollowerById(fol);
 		}
 
 #endregion

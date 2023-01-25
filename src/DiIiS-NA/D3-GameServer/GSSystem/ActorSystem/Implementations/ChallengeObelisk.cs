@@ -32,16 +32,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public ChallengeObelisk(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            this.Attributes[GameAttribute.TeamID] = 2;
-            this.Attributes[GameAttribute.MinimapActive] = true;
-            this.Attributes.BroadcastChangedIfRevealed();
+            Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes.BroadcastChangedIfRevealed();
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
             bool Activated = false;
 
-            this.PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+            this.PlayAnimation(5, AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
             Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
             Attributes[GameAttribute.Untargetable] = !Activated;
             Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -52,11 +52,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             Attributes.BroadcastChangedIfRevealed();
             CollFlags = 0;
 
-            TickTimer Timeout = new SecondsTickTimer(this.World.Game, 3.5f);
+            TickTimer Timeout = new SecondsTickTimer(World.Game, 3.5f);
             var Boom = Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
             Boom.ContinueWith(delegate
             {
-                var actor = this.World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
+                var actor = World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
                 actor.SetVisible(true);
                 actor.Reveal(player);
 
@@ -75,13 +75,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                 return false;
             if (!Attributes[GameAttribute.Operatable])
             {
-                var actor = this.World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
+                var actor = World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
                 actor.SetVisible(false);
                 actor.Unreveal(player);
             }
             else
             {
-                this.PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+                this.PlayAnimation(5, AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
             }
             return true;
         }

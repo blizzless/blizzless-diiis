@@ -29,14 +29,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 		public Artisan(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttribute.MinimapActive] = true;
 			Interactions.Add(new CraftInteraction());
 			//Interactions.Add(new IdentifyAllInteraction());
 		}
 
 		public override void OnCraft(Player player)
 		{
-			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = this.DynamicID(player) });
+			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
 			//player.InGameClient.SendMessage(new OpenArtisanWindowMessage() { ArtisanID = this.DynamicID(player) });
 		}
 

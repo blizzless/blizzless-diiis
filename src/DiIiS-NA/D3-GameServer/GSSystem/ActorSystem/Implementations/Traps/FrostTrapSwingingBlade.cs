@@ -29,14 +29,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public FrostTrapSwingingBlade(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Field2 = 0x8;
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
+			Field2 = 0x8;
+			CollFlags = 0;
+			WalkSpeed = 0;
 			
-			this.Attributes[GameAttribute.Movement_Scalar] = 0f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = 0f;
-			this.Spawner = true;
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Movement_Scalar] = 0f;
+			Attributes[GameAttribute.Run_Speed_Granted] = 0f;
+			Spawner = true;
+			Attributes[GameAttribute.Invulnerable] = true;
 			//(Brain as MonsterBrain).RemovePresetPower(30592);
 			//(Brain as MonsterBrain).AddPresetPower(96925);
 		}

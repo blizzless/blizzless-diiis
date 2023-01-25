@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Minions;
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -260,7 +261,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			int EnemiesHit = 1;
 			public LeapAttackArmorBuff(int enemies)
 			{
-				this.EnemiesHit = enemies;
+				EnemiesHit = enemies;
 			}
 
 			public override void Init()
@@ -273,7 +274,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				User.Attributes[GameAttribute.Armor_Bonus_Percent] += (ScriptFormula(33) * this.EnemiesHit);
+				User.Attributes[GameAttribute.Armor_Bonus_Percent] += (ScriptFormula(33) * EnemiesHit);
 				User.Attributes.BroadcastChangedIfRevealed();
 
 				return true;
@@ -283,7 +284,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 
-				User.Attributes[GameAttribute.Armor_Bonus_Percent] -= (ScriptFormula(33) * this.EnemiesHit);
+				User.Attributes[GameAttribute.Armor_Bonus_Percent] -= (ScriptFormula(33) * EnemiesHit);
 				User.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -857,7 +858,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							if (Rand.NextDouble() < ScriptFormula(5))
 							{
 								//ScriptFormula(4) -> extends duration 
-								this.Extend((int)ScriptFormula(4) * 60);
+								Extend((int)ScriptFormula(4) * 60);
 							}
 						}
 						if (Rune_C > 0)
@@ -2289,7 +2290,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (GainedFury >= (1 / ScriptFormula(21)))
 					{
 						GainedFury -= (1 / ScriptFormula(21));
-						this.Extend(60);
+						Extend(60);
 					}
 				return false;
 			}
@@ -2332,6 +2333,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	[ImplementsPowerSNO(SkillsSystem.Skills.Barbarian.Situational.CallOfTheAncients)]
 	public class CallOfTheAncients : Skill
 	{
+		private AncientBarbarian SpawnAncient(int number)
+        {
+            return number switch
+            {
+                0 => new AncientKorlic(World, this),
+                1 => new AncientTalic(World, this),
+                2 => new AncientMawdawc(World, this),
+                _ => throw new Exception("number shoild be less than 3"),
+            };
+        }
 		public override IEnumerable<TickTimer> Main()
 		{
 			if ((User as Player).SkillSet.HasPassive(204603))
@@ -2342,39 +2353,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			List<Actor> ancients = new List<Actor>();
 			for (int i = 0; i < 3; i++)
 			{
-				if (i == 0)
-				{
-					var ancient = new AncientKorlic(this.World, this, i);
-					ancient.Brain.DeActivate();
-					ancient.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-					ancient.Attributes[GameAttribute.Untargetable] = true;
-					ancient.EnterWorld(ancient.Position);
-					ancient.PlayActionAnimation(97105);
-					ancients.Add(ancient);
-					yield return WaitSeconds(0.2f);
-				}
-				if (i == 1)
-				{
-					var ancient = new AncientTalic(this.World, this, i);
-					ancient.Brain.DeActivate();
-					ancient.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-					ancient.Attributes[GameAttribute.Untargetable] = true;
-					ancient.EnterWorld(ancient.Position);
-					ancient.PlayActionAnimation(97109);
-					ancients.Add(ancient);
-					yield return WaitSeconds(0.2f);
-				}
-				if (i == 2)
-				{
-					var ancient = new AncientMawdawc(this.World, this, i);
-					ancient.Brain.DeActivate();
-					ancient.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-					ancient.Attributes[GameAttribute.Untargetable] = true;
-					ancient.EnterWorld(ancient.Position);
-					ancient.PlayActionAnimation(97107);
-					ancients.Add(ancient);
-					yield return WaitSeconds(0.2f);
-				}
+				var ancient = SpawnAncient(i);
+				ancient.Brain.DeActivate();
+				ancient.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
+				ancient.Attributes[GameAttribute.Untargetable] = true;
+				ancient.EnterWorld(ancient.Position);
+				ancient.PlayActionAnimation(ancient.IntroAnimation);
+				ancients.Add(ancient);
+				yield return WaitSeconds(0.2f);
 			}
 			yield return WaitSeconds(0.8f);
 

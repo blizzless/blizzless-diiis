@@ -27,22 +27,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public A1dun_firewall(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			this.Field2 = 0x8;
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
+			Field2 = 0x8;
+			CollFlags = 0;
+			WalkSpeed = 0;
 
-			this.Attributes[GameAttribute.Movement_Scalar] = 0f;
-			this.Attributes[GameAttribute.Run_Speed_Granted] = 0f;
-			this.Spawner = true;
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttribute.Movement_Scalar] = 0f;
+			Attributes[GameAttribute.Run_Speed_Granted] = 0f;
+			Spawner = true;
+			Attributes[GameAttribute.Invulnerable] = true;
 
-			this.CollFlags = 0;
-			this.WalkSpeed = 0;
-			this.Attributes[GameAttribute.Invulnerable] = true;
+			CollFlags = 0;
+			WalkSpeed = 0;
+			Attributes[GameAttribute.Invulnerable] = true;
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			//(Brain as MonsterBrain).AddPresetPower(96925);
 			(Brain as MonsterBrain).AddPresetPower(223284);
-			this.WalkSpeed = 0.0f;
+			WalkSpeed = 0.0f;
 			//[224754] [EffectGroup] a4dun_spire_firewall_slideExplode
 			//[223284] [Power] a4dun_spire_firewall
 		}

@@ -22,8 +22,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnPlayerApproaching(PlayerSystem.Player player)
 		{
-			if (this.World.Game.PvP) return;
-			if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * this.Scale * this.Scale && !_checkpointReached)
+			if (World.Game.PvP) return;
+			if (player.Position.DistanceSquared(ref _position) < ActorData.Sphere.Radius * ActorData.Sphere.Radius * Scale * Scale && !_checkpointReached)
 			{
 				_checkpointReached = true;
 
@@ -33,7 +33,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					Effect = Effect.Checkpoint
 				});
 
-				player.CheckPointPosition = this.Position;
+				player.CheckPointPosition = Position;
 				player.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;     // Reset corpse resurrection charges
 			}
 		}

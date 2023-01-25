@@ -22,8 +22,6 @@ using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 //Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
 //Blizzless Project 2022 
 using System;
@@ -32,12 +30,36 @@ using System.Collections.Generic;
 //Blizzless Project 2022 
 using System.Linq;
 //Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
+    static class WitchDoctorPowerContextExtensions
+    {
+		internal static bool ShouldSpawnFetishSycophant(this PowerContext powerContext)
+        {
+			return (powerContext.User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 15;
+        }
+
+		internal static void MakeFetishSpawn(this Minion fetish)
+        {
+			fetish.Brain.DeActivate();
+			fetish.Position = PowerContext.RandomDirection(fetish.Master.Position, 3f, 8f);
+			fetish.Attributes[GameAttribute.Untargetable] = true;
+			fetish.EnterWorld(fetish.Position);
+			fetish.PlayActionAnimation(AnimationSno.fetish_spawn_01);
+		}
+
+		internal static void MakeFetishLive(this Minion fetish, float? customLifeTime = 60f)
+        {
+			fetish.Brain.Activate();
+			fetish.Attributes[GameAttribute.Untargetable] = false;
+			fetish.Attributes.BroadcastChangedIfRevealed();
+			if (customLifeTime != null)
+				fetish.LifeTime = TickTimer.WaitSeconds(fetish.World.Game, customLifeTime.Value);
+			fetish.PlayActionAnimation(AnimationSno.fetish_idle_01);
+		}
+	}
 	//Complete
 	#region PoisonDart
 	[ImplementsPowerSNO(SkillsSystem.Skills.WitchDoctor.PhysicalRealm.PoisonDart)]
@@ -93,21 +115,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				};
 				proj.Launch(TargetPosition, 1f);
 
-				if ((User as Player).SkillSet.HasPassive(218588) && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+				if (this.ShouldSpawnFetishSycophant()) //FetishSycophants (wd)
 				{
-					var Fetish = new FetishMelee(this.World, this, 0);
-					Fetish.Brain.DeActivate();
-					Fetish.Position = RandomDirection(User.Position, 3f, 8f);
-					Fetish.Attributes[GameAttribute.Untargetable] = true;
-					Fetish.EnterWorld(Fetish.Position);
-					Fetish.PlayActionAnimation(90118);
+					var fetish = new FetishMelee(World, this, 0);
+					fetish.MakeFetishSpawn();
 					yield return WaitSeconds(0.5f);
 
-					(Fetish as Minion).Brain.Activate();
-					Fetish.Attributes[GameAttribute.Untargetable] = false;
-					Fetish.Attributes.BroadcastChangedIfRevealed();
-					Fetish.LifeTime = WaitSeconds(60f);
-					Fetish.PlayActionAnimation(87190);
+					fetish.MakeFetishLive();
 				}
 			}
 		}
@@ -124,21 +138,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			StartCooldown(EvalTag(PowerKeys.CooldownTime));
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if (this.ShouldSpawnFetishSycophant()) //FetishSycophants (wd)
 			{
-				var Fetish = new FetishMelee(this.World, this, 0);
-				Fetish.Brain.DeActivate();
-				Fetish.Position = RandomDirection(User.Position, 3f, 8f);
-				Fetish.Attributes[GameAttribute.Untargetable] = true;
-				Fetish.EnterWorld(Fetish.Position);
-				Fetish.PlayActionAnimation(90118);
+				var fetish = new FetishMelee(World, this, 0);
+				fetish.MakeFetishSpawn();
 				yield return WaitSeconds(0.5f);
 
-				Fetish.Brain.Activate();
-				Fetish.Attributes[GameAttribute.Untargetable] = false;
-				Fetish.Attributes.BroadcastChangedIfRevealed();
-				Fetish.LifeTime = WaitSeconds(60f);
-				Fetish.PlayActionAnimation(87190);
+				fetish.MakeFetishLive();
 			}
 
 			if (Rune_C > 0)
@@ -150,10 +156,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				// HACK: holy hell there is alot of hardcoded animation timings here
 
-				bigtoad.PlayActionAnimation(110766); // spawn ani
+				bigtoad.PlayActionAnimation(AnimationSno.gianttoad_spawn); // spawn ani
 				yield return WaitSeconds(1f);
 
-				bigtoad.PlayActionAnimation(110520); // attack ani
+				bigtoad.PlayActionAnimation(AnimationSno.gianttoad_attack_01); // attack ani
 				TickTimer waitAttackEnd = WaitSeconds(1.5f);
 				yield return WaitSeconds(0.3f); // wait for attack ani to play a bit
 
@@ -163,9 +169,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				yield return WaitSeconds(0.3f); // have tongue hang there for a bit
 
 				var tongueMover = new KnockbackBuff(-0.01f, 3f, -0.1f);
-				this.World.BuffManager.AddBuff(bigtoad, tongueEnd, tongueMover);
+				World.BuffManager.AddBuff(bigtoad, tongueEnd, tongueMover);
 				if (ValidTarget())
-					this.World.BuffManager.AddBuff(bigtoad, Target, new KnockbackBuff(-0.01f, 3f, -0.1f));
+					World.BuffManager.AddBuff(bigtoad, Target, new KnockbackBuff(-0.01f, 3f, -0.1f));
 
 				yield return tongueMover.ArrivalTime;
 				tongueEnd.Destroy();
@@ -177,7 +183,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (!waitAttackEnd.TimedOut)
 						yield return waitAttackEnd;
 
-					bigtoad.PlayActionAnimation(110636); // disgest ani, 5 seconds
+					bigtoad.PlayActionAnimation(AnimationSno.gianttoad_idle_digest); // disgest ani, 5 seconds
 					for (int n = 0; n < 5 && ValidTarget(); ++n)
 					{
 						WeaponDamage(Target, 0.039f, DamageType.Poison);
@@ -188,14 +194,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					{
 						_SetHiddenAttribute(Target, false);
 
-						bigtoad.PlayActionAnimation(110637); // regurgitate ani
+						bigtoad.PlayActionAnimation(AnimationSno.gianttoad_regurgitate); // regurgitate ani
 						this.World.BuffManager.AddBuff(bigtoad, Target, new Implementations.KnockbackBuff(36f));
 						Target.PlayEffectGroup(18281); // actual regurgitate efg isn't working so use generic acid effect
 						yield return WaitSeconds(0.9f);
 					}
 				}
 
-				bigtoad.PlayActionAnimation(110764); // despawn ani
+				bigtoad.PlayActionAnimation(AnimationSno.gianttoad_despawn); // despawn ani
 				yield return WaitSeconds(0.7f);
 				bigtoad.Destroy();
 			}
@@ -366,7 +372,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			public DamageGroundDebuff(Player player)
 			{
-				this.plr = player;
+				plr = player;
 			}
 
 			public override void OnPayload(Payload payload)
@@ -378,22 +384,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						if (Rand.NextDouble() < ScriptFormula(21))
 						{
 							//produce a health globe or summon a dog
-							if (DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble() > 0.5)
+							if (FastRandom.Instance.NextDouble() > 0.5)
 								Target.World.SpawnHealthGlobe(Target, this.plr, Target.Position);
 							else
 							{
-								var dog = new ZombieDog(User.World, this.plr, 0);
+								var dog = new ZombieDog(User.World, plr, 0);
 								dog.Brain.DeActivate();
 								dog.Position = Target.Position;
 								dog.Attributes[GameAttribute.Untargetable] = true;
 								dog.EnterWorld(dog.Position);
-								dog.PlayActionAnimation(11437);
-								System.Threading.Tasks.Task.Delay(1000).ContinueWith(d =>
+								dog.PlayActionAnimation(AnimationSno.zombiedog_summon_01);
+                                Task.Delay(1000).ContinueWith(d =>
 								{
 									dog.Brain.Activate();
 									dog.Attributes[GameAttribute.Untargetable] = false;
 									dog.Attributes.BroadcastChangedIfRevealed();
-									dog.PlayActionAnimation(11431);
+									dog.PlayActionAnimation(AnimationSno.zombiedog_idle_01);
 								});
 							}
 
@@ -600,21 +606,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				ActorSno._witchdoctor_zombiecharger_projectile_alabasterrune
 			);
 
-			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if (this.ShouldSpawnFetishSycophant()) //FetishSycophants (wd)
 			{
-				var Fetish = new FetishMelee(this.World, this, 0);
-				Fetish.Brain.DeActivate();
-				Fetish.Position = RandomDirection(User.Position, 3f, 8f);
-				Fetish.Attributes[GameAttribute.Untargetable] = true;
-				Fetish.EnterWorld(Fetish.Position);
-				Fetish.PlayActionAnimation(90118);
+				var fetish = new FetishMelee(World, this, 0);
+				fetish.MakeFetishSpawn();
 				yield return WaitSeconds(0.5f);
 
-				(Fetish as Minion).Brain.Activate();
-				Fetish.Attributes[GameAttribute.Untargetable] = false;
-				Fetish.Attributes.BroadcastChangedIfRevealed();
-				Fetish.LifeTime = WaitSeconds(60f);
-				Fetish.PlayActionAnimation(87190);
+				fetish.MakeFetishLive();
 			}
 
 			if (Rune_A > 0)
@@ -870,21 +868,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			UsePrimaryResource(ScriptFormula(0) * 0.25f); //resourceCostReduction
 
-			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if (this.ShouldSpawnFetishSycophant()) //FetishSycophants (wd)
 			{
-				var Fetish = new FetishMelee(this.World, this, 0);
-				Fetish.Brain.DeActivate();
-				Fetish.Position = RandomDirection(User.Position, 3f, 8f);
-				Fetish.Attributes[GameAttribute.Untargetable] = true;
-				Fetish.EnterWorld(Fetish.Position);
-				Fetish.PlayActionAnimation(90118);
+				var fetish = new FetishMelee(World, this, 0);
+				fetish.MakeFetishSpawn();
 				yield return WaitSeconds(0.5f);
 
-				(Fetish as Minion).Brain.Activate();
-				Fetish.Attributes[GameAttribute.Untargetable] = false;
-				Fetish.Attributes.BroadcastChangedIfRevealed();
-				Fetish.LifeTime = WaitSeconds(60f);
-				Fetish.PlayActionAnimation(87190);
+				fetish.MakeFetishLive();
 			}
 
 			if (Rune_A > 0)
@@ -1025,21 +1015,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-			if ((User as Player).SkillSet.HasPassive(218588) && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if (this.ShouldSpawnFetishSycophant()) //FetishSycophants (wd)
 			{
-				var Fetish = new FetishMelee(this.World, this, 0);
-				Fetish.Brain.DeActivate();
-				Fetish.Position = RandomDirection(User.Position, 3f, 8f);
-				Fetish.Attributes[GameAttribute.Untargetable] = true;
-				Fetish.EnterWorld(Fetish.Position);
-				Fetish.PlayActionAnimation(90118);
+				var fetish = new FetishMelee(World, this, 0);
+				fetish.MakeFetishSpawn();
 				yield return WaitSeconds(0.5f);
 
-				(Fetish as Minion).Brain.Activate();
-				Fetish.Attributes[GameAttribute.Untargetable] = false;
-				Fetish.Attributes.BroadcastChangedIfRevealed();
-				Fetish.LifeTime = WaitSeconds(60f);
-				Fetish.PlayActionAnimation(87190);
+				fetish.MakeFetishLive();
 			}
 
 			Projectile[] grenades = new Projectile[1];
@@ -1069,7 +1051,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var targets = GetEnemiesInRadius(grenadeN.Position, ScriptFormula(11));
 					if (targets.Actors.Count > 0)
 					{
-						var target = targets.Actors[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, targets.Actors.Count)];
+						var target = targets.Actors[FastRandom.Instance.Next(0, targets.Actors.Count)];
 
 						grenadeN.LaunchArc(PowerMath.TranslateDirection2D(grenadeN.Position, target.Position, grenadeN.Position, PowerMath.Distance2D(grenadeN.Position, target.Position)), height, ScriptFormula(2));
 						yield return grenadeN.ArrivalTime;
@@ -1422,21 +1404,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-			if ((User as Player).SkillSet.HasPassive(218588) && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if (this.ShouldSpawnFetishSycophant()) //FetishSycophants (wd)
 			{
-				var Fetish = new FetishMelee(this.World, this, 0);
-				Fetish.Brain.DeActivate();
-				Fetish.Position = RandomDirection(User.Position, 3f, 8f);
-				Fetish.Attributes[GameAttribute.Untargetable] = true;
-				Fetish.EnterWorld(Fetish.Position);
-				Fetish.PlayActionAnimation(90118);
+				var fetish = new FetishMelee(World, this, 0);
+				fetish.MakeFetishSpawn();
 				yield return WaitSeconds(0.5f);
 
-				(Fetish as Minion).Brain.Activate();
-				Fetish.Attributes[GameAttribute.Untargetable] = false;
-				Fetish.Attributes.BroadcastChangedIfRevealed();
-				Fetish.LifeTime = WaitSeconds(60f);
-				Fetish.PlayActionAnimation(87190);
+				fetish.MakeFetishLive();
 			}
 
 			//cast, spread to those in radius, from there jump to other mobs in area within (__?__)
@@ -1703,21 +1677,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if (this.ShouldSpawnFetishSycophant()) //FetishSycophants (wd)
 			{
-				var Fetish = new FetishMelee(this.World, this, 0);
-				Fetish.Brain.DeActivate();
-				Fetish.Position = RandomDirection(User.Position, 3f, 8f);
-				Fetish.Attributes[GameAttribute.Untargetable] = true;
-				Fetish.EnterWorld(Fetish.Position);
-				Fetish.PlayActionAnimation(90118);
+				var fetish = new FetishMelee(World, this, 0);
+				fetish.MakeFetishSpawn();
 				yield return WaitSeconds(0.5f);
 
-				Fetish.Brain.Activate();
-				Fetish.Attributes[GameAttribute.Untargetable] = false;
-				Fetish.Attributes.BroadcastChangedIfRevealed();
-				Fetish.LifeTime = WaitSeconds(60f);
-				Fetish.PlayActionAnimation(87190);
+				fetish.MakeFetishLive();
 			}
 
 			if (Rune_E > 0)
@@ -1998,13 +1964,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						dog.Position = Target.Position;
 						dog.Attributes[GameAttribute.Untargetable] = true;
 						dog.EnterWorld(dog.Position);
-						dog.PlayActionAnimation(11437);
-						System.Threading.Tasks.Task.Delay(1000).ContinueWith(d =>
+						dog.PlayActionAnimation(AnimationSno.zombiedog_summon_01);
+                        Task.Delay(1000).ContinueWith(d =>
 						{
 							dog.Brain.Activate();
 							dog.Attributes[GameAttribute.Untargetable] = false;
 							dog.Attributes.BroadcastChangedIfRevealed();
-							dog.PlayActionAnimation(11431);
+							dog.PlayActionAnimation(AnimationSno.zombiedog_idle_01);
 						});
 					}
 			}
@@ -2028,21 +1994,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			StartCooldown(EvalTag(PowerKeys.CooldownTime));
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-			if ((User as Player).SkillSet.HasPassive(218588) && DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if (this.ShouldSpawnFetishSycophant()) //FetishSycophants (wd)
 			{
-				var Fetish = new FetishMelee(this.World, this, 0);
-				Fetish.Brain.DeActivate();
-				Fetish.Position = RandomDirection(User.Position, 3f, 8f);
-				Fetish.Attributes[GameAttribute.Untargetable] = true;
-				Fetish.EnterWorld(Fetish.Position);
-				Fetish.PlayActionAnimation(90118);
+				var fetish = new FetishMelee(World, this, 0);
+				fetish.MakeFetishSpawn();
 				yield return WaitSeconds(0.5f);
 
-				(Fetish as Minion).Brain.Activate();
-				Fetish.Attributes[GameAttribute.Untargetable] = false;
-				Fetish.Attributes.BroadcastChangedIfRevealed();
-				Fetish.LifeTime = WaitSeconds(60f);
-				Fetish.PlayActionAnimation(87190);
+				fetish.MakeFetishLive();
 			}
 
 			if (Rune_C > 0)
@@ -2130,7 +2088,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						List<Actor> Creepers = new List<Actor>();
 						for (int i = 0; i < maxCreepers; i++)
 						{
-							var Creeper = new WallCreeper(this.World, this, i);
+							var Creeper = new WallCreeper(World, this, i);
 							Creeper.Brain.DeActivate();
 							Creeper.Position = RandomDirection(Wall.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 							Creeper.Attributes[GameAttribute.Untargetable] = true;
@@ -2162,29 +2120,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			StartCooldown(ScriptFormula(18));
 
 			int maxFetishes = (int)(ScriptFormula(0) + ScriptFormula(9));
-			List<Actor> Fetishes = new List<Actor>();
+			var fetishes = new List<Minion>();
 			for (int i = 0; i < maxFetishes; i++)
 			{
-				var Fetish = new FetishMelee(this.World, this, i);
-				Fetish.Brain.DeActivate();
-				Fetish.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-				Fetish.Attributes[GameAttribute.Untargetable] = true;
-				Fetish.EnterWorld(Fetish.Position);
-				Fetish.PlayActionAnimation(90118);
-				Fetishes.Add(Fetish);
+				var fetish = new FetishMelee(this.World, this, i);
+				fetish.MakeFetishSpawn();
+				fetishes.Add(fetish);
 				yield return WaitSeconds(0.2f);
 			}
 			if (Rune_C > 0)
 			{
 				for (int i = 0; i < ScriptFormula(10); i++)
 				{
-					var Fetish = new FetishShaman(this.World, this, i);
-					Fetish.Brain.DeActivate();
-					Fetish.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-					Fetish.Attributes[GameAttribute.Untargetable] = true;
-					Fetish.EnterWorld(Fetish.Position);
-					Fetish.PlayActionAnimation(90118);
-					Fetishes.Add(Fetish);
+					var fetish = new FetishShaman(this.World, this, i);
+					fetish.MakeFetishSpawn();
+					fetishes.Add(fetish);
 					yield return WaitSeconds(0.2f);
 				}
 			}
@@ -2192,23 +2142,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				for (int i = 0; i < ScriptFormula(13); i++)
 				{
-					var Fetish = new FetishHunter(this.World, this, i);
-					Fetish.Brain.DeActivate();
-					Fetish.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-					Fetish.Attributes[GameAttribute.Untargetable] = true;
-					Fetish.EnterWorld(Fetish.Position);
-					Fetish.PlayActionAnimation(90118);
-					Fetishes.Add(Fetish);
+					var fetish = new FetishHunter(this.World, this, i);
+					fetish.MakeFetishSpawn();
+					fetishes.Add(fetish);
 					yield return WaitSeconds(0.2f);
 				}
 			}
 			yield return WaitSeconds(0.5f);
-			foreach (Actor Fetish in Fetishes)
+			foreach (var Fetish in fetishes)
 			{
-				(Fetish as Minion).Brain.Activate();
-				Fetish.Attributes[GameAttribute.Untargetable] = false;
-				Fetish.Attributes.BroadcastChangedIfRevealed();
-				Fetish.PlayActionAnimation(87190); //Not sure why this is required, but after the summon is done, it'll just be frozen otherwise.
+				Fetish.MakeFetishLive(customLifeTime: null);
 				if (Rune_A > 0)
 				{
 					Fetish.PlayEffectGroup(133761);
@@ -2276,17 +2219,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					{
 						var dog = new ZombieDog(User.World, User, 0);
 						dog.Brain.DeActivate();
-						dog.Position = PowerContext.RandomDirection(User.Position, 3f, 8f);
+						dog.Position = RandomDirection(User.Position, 3f, 8f);
 						dog.Attributes[GameAttribute.Untargetable] = true;
 						dog.EnterWorld(dog.Position);
-						dog.PlayActionAnimation(11437);
+						dog.PlayActionAnimation(AnimationSno.zombiedog_summon_01);
 						_dogsSummoned++;
 
 						yield return WaitSeconds(0.5f);
 						dog.Brain.Activate();
 						dog.Attributes[GameAttribute.Untargetable] = false;
 						dog.Attributes.BroadcastChangedIfRevealed();
-						dog.PlayActionAnimation(11431);
+						dog.PlayActionAnimation(AnimationSno.zombiedog_idle_01);
 					}
 
 				if (_dogsSummoned >= 3)
@@ -2331,18 +2274,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			StartCooldown(EvalTag(PowerKeys.CooldownTime));
-			var garg = new GargantuanMinion(this.World, this, 0);
+			var garg = new GargantuanMinion(World, this, 0);
 			garg.Brain.DeActivate();
 			garg.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 			garg.Attributes[GameAttribute.Untargetable] = true;
 			garg.EnterWorld(garg.Position);
-			garg.PlayActionAnimation(155988);
+			garg.PlayActionAnimation(AnimationSno.gargantuan_summon);
 			yield return WaitSeconds(0.8f);
 
 			(garg as Minion).Brain.Activate();
 			garg.Attributes[GameAttribute.Untargetable] = false;
 			garg.Attributes.BroadcastChangedIfRevealed();
-			garg.PlayActionAnimation(144967); //Not sure why this is required, but after the summon is done, it'll just be frozen otherwise.
+			garg.PlayActionAnimation(AnimationSno.gargantuan_idle_01); //Not sure why this is required, but after the summon is done, it'll just be frozen otherwise.
 
 			if (Rune_A > 0)
 				AddBuff(garg, new GargantuanPrepareBuff());
@@ -2422,7 +2365,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				var garg = (this.Target as GargantuanMinion);
+				var garg = (Target as GargantuanMinion);
 				garg.WalkSpeed *= 1.2f;
 				garg.CooldownReduction *= 0.65f;
 				return true;
@@ -2438,7 +2381,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			public override void Remove()
 			{
-				var garg = (this.Target as GargantuanMinion);
+				var garg = (Target as GargantuanMinion);
 				garg.WalkSpeed /= 1.2f;
 				garg.CooldownReduction /= 0.65f;
 				base.Remove();
@@ -2462,12 +2405,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			else
 			{
-				var hex = new HexMinion(this.World, this, 0);
+				var hex = new HexMinion(World, this, 0);
 				hex.Brain.DeActivate();
 				hex.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 				hex.Attributes[GameAttribute.Untargetable] = true;
 				hex.EnterWorld(hex.Position);
-				hex.PlayActionAnimation(90118);
+				hex.PlayActionAnimation(AnimationSno.fetish_spawn_01); 
 				yield return WaitSeconds(0.8f);
 
 				(hex as Minion).Brain.Activate();
@@ -2552,7 +2495,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_B > 0)
 			{
-				var spider = new CorpseSpiderQueen(this.World, this, 0);
+				var spider = new CorpseSpiderQueen(World, this, 0);
 				spider.Brain.DeActivate();
 				spider.Scale = 3f;
 				spider.Position = RandomDirection(TargetPosition, 3f, 8f);
@@ -2570,7 +2513,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				for (int i = 0; i < (int)ScriptFormula(0); i++)
 				{
 					var spider = new CorpseSpider(
-						this.World,
+						World,
 						this,
 						RuneSelect(
 							ActorSno._witchdoctor_corpsespider,
@@ -2595,21 +2538,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 			}
 
-			if ((User as Player).SkillSet.HasPassive(218588) && FastRandom.Instance.Next(100) < 5) //FetishSycophants (wd)
+			if (this.ShouldSpawnFetishSycophant()) //FetishSycophants (wd)
 			{
-				var Fetish = new FetishMelee(this.World, this, 0);
-				Fetish.Brain.DeActivate();
-				Fetish.Position = RandomDirection(User.Position, 3f, 8f);
-				Fetish.Attributes[GameAttribute.Untargetable] = true;
-				Fetish.EnterWorld(Fetish.Position);
-				Fetish.PlayActionAnimation(90118);
+				var fetish = new FetishMelee(World, this, 0);
+				fetish.MakeFetishSpawn();
 				yield return WaitSeconds(0.5f);
 
-				(Fetish as Minion).Brain.Activate();
-				Fetish.Attributes[GameAttribute.Untargetable] = false;
-				Fetish.Attributes.BroadcastChangedIfRevealed();
-				Fetish.LifeTime = WaitSeconds(60f);
-				Fetish.PlayActionAnimation(87190);
+				fetish.MakeFetishLive();
 			}
 
 			yield break;
@@ -2686,12 +2621,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			List<Actor> dogs = new List<Actor>();
 			for (int i = 0; i < maxDogs; i++)
 			{
-				var dog = new ZombieDog(this.World, User, i, ScriptFormula(13));
+				var dog = new ZombieDog(World, User, i, ScriptFormula(13));
 				dog.Brain.DeActivate();
 				dog.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
 				dog.Attributes[GameAttribute.Untargetable] = true;
 				dog.EnterWorld(dog.Position);
-				dog.PlayActionAnimation(11437);
+				dog.PlayActionAnimation(AnimationSno.zombiedog_summon_01);
 				dogs.Add(dog);
 				yield return WaitSeconds(0.2f);
 			}
@@ -2701,7 +2636,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				(dog as Minion).Brain.Activate();
 				dog.Attributes[GameAttribute.Untargetable] = false;
 				dog.Attributes.BroadcastChangedIfRevealed();
-				dog.PlayActionAnimation(11431); //Not sure why this is required, but after the summon is done, it'll just be frozen otherwise.
+				dog.PlayActionAnimation(AnimationSno.zombiedog_idle_01); //Not sure why this is required, but after the summon is done, it'll just be frozen otherwise.
 				if (Rune_A > 0)
 				{
 					AddBuff(dog, new BurningDogBuff());
