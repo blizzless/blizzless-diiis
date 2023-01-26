@@ -22,13 +22,13 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.CommandManager
 {
-	[CommandGroup("account", "Provides account managment commands.")]
+	[CommandGroup("account", "Provides account management commands.")]
 	public class AccountCommands : CommandGroup
 	{
 		[Command("show", "Shows information about given account\nUsage: account show <email>", Account.UserLevels.GM)]
 		public string Show(string[] @params, BattleClient invokerClient)
 		{
-			if (@params.Count() < 1)
+			if (!@params.Any())
 				return "Invalid arguments. Type 'help account show' to get help.";
 
 			var email = @params[0];
@@ -168,7 +168,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				default:
 					return level + " is not a valid user level.";
 			}
-			AccountManager.UpdateUserLevel(account, userLevel);
+			account.UpdateUserLevel(userLevel);
 			return string.Format("Updated user level for account {0} [user-level: {1}].", email, userLevel);
 		}
 	}
