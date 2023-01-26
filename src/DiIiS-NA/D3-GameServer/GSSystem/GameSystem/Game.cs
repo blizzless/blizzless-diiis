@@ -1068,7 +1068,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				{
 					SyncedData = new GameSyncedData
 					{
-						GameSyncedFlags = IsSeasoned == true ? IsHardcore == true ? 6 : 6 : IsHardcore == true ? 4 : 4,
+						GameSyncedFlags = IsSeasoned ? IsHardcore ? 6 : 4 : IsHardcore == true ? 4 : 6,
 						Act = Math.Min(CurrentAct, 3000),       //act id
 						InitialMonsterLevel = InitialMonsterLevel, //InitialMonsterLevel
 						MonsterLevel = 0x7044248F, //MonsterLevel

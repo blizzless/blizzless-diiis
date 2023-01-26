@@ -5129,7 +5129,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					}
 					else
 					{
-						Attributes[GameAttribute.Experience_Next_Lo] = Attributes[GameAttribute.Experience_Next_Lo] + (int)LevelBorders[Attributes[GameAttribute.Level]];
+						Attributes[GameAttribute.Experience_Next_Lo] += (int)LevelBorders[Attributes[GameAttribute.Level]];
 						Toon.ExperienceNext = Attributes[GameAttribute.Experience_Next_Lo];
 					}
 
