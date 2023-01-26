@@ -80,8 +80,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (sno == ActorSno._zoltunkulle && world.SNO == WorldSno.a2dun_zolt_lobby) SetVisible(false);
 			Attributes[GameAttribute.MinimapActive] = true;
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
-			Attributes[GameAttribute.//Blizzless Project 2022 
-using_Bossbar] = true;
+			Attributes[GameAttribute.using_Bossbar] = true;
 			Attributes[GameAttribute.InBossEncounter] = true;
 			Attributes[GameAttribute.Hitpoints_Max] *= 10.0f;
 			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 7.8f;
