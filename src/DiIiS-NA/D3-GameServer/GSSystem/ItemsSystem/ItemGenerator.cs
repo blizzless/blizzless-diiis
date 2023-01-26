@@ -46,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 {
 	public static class ItemGenerator
 	{
-		public static readonly Logger Logger = LogManager.CreateLogger(nameof(ItemGenerator));
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(ItemGenerator));
 
 		public static readonly ConcurrentDictionary<int, ItemTable> Items = new();
 

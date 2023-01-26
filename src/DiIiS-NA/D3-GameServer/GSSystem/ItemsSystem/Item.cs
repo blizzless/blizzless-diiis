@@ -45,17 +45,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 {
     public class Item : Actor
     {
-        public DBInventory DBInventory = null;
-
         private static readonly Logger Logger = LogManager.CreateLogger(nameof(Item));
 
+        public DBInventory DBInventory = null;
         public bool ItemHasChanges
         {
             get;
             private set; //needed in Future, set this to true if Item affixes or item attributes have changed.
         }
-
-
+        
         public override ActorType ActorType => ActorType.Item;
 
         public Actor Owner { get; set; } // Only set when the _actor_ has the item in its inventory. /fasbat
