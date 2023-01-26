@@ -42,8 +42,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         };
         public Header Header { get; private set; }
         public int SNOParentAnimSet { get; private set; }
-        private TagMap TagMapAnimDefault;
-        private TagMap[] AnimSetTagMaps;
+        public TagMap TagMapAnimDefault { get; private set; }
+        public TagMap[] AnimSetTagMaps;
 
 
         private Dictionary<int, AnimationSno> _animations;
@@ -63,7 +63,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             if (SNOParentAnimSet != -1)
             {
                 var ani = (AnimSet)MPQStorage.Data.Assets[SNOGroup.AnimSet][SNOParentAnimSet].Data;
-                return defaultAnimations.Union(ani.Animations.Where(x => !defaultAnimations.ContainsKey(x.Key))).ToDictionary(x => x.Key, x => (AnimationSno)x.Value);
+                return defaultAnimations.Union(ani.Animations.Where(x => !defaultAnimations.ContainsKey(x.Key))).ToDictionary(x => x.Key, x => x.Value);
             }
             return defaultAnimations;
         }

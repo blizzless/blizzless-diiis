@@ -1539,7 +1539,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 													//{[1013103213, {[Actor] [Type: Gizmo] SNOId:78439 GlobalId: 1013103213 Position: x:119.54008 y:140.65799 z:-4.535186 Name: Test_CainIntro_greybox_bridge_trOut_TempWorking}]}
 													//Обрушиваем мостик //EffectGroup "CainIntro_shake", 81546
 													var bridge = encWorld.GetActorBySNO(ActorSno._test_cainintro_greybox_bridge_trout_tempworking);
-													bridge.PlayAnimation(5, bridge.AnimationSet.Animations[AnimationSetKeys.DeathDefault.ID]);
+													bridge.PlayAnimation(5, (AnimationSno)bridge.AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault]);
 													//}
 													foreach (var skeleton in Skeletons)
 													{

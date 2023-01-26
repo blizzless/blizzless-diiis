@@ -530,8 +530,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				var HubWorld = player.InGameClient.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
 				var NStone = HubWorld.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 				bool Activated = true;
-				NStone.SetIdleAnimation(NStone.AnimationSet.Animations[AnimationSetKeys.IdleDefault.ID]);
-				NStone.PlayActionAnimation(NStone.AnimationSet.Animations[AnimationSetKeys.Closing.ID]);
+				NStone.SetIdleAnimation((AnimationSno)NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
+				NStone.PlayActionAnimation((AnimationSno)NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Closing]);
 				NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 				NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 				NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;

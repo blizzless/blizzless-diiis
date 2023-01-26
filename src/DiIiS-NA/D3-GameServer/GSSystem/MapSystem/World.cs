@@ -569,9 +569,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
                 monster.EnterWorld(position);
                 if (monster.AnimationSet != null)
                 {
-					var animationTag = new[] { AnimationSetKeys.Spawn.ID, AnimationSetKeys.Spawn2.ID }.FirstOrDefault(x => monster.AnimationSet.Animations.ContainsKey(x));
+					var animationTag = new[] { AnimationSetKeys.Spawn, AnimationSetKeys.Spawn2 }.FirstOrDefault(x => monster.AnimationSet.TagMapAnimDefault.ContainsKey(x));
 
-					if (animationTag > 0)
+					if (animationTag != null)
                     {
 						monster.World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 						{
@@ -583,7 +583,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 								new PlayAnimationMessageSpec()
 								{
 									Duration = 150,
-									AnimationSNO = (int)monster.AnimationSet.Animations[animationTag],
+									AnimationSNO = monster.AnimationSet.TagMapAnimDefault[animationTag],
 									PermutationIndex = 0,
 									Speed = 1
 								}

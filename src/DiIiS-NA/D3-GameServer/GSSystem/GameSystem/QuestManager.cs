@@ -939,7 +939,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					{
 						while (MonsterCount < AdditionalTargetCounter + 20)
 						{
-							Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count - 1)].Position;
+							Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count)].Position;
 							Core.Types.Math.Vector3D SP = null;
 							while (true)
 							{

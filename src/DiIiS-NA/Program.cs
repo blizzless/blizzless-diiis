@@ -126,7 +126,7 @@ namespace DiIiS_NA
                         using var proc = Process.GetCurrentProcess();
                         var cpuTime = proc.TotalProcessorTime;
                         var text =
-                            $"{name} | {PlayerManager.OnlinePlayers.Count()} onlines in {PlayerManager.OnlinePlayers.Count(s => s.InGameClient.Player.World != null)} worlds | Memory: {totalMemory:0.000} GB | CPU Time: {cpuTime.ToSmallText()} | Uptime: {uptime}";
+                            $"{name} | {PlayerManager.OnlinePlayers.Count()} onlines in {PlayerManager.OnlinePlayers.Count(s => s.InGameClient?.Player?.World != null)} worlds | Memory: {totalMemory:0.000} GB | CPU Time: {cpuTime.ToSmallText()} | Uptime: {uptime}";
                         try
                         {
                             Console.Title = text;
