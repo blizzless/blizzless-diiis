@@ -978,49 +978,49 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				Logger.Warn("Treasure Bag system v0.2");
 				string[] items = new string[1];
-				int Base = 0;
+				int @base = 0;
 				switch (player.Toon.Class)
 				{
-					case LoginServer.Toons.ToonClass.Crusader: Base = 2; break;
-					case LoginServer.Toons.ToonClass.DemonHunter: Base = 4; break;
-					case LoginServer.Toons.ToonClass.Monk: Base = 6; break;
-					case LoginServer.Toons.ToonClass.Necromancer: Base = 8; break;
-					case LoginServer.Toons.ToonClass.WitchDoctor: Base = 10; break;
-					case LoginServer.Toons.ToonClass.Wizard: Base = 12; break;
+					case LoginServer.Toons.ToonClass.Crusader: @base = 2; break;
+					case LoginServer.Toons.ToonClass.DemonHunter: @base = 4; break;
+					case LoginServer.Toons.ToonClass.Monk: @base = 6; break;
+					case LoginServer.Toons.ToonClass.Necromancer: @base = 8; break;
+					case LoginServer.Toons.ToonClass.WitchDoctor: @base = 10; break;
+					case LoginServer.Toons.ToonClass.Wizard: @base = 12; break;
 				} //0 - Barbarian, 2 - Crusader, 4 - Hunter, 6 - Monk, 8 - Necromancer, 10 - Sorcerer, 12 - Wizard
 				string it = "";
 				#region Balance calculation
-				var Moneys = D3.Items.CurrencySavedData.CreateBuilder();
+				var moneys = D3.Items.CurrencySavedData.CreateBuilder();
 				var playerAcc = player.InGameClient.BnetClient.Account.GameAccount;
 
-				D3.Items.CurrencyData GoldData = D3.Items.CurrencyData.CreateBuilder().SetId(0).SetCount((long)player.Inventory.GetGoldAmount()).Build();
-				D3.Items.CurrencyData BloodShardData = D3.Items.CurrencyData.CreateBuilder().SetId(1).SetCount(playerAcc.BloodShards).Build();
-				D3.Items.CurrencyData PlatinumData = D3.Items.CurrencyData.CreateBuilder().SetId(2).SetCount(playerAcc.Platinum).Build();
+				D3.Items.CurrencyData goldData = D3.Items.CurrencyData.CreateBuilder().SetId(0).SetCount((long)player.Inventory.GetGoldAmount()).Build();
+				D3.Items.CurrencyData bloodShardData = D3.Items.CurrencyData.CreateBuilder().SetId(1).SetCount(playerAcc.BloodShards).Build();
+				D3.Items.CurrencyData platinumData = D3.Items.CurrencyData.CreateBuilder().SetId(2).SetCount(playerAcc.Platinum).Build();
 
-				D3.Items.CurrencyData Craft1Data = D3.Items.CurrencyData.CreateBuilder().SetId(3).SetCount(playerAcc.CraftItem1).Build(); // Reusable Parts.
-				D3.Items.CurrencyData Craft2Data = D3.Items.CurrencyData.CreateBuilder().SetId(4).SetCount(playerAcc.CraftItem2).Build(); // Arcanes Dust.
-				D3.Items.CurrencyData Craft3Data = D3.Items.CurrencyData.CreateBuilder().SetId(5).SetCount(playerAcc.CraftItem3).Build(); // Veiled Crystal.
-				D3.Items.CurrencyData Craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4).Build(); // Death's Breath.
-				D3.Items.CurrencyData Craft5Data = D3.Items.CurrencyData.CreateBuilder().SetId(7).SetCount(playerAcc.CraftItem5).Build(); // Forgotten Soul.
+				D3.Items.CurrencyData craft1Data = D3.Items.CurrencyData.CreateBuilder().SetId(3).SetCount(playerAcc.CraftItem1).Build(); // Reusable Parts.
+				D3.Items.CurrencyData craft2Data = D3.Items.CurrencyData.CreateBuilder().SetId(4).SetCount(playerAcc.CraftItem2).Build(); // Arcanes Dust.
+				D3.Items.CurrencyData craft3Data = D3.Items.CurrencyData.CreateBuilder().SetId(5).SetCount(playerAcc.CraftItem3).Build(); // Veiled Crystal.
+				D3.Items.CurrencyData craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4).Build(); // Death's Breath.
+				D3.Items.CurrencyData craft5Data = D3.Items.CurrencyData.CreateBuilder().SetId(7).SetCount(playerAcc.CraftItem5).Build(); // Forgotten Soul.
 
-				D3.Items.CurrencyData Horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8).SetCount(playerAcc.HoradricA1Res).Build();  // Khanduran Rune Bounty itens Act I.
-				D3.Items.CurrencyData Horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9).SetCount(playerAcc.HoradricA2Res).Build();  // Caldeum Nightshade Bounty itens Act II.
-				D3.Items.CurrencyData Horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10).SetCount(playerAcc.HoradricA3Res).Build(); // Arreat War Tapestry Bounty itens Act III.
-				D3.Items.CurrencyData Horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11).SetCount(playerAcc.HoradricA4Res).Build(); // Copputed Angel Flesh Bounty itens Act IV.
-				D3.Items.CurrencyData Horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12).SetCount(playerAcc.HoradricA5Res).Build(); // Westmarch Holy Water Bounty itens Act V.
+				D3.Items.CurrencyData horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8).SetCount(playerAcc.HoradricA1Res).Build();  // Khanduran Rune Bounty itens Act I.
+				D3.Items.CurrencyData horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9).SetCount(playerAcc.HoradricA2Res).Build();  // Caldeum Nightshade Bounty itens Act II.
+				D3.Items.CurrencyData horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10).SetCount(playerAcc.HoradricA3Res).Build(); // Arreat War Tapestry Bounty itens Act III.
+				D3.Items.CurrencyData horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11).SetCount(playerAcc.HoradricA4Res).Build(); // Copputed Angel Flesh Bounty itens Act IV.
+				D3.Items.CurrencyData horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12).SetCount(playerAcc.HoradricA5Res).Build(); // Westmarch Holy Water Bounty itens Act V.
 
-				D3.Items.CurrencyData Craft8Data = D3.Items.CurrencyData.CreateBuilder().SetId(13).SetCount(playerAcc.HeartofFright).Build();     // Heart of Fright.
-				D3.Items.CurrencyData Craft9Data = D3.Items.CurrencyData.CreateBuilder().SetId(14).SetCount(playerAcc.VialofPutridness).Build();  // Idol of Terror.
-				D3.Items.CurrencyData Craft10Data = D3.Items.CurrencyData.CreateBuilder().SetId(15).SetCount(playerAcc.IdolofTerror).Build();     // Vail of Putridiness.
-				D3.Items.CurrencyData Craft11Data = D3.Items.CurrencyData.CreateBuilder().SetId(16).SetCount(playerAcc.LeorikKey).Build();        // Leorik Regret.
+				D3.Items.CurrencyData craft8Data = D3.Items.CurrencyData.CreateBuilder().SetId(13).SetCount(playerAcc.HeartofFright).Build();     // Heart of Fright.
+				D3.Items.CurrencyData craft9Data = D3.Items.CurrencyData.CreateBuilder().SetId(14).SetCount(playerAcc.VialofPutridness).Build();  // Idol of Terror.
+				D3.Items.CurrencyData craft10Data = D3.Items.CurrencyData.CreateBuilder().SetId(15).SetCount(playerAcc.IdolofTerror).Build();     // Vail of Putridiness.
+				D3.Items.CurrencyData craft11Data = D3.Items.CurrencyData.CreateBuilder().SetId(16).SetCount(playerAcc.LeorikKey).Build();        // Leorik Regret.
 
-				D3.Items.CurrencyData Craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20).SetCount(playerAcc.BigPortalKey).Build();      // KeyStone Greater Rift.
+				D3.Items.CurrencyData craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20).SetCount(playerAcc.BigPortalKey).Build();      // KeyStone Greater Rift.
 
-				object[] consumables = {GoldData, BloodShardData, PlatinumData, Craft1Data, Craft2Data, Craft3Data, Craft4Data, Craft5Data, Craft7Data, Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data, Craft8Data, Craft9Data, Craft10Data, Craft11Data};
+				object[] consumables = {goldData, bloodShardData, platinumData, craft1Data, craft2Data, craft3Data, craft4Data, craft5Data, craft7Data, horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data, craft8Data, craft9Data, craft10Data, craft11Data};
 
 				foreach (object consumable in consumables)
 				{
-					Moneys.AddCurrency(consumable);
+					moneys.AddCurrency(consumable);
 				}
 
 				#endregion
@@ -1037,14 +1037,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 												"Unique_Helm_Set_06_x1", "Unique_Gloves_Set_06_x1"};
 						switch (player.Toon.Class)
 						{
-							case LoginServer.Toons.ToonClass.Crusader:		Base = 2; break;
-							case LoginServer.Toons.ToonClass.DemonHunter:	Base = 4; break;
-							case LoginServer.Toons.ToonClass.Monk:			Base = 6; break;
-							case LoginServer.Toons.ToonClass.Necromancer:	Base = 8; break;
-							case LoginServer.Toons.ToonClass.WitchDoctor:	Base = 10; break;
-							case LoginServer.Toons.ToonClass.Wizard:		Base = 12; break;
+							case LoginServer.Toons.ToonClass.Crusader:		@base = 2; break;
+							case LoginServer.Toons.ToonClass.DemonHunter:	@base = 4; break;
+							case LoginServer.Toons.ToonClass.Monk:			@base = 6; break;
+							case LoginServer.Toons.ToonClass.Necromancer:	@base = 8; break;
+							case LoginServer.Toons.ToonClass.WitchDoctor:	@base = 10; break;
+							case LoginServer.Toons.ToonClass.Wizard:		@base = 12; break;
 						}
-						it = items[RandomHelper.Next(Base, Base+1)]; player.Inventory.PickUp(ItemGenerator.Cook(player, it));
+						it = items[RandomHelper.Next(@base, @base+1)]; player.Inventory.PickUp(ItemGenerator.Cook(player, it));
 						break;
 					case -1249067448:
 						items = new string[] {  "Unique_Shoulder_Set_15_x1", "Unique_Boots_Set_15_x1",
@@ -1054,7 +1054,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 												"P6_Necro_Set_3_Shoulders",   "P6_Necro_Set_3_Boots",
 												"Unique_Shoulder_Set_09_x1", "Unique_Boots_Set_09_x1",
 												"Unique_Shoulder_Set_06_x1", "Unique_Boots_Set_06_x1"};
-						it = items[RandomHelper.Next(Base, Base + 1)]; player.Inventory.PickUp(ItemGenerator.Cook(player, it));
+						it = items[RandomHelper.Next(@base, @base + 1)]; player.Inventory.PickUp(ItemGenerator.Cook(player, it));
 						break;
 					case -1249067447:
 						items = new string[] {  "Unique_Chest_Set_15_x1", "Unique_Pants_Set_15_x1",
@@ -1064,14 +1064,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 												"P6_Necro_Set_3_Chest",   "P6_Necro_Set_3_Pants",
 												"Unique_Chest_Set_09_x1", "Unique_Pants_Set_09_x1",
 												"Unique_Chest_Set_06_x1", "Unique_Pants_Set_06_x1"};
-						it = items[RandomHelper.Next(Base, Base + 1)]; player.Inventory.PickUp(ItemGenerator.Cook(player, it));
+						it = items[RandomHelper.Next(@base, @base + 1)]; player.Inventory.PickUp(ItemGenerator.Cook(player, it));
 						break;
 					#endregion
 					#region The Treasure of the Khoradrim
 					case -1575654862: // The Treasure 1 Акта
 						playerAcc.HoradricA1Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						Horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8).SetCount(playerAcc.HoradricA1Res).Build();
+						horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8).SetCount(playerAcc.HoradricA1Res).Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1082,7 +1082,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					case -1575654861: // The Treasure 2 Акта
 						playerAcc.HoradricA2Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						Horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9).SetCount(playerAcc.HoradricA2Res).Build();
+						horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9).SetCount(playerAcc.HoradricA2Res).Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1093,7 +1093,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					case -1575654860: // The Treasure 3 Акта
 						playerAcc.HoradricA3Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						Horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10).SetCount(playerAcc.HoradricA3Res).Build();
+						horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10).SetCount(playerAcc.HoradricA3Res).Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1104,7 +1104,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					case -1575654859: // The Treasure 4 Акта
 						playerAcc.HoradricA4Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						Horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11).SetCount(playerAcc.HoradricA4Res).Build();
+						horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11).SetCount(playerAcc.HoradricA4Res).Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1115,7 +1115,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					case -1575654858: // The Treasure 5 Акта
 						playerAcc.HoradricA5Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						Horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12).SetCount(playerAcc.HoradricA5Res).Build();
+						horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12).SetCount(playerAcc.HoradricA5Res).Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1127,15 +1127,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					default:
 						Logger.Warn("This treasure bag - not implemented"); break;
 				}
-				Craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4).Build();
+				craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4).Build();
 
-				object[] HoradricBoxes = {Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data};
-				foreach (object HoradricBoxe in HoradricBoxes)
+				object[] horadricBoxes = {horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data};
+				foreach (object horadricBoxe in horadricBoxes)
 				{
-					Moneys.AddCurrency(HoradricBoxe);
+					moneys.AddCurrency(horadricBoxe);
 				}
 
-				player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull) { Data = Moneys.Build().ToByteArray() });
+				player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull) { Data = moneys.Build().ToByteArray() });
 
 				player.Inventory.DestroyInventoryItem(this);
 				return;
@@ -1259,9 +1259,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					UpdateStackCount(--Attributes[GameAttribute.ItemStackQuantityLo]); // Just remove one
 					Attributes.SendChangedMessage(player.InGameClient);
 				}
-
-
-
 				return;
 			}
 
