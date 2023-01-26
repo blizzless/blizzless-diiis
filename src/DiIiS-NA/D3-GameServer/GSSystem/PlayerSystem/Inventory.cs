@@ -2332,24 +2332,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			D3.Items.CurrencyData Craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20).SetCount(playerAcc.BigPortalKey).Build();      // KeyStone Greater Rift.
 
-			Moneys.AddCurrency(GoldData);
-			Moneys.AddCurrency(BloodShardData);
-			Moneys.AddCurrency(PlatinumData);
-			Moneys.AddCurrency(Craft1Data);
-			Moneys.AddCurrency(Craft2Data);
-			Moneys.AddCurrency(Craft3Data);
-			Moneys.AddCurrency(Craft4Data);
-			Moneys.AddCurrency(Craft5Data);
-			Moneys.AddCurrency(Craft7Data);
-			Moneys.AddCurrency(Horadric1Data);
-			Moneys.AddCurrency(Horadric2Data);
-			Moneys.AddCurrency(Horadric3Data);
-			Moneys.AddCurrency(Horadric4Data);
-			Moneys.AddCurrency(Horadric5Data);
-			Moneys.AddCurrency(Craft8Data);
-			Moneys.AddCurrency(Craft9Data);
-			Moneys.AddCurrency(Craft10Data);
-			Moneys.AddCurrency(Craft11Data);
+			object[] consumables = {GoldData, BloodShardData, PlatinumData, Craft1Data, Craft2Data, Craft3Data, Craft4Data, Craft5Data, Craft7Data, Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data, Craft8Data, Craft9Data, Craft10Data, Craft11Data};
+
+			foreach (object consumable in consumables)
+			{
+				Moneys.AddCurrency(consumable);
+			}
 
 			_owner.InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CurrencyDataFull) { Data = Moneys.Build().ToByteArray() });
 		}
@@ -2362,7 +2350,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void RemoveBloodShardsAmount(int amount)
 		{
-			this.BloodShards -= amount;			
+			this.BloodShards -= amount;
 			_owner.Toon.GameAccount.BloodShards -= amount;
 			UpdateCurrencies();
 		}
