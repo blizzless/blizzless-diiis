@@ -46,29 +46,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 	{
 		public DBInventory DBInventory = null;
 
-		private static readonly Logger Logger = LogManager.CreateLogger();
-		public bool ItemHasChanges { get; private set; }//needed in Future, set this to true if Item affixes or item attributes have changed.
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(Item));
+
+		public bool ItemHasChanges
+		{
+			get;
+			private set; //needed in Future, set this to true if Item affixes or item attributes have changed.
+		} 
 
 
-		public override ActorType ActorType { get { return ActorType.Item; } }
+		public override ActorType ActorType => ActorType.Item;
 
 		public Actor Owner { get; set; } // Only set when the _actor_ has the item in its inventory. /fasbat
 
-		public ItemTable ItemDefinition
-		{
-			get
-			{
-				return ItemGenerator.GetItemDefinition(GBHandle.GBID);
-			}
-		}
+		public ItemTable ItemDefinition => ItemGenerator.GetItemDefinition(GBHandle.GBID);
 
-		public ItemTypeTable ItemType
-		{
-			get
-			{
-				return ItemGroup.FromHash(ItemDefinition.ItemTypesGBID);
-			}
-		}
+		public ItemTypeTable ItemType => ItemGroup.FromHash(ItemDefinition.ItemTypesGBID);
 
 		public bool Unidentified = false;
 
@@ -101,40 +94,28 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public ItemState CurrentState { get; set; }
 
 		public int EquipmentSlot { get; private set; }
-		public Vector2D InventoryLocation { get; private set; } // Column, row; NOTE: Call SetInventoryLocation() instead of setting fields on this
+
+		public Vector2D
+			InventoryLocation
+		{
+			get;
+			private set;
+		} // Column, row; NOTE: Call SetInventoryLocation() instead of setting fields on this
 
 		public override int Quality
 		{
-			get
-			{
-				return Attributes[GameAttribute.Item_Quality_Level];
-			}
-			set
-			{
-				Attributes[GameAttribute.Item_Quality_Level] = value;
-			}
+			get => Attributes[GameAttribute.Item_Quality_Level];
+			set => Attributes[GameAttribute.Item_Quality_Level] = value;
 		}
 
-		public SNOHandle SnoFlippyActory
-		{
-			get
-			{
-				return ActorData.TagMap.ContainsKey(ActorKeys.Flippy) ? ActorData.TagMap[ActorKeys.Flippy] : null;
-			}
-		}
+		public SNOHandle SnoFlippyActory => ActorData.TagMap.ContainsKey(ActorKeys.Flippy) ? ActorData.TagMap[ActorKeys.Flippy] : null;
 
-		public SNOHandle SnoFlippyParticle
-		{
-			get
-			{
-				return ActorData.TagMap.ContainsKey(ActorKeys.FlippyParticle) ? ActorData.TagMap[ActorKeys.FlippyParticle] : null;
-			}
-		}
+		public SNOHandle SnoFlippyParticle =>
+			ActorData.TagMap.ContainsKey(ActorKeys.FlippyParticle)
+				? ActorData.TagMap[ActorKeys.FlippyParticle]
+				: null;
 
-		public override bool HasWorldLocation
-		{
-			get { return Owner == null; }
-		}
+		public override bool HasWorldLocation => Owner == null;
 
 		public override InventoryLocationMessageData InventoryLocationMessage(Player plr)
 		{
@@ -164,10 +145,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public List<int> AffixFamilies = new List<int>();
 
-		public Item(World world, ItemTable definition, IEnumerable<Affix> affixList, string serializedGameAttributeMap, int count = 1)
+		public Item(World world, ItemTable definition, IEnumerable<Affix> affixList, string serializedGameAttributeMap,
+			int count = 1)
 			: base(world, (ActorSno)definition.SNOActor)
 		{
-			GBHandle.GBID = definition.Hash; 
+			GBHandle.GBID = definition.Hash;
 			SetInitialValues(definition);
 			Attributes.FillBySerialized(serializedGameAttributeMap);
 			if (Attributes[GameAttribute.Seed] == 0)
@@ -180,7 +162,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//for (int i = 50; i < 60; i++)
 			//Attributes[GameAttribute.Requirement, 57] = 10;
 
-			
+
 
 			Attributes[GameAttribute.ItemStackQuantityLo] = count;
 			Attributes[GameAttribute.Loot_2_0_Drop] = true;
@@ -191,17 +173,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//this.Attributes[GameAttribute.EnchantAffix, 1] = -758203990;
 			//this.Attributes[GameAttribute.EnchantRangeVal] = 1;
 			//*
-			if (IsArmor(ItemType) || IsWeapon(ItemType) || IsOffhand(ItemType) || (IsPotion(ItemType) && ItemDefinition.Name.Contains("Legendary")) || IsAccessory(ItemType))
+			if (IsArmor(ItemType) || IsWeapon(ItemType) || IsOffhand(ItemType) ||
+			    (IsPotion(ItemType) && ItemDefinition.Name.Contains("Legendary")) || IsAccessory(ItemType))
 			{
 				//Attributes[GameAttribute.Requirement, 64] = 0;
-				var reqLevel = (definition.RequiredLevel % 10 != 0) ? definition.RequiredLevel - 1 : definition.RequiredLevel;
+				var reqLevel = (definition.RequiredLevel % 10 != 0)
+					? definition.RequiredLevel - 1
+					: definition.RequiredLevel;
 				var level = Math.Max(AffixList.Any() ? AffixList.Select(a => a.ItemLevel).Max() : 0, reqLevel);
-				Attributes[GameAttribute.Requirement, 57] = Math.Max(level - Attributes[GameAttribute.Item_Level_Requirement_Reduction], 0);
+				Attributes[GameAttribute.Requirement, 57] =
+					Math.Max(level - Attributes[GameAttribute.Item_Level_Requirement_Reduction], 0);
 			}
 
 			if (AffixList.Count > 0)
 			{
-				if (Attributes[GameAttribute.Requirement, 57] != AffixList[0].Definition.OverrideLevelReq && AffixList[0].Definition.OverrideLevelReq != 0)
+				if (Attributes[GameAttribute.Requirement, 57] != AffixList[0].Definition.OverrideLevelReq &&
+				    AffixList[0].Definition.OverrideLevelReq != 0)
 					Attributes[GameAttribute.Requirement, 57] = AffixList[0].Definition.OverrideLevelReq;
 				foreach (var affix in AffixList)
 				{
@@ -219,7 +206,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			*/
 			//Attributes[GameAttribute.ItemStackQuantityLo] = 1;
 			//Attributes[GameAttribute.Seed] = RandomHelper.Next(); //unchecked((int)2286800181);
-			
+
 		}
 
 
@@ -254,7 +241,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			Attributes[GameAttribute.Loot_2_0_Drop] = true;
 
-			if (IsArmor(ItemType) || IsWeapon(ItemType) || IsOffhand(ItemType) || IsAccessory(ItemType) || IsShard(ItemType))
+			if (IsArmor(ItemType) || IsWeapon(ItemType) || IsOffhand(ItemType) || IsAccessory(ItemType) ||
+			    IsShard(ItemType))
 				Attributes[GameAttribute.Item_Quality_Level] = RandomHelper.Next(8);
 			if (ItemType.Usable.HasFlag(ItemFlags.AtLeastMagical) && Attributes[GameAttribute.Item_Quality_Level] < 3)
 				Attributes[GameAttribute.Item_Quality_Level] = 3;
@@ -266,6 +254,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				Attributes[GameAttribute.Item_Quality_Level] = 9;
 			}
+
 			if (ItemDefinition.Name.ToLower().Contains("unique_gem"))
 			{
 				Attributes[GameAttribute.Item_Quality_Level] = 9;
@@ -273,10 +262,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					Attributes[GameAttribute.Jewel_Rank] = 1;
 				//Attributes[GameAttribute.Jewel_Rank] = 1;
 			}
+
 			if (ItemDefinition.Name.ToLower().Contains("norm_season"))
 			{
 				Attributes[GameAttribute.Item_Quality_Level] = 9;
 			}
+
 			if (ItemDefinition.Name.ToLower().StartsWith("p71_ethereal"))
 			{
 
@@ -310,9 +301,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				if (!crafted)
 					RandomGenerator.Next();
-				if (Attributes[GameAttribute.Item_Quality_Level] >= 5 && Attributes[GameAttribute.Item_Quality_Level] <= 7)
+				if (Attributes[GameAttribute.Item_Quality_Level] >= 5 &&
+				    Attributes[GameAttribute.Item_Quality_Level] <= 7)
 					RandomGenerator.Next();
 			}
+
 			RandomGenerator.ReinitSeed();
 
 			if (IsWeapon(ItemType) && !crafted)
@@ -367,13 +360,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				Attributes[GameAttribute.MinimapActive] = true;
 			}
 
-			if (IsArmor(ItemType) || IsWeapon(ItemType) || IsOffhand(ItemType) || (IsPotion(ItemType) && ItemDefinition.Name.Contains("Legendary")) || IsAccessory(ItemType))
+			if (IsArmor(ItemType) || IsWeapon(ItemType) || IsOffhand(ItemType) ||
+			    (IsPotion(ItemType) && ItemDefinition.Name.Contains("Legendary")) || IsAccessory(ItemType))
 			{
 
 				var a = Attributes[GameAttribute.Requirement, 57];
-				var reqLevel = (definition.RequiredLevel % 10 != 0) ? definition.RequiredLevel - 1 : definition.RequiredLevel;
+				var reqLevel = (definition.RequiredLevel % 10 != 0)
+					? definition.RequiredLevel - 1
+					: definition.RequiredLevel;
 				var level = Math.Max(AffixList.Any() ? AffixList.Select(a => a.ItemLevel).Max() : 0, reqLevel);
-				Attributes[GameAttribute.Requirement, 57] = Math.Max(level - Attributes[GameAttribute.Item_Level_Requirement_Reduction], 0);
+				Attributes[GameAttribute.Requirement, 57] =
+					Math.Max(level - Attributes[GameAttribute.Item_Level_Requirement_Reduction], 0);
 				a = Attributes[GameAttribute.Requirement, 57];
 			}
 
@@ -382,7 +379,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				if (Attributes[GameAttribute.Requirement, 57] == 0)
 					Attributes[GameAttribute.Item_Level_Requirement_Override] = 1;
 				else
-					Attributes[GameAttribute.Item_Level_Requirement_Override] = (int)Attributes[GameAttribute.Requirement, 57];
+					Attributes[GameAttribute.Item_Level_Requirement_Override] =
+						(int)Attributes[GameAttribute.Requirement, 57];
 
 			if (ItemDefinition.Name.ToLower().StartsWith("p71_ethereal"))
 			{
@@ -441,91 +439,92 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					if (Attributes[GameAttribute.Damage_Weapon_Delta, 0] == 0)
 						Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 34;
 				}
+
 				float scaleCapMin = 0f;
 				float scaleCapDelta = 0f;
 				switch (definition.ItemTypesGBID)
 				{
-					case 109694:            //Axe
+					case 109694: //Axe
 						scaleCapMin = 249f;
 						scaleCapDelta = 461f - scaleCapMin;
 						break;
-					case -262576534:        //Dagger
+					case -262576534: //Dagger
 						scaleCapMin = 107f;
 						scaleCapDelta = 321f - scaleCapMin;
 						break;
-					case 4026134:           //Mace
+					case 4026134: //Mace
 						scaleCapMin = 316f;
 						scaleCapDelta = 585f - scaleCapMin;
 						break;
-					case 140519163:         //Spear
+					case 140519163: //Spear
 						scaleCapMin = 357f;
 						scaleCapDelta = 526f - scaleCapMin;
 						break;
-					case 140782159:         //Sword
+					case 140782159: //Sword
 						scaleCapMin = 168f;
 						scaleCapDelta = 392f - scaleCapMin;
 						break;
-					case -199811863:        //Ceremonial Knife
+					case -199811863: //Ceremonial Knife
 						scaleCapMin = 117f;
 						scaleCapDelta = 469f - scaleCapMin;
 						break;
-					case -2094596416:       //Fist Weapon
+					case -2094596416: //Fist Weapon
 						scaleCapMin = 168f;
 						scaleCapDelta = 392f - scaleCapMin;
 						break;
-					case -1363671135:       //Flail
+					case -1363671135: //Flail
 						scaleCapMin = 192f;
 						scaleCapDelta = 355f - scaleCapMin;
 						break;
-					case -1488678091:       //Mighty Weapon
+					case -1488678091: //Mighty Weapon
 						scaleCapMin = 249f;
 						scaleCapDelta = 461f - scaleCapMin;
 						break;
-					case 763102523:         //Hand Crossbow
+					case 763102523: //Hand Crossbow
 						scaleCapMin = 126f;
 						scaleCapDelta = 714f - scaleCapMin;
 						break;
-					case 4385866:           //Wand
+					case 4385866: //Wand
 						scaleCapMin = 197f;
 						scaleCapDelta = 357f - scaleCapMin;
 						break;
-					case 110504:            //Bow
+					case 110504: //Bow
 						scaleCapMin = 143f;
 						scaleCapDelta = 815f - scaleCapMin;
 						break;
-					case -1338851342:       //Crossbow
+					case -1338851342: //Crossbow
 						scaleCapMin = 779f;
 						scaleCapDelta = 945f - scaleCapMin;
 						break;
-					case 119458520:         //2H Axe
+					case 119458520: //2H Axe
 						scaleCapMin = 1384f;
 						scaleCapDelta = 1685f - scaleCapMin;
 						break;
-					case 89494384:          //2H Mace
+					case 89494384: //2H Mace
 						scaleCapMin = 1737f;
 						scaleCapDelta = 1912f - scaleCapMin;
 						break;
-					case -1203595600:       //2H Polearm
+					case -1203595600: //2H Polearm
 						scaleCapMin = 1497f;
 						scaleCapDelta = 1823f - scaleCapMin;
 						break;
-					case 140658708:         //2H Staff
+					case 140658708: //2H Staff
 						scaleCapMin = 1229f;
 						scaleCapDelta = 1839f - scaleCapMin;
 						break;
-					case -1307049751:       //2H Sword
+					case -1307049751: //2H Sword
 						scaleCapMin = 1137f;
 						scaleCapDelta = 1702f - scaleCapMin;
 						break;
-					case -1620551894:       //2H Daibo
+					case -1620551894: //2H Daibo
 						scaleCapMin = 994f;
 						scaleCapDelta = 1845f - scaleCapMin;
 						break;
-					case -1363671102:       //2H Flail
+					case -1363671102: //2H Flail
 						scaleCapMin = 1351f;
 						scaleCapDelta = 1486f - scaleCapMin;
 						break;
-					case -1488678058:       //2H Mighty Weapon
+					case -1488678058: //2H Mighty Weapon
 						scaleCapMin = 1462f;
 						scaleCapDelta = 1609f - scaleCapMin;
 						break;
@@ -536,8 +535,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					float ratio = (float)Math.Pow(definition.ItemLevel, 2f) / 4900f;
 					if (ratio < 0.01f) ratio = 0.01f;
 					if (ratio > 1f) ratio = 1f;
-					Attributes[GameAttribute.Damage_Weapon_Min, 0] += Math.Abs(scaleCapMin * ratio - Attributes[GameAttribute.Damage_Weapon_Min, 0]);
-					Attributes[GameAttribute.Damage_Weapon_Delta, 0] += Math.Abs(scaleCapDelta * ratio - Attributes[GameAttribute.Damage_Weapon_Delta, 0]);
+					Attributes[GameAttribute.Damage_Weapon_Min, 0] +=
+						Math.Abs(scaleCapMin * ratio - Attributes[GameAttribute.Damage_Weapon_Min, 0]);
+					Attributes[GameAttribute.Damage_Weapon_Delta, 0] +=
+						Math.Abs(scaleCapDelta * ratio - Attributes[GameAttribute.Damage_Weapon_Delta, 0]);
 				}
 			}
 		}
@@ -559,29 +560,38 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			if (UniqueItems.UniqueItemStats.ContainsKey(hash))
 			{
-				
+
 				Attributes[GameAttribute.Armor_Item] += UniqueItems.GetArmor(hash);
 				//Unique items level scaling
 				if (IsArmor(ItemType))
 					if (Attributes[GameAttribute.Armor_Item] == 0)
 						Attributes[GameAttribute.Armor_Item] = 30;
 
-				if (Attributes[GameAttribute.Armor_Item] < 100) Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 6;
-				else if (Attributes[GameAttribute.Armor_Item] < 200) Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 5;
-				else if (Attributes[GameAttribute.Armor_Item] < 300) Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 4;
-				else if (Attributes[GameAttribute.Armor_Item] < 400) Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 3;
-				else if (Attributes[GameAttribute.Armor_Item] < 500) Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 2;
-				else if (Attributes[GameAttribute.Armor_Item] < 600) Attributes[GameAttribute.Armor_Item] += definition.ItemLevel;
+				if (Attributes[GameAttribute.Armor_Item] < 100)
+					Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 6;
+				else if (Attributes[GameAttribute.Armor_Item] < 200)
+					Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 5;
+				else if (Attributes[GameAttribute.Armor_Item] < 300)
+					Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 4;
+				else if (Attributes[GameAttribute.Armor_Item] < 400)
+					Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 3;
+				else if (Attributes[GameAttribute.Armor_Item] < 500)
+					Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 2;
+				else if (Attributes[GameAttribute.Armor_Item] < 600)
+					Attributes[GameAttribute.Armor_Item] += definition.ItemLevel;
 
-				if (definition.ItemTypesGBID == 332825721 || definition.ItemTypesGBID == 602099538)     //Shield and CruShield
+				if (definition.ItemTypesGBID == 332825721 ||
+				    definition.ItemTypesGBID == 602099538) //Shield and CruShield
 				{
 					float scaleCapMin = 14000f;
 					float scaleCapDelta = 21000f - scaleCapMin;
 					float ratio = (float)Math.Pow(definition.ItemLevel, 2f) / 4900f;
 					if (ratio < 0.01f) ratio = 0.01f;
 					if (ratio > 1f) ratio = 1f;
-					Attributes[GameAttribute.Block_Amount_Item_Min] += Math.Abs(scaleCapMin * ratio - Attributes[GameAttribute.Block_Amount_Item_Min, 0]);
-					Attributes[GameAttribute.Block_Amount_Item_Delta] += Math.Abs(scaleCapDelta * ratio - Attributes[GameAttribute.Block_Amount_Item_Delta, 0]);
+					Attributes[GameAttribute.Block_Amount_Item_Min] +=
+						Math.Abs(scaleCapMin * ratio - Attributes[GameAttribute.Block_Amount_Item_Min, 0]);
+					Attributes[GameAttribute.Block_Amount_Item_Delta] += Math.Abs(scaleCapDelta * ratio -
+						Attributes[GameAttribute.Block_Amount_Item_Delta, 0]);
 				}
 			}
 		}
@@ -635,14 +645,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				Attributes[GameAttribute.Skill, definition.SNOSkill0] = 1;
 			}
+
 			if (definition.SNOSkill1 != -1)
 			{
 				Attributes[GameAttribute.Skill, definition.SNOSkill1] = 1;
 			}
+
 			if (definition.SNOSkill2 != -1)
 			{
 				Attributes[GameAttribute.Skill, definition.SNOSkill2] = 1;
 			}
+
 			if (definition.SNOSkill3 != -1)
 			{
 				Attributes[GameAttribute.Skill, definition.SNOSkill3] = 1;
@@ -683,10 +696,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			return new VisualItem()
 			{
-				GbId = (Attributes[GameAttribute.TransmogGBID] == -1 ? GBHandle.GBID : Attributes[GameAttribute.TransmogGBID]),
+				GbId = (Attributes[GameAttribute.TransmogGBID] == -1
+					? GBHandle.GBID
+					: Attributes[GameAttribute.TransmogGBID]),
 				DyeType = Attributes[GameAttribute.DyeType],
-				ItemEffectType = 0,//Mooege.Common.Helpers.Math.FastRandom.Instance.Next(1, 14),
-				EffectLevel = -1//Mooege.Common.Helpers.Math.FastRandom.Instance.Next(1, 30)
+				ItemEffectType = 0, //Mooege.Common.Helpers.Math.FastRandom.Instance.Next(1, 14),
+				EffectLevel = -1 //Mooege.Common.Helpers.Math.FastRandom.Instance.Next(1, 30)
 			};
 		}
 
@@ -694,7 +709,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public D3.Hero.VisualItem GetVisualItem()
 		{
 			var visualItem = D3.Hero.VisualItem.CreateBuilder()
-				.SetGbid((Attributes[GameAttribute.TransmogGBID] == -1 ? GBHandle.GBID : Attributes[GameAttribute.TransmogGBID]))
+				.SetGbid((Attributes[GameAttribute.TransmogGBID] == -1
+					? GBHandle.GBID
+					: Attributes[GameAttribute.TransmogGBID]))
 				.SetDyeType(Attributes[GameAttribute.DyeType])
 				.SetEffectLevel(0)
 				.SetItemEffectType(-1)
@@ -711,10 +728,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				price += affix.Price;
 			}
+
 			return price;
 		}
 
 		#region Is*
+
 		public static bool IsHealthGlobe(ItemTypeTable itemType)
 		{
 			return ItemGroup.IsSubType(itemType, "HealthGlyph");
@@ -809,6 +828,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			return itemType.Name.Contains("Amulet");
 		}
+
 		public static bool IsHandXbow(ItemTypeTable itemType)
 		{
 			return itemType.Name.Contains("HandXbow");
@@ -838,6 +858,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			return ItemGroup.Is2H(itemType);
 		}
+
 		#endregion
 
 		public void SetInventoryLocation(int equipmentSlot, int column, int row)
@@ -885,37 +906,66 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			}
 
 			var Moneys = D3.Items.CurrencySavedData.CreateBuilder();
-			D3.Items.CurrencyData GoldData = D3.Items.CurrencyData.CreateBuilder().SetId(0).SetCount((long)player.Inventory.GetGoldAmount()).Build();
-			D3.Items.CurrencyData BloodShardData = D3.Items.CurrencyData.CreateBuilder().SetId(1).SetCount(playerAcc.BloodShards).Build();
-			D3.Items.CurrencyData PlatinumData = D3.Items.CurrencyData.CreateBuilder().SetId(2).SetCount(playerAcc.Platinum).Build();
+			D3.Items.CurrencyData GoldData = D3.Items.CurrencyData.CreateBuilder().SetId(0)
+				.SetCount((long)player.Inventory.GetGoldAmount()).Build();
+			D3.Items.CurrencyData BloodShardData =
+				D3.Items.CurrencyData.CreateBuilder().SetId(1).SetCount(playerAcc.BloodShards).Build();
+			D3.Items.CurrencyData PlatinumData =
+				D3.Items.CurrencyData.CreateBuilder().SetId(2).SetCount(playerAcc.Platinum).Build();
 
-			D3.Items.CurrencyData Craft1Data = D3.Items.CurrencyData.CreateBuilder().SetId(3).SetCount(playerAcc.CraftItem1).Build(); // Reusable Parts.
-			D3.Items.CurrencyData Craft2Data = D3.Items.CurrencyData.CreateBuilder().SetId(4).SetCount(playerAcc.CraftItem2).Build(); // Arcanes Dust.
-			D3.Items.CurrencyData Craft3Data = D3.Items.CurrencyData.CreateBuilder().SetId(5).SetCount(playerAcc.CraftItem3).Build(); // Veiled Crystal.
-			D3.Items.CurrencyData Craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4).Build(); // Death's Breath.
-			D3.Items.CurrencyData Craft5Data = D3.Items.CurrencyData.CreateBuilder().SetId(7).SetCount(playerAcc.CraftItem5).Build(); // Forgotten Soul.
+			D3.Items.CurrencyData Craft1Data =
+				D3.Items.CurrencyData.CreateBuilder().SetId(3).SetCount(playerAcc.CraftItem1)
+					.Build(); // Reusable Parts.
+			D3.Items.CurrencyData Craft2Data =
+				D3.Items.CurrencyData.CreateBuilder().SetId(4).SetCount(playerAcc.CraftItem2).Build(); // Arcanes Dust.
+			D3.Items.CurrencyData Craft3Data =
+				D3.Items.CurrencyData.CreateBuilder().SetId(5).SetCount(playerAcc.CraftItem3)
+					.Build(); // Veiled Crystal.
+			D3.Items.CurrencyData Craft4Data =
+				D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4)
+					.Build(); // Death's Breath.
+			D3.Items.CurrencyData Craft5Data =
+				D3.Items.CurrencyData.CreateBuilder().SetId(7).SetCount(playerAcc.CraftItem5)
+					.Build(); // Forgotten Soul.
 
-			D3.Items.CurrencyData Horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8).SetCount(playerAcc.HoradricA1Res).Build();  // Khanduran Rune Bounty itens Act I.
-			D3.Items.CurrencyData Horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9).SetCount(playerAcc.HoradricA2Res).Build();  // Caldeum Nightshade Bounty itens Act II.
-			D3.Items.CurrencyData Horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10).SetCount(playerAcc.HoradricA3Res).Build(); // Arreat War Tapestry Bounty itens Act III.
-			D3.Items.CurrencyData Horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11).SetCount(playerAcc.HoradricA4Res).Build(); // Copputed Angel Flesh Bounty itens Act IV.
-			D3.Items.CurrencyData Horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12).SetCount(playerAcc.HoradricA5Res).Build(); // Westmarch Holy Water Bounty itens Act V.
+			D3.Items.CurrencyData Horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8)
+				.SetCount(playerAcc.HoradricA1Res).Build(); // Khanduran Rune Bounty itens Act I.
+			D3.Items.CurrencyData Horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9)
+				.SetCount(playerAcc.HoradricA2Res).Build(); // Caldeum Nightshade Bounty itens Act II.
+			D3.Items.CurrencyData Horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10)
+				.SetCount(playerAcc.HoradricA3Res).Build(); // Arreat War Tapestry Bounty itens Act III.
+			D3.Items.CurrencyData Horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11)
+				.SetCount(playerAcc.HoradricA4Res).Build(); // Copputed Angel Flesh Bounty itens Act IV.
+			D3.Items.CurrencyData Horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12)
+				.SetCount(playerAcc.HoradricA5Res).Build(); // Westmarch Holy Water Bounty itens Act V.
 
-			D3.Items.CurrencyData Craft8Data = D3.Items.CurrencyData.CreateBuilder().SetId(13).SetCount(playerAcc.HeartofFright).Build();     // Heart of Fright.
-			D3.Items.CurrencyData Craft9Data = D3.Items.CurrencyData.CreateBuilder().SetId(14).SetCount(playerAcc.VialofPutridness).Build();  // Idol of Terror.
-			D3.Items.CurrencyData Craft10Data = D3.Items.CurrencyData.CreateBuilder().SetId(15).SetCount(playerAcc.IdolofTerror).Build();     // Vail of Putridiness.
-			D3.Items.CurrencyData Craft11Data = D3.Items.CurrencyData.CreateBuilder().SetId(16).SetCount(playerAcc.LeorikKey).Build();        // Leorik Regret.
+			D3.Items.CurrencyData Craft8Data = D3.Items.CurrencyData.CreateBuilder().SetId(13)
+				.SetCount(playerAcc.HeartofFright).Build(); // Heart of Fright.
+			D3.Items.CurrencyData Craft9Data = D3.Items.CurrencyData.CreateBuilder().SetId(14)
+				.SetCount(playerAcc.VialofPutridness).Build(); // Idol of Terror.
+			D3.Items.CurrencyData Craft10Data = D3.Items.CurrencyData.CreateBuilder().SetId(15)
+				.SetCount(playerAcc.IdolofTerror).Build(); // Vail of Putridiness.
+			D3.Items.CurrencyData Craft11Data =
+				D3.Items.CurrencyData.CreateBuilder().SetId(16).SetCount(playerAcc.LeorikKey).Build(); // Leorik Regret.
 
-			D3.Items.CurrencyData Craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20).SetCount(playerAcc.BigPortalKey).Build();      // KeyStone Greater Rift.
+			D3.Items.CurrencyData Craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20)
+				.SetCount(playerAcc.BigPortalKey).Build(); // KeyStone Greater Rift.
 
-			object[] consumables = {GoldData, BloodShardData, PlatinumData, Craft1Data, Craft2Data, Craft3Data, Craft4Data, Craft5Data, Craft7Data, Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data, Craft8Data, Craft9Data, Craft10Data, Craft11Data};
+			object[] consumables =
+			{
+				GoldData, BloodShardData, PlatinumData, Craft1Data, Craft2Data, Craft3Data, Craft4Data, Craft5Data,
+				Craft7Data, Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data, Craft8Data,
+				Craft9Data, Craft10Data, Craft11Data
+			};
 
 			foreach (object consumable in consumables)
 			{
 				Moneys.AddCurrency(consumable);
 			}
 
-			player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull) { Data = Moneys.Build().ToByteArray() });
+			player.InGameClient.SendMessage(
+				new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull)
+					{ Data = Moneys.Build().ToByteArray() });
 
 		}
 
@@ -951,13 +1001,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					else
 						break;
 				}
+
 				for (int i = 0; i < 8; i++)
 				{
 					if (ItemDefinition.TransmogsToGrant[i] != -1)
-						 player.UnlockTransmog(ItemDefinition.TransmogsToGrant[i]);
+						player.UnlockTransmog(ItemDefinition.TransmogsToGrant[i]);
 					else
 						break;
 				}
+
 				if (GBHandle.GBID == 1549850924) //Arma Haereticorum additional transmog
 				{
 					player.UnlockTransmog(974107120);
@@ -971,6 +1023,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					UpdateStackCount(--Attributes[GameAttribute.ItemStackQuantityLo]); // Just remove one
 					Attributes.SendChangedMessage(player.InGameClient);
 				}
+
 				return;
 			}
 
@@ -981,42 +1034,80 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				int @base = 0;
 				switch (player.Toon.Class)
 				{
-					case LoginServer.Toons.ToonClass.Crusader: @base = 2; break;
-					case LoginServer.Toons.ToonClass.DemonHunter: @base = 4; break;
-					case LoginServer.Toons.ToonClass.Monk: @base = 6; break;
-					case LoginServer.Toons.ToonClass.Necromancer: @base = 8; break;
-					case LoginServer.Toons.ToonClass.WitchDoctor: @base = 10; break;
-					case LoginServer.Toons.ToonClass.Wizard: @base = 12; break;
+					case LoginServer.Toons.ToonClass.Crusader:
+						@base = 2;
+						break;
+					case LoginServer.Toons.ToonClass.DemonHunter:
+						@base = 4;
+						break;
+					case LoginServer.Toons.ToonClass.Monk:
+						@base = 6;
+						break;
+					case LoginServer.Toons.ToonClass.Necromancer:
+						@base = 8;
+						break;
+					case LoginServer.Toons.ToonClass.WitchDoctor:
+						@base = 10;
+						break;
+					case LoginServer.Toons.ToonClass.Wizard:
+						@base = 12;
+						break;
 				} //0 - Barbarian, 2 - Crusader, 4 - Hunter, 6 - Monk, 8 - Necromancer, 10 - Sorcerer, 12 - Wizard
+
 				string it = "";
+
 				#region Balance calculation
+
 				var moneys = D3.Items.CurrencySavedData.CreateBuilder();
 				var playerAcc = player.InGameClient.BnetClient.Account.GameAccount;
 
-				D3.Items.CurrencyData goldData = D3.Items.CurrencyData.CreateBuilder().SetId(0).SetCount((long)player.Inventory.GetGoldAmount()).Build();
-				D3.Items.CurrencyData bloodShardData = D3.Items.CurrencyData.CreateBuilder().SetId(1).SetCount(playerAcc.BloodShards).Build();
-				D3.Items.CurrencyData platinumData = D3.Items.CurrencyData.CreateBuilder().SetId(2).SetCount(playerAcc.Platinum).Build();
+				D3.Items.CurrencyData goldData = D3.Items.CurrencyData.CreateBuilder().SetId(0)
+					.SetCount((long)player.Inventory.GetGoldAmount()).Build();
+				D3.Items.CurrencyData bloodShardData = D3.Items.CurrencyData.CreateBuilder().SetId(1)
+					.SetCount(playerAcc.BloodShards).Build();
+				D3.Items.CurrencyData platinumData =
+					D3.Items.CurrencyData.CreateBuilder().SetId(2).SetCount(playerAcc.Platinum).Build();
 
-				D3.Items.CurrencyData craft1Data = D3.Items.CurrencyData.CreateBuilder().SetId(3).SetCount(playerAcc.CraftItem1).Build(); // Reusable Parts.
-				D3.Items.CurrencyData craft2Data = D3.Items.CurrencyData.CreateBuilder().SetId(4).SetCount(playerAcc.CraftItem2).Build(); // Arcanes Dust.
-				D3.Items.CurrencyData craft3Data = D3.Items.CurrencyData.CreateBuilder().SetId(5).SetCount(playerAcc.CraftItem3).Build(); // Veiled Crystal.
-				D3.Items.CurrencyData craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4).Build(); // Death's Breath.
-				D3.Items.CurrencyData craft5Data = D3.Items.CurrencyData.CreateBuilder().SetId(7).SetCount(playerAcc.CraftItem5).Build(); // Forgotten Soul.
+				D3.Items.CurrencyData craft1Data = D3.Items.CurrencyData.CreateBuilder().SetId(3)
+					.SetCount(playerAcc.CraftItem1).Build(); // Reusable Parts.
+				D3.Items.CurrencyData craft2Data = D3.Items.CurrencyData.CreateBuilder().SetId(4)
+					.SetCount(playerAcc.CraftItem2).Build(); // Arcanes Dust.
+				D3.Items.CurrencyData craft3Data = D3.Items.CurrencyData.CreateBuilder().SetId(5)
+					.SetCount(playerAcc.CraftItem3).Build(); // Veiled Crystal.
+				D3.Items.CurrencyData craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6)
+					.SetCount(playerAcc.CraftItem4).Build(); // Death's Breath.
+				D3.Items.CurrencyData craft5Data = D3.Items.CurrencyData.CreateBuilder().SetId(7)
+					.SetCount(playerAcc.CraftItem5).Build(); // Forgotten Soul.
 
-				D3.Items.CurrencyData horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8).SetCount(playerAcc.HoradricA1Res).Build();  // Khanduran Rune Bounty itens Act I.
-				D3.Items.CurrencyData horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9).SetCount(playerAcc.HoradricA2Res).Build();  // Caldeum Nightshade Bounty itens Act II.
-				D3.Items.CurrencyData horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10).SetCount(playerAcc.HoradricA3Res).Build(); // Arreat War Tapestry Bounty itens Act III.
-				D3.Items.CurrencyData horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11).SetCount(playerAcc.HoradricA4Res).Build(); // Copputed Angel Flesh Bounty itens Act IV.
-				D3.Items.CurrencyData horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12).SetCount(playerAcc.HoradricA5Res).Build(); // Westmarch Holy Water Bounty itens Act V.
+				D3.Items.CurrencyData horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8)
+					.SetCount(playerAcc.HoradricA1Res).Build(); // Khanduran Rune Bounty itens Act I.
+				D3.Items.CurrencyData horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9)
+					.SetCount(playerAcc.HoradricA2Res).Build(); // Caldeum Nightshade Bounty itens Act II.
+				D3.Items.CurrencyData horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10)
+					.SetCount(playerAcc.HoradricA3Res).Build(); // Arreat War Tapestry Bounty itens Act III.
+				D3.Items.CurrencyData horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11)
+					.SetCount(playerAcc.HoradricA4Res).Build(); // Copputed Angel Flesh Bounty itens Act IV.
+				D3.Items.CurrencyData horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12)
+					.SetCount(playerAcc.HoradricA5Res).Build(); // Westmarch Holy Water Bounty itens Act V.
 
-				D3.Items.CurrencyData craft8Data = D3.Items.CurrencyData.CreateBuilder().SetId(13).SetCount(playerAcc.HeartofFright).Build();     // Heart of Fright.
-				D3.Items.CurrencyData craft9Data = D3.Items.CurrencyData.CreateBuilder().SetId(14).SetCount(playerAcc.VialofPutridness).Build();  // Idol of Terror.
-				D3.Items.CurrencyData craft10Data = D3.Items.CurrencyData.CreateBuilder().SetId(15).SetCount(playerAcc.IdolofTerror).Build();     // Vail of Putridiness.
-				D3.Items.CurrencyData craft11Data = D3.Items.CurrencyData.CreateBuilder().SetId(16).SetCount(playerAcc.LeorikKey).Build();        // Leorik Regret.
+				D3.Items.CurrencyData craft8Data = D3.Items.CurrencyData.CreateBuilder().SetId(13)
+					.SetCount(playerAcc.HeartofFright).Build(); // Heart of Fright.
+				D3.Items.CurrencyData craft9Data = D3.Items.CurrencyData.CreateBuilder().SetId(14)
+					.SetCount(playerAcc.VialofPutridness).Build(); // Idol of Terror.
+				D3.Items.CurrencyData craft10Data = D3.Items.CurrencyData.CreateBuilder().SetId(15)
+					.SetCount(playerAcc.IdolofTerror).Build(); // Vail of Putridiness.
+				D3.Items.CurrencyData craft11Data = D3.Items.CurrencyData.CreateBuilder().SetId(16)
+					.SetCount(playerAcc.LeorikKey).Build(); // Leorik Regret.
 
-				D3.Items.CurrencyData craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20).SetCount(playerAcc.BigPortalKey).Build();      // KeyStone Greater Rift.
+				D3.Items.CurrencyData craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20)
+					.SetCount(playerAcc.BigPortalKey).Build(); // KeyStone Greater Rift.
 
-				object[] consumables = {goldData, bloodShardData, platinumData, craft1Data, craft2Data, craft3Data, craft4Data, craft5Data, craft7Data, horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data, craft8Data, craft9Data, craft10Data, craft11Data};
+				object[] consumables =
+				{
+					goldData, bloodShardData, platinumData, craft1Data, craft2Data, craft3Data, craft4Data, craft5Data,
+					craft7Data, horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data, craft8Data,
+					craft9Data, craft10Data, craft11Data
+				};
 
 				foreach (object consumable in consumables)
 				{
@@ -1024,54 +1115,85 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				}
 
 				#endregion
+
 				switch (GBHandle.GBID)
 				{
-                    #region The Gift of Horadric
-                    case -1249067449:
-					    items = new string[] {	"Unique_Helm_Set_15_x1", "Unique_Gloves_Set_15_x1",
-												"Unique_Helm_Set_12_x1", "Unique_Gloves_Set_12_x1",
-												"Unique_Helm_Set_14_x1", "Unique_Gloves_Set_14_x1",
-												"Unique_Helm_Set_11_x1", "Unique_Gloves_Set_11_x1",
-												"P6_Necro_Set_3_Helm",	 "P6_Necro_Set_3_Gloves",
-												"Unique_Helm_Set_09_x1", "Unique_Gloves_Set_09_x1",
-												"Unique_Helm_Set_06_x1", "Unique_Gloves_Set_06_x1"};
+					#region The Gift of Horadric
+
+					case -1249067449:
+						items = new string[]
+						{
+							"Unique_Helm_Set_15_x1", "Unique_Gloves_Set_15_x1",
+							"Unique_Helm_Set_12_x1", "Unique_Gloves_Set_12_x1",
+							"Unique_Helm_Set_14_x1", "Unique_Gloves_Set_14_x1",
+							"Unique_Helm_Set_11_x1", "Unique_Gloves_Set_11_x1",
+							"P6_Necro_Set_3_Helm", "P6_Necro_Set_3_Gloves",
+							"Unique_Helm_Set_09_x1", "Unique_Gloves_Set_09_x1",
+							"Unique_Helm_Set_06_x1", "Unique_Gloves_Set_06_x1"
+						};
 						switch (player.Toon.Class)
 						{
-							case LoginServer.Toons.ToonClass.Crusader:		@base = 2; break;
-							case LoginServer.Toons.ToonClass.DemonHunter:	@base = 4; break;
-							case LoginServer.Toons.ToonClass.Monk:			@base = 6; break;
-							case LoginServer.Toons.ToonClass.Necromancer:	@base = 8; break;
-							case LoginServer.Toons.ToonClass.WitchDoctor:	@base = 10; break;
-							case LoginServer.Toons.ToonClass.Wizard:		@base = 12; break;
+							case LoginServer.Toons.ToonClass.Crusader:
+								@base = 2;
+								break;
+							case LoginServer.Toons.ToonClass.DemonHunter:
+								@base = 4;
+								break;
+							case LoginServer.Toons.ToonClass.Monk:
+								@base = 6;
+								break;
+							case LoginServer.Toons.ToonClass.Necromancer:
+								@base = 8;
+								break;
+							case LoginServer.Toons.ToonClass.WitchDoctor:
+								@base = 10;
+								break;
+							case LoginServer.Toons.ToonClass.Wizard:
+								@base = 12;
+								break;
 						}
-						it = items[RandomHelper.Next(@base, @base+1)]; player.Inventory.PickUp(ItemGenerator.Cook(player, it));
+
+						it = items[RandomHelper.Next(@base, @base + 1)];
+						player.Inventory.PickUp(ItemGenerator.Cook(player, it));
 						break;
 					case -1249067448:
-						items = new string[] {  "Unique_Shoulder_Set_15_x1", "Unique_Boots_Set_15_x1",
-												"Unique_Shoulder_Set_12_x1", "Unique_Boots_Set_12_x1",
-												"Unique_Shoulder_Set_14_x1", "Unique_Boots_Set_14_x1",
-												"Unique_Shoulder_Set_11_x1", "Unique_Boots_Set_11_x1",
-												"P6_Necro_Set_3_Shoulders",   "P6_Necro_Set_3_Boots",
-												"Unique_Shoulder_Set_09_x1", "Unique_Boots_Set_09_x1",
-												"Unique_Shoulder_Set_06_x1", "Unique_Boots_Set_06_x1"};
-						it = items[RandomHelper.Next(@base, @base + 1)]; player.Inventory.PickUp(ItemGenerator.Cook(player, it));
+						items = new string[]
+						{
+							"Unique_Shoulder_Set_15_x1", "Unique_Boots_Set_15_x1",
+							"Unique_Shoulder_Set_12_x1", "Unique_Boots_Set_12_x1",
+							"Unique_Shoulder_Set_14_x1", "Unique_Boots_Set_14_x1",
+							"Unique_Shoulder_Set_11_x1", "Unique_Boots_Set_11_x1",
+							"P6_Necro_Set_3_Shoulders", "P6_Necro_Set_3_Boots",
+							"Unique_Shoulder_Set_09_x1", "Unique_Boots_Set_09_x1",
+							"Unique_Shoulder_Set_06_x1", "Unique_Boots_Set_06_x1"
+						};
+						it = items[RandomHelper.Next(@base, @base + 1)];
+						player.Inventory.PickUp(ItemGenerator.Cook(player, it));
 						break;
 					case -1249067447:
-						items = new string[] {  "Unique_Chest_Set_15_x1", "Unique_Pants_Set_15_x1",
-												"Unique_Chest_Set_12_x1", "Unique_Pants_Set_12_x1",
-												"Unique_Chest_Set_14_x1", "Unique_Pants_Set_14_x1",
-												"Unique_Chest_Set_11_x1", "Unique_Pants_Set_11_x1",
-												"P6_Necro_Set_3_Chest",   "P6_Necro_Set_3_Pants",
-												"Unique_Chest_Set_09_x1", "Unique_Pants_Set_09_x1",
-												"Unique_Chest_Set_06_x1", "Unique_Pants_Set_06_x1"};
-						it = items[RandomHelper.Next(@base, @base + 1)]; player.Inventory.PickUp(ItemGenerator.Cook(player, it));
+						items = new string[]
+						{
+							"Unique_Chest_Set_15_x1", "Unique_Pants_Set_15_x1",
+							"Unique_Chest_Set_12_x1", "Unique_Pants_Set_12_x1",
+							"Unique_Chest_Set_14_x1", "Unique_Pants_Set_14_x1",
+							"Unique_Chest_Set_11_x1", "Unique_Pants_Set_11_x1",
+							"P6_Necro_Set_3_Chest", "P6_Necro_Set_3_Pants",
+							"Unique_Chest_Set_09_x1", "Unique_Pants_Set_09_x1",
+							"Unique_Chest_Set_06_x1", "Unique_Pants_Set_06_x1"
+						};
+						it = items[RandomHelper.Next(@base, @base + 1)];
+						player.Inventory.PickUp(ItemGenerator.Cook(player, it));
 						break;
+
 					#endregion
+
 					#region The Treasure of the Khoradrim
+
 					case -1575654862: // The Treasure 1 Акта
 						playerAcc.HoradricA1Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8).SetCount(playerAcc.HoradricA1Res).Build();
+						horadric1Data = D3.Items.CurrencyData.CreateBuilder().SetId(8).SetCount(playerAcc.HoradricA1Res)
+							.Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1082,7 +1204,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					case -1575654861: // The Treasure 2 Акта
 						playerAcc.HoradricA2Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9).SetCount(playerAcc.HoradricA2Res).Build();
+						horadric2Data = D3.Items.CurrencyData.CreateBuilder().SetId(9).SetCount(playerAcc.HoradricA2Res)
+							.Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1093,7 +1216,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					case -1575654860: // The Treasure 3 Акта
 						playerAcc.HoradricA3Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10).SetCount(playerAcc.HoradricA3Res).Build();
+						horadric3Data = D3.Items.CurrencyData.CreateBuilder().SetId(10)
+							.SetCount(playerAcc.HoradricA3Res).Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1104,7 +1228,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					case -1575654859: // The Treasure 4 Акта
 						playerAcc.HoradricA4Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11).SetCount(playerAcc.HoradricA4Res).Build();
+						horadric4Data = D3.Items.CurrencyData.CreateBuilder().SetId(11)
+							.SetCount(playerAcc.HoradricA4Res).Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1115,7 +1240,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					case -1575654858: // The Treasure 5 Акта
 						playerAcc.HoradricA5Res += RandomHelper.Next(1, 5);
 						playerAcc.CraftItem4 += RandomHelper.Next(2, 4);
-						horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12).SetCount(playerAcc.HoradricA5Res).Build();
+						horadric5Data = D3.Items.CurrencyData.CreateBuilder().SetId(12)
+							.SetCount(playerAcc.HoradricA5Res).Build();
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(3, 8));
 						player.World.SpawnRandomEquip(player, player, RandomHelper.Next(5, 9));
@@ -1123,19 +1249,25 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						player.World.SpawnGold(player, player, 5000);
 						player.World.SpawnBloodShards(player, player, RandomHelper.Next(10, 25));
 						break;
+
 					#endregion
+
 					default:
-						Logger.Warn("This treasure bag - not implemented"); break;
+						Logger.Warn("This treasure bag - not implemented");
+						break;
 				}
+
 				craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4).Build();
 
-				object[] horadricBoxes = {horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data};
+				object[] horadricBoxes = { horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data };
 				foreach (object horadricBoxe in horadricBoxes)
 				{
 					moneys.AddCurrency(horadricBoxe);
 				}
 
-				player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull) { Data = moneys.Build().ToByteArray() });
+				player.InGameClient.SendMessage(
+					new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull)
+						{ Data = moneys.Build().ToByteArray() });
 
 				player.Inventory.DestroyInventoryItem(this);
 				return;
@@ -1184,7 +1316,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 				player.GrantAchievement(74987243307154);
 
-				var colors = new List<int>(player.Inventory.GetEquippedItems().Where(i => i.Attributes[GameAttribute.DyeType] > 0).Select(i => i.Attributes[GameAttribute.DyeType]));
+				var colors = new List<int>(player.Inventory.GetEquippedItems()
+					.Where(i => i.Attributes[GameAttribute.DyeType] > 0)
+					.Select(i => i.Attributes[GameAttribute.DyeType]));
 				if (colors.Count >= 6)
 				{
 					if (new HashSet<int>(colors).Count == 1)
@@ -1259,6 +1393,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					UpdateStackCount(--Attributes[GameAttribute.ItemStackQuantityLo]); // Just remove one
 					Attributes.SendChangedMessage(player.InGameClient);
 				}
+
 				return;
 			}
 
@@ -1344,7 +1479,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public override bool Unreveal(Player player)
 		{
-			if (CurrentState == ItemState.PickingUp)// && player == Owner)
+			if (CurrentState == ItemState.PickingUp) // && player == Owner)
 			{
 				return false;
 			}
