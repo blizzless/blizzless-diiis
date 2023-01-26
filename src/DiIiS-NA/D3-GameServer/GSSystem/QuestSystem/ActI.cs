@@ -85,12 +85,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     {
                         if (Game.CurrentQuest == 87700 & Game.CurrentStep == -1)
                         {
-                            //Указывает куда идти
-                            //ActiveArrow(this.Game.GetWorld(71150), 3739);
-
-                            //Убираем лишнюю Лею
-                            var Leah = world.GetActorBySNO(ActorSno._leah, true);
-                            if (Leah != null) Leah.Hidden = true;
+                            var leah = world.GetActorBySNO(ActorSno._leah, true);
+                            if (leah != null) leah.Hidden = true;
                         }
                     });
                     SetActorOperable(world, ActorSno._trout_newtristram_gate_town, false);
@@ -139,7 +135,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     }
                     catch { }
                     UnlockTeleport(0);
-                    if (world.GetActorsBySNO(ActorSno._trout_newtristram_gate_town).Where(d => d.Visible).FirstOrDefault() != null)
+                    if (world.GetActorsBySNO(ActorSno._trout_newtristram_gate_town).FirstOrDefault(d => d.Visible) != null)
                         Open(world, ActorSno._trout_newtristram_gate_town);
                     ActiveArrow(world, ActorSno._g_portal_rectangle_orange_icondoor, WorldSno.trout_tristram_inn);
                     ListenConversation(151123, new Advance());

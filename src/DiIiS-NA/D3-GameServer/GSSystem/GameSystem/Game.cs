@@ -86,7 +86,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public List<Player> ConnectedPlayers = new List<Player>();
 
-		public bool QuestSetuped = false;
+		public bool QuestSetup = false;
 
 		public int LoadedPlayers = 0;
 
@@ -931,7 +931,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 
 			if (PvP) return;
-			if (!QuestSetuped)
+			if (!QuestSetup)
 			{
 				QuestManager.SetQuests();
 				DestinationEnterQuest = currQuest;
@@ -941,7 +941,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				CurrentQuest = QuestsOrder[0];
 				CurrentStep = -1;
 
-				if (CurrentAct == 3000)
+				if (CurrentAct is 3000 or 0)
 				{
 					QuestManager.Quests[CurrentQuest].Steps[-1].OnAdvance.Invoke();
 					return;

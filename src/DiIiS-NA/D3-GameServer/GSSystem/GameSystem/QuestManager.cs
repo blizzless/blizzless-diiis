@@ -75,7 +75,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			Game.QuestProgress.SetQuests();
 			Game.SideQuestProgress.SetQuests();
-			Game.QuestSetuped = true;
+			Game.QuestSetup = true;
 		}
 
 		public void ClearQuests()
