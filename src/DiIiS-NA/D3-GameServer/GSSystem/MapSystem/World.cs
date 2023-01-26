@@ -6,7 +6,6 @@ using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 //Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.Misc;
 //Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.QuadTrees;
 //Blizzless Project 2022 
@@ -50,6 +49,12 @@ using System.Linq;
 using System.Text;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.LoginServer.Toons;
+using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
+using Circle = DiIiS_NA.GameServer.Core.Types.Misc.Circle;
+using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
+using ResolvedPortalDestination = DiIiS_NA.GameServer.MessageSystem.Message.Fields.ResolvedPortalDestination;
 
 namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 {
@@ -569,9 +574,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
                 monster.EnterWorld(position);
                 if (monster.AnimationSet != null)
                 {
-					var animationTag = new[] { AnimationSetKeys.Spawn.ID, AnimationSetKeys.Spawn2.ID }.FirstOrDefault(x => monster.AnimationSet.Animations.ContainsKey(x));
+					var animationTag = new[] { AnimationSetKeys.Spawn, AnimationSetKeys.Spawn2 }.FirstOrDefault(x => monster.AnimationSet.TagMapAnimDefault.ContainsKey(x));
 
-					if (animationTag > 0)
+					if (animationTag != null)
                     {
 						monster.World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 						{
@@ -583,7 +588,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 								new PlayAnimationMessageSpec()
 								{
 									Duration = 150,
-									AnimationSNO = (int)monster.AnimationSet.Animations[animationTag],
+									AnimationSNO = monster.AnimationSet.TagMapAnimDefault[animationTag],
 									PermutationIndex = 0,
 									Speed = 1
 								}
@@ -790,18 +795,33 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				
 			}, actor);
 		}
-		public void SpawnRandomEquip(Actor source, Player player, int forceQuality = -1, int forceLevel = -1)
+		public Item SpawnRandomEquip(Actor source, Player player, int forceQuality = -1, int forceLevel = -1, GameBalance.ItemTypeTable type = null, ToonClass toonClass = ToonClass.Unknown)
 		{
 			//Logger.Debug("SpawnRandomEquip(): quality {0}", forceQuality);
 			if (player != null)
 			{
 				int level = (forceLevel > 0 ? forceLevel : source.Attributes[GameAttribute.Level]);
-				var item = ItemGenerator.GenerateRandomEquip(player, level, forceQuality);
-				if (item == null) return;
-				player.GroundItems[item.GlobalID] = item;
+				if (toonClass == ToonClass.Unknown && type == null)
+				{
+					var item = ItemGenerator.GenerateRandomEquip(player, level, forceQuality, forceQuality);
+					if (item == null) return null;
+					player.GroundItems[item.GlobalID] = item;
 
-				DropItem(source, null, item);
+					DropItem(source, null, item);
+					return item;
+				}
+				else
+				{
+					var item = ItemGenerator.GenerateRandomEquip(player, level, forceQuality, forceQuality, type: type,owner_class: toonClass);
+					if (item == null) return null;
+					player.GroundItems[item.GlobalID] = item;
+
+					DropItem(source, null, item);
+					return item;
+				}
 			}
+
+			return null;
 		}
 		public void SpawnRandomLegOrSetEquip(Actor source, Player player)
 		{

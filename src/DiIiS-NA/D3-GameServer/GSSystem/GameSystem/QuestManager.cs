@@ -51,13 +51,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		
 		public Game Game { get; set; }
 
-		public int CurrentAct
-		{
-			get
-			{
-				return Game.CurrentAct;
-			}
-		}
+		public int CurrentAct => Game.CurrentAct;
 
 		public delegate void QuestProgressDelegate();
 		public event QuestProgressDelegate OnQuestProgress = delegate { };
@@ -75,7 +69,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			Game.QuestProgress.SetQuests();
 			Game.SideQuestProgress.SetQuests();
-			Game.QuestSetuped = true;
+			Game.QuestSetup = true;
 		}
 
 		public void ClearQuests()
@@ -939,7 +933,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					{
 						while (MonsterCount < AdditionalTargetCounter + 20)
 						{
-							Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count - 1)].Position;
+							Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count)].Position;
 							Core.Types.Math.Vector3D SP = null;
 							while (true)
 							{

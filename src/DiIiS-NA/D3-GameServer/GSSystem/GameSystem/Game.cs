@@ -86,7 +86,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public List<Player> ConnectedPlayers = new List<Player>();
 
-		public bool QuestSetuped = false;
+		public bool QuestSetup = false;
 
 		public int LoadedPlayers = 0;
 
@@ -931,7 +931,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 
 			if (PvP) return;
-			if (!QuestSetuped)
+			if (!QuestSetup)
 			{
 				QuestManager.SetQuests();
 				DestinationEnterQuest = currQuest;
@@ -941,7 +941,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				CurrentQuest = QuestsOrder[0];
 				CurrentStep = -1;
 
-				if (CurrentAct == 3000)
+				if (CurrentAct is 3000 or 0)
 				{
 					QuestManager.Quests[CurrentQuest].Steps[-1].OnAdvance.Invoke();
 					return;
@@ -1068,7 +1068,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				{
 					SyncedData = new GameSyncedData
 					{
-						GameSyncedFlags = IsSeasoned == true ? IsHardcore == true ? 6 : 6 : IsHardcore == true ? 4 : 4,
+						GameSyncedFlags = IsSeasoned ? IsHardcore ? 6 : 4 : IsHardcore == true ? 4 : 6,
 						Act = Math.Min(CurrentAct, 3000),       //act id
 						InitialMonsterLevel = InitialMonsterLevel, //InitialMonsterLevel
 						MonsterLevel = 0x7044248F, //MonsterLevel
@@ -1539,7 +1539,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 													//{[1013103213, {[Actor] [Type: Gizmo] SNOId:78439 GlobalId: 1013103213 Position: x:119.54008 y:140.65799 z:-4.535186 Name: Test_CainIntro_greybox_bridge_trOut_TempWorking}]}
 													//Обрушиваем мостик //EffectGroup "CainIntro_shake", 81546
 													var bridge = encWorld.GetActorBySNO(ActorSno._test_cainintro_greybox_bridge_trout_tempworking);
-													bridge.PlayAnimation(5, bridge.AnimationSet.Animations[AnimationSetKeys.DeathDefault.ID]);
+													bridge.PlayAnimation(5, (AnimationSno)bridge.AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault]);
 													//}
 													foreach (var skeleton in Skeletons)
 													{

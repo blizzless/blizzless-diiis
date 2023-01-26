@@ -1715,7 +1715,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					#region Активация
 					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
-					NStone.PlayAnimation(5, NStone.AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
+					NStone.PlayAnimation(5, (AnimationSno)NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 					NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -1852,7 +1852,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							actor.Destroy();
 					#region Активация
 					NStone = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
-					NStone.PlayAnimation(5, NStone.AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
+					NStone.PlayAnimation(5, (AnimationSno)NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
 					NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
 					NStone.Attributes[GameAttribute.Untargetable] = !Activated;
 					NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -4896,86 +4896,86 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		};
 		public static void GeneratePLB()
 		{
-			long PreviosExp = 7200000;
+			long previousExp = 7200000;
 			ParagonLevelBorders.Add(7200000);
 			for (int i = 0; i < 59; i++)
 			{
-				PreviosExp += 1440000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 1440000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 10; i++)
 			{
-				PreviosExp += 2880000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 2880000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 3; i++)
 			{
-				PreviosExp += 5040000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 5040000;
+				ParagonLevelBorders.Add(previousExp);
 			}
-			PreviosExp += 3660000;
-			ParagonLevelBorders.Add(PreviosExp);
+			previousExp += 3660000;
+			ParagonLevelBorders.Add(previousExp);
 			for (int i = 0; i < 75; i++)
 			{
-				PreviosExp += 1020000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 1020000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 101; i++)
 			{
-				PreviosExp += 2040000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 2040000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 100; i++)
 			{
-				PreviosExp += 4080000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 4080000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 99; i++)
 			{
-				PreviosExp += 6120000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 6120000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 51; i++)
 			{
-				PreviosExp += 8160000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 8160000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 50; i++)
 			{
-				PreviosExp += 20400000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 20400000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 50; i++)
 			{
-				PreviosExp += 40800000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 40800000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 50; i++)
 			{
-				PreviosExp += 61200000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 61200000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 50; i++)
 			{
-				PreviosExp += 81600000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 81600000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 50; i++)
 			{
-				PreviosExp += 102000000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 102000000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			for (int i = 0; i < 1500; i++)
 			{
-				PreviosExp += 122400000;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += 122400000;
+				ParagonLevelBorders.Add(previousExp);
 			}
 			long boosterofup = 229500000;
 			for (int i = 0; i < 17750; i++)
 			{
 				boosterofup += 102000;
-				PreviosExp += boosterofup;
-				ParagonLevelBorders.Add(PreviosExp);
+				previousExp += boosterofup;
+				ParagonLevelBorders.Add(previousExp);
 			}
 		}
 		//public static List<long> ParagonLevelBorders = ((GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.GameBalance][252616].Data).Experience.Select(row => row.DeltaXP).ToList();
@@ -5129,7 +5129,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					}
 					else
 					{
-						Attributes[GameAttribute.Experience_Next_Lo] = Attributes[GameAttribute.Experience_Next_Lo] + (int)LevelBorders[Attributes[GameAttribute.Level]];
+						Attributes[GameAttribute.Experience_Next_Lo] += (int)LevelBorders[Attributes[GameAttribute.Level]];
 						Toon.ExperienceNext = Attributes[GameAttribute.Experience_Next_Lo];
 					}
 
@@ -5197,13 +5197,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							{
 								GrantAchievement(74987243307039);
 								if (!Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.HardcoreTormentUnlocked))
-									Toon.GameAccount.Flags = Toon.GameAccount.Flags | GameAccount.GameAccountFlags.HardcoreTormentUnlocked;
+									Toon.GameAccount.Flags |= GameAccount.GameAccountFlags.HardcoreTormentUnlocked;
 							}
 							else
 							{
 								GrantAchievement(74987243307100);
 								if (!Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.TormentUnlocked))
-									Toon.GameAccount.Flags = Toon.GameAccount.Flags | GameAccount.GameAccountFlags.TormentUnlocked;
+									Toon.GameAccount.Flags |= GameAccount.GameAccountFlags.TormentUnlocked;
 							}
 							CheckLevelCap();
 							break;
@@ -6020,5 +6020,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 
 #endregion
+
+		public void Heal()
+		{
+			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttribute.Hitpoints_Total_From_Level] = Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes.BroadcastChangedIfRevealed();
+		}
 	}
 }

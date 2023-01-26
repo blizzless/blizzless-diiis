@@ -85,12 +85,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     {
                         if (Game.CurrentQuest == 87700 & Game.CurrentStep == -1)
                         {
-                            //Указывает куда идти
-                            //ActiveArrow(this.Game.GetWorld(71150), 3739);
-
-                            //Убираем лишнюю Лею
-                            var Leah = world.GetActorBySNO(ActorSno._leah, true);
-                            if (Leah != null) Leah.Hidden = true;
+                            var leah = world.GetActorBySNO(ActorSno._leah, true);
+                            if (leah != null) leah.Hidden = true;
                         }
                     });
                     SetActorOperable(world, ActorSno._trout_newtristram_gate_town, false);
@@ -139,7 +135,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     }
                     catch { }
                     UnlockTeleport(0);
-                    if (world.GetActorsBySNO(ActorSno._trout_newtristram_gate_town).Where(d => d.Visible).FirstOrDefault() != null)
+                    if (world.GetActorsBySNO(ActorSno._trout_newtristram_gate_town).FirstOrDefault(d => d.Visible) != null)
                         Open(world, ActorSno._trout_newtristram_gate_town);
                     ActiveArrow(world, ActorSno._g_portal_rectangle_orange_icondoor, WorldSno.trout_tristram_inn);
                     ListenConversation(151123, new Advance());
@@ -1220,8 +1216,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     ListenProximity(ActorSno._woodfencee_fields_trout, new Advance()); //if going through graveyard
                     var Gate = world.GetActorBySNO(ActorSno._cemetary_gate_trout_wilderness_no_lock);
                     Gate.Field2 = 16;
-                    var animation = Gate.AnimationSet.Animations[AnimationSetKeys.Opening.ID];
-                    Gate.PlayAnimation(5, animation);
+                    Gate.PlayAnimation(5, (AnimationSno)Gate.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
                     world.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDCollFlagsMessage
                     {
                         ActorID = Gate.DynamicID(plr),
@@ -1896,8 +1891,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         var world = Game.GetWorld(WorldSno.trout_townattack_chapelcellar_a);
                         foreach (var Table in world.GetActorsBySNO(ActorSno._trout_townattack_cellar_altar)) {
                             Table.SetUsable(false);
-                            var animation = Table.AnimationSet.Animations[AnimationSetKeys.Open.ID];
-                            Table.SetIdleAnimation(animation); 
+                            Table.SetIdleAnimation((AnimationSno)Table.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]); 
                         }
                         foreach (var Maghda in world.GetActorsBySNO(ActorSno._maghda_a_tempprojection)) Maghda.Destroy();
                     });

@@ -37,7 +37,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             if (!base.Reveal(player))
                 return false;
 
-            var animation = Attributes[GameAttribute.Untargetable] ? AnimationSet.Animations[AnimationSetKeys.Open.ID] : AnimationSet.Animations[AnimationSetKeys.IdleDefault.ID];
+            var animationTag = Attributes[GameAttribute.Untargetable] ? AnimationSetKeys.Open : AnimationSetKeys.IdleDefault;
+            var animation = (AnimationSno)AnimationSet.TagMapAnimDefault[animationTag];
             PlayAnimation(5, animation);
             SetIdleAnimation(animation);
             

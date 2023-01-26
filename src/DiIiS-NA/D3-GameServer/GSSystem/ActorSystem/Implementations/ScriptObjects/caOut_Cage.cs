@@ -28,8 +28,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			if (Attributes[GameAttribute.Disabled]) return;
 
-			PlayAnimation(5, AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
-			SetIdleAnimation(AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
+			PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+			SetIdleAnimation((AnimationSno)AnimationSetKeys.Open.ID);
 
 			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
 			Attributes.BroadcastChangedIfRevealed();

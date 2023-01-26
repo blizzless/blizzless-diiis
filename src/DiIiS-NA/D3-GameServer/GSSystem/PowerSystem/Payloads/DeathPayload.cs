@@ -1176,7 +1176,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		private AnimationSno FindBestDeathAnimationSNO()
 		{
-			if (Context != null)
+			if (Context == null)
                 return AnimationSno._NONE;
 
             // check if power has special death animation, and roll chance to use it
@@ -1211,8 +1211,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		private AnimationSno GetSNOFromTag(TagKeyInt tag)
 		{
-			if (Target.AnimationSet != null && Target.AnimationSet.Animations.ContainsKey(tag.ID))
-				return (AnimationSno)Target.AnimationSet.Animations[tag.ID];
+			if (Target.AnimationSet != null && Target.AnimationSet.TagMapAnimDefault.ContainsKey(tag))
+				return (AnimationSno)Target.AnimationSet.TagMapAnimDefault[tag];
 			else
 				return AnimationSno._NONE;
 		}

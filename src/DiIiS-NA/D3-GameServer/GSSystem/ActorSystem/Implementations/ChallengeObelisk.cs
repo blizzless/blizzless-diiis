@@ -41,7 +41,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         {
             bool Activated = false;
 
-            this.PlayAnimation(5, AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
+            this.PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
             Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
             Attributes[GameAttribute.Untargetable] = !Activated;
             Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
@@ -81,7 +81,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             }
             else
             {
-                this.PlayAnimation(5, AnimationSet.Animations[AnimationSetKeys.Opening.ID]);
+                this.PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
             }
             return true;
         }
