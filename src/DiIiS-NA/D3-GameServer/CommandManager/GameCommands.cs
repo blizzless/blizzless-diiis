@@ -44,7 +44,22 @@ using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 
 namespace DiIiS_NA.GameServer.CommandManager
 {
-    [CommandGroup("invulnerable", "Makes you invulnerable")]
+
+    [CommandGroup("heal", "Heals yourself", Account.UserLevels.Tester)]
+    public class HealCommand : CommandGroup
+    {
+        [DefaultCommand]
+        public string Heal(string[] @params, BattleClient invokerClient)
+        {
+            if (invokerClient?.InGameClient?.Player is not {} player)
+                return "You are not in game";
+
+            player.Heal();
+            return "You have been healed";
+        }
+    }
+
+    [CommandGroup("invulnerable", "Makes you invulnerable", Account.UserLevels.GM)]
     public class InvulnerableCommand : CommandGroup
     {
         [DefaultCommand]
@@ -68,7 +83,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("spawn", "Spawns a mob.\nUsage: spawn [actorSNO] [amount]")]
+    [CommandGroup("spawn", "Spawns a mob.\nUsage: spawn [actorSNO] [amount]", Account.UserLevels.GM)]
     public class SpawnCommand : CommandGroup
     {
         [DefaultCommand]
@@ -124,7 +139,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 
     }
 
-    [CommandGroup("levelup", "Levels your character.\nOptionally specify the number of levels: !levelup [count]")]
+    [CommandGroup("levelup", "Levels your character.\nOptionally specify the number of levels: !levelup [count]", Account.UserLevels.GM)]
     public class LevelUpCommand : CommandGroup
     {
         [DefaultCommand]
@@ -172,7 +187,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("unlockart", "Unlock all artisans: !unlockart")]
+    [CommandGroup("unlockart", "Unlock all artisans: !unlockart", Account.UserLevels.Tester)]
     public class UnlockArtCommand : CommandGroup
     {
         [DefaultCommand]
@@ -210,7 +225,7 @@ namespace DiIiS_NA.GameServer.CommandManager
     }
 
     [CommandGroup("platinum",
-        "Platinum for your character.\nOptionally specify the number of levels: !platinum [count]")]
+        "Platinum for your character.\nOptionally specify the number of levels: !platinum [count]", Account.UserLevels.Tester)]
     public class PlatinumCommand : CommandGroup
     {
         [DefaultCommand]
@@ -244,7 +259,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("stashup", "Upgrade Stash.\n !stashup")]
+    [CommandGroup("stashup", "Upgrade Stash.\n !stashup", Account.UserLevels.Tester)]
     public class StashUpCommand : CommandGroup
     {
         [DefaultCommand]
@@ -264,7 +279,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("gold", "Gold for your character.\nOptionally specify the number of gold: !gold [count]")]
+    [CommandGroup("gold", "Gold for your character.\nOptionally specify the number of gold: !gold [count]", Account.UserLevels.GM)]
     public class GoldCommand : CommandGroup
     {
         [DefaultCommand]
@@ -292,7 +307,7 @@ namespace DiIiS_NA.GameServer.CommandManager
     }
 
     [CommandGroup("achiplatinum",
-        "Platinum for your character.\nOptionally specify the number of levels: !platinum [count]")]
+        "Platinum for your character.\nOptionally specify the number of levels: !platinum [count]", Account.UserLevels.GM)]
     public class PlatinumAchiCommand : CommandGroup
     {
         [DefaultCommand]
@@ -330,7 +345,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("eff", "Platinum for your character.\nOptionally specify the number of levels: !eff [count]")]
+    [CommandGroup("eff", "Platinum for your character.\nOptionally specify the number of levels: !eff [count]", Account.UserLevels.GM)]
     public class PlayEffectGroup : CommandGroup
     {
         [DefaultCommand]
@@ -357,7 +372,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("item", "Spawns an item (with a name or type).\nUsage: item [type <type>|<name>] [amount]")]
+    [CommandGroup("item", "Spawns an item (with a name or type).\nUsage: item [type <type>|<name>] [amount]", Account.UserLevels.GM)]
     public class ItemCommand : CommandGroup
     {
         [DefaultCommand]
@@ -466,6 +481,41 @@ namespace DiIiS_NA.GameServer.CommandManager
             return $"Dropped {bpItems.Count} Items for you";
         }
     }
+
+    [CommandGroup("drop", "Drops an epic item for your class.\nOptionally specify the number of items: !drop [1-20]", Account.UserLevels.Owner)]
+    public class DropCommand : CommandGroup
+    {
+        [DefaultCommand]
+        public string Drop(string[] @params, BattleClient invokerClient)
+        {
+            if (invokerClient?.InGameClient?.Player is not {} player)
+                return "You can only invoke from the client.";
+            
+            var amount = 1;
+            if (@params != null && @params.Any())
+                if (!Int32.TryParse(@params[0], out amount)) amount = 1;
+
+            amount = amount switch
+            {
+                < 1 => 1,
+                > 20 => 20,
+                _ => amount
+            };
+            
+            try
+            {
+                for (int i = 0; i < amount; i++)
+                    player.World.SpawnRandomEquip(player, player, 11, player.Level, toonClass: player.Toon.Class);
+            }
+            catch
+            {
+                for (int i = 0; i < amount; i++)
+                    player.World.SpawnRandomEquip(player, player, 8, player.Level, toonClass: player.Toon.Class);
+            }
+            return $"Dropped {amount} random equipment.";
+        }
+    }
+
 
     [CommandGroup("tp", "Transfers your character to another world.")]
     public class TeleportCommand : CommandGroup
@@ -692,7 +742,23 @@ namespace DiIiS_NA.GameServer.CommandManager
                 invokerClient.InGameClient.Game.QuestManager.LaunchQuestTimer(eventId, (float)duration,
                     new Action<int>((q) => { }));
 
-                return String.Format("Message sended.");
+                return String.Format("Message sent.");
+            }
+
+            [Command("info", "Retrieves information about quest states.\n Usage: info")]
+            public string Info(string[] @params, BattleClient invokerClient)
+            {
+                var questManager = invokerClient.InGameClient.Game.QuestManager;
+                var act = questManager.CurrentAct;
+                var quest = questManager.Game.CurrentQuest;
+                var questStep = questManager.Game.CurrentStep;
+                var currentSideQuest = questManager.Game.CurrentSideQuest;
+                var currentSideQuestStep = questManager.Game.CurrentSideStep;
+                return $"Act: {act}\n" +
+                       $"Quest: {quest}\n" +
+                       $"Quest Step: {questStep}\n" +
+                       $"Side Quest: {currentSideQuest}\n" +
+                       $"Side Quest Step: {currentSideQuestStep}";
             }
         }
 

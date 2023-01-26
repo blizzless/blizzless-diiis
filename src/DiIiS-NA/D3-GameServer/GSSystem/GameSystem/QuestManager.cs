@@ -51,13 +51,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		
 		public Game Game { get; set; }
 
-		public int CurrentAct
-		{
-			get
-			{
-				return Game.CurrentAct;
-			}
-		}
+		public int CurrentAct => Game.CurrentAct;
 
 		public delegate void QuestProgressDelegate();
 		public event QuestProgressDelegate OnQuestProgress = delegate { };
