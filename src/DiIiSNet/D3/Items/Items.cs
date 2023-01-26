@@ -6581,7 +6581,6 @@ namespace D3.Items {
 
             public void AddCurrency(object consumable)
             {
-                throw new NotImplementedException();
             }
         }
     static CurrencySavedData() {
