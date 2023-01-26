@@ -36,25 +36,10 @@ namespace DiIiS_NA.GameServer.MessageSystem
 	public class ScriptedAttributeInitializer
 	{
 		#region Pin() implementation for scripts to use.
-		public static int Pin(int a, int b, int c)
-		{
-			if (b > a)
-				return b;
-			else if (a > c)
-				return c;
-			else
-				return a;
-		}
+		public static int Pin(int a, int b, int c) => b > a ? b : (a > c ? c : a);
 
-		public static float Pin(float a, float b, float c)
-		{
-			if (b > a)
-				return b;
-			else if (a > c)
-				return c;
-			else
-				return a;
-		}
+		public static float Pin(float a, float b, float c) => b > a ? b : (a > c ? c : a);
+
 		#endregion
 
 		public static void ProcessAttributes(GameAttribute[] attributes)

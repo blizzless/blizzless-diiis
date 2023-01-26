@@ -1644,7 +1644,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				#region Нефалемский портал
 				case -1:
-					Logger.Debug("Вызов нефалемского портала (Обычный)");
+					Logger.Debug("Calling Nephalem Portal (Normal)");
 					Activated = false;
 
 					foreach (var oldp in World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal)) { oldp.Destroy(); }

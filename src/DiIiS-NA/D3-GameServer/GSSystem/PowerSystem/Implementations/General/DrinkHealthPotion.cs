@@ -11,9 +11,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.General
     {
         public override IEnumerable<TickTimer> Run()
         {
-            if (User is Player)
+            if (User is Player player)
             {
-                Player player = (Player)User;
                 player.AddPercentageHP(60);
                 AddBuff(player, player, new CooldownBuff(30211, TickTimer.WaitSeconds(player.World.Game, 30f)));
             }
