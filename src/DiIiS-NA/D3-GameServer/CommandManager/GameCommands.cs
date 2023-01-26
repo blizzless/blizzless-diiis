@@ -694,10 +694,6 @@ namespace DiIiS_NA.GameServer.CommandManager
 
                 return String.Format("Message sended.");
             }
-
-            return matches.Aggregate(matches.Count >= 1 ? "Actor Matches:\n" : "No match found.",
-                                     (current, match) => current +
-                                                         $"[{match.SNOId.ToString("D6")}] {match.Name} ({(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type} {(((match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).Type == ActorType.Gizmo) ? ((int)(match.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[ActorKeys.GizmoGroup]).ToString() : "")})\n");
         }
 
         [CommandGroup("lookup",
