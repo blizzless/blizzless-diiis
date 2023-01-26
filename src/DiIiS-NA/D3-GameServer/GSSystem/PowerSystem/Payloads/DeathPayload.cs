@@ -805,22 +805,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						}
 					});
 					//StartConversation(this.Target.World, 340878);
-					var HubWorld = this.Target.World.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
-					var Orek = (HubWorld.GetActorBySNO(ActorSno._x1_lr_nephalem) as InteractiveNPC);
-					Orek.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(340878));
-					Orek.ForceConversationSNO = 340878;
-					Orek.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
-					Orek.Attributes[GameAttribute.Conversation_Icon, 1] = 2;
-					Orek.Attributes[GameAttribute.Conversation_Icon, 2] = 2;
-					Orek.Attributes[GameAttribute.Conversation_Icon, 3] = 2;
-					Orek.Attributes.BroadcastChangedIfRevealed();
-					//Уникальный спавн
-					this.Target.World.SpawnBloodShards(this.Target, plr, RandomHelper.Next(10, 30));
-					this.Target.World.SpawnGold(this.Target, plr);
-					this.Target.World.SpawnGold(this.Target, plr);
-					this.Target.World.SpawnGold(this.Target, plr);
+					var hubWorld = this.Target.World.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
+					var orek = (hubWorld.GetActorBySNO(ActorSno._x1_lr_nephalem) as InteractiveNPC);
+					orek.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(340878));
+					orek.ForceConversationSNO = 340878;
+					orek.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+					orek.Attributes[GameAttribute.Conversation_Icon, 1] = 2;
+					orek.Attributes[GameAttribute.Conversation_Icon, 2] = 2;
+					orek.Attributes[GameAttribute.Conversation_Icon, 3] = 2;
+					orek.Attributes.BroadcastChangedIfRevealed();
+					// Unique spawn
+					Target.World.SpawnBloodShards(Target, plr, RandomHelper.Next(10, 30));
+					Target.World.SpawnGold(Target, plr);
+					Target.World.SpawnGold(Target, plr);
+					Target.World.SpawnGold(Target, plr);
 					plr.Toon.GameAccount.BigPortalKey++;
-					this.Target.World.Game.ActiveNephalemProgress = 0f;
+					Target.World.Game.ActiveNephalemProgress = 0f;
 				}
 			}
 

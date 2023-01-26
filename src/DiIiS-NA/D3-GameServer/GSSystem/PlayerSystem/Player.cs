@@ -2487,7 +2487,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;		// Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
 
 #if DEBUG
-				Logger.Warn("Player Location {0}, Scene: {1} SNO: {2} LevelArea: {3}", this.Toon.Name, this.CurrentScene.SceneSNO.Name, this.CurrentScene.SceneSNO.Id, this.CurrentScene.Specification.SNOLevelAreas[0]);
+				Logger.Warn("Player Location {0}, Scene: {1} SNO: {2} LevelArea: {3}", Toon.Name, CurrentScene.SceneSNO.Name, CurrentScene.SceneSNO.Id, CurrentScene.Specification.SNOLevelAreas[0]);
 #else
 
 #endif
@@ -2964,8 +2964,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			// Check the gold
 			if (InGameClient.Game.TickCounter % 120 == 0 && World != null && GoldCollectedTempCount > 0)
 			{
-				this.Toon.GameAccount.Gold += (ulong)this.GoldCollectedTempCount;
-				this.Toon.CollectedGold += (ulong)this.GoldCollectedTempCount;
+				Toon.GameAccount.Gold += (ulong)GoldCollectedTempCount;
+				Toon.CollectedGold += (ulong)GoldCollectedTempCount;
 
 				if (World.Game.IsHardcore)
 					Toon.CollectedGoldSeasonal += GoldCollectedTempCount;
@@ -2978,9 +2978,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			// Check the blood shards
 			if (InGameClient.Game.TickCounter % 120 == 0 && World != null && BloodShardsCollectedTempCount > 0)
 			{
-				this.Toon.GameAccount.BloodShards += this.BloodShardsCollectedTempCount;
-				this.Toon.GameAccount.TotalBloodShards += this.BloodShardsCollectedTempCount;
-				this.BloodShardsCollectedTempCount = 0;
+				Toon.GameAccount.BloodShards += BloodShardsCollectedTempCount;
+				Toon.GameAccount.TotalBloodShards += BloodShardsCollectedTempCount;
+				BloodShardsCollectedTempCount = 0;
 			}
 
 			if (World != null && SkillSet.HasPassive(298038) && (InGameClient.Game.TickCounter - LastMovementTick) > 90)
@@ -3098,19 +3098,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				if (KilledMonstersTempCount != 0)
 				{
-					this.Toon.TotalKilled += (ulong)this.KilledMonstersTempCount;
-					this.KilledMonstersTempCount = 0;
+					Toon.TotalKilled += (ulong)KilledMonstersTempCount;
+					KilledMonstersTempCount = 0;
 
 					if (KilledElitesTempCount != 0)
 					{
-						this.Toon.ElitesKilled += (ulong)this.KilledElitesTempCount;
-						this.KilledElitesTempCount = 0;
+						Toon.ElitesKilled += (ulong)KilledElitesTempCount;
+						KilledElitesTempCount = 0;
 					}
 
 					if (KilledSeasonalTempCount != 0)
 					{
-						this.Toon.SeasonalKills += this.KilledSeasonalTempCount;
-						this.KilledSeasonalTempCount = 0;
+						Toon.SeasonalKills += KilledSeasonalTempCount;
+						KilledSeasonalTempCount = 0;
 					}
 				}
 
