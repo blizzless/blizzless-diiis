@@ -1216,8 +1216,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     ListenProximity(ActorSno._woodfencee_fields_trout, new Advance()); //if going through graveyard
                     var Gate = world.GetActorBySNO(ActorSno._cemetary_gate_trout_wilderness_no_lock);
                     Gate.Field2 = 16;
-                    var animation = Gate.AnimationSet.Animations[AnimationSetKeys.Opening.ID];
-                    Gate.PlayAnimation(5, animation);
+                    Gate.PlayAnimation(5, (AnimationSno)Gate.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
                     world.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDCollFlagsMessage
                     {
                         ActorID = Gate.DynamicID(plr),
@@ -1892,8 +1891,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         var world = Game.GetWorld(WorldSno.trout_townattack_chapelcellar_a);
                         foreach (var Table in world.GetActorsBySNO(ActorSno._trout_townattack_cellar_altar)) {
                             Table.SetUsable(false);
-                            var animation = Table.AnimationSet.Animations[AnimationSetKeys.Open.ID];
-                            Table.SetIdleAnimation(animation); 
+                            Table.SetIdleAnimation((AnimationSno)Table.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]); 
                         }
                         foreach (var Maghda in world.GetActorsBySNO(ActorSno._maghda_a_tempprojection)) Maghda.Destroy();
                     });

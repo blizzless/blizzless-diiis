@@ -66,7 +66,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 							new PlayAnimationMessageSpec()
 							{
 								Duration = duration,
-								AnimationSNO = (int)(ActorData.TagMap.ContainsKey(ActorKeys.DeathAnimationTag) ? AnimationSet.Animations[ActorData.TagMap[ActorKeys.DeathAnimationTag]] : AnimationSet.Animations[AnimationSetKeys.DeathDefault.ID]) ,
+								AnimationSNO = ActorData.TagMap.ContainsKey(ActorKeys.DeathAnimationTag) ? AnimationSet.TagMapAnimDefault[ActorData.TagMap[ActorKeys.DeathAnimationTag]].Int : AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault],
 								PermutationIndex = 0,
 								AnimationTag = 0,
 								Speed = 1
