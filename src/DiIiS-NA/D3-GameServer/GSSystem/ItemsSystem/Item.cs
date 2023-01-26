@@ -383,9 +383,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 Reveal(Owner as Player);
                 if (ItemDefinition.Name.Contains("Unique"))
                 {
-                    (Owner as Player).UniqueItemIdentified(DBInventory.Id);
+                    ((Player)Owner).UniqueItemIdentified(DBInventory.Id);
                     //if (Program.MaxLevel == 70)
-                    (Owner as Player).UnlockTransmog(ItemDefinition.Hash);
+                    ((Player)Owner).UnlockTransmog(ItemDefinition.Hash);
                 }
             }
         }
@@ -531,7 +531,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 //Attributes[GameAttribute.Armor_Bonus_Item] = 0;
                 //Attributes[GameAttribute.Armor_Item_Percent] = 0;
                 Attributes[GameAttribute.Armor] += definition.Armor;
-                var Armor_Item_Total = Attributes[GameAttribute.Armor_Item_Total];
+                var armorItemTotal = Attributes[GameAttribute.Armor_Item_Total];
             }
 
             var hash = definition.Hash;
