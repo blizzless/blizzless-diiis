@@ -872,12 +872,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
 			player.Inventory.RefreshInventoryToClient();
-			//var playerAcc = player.InGameClient.BnetClient.Account.GameAccount;
-			switch (this.SNO)
+			var playerAcc = player.InGameClient.BnetClient.Account.GameAccount;
+			switch (SNO)
 			{
 				case ActorSno._tieredlootrunkey_0:
-					player.Toon.GameAccount.BigPortalKey++;
-					this.Destroy();
+					playerAcc.BigPortalKey++;
+					Destroy();
 					break;
 				default:
 					player.Inventory.PickUp(this);
@@ -885,7 +885,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			}
 
 			var Moneys = D3.Items.CurrencySavedData.CreateBuilder();
-			var playerAcc = player.InGameClient.BnetClient.Account.GameAccount;
 			D3.Items.CurrencyData GoldData = D3.Items.CurrencyData.CreateBuilder().SetId(0).SetCount((long)player.Inventory.GetGoldAmount()).Build();
 			D3.Items.CurrencyData BloodShardData = D3.Items.CurrencyData.CreateBuilder().SetId(1).SetCount(playerAcc.BloodShards).Build();
 			D3.Items.CurrencyData PlatinumData = D3.Items.CurrencyData.CreateBuilder().SetId(2).SetCount(playerAcc.Platinum).Build();
@@ -909,24 +908,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			D3.Items.CurrencyData Craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20).SetCount(playerAcc.BigPortalKey).Build();      // KeyStone Greater Rift.
 
-			Moneys.AddCurrency(GoldData);
-			Moneys.AddCurrency(BloodShardData);
-			Moneys.AddCurrency(PlatinumData);
-			Moneys.AddCurrency(Craft1Data);
-			Moneys.AddCurrency(Craft2Data);
-			Moneys.AddCurrency(Craft3Data);
-			Moneys.AddCurrency(Craft4Data);
-			Moneys.AddCurrency(Craft5Data);
-			Moneys.AddCurrency(Craft7Data);
-			Moneys.AddCurrency(Horadric1Data);
-			Moneys.AddCurrency(Horadric2Data);
-			Moneys.AddCurrency(Horadric3Data);
-			Moneys.AddCurrency(Horadric4Data);
-			Moneys.AddCurrency(Horadric5Data);
-			Moneys.AddCurrency(Craft8Data);
-			Moneys.AddCurrency(Craft9Data);
-			Moneys.AddCurrency(Craft10Data);
-			Moneys.AddCurrency(Craft11Data);
+			object[] consumables = {GoldData, BloodShardData, PlatinumData, Craft1Data, Craft2Data, Craft3Data, Craft4Data, Craft5Data, Craft7Data, Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data, Craft8Data, Craft9Data, Craft10Data, Craft11Data};
+
+			foreach (object consumable in consumables)
+			{
+				Moneys.AddCurrency(consumable);
+			}
 
 			player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull) { Data = Moneys.Build().ToByteArray() });
 
@@ -1029,24 +1016,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 				D3.Items.CurrencyData Craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20).SetCount(playerAcc.BigPortalKey).Build();      // KeyStone Greater Rift.
 
-				Moneys.AddCurrency(GoldData);
-				Moneys.AddCurrency(BloodShardData);
-				Moneys.AddCurrency(PlatinumData);
-				Moneys.AddCurrency(Craft1Data);
-				Moneys.AddCurrency(Craft2Data);
-				Moneys.AddCurrency(Craft3Data);
-				Moneys.AddCurrency(Craft4Data);
-				Moneys.AddCurrency(Craft5Data);
-				Moneys.AddCurrency(Craft7Data);
-				Moneys.AddCurrency(Horadric1Data);
-				Moneys.AddCurrency(Horadric2Data);
-				Moneys.AddCurrency(Horadric3Data);
-				Moneys.AddCurrency(Horadric4Data);
-				Moneys.AddCurrency(Horadric5Data);
-				Moneys.AddCurrency(Craft8Data);
-				Moneys.AddCurrency(Craft9Data);
-				Moneys.AddCurrency(Craft10Data);
-				Moneys.AddCurrency(Craft11Data);
+				object[] consumables = {GoldData, BloodShardData, PlatinumData, Craft1Data, Craft2Data, Craft3Data, Craft4Data, Craft5Data, Craft7Data, Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data, Craft8Data, Craft9Data, Craft10Data, Craft11Data};
+
+				foreach (object consumable in consumables)
+				{
+					Moneys.AddCurrency(consumable);
+				}
+
 				#endregion
 				switch (GBHandle.GBID)
 				{
@@ -1148,15 +1124,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						player.World.SpawnBloodShards(player, player, RandomHelper.Next(10, 25));
 						break;
 					#endregion
-					default: 
+					default:
 						Logger.Warn("This treasure bag - not implemented"); break;
 				}
 				Craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4).Build();
-				Moneys.AddCurrency(Horadric1Data);
-				Moneys.AddCurrency(Horadric2Data);
-				Moneys.AddCurrency(Horadric3Data);
-				Moneys.AddCurrency(Horadric4Data);
-				Moneys.AddCurrency(Horadric5Data);
+
+				object[] HoradricBoxes = {Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data};
+				foreach (object HoradricBoxe in HoradricBoxes)
+				{
+					Moneys.AddCurrency(HoradricBoxe);
+				}
+
 				player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull) { Data = Moneys.Build().ToByteArray() });
 
 				player.Inventory.DestroyInventoryItem(this);
