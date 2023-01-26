@@ -50,7 +50,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			return base.Reveal(player);
 		}
 
-
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
 			if (Attributes[GameAttribute.Disabled]) return;

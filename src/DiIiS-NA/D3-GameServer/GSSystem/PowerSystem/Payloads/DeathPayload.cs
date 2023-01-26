@@ -88,11 +88,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (Target.Dead)
 				return;
 
-			if (Target is Player)
+			if (Target is Player plr)
 			{
-				var plr = Target as Player;
-				if(Target.World.Game.NephalemGreater)
-					(Target as Player).Attributes[GameAttribute.Tiered_Loot_Run_Death_Count]++;
+				if(plr.World.Game.NephalemGreater)
+					plr.Attributes[GameAttribute.Tiered_Loot_Run_Death_Count]++;
 				if (plr.SkillSet.HasPassive(218501) && plr.World.BuffManager.GetFirstBuff<SpiritVesselCooldownBuff>(plr) == null) //SpiritWessel (wd)
 				{
 					plr.Attributes[GameAttribute.Hitpoints_Cur] = plr.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.15f;
@@ -110,16 +109,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					return;
 				}
 			}
-			if (Target is Hireling)
+			if (Target is Hireling hireling)
 			{
-				Hireling mon = (Hireling)Target;
-				mon.Dead = true;
+				hireling.Dead = true;
 
-				if (mon.Dead)
+				if (hireling.Dead)
 				{
-					mon.Attributes[GameAttribute.Hitpoints_Cur] = mon.Attributes[GameAttribute.Hitpoints_Max_Total];
-					mon.Attributes.BroadcastChangedIfRevealed();
-					mon.Dead = false;
+					hireling.Attributes[GameAttribute.Hitpoints_Cur] = hireling.Attributes[GameAttribute.Hitpoints_Max_Total];
+					hireling.Attributes.BroadcastChangedIfRevealed();
+					hireling.Dead = false;
 				}
 
 				return;
@@ -144,92 +142,80 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				return;
 			}
 
-			if (Target is NecromancerSkeleton_A)
+			if (Target is NecromancerSkeleton_A { Master: Player masterPlr } skeletonA)
 			{
 				//(this.Target as NecromancerSkeleton_A).Master+
-				((Target as NecromancerSkeleton_A).Master as Player).InGameClient.SendMessage(new MessageSystem.Message.Definitions.Pet.PetDetachMessage()
+				masterPlr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Pet.PetDetachMessage()
 				{
-					PetId = Target.DynamicID(((Target as NecromancerSkeleton_A).Master as Player))
+					PetId = skeletonA.DynamicID((skeletonA.Master as Player))
 				});
-				((Target as NecromancerSkeleton_A).Master as Player).NecroSkeletons.Remove(Target);
+				masterPlr.NecroSkeletons.Remove(skeletonA);
 			}
-			if (Target is BaseGolem ||
-					Target is IceGolem ||
-					Target is BoneGolem ||
-					Target is DecayGolem ||
-					Target is ConsumeFleshGolem ||
-					Target is BloodGolem)
+			if (Target is Minion { Master: Player masterPlr2 } and (BaseGolem or IceGolem or BoneGolem or DecayGolem or ConsumeFleshGolem or BloodGolem))
             {
-				((Target as Minion).Master as Player).InGameClient.SendMessage(new MessageSystem.Message.Definitions.Pet.PetDetachMessage()
+				masterPlr2.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Pet.PetDetachMessage()
 				{
 					PetId = Target.DynamicID(((Target as Minion).Master as Player))
 				});
-				((Target as Minion).Master as Player).ActiveGolem = null;
+				masterPlr2.ActiveGolem = null;
 			}
-			if (Target is Player)
+			if (Target is Player user)
 			{
-				var plr = Target as Player;
-
-				if (plr.SkillSet.HasPassive(208779)) //Grenadier (DH)
+				if (user.SkillSet.HasPassive(208779)) //Grenadier (DH)
 				{
-					plr.World.PowerManager.RunPower(plr, 208779);
+					user.World.PowerManager.RunPower(user, 208779);
 				}
 
-				plr.Attributes.BroadcastChangedIfRevealed();
+				user.Attributes.BroadcastChangedIfRevealed();
 
 				DoPlayerDeath();
 				return;
 			}
 
 			if (Context != null)
-				if (Context.User is Player)  //Hitpoints_On_Kill
-					if (Context.User.Attributes[GameAttribute.Hitpoints_On_Kill] > 0)
-						(Context.User as Player).AddHP(Context.User.Attributes[GameAttribute.Hitpoints_On_Kill]);
+				if (Context.User is Player player)  //Hitpoints_On_Kill
+					if (player.Attributes[GameAttribute.Hitpoints_On_Kill] > 0)
+						player.AddHP(player.Attributes[GameAttribute.Hitpoints_On_Kill]);
 
 			// HACK: add to hackish list thats used to defer deleting actor and filter it from powers targetting
 			if (!(Target is Boss))
 				Target.World.PowerManager.AddDeletingActor(Target);
 
-			if (Target is Living)
+			if (Target is Living actor)
 			{
-				Living actor = (Living)Target;
 				if (actor.Brain != null)
 					actor.Brain.Kill();
 			}
 
-			if (Target is Monster)
+			if (Target is Monster target)
 			{
+				if (target.Brain != null)
+					target.Brain.Kill();
 
-				Monster mon = (Monster)Target;
-				if (mon.Brain != null)
-					mon.Brain.Kill();
-
-				mon.World.BroadcastIfRevealed(plr => new ACDCollFlagsMessage
+				target.World.BroadcastIfRevealed(plr => new ACDCollFlagsMessage
 				{
-					ActorID = mon.DynamicID(plr),
+					ActorID = target.DynamicID(plr),
 					CollFlags = 0
-				}, mon);
+				}, target);
 
 			}
 
-			if (Target is Minion)
+			if (Target is Minion minionTarget)
 			{
-				Minion mon = (Minion)Target;
-				if (mon.Master != null && mon.Master is Player)
+				if (minionTarget.Master != null && minionTarget.Master is Player)
 				{
-					(mon.Master as Player).Followers.Remove(Target.GlobalID);
-					(mon.Master as Player).FreeFollowerIndex(mon.SNO);
+					(minionTarget.Master as Player).Followers.Remove(minionTarget.GlobalID);
+					(minionTarget.Master as Player).FreeFollowerIndex(minionTarget.SNO);
 				}
-				if (mon.Brain != null)
-					mon.Brain.Kill();
+				if (minionTarget.Brain != null)
+					minionTarget.Brain.Kill();
 
 				LootAndExp = false;
 			}
-			bool championsAlive = false;
 
 			if (Target is Champion)
 			{
-				championsAlive = Target.GetActorsInRange<Champion>(1000).Where(c => c.GroupId == Target.GroupId && c.Attributes[GameAttribute.Hitpoints_Cur] > 0).ToList().Count > 0;
+				bool championsAlive = Target.GetActorsInRange<Champion>(1000).Where(c => c.GroupId == Target.GroupId && c.Attributes[GameAttribute.Hitpoints_Cur] > 0).ToList().Count > 0;
 				if (championsAlive)
 					LootAndExp = false;
 			}
@@ -309,10 +295,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				Field3 = true
 			}, Target);
 
-			if (Context != null)
-				if (Context.User.Attributes[GameAttribute.Item_Power_Passive, 247640] == 1 ||
-					Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] == 1 ||
-					Context.User.Attributes[GameAttribute.Item_Power_Passive, 249954] == 1 ||
+			if (Context?.User != null)
+				if (Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 247640] - 1) < 0.001 ||
+					Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] - 1) < 0.001 ||
+					Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249954] - 1) < 0.001 ||
 					(float)FastRandom.Instance.NextDouble() < 0.1f ||
 					Target.World.SNO == WorldSno.a1dun_random_level01)
 					switch ((int)DeathDamageType.HitEffect)
@@ -327,14 +313,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					}
 
 			if (Context != null)
-				if (Context.User is Player && Math.Abs(Context.User.Attributes[GameAttribute.Level] - Target.Attributes[GameAttribute.Level]) < 5)
-					(Context.User as Player).KilledSeasonalTempCount++;
+				if (Context.User is Player player && Math.Abs(player.Attributes[GameAttribute.Level] - Target.Attributes[GameAttribute.Level]) < 5)
+					player.KilledSeasonalTempCount++;
 
-			if (Context.User is Player)
+			if (Context?.User is Player plr2)
 				if (Context.World.BuffManager.HasBuff<LandOfDead.ZBuff>(Context.User))
 				{
-					(Context.User as Player).BuffStreakKill += 1;
-					if ((Context.User as Player).BuffStreakKill == 10 || (Context.User as Player).BuffStreakKill == 20)
+					plr2.BuffStreakKill += 1;
+					if (plr2.BuffStreakKill == 10 || plr2.BuffStreakKill == 20)
 					{
 						//(this.Context.User as Player).Attributes[_Buff_Icon_End_TickN, PowerSNO]
 					}
