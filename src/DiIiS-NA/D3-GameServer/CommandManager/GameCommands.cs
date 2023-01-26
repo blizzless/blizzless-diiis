@@ -62,7 +62,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         {
             if (invokerClient?.InGameClient is null)
                 return "You must execute this command in-game.";
-            if (invokerClient.InGameClient.Player.World.Game.Difficulty == 0)
+            if (invokerClient.InGameClient.Player.World.Game.Difficulty == 1)
                 return "Difficulty is already at minimum";
             invokerClient.InGameClient.Player.World.Game.LowDifficulty(invokerClient.InGameClient, null);
             return $"Difficulty decreased - set to {invokerClient.InGameClient.Player.World.Game.Difficulty}";
@@ -77,6 +77,14 @@ namespace DiIiS_NA.GameServer.CommandManager
                 return "Invalid difficulty";
             invokerClient.InGameClient.Player.World.Game.SetDifficulty(difficulty);
             return $"Difficulty set to {invokerClient.InGameClient.Player.World.Game.Difficulty}";
+        }
+        
+        [DefaultCommand]
+        public string Get(string[] @params, BattleClient invokerClient)
+        {
+            if (invokerClient?.InGameClient is null)
+                return "You must execute this command in-game.";
+            return $"Current difficulty is {invokerClient.InGameClient.Player.World.Game.Difficulty}";
         }
     }
 
