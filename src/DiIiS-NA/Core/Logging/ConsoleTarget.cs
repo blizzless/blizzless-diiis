@@ -23,7 +23,7 @@ namespace DiIiS_NA.Core.Logging
 		{
 			var timeStamp = this.IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
 			SetConsoleForegroundColor(level);
-			Console.WriteLine(string.Format("{0}[{1}] [{2}]: {3}", timeStamp, level.ToString().PadLeft(5), logger, message));
+			Console.WriteLine($"{timeStamp}[{level.ToString(),5}] [{logger,20}]: {message}");
 		}
 
 		/// <param name="level">Log level.</param>
@@ -34,7 +34,8 @@ namespace DiIiS_NA.Core.Logging
 		{
 			var timeStamp = this.IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
 			SetConsoleForegroundColor(level);
-			Console.WriteLine(string.Format("{0}[{1}] [{2}]: {3} - [Exception] {4}", timeStamp, level.ToString().PadLeft(5), logger, message, exception));
+			Console.WriteLine(
+				$"{timeStamp}[{level.ToString(),8}] [{logger,20}]: {message} - [Exception] {exception}");
 		}
 
 		/// <param name="level"></param>
@@ -42,11 +43,13 @@ namespace DiIiS_NA.Core.Logging
 		{
 			switch (level)
 			{
-				case Logger.Level.Trace:
 				case Logger.Level.PacketDump:
 					Console.ForegroundColor = ConsoleColor.DarkGray;
 					break;
 				case Logger.Level.Debug:
+					Console.ForegroundColor = ConsoleColor.DarkCyan;
+					break;
+				case Logger.Level.Trace:
 					Console.ForegroundColor = ConsoleColor.Cyan;
 					break;
 				case Logger.Level.Info:
