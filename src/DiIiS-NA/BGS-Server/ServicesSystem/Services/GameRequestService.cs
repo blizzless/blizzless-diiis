@@ -36,79 +36,79 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         }
         public override void QueueMatchmaking(IRpcController controller, QueueMatchmakingRequest request, Action<QueueMatchmakingResponse> done)
         {
-            #region Инициализация игры
+            #region Game initialization
 
             var id = RequestId.CreateBuilder().SetId(Counter); Counter++;
 
             done(QueueMatchmakingResponse.CreateBuilder().SetRequestId(id).Build());
             #endregion
-            string request_type = "";
-            string ServerPool = "";
-            bgs.protocol.v2.Attribute AttributeOfServer = null;
+            string requestType = "";
+            string serverPool = "";
+            bgs.protocol.v2.Attribute attributeOfServer = null;
             GameCreateParams gameCreateParams = null;
 
-            int Difficulty = 0;
-            int CurrentAct = 0;
-            int CurrentQuest = 0;
-            int CurrentStep = 0;
+            int difficulty = 0;
+            int currentAct = 0;
+            int currentQuest = 0;
+            int currentStep = 0;
             foreach (var attr in request.Options.CreationProperties.AttributeList)
             {
                 switch (attr.Name)
                 {
                     case "GameCreateParams":
                         gameCreateParams = GameCreateParams.ParseFrom(attr.Value.BlobValue);
-                        AttributeOfServer = attr;
+                        attributeOfServer = attr;
                         break;
                     case "ServerPool":
-                        ServerPool = attr.Value.StringValue;
+                        serverPool = attr.Value.StringValue;
                         break;
                     case "request_type":
-                        request_type = attr.Value.StringValue;
+                        requestType = attr.Value.StringValue;
                         break;
                 }
             }
 
-            Difficulty = gameCreateParams.CampaignOrAdventureMode.HandicapLevel;
-            CurrentAct = gameCreateParams.CampaignOrAdventureMode.Act;
-            CurrentQuest = gameCreateParams.CampaignOrAdventureMode.SnoQuest;
-            CurrentStep = gameCreateParams.CampaignOrAdventureMode.QuestStepId;
+            difficulty = gameCreateParams.CampaignOrAdventureMode.HandicapLevel;
+            currentAct = gameCreateParams.CampaignOrAdventureMode.Act;
+            currentQuest = gameCreateParams.CampaignOrAdventureMode.SnoQuest;
+            currentStep = gameCreateParams.CampaignOrAdventureMode.QuestStepId;
 
-            #region Ставим в очередь
+            #region Put in queue
             QueueWaitTimes.Builder timers = QueueWaitTimes.CreateBuilder();
             timers.SetMinWait(0).SetMaxWait(120).SetAvgWait(60).SetStdDevWait(0);
 
             var member = bgs.protocol.account.v1.GameAccountHandle.CreateBuilder();
-            member.SetId((uint)(controller as HandlerController).Client.Account.GameAccount.BnetEntityId.Low).SetProgram(0x00004433).SetRegion(1);
+            member.SetId((uint)((HandlerController) controller).Client.Account.GameAccount.BnetEntityId.Low).SetProgram(0x00004433).SetRegion(1);
 
             QueueEntryNotification.Builder qen = QueueEntryNotification.CreateBuilder();
             qen.SetRequestId(id).SetWaitTimes(timers).AddMember(member).SetRequestInitiator(member);
-            (controller as HandlerController).Client.MakeRPC((lid) => GameRequestListener.CreateStub((controller as HandlerController).Client).OnQueueEntry(new HandlerController() { ListenerId = lid }, qen.Build(), callback => { }));
+            ((HandlerController) controller).Client.MakeRPC((lid) => GameRequestListener.CreateStub(((HandlerController) controller).Client).OnQueueEntry(new HandlerController() { ListenerId = lid }, qen.Build(), callback => { }));
             #endregion
 
-            #region Обновление очереди
+            #region Update Queue
             QueueUpdateNotification.Builder qun = QueueUpdateNotification.CreateBuilder();
             qun.SetRequestId(id)
                 .SetWaitTimes(timers)
                 .SetIsMatchmaking(true);
-            (controller as HandlerController).Client.MakeRPC((lid) => GameRequestListener.CreateStub((controller as HandlerController).Client).OnQueueUpdate(new HandlerController() { ListenerId = lid }, qun.Build(), callback => { }));
+            ((HandlerController) controller).Client.MakeRPC((lid) => GameRequestListener.CreateStub(((HandlerController) controller).Client).OnQueueUpdate(new HandlerController() { ListenerId = lid }, qun.Build(), callback => { }));
             #endregion
 
 
-            string GAME_SERVER_IP = Program.GAMESERVERIP;
+            string gameServerIp = Program.GAMESERVERIP;
             if (GameServer.NATConfig.Instance.Enabled)
-                GAME_SERVER_IP = Program.PUBLICGAMESERVERIP;
-            uint GAME_SERVER_PORT = 2001;
+                gameServerIp = Program.PUBLICGAMESERVERIP;
+            uint gameServerPort = 2001;
 
             MatchmakingResultNotification.Builder notification = MatchmakingResultNotification.CreateBuilder();
             ConnectInfo.Builder connectInfo = ConnectInfo.CreateBuilder();
-            connectInfo.SetAddress(Address.CreateBuilder().SetAddress_(GAME_SERVER_IP).SetPort(GAME_SERVER_PORT));
+            connectInfo.SetAddress(Address.CreateBuilder().SetAddress_(gameServerIp).SetPort(gameServerPort));
             connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("GameAccount").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetBlobValue(member.Build().ToByteString())));
             connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("Token").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetUintValue(0xEEF4364684EE186E))); // FIXME
-            connectInfo.AddAttribute(AttributeOfServer); // Настройки игры
+            connectInfo.AddAttribute(attributeOfServer); // Настройки игры
 
             GameHandle.Builder gh = GameHandle.CreateBuilder();
             gh.SetMatchmaker(MatchmakerHandle.CreateBuilder()
-                                .SetId((uint)(controller as HandlerController).Client.Account.GameAccount.BnetEntityId.Low)
+                                .SetId((uint)((HandlerController) controller).Client.Account.GameAccount.BnetEntityId.Low)
                                 .SetAddr(HostProxyPair.CreateBuilder()
                                             .SetHost(ProcessId.CreateBuilder().SetLabel(1250).SetEpoch(1499729350))
                                             .SetProxy(ProcessId.CreateBuilder().SetLabel(0xaa82dfd9).SetEpoch(1497363883))));
@@ -116,10 +116,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                                 .SetHost(ProcessId.CreateBuilder().SetLabel(1277).SetEpoch(1499729371))
                                 .SetProxy(ProcessId.CreateBuilder().SetLabel(0xf511871c).SetEpoch(1497363865)));
 
-            var gameFound = GameFactoryManager.FindGame((controller as HandlerController).Client, request, ++GameFactoryManager.RequestIdCounter);
+            var gameFound = GameFactoryManager.FindGame(((HandlerController) controller).Client, request, ++GameFactoryManager.RequestIdCounter);
             var clients = (from player in request.Options.PlayerList select GameAccountManager.GetAccountByPersistentID(player.GameAccount.Id) into gameAccount where gameFound != null select gameAccount.LoggedInClient).ToList();
 
-            if (((controller as HandlerController).Client).CurrentChannel != null)
+            if ((((HandlerController)controller).Client).CurrentChannel != null)
             {
                  var channelStatePermission = bgs.protocol.channel.v1.ChannelState.CreateBuilder()
                     .AddAttribute(bgs.protocol.Attribute.CreateBuilder()
@@ -128,27 +128,27 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     .Build()).Build();
 
                 var notificationPermission = bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder()
-                    .SetAgentId(((controller as HandlerController).Client).Account.GameAccount.BnetEntityId)
+                    .SetAgentId((((HandlerController) controller).Client).Account.GameAccount.BnetEntityId)
                     .SetStateChange(channelStatePermission)
                     .Build();
 
-                var JoinPerm = bgs.protocol.channel.v1.JoinNotification.CreateBuilder().SetChannelState(channelStatePermission).Build();
+                var joinNotification = bgs.protocol.channel.v1.JoinNotification.CreateBuilder().SetChannelState(channelStatePermission).Build();
 
-                ((controller as HandlerController).Client).MakeTargetedRPC(((controller as HandlerController).Client).CurrentChannel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(((controller as HandlerController).Client)).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notificationPermission, callback => { }));
+                (((HandlerController) controller).Client).MakeTargetedRPC((((HandlerController) controller).Client).CurrentChannel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub((((HandlerController) controller).Client)).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notificationPermission, callback => { }));
             }            
             gameFound.StartGame(clients, gameFound.DynamicId);
             
             var notificationFound = bgs.protocol.notification.v1.Notification.CreateBuilder()
                 .SetSenderId(bgs.protocol.EntityId.CreateBuilder().SetHigh((ulong)EntityIdHelper.HighIdType.GameAccountId).SetLow(0).Build())
-                .SetTargetId(((controller as HandlerController).Client).Account.GameAccount.BnetEntityId)
+                .SetTargetId((((HandlerController) controller).Client).Account.GameAccount.BnetEntityId)
                 .SetType("GQ_ENTRY");
             var attrF = bgs.protocol.Attribute.CreateBuilder()
                 .SetName("game_request_id")
                 .SetValue(bgs.protocol.Variant.CreateBuilder().SetUintValue(gameFound.RequestId).Build());
             notificationFound.AddAttribute(attrF);
 
-            ((controller as HandlerController).Client).MakeRPC((lid) =>
-                bgs.protocol.notification.v1.NotificationListener.CreateStub(((controller as HandlerController).Client)).OnNotificationReceived(new HandlerController() { ListenerId = lid }, notificationFound.Build(), callback => { }));
+            (((HandlerController) controller).Client).MakeRPC((lid) =>
+                bgs.protocol.notification.v1.NotificationListener.CreateStub((((HandlerController) controller).Client)).OnNotificationReceived(new HandlerController() { ListenerId = lid }, notificationFound.Build(), callback => { }));
 
 
             gh.SetGameInstanceId((uint)gameFound.BnetEntityId.Low);
@@ -162,7 +162,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             notification.SetGameHandle(gh);
 
             System.Threading.Tasks.Task.Delay(2000).ContinueWith(delegate {
-                (controller as HandlerController).Client.MakeRPC((lid) => GameRequestListener.CreateStub((controller as HandlerController).Client).OnMatchmakingResult(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
+                ((HandlerController) controller).Client.MakeRPC((lid) => GameRequestListener.CreateStub(((HandlerController) controller).Client).OnMatchmakingResult(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
             });
         }
     }
