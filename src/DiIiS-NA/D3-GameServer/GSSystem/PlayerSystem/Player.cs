@@ -5197,13 +5197,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							{
 								GrantAchievement(74987243307039);
 								if (!Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.HardcoreTormentUnlocked))
-									Toon.GameAccount.Flags = Toon.GameAccount.Flags | GameAccount.GameAccountFlags.HardcoreTormentUnlocked;
+									Toon.GameAccount.Flags |= GameAccount.GameAccountFlags.HardcoreTormentUnlocked;
 							}
 							else
 							{
 								GrantAchievement(74987243307100);
 								if (!Toon.GameAccount.Flags.HasFlag(GameAccount.GameAccountFlags.TormentUnlocked))
-									Toon.GameAccount.Flags = Toon.GameAccount.Flags | GameAccount.GameAccountFlags.TormentUnlocked;
+									Toon.GameAccount.Flags |= GameAccount.GameAccountFlags.TormentUnlocked;
 							}
 							CheckLevelCap();
 							break;
