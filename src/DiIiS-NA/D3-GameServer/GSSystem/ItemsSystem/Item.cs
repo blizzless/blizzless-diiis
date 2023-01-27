@@ -62,7 +62,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public ItemTypeTable ItemType => ItemGroup.FromHash(ItemDefinition.ItemTypesGBID);
 
-        public bool Unidentified = false;
+        public bool Unidentified
+        {
+            get;
+            set;
+        }
 
         public int EquipGemType
         {
@@ -81,11 +85,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public int Rating
         {
-            get
-            {
-                return AffixList.Select(a => a.Rating).Sum() + (int)Gems.Select(g => g.ItemDefinition.Cost * 6f).Sum();
-            }
-            set { }
+            get => AffixList.Select(a => a.Rating).Sum() + (int)Gems.Select(g => g.ItemDefinition.Cost * 6f).Sum();
+            set => Logger.Warn("Rating is readonly");
         }
 
         public D3.Items.RareItemName RareItemName = null;
@@ -94,8 +95,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public int EquipmentSlot { get; private set; }
 
-        public Vector2D
-            InventoryLocation
+        public Vector2D InventoryLocation
         {
             get;
             private set;
@@ -186,7 +186,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
             if (AffixList.Count > 0)
             {
-                if (Attributes[GameAttribute.Requirement, 57] != AffixList[0].Definition.OverrideLevelReq &&
+                if (Math.Abs(Attributes[GameAttribute.Requirement, 57] - AffixList[0].Definition.OverrideLevelReq) > 0.001 &&
                     AffixList[0].Definition.OverrideLevelReq != 0)
                     Attributes[GameAttribute.Requirement, 57] = AffixList[0].Definition.OverrideLevelReq;
                 foreach (var affix in AffixList)
@@ -226,7 +226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             Attributes[GameAttribute.TeamID] = 0;
         }
 
-        public Item(World world, ItemTable definition, int ForceQualityLevel = -1, bool crafted = false, int seed = -1)
+        public Item(World world, ItemTable definition, int forceQualityLevel = -1, bool crafted = false, int seed = -1)
             : base(world, (ActorSno)definition.SNOActor)
         {
             GBHandle.GBID = definition.Hash;
@@ -244,8 +244,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 Attributes[GameAttribute.Item_Quality_Level] = 3;
             if (definition.Name.ToLower().Contains("unique") || definition.Quality == ItemTable.ItemQuality.Legendary)
                 Attributes[GameAttribute.Item_Quality_Level] = 9;
-            if (ForceQualityLevel > -1)
-                Attributes[GameAttribute.Item_Quality_Level] = ForceQualityLevel;
+            if (forceQualityLevel > -1)
+                Attributes[GameAttribute.Item_Quality_Level] = forceQualityLevel;
             if (definition.SNOSet != -1) Attributes[GameAttribute.Item_Quality_Level] = 9;
 
             if (ItemDefinition.Name.ToLower().Contains("unique_gem"))
@@ -355,7 +355,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 a = Attributes[GameAttribute.Requirement, 57];
             }
 
-            //Жесткая перепись требуемого уровня для легендарного оружия, в случае его бага на 70 лвл.
+            // Hard rewrite of the required level for legendary weapons, in case of its bug on 70 lvls.
             if (Attributes[GameAttribute.Item_Quality_Level] > 8)
                 if (Attributes[GameAttribute.Requirement, 57] == 0)
                     Attributes[GameAttribute.Item_Level_Requirement_Override] = 1;
@@ -375,15 +375,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             Attributes[GameAttribute.Unidentified] = false;
 
             Owner.World.Game.GameDBSession.SessionUpdate(DBInventory);
-            if (Owner is Player)
+            if (Owner is Player player)
             {
-                Unreveal(Owner as Player);
-                Reveal(Owner as Player);
+                Unreveal(player);
+                Reveal(player);
                 if (ItemDefinition.Name.Contains("Unique"))
                 {
-                    ((Player)Owner).UniqueItemIdentified(DBInventory.Id);
+                    player.UniqueItemIdentified(DBInventory.Id);
                     //if (Program.MaxLevel == 70)
-                    ((Player)Owner).UnlockTransmog(ItemDefinition.Hash);
+                    player.UnlockTransmog(ItemDefinition.Hash);
                 }
             }
         }

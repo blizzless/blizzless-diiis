@@ -69,10 +69,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				player.Inventory.GetBag().GrabSomeItems(-110888638, 1);
 				if (!World.Game.IsHardcore)
 					player.Inventory.RemoveGoldAmount(250000);
-				if (FastRandom.Instance.Next(100) < chance)
-					World.SpawnRandomEquip(player, player, LootManager.Epic, player.Level);
-				else
-					World.SpawnRandomEquip(player, player, LootManager.Rare, player.Level);
+				World.SpawnRandomEquip(player, player,
+					FastRandom.Instance.Next(100) < chance ? LootManager.Epic : LootManager.Rare, player.Level);
 
 				var toon = player.Toon.DBToon;
 				toon.ChestsOpened++;
