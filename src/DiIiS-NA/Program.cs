@@ -263,11 +263,22 @@ namespace DiIiS_NA
                 IChannel boundChannel = await b.BindAsync(DiIiS_NA.LoginServer.Config.Instance.Port);
 
                 Logger.Info("$[bold red3_1]$Tip:$[/]$ graceful shutdown with $[red3_1]$CTRL+C$[/]$ or $[red3_1]$!q[uit]$[/]$ or $[red3_1]$!exit$[/]$.");
+                Logger.Info("$[bold red3_1]$Tip:$[/]$ SNO breakdown with $[red3_1]$!sno$[/]$ $[red]$<fullSnoBreakdown(true:false)>$[/]$.");
                 while (true)
                 {
                     var line = Console.ReadLine();
                     if (line is null or "!q" or "!quit" or "!exit")
                         break;
+                    if (line is "!cls" or "!clear" or "cls" or "clear")
+                    {
+                        Console.Clear();
+                        continue;
+                    }
+                    if (line.ToLower().StartsWith("!sno"))
+                    {
+                        MPQStorage.Data.SnoBreakdown(line.ToLower().Equals("!sno 1") || line.ToLower().Equals("!sno true"));
+                        continue;
+                    }
                     CommandManager.Parse(line);
                 }
 
