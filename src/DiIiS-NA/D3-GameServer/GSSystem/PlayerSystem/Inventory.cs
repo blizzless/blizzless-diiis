@@ -2254,12 +2254,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			if (_inventoryGold != null)
 			{
-				Logger.Warn($"InventoryGold is $[bold red]$NOT$[/]$ null: {_inventoryGold.Attributes[GameAttribute.Gold]}");
+				// Logger.Warn($"InventoryGold is $[bold red]$NOT$[/]$ null: {_inventoryGold.Attributes[GameAttribute.Gold]}");
 				return _inventoryGold.Attributes[GameAttribute.Gold];
 			}
 			else
 			{
-				Logger.Warn($"InventoryGold is $[bold red]$NULL$[/]$");
+				// Logger.Warn($"InventoryGold is $[bold red]$NULL$[/]$");
 
 				return -1;
 			}
@@ -2348,7 +2348,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			Item item = null;
 			int goldAmount = (int)_owner.World.Game.GameDBSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).Gold;
-			Logger.Warn($"User {this._owner.Toon.PersistentID} has {goldAmount} gold.");
+			// Logger.Warn($"User {this._owner.Toon.PersistentID} has {goldAmount} gold.");
 			this.BloodShards = (int)_owner.World.Game.GameDBSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).BloodShards;
 			// Clear already present items
 			// LoadFromDB is called every time World is changed, even entering a dungeon
@@ -2411,7 +2411,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			//}).ContinueWith((a) =>{
 			_inventoryGold = ItemGenerator.CreateGold(_owner, goldAmount);
 			_inventoryGold.Attributes[GameAttribute.Gold] = goldAmount;
-			Logger.Warn($"User {this._owner.Toon.PersistentID} - inventory gold has {_inventoryGold.Attributes[GameAttribute.Gold]} gold.");
+			// Logger.Warn($"User {this._owner.Toon.PersistentID} - inventory gold has {_inventoryGold.Attributes[GameAttribute.Gold]} gold.");
 
 			_inventoryGold.Attributes[GameAttribute.ItemStackQuantityLo] = goldAmount; // This is the attribute that makes the gold visible in gamethe gold visible in game
 			_inventoryGold.Owner = _owner;

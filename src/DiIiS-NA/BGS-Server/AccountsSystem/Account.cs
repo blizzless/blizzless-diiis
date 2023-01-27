@@ -203,8 +203,8 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				if(GameAccount.ProgramField.Value == "APP")
 					return string.Format("{0}", DBAccount.BattleTagName);
 				else if (GameAccount.ProgramField.Value == "D3")
-					return string.Format("{0}", DBAccount.BattleTagName);
-					//return string.Format(staff ? " {{icon:bnet}} {{c_legendary}}{0}{{/c}}" : ("{0}"), this.DBAccount.BattleTagName);
+					//return string.Format("{0}", DBAccount.BattleTagName);
+					return string.Format(staff ? " {{icon:bnet}} {{c_legendary}}{0}{{/c}}" : ("{0}"), this.DBAccount.BattleTagName);
 				else
 					return string.Format("{0}", DBAccount.BattleTagName);
 				//return (staff ? " {icon:bnet} " : (premium ? " {icon:gold} " : "")) + dbAcc.BattleTagName;
