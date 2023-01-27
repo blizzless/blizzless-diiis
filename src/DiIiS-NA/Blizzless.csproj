@@ -81,7 +81,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.1" />
     <PackageReference Include="Npgsql" Version="4.0.4" />
-    <PackageReference Include="Skater.exe" Version="7.5.0" />
     <PackageReference Include="System.ServiceModel.Web" Version="1.0.0" />
   </ItemGroup>
 
