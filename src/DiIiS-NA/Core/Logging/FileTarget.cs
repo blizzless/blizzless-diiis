@@ -99,14 +99,8 @@ namespace DiIiS_NA.Core.Logging
 				var timeStamp = this.IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
 				if (!this._disposed) // make sure we're not disposed.
 				{
-					if (this._fileStream.Length >= 20971520) //20 MB limit
-					{
-						System.IO.File.Move(this._filePath, string.Format("{0}.{1}", this._filePath, this._fileIndex));
-						this._fileIndex++;
-						this._fileStream = new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.Read); // init the file stream.
-						this._logStream = new StreamWriter(this._fileStream) { AutoFlush = true }; // init the stream writer.
-					}
-					this._logStream.WriteLine(string.Format("{0}[{1}] [{2}]: {3} - [Exception] {4}", timeStamp, level.ToString().PadLeft(5), logger, message, exception));
+					this._logStream.WriteLine(
+						$"{timeStamp}[{level.ToString(),5}] [{logger}]: {message} - [Exception] {exception}");
 				}
 			});
 		}

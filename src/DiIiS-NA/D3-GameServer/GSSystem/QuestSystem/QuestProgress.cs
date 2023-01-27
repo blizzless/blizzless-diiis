@@ -285,6 +285,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			return true;
 		}
 
+		public bool HasFollower(ActorSno sno)
+		{
+			return Game.Players.Values.First().Followers.Any(x => x.Value == sno);
+		}
+
 		public void AddFollower(World world, ActorSno sno)
 		{
 			if (Game.Players.Count > 0)

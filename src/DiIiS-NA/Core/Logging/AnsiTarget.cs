@@ -125,9 +125,9 @@ public class AnsiTarget : LogTarget
         {
             Logger.Level.RenameAccountLog => new Style(Color.DarkSlateGray3),//
             Logger.Level.ChatMessage => new Style(Color.DarkSlateGray2),//
-            Logger.Level.Debug => new Style(Color.Purple4),//
-            Logger.Level.MethodTrace => new Style(Color.Purple4_1),//
-            Logger.Level.Trace => new Style(Color.Purple),//
+            Logger.Level.Debug => new Style(Color.Olive),//
+            Logger.Level.MethodTrace => new Style(Color.Purple),//
+            Logger.Level.Trace => new Style(Color.BlueViolet),//
             Logger.Level.Info => new Style(Color.White),
             Logger.Level.Success => new Style(Color.Green3_1),
             Logger.Level.Warn => new Style(Color.Yellow),//
