@@ -1,8 +1,5 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement

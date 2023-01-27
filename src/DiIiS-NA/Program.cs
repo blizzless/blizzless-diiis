@@ -1,67 +1,37 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Discord.Modules;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.AchievementSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.CommandManager;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.GuildSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
 using DiIiS_NA.REST;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.Manager;
-//Blizzless Project 2022 
 using DotNetty.Handlers.Logging;
-//Blizzless Project 2022 
 using DotNetty.Transport.Bootstrapping;
-//Blizzless Project 2022 
 using DotNetty.Transport.Channels;
-//Blizzless Project 2022 
 using DotNetty.Transport.Channels.Sockets;
-//Blizzless Project 2022 
 using Npgsql;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Data.Common;
 using System.Diagnostics;
-//Blizzless Project 2022 
 using System.Globalization;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
-//Blizzless Project 2022 
 using System.Security;
-//Blizzless Project 2022 
 using System.Security.Permissions;
-//Blizzless Project 2022 
 using System.Threading;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 using Spectre.Console;
 using Environment = System.Environment;

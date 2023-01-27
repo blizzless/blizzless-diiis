@@ -1,17 +1,10 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using bgs.protocol;
-//Blizzless Project 2022 
 using DotNetty.Codecs;
-//Blizzless Project 2022 
 using DotNetty.Buffers;
-//Blizzless Project 2022 
 using DotNetty.Codecs.Http.WebSockets;
-//Blizzless Project 2022 
 using DotNetty.Transport.Channels;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
 
 namespace DiIiS_NA.LoginServer.Base

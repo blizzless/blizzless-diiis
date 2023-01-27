@@ -1,20 +1,11 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 

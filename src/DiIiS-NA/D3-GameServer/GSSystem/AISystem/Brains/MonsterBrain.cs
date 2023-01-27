@@ -1,43 +1,28 @@
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 {
 	public class MonsterBrain : Brain
 	{
+		private new readonly Logger Logger;
 		// list of power SNOs that are defined for the monster
 		public Dictionary<int, Cooldown> PresetPowers { get; private set; }
 
@@ -62,37 +47,44 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		public MonsterBrain(Actor body)
 		: base(body)
 		{
+			Logger = LogManager.CreateLogger(GetType().Name);
+			
 			PresetPowers = new Dictionary<int, Cooldown>();
 
 			// build list of powers defined in monster mpq data
-			if (body.ActorData.MonsterSNO > 0)
+			if (body.ActorData.MonsterSNO <= 0)
 			{
-				var monsterData = (DiIiS_NA.Core.MPQ.FileFormats.Monster)MPQStorage.Data.Assets[SNOGroup.Monster][body.ActorData.MonsterSNO].Data;
-				_mpqPowerCount = monsterData.SkillDeclarations.Count(e => e.SNOPower != -1);
-				for (int i = 0; i < monsterData.SkillDeclarations.Count(); i++)
-				{
-					if (monsterData.SkillDeclarations[i].SNOPower == -1) continue;
-					if (PowerLoader.HasImplementationForPowerSNO(monsterData.SkillDeclarations[i].SNOPower))
-					{
-						var cooldownTime = monsterData.MonsterSkillDeclarations[i].Timer / 10f;
-						PresetPowers.Add(monsterData.SkillDeclarations[i].SNOPower, new Cooldown { CooldownTimer = null, CooldownTime = cooldownTime });
-					}
-				}
-
-				if (!monsterData.SkillDeclarations.Any(s => s.SNOPower == 30592))
-					PresetPowers.Add(30592, new Cooldown { CooldownTimer = null, CooldownTime = 0f }); //hack for dummy mobs without powers
+				Logger.Warn($"$[red]${GetType().Name}$[/]$ - Monster \"{body.SNO}\" has no monster SNO");
+				return;
 			}
+			var monsterData = (DiIiS_NA.Core.MPQ.FileFormats.Monster)MPQStorage.Data.Assets[SNOGroup.Monster][body.ActorData.MonsterSNO].Data;
+			_mpqPowerCount = monsterData.SkillDeclarations.Count(e => e.SNOPower != -1);
+			for (int i = 0; i < monsterData.SkillDeclarations.Count(); i++)
+			{
+				if (monsterData.SkillDeclarations[i].SNOPower == -1) continue;
+				if (PowerLoader.HasImplementationForPowerSNO(monsterData.SkillDeclarations[i].SNOPower))
+				{
+					var cooldownTime = monsterData.MonsterSkillDeclarations[i].Timer / 10f;
+					PresetPowers.Add(monsterData.SkillDeclarations[i].SNOPower, new Cooldown { CooldownTimer = null, CooldownTime = cooldownTime });
+				}
+			}
+
+			if (monsterData.SkillDeclarations.All(s => s.SNOPower != 30592))
+				PresetPowers.Add(30592, new Cooldown { CooldownTimer = null, CooldownTime = 0f }); //hack for dummy mobs without powers
 		}
 
 		public override void Think(int tickCounter)
 		{
-			if (Body.SNO == ActorSno._uber_siegebreakerdemon ||
-				Body.SNO == ActorSno._a4dun_garden_corruption_monster ||
-				Body.SNO == ActorSno._a4dun_garden_hellportal_pillar)
-				return;
-			if (Body.SNO == ActorSno._belialvoiceover) //BelialVoiceover
-				return;
-			if (Body.Hidden == true)
+			switch (Body.SNO)
+			{
+				case ActorSno._uber_siegebreakerdemon:
+				case ActorSno._a4dun_garden_corruption_monster:
+				case ActorSno._a4dun_garden_hellportal_pillar:
+				case ActorSno._belialvoiceover:
+					return;
+			}
+
+			if (Body.Hidden)
 				return;
 
 			if (CurrentAction != null && PriorityTarget != null && PriorityTarget.Attributes[GameAttribute.Is_Helper] == true)
@@ -103,7 +95,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				return;
 			}
 
-			if (!(tickCounter % 60 == 0)) return;
+			if (tickCounter % 60 != 0) return;
 			
 			if (Body is NPC) return;
 
@@ -146,16 +138,15 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					);
 					return;
 				}
-				else return;
+
+				return;
 			}
-			else
-				Feared = false;
 
-			if (CurrentAction == null) 
+			Feared = false;
+
+			if (CurrentAction == null)
 			{
-
-				if (_powerDelay == null)
-					_powerDelay = new SecondsTickTimer(Body.World.Game, 1.0f);
+				_powerDelay ??= new SecondsTickTimer(Body.World.Game, 1.0f);
 				if (AttackedBy != null || Body.GetObjectsInRange<Player>(50f).Count != 0)
 				{
 					if (_powerDelay.TimedOut)
@@ -167,14 +158,13 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 						if (PriorityTarget == null)
 						{
-							List<Actor> targets = new List<Actor>();
+							Actor[] targets;
 
 							if (Body.Attributes[GameAttribute.Team_Override] == 1)
 								targets = Body.GetObjectsInRange<Monster>(60f)
 									.Where(p => !p.Dead)
 									.OrderBy((monster) => PowerMath.Distance2D(monster.Position, Body.Position))
-									.Cast<Actor>()
-									.ToList();
+									.ToArray();
 							else
 								targets = Body.GetActorsInRange(50f)
 									.Where(p => ((p is Player) && !p.Dead && p.Attributes[GameAttribute.Loading] == false && p.Attributes[GameAttribute.Is_Helper] == false && p.World.BuffManager.GetFirstBuff<ActorGhostedBuff>(p) == null)
@@ -183,10 +173,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 										|| ((p is Hireling) && !p.Dead)
 										)
 									.OrderBy((actor) => PowerMath.Distance2D(actor.Position, Body.Position))
-									.Cast<Actor>()
-									.ToList();
+									.ToArray();
 
-							if (targets.Count == 0) return;
+							if (targets.Length == 0) return;
 							
 							_target = targets.First();
 						}
@@ -210,28 +199,27 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 								if (power is SummoningSkill)
 									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) };
 
-								if (power is MonsterAffixSkill)
-									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
+								if (power is MonsterAffixSkill monsterAffixSkill)
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = monsterAffixSkill.CooldownTime };
 
 								if (PresetPowers[powerToUse].CooldownTime > 0f)
 									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, PresetPowers[powerToUse].CooldownTime), CooldownTime = PresetPowers[powerToUse].CooldownTime };
 
-								if (powerToUse == 96925 ||
-								   powerToUse == 223284)
+								if (powerToUse is 96925 or 223284)
 									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, 10f), CooldownTime = 10f };
 							}
 							else if (Body.WalkSpeed != 0)
 							{
 								if (Body.SNO.IsWoodwraithOrWasp())
 								{
-									Logger.Trace("MoveToPointAction to target");
+									Logger.Trace($"{GetType().Name} {nameof(MoveToPointAction)} to target [{_target.Position}]");
 									CurrentAction = new MoveToPointAction(
 										Body, _target.Position
 									);
 								}
 								else
 								{
-									Logger.Trace("MoveToTargetWithPathfindAction to target");
+									Logger.Trace($"{GetType().Name} {nameof(MoveToTargetWithPathfindAction)} to target [{_target.ActorType}] {_target.SNO.ToString()}");
 									CurrentAction = new MoveToTargetWithPathfindAction(
 										Body,
 										_target,
@@ -242,12 +230,11 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							}
 							else
 							{
-								switch (Body.SNO)
+								powerToUse = Body.SNO switch
 								{
-									case ActorSno._a1dun_leor_firewall2:
-										powerToUse = 223284;
-										break;
-								}
+									ActorSno._a1dun_leor_firewall2 => 223284,
+									_ => powerToUse
+								};
 								CurrentAction = new PowerAction(Body, powerToUse, _target);
 
 								if (power is SummoningSkill)
@@ -278,36 +265,31 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 						if (PriorityTarget == null)
 						{
-							List<Actor> targets = new List<Actor>();
-
-							targets = Body.GetActorsInRange(50f)
+							var targets = Body.GetActorsInRange(50f)
 							.Where(p => ((p is LorathNahr_NPC) && !p.Dead)
 								|| ((p is CaptainRumford) && !p.Dead)
 								|| (p is DesctructibleLootContainer && p.SNO.IsDoorOrBarricade())
 								|| ((p is Cain) && !p.Dead))
 							.OrderBy((actor) => PowerMath.Distance2D(actor.Position, Body.Position))
-							.Cast<Actor>()
-							.ToList();
+							.ToArray();
 
-							if (targets.Count == 0)
+							if (targets.Length == 0)
 							{
 								targets = Body.GetActorsInRange(20f)
 									.Where(p => ((p is Monster) && !p.Dead)
 										|| ((p is CaptainRumford) && !p.Dead)
 										)
 									.OrderBy((actor) => PowerMath.Distance2D(actor.Position, Body.Position))
-									.Cast<Actor>()
-									.ToList();
+									.ToArray();
 
 
-								if (targets.Count == 0)
+								if (targets.Length == 0)
 									return;
 
-								foreach (var tar in targets)
-									if (_target == null)
-										if (tar is Monster && tar != Body)
-											if (((tar as Monster).Brain as MonsterBrain).AttackedBy != null)
-												_target = ((tar as Monster).Brain as MonsterBrain).AttackedBy;
+								foreach (var monsterActor in targets.Where(tar => _target == null))
+									if (monsterActor is Monster { Brain: MonsterBrain brain } monster && monsterActor != Body)
+										if (brain.AttackedBy != null)
+											_target = brain.AttackedBy;
 							}
 							else
 							{
@@ -346,14 +328,16 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 								if (Body.WalkSpeed != 0)
 									Body.TranslateFacing(_target.Position, false); //columns and other non-walkable shit can't turn
 
-								//Logger.Trace("PowerAction to target");
+								
+								Logger.Trace($"{GetType().Name} {nameof(PowerAction)} to target [{_target.ActorType}] {_target.SNO.ToString()}");
+								// Logger.Trace("PowerAction to target");
 								CurrentAction = new PowerAction(Body, powerToUse, _target);
 
 								if (power is SummoningSkill)
 									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) };
 
-								if (power is MonsterAffixSkill)
-									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
+								if (power is MonsterAffixSkill monsterSkill)
+									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = monsterSkill.CooldownTime };
 
 								if (PresetPowers[powerToUse].CooldownTime > 0f)
 									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, PresetPowers[powerToUse].CooldownTime), CooldownTime = PresetPowers[powerToUse].CooldownTime };
@@ -361,15 +345,17 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							else if (Body.WalkSpeed != 0)
 							{
 								if (Body.SNO.IsWoodwraithOrWasp())
-								{
-									Logger.Trace("MoveToPointAction to target");
+								{									
+									Logger.Trace($"{GetType().Name} {nameof(MoveToPointAction)} to target [{_target.Position}]");
+
 									CurrentAction = new MoveToPointAction(
 										Body, _target.Position
 									);
 								}
 								else
 								{
-									Logger.Trace("MoveToTargetWithPathfindAction to target");
+									Logger.Trace($"{GetType().Name} {nameof(MoveToTargetWithPathfindAction)} to target [{_target.ActorType}] {_target.SNO.ToString()}");
+
 									CurrentAction = new MoveToTargetWithPathfindAction(
 										Body,
 										//(
@@ -397,23 +383,23 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				}
 			}
 		}
-		public static Core.Types.Math.Vector3D RandomPosibleDirection(Core.Types.Math.Vector3D position, float minRadius, float maxRadius, MapSystem.World wrld)
+		public static Core.Types.Math.Vector3D RandomPossibleDirection(Core.Types.Math.Vector3D position, float minRadius, float maxRadius, MapSystem.World world)
 		{
 			float angle = (float)(FastRandom.Instance.NextDouble() * Math.PI * 2);
 			float radius = minRadius + (float)FastRandom.Instance.NextDouble() * (maxRadius - minRadius);
-			Core.Types.Math.Vector3D SP = null;
+			Core.Types.Math.Vector3D point = null;
 			int tryC = 0;
-			while (tryC < 50)
+			while (tryC < 100)
 			{
 				//break;
-				SP = new Core.Types.Math.Vector3D(position.X + (float)Math.Cos(angle) * radius,
+				point = new Core.Types.Math.Vector3D(position.X + (float)Math.Cos(angle) * radius,
 							  position.Y + (float)Math.Sin(angle) * radius,
 							  position.Z);
-				if (wrld.CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+				if (world.CheckLocationForFlag(point, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 					break;
 				tryC++;
 			}
-			return SP;
+			return point;
 		}
 
 		public void FastAttack(Actor target, int skillSNO)
@@ -422,15 +408,14 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			power.User = Body;
 			if (Body.WalkSpeed != 0)
 				Body.TranslateFacing(target.Position, false); //columns and other non-walkable shit can't turn
-
-			//Logger.Trace("Fast PowerAction to target");
+			Logger.Trace($"{GetType().Name} {nameof(FastAttack)} {nameof(PowerAction)} to target [{_target.ActorType}] {_target.SNO.ToString()}");
 			CurrentAction = new PowerAction(Body, skillSNO, target);
 
 			if (power is SummoningSkill)
 				PresetPowers[skillSNO] = new Cooldown { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) };
 
-			if (power is MonsterAffixSkill)
-				PresetPowers[skillSNO] = new Cooldown { CooldownTimer = null, CooldownTime = (power as MonsterAffixSkill).CooldownTime };
+			if (power is MonsterAffixSkill monsterAffixSkill)
+				PresetPowers[skillSNO] = new Cooldown { CooldownTimer = null, CooldownTime = monsterAffixSkill.CooldownTime };
 
 			if (PresetPowers[skillSNO].CooldownTime > 0f)
 				PresetPowers[skillSNO] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, PresetPowers[skillSNO].CooldownTime), CooldownTime = PresetPowers[skillSNO].CooldownTime };
@@ -440,26 +425,26 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			if (!_warnedNoPowers && PresetPowers.Count == 0)
 			{
-				Logger.Info("Monster \"{0}\" has no usable powers. {1} are defined in mpq data.", Body.Name, _mpqPowerCount);
+				Logger.Warn($"Monster $[red]$\"{Body.Name}\"$[/]$ has no usable powers. {_mpqPowerCount} are defined in mpq data.");
 				_warnedNoPowers = true;
+				return -1;
 			}
 
 			// randomly used an implemented power
-			if (PresetPowers.Count > 0)
+			if (PresetPowers.Count <= 0) return -1;
+			
+			//int power = this.PresetPowers[RandomHelper.Next(this.PresetPowers.Count)].Key;
+			var availablePowers = PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key).ToList();
+			if (availablePowers.Count(p => p != 30592) > 0)
 			{
-				//int power = this.PresetPowers[RandomHelper.Next(this.PresetPowers.Count)].Key;
-				List<int> availablePowers = Enumerable.ToList(PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key));
-				if (availablePowers.Where(p => p != 30592).Count() > 0)
-				{
-					int SelectedPower = availablePowers.Where(p => p != 30592).ToList()[RandomHelper.Next(availablePowers.Where(p => p != 30592).ToList().Count())];
-					//if(SelectedPower == 73824)
-						//if(SkeletonKingWhirlwind)
-					return SelectedPower;
-				}
-				else
-					if (availablePowers.Contains(30592))
-					return 30592; //melee attack
+				int SelectedPower = availablePowers.Where(p => p != 30592).ToList()[RandomHelper.Next(availablePowers.Where(p => p != 30592).ToList().Count())];
+				//if(SelectedPower == 73824)
+				//if(SkeletonKingWhirlwind)
+				return SelectedPower;
 			}
+
+			if (availablePowers.Contains(30592))
+				return 30592; //melee attack
 
 			// no usable power
 			return -1;
@@ -469,14 +454,17 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			if (PresetPowers.ContainsKey(powerSNO))
 			{
+				Logger.Warn($"Monster $[red]$\"{Body.Name}\"$[/]$ already has power {powerSNO}.");
 				// Logger.Debug("AddPresetPower(): power sno {0} already defined for monster \"{1}\"",
 				//powerSNO, this.Body.ActorSNO.Name);
 				return;
 			}
-			if (PresetPowers.ContainsKey(30592)) //if can cast melee
-				PresetPowers.Add(powerSNO, new Cooldown { CooldownTimer = null, CooldownTime = 5f });
-			else
-				PresetPowers.Add(powerSNO, new Cooldown { CooldownTimer = null, CooldownTime = 1f + (float)FastRandom.Instance.NextDouble() });
+
+			PresetPowers.Add(powerSNO,
+				PresetPowers.ContainsKey(30592) //if can cast melee
+					? new Cooldown { CooldownTimer = null, CooldownTime = 5f }
+					: new Cooldown
+						{ CooldownTimer = null, CooldownTime = 1f + (float)FastRandom.Instance.NextDouble() });
 		}
 
 		public void RemovePresetPower(int powerSNO)

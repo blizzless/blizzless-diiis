@@ -1,24 +1,13 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
 using NHibernate.Linq;
 
 namespace DiIiS_NA.LoginServer.Toons

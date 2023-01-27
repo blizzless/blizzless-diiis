@@ -1,18 +1,10 @@
-﻿//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
+﻿using System.Linq;
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 

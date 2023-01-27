@@ -1,9 +1,6 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Text;
 
 namespace DiIiS_NA.REST

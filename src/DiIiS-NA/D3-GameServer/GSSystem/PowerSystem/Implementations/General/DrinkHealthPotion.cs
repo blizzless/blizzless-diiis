@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022 
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 

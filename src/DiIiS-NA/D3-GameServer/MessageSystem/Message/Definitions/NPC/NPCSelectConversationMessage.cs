@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022 
-using System.Text;
+﻿using System.Text;
 
 namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.NPC
 {

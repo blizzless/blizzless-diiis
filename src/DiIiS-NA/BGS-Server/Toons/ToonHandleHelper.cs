@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.LoginServer.Helpers;
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Text;
 
 namespace DiIiS_NA.LoginServer.Toons

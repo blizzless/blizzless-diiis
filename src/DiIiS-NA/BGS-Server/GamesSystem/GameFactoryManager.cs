@@ -1,19 +1,11 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using bgs.protocol.matchmaking.v1;
-//Blizzless Project 2022 
 using D3.OnlineService;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.ChannelSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.LoginServer.GamesSystem

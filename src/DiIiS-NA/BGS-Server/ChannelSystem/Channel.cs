@@ -1,25 +1,14 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.GuildSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.LoginServer.ChannelSystem

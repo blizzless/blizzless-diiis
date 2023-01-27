@@ -1,13 +1,8 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Globalization;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.Core.Logging

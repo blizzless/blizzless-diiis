@@ -1,5 +1,4 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
 
 namespace DiIiS_NA.Core.Logging

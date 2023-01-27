@@ -1,11 +1,7 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Threading;
 
 namespace DiIiS_NA.Core.Logging

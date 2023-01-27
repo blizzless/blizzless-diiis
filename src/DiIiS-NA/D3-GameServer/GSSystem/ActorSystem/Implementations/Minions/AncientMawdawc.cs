@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.PowerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 

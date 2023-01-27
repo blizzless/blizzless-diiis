@@ -1,41 +1,22 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads

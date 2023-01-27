@@ -1,17 +1,10 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Numerics;
-//Blizzless Project 2022 
 using System.Security.Cryptography;
-//Blizzless Project 2022 
 using System.Text;
 
 namespace DiIiS_NA.LoginServer.Crypthography

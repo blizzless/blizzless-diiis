@@ -1,7 +1,5 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
 
 namespace DiIiS_NA.Core.Helpers.Hash

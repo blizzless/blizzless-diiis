@@ -1,55 +1,29 @@
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Drawing;
-//Blizzless Project 2022 
 using System.Linq;
 using DiIiS_NA.Core.MPQ;
 using Player = DiIiS_NA.GameServer.GSSystem.PlayerSystem.Player;

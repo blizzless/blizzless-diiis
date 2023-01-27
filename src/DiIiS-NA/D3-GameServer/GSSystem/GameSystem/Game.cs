@@ -1,70 +1,36 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.MessageSystem;
 using GameBalance = DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Threading;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
-//Blizzless Project 2022 
 using System.Drawing;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.QuestSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Act;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Player;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Team;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using System.Diagnostics;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 

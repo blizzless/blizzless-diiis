@@ -1,5 +1,4 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System.Runtime.Serialization;
 
 namespace DiIiS_NA.LoginServer.Objects

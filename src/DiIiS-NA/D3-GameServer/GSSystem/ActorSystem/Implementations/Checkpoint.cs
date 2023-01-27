@@ -1,11 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations

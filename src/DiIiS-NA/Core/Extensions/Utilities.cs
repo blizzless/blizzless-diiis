@@ -1,23 +1,15 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.Core.Extensions
 {
-    //Blizzless Project 2022 
-using System;
-    //Blizzless Project 2022 
-using System.Globalization;
-    //Blizzless Project 2022 
-using System.Text;
+    using System;
+    using System.Globalization;
+    using System.Text;
 
     public static class Utilities
     {

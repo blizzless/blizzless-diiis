@@ -1,13 +1,8 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents

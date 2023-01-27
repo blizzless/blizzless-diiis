@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.LoginServer.AccountsSystem;
 using FluentNHibernate.Data;
 
 

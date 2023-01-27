@@ -1,9 +1,6 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using bgs.protocol.presence.v1;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 
 namespace DiIiS_NA.LoginServer.Helpers

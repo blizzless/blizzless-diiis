@@ -1,27 +1,15 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.AchievementSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.GamesSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using WatsonTcp;
 
 namespace DiIiS_NA.LoginServer.Battle

@@ -1,15 +1,9 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations

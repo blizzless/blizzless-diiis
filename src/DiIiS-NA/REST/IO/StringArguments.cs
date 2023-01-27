@@ -1,16 +1,9 @@
-﻿//Blizzless Project 2022 
-using FluentNHibernate.Conventions;
-//Blizzless Project 2022 
+﻿using FluentNHibernate.Conventions;
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Text.RegularExpressions;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.REST.IO

@@ -1,8 +1,5 @@
-﻿//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 

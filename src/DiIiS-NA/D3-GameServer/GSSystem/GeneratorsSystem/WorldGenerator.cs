@@ -1,52 +1,27 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Collision;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
 using World = DiIiS_NA.GameServer.GSSystem.MapSystem.World;
-//Blizzless Project 2022 
 using Scene = DiIiS_NA.GameServer.GSSystem.MapSystem.Scene;
-//Blizzless Project 2022 
 using Affix = DiIiS_NA.GameServer.GSSystem.ItemsSystem.Affix;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.WorldSceneBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Scene;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Interactions;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 

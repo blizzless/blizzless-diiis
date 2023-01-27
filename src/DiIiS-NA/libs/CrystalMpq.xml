@@ -163,8 +163,7 @@
             <summary>Parses the listfile if it has not already been done.</summary>
             <remarks>
             Once the list file has been parsed, calls this function will just do nothing.
-            The list file will always be parsed by default, but you can override this behavior //Blizzless Project 2022 
-using an appropriate constructor.
+            The list file will always be parsed by default, but you can override this behavior using an appropriate constructor.
             Please note that parsing the list file can take some time, and is not required if you already know the filenames.
             Also, this operation is irreversible. Once the filenames are present in memory, the only way to free the memory is to close the archive.
             </remarks>
@@ -311,9 +310,7 @@ using an appropriate constructor.
         <member name="M:CrystalMpq.CommonMethods.GetSharedBuffer(System.Int32)">
             <summary>Gets a buffer of at least <paramref name="minLength"/> bytes.</summary>
             <remarks>
-            While actively //Blizzless Project 2022 
-using the buffer, you must <c>make sure</c> to not call any other method //Blizzless Project 2022 
-using the same shared buffer.
+            While actively using the buffer, you must <c>make sure</c> to not call any other method using the same shared buffer.
             Also, no references to the buffer should be leaked after the method requesting the buffer has returned.
             <c>Not following these rules carefully will likely lead to a crash.</c>
             </remarks>
@@ -481,19 +478,16 @@ using the same shared buffer.
             <remarks>
             This structure is designed for internal use in CrystalMpq.
             Incorrect usage of the structure will lead to bugs or even worse, memory leaks.
-            The structure shall always be initialized //Blizzless Project 2022 
-using this constructor.
+            The structure shall always be initialized using this constructor.
             Once created, there shall never be more than one living copy of the structure.
             The structure shall always be passed as a reference parameter and never as a value parameter.
-            Once the structure have been used for its purposes, it shall be released //Blizzless Project 2022 
-using the <see cref="M:CrystalMpq.BitBuffer.Dispose"/> method.
+            Once the structure have been used for its purposes, it shall be released using the <see cref="M:CrystalMpq.BitBuffer.Dispose"/> method.
             After the structure has been disposed, the instance shall never be used again.
             </remarks>
         </member>
         <member name="M:CrystalMpq.BitBuffer.#ctor(System.Byte[],System.Int32,System.Int32)">
             <summary>Initializes a new instance of the <see cref="T:CrystalMpq.BitBuffer"/> struct.</summary>
-            <remarks>The structure shall always be initialized //Blizzless Project 2022 
-using this constructor.</remarks>
+            <remarks>The structure shall always be initialized using this constructor.</remarks>
             <param name="buffer">Array of bit containing the data</param>
             <param name="index">Position of data in the array</param>
             <param name="count">Size of data in the array</param>
@@ -509,16 +503,13 @@ using this constructor.</remarks>
             <summary>Flags which can be applied to files in a MPQ archive.</summary>
         </member>
         <member name="F:CrystalMpq.MpqFileFlags.DclCompressed">
-            <summary>The file is compressed //Blizzless Project 2022 
-using DCL compression only.</summary>
+            <summary>The file is compressed using DCL compression only.</summary>
         </member>
         <member name="F:CrystalMpq.MpqFileFlags.MultiCompressed">
-            <summary>The file is compressed //Blizzless Project 2022 
-using Blizzard's multiple compression system.</summary>
+            <summary>The file is compressed using Blizzard's multiple compression system.</summary>
         </member>
         <member name="F:CrystalMpq.MpqFileFlags.Compressed">
-            <summary>The file is compressed //Blizzless Project 2022 
-using either method.</summary>
+            <summary>The file is compressed using either method.</summary>
         </member>
         <member name="F:CrystalMpq.MpqFileFlags.Encrypted">
             <summary>The file is encrypted with a seed.</summary>

@@ -1,10 +1,6 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.ObjectModel;
-//Blizzless Project 2022 
 using System.Drawing;
 
 namespace DiIiS_NA.GameServer.Core.Types.QuadTrees

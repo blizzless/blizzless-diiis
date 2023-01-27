@@ -1,45 +1,24 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using NHibernate.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 
-//Blizzless Project 2022 
 using Scene = DiIiS_NA.GameServer.GSSystem.MapSystem.Scene;
-//Blizzless Project 2022 
 using World = DiIiS_NA.GameServer.GSSystem.MapSystem.World;
-//Blizzless Project 2022 
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem

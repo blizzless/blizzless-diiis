@@ -1,18 +1,10 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.CommandManager

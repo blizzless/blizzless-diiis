@@ -1,14 +1,8 @@
-﻿//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using CrystalMpq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using Gibbed.IO;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats

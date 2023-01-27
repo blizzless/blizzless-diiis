@@ -1,33 +1,18 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
-//Blizzless Project 2022 
 using System.Net.Sockets;
-//Blizzless Project 2022 
 using System.Security.Cryptography;
-//Blizzless Project 2022 
 using System.Security.Cryptography.X509Certificates;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.Http;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.Data.Authentication;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.JSON;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.REST

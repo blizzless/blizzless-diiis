@@ -1,16 +1,9 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.IO.Compression;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.REST.IO.Zlib
@@ -25,8 +18,7 @@ namespace DiIiS_NA.REST.IO.Zlib
 
             uint adler32 = ZLib.adler32(1, data, (uint)data.Length);// Adler32(1, data, (uint)data.Length);
             var ms = new MemoryStream();
-            //Blizzless Project 2022 
-using (var deflateStream = new DeflateStream(ms, CompressionMode.Compress))
+            using (var deflateStream = new DeflateStream(ms, CompressionMode.Compress))
             {
                 deflateStream.Write(data, 0, data.Length);
                 deflateStream.Flush();
@@ -40,8 +32,7 @@ using (var deflateStream = new DeflateStream(ms, CompressionMode.Compress))
         public static byte[] Decompress(byte[] data, uint unpackedSize)
         {
             byte[] decompressData = new byte[unpackedSize];
-            //Blizzless Project 2022 
-using (var deflateStream = new DeflateStream(new MemoryStream(data, 2, data.Length - 6), CompressionMode.Decompress))
+            using (var deflateStream = new DeflateStream(new MemoryStream(data, 2, data.Length - 6), CompressionMode.Decompress))
             {
                 var decompressed = new MemoryStream();
                 deflateStream.CopyTo(decompressed);

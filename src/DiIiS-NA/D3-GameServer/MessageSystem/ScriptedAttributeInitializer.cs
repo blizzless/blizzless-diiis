@@ -1,26 +1,14 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using Microsoft.CodeAnalysis;
-//Blizzless Project 2022 
 using Microsoft.CodeAnalysis.CSharp;
-//Blizzless Project 2022 
 using Microsoft.CodeAnalysis.Emit;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using System.Runtime.Loader;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Text.RegularExpressions;
 
 namespace DiIiS_NA.GameServer.MessageSystem
@@ -148,13 +136,9 @@ namespace DiIiS_NA.GameServer.MessageSystem
 			string codeToCompile = "";
 			codeToCompile +=
 
-@"//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+@"using System;
 using System.Runtime;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 
 namespace DiIiS_NA.GameServer.MessageSystem.GeneratedCode
@@ -201,8 +185,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.GeneratedCode
 				references: references,
 				options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default));
 
-			//Blizzless Project 2022 
-using (var ms = new MemoryStream())
+			using (var ms = new MemoryStream())
 			{
 				EmitResult result = compilation.Emit(ms);
 

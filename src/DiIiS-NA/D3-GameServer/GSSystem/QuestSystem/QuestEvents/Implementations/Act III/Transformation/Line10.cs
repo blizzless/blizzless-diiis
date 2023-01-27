@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 using System;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations

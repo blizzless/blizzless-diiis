@@ -1,11 +1,7 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
 
 namespace DiIiS_NA.Core.Helpers.IO

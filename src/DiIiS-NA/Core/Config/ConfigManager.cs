@@ -1,11 +1,7 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using Nini.Config;
 
 namespace DiIiS_NA.Core.Config

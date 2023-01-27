@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem

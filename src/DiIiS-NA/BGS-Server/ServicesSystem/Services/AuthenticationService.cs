@@ -1,23 +1,13 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using bgs.protocol;
-//Blizzless Project 2022 
 using bgs.protocol.authentication.v1;
-//Blizzless Project 2022 
 using bgs.protocol.challenge.v1;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
 
 

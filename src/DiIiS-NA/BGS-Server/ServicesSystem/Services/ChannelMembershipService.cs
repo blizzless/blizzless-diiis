@@ -1,11 +1,7 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using bgs.protocol;
-//Blizzless Project 2022 
 using bgs.protocol.channel.v2.membership;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
 using System;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services

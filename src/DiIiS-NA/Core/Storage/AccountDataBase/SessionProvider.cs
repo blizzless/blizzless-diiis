@@ -1,22 +1,12 @@
-﻿//Blizzless Project 2022 
-using System.IO;
-//Blizzless Project 2022 
+﻿using System.IO;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using FluentNHibernate;
-//Blizzless Project 2022 
 using FluentNHibernate.Cfg;
-//Blizzless Project 2022 
 using NHibernate;
-//Blizzless Project 2022 
 using NHibernate.Cfg;
-//Blizzless Project 2022 
 using NHibernate.Tool.hbm2ddl;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.WorldSceneBase.Mapper;
 
 namespace DiIiS_NA.Core.Storage.AccountDataBase

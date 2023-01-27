@@ -1,23 +1,13 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.LoginServer.FriendsSystem

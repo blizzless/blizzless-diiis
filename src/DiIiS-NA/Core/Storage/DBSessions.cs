@@ -1,16 +1,9 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using Microsoft.Data.Sqlite;
-//Blizzless Project 2022 
 using NHibernate;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using NHibernate.Linq;
 
 namespace DiIiS_NA.Core.Storage
@@ -41,8 +34,7 @@ namespace DiIiS_NA.Core.Storage
 		{
 			try
 			{
-				//Blizzless Project 2022 
-using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
+				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
 					session.Insert(obj);
 			}
 			catch (Exception e)
@@ -56,8 +48,7 @@ using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactor
 		{
 			try
 			{
-				//Blizzless Project 2022 
-using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
+				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
 					session.Update(obj);
 			}
 			catch (Exception e)
@@ -71,8 +62,7 @@ using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactor
 		{
 			try
 			{
-				//Blizzless Project 2022 
-using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
+				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
 					session.Delete(obj);
 			}
 			catch (Exception e)
@@ -86,8 +76,7 @@ using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactor
 		{
 			try
 			{
-				//Blizzless Project 2022 
-using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
+				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
 					return session.QueryOver<T>().WhereRestrictionOn(expression).IsIn(list).List().ToList();
 			}
 			catch (Exception e)
@@ -101,8 +90,7 @@ using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactor
 		{
 			try
 			{
-				//Blizzless Project 2022 
-using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
+				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
 					return session.Query<T>().ToList();
 			}
 			catch (Exception e)
@@ -116,8 +104,7 @@ using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactor
 		{
 			try
 			{
-				//Blizzless Project 2022 
-using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
+				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
 					return session.QueryOver<T>().Where(predicate).List().ToList();
 			}
 			catch (Exception e)
@@ -131,8 +118,7 @@ using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactor
 		{
 			try
 			{
-				//Blizzless Project 2022 
-using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
+				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
 					return session.Query<T>().Single(predicate);
 			}
 			catch (Exception e)
@@ -146,8 +132,7 @@ using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactor
 		{
 			try
 			{
-				//Blizzless Project 2022 
-using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
+				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
 					return (T)session.Get<T>(obj);
 			}
 			catch (Exception e)

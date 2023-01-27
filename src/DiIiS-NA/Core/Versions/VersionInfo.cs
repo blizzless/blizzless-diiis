@@ -1,8 +1,5 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 
 namespace DiIiS_NA.Core.Versions

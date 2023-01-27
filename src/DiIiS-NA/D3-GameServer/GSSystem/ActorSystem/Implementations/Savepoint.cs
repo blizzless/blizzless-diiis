@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using System.Drawing;
-//Blizzless Project 2022 
+﻿using System.Drawing;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 

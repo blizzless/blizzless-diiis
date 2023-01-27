@@ -1,9 +1,6 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
 
 namespace DiIiS_NA.LoginServer.Objects

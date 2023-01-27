@@ -1,18 +1,10 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Runtime.Serialization.Json;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.Extensions;
 
 namespace DiIiS_NA.REST.JSON

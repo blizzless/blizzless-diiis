@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using System.Reflection;
 
 namespace DiIiS_NA.GameServer.Core.Types.TagMap

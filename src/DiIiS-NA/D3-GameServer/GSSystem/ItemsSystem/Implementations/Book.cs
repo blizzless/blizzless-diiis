@@ -1,8 +1,5 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem.Implementations

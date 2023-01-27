@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Storage.WorldSceneBase.Entities;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Storage.WorldSceneBase.Entities;
 using FluentNHibernate.Mapping;
 
 namespace DiIiS_NA.Core.Storage.WorldSceneBase.Mapper

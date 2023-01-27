@@ -1,5 +1,4 @@
 ﻿//Blizzless Project 2022
-//Blizzless Project 2022 
 using Nini.Config;
 
 namespace DiIiS_NA.Core.Config

@@ -1,10 +1,6 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Runtime.InteropServices;
 
 namespace DiIiS_NA.GameServer.MessageSystem

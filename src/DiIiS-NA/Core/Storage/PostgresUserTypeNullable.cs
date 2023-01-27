@@ -1,14 +1,8 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Data.Common;
-//Blizzless Project 2022 
 using NHibernate;
-//Blizzless Project 2022 
 using NHibernate.Engine;
-//Blizzless Project 2022 
 using NHibernate.SqlTypes;
-//Blizzless Project 2022 
 using NHibernate.UserTypes;
 
 namespace DiIiS_NA.Core.Storage

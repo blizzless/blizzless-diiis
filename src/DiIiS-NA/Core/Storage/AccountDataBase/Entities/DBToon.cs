@@ -1,8 +1,5 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.LoginServer.Toons;
 using FluentNHibernate.Data;
-//Blizzless Project 2022 
 using static DiIiS_NA.LoginServer.Toons.Toon;
 
 namespace DiIiS_NA.Core.Storage.AccountDataBase.Entities

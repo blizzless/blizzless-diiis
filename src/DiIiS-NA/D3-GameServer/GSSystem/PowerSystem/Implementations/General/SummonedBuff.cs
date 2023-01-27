@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.MPQ.FileFormats;
+﻿using DiIiS_NA.Core.MPQ.FileFormats;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {

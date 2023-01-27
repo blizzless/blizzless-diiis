@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.ClientSystem;
 using System.Text;
 
 namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Player

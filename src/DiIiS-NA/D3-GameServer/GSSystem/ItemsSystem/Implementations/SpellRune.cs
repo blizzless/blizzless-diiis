@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.LoginServer.Toons;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem.Implementations

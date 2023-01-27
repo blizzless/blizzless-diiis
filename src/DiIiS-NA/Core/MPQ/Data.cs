@@ -1,28 +1,15 @@
-﻿//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using Microsoft.Data.Sqlite;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 using Spectre.Console;
 
@@ -138,8 +125,7 @@ namespace DiIiS_NA.Core.MPQ
             string[] MyFiles = Directory.GetFiles(@"E:\\Unpacked\\2.7.1\\Rope\\", @"*", SearchOption.AllDirectories);
             string writePath = @"E:\Unpacked\Rope.txt";
             int i = 0;
-            //Blizzless Project 2022 
-using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
+            using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
             {
 
                 foreach (var file in MyFiles)
@@ -327,8 +313,7 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             int assetCount = 0;
             var timerStart = DateTime.Now;
 
-            //Blizzless Project 2022 
-using (var cmd = new SqliteCommand("SELECT * FROM TOC", Storage.DBManager.MPQMirror))
+            using (var cmd = new SqliteCommand("SELECT * FROM TOC", Storage.DBManager.MPQMirror))
             {
                 var itemReader = cmd.ExecuteReader();
 

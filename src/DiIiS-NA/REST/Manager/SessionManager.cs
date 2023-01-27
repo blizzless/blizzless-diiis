@@ -1,10 +1,6 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.REST.Data.Forms;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.REST.Data.Forms;
 using DiIiS_NA.REST.Extensions;
-//Blizzless Project 2022 
 using System.Net;
-//Blizzless Project 2022 
 using System.Security.Cryptography.X509Certificates;
 
 namespace DiIiS_NA.REST.Manager
