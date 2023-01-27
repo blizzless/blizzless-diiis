@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {

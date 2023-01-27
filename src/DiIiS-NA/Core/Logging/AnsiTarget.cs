@@ -87,17 +87,17 @@ public class AnsiTarget : LogTarget
             return;
         if (IncludeTimeStamps)
             _table.AddRow(
-                new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)), 
-                new Markup(level.ToString(), GetStyleByLevel(level)), 
-                new Markup(logger, GetStyleByLevel(level)), 
-                new Markup(Cleanup(message), GetStyleByLevel(level)), 
-                new Markup("N/A"));
+                new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
+                new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
+                new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
+                new Markup("", new Style(foreground: Color.Green3_1)).Centered());
         else
             _table.AddRow(
-                new Markup(level.ToString()), 
-                new Markup(logger, GetStyleByLevel(level)), 
-                new Markup(Cleanup(message), GetStyleByLevel(level)), 
-                new Markup("N/A"));
+                new Markup(level.ToString()).RightJustified(),
+                new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
+                new Markup("", new Style(foreground: Color.Green3_1)).Centered());
     }
 
     public override void LogException(Logger.Level level, string logger, string message, Exception exception)
@@ -107,16 +107,16 @@ public class AnsiTarget : LogTarget
         if (IncludeTimeStamps)
             _table.AddRow(
                 new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)), 
-                new Markup(level.ToString(), GetStyleByLevel(level)), 
-                new Markup(logger, GetStyleByLevel(level)), 
-                new Markup(Cleanup(message), GetStyleByLevel(level)), 
-                new Markup($"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message), new Style(foreground: Color.Red3_1)));
+                new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(), 
+                new Markup(logger, GetStyleByLevel(level)).LeftJustified(), 
+                new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(), 
+                new Markup($"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message), new Style(foreground: Color.Red3_1)).Centered());
         else
             _table.AddRow(
-                new Markup(level.ToString()), 
-                new Markup(logger, GetStyleByLevel(level)), 
-                new Markup(message, GetStyleByLevel(level)),
-                new Markup($"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message), new Style(foreground: Color.Red3_1)));
+                new Markup(level.ToString()).RightJustified(), 
+                new Markup(logger, GetStyleByLevel(level)).LeftJustified(), 
+                new Markup(message, GetStyleByLevel(level)).LeftJustified(),
+                new Markup($"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message), new Style(foreground: Color.Red3_1)).Centered());
     }
 
     private static Style GetStyleByLevel(Logger.Level level)
