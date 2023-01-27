@@ -45,7 +45,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				if (!_commands.ContainsKey(attribute))
 					_commands.Add(attribute, method);
 				else
-					Logger.Warn("There exists an already registered command '{0}'.", attribute.Name);
+					Logger.Error("Command '{0}' already exists.", attribute.Name);
 			}
 		}
 

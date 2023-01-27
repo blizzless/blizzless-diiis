@@ -49,6 +49,10 @@ namespace DiIiS_NA.Core.Logging
 			/// </summary>
 			Info,
 			/// <summary>
+			/// Success messages.
+			/// </summary>
+			Success,
+			/// <summary>
 			/// Warning messages.
 			/// </summary>
 			Warn,
@@ -109,6 +113,13 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
 		public void Info(string message, params object[] args) => Log(Level.Info, message, args);
+		
+		/// <param name="message">The log message.</param>
+		public void Success(string message) => Log(Level.Success, message, null);
+
+		/// <param name="message">The log message.</param>
+		/// <param name="args">Additional arguments.</param>
+		public void Success(string message, params object[] args) => Log(Level.Success, message, args);
 
 		/// <param name="message">The log message.</param>
 		public void Warn(string message) => Log(Level.Warn, message, null);

@@ -13,7 +13,7 @@ namespace DiIiS_NA.Core.Logging
 		{
 			MinimumLevel = minLevel;
 			MaximumLevel = maxLevel;
-			this.IncludeTimeStamps = includeTimeStamps;
+			IncludeTimeStamps = includeTimeStamps;
 		}
 		
 		/// <param name="level">Log level.</param>
@@ -21,9 +21,9 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="message">Log message.</param>
 		public override void LogMessage(Logger.Level level, string logger, string message)
 		{
-			var timeStamp = this.IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
+			var timeStamp = IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
 			SetConsoleForegroundColor(level);
-			Console.WriteLine($"{timeStamp}[{level.ToString(),5}] [{logger,20}]: {message}");
+			Console.WriteLine($"{timeStamp}[{level.ToString(),8}] [{logger,20}]: {message}");
 		}
 
 		/// <param name="level">Log level.</param>
@@ -32,7 +32,7 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="exception">Exception to be included with log message.</param>
 		public override void LogException(Logger.Level level, string logger, string message, Exception exception)
 		{
-			var timeStamp = this.IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
+			var timeStamp = IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
 			SetConsoleForegroundColor(level);
 			Console.WriteLine(
 				$"{timeStamp}[{level.ToString(),8}] [{logger,20}]: {message} - [Exception] {exception}");
@@ -54,6 +54,9 @@ namespace DiIiS_NA.Core.Logging
 					break;
 				case Logger.Level.Info:
 					Console.ForegroundColor = ConsoleColor.White;
+					break;
+				case Logger.Level.Success:
+					Console.ForegroundColor = ConsoleColor.DarkGreen;
 					break;
 				case Logger.Level.Warn:
 					Console.ForegroundColor = ConsoleColor.Yellow;
