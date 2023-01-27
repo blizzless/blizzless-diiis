@@ -63,7 +63,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 			if (!ExtractCommandAndParameters(line, out command, out parameters))
 			{
 				output = "Unknown command: " + line;
-				Logger.Info(output);
+				Logger.Error(output);
 				return;
 			}
 
@@ -76,10 +76,15 @@ namespace DiIiS_NA.GameServer.CommandManager
 			}
 
 			if (found == false)
-				output = string.Format("Unknown command: {0} {1}", command, parameters);
+			{
+				Logger.Error("Unknown command: " + command);
+				return;
+			}
 
 			if (output != string.Empty)
-				Logger.Info(output);
+				Logger.Success(output);
+			else
+				Logger.Success("Command executed successfully.");
 		}
 
 

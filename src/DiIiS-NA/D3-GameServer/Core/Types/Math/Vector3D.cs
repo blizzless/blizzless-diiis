@@ -11,6 +11,8 @@ using Gibbed.IO;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
 using System;
+using System.Numerics;
+using DiIiS_NA.Core.Helpers.Math;
 
 namespace DiIiS_NA.GameServer.Core.Types.Math
 {
@@ -110,9 +112,9 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 		/// <returns>the distance squared between the vectors</returns>
 		public float DistanceSquared(ref Vector3D point)
 		{
-			float x = point.X - X;
-			float y = point.Y - Y;
-			float z = point.Z - Z;
+			float x = point.X - X, 
+				y = point.Y - Y,
+				z = point.Z - Z;
 
 			return ((x * x) + (y * y)) + (z * z);
 		}
@@ -178,29 +180,17 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 			var v = o as Vector3D;
 			if (v != null)
 			{
-				return X == v.X
-					&& Y == v.Y
-					&& Z == v.Z;
+				return System.Math.Abs(X - v.X) < 0.0001
+					&& System.Math.Abs(Y - v.Y) < 0.0001
+					&& System.Math.Abs(Z - v.Z) < 0.0001;
 			}
 			return false;
 		}
 
-		public override int GetHashCode()
-		{
-			return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode();
-		}
+		public override string ToString() => $"X:{X:F4}, Y:{Y:F4} Z:{Z:F4}";
 
-		public override string ToString()
-		{
-			return string.Format("x:{0} y:{1} z:{2}", X, Y, Z);
-		}
+		public bool IsNear(Vector3D other, float distance) => DistanceSquared(ref other) < distance * distance;
 
-		public Vector3D Around2D(float f)
-		{
-			var angle = (float)(System.Math.PI * 2 * f);
-			var x = (float)(System.Math.Cos(angle) * X - System.Math.Sin(angle) * Y);
-			var y = (float)(System.Math.Sin(angle) * X + System.Math.Cos(angle) * Y);
-			return new Vector3D(x, y, Z);
-		}
+		public bool IsNearSquared(Vector3D other, float distanceSquared) => DistanceSquared(ref other) < distanceSquared;
 	}
 }

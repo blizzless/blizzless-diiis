@@ -555,8 +555,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         StartConversation(tristramWorld, 72498);
                     });
                     //StartConversation(this.Game.GetWorld(71150), 72496);
-                    // we check if Leah is spawned in New Tristram
-                    
                     var leah = tristramWorld.GetActorBySNO(ActorSno._leah, true);
                     if (leah == null)
                     {
@@ -567,6 +565,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             leah.SetVisible(true);
                         }
                     }
+
+                    // SetActorVisible(tristramWorld, ActorSno._leah, true);
                     ListenConversation(198617, new Advance());
                 }
             });

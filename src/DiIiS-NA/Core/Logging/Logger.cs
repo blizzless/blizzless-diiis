@@ -40,6 +40,10 @@ namespace DiIiS_NA.Core.Logging
 			/// </summary>
 			Debug,
 			/// <summary>
+			/// The messages meant for method call tracing.
+			/// </summary>
+			MethodTrace,
+			/// <summary>
 			/// The messages meant for tracing purposes.
 			/// Trace messages are rarer than debug messages and should be used for more precise tracing.
 			/// </summary>
@@ -100,6 +104,13 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="args">Additional arguments.</param>
 		public void Trace(string message, params object[] args) => Log(Level.Trace, message, args);
 
+		/// <param name="message">The log message.</param>
+		public void MethodTrace(string message) => Log(Level.MethodTrace, message, null);
+
+		/// <param name="message">The log message.</param>
+		/// <param name="args">Additional arguments.</param>
+		public void MethodTrace(string message, params object[] args) => Log(Level.MethodTrace, message, args);
+		
 		/// <param name="message">The log message.</param>
 		public void Debug(string message) => Log(Level.Debug, message, null);
 

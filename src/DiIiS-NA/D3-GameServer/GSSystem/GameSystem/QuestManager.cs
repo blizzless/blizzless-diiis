@@ -552,7 +552,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			if (Game.QuestProgress.QuestTriggers.Count == 1)
 			{
-				Logger.Trace("AutoSetQuestMarker()");
+				Logger.MethodTrace($"AutoSetQuestMarker() - {Game.QuestProgress.QuestTriggers.Count} triggers found");
 				var trigger = Game.QuestProgress.QuestTriggers.First();
 				if (trigger.Value.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 					foreach (var world in Game.Worlds)
