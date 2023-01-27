@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 {
-    [Service(serviceID: 0xb, serviceName: "bnet.protocol.presence.PresenceService")]//: )]
+    [Service(serviceID: 0xb, serviceName: "bnet.protocol.presence.PresenceService")]
     public class PresenceService : bgs.protocol.presence.v1.PresenceService, IServerService
     {
         private static readonly Logger Logger = LogManager.CreateLogger();
@@ -39,23 +39,29 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     switch (req.GetHighIdType())
                     {
                         case EntityIdHelper.HighIdType.AccountId:
+                        {
                             var account = AccountManager.GetAccountByPersistentID(req.Low);
                             if (account != null)
                             {
-                                Logger.Trace("Subscribe() {0} {1}", ((controller as HandlerController).Client), account);
-                                account.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
-                                response.AddSubscribeFailed(SubscribeResult.CreateBuilder().SetEntityId(req).SetResult(0));
+                                Logger.Debug("Subscribe() {0} {1}", (((HandlerController)controller).Client), account);
+                                account.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
+                                response.AddSubscribeFailed(SubscribeResult.CreateBuilder().SetEntityId(req)
+                                    .SetResult(0));
                             }
-
+                        }
                             break;
                         case EntityIdHelper.HighIdType.GameAccountId:
-                            var gameaccount = GameAccountManager.GetAccountByPersistentID(req.Low);
-                            if (gameaccount != null)
+                        {
+                            var gameAccount = GameAccountManager.GetAccountByPersistentID(req.Low);
+                            if (gameAccount != null)
                             {
-                                Logger.Trace("Subscribe() {0} {1}", ((controller as HandlerController).Client), gameaccount);
-                                gameaccount.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
-                                response.AddSubscribeFailed(SubscribeResult.CreateBuilder().SetEntityId(req).SetResult(0));
+                                Logger.Debug("Subscribe() {0} {1}", (((HandlerController)controller).Client),
+                                    gameAccount);
+                                gameAccount.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
+                                response.AddSubscribeFailed(SubscribeResult.CreateBuilder().SetEntityId(req)
+                                    .SetResult(0));
                             }
+                        }
                             break;
                         default:
                             Logger.Warn("Recieved an unhandled Presence.Subscribe request with type {0} (0x{1})", req.GetHighIdType(), req.High.ToString("X16"));
@@ -72,7 +78,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         public override void BatchUnsubscribe(IRpcController controller, BatchUnsubscribeRequest request, Action<NoData> done)
         {
-            throw new NotImplementedException();
+            Logger.Fatal("Batch Unsubscribe not implemented");
         }
 
         public override void Query(IRpcController controller, QueryRequest request, Action<QueryResponse> done)
@@ -82,26 +88,34 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             switch (request.EntityId.GetHighIdType())
             {
                 case EntityIdHelper.HighIdType.AccountId:
-                    var account = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
+                {
+                    var gameAccount = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
                     foreach (var key in request.KeyList)
                     {
-                        Logger.Trace("Query() {0} {1} - {2}, {3}, {4}", ((controller as HandlerController).Client), account, (FieldKeyHelper.Program)key.Program, (FieldKeyHelper.OriginatingClass)key.Group, key.Field);
-                        var field = account.QueryField(key);
+                        Logger.Debug("Query() {0} {1} - {2}, {3}, {4}", (((HandlerController)controller).Client),
+                            gameAccount, (FieldKeyHelper.Program)key.Program, (FieldKeyHelper.OriginatingClass)key.Group,
+                            key.Field);
+                        var field = gameAccount.QueryField(key);
                         if (field != null) builder.AddField(field);
                     }
+                }
                     break;
 
                 case EntityIdHelper.HighIdType.GameAccountId:
-                    var gameaccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
+                {
+                    var gameAccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
                     foreach (var key in request.KeyList)
                     {
-                        Logger.Trace("Query() {0} {1} - {2}, {3}, {4}", ((controller as HandlerController).Client), gameaccount, (FieldKeyHelper.Program)key.Program, (FieldKeyHelper.OriginatingClass)key.Group, key.Field);
-                        var field = gameaccount.QueryField(key);
+                        Logger.Debug("Query() {0} {1} - {2}, {3}, {4}", (((HandlerController)controller).Client),
+                            gameAccount, (FieldKeyHelper.Program)key.Program,
+                            (FieldKeyHelper.OriginatingClass)key.Group, key.Field);
+                        var field = gameAccount.QueryField(key);
                         if (field != null) builder.AddField(field);
                     }
+                }
                     break;
                 default:
-                    Logger.Warn("Recieved an unhandled Presence.Query request with type {0} (0x{1})", request.EntityId.GetHighIdType(), request.EntityId.High.ToString("X16"));
+                    Logger.Warn("Received an unhandled Presence.Query request with type {0} (0x{1})", request.EntityId.GetHighIdType(), request.EntityId.High.ToString("X16"));
                     break;
             }
 
@@ -115,23 +129,27 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 switch (request.EntityId.GetHighIdType())
                 {
                     case EntityIdHelper.HighIdType.AccountId:
-                        var account = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
-                        if (account != null)
+                    {
+                        var gameAccount = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
+                        if (gameAccount != null)
                         {
-                            Logger.Trace("Subscribe() {0} {1}", ((controller as HandlerController).Client), account);
-                            account.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
+                            Logger.Trace("Subscribe() {0} {1}", (((HandlerController)controller).Client), gameAccount);
+                            gameAccount.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                         }
+                    }
                         break;
                     case EntityIdHelper.HighIdType.GameAccountId:
+                    {
                         var gameaccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
                         if (gameaccount != null)
                         {
-                            Logger.Trace("Subscribe() {0} {1}", ((controller as HandlerController).Client), gameaccount);
-                            gameaccount.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
+                            Logger.Debug("Subscribe() {0} {1}", (((HandlerController)controller).Client), gameaccount);
+                            gameaccount.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                         }
+                    }
                         break;
                     default:
-                        Logger.Warn("Recieved an unhandled Presence.Subscribe request with type {0} (0x{1})", request.EntityId.GetHighIdType(), request.EntityId.High.ToString("X16"));
+                        Logger.Warn("Received an unhandled Presence.Subscribe request with type {0} (0x{1})", request.EntityId.GetHighIdType(), request.EntityId.High.ToString("X16"));
                         break;
                 }
             });
@@ -146,24 +164,29 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             switch (request.EntityId.GetHighIdType())
             {
                 case EntityIdHelper.HighIdType.AccountId:
-                    var account = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
+                {
+                    var gameAccount = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
                     // The client will probably make sure it doesn't unsubscribe to a null ID, but just to make sure..
-                    if (account != null)
+                    if (gameAccount != null)
                     {
-                        account.RemoveSubscriber(((controller as HandlerController).Client));
-                        Logger.Trace("Unsubscribe() {0} {1}", ((controller as HandlerController).Client), account);
+                        gameAccount.RemoveSubscriber((((HandlerController) controller).Client));
+                        Logger.Debug("Unsubscribe() {0} {1}", (((HandlerController) controller).Client), gameAccount);
                     }
+                }
                     break;
                 case EntityIdHelper.HighIdType.GameAccountId:
-                    var gameaccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
-                    if (gameaccount != null)
+                {
+                    var gameAccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
+                    if (gameAccount != null)
                     {
-                        gameaccount.RemoveSubscriber(((controller as HandlerController).Client));
-                        Logger.Trace("Unsubscribe() {0} {1}", ((controller as HandlerController).Client), gameaccount);
+                        gameAccount.RemoveSubscriber((((HandlerController) controller).Client));
+                        Logger.Debug("Unsubscribe() {0} {1}", (((HandlerController) controller).Client), gameAccount);
                     }
+                }
                     break;
                 default:
-                    Logger.Warn("Recieved an unhandled Presence.Unsubscribe request with type {0} (0x{1})", request.EntityId.GetHighIdType(), request.EntityId.High.ToString("X16"));
+                    Logger.Warn("Received an unhandled Presence.Unsubscribe request with type {0} (0x{1})",
+                        request.EntityId.GetHighIdType(), request.EntityId.High.ToString("X16"));
                     break;
             }
 
@@ -175,35 +198,44 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         {
             //4,1
             //4,2
-            switch(request.EntityId.GetHighIdType())
+            switch (request.EntityId.GetHighIdType())
             {
-				case EntityIdHelper.HighIdType.AccountId:
+                case EntityIdHelper.HighIdType.AccountId:
+                {
                     if (request.EntityId.Low <= 0) break;
-                    var account = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
-                    if (account == null) break;
-                    var a_trace = string.Format("Update() {0} {1} - {2} Operations", ((controller as HandlerController).Client), account, request.FieldOperationCount);
+                    var gameAccount = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
+                    if (gameAccount == null) break;
+                    var traceData = $"Update() {(((HandlerController)controller).Client)} {gameAccount} - {request.FieldOperationCount} Operations";
                     foreach (var fieldOp in request.FieldOperationList)
                     {
-                        a_trace += string.Format("\t{0}, {1}, {2}", (FieldKeyHelper.Program)fieldOp.Field.Key.Program, (FieldKeyHelper.OriginatingClass)fieldOp.Field.Key.Group, fieldOp.Field.Key.Field);
+                        traceData += $"\t{(FieldKeyHelper.Program)fieldOp.Field.Key.Program}, {(FieldKeyHelper.OriginatingClass)fieldOp.Field.Key.Group}, {fieldOp.Field.Key.Field}";
                     }
-                    account.Update(request.FieldOperationList);
-                    Logger.Trace(a_trace);
-                    break;
-				case EntityIdHelper.HighIdType.GameAccountId:
-					if (request.EntityId.Low <= 0) break;
-                var gameaccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
-                if (gameaccount == null) break;
-                var ga_trace = string.Format("Update() {0} {1} - {2} Operations", ((controller as HandlerController).Client), gameaccount, request.FieldOperationCount);
-                foreach (var fieldOp in request.FieldOperationList)
-                {
-                    ga_trace += string.Format("\t{0}, {1}, {2}", (FieldKeyHelper.Program)fieldOp.Field.Key.Program, (FieldKeyHelper.OriginatingClass)fieldOp.Field.Key.Group, fieldOp.Field.Key.Field);
+
+                    gameAccount.Update(request.FieldOperationList);
+                    Logger.Debug(traceData);
                 }
-                gameaccount.Update(request.FieldOperationList);
-                Logger.Trace(ga_trace);
-                break;
+                    break;
+                case EntityIdHelper.HighIdType.GameAccountId:
+                {
+                    if (request.EntityId.Low <= 0) break;
+                    var gameAccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
+                    if (gameAccount == null) break;
+                    var traceData =
+                        $"Update() {(((HandlerController) controller).Client)} {gameAccount} - {request.FieldOperationCount} Operations";
+                    foreach (var fieldOp in request.FieldOperationList)
+                    {
+                        traceData +=
+                            $"\t{(FieldKeyHelper.Program)fieldOp.Field.Key.Program}, {(FieldKeyHelper.OriginatingClass)fieldOp.Field.Key.Group}, {fieldOp.Field.Key.Field}";
+                    }
+
+                    gameAccount.Update(request.FieldOperationList);
+                    Logger.Debug(traceData);
+                    break;
+                }
                 default:
-					Logger.Warn("Recieved an unhandled Presence.Update request with type {0} (0x{1})", request.EntityId.GetHighIdType(), request.EntityId.High.ToString("X16"));
-                break;
+                    Logger.Warn("Received an unhandled Presence.Update request with type {0} (0x{1})",
+                        request.EntityId.GetHighIdType(), request.EntityId.High.ToString("X16"));
+                    break;
             }
 
             var builder = bgs.protocol.NoData.CreateBuilder();

@@ -1,44 +1,22 @@
-﻿//#define LOG_KEEP_ALIVE
-
-//Blizzless Project 2022 
-using bgs.protocol;
-//Blizzless Project 2022 
+﻿using bgs.protocol;
 using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.ChannelSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.ServicesSystem;
-//Blizzless Project 2022 
 using DotNetty.Transport.Channels;
-//Blizzless Project 2022 
 using DotNetty.Transport.Channels.Sockets;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers.DescriptorProtos;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers.Descriptors;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Net.Security;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
 
@@ -46,7 +24,7 @@ namespace DiIiS_NA.LoginServer.Battle
 {
     public class BattleClient : SimpleChannelInboundHandler<BNetPacket>, IRpcChannel
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger("F-Client");
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(BattleClient));
 
 		public Dictionary<uint, uint> Services { get; private set; }
 		public ISocketChannel SocketConnection { get; private set; }
@@ -55,17 +33,17 @@ namespace DiIiS_NA.LoginServer.Battle
 		public ClientLocale ClientLanguage = ClientLocale.enUS;
 		public IRpcController ListenerController;
 		private uint _tokenCounter = 0;
-		public static bgs.protocol.NO_RESPONSE NO_RESPONSE = bgs.protocol.NO_RESPONSE.CreateBuilder().Build();
-		private readonly Dictionary<int, RPCCallBack> _pendingResponses = new Dictionary<int, RPCCallBack>();
+		public static NO_RESPONSE NO_RESPONSE = NO_RESPONSE.CreateBuilder().Build();
+		private readonly Dictionary<int, RPCCallBack> _pendingResponses = new(); // TODO: Check usage and remove if not needed
 		public bgs.protocol.v2.Attribute AttributeOfServer { get; set; }
 
 		public Account Account { get; set; }
 		public const byte ServiceReply = 0xFE;
-		public SslStream ssl = null;
+		public SslStream Ssl = null;
 		private static int REQUEST_SERVICE_ID = 0;
 		private static int RESPONSE_SERVICE_ID = 254;
 		//public object clientLock = new object();
-		public object _serviceLock = new object();
+		public readonly object _serviceLock = new object();
 		public object messageLock = new object();
 		private ulong _listenerId; // last targeted rpc object.
 		public bool MOTDSent { get; private set; }
@@ -94,7 +72,7 @@ namespace DiIiS_NA.LoginServer.Battle
 			get
 			{
 				if (_currentChannel == null)
-					_currentChannel = this.Channels.Values.Where(c => !c.IsChatChannel).FirstOrDefault();
+					_currentChannel = Channels.Values.FirstOrDefault(c => !c.IsChatChannel);
 				return _currentChannel;
 			}
 			set
@@ -102,17 +80,17 @@ namespace DiIiS_NA.LoginServer.Battle
 				if (value == null)
 				{
 					if (_currentChannel != null)
-						this.Channels.Remove(this._currentChannel.DynamicId);
+						Channels.Remove(_currentChannel.DynamicId);
 					//Logger.Trace("Client removed from CurrentChannel: {0}, setting new CurrentChannel to {1}", this._currentChannel, this.Channels.FirstOrDefault().Value);
-					this._currentChannel = Channels.FirstOrDefault().Value;
+					_currentChannel = Channels.FirstOrDefault().Value;
 				}
 				else if (!Channels.ContainsKey(value.DynamicId))
 				{
-					this.Channels.Add(value.DynamicId, value);
-					this._currentChannel = value;
+					Channels.Add(value.DynamicId, value);
+					_currentChannel = value;
 				}
 				else
-					this._currentChannel = value;
+					_currentChannel = value;
 			}
 		}
 
@@ -122,14 +100,14 @@ namespace DiIiS_NA.LoginServer.Battle
 			if (text.Trim() == string.Empty) return;
 
 			var notification = bgs.protocol.notification.v1.Notification.CreateBuilder()
-				.SetTargetId(this.Account.GameAccount.BnetEntityId)
+				.SetTargetId(Account.GameAccount.BnetEntityId)
 				.SetType("WHISPER")
-				.SetSenderId(this.Account.GameAccount.BnetEntityId)
-				.SetSenderAccountId(this.Account.BnetEntityId)
+				.SetSenderId(Account.GameAccount.BnetEntityId)
+				.SetSenderAccountId(Account.BnetEntityId)
 				.AddAttribute(bgs.protocol.Attribute.CreateBuilder().SetName("whisper")
 				.SetValue(Variant.CreateBuilder().SetStringValue(text).Build()).Build()).Build();
 
-			this.MakeRPC((lid) => bgs.protocol.notification.v1.NotificationListener.CreateStub(this).
+			MakeRPC((lid) => bgs.protocol.notification.v1.NotificationListener.CreateStub(this).
 				OnNotificationReceived(new HandlerController()
 				{
 					ListenerId = lid
@@ -146,7 +124,7 @@ namespace DiIiS_NA.LoginServer.Battle
 
 		public void LeaveAllChannels()
 		{
-			List<Channel> _channels = this.Channels.Values.ToList();
+			List<Channel> _channels = Channels.Values.ToList();
 			foreach (var channel in _channels)
 			{
 				try
@@ -155,7 +133,7 @@ namespace DiIiS_NA.LoginServer.Battle
 				}
 				catch { }
 			}
-			this.Channels.Clear();
+			Channels.Clear();
 		}
 
 		#endregion
@@ -165,7 +143,7 @@ namespace DiIiS_NA.LoginServer.Battle
 			SocketConnection = socketChannel;
 			Services = new Dictionary<uint, uint>();
 			MappedObjects = new ConcurrentDictionary<ulong, ulong>();
-			this.MOTDSent = false;
+			MOTDSent = false;
 			if (SocketConnection.Active)
 				Logger.Trace("Client - {0} - successfully encrypted the connection", socketChannel.RemoteAddress);
 		}
@@ -289,12 +267,15 @@ namespace DiIiS_NA.LoginServer.Battle
 									ListenerId = 0
 								};
 #if DEBUG
-								#if !LOG_KEEP_ALIVE
-								if (method.Name != "KeepAlive")
-								#endif
+								if (method.Name == "KeepAlive")
 								{
-									Logger.Warn("Call: {0}, Service hash: {1}, Method: {2}, ID: {3}",
-										service.GetType().Name, header.ServiceHash, method.Name, header.MethodId);
+									Logger.Debug(
+										$"Call: {service.GetType().Name}, Service hash: {header.ServiceHash}, Method: {method.Name}, ID: {header.MethodId}");
+								}
+								else
+								{
+									Logger.Trace(
+										$"Call: {service.GetType().Name}, Service hash: {header.ServiceHash}, Method: {method.Name}, ID: {header.MethodId}");
 								}
 #endif
 
@@ -412,9 +393,9 @@ namespace DiIiS_NA.LoginServer.Battle
 				//{
 				try
 				{
-					if (this.SocketConnection == null || !this.SocketConnection.Active) return;
-					var listenerId = this.GetRemoteObjectId(targetObject.DynamicId);
-					Logger.Debug("[RPC: {0}] Method: {1} Target: {2} [localId: {3}, remoteId: {4}].", this.GetType().Name, rpc.Method.Name,
+					if (SocketConnection == null || !SocketConnection.Active) return;
+					var listenerId = GetRemoteObjectId(targetObject.DynamicId);
+					Logger.Debug("[RPC: {0}] Method: {1} Target: {2} [localId: {3}, remoteId: {4}].", GetType().Name, rpc.Method.Name,
 								 targetObject.ToString(), targetObject.DynamicId, listenerId);
 
 					rpc(listenerId);
@@ -431,8 +412,8 @@ namespace DiIiS_NA.LoginServer.Battle
 				//{
 				try
 				{
-					if (this.SocketConnection == null || !this.SocketConnection.Active) return;
-					Logger.Debug("[RPC: {0}] Method: {1} Target: N/A", this.GetType().Name, rpc.Method.Name);
+					if (SocketConnection == null || !SocketConnection.Active) return;
+					Logger.Debug("[RPC: {0}] Method: {1} Target: N/A", GetType().Name, rpc.Method.Name);
 					rpc(0);
 				}
 				catch { }
@@ -450,7 +431,7 @@ namespace DiIiS_NA.LoginServer.Battle
 				str = method.Service.Options.UnknownFields[90000].LengthDelimitedList[0].ToStringUtf8().Remove(0, 2);
 			var serviceHash = StringHashHelper.HashIdentity(str);
 
-			if (!this.Services.ContainsKey(serviceHash))
+			if (!Services.ContainsKey(serviceHash))
 			{
 				Logger.Warn("Service not found for client {0} [0x{1}].", serviceName, serviceHash.ToString("X8"));
 				// in english: "Service not found for client {0} [0x{1}]."
@@ -465,8 +446,8 @@ namespace DiIiS_NA.LoginServer.Battle
 				_listenerId = (controller as HandlerController).ListenerId;
 			}
 		
-			var serviceId = this.Services[serviceHash];
-			var token = this._tokenCounter++;
+			var serviceId = Services[serviceHash];
+			var token = _tokenCounter++;
 			sendRequest(Connect, serviceHash, GetMethodId(method), token, request, (uint)_listenerId, status);
 		}
 		public static void sendRequest(IChannelHandlerContext ctx, uint serviceHash, uint methodId, uint token, IMessage request, uint listenerId, uint status)
@@ -489,7 +470,7 @@ namespace DiIiS_NA.LoginServer.Battle
 		{
 			try
 			{
-				this.MappedObjects[localObjectId] = remoteObjectId;
+				MappedObjects[localObjectId] = remoteObjectId;
 			}
 			catch (Exception e)
 			{
@@ -502,7 +483,7 @@ namespace DiIiS_NA.LoginServer.Battle
 		{
 			try
 			{
-				this.MappedObjects.TryRemove(localObjectId, out _);
+				MappedObjects.TryRemove(localObjectId, out _);
 			}
 			catch (Exception e)
 			{
@@ -511,7 +492,7 @@ namespace DiIiS_NA.LoginServer.Battle
 		}
 		public ulong GetRemoteObjectId(ulong localObjectId)
 		{
-			return localObjectId != 0 ? this.MappedObjects[localObjectId] : 0;
+			return localObjectId != 0 ? MappedObjects[localObjectId] : 0;
 		}
 		public static uint GetMethodId(MethodDescriptor method)
 		{
@@ -537,13 +518,13 @@ namespace DiIiS_NA.LoginServer.Battle
 		}
 		public void SendMOTD()
 		{
-			if (this.MOTDSent)
+			if (MOTDSent)
 				return;
 
 			var motd = "Welcome to BlizzLess.Net Alpha-Build Server!";
 
-			this.SendServerWhisper(motd);
-			this.MOTDSent = true;
+			SendServerWhisper(motd);
+			MOTDSent = true;
 		}
 
         public override void ChannelInactive(IChannelHandlerContext context)
@@ -554,7 +535,7 @@ namespace DiIiS_NA.LoginServer.Battle
 
 		private void DisconnectClient()
 		{
-			if (this.Account != null && this.Account.GameAccount != null) this.Account.GameAccount.LoggedInClient = null;
+			if (Account != null && Account.GameAccount != null) Account.GameAccount.LoggedInClient = null;
 			PlayerManager.PlayerDisconnected(this);
 		}
 	}
