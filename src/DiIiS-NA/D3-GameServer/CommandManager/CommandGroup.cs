@@ -23,8 +23,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 		public CommandGroupAttribute Attributes { get; private set; }
 
-		private readonly Dictionary<CommandAttribute, MethodInfo> _commands =
-			new Dictionary<CommandAttribute, MethodInfo>();
+		private readonly Dictionary<CommandAttribute, MethodInfo> _commands = new();
 
 		public void Register(CommandGroupAttribute attributes)
 		{
