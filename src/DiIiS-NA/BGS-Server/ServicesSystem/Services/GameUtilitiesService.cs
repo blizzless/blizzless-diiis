@@ -221,7 +221,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 #if DEBUG
             if (messageId != 270)
-                Logger.Info("ProcessClientRequest() ID: {0}", messageId);
+                Logger.Debug("ProcessClientRequest() ID: {0}", messageId);
 #endif
             switch (((HandlerController)controller).Client.Account.GameAccount.ProgramField.Value)
             {
@@ -243,9 +243,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             ByteString hero1 = OnHeroDeleteParams(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
                             attr.SetValue(Variant.CreateBuilder().SetMessageValue(hero1));
                             break;
-                        case 3:  // Выбор Персонажа
-                            ByteString SwitchHero = SwitchCharRequest(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
-                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(SwitchHero));
+                        case 3:  // Hero Select
+                            ByteString switchHero = SwitchCharRequest(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
+                            attr.SetValue(Variant.CreateBuilder().SetMessageValue(switchHero));
                             break;
                         case 4: //D3.GameMessages.SaveBannerConfiguration -> return MessageId with no Message
                             SaveBanner(((HandlerController)controller).Client, request.GetAttribute(2).Value.MessageValue);
@@ -497,20 +497,20 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         {
             var request = D3.GameMessage.LeaderboardGetHeroSnapshot.ParseFrom(data);
             var response = D3.GameMessage.LeaderboardGetHeroSnapshotResponse.CreateBuilder();
-            bool Season = false;
-            bool Hardcore = false;
-            ToonClass NeededClass = 0;
+            bool season = false;
+            bool hardcore = false;
+            ToonClass neededClass = 0;
             switch (request.LeaderboardId)
             {
                 case 1:
                     break;
-                case 2: NeededClass = ToonClass.Barbarian; break; // Barbarian
-                case 3: NeededClass = ToonClass.Crusader; break; // Crusader
-                case 4: NeededClass = ToonClass.DemonHunter; break; // Demon Hunter
-                case 5: NeededClass = ToonClass.Monk; break; // Monk
-                case 6: NeededClass = ToonClass.WitchDoctor; break; // Witch Doctor
-                case 7: NeededClass = ToonClass.Wizard; break; // Wizard
-                case 8: NeededClass = ToonClass.Necromancer; break; // Necromancer
+                case 2: neededClass = ToonClass.Barbarian; break; // Barbarian
+                case 3: neededClass = ToonClass.Crusader; break; // Crusader
+                case 4: neededClass = ToonClass.DemonHunter; break; // Demon Hunter
+                case 5: neededClass = ToonClass.Monk; break; // Monk
+                case 6: neededClass = ToonClass.WitchDoctor; break; // Witch Doctor
+                case 7: neededClass = ToonClass.Wizard; break; // Wizard
+                case 8: neededClass = ToonClass.Necromancer; break; // Necromancer
 
                 case 10: // deuces
                     break;
@@ -532,48 +532,48 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             switch (request.ScopeId)
             {
                 case 3: break; //Normal
-                case 2: Hardcore = true; break; //Hardcore
-                case 5: Season = true; break; //Seasonal
-                case 4: Season = true; Hardcore = true; break; //Hardcore and Seasonal
+                case 2: hardcore = true; break; //Hardcore
+                case 5: season = true; break; //Seasonal
+                case 4: season = true; hardcore = true; break; //Hardcore and Seasonal
             }
 
-            List<DBGameAccount> GA = DBSessions.SessionQuery<DBGameAccount>().Where(a => a.Id == request.GameAccountId).ToList();
-            var Heroes = ToonManager.GetToonsForGameAccount(GameAccountManager.GetGameAccountByDBGameAccount(GA[0]));
-            Toon Hero = null;
+            List<DBGameAccount> gameAccounts = DBSessions.SessionQuery<DBGameAccount>().Where(a => a.Id == request.GameAccountId).ToList();
+            var heroes = ToonManager.GetToonsForGameAccount(GameAccountManager.GetGameAccountByDBGameAccount(gameAccounts[0]));
+            Toon hero = null;
             byte upLevel = 0;
             int idx = -1;
-            if (Heroes.Count > 0)
+            if (heroes.Count > 0)
             {
-                for (int i = 0; i < Heroes.Count; i++)
+                for (int i = 0; i < heroes.Count; i++)
                 {
-                    if (Season && !Heroes[i].isSeassoned) continue;
-                    if (Hardcore && !Heroes[i].IsHardcore) continue;
-                    if (Heroes[i].Class != NeededClass && (uint)NeededClass != 0) continue;
-                    if (upLevel > Heroes[i].Level) continue;
-                    upLevel = Heroes[i].Level;
+                    if (season && !heroes[i].isSeassoned) continue;
+                    if (hardcore && !heroes[i].IsHardcore) continue;
+                    if (heroes[i].Class != neededClass && (uint)neededClass != 0) continue;
+                    if (upLevel > heroes[i].Level) continue;
+                    upLevel = heroes[i].Level;
                     idx = i;
                 }
                 if (idx > -1)
-                    Hero = Heroes[idx];
+                    hero = heroes[idx];
             }
-            if (Hero != null)
+            if (hero != null)
             {
                 var Snapshot = D3.Leaderboard.HeroSnapshot.CreateBuilder()
-                        .SetHeroId(Hero.D3EntityID)
-                        .AddCosmeticItems(D3.Leaderboard.HeroCosmeticItem.CreateBuilder().SetCosmeticVisualInventorySlot(1).SetGbid(Hero.Cosmetic1))
-                        .AddCosmeticItems(D3.Leaderboard.HeroCosmeticItem.CreateBuilder().SetCosmeticVisualInventorySlot(2).SetGbid(Hero.Cosmetic2))
-                        .AddCosmeticItems(D3.Leaderboard.HeroCosmeticItem.CreateBuilder().SetCosmeticVisualInventorySlot(3).SetGbid(Hero.Cosmetic3))
-                        .AddCosmeticItems(D3.Leaderboard.HeroCosmeticItem.CreateBuilder().SetCosmeticVisualInventorySlot(4).SetGbid(Hero.Cosmetic4))
+                        .SetHeroId(hero.D3EntityID)
+                        .AddCosmeticItems(D3.Leaderboard.HeroCosmeticItem.CreateBuilder().SetCosmeticVisualInventorySlot(1).SetGbid(hero.Cosmetic1))
+                        .AddCosmeticItems(D3.Leaderboard.HeroCosmeticItem.CreateBuilder().SetCosmeticVisualInventorySlot(2).SetGbid(hero.Cosmetic2))
+                        .AddCosmeticItems(D3.Leaderboard.HeroCosmeticItem.CreateBuilder().SetCosmeticVisualInventorySlot(3).SetGbid(hero.Cosmetic3))
+                        .AddCosmeticItems(D3.Leaderboard.HeroCosmeticItem.CreateBuilder().SetCosmeticVisualInventorySlot(4).SetGbid(hero.Cosmetic4))
                         .SetActiveSkills(SkillsWithRunes.CreateBuilder()
-                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(Hero.DBActiveSkills.Skill0).SetRuneType(Hero.DBActiveSkills.Rune0))
-                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(Hero.DBActiveSkills.Skill1).SetRuneType(Hero.DBActiveSkills.Rune1))
-                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(Hero.DBActiveSkills.Skill2).SetRuneType(Hero.DBActiveSkills.Rune2))
-                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(Hero.DBActiveSkills.Skill3).SetRuneType(Hero.DBActiveSkills.Rune3))
-                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(Hero.DBActiveSkills.Skill4).SetRuneType(Hero.DBActiveSkills.Rune4))
-                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(Hero.DBActiveSkills.Skill5).SetRuneType(Hero.DBActiveSkills.Rune5)))
-                        .SetActiveTraits(PassiveSkills.CreateBuilder().AddSnoTraits(Hero.DBActiveSkills.Passive0).AddSnoTraits(Hero.DBActiveSkills.Passive1).AddSnoTraits(Hero.DBActiveSkills.Passive2).AddSnoTraits(Hero.DBActiveSkills.Passive3));
+                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(hero.DBActiveSkills.Skill0).SetRuneType(hero.DBActiveSkills.Rune0))
+                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(hero.DBActiveSkills.Skill1).SetRuneType(hero.DBActiveSkills.Rune1))
+                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(hero.DBActiveSkills.Skill2).SetRuneType(hero.DBActiveSkills.Rune2))
+                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(hero.DBActiveSkills.Skill3).SetRuneType(hero.DBActiveSkills.Rune3))
+                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(hero.DBActiveSkills.Skill4).SetRuneType(hero.DBActiveSkills.Rune4))
+                            .AddRunes(SkillWithRune.CreateBuilder().SetSkill(hero.DBActiveSkills.Skill5).SetRuneType(hero.DBActiveSkills.Rune5)))
+                        .SetActiveTraits(PassiveSkills.CreateBuilder().AddSnoTraits(hero.DBActiveSkills.Passive0).AddSnoTraits(hero.DBActiveSkills.Passive1).AddSnoTraits(hero.DBActiveSkills.Passive2).AddSnoTraits(hero.DBActiveSkills.Passive3));
 
-                foreach (var item in Hero.Profile.Equipment.ItemsList)
+                foreach (var item in hero.Profile.Equipment.ItemsList)
                 {
                     int pos = 0;
                     switch ((item.ItemSlot - 272) / 16)
@@ -611,18 +611,18 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             var response = LeaderboardFetchScoresResponse.CreateBuilder();
             bool season = false;
             bool hardcore = false;
-            ToonClass NeededClass = ToonClass.Unknown;
+            ToonClass neededClass = ToonClass.Unknown;
             switch (request.LeaderboardId)
             {
                 case 1:
                     break;
-                case 2: NeededClass = ToonClass.Barbarian; break; // Barbarian.
-                case 3: NeededClass = ToonClass.Crusader; break; // Crusader.
-                case 4: NeededClass = ToonClass.DemonHunter; break; // Demon Hunter.
-                case 5: NeededClass = ToonClass.Monk; break; // Monk.
-                case 6: NeededClass = ToonClass.WitchDoctor; break; // Warlock.
-                case 7: NeededClass = ToonClass.Wizard; break; // Wizard.
-                case 8: NeededClass = ToonClass.Necromancer; break; // Necromancer.
+                case 2: neededClass = ToonClass.Barbarian; break; // Barbarian.
+                case 3: neededClass = ToonClass.Crusader; break; // Crusader.
+                case 4: neededClass = ToonClass.DemonHunter; break; // Demon Hunter.
+                case 5: neededClass = ToonClass.Monk; break; // Monk.
+                case 6: neededClass = ToonClass.WitchDoctor; break; // Warlock.
+                case 7: neededClass = ToonClass.Wizard; break; // Wizard.
+                case 8: neededClass = ToonClass.Necromancer; break; // Necromancer.
 
                 case 10: // ToonClass.
                     break;
@@ -665,7 +665,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     {
                         if (season && !Heroes[i].isSeassoned) continue;
                         if (hardcore && !Heroes[i].IsHardcore) continue;
-                        if (Heroes[i].Class != NeededClass && NeededClass !=  ToonClass.Unknown) continue;
+                        if (Heroes[i].Class != neededClass && neededClass !=  ToonClass.Unknown) continue;
                         if (upLevel > Heroes[i].Level) continue;
                         upLevel = Heroes[i].Level;
                         idx = i;
@@ -676,27 +676,27 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 if (Hero != null)
                     try
                     {
-                        GameAccount Gaccount = GameAccountManager.GetGameAccountByDBGameAccount(gameAccount);
-                        Account account = AccountManager.GetAccountByPersistentID(Gaccount.AccountId);
-                        var Memb = D3.Leaderboard.Member.CreateBuilder()
-                                                .SetAccountId(Gaccount.AccountId)
+                        GameAccount gameAccount2 = GameAccountManager.GetGameAccountByDBGameAccount(gameAccount);
+                        Account account = AccountManager.GetAccountByPersistentID(gameAccount2.AccountId);
+                        var member = D3.Leaderboard.Member.CreateBuilder()
+                                                .SetAccountId(gameAccount2.AccountId)
                                                 .SetHeroSeasonCreated((uint)Hero.SeasonCreated)
                                                 .SetBattleTag(account.BattleTagName)
-                                                .SetHeroAltLevel((uint)Gaccount.DBGameAccount.ParagonLevel)
+                                                .SetHeroAltLevel((uint)gameAccount2.DBGameAccount.ParagonLevel)
                                                 .SetHeroFlags((uint)Hero.Flags)
                                                 .SetHeroLevel((uint)Hero.Level)
                                                 .SetHeroGbidClass((uint)Hero.ClassID)
                                                 .SetHeroName(Hero.Name)
                                                 .SetHeroSnapshotAvailable(true)
-                                                .SetHeroVisualEquipment(Gaccount.Toons[0].Digest.VisualEquipment);
-                        if (Gaccount.Clan != null)
+                                                .SetHeroVisualEquipment(gameAccount2.Toons[0].Digest.VisualEquipment);
+                        if (gameAccount2.Clan != null)
                         {
-                            Memb.SetClanId(Gaccount.Clan.GuildId.GuildId_).SetClanTag(Gaccount.Clan.Prefix).SetClanName(Gaccount.Clan.Name);
+                            member.SetClanId(gameAccount2.Clan.GuildId.GuildId_).SetClanTag(gameAccount2.Clan.Prefix).SetClanName(gameAccount2.Clan.Name);
                         }
                         response
                             .AddEntry(D3.Leaderboard.Score.CreateBuilder()
-                            .SetGameAccountId(Gaccount.AccountId)
-                            .SetScore_((ulong)Hero.Level + (ushort)Gaccount.DBGameAccount.ParagonLevel) // Temporary Separation.
+                            .SetGameAccountId(gameAccount2.AccountId)
+                            .SetScore_((ulong)Hero.Level + (ushort)gameAccount2.DBGameAccount.ParagonLevel) // Temporary Separation.
                             .SetScoreBand(5)
                             .SetLeaderboardId(5)
                             .SetScopeId(5)
@@ -709,15 +709,15 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                                 .SetAct5TimeMs(0)
                                 .SetLevelSeed(0)
                                 .SetCheated(false)
-                                .AddTeamMember(Memb)
+                                .AddTeamMember(member)
                                 .SetChallengeData(D3.Leaderboard.WeeklyChallengeData.CreateBuilder()
                                     .SetBnetAccountId(unchecked((uint)account.BnetEntityId.Low))
-                                    .SetGameAccountId(GameAccountHandle.CreateBuilder().SetId(unchecked((uint)Gaccount.BnetEntityId.Low)).SetProgram(17459).SetRegion(1))
+                                    .SetGameAccountId(GameAccountHandle.CreateBuilder().SetId(unchecked((uint)gameAccount2.BnetEntityId.Low)).SetProgram(17459).SetRegion(1))
                                     .SetHeroSnapshot(D3.Hero.SavedDefinition.CreateBuilder().SetVersion(905)
                                             .SetDigest(Hero.Digest)
                                             .SetSavedAttributes(D3.AttributeSerializer.SavedAttributes.CreateBuilder()))
                                     .SetAccountSnapshot(D3.Account.SavedDefinition.CreateBuilder().SetVersion(905)
-                                        .SetDigest(Gaccount.Digest))
+                                        .SetDigest(gameAccount2.Digest))
                                     .SetRiftSnapshot(D3.Leaderboard.RiftSnapshot.CreateBuilder()
                                         .SetRiftSeed(2342341)
                                         .SetRiftTier(1)
@@ -729,8 +729,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Logger.ErrorException(ex, "Error while creating leaderboard entry");
                     }
             }
             return response.Build().ToByteString();
@@ -738,20 +739,20 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         private ByteString GetRating(BattleClient client, ByteString data)
         {
             LeaderboardList request = LeaderboardList.ParseFrom(data);
-            bool Season = false;
-            bool Hardcore = false;
-            ToonClass NeededClass = ToonClass.Unknown;
+            bool season = false;
+            bool hardcore = false;
+            ToonClass neededClass = ToonClass.Unknown;
             switch (request.LeaderboardId)
             {
                 case 1: 
                     break;
-                case 2: NeededClass = ToonClass.Barbarian; break; // Barbarian
-                case 3: NeededClass = ToonClass.Crusader; break; // Crusader
-                case 4: NeededClass = ToonClass.DemonHunter; break; // Demon Hunter
-                case 5: NeededClass = ToonClass.Monk; break; // Monk
-                case 6: NeededClass = ToonClass.WitchDoctor; break; // Witch Doctor
-                case 7: NeededClass = ToonClass.Wizard; break; // Wizard
-                case 8: NeededClass = ToonClass.Necromancer; break; // Necromancer
+                case 2: neededClass = ToonClass.Barbarian; break; // Barbarian
+                case 3: neededClass = ToonClass.Crusader; break; // Crusader
+                case 4: neededClass = ToonClass.DemonHunter; break; // Demon Hunter
+                case 5: neededClass = ToonClass.Monk; break; // Monk
+                case 6: neededClass = ToonClass.WitchDoctor; break; // Witch Doctor
+                case 7: neededClass = ToonClass.Wizard; break; // Wizard
+                case 8: neededClass = ToonClass.Necromancer; break; // Necromancer
 
                 case 10: // Duples
                     break;
@@ -769,9 +770,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             switch (request.ScopeId)
             {
                 case 3: break; //Normal
-                case 2: Hardcore = true; break; //Hardcore
-                case 5: Season = true; break; //Seasonal
-                case 4: Season = true; Hardcore = true; break; //Seasonal + Harcore
+                case 2: hardcore = true; break; //Hardcore
+                case 5: season = true; break; //Seasonal
+                case 4: season = true; hardcore = true; break; //Seasonal + Harcore
             }
 
             var result = LeaderboardListResponse.CreateBuilder()
@@ -785,39 +786,39 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             {
                 var toons = ToonManager.GetToonsForGameAccount(
                     GameAccountManager.GetGameAccountByDBGameAccount(gameAccountId));
-                Toon Hero = null;
-                byte uplvl = 0;
+                Toon hero = null;
+                byte upLevel = 0;
                 int idx = -1;
                 if (toons.Count > 0)
                 {
                     for (int i = 0; i < toons.Count; i++)
                     {
-                        if (Season && !toons[i].isSeassoned) continue;
-                        if (Hardcore && !toons[i].IsHardcore) continue;
-                        if (toons[i].Class != NeededClass && NeededClass != ToonClass.Unknown) continue;
-                        if (uplvl > toons[i].Level) continue;
-                        uplvl = toons[i].Level;
+                        if (season && !toons[i].isSeassoned) continue;
+                        if (hardcore && !toons[i].IsHardcore) continue;
+                        if (toons[i].Class != neededClass && neededClass != ToonClass.Unknown) continue;
+                        if (upLevel > toons[i].Level) continue;
+                        upLevel = toons[i].Level;
                         idx = i;
                     }
 
                     if (idx > -1)
-                        Hero = toons[idx];
+                        hero = toons[idx];
                 }
 
-                if (Hero != null)
+                if (hero != null)
                     try
                     {
                         GameAccount gameAccount = GameAccountManager.GetGameAccountByDBGameAccount(gameAccountId);
                         Account account = AccountManager.GetAccountByPersistentID(gameAccount.AccountId);
                         var member = D3.Leaderboard.Member.CreateBuilder()
                             .SetAccountId((uint)gameAccount.D3GameAccountId.IdLow)
-                            .SetHeroSeasonCreated((uint)Hero.SeasonCreated)
+                            .SetHeroSeasonCreated((uint)hero.SeasonCreated)
                             .SetBattleTag(account.BattleTagName)
                             .SetHeroAltLevel((uint)gameAccount.DBGameAccount.ParagonLevel)
-                            .SetHeroFlags((uint)Hero.Flags)
-                            .SetHeroLevel((uint)Hero.Level)
-                            .SetHeroGbidClass((uint)Hero.ClassID)
-                            .SetHeroName(Hero.Name)
+                            .SetHeroFlags((uint)hero.Flags)
+                            .SetHeroLevel((uint)hero.Level)
+                            .SetHeroGbidClass((uint)hero.ClassID)
+                            .SetHeroName(hero.Name)
                             .SetHeroSnapshotAvailable(true)
                             .SetHeroVisualEquipment(gameAccount.Toons[0].Digest.VisualEquipment);
                         if (gameAccount.Clan != null)
@@ -830,7 +831,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             .AddEntry(D3.Leaderboard.Slot.CreateBuilder()
                                 .SetGameAccountId(gameAccount.AccountId)
                                 //TODO: Need to implement the calculation from the time of passage of the portal!
-                                .SetScore((ulong)Hero.Level +
+                                .SetScore((ulong)hero.Level +
                                           (ulong)gameAccount.DBGameAccount.ParagonLevel) //temporary separation
                                 .SetTimestamp(DateTime.UtcNow.ToUnixTime())
                                 .SetMetadata(D3.Leaderboard.Metadata.CreateBuilder()
@@ -847,7 +848,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                                             .SetId(unchecked((uint)gameAccount.BnetEntityId.Low)).SetProgram(17459)
                                             .SetRegion(1))
                                         .SetHeroSnapshot(D3.Hero.SavedDefinition.CreateBuilder().SetVersion(905)
-                                            .SetDigest(Hero.Digest)
+                                            .SetDigest(hero.Digest)
                                             .SetSavedAttributes(D3.AttributeSerializer.SavedAttributes.CreateBuilder()))
                                         .SetAccountSnapshot(D3.Account.SavedDefinition.CreateBuilder().SetVersion(905)
                                             .SetDigest(gameAccount.Digest)
@@ -908,8 +909,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         }
         private ByteString OnHeroDeleteParams(BattleClient client, ByteString data)
         {
-            var DeleteParams = DeleteHero.ParseFrom(data);
-            var toon = ToonManager.GetToonByLowID(DeleteParams.HeroId);
+            var deleteParams = DeleteHero.ParseFrom(data);
+            var toon = ToonManager.GetToonByLowID(deleteParams.HeroId);
             ToonManager.DeleteToon(toon);
             return ByteString.Empty;
         }
@@ -918,11 +919,11 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             var request = D3.GameMessage.GetToonSettings.ParseFrom(data);
 
             var oldToon = client.Account.GameAccount.CurrentToon;
-            var newtoon = ToonManager.GetToonByLowID(request.HeroId);
+            var newToon = ToonManager.GetToonByLowID(request.HeroId);
 
-            if (oldToon != newtoon)
+            if (oldToon != newToon)
             {
-                client.Account.GameAccount.CurrentToon = newtoon;
+                client.Account.GameAccount.CurrentToon = newToon;
                 client.Account.GameAccount.NotifyUpdate();
                 //AccountManager.SaveToDB(Client.Account);
                 //Client.Account.GameAccount.Setted = true;
@@ -947,7 +948,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         #region Banner editing
         private bool SaveBanner(BattleClient client, ByteString data)
         {
-            Logger.Trace("SaveBannerConfiguration()");
+            Logger.Debug("SaveBannerConfiguration()");
             //var bannerConfig = HeroDigestBanner.ParseFrom(data);
             var bannerConfig = SaveBannerConfiguration.ParseFrom(data);
 
@@ -979,7 +980,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         private ByteString SearchGuilds(BattleClient client, ByteString data)
         {
             GuildSearch request = GuildSearch.ParseFrom(data);
-            Logger.Trace("GuildSearch(): {0}", request.ToString());
+            Logger.Debug("GuildSearch(): {0}", request.ToString());
             var builder = D3.Guild.GuildSearchResultList.CreateBuilder();
 
             List<Guild> allGuilds = request.ClanOrGroup == 1 ? GuildManager.GetCommunities() : GuildManager.GetClans();
@@ -1053,7 +1054,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         }
         private void GuildKickMemberP(BattleClient client, D3.GameMessage.GuildKickMember request)
         {
-            Logger.Trace("GuildKickMember(): {0}", request.ToString());
+            Logger.Debug("GuildKickMember(): {0}", request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId);
             if (guild != null && client.Account.GameAccount.PersistentID == guild.Owner.PersistentID)
@@ -1065,7 +1066,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         }
         private void GuildDisband(BattleClient client, D3.GameMessage.GuildId request)
         {
-            Logger.Trace("GuildDisband(): {0}", request.ToString());
+            Logger.Debug("GuildDisband(): {0}", request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId_);
             if (guild != null && client.Account.GameAccount.PersistentID == guild.Owner.PersistentID)
@@ -1080,7 +1081,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         }
         private ByteString GuildFetchNews(BattleClient client, D3.GameMessage.GuildFetchNews request)
         {
-            Logger.Trace("GuildFetchNews(): {0}", request.ToString());
+            Logger.Debug("GuildFetchNews(): {0}", request.ToString());
             var builder = D3.Guild.NewsList.CreateBuilder();
 
             /* news types:
@@ -1115,7 +1116,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         private ByteString GuildPromoteMember(BattleClient client, D3.GameMessage.GuildPromoteMember request)
         {
-            Logger.Trace("GuildPromoteMember(): {0}", request.ToString());
+            Logger.Debug("GuildPromoteMember(): {0}", request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId);
             var account = GameAccountManager.GetAccountByPersistentID(request.MemberId);
@@ -1136,7 +1137,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         private ByteString GuildDemoteMember(BattleClient client, D3.GameMessage.GuildDemoteMember request)
         {
-            Logger.Trace("GuildDemoteMember(): {0}", request.ToString());
+            Logger.Debug("GuildDemoteMember(): {0}", request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId);
             var account = GameAccountManager.GetAccountByPersistentID(request.MemberId);
@@ -1294,7 +1295,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         private ByteString CreateCommunity(BattleClient client, ByteString data)
         {
             var request = GroupCreate.ParseFrom(data);
-            Logger.Trace("CreateCommunity(): {0}", request.ToString());
+            Logger.Debug("CreateCommunity(): {0}", request.ToString());
 
             var guild = GuildManager.CreateNewGuild(client.Account.GameAccount, request.Name, "", false, request.SearchCategory, false, request.Language);
             if (guild != null)
@@ -2300,14 +2301,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         }
         private ByteString SelectToon(BattleClient Client, ByteString data)
         {
-
             var request = D3.GameMessage.HeroDigestListRequest.ParseFrom(data);
             var builder = HeroDigestListResponse.CreateBuilder();
             foreach (var toon in request.ToonIdList)
                 builder.AddDigestList(ToonManager.GetToonByLowID(toon).Digest);
 
             return builder.Build().ToByteString();
-
         }
 
         private ByteString SendWarden3Custom(BattleClient client, ByteString data)
@@ -3778,14 +3777,14 @@ challenge_end_time_unix_seconds: 1583200800
         }
         private ByteString GetGameAccountSettings(BattleClient client)
         {
-            Logger.Trace("GetGameAccountSettings()");
+            Logger.Debug("GetGameAccountSettings()");
 
             var gameAccount = client.Account.GameAccount;
             return gameAccount.Settings.ToByteString();
         }
         private ByteString SetGameAccountSettings(SetGameAccountSettings settings, BattleClient client)
         {
-            Logger.Trace("SetGameAccountSettings()");
+            Logger.Debug("SetGameAccountSettings()");
 
             client.Account.GameAccount.Settings = settings.Settings;
             return ByteString.Empty;

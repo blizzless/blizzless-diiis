@@ -1495,17 +1495,17 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					{
 						CurrentActivity = (int)field.Value.IntValue;
 						returnField.SetValue(field.Value);
-						Logger.Trace("{0} set CurrentActivity to {1}", this, field.Value.IntValue);
+						Logger.Debug("{0} set CurrentActivity to {1}", this, field.Value.IntValue);
 					}
 					else if (field.Key.Group == 2 && field.Key.Field == 4) //Unknown bool
 					{
 						returnField.SetValue(field.Value);
-						Logger.Trace("{0} set CurrentActivity to {1}", this, field.Value.BoolValue);
+						Logger.Debug("{0} set CurrentActivity to {1}", this, field.Value.BoolValue);
 					}
 					else if (field.Key.Group == 2 && field.Key.Field == 6) //Flags
 					{
 						returnField.SetValue(field.Value);
-						Logger.Trace("{0} set Flags to {1}", this, field.Value.UintValue);
+						Logger.Debug("{0} set Flags to {1}", this, field.Value.UintValue);
 					}
 					else if (field.Key.Group == 2 && field.Key.Field == 8) //?
 					{
@@ -1514,7 +1514,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					else if (field.Key.Group == 2 && field.Key.Field == 11) //Version
 					{
 						returnField.SetValue(field.Value);
-						Logger.Trace("{0} set Version to {1}", this, field.Value.StringValue);
+						Logger.Debug("{0} set Version to {1}", this, field.Value.StringValue);
 					}
 					else if (field.Key.Group == 4 && field.Key.Field == 1) //PartyId
 					{
@@ -1532,7 +1532,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 
 
-							Logger.Trace("{0} set channel to {1}", this, channel);
+							Logger.Debug("{0} set channel to {1}", this, channel);
 						}
 						else
 						{
@@ -1541,7 +1541,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 							//	returnField.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(PartyChannelId.ToByteString()).Build());
 							//else
 							returnField.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(ByteString.Empty).Build());
-							Logger.Trace("Emtpy-field: {0}, {1}, {2}", field.Key.Program, field.Key.Group, field.Key.Field);
+							Logger.Debug("Empty-field: {0}, {1}, {2}", field.Key.Program, field.Key.Group, field.Key.Field);
 						}
 					}
 					else if (field.Key.Group == 4 && field.Key.Field == 2) //JoinPermission
@@ -1549,13 +1549,13 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 						if (ScreenStatus.Screen != field.Value.IntValue)
 						{
 							ScreenStatus = ScreenStatus.CreateBuilder().SetScreen((int)field.Value.IntValue).SetStatus(0).Build();
-							Logger.Trace("{0} set current screen to {1}.", this, field.Value.IntValue);
+							Logger.Debug("{0} set current screen to {1}.", this, field.Value.IntValue);
 						}
 						returnField.SetValue(field.Value);
 					}
 					else if (field.Key.Group == 4 && field.Key.Field == 3) //CallToArmsMessage
 					{
-						Logger.Trace("CallToArmsMessage: {0}, {1}, {2}", field.Key.Group, field.Key.Field, field.Value);
+						Logger.Debug("CallToArmsMessage: {0}, {1}, {2}", field.Key.Group, field.Key.Field, field.Value);
 						returnField.SetValue(field.Value);
 					}
 					else if (field.Key.Group == 4 && field.Key.Field == 4) //Party IsFull
@@ -1566,7 +1566,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					{
 						//returnField.SetValue(Variant.CreateBuilder().SetBoolValue(false).Build());
 						returnField.SetValue(field.Value);
-						Logger.Trace("{0} set Game IsPrivate {1}.", this, field.Value.ToString());
+						Logger.Debug("{0} set Game IsPrivate {1}.", this, field.Value.ToString());
 					}
 					else
 					{
@@ -1579,7 +1579,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					{
 						AwayStatus = (AwayStatusFlag)field.Value.IntValue;
 						returnField.SetValue(bgs.protocol.Variant.CreateBuilder().SetIntValue((long)AwayStatus).Build());
-						Logger.Trace("{0} set AwayStatus to {1}.", this, AwayStatus);
+						Logger.Debug("{0} set AwayStatus to {1}.", this, AwayStatus);
 					}
 					else if (field.Key.Group == 2 && field.Key.Field == 8)// RichPresence
 					{
@@ -1588,7 +1588,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					else if (field.Key.Group == 2 && field.Key.Field == 10) // AFK
 					{
 						returnField.SetValue(field.Value);
-						Logger.Trace("{0} set AFK to {1}.", this, field.Value.BoolValue);
+						Logger.Debug("{0} set AFK to {1}.", this, field.Value.BoolValue);
 					}
 					else
 					{
@@ -1740,7 +1740,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public override string ToString()
 		{
-			return String.Format("{{ GameAccount: {0} [lowId: {1}] }}", Owner.BattleTag, BnetEntityId.Low);
+			return $"{{ GameAccount: {Owner.BattleTag} [lowId: {BnetEntityId.Low}] }}";
 		}
 
 		//TODO: figure out what 1 and 3 represent, or if it is a flag since all observed values are powers of 2 so far /dustinconrad

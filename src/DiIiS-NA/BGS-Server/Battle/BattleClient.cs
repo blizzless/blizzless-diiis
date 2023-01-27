@@ -1,4 +1,4 @@
-﻿#define LOG_KEEP_ALIVE
+﻿//#define LOG_KEEP_ALIVE
 
 //Blizzless Project 2022 
 using bgs.protocol;

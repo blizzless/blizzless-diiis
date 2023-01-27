@@ -189,7 +189,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 				{
 					// TODO: Find a game that fits the clients params and join /raist.
 					var publicGameParams = D3.PartyMessage.SearchForPublicGameParams.ParseFrom(attribute.Value.MessageValue);
-					Logger.Trace("SearchForPublicGameParams: {0}", publicGameParams.ToString());
+					Logger.Debug("SearchForPublicGameParams: {0}", publicGameParams.ToString());
 					var attr = bgs.protocol.Attribute.CreateBuilder()
 						.SetName("D3.Party.SearchForPublicGame.Params")
 						.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(publicGameParams.ToByteString()).Build());
