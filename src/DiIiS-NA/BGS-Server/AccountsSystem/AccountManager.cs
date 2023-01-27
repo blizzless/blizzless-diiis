@@ -154,7 +154,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					return null;
 				}
 				else
-					Logger.Debug("GetAccountByEmail id -  \"{0}\"", dbAcc.First().Id);
+					Logger.MethodTrace("GetAccountByEmail id -  \"{0}\"", dbAcc.First().Id);
 				return GetAccountByDBAccount(dbAcc.First());
 			}
 		}

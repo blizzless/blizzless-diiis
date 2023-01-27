@@ -42,27 +42,27 @@ namespace DiIiS_NA.LoginServer.Battle
 
 		public Dictionary<string, ServerDescriptor> PvPGameServers = new Dictionary<string, ServerDescriptor>();
 
-		public BattleBackend(string BattletHost, int BackPort)
+		public BattleBackend(string battleHost, int port)
 		{
-			this.GameServerSocket = new WatsonTcpServer(BattletHost, BackPort, this._receiverClientConnected, this._receiverClientDisconnected, this._receiverMessageReceived, false);
+			GameServerSocket = new WatsonTcpServer(battleHost, port, ReceiverClientConnected, ReceiverClientDisconnected, ReceiverMessageReceived, false);
 			System.Threading.Thread.Sleep(3000);
 		}
 
-		private bool _receiverClientConnected(string ipPort)
+		private bool ReceiverClientConnected(string ipPort)
 		{
-			Logger.Info("Game server loaded {0} connecting to BlizzLess.Net...", ipPort);
+			Logger.Info($"Blizzless server loaded {ipPort} - connecting...");
 			return true;
 		}
 
-		private bool _receiverClientDisconnected(string ipPort)
+		private bool ReceiverClientDisconnected(string ipPort)
 		{
-			Logger.Warn("GameServer at {0} was disconnected!", ipPort);
-			if (this.GameServers.ContainsKey(ipPort)) this.GameServers.Remove(ipPort);
-			if (this.PvPGameServers.ContainsKey(ipPort)) this.PvPGameServers.Remove(ipPort);
+			Logger.Warn("Blizzless server at {0} was disconnected!", ipPort);
+			if (GameServers.ContainsKey(ipPort)) GameServers.Remove(ipPort);
+			if (PvPGameServers.ContainsKey(ipPort)) PvPGameServers.Remove(ipPort);
 
-			if (this.GameServers.Count == 0)
+			if (GameServers.Count == 0)
 				Logger.Warn("GameServers list is empty! Unable to use PvE game activities atm.");
-			if (this.PvPGameServers.Count == 0)
+			if (PvPGameServers.Count == 0)
 				Logger.Warn("PvPGameServers list is empty! Unable to use PvP game activities atm.");
 			return true;
 		}
@@ -72,7 +72,7 @@ namespace DiIiS_NA.LoginServer.Battle
 			GameServerSocket.Send(ipPort, Encoding.UTF8.GetBytes(string.Format("diiiscg|{0}/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}", GameId, level, act, difficulty, questId, questStepId, isHardcore, gamemode, iSseasoned, perftest_id)));
 		}
 
-		private bool _receiverMessageReceived(string ipPort, byte[] data)
+		private bool ReceiverMessageReceived(string ipPort, byte[] data)
 		{
 			string msg = "";
 			if (data != null && data.Length > 0) msg = Encoding.UTF8.GetString(data);
@@ -83,17 +83,17 @@ namespace DiIiS_NA.LoginServer.Battle
 			switch (message[0])
 			{
 				case "rngsr":
-					if (this.GameServers.ContainsKey(ipPort)) this.GameServers.Remove(ipPort);
+					if (GameServers.ContainsKey(ipPort)) GameServers.Remove(ipPort);
 					string rgs_ip = args[0];
 					int rgs_port = int.Parse(args[1].Trim());
-					this.GameServers.Add(ipPort, new ServerDescriptor { GameIP = rgs_ip, GamePort = rgs_port });
-					Logger.Info("Game server was registred for BlizzLess.Net {0}:{1}.", rgs_ip, rgs_port);
+					GameServers.Add(ipPort, new ServerDescriptor { GameIP = rgs_ip, GamePort = rgs_port });
+					Logger.Info("Game server was registered for Blizzless {0}:{1}.", rgs_ip, rgs_port);
 					break;
 				case "rnpvpgsr":
-					if (this.PvPGameServers.ContainsKey(ipPort)) this.PvPGameServers.Remove(ipPort);
+					if (PvPGameServers.ContainsKey(ipPort)) PvPGameServers.Remove(ipPort);
 					string rpgs_ip = args[0];
 					int rpgs_port = int.Parse(args[1].Trim());
-					this.PvPGameServers.Add(ipPort, new ServerDescriptor { GameIP = rpgs_ip, GamePort = rpgs_port });
+					PvPGameServers.Add(ipPort, new ServerDescriptor { GameIP = rpgs_ip, GamePort = rpgs_port });
 					Logger.Info("PvP GameServer at {0}:{1} successfully signed and ready to work.", rpgs_ip, rpgs_port);
 					break;
 				case "grachi":
@@ -292,7 +292,7 @@ namespace DiIiS_NA.LoginServer.Battle
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
 						try
 						{
-							LoginServer.Toons.ToonManager.GetToonByLowID((ulong)tsc_toonId).StateChanged();
+							Toons.ToonManager.GetToonByLowID((ulong)tsc_toonId).StateChanged();
 						}
 						catch { }
 					});

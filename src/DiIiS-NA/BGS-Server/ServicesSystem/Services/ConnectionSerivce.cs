@@ -19,7 +19,7 @@ using DiIiS_NA.Core.Extensions;
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 {
     [Service(serviceID: 0x0, serviceHash: 1698982289)]
-    public class ConnectionSerivce : ConnectionService, IServerService
+    public class ConnectionSvc : ConnectionService, IServerService
     {
         private static readonly Logger Logger = LogManager.CreateLogger();
         public override void Bind(IRpcController controller, BindRequest request, Action<BindResponse> done)
@@ -35,9 +35,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 .SetClientId(ProcessId.CreateBuilder().SetLabel(1).SetEpoch(DateTime.Now.ToUnixTime()));
             if (request.HasUseBindlessRpc)
                 builder.SetUseBindlessRpc(true);
-
-
-
+            
             (controller as HandlerController).Client.Services.Add(0x54DFDA17, 0x01);
             (controller as HandlerController).Client.Services.Add(0xD4DCD093, 0x02);
             (controller as HandlerController).Client.Services.Add(0x71240E35, 0x03);
@@ -60,7 +58,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             (controller as HandlerController).Client.Services.Add(2119327385, 0x26);
             
             done(builder.Build());
-            Logger.Info("Connect with BlizzLess.Net established. Client - {0}", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
+            Logger.Info("Connect with $[dodgerblue1]$Blizz$[/]$$[deepskyblue2]$less$[/]$ established. Client - {0}", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
         }
 
         public override void Echo(IRpcController controller, EchoRequest request, Action<EchoResponse> done)
@@ -84,7 +82,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         public override void RequestDisconnect(IRpcController controller, DisconnectRequest request, Action<NO_RESPONSE> done)
         {
-            Console.WriteLine("Клиент - {0} , отключен", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
+            Logger.Info("Client - {0} , disconnected", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
             this.DisconnectClient(controller as HandlerController);
             if ((controller as HandlerController).Client.Account != null)
                 (controller as HandlerController).Client.Account.GameAccount.Logined = false;

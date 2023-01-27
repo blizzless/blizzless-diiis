@@ -43,7 +43,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             var account = AccountManager.GetAccountByPersistentID(req.Low);
                             if (account != null)
                             {
-                                Logger.Debug("Subscribe() {0} {1}", (((HandlerController)controller).Client), account);
+                                Logger.MethodTrace("Subscribe() {0} {1}", (((HandlerController)controller).Client), account);
                                 account.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                                 response.AddSubscribeFailed(SubscribeResult.CreateBuilder().SetEntityId(req)
                                     .SetResult(0));
@@ -55,7 +55,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             var gameAccount = GameAccountManager.GetAccountByPersistentID(req.Low);
                             if (gameAccount != null)
                             {
-                                Logger.Debug("Subscribe() {0} {1}", (((HandlerController)controller).Client),
+                                Logger.MethodTrace("Subscribe() {0} {1}", (((HandlerController)controller).Client),
                                     gameAccount);
                                 gameAccount.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                                 response.AddSubscribeFailed(SubscribeResult.CreateBuilder().SetEntityId(req)
@@ -64,7 +64,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         }
                             break;
                         default:
-                            Logger.Warn("Recieved an unhandled Presence.Subscribe request with type {0} (0x{1})", req.GetHighIdType(), req.High.ToString("X16"));
+                            Logger.Warn("Received an unhandled Presence.Subscribe request with type {0} (0x{1})", req.GetHighIdType(), req.High.ToString("X16"));
                             break;
                     }
                 }
@@ -133,7 +133,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         var gameAccount = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
                         if (gameAccount != null)
                         {
-                            Logger.Trace("Subscribe() {0} {1}", (((HandlerController)controller).Client), gameAccount);
+                            Logger.MethodTrace("Subscribe() {0} {1}", (((HandlerController)controller).Client), gameAccount);
                             gameAccount.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                         }
                     }
@@ -143,7 +143,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         var gameaccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
                         if (gameaccount != null)
                         {
-                            Logger.Debug("Subscribe() {0} {1}", (((HandlerController)controller).Client), gameaccount);
+                            Logger.MethodTrace("Subscribe() {0} {1}", (((HandlerController)controller).Client), gameaccount);
                             gameaccount.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                         }
                     }
@@ -170,7 +170,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     if (gameAccount != null)
                     {
                         gameAccount.RemoveSubscriber((((HandlerController) controller).Client));
-                        Logger.Debug("Unsubscribe() {0} {1}", (((HandlerController) controller).Client), gameAccount);
+                        Logger.MethodTrace("Unsubscribe() {0} {1}", (((HandlerController) controller).Client), gameAccount);
                     }
                 }
                     break;
@@ -180,7 +180,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     if (gameAccount != null)
                     {
                         gameAccount.RemoveSubscriber((((HandlerController) controller).Client));
-                        Logger.Debug("Unsubscribe() {0} {1}", (((HandlerController) controller).Client), gameAccount);
+                        Logger.MethodTrace("Unsubscribe() {0} {1}", (((HandlerController) controller).Client), gameAccount);
                     }
                 }
                     break;
@@ -212,7 +212,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     }
 
                     gameAccount.Update(request.FieldOperationList);
-                    Logger.Debug(traceData);
+                    Logger.MethodTrace(traceData);
                 }
                     break;
                 case EntityIdHelper.HighIdType.GameAccountId:
@@ -229,7 +229,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     }
 
                     gameAccount.Update(request.FieldOperationList);
-                    Logger.Debug(traceData);
+                    Logger.MethodTrace(traceData);
                     break;
                 }
                 default:

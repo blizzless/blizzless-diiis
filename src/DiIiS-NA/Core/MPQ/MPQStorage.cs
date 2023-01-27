@@ -36,7 +36,7 @@ namespace DiIiS_NA.Core.MPQ
                 return;
             }
 
-            Logger.Info("Initializing of data..");
+            Logger.Info("Initializing MPQ archives...");
             MPQList = FileHelpers.GetFilesByExtensionRecursive(MpqRoot, ".mpq");
 
             Data = new Data();

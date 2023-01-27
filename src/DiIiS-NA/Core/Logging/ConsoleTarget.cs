@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Spectre.Console;
 
 namespace DiIiS_NA.Core.Logging
 {
@@ -17,14 +18,14 @@ namespace DiIiS_NA.Core.Logging
 			IncludeTimeStamps = includeTimeStamps;
 		}
 		
+		
 		/// <param name="level">Log level.</param>
 		/// <param name="logger">Source of the log message.</param>
 		/// <param name="message">Log message.</param>
 		public override void LogMessage(Logger.Level level, string logger, string message)
 		{
-			var timeStamp = IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
-			SetConsoleForegroundColor(level);
-			Console.WriteLine($"{timeStamp}[{level.ToString(),8}] [{logger,20}]: {message}");
+			var timeStamp = IncludeTimeStamps ? "[[" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff") + "]] " : "";
+			AnsiConsole.MarkupLine($"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{Cleanup(logger),20}]]: {Cleanup(message)}[/]");
 		}
 
 		/// <param name="level">Log level.</param>
@@ -33,43 +34,50 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="exception">Exception to be included with log message.</param>
 		public override void LogException(Logger.Level level, string logger, string message, Exception exception)
 		{
-			var timeStamp = IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
-			SetConsoleForegroundColor(level);
-			Console.WriteLine(
-				$"{timeStamp}[{level.ToString(),8}] [{logger,20}]: {message} - [Exception] {exception}");
+			var timeStamp = IncludeTimeStamps ? "[[" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff") + "]] " : "";
+			
+			AnsiConsole.MarkupLine(
+				$"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{Cleanup(logger),20}]]: {Cleanup(message)}[/] - [underline red on white][[{exception.GetType().Name}]][/][red] {Cleanup(exception.Message)}[/]");
 		}
+		
+		
+		/// <summary>
+		/// Performs a cleanup on the target.
+		/// All [ becomes [[, and ] becomes ]] (for ignoring ANSI codes)
+		/// To use a style, use $[..]$abc$[/]$.
+		/// Example:
+		/// Logger.Warn("This is a $[red]$red$[/]$ message");
+		/// instead of
+		/// Logger.Warn("This is a [red]red[/] message");
+		/// </summary>
+		/// <param name="x"></param>
+		/// <returns></returns>
+		string Cleanup(string x) => AnsiTarget.Filter(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
 
 		/// <param name="level"></param>
-		private static void SetConsoleForegroundColor(Logger.Level level)
+		private static string SetColor(Logger.Level level, bool withBackground = false)
 		{
+			string postfix = withBackground ? " on grey19" : "";
 			switch (level)
 			{
 				case Logger.Level.PacketDump:
-					Console.ForegroundColor = ConsoleColor.DarkGray;
-					break;
+					return $"[grey30{postfix}]";
 				case Logger.Level.Debug:
-					Console.ForegroundColor = ConsoleColor.DarkCyan;
-					break;
+					return $"[grey39{postfix}]";
 				case Logger.Level.Trace:
-					Console.ForegroundColor = ConsoleColor.Cyan;
-					break;
+					return $"[purple{postfix}]";
 				case Logger.Level.Info:
-					Console.ForegroundColor = ConsoleColor.White;
-					break;
+					return $"[white{postfix}]";
 				case Logger.Level.Success:
-					Console.ForegroundColor = ConsoleColor.DarkGreen;
-					break;
+					return $"[green3_1{postfix}]";
 				case Logger.Level.Warn:
-					Console.ForegroundColor = ConsoleColor.Yellow;
-					break;
+					return $"[darkorange3_1{postfix}]";
 				case Logger.Level.Error:
-					Console.ForegroundColor = ConsoleColor.Magenta;
-					break;
+					return "[indianred1{postfix}]";
 				case Logger.Level.Fatal:
-					Console.ForegroundColor = ConsoleColor.Red;
-					break;
+					return $"[red3{postfix}]";
 				default:
-					break;
+					return $"[navajowhite3{postfix}]";
 			}
 		}
 	}

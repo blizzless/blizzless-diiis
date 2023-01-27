@@ -23,9 +23,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public WatsonTcpClient BattleNetSocket;
 
-		public GsBackend(string battletHost, int battlePort)
+		public GsBackend(string battleHost, int battlePort)
 		{
-			BattleNetSocket = new WatsonTcpClient(battletHost, battlePort, SenderServerConnected, SenderServerDisconnected, SenderMessageReceived, false);
+			BattleNetSocket = new WatsonTcpClient(battleHost, battlePort, SenderServerConnected, SenderServerDisconnected, SenderMessageReceived, false);
 		}
 
 
@@ -56,6 +56,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 									game.SetQuestProgress(int.Parse(args[4].Trim()), int.Parse(args[5].Trim()));
 								if (args.Length > 9)
 									if (int.Parse(args[9].Trim()) > 0) game.EnablePerfTest(int.Parse(args[9].Trim()));
+								
 								//Good job, you reverse God, AiDIEvE =)
 							}
 						}
