@@ -173,7 +173,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 			}
 		}
 
-		[CommandGroup("help", "Oh no, we forgot to add a help to text to help command itself!")]
+		[CommandGroup("help", "usage: help <command>\nType 'commands' to get a list of available commands.")]
 		public class HelpCommandGroup : CommandGroup
 		{
 			public override string Fallback(string[] parameters = null, BattleClient invokerClient = null)
