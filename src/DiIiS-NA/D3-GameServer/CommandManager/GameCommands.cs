@@ -289,9 +289,6 @@ namespace DiIiS_NA.GameServer.CommandManager
                 }
             }
 
-
-
-
             player.Toon.GameAccount.NotifyUpdate();
             if (player.Level >= 70)
                 return $"New paragon level: {player.ParagonLevel}";

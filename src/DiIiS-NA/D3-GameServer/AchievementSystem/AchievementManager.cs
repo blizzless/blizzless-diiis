@@ -384,7 +384,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 				lock (client._serviceLock)
 				{
 					if (additionalQuantity == 0) return;
-					Logger.Trace("UpdateQuantity(): id {0}", achievementId);
+					Logger.Debug("UpdateQuantity(): id {0}", achievementId);
 					if (client.Account.GameAccount.Achievements.Where(a => a.AchievementId == achievementId && a.Completion != -1).Count() > 0) return;
 
 					ulong mainCriteriaId = GetMainCriteria(achievementId);
@@ -417,7 +417,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 					var achievement = new DBAchievements();
 					if (achs.Count == 0)
 					{
-						Logger.Trace("UpdateQuantity(): creating new ach data");
+						Logger.Debug("UpdateQuantity(): creating new ach data");
 						achievement.DBGameAccount = client.Account.GameAccount.DBGameAccount;
 						achievement.AchievementId = achievementId;
 						achievement.IsHardcore = IsHardcore(achievementId);

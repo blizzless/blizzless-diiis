@@ -314,7 +314,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			    asset.ConversationType != ConversationTypes.GlobalFloat)
 				player.CheckConversationCriteria(asset.Header.SNOId);
 
-			Logger.Trace("Handling conversation for Conversation: {0}", SNOId);
+			Logger.Debug("Handling conversation for Conversation: {0}", SNOId);
 			if (player.World.Game.QuestProgress.QuestTriggers.ContainsKey(SNOId))
 			{
 				var trigger = player.World.Game.QuestProgress.QuestTriggers[SNOId];
@@ -730,12 +730,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		void ConversationEnded(object sender, EventArgs e)
 		{
 			Conversation conversation = sender as Conversation;
-			Logger.Trace(" (ConversationEnded) Sending a notify with type {0} and value {1}",
+			Logger.Debug(" (ConversationEnded) Sending a notify with type {0} and value {1}",
 				conversation.ConversationType, conversation.SNOId);
 
 			//quests.Notify(QuestStepObjectiveType.HadConversation, conversation.SNOId); //deprecated
 
-			//����������
+			//Conversation ended
 			if (player.PlayerIndex == 0)
 				switch (conversation.SNOId)
 				{

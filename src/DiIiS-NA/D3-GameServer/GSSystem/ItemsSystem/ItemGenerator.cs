@@ -1035,7 +1035,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		// generates a random equip item (for vendors)
 		public static Item GenerateRandomEquip(ActorSystem.Actor owner, int level, int minQuality = 1,
-			int maxQuality = -1, ItemTypeTable type = null, ToonClass owner_class = ToonClass.Unknown,
+			int maxQuality = -1, ItemTypeTable type = null, ToonClass ownerClass = ToonClass.Unknown,
 			bool crafted = false)
 		{
 			if (level < 0) level = owner.Attributes[GameAttribute.Level];
@@ -1053,35 +1053,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 							&& !ObsoleteItems.Contains(def.Hash)
 							&& UniqueItems.UniqueItemStats.ContainsKey(def.Hash)
 							&& def.Quality != ItemTable.ItemQuality.Special
-							&& (type == null
-								? true
-								: ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID))
-									.Contains(type.Hash))
-							&& (quality > 2
-								? true
-								: !ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID))
-									.Contains(-740765630)) //not jewelry
-							&& (owner_class == ToonClass.Unknown
-								? true
-								: (owner_class == ToonClass.Barbarian
-									? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Barbarian)
-									: (owner_class == ToonClass.Crusader
-										? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Crusader)
-										: (owner_class == ToonClass.Monk
-											? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Monk)
-											: (owner_class == ToonClass.Necromancer
-												? ItemGroup.FromHash(def.ItemTypesGBID).Usable
-													.HasFlag(ItemFlags.Necromancer)
-												: (owner_class == ToonClass.Wizard
-													? ItemGroup.FromHash(def.ItemTypesGBID).Usable
-														.HasFlag(ItemFlags.Wizard)
-													: (owner_class == ToonClass.DemonHunter
-														? ItemGroup.FromHash(def.ItemTypesGBID).Usable
-															.HasFlag(ItemFlags.DemonHunter)
-														: (owner_class == ToonClass.WitchDoctor
-															? ItemGroup.FromHash(def.ItemTypesGBID).Usable
-																.HasFlag(ItemFlags.WitchDoctor)
-															: true)))))))
+							&& (type == null || ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash))
+							&& (quality > 2 || !ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(-740765630)) //not jewelry
+							&& (ownerClass == ToonClass.Unknown || (ownerClass switch
+								{
+									ToonClass.Barbarian => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Barbarian),
+									ToonClass.Crusader => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Crusader),
+									ToonClass.Monk => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Monk),
+									ToonClass.Necromancer => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Necromancer),
+									ToonClass.Wizard => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Wizard),
+									ToonClass.DemonHunter => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.DemonHunter),
+									_ => ownerClass != ToonClass.WitchDoctor || ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.WitchDoctor)
+								})
 							)
 						).ToList()
 					, (quality > 8));
@@ -1101,37 +1084,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						&& def.ItemLevel <= Math.Min(level + 3, 73)
 
 						&& !ObsoleteItems.Contains(def.Hash) //obsolete 1.0.3 items
-						&& (type == null
-							? true
-							: ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash))
-						&& (quality > 2
-							? true
-							: !ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID))
-								.Contains(-740765630)) //not jewelry
-						&& (owner_class == ToonClass.Unknown
-							? true
-							: (owner_class == ToonClass.Barbarian
-								?
-								ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Barbarian)
-								:
-								owner_class == ToonClass.Crusader
-									? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Crusader)
-									:
-									(owner_class == ToonClass.Monk
-										? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Monk)
-										: (owner_class == ToonClass.Wizard
-											? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Wizard)
-											: (owner_class == ToonClass.DemonHunter
-												? ItemGroup.FromHash(def.ItemTypesGBID).Usable
-													.HasFlag(ItemFlags.DemonHunter)
-												: (owner_class == ToonClass.Necromancer
-													? ItemGroup.FromHash(def.ItemTypesGBID).Usable
-														.HasFlag(ItemFlags.Necromancer)
-													: (owner_class == ToonClass.WitchDoctor
-														? ItemGroup.FromHash(def.ItemTypesGBID).Usable
-															.HasFlag(ItemFlags.WitchDoctor)
-														: true
-													)))))))
+						&& (type == null || ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash))
+						&& (quality > 2 || !ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(-740765630)) //not jewelry
+						&& (ownerClass == ToonClass.Unknown || (ownerClass switch
+						{
+							ToonClass.Barbarian => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Barbarian),
+							ToonClass.Crusader => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Crusader),
+							ToonClass.Monk => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Monk),
+							ToonClass.Wizard => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Wizard),
+							ToonClass.DemonHunter => ItemGroup.FromHash(def.ItemTypesGBID).Usable
+								.HasFlag(ItemFlags.DemonHunter),
+							ToonClass.Necromancer => ItemGroup.FromHash(def.ItemTypesGBID).Usable
+								.HasFlag(ItemFlags.Necromancer),
+							ToonClass.WitchDoctor => ItemGroup.FromHash(def.ItemTypesGBID).Usable
+								.HasFlag(ItemFlags.WitchDoctor),
+							_ => true
+						}))
 					).ToList()
 				, false //(quality > 8)
 			);
@@ -1350,7 +1318,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public static int GetItemHash(string name)
 		{
-			var item = Items.Where(i => i.Value.Name == name).FirstOrDefault();
+			var item = Items.FirstOrDefault(i => i.Value.Name == name);
 			return (item.Value == null ? -1 : item.Key);
 		}
 
@@ -1378,7 +1346,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			Item item = GenerateRandomEquip(player, player.Level, minQuality, 10, itemType);
 
-			item.Unidentified = false;
+			item.Unidentified = FastRandom.Instance.Chance(10f);
 			return item;
 		}
 
@@ -1396,6 +1364,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				new object[] { owner.World, definition, forceQuality, crafted, seed });
 			if (forceQuality == 9)
 				item.Attributes[GameAttribute.Item_Quality_Level] = 9;
+			item.Unidentified = FastRandom.Instance.Chance(10f);
 			return item;
 		}
 
@@ -1444,17 +1413,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			return (Items.ContainsKey(gbid)) ? Items[gbid] : null;
 		}
 
-		public static List<ParagonBonusesTable> GetParagonBonusTable(ToonClass toon_class)
+		public static List<ParagonBonusesTable> GetParagonBonusTable(ToonClass toonClass)
 		{
-			Class gb_class = Class.None;
-			if (toon_class == ToonClass.Barbarian) gb_class = Class.Barbarian;
-			if (toon_class == ToonClass.Crusader) gb_class = Class.Crusader;
-			if (toon_class == ToonClass.DemonHunter) gb_class = Class.DemonHunter;
-			if (toon_class == ToonClass.Monk) gb_class = Class.Monk;
-			if (toon_class == ToonClass.WitchDoctor) gb_class = Class.Witchdoctor;
-			if (toon_class == ToonClass.Wizard) gb_class = Class.Wizard;
-			if (toon_class == ToonClass.Necromancer) gb_class = Class.Necromancer;
-			return ParagonBonuses.Where(b => b.HeroClass == gb_class || b.HeroClass == Class.None).ToList();
+			Class @class = Class.None;
+			if (toonClass == ToonClass.Barbarian) @class = Class.Barbarian;
+			if (toonClass == ToonClass.Crusader) @class = Class.Crusader;
+			if (toonClass == ToonClass.DemonHunter) @class = Class.DemonHunter;
+			if (toonClass == ToonClass.Monk) @class = Class.Monk;
+			if (toonClass == ToonClass.WitchDoctor) @class = Class.Witchdoctor;
+			if (toonClass == ToonClass.Wizard) @class = Class.Wizard;
+			if (toonClass == ToonClass.Necromancer) @class = Class.Necromancer;
+			return ParagonBonuses.Where(b => b.HeroClass == @class || b.HeroClass == Class.None).ToList();
 		}
 
 		public static RecipeTable GetRecipeDefinition(int gbid)
@@ -1464,8 +1433,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public static RecipeTable GetRecipeDefinition(string name)
 		{
-			var recipe = Recipes.Where(r => r.Value.Name == name).FirstOrDefault();
-			return (recipe.Value == null) ? null : recipe.Value;
+			var recipe = Recipes.FirstOrDefault(r => r.Value.Name == name);
+			return recipe.Value;
 		}
 
 		public static SocketedEffectTable GetGemEffectDefinition(int gem_gbid, int item_type)
@@ -1581,8 +1550,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				itm.Attributes[GameAttribute.Durability_Cur] = instance.Durability;
 			itm.Attributes[GameAttribute.DyeType] = instance.DyeType;
 			itm.Attributes[GameAttribute.TransmogGBID] = instance.TransmogGBID;
-			itm.Unidentified = instance.Unidentified;
 			itm.DBInventory = instance;
+			itm.Unidentified = instance.Unidentified;
+
 			if (instance.Version == 1)
 				itm.Attributes[GameAttribute.IsCrafted] = true;
 

@@ -797,7 +797,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		}
 		public Item SpawnRandomEquip(Actor source, Player player, int forceQuality = -1, int forceLevel = -1, GameBalance.ItemTypeTable type = null, ToonClass toonClass = ToonClass.Unknown)
 		{
-			//Logger.Debug("SpawnRandomEquip(): quality {0}", forceQuality);
+			Logger.Debug("SpawnRandomEquip(): quality {0}", forceQuality);
 			if (player != null)
 			{
 				int level = (forceLevel > 0 ? forceLevel : source.Attributes[GameAttribute.Level]);
@@ -812,7 +812,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				}
 				else
 				{
-					var item = ItemGenerator.GenerateRandomEquip(player, level, forceQuality, forceQuality, type: type,owner_class: toonClass);
+					var item = ItemGenerator.GenerateRandomEquip(player, level, forceQuality, forceQuality, type: type,ownerClass: toonClass);
 					if (item == null) return null;
 					player.GroundItems[item.GlobalID] = item;
 

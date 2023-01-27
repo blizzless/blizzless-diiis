@@ -64,8 +64,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public bool Unidentified
         {
-            get;
-            set;
+            get => Attributes[GameAttribute.Unidentified];
+            set 
+            { 
+                Attributes[GameAttribute.Unidentified] = value;
+                if (DBInventory is {} dbInventory) dbInventory.Unidentified = value;
+            }
         }
 
         public int EquipGemType
@@ -371,7 +375,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         public void Identify()
         {
             Unidentified = false;
-            DBInventory.Unidentified = false;
+            // DBInventory.Unidentified = false;
             Attributes[GameAttribute.Unidentified] = false;
 
             Owner.World.Game.GameDBSession.SessionUpdate(DBInventory);
