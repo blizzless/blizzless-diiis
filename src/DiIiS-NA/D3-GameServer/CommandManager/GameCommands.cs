@@ -1,51 +1,57 @@
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Inventory;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Platinum;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 
 namespace DiIiS_NA.GameServer.CommandManager
 {
+    [CommandGroup("powerful", "Makes your character with absurd amount of damage. Useful for testing.", Account.UserLevels.Tester)]
+    public class PowerfulCommand : CommandGroup
+    {
+        [DefaultCommand]
+        public string Powerful(string[] @params, BattleClient invokerClient)
+        {
+            if (invokerClient?.InGameClient?.Player is not {} player)
+                return "You must be in game to use this command.";
+
+            if (player.Attributes.FixedMap.Contains(FixedAttribute.Powerful))
+            {
+                player.Attributes.FixedMap.Remove(FixedAttribute.Powerful);
+                player.Attributes.BroadcastChangedIfRevealed();
+                return "You are no longer powerful.";
+            }
+
+            player.Attributes.FixedMap.Add(FixedAttribute.Powerful, (attributes) =>
+            {
+                attributes[GameAttribute.Damage_Delta, 0] = float.MaxValue;
+                attributes[GameAttribute.Damage_Min, 0] = float.MaxValue;
+                attributes[GameAttribute.Damage_Weapon_Delta, 0] = float.MaxValue;
+                attributes[GameAttribute.Damage_Weapon_Min, 0] = float.MaxValue;
+            });
+            player.Attributes.BroadcastChangedIfRevealed();
+            return "You are now powerful.";
+        }
+    }
+
     [CommandGroup("info", "Get current game information.")]
     public class InfoCommand : CommandGroup
     {
@@ -79,11 +85,11 @@ namespace DiIiS_NA.GameServer.CommandManager
                     foreach (var playerInWorld in world.Players)
                     {
                         info.Add($">>>>> Player[{playerInWorld.Value.PlayerIndex}] <<<<<");
-                        info.Add($"        Id: {playerInWorld.Value.GlobalID}");
-                        info.Add($"     Index: {playerInWorld.Value.PlayerIndex}");
-                        info.Add($"      Name: {playerInWorld.Value.Name}");
-                        info.Add($"     Class: {playerInWorld.Value.Toon.Class.ToString()}");
-                        info.Add($"     Level: {playerInWorld.Value.Toon.Level}");
+                        info.Add($"Id: {playerInWorld.Value.GlobalID}");
+                        // info.Add($"Index: {playerInWorld.Value.PlayerIndex}");
+                        info.Add($"Name: {playerInWorld.Value.Name}");
+                        info.Add($"Class: {playerInWorld.Value.Toon.Class.ToString()}");
+                        info.Add($"Level: {playerInWorld.Value.Toon.Level}");
                         info.Add(
                             $"    Health: {playerInWorld.Value.Attributes[GameAttribute.Hitpoints_Cur]} / {playerInWorld.Value.Attributes[GameAttribute.Hitpoints_Max]}");
                         info.Add($"    Damage: {playerInWorld.Value.Attributes[GameAttribute.Damage_Min, 0]}");
@@ -132,7 +138,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         {
             if (invokerClient?.InGameClient is null)
                 return "You must execute this command in-game.";
-            if (invokerClient.InGameClient.Player.World.Game.Difficulty == 1)
+            if (invokerClient.InGameClient.Player.World.Game.Difficulty == 0)
                 return "Difficulty is already at minimum";
             invokerClient.InGameClient.Player.World.Game.LowDifficulty(invokerClient.InGameClient, null);
             return $"Difficulty decreased - set to {invokerClient.InGameClient.Player.World.Game.Difficulty}";
@@ -739,16 +745,16 @@ namespace DiIiS_NA.GameServer.CommandManager
 
             if (@params == null)
                 return
-                    "Change the movement speed. Min 0 (Base), Max 2.\n You can use decimal values like 1,3 for example.";
+                    "Change the movement speed. Min 0 (Base), Max 2.\n You can use decimal values like 1.3 for example.";
             float speedValue;
 
-            const float maxSpeed = 3; // 2;
+            const float maxSpeed = 2;
             const float baseSpeed = 0.36f;
 
             if (@params.Any())
             {
                 if (!float.TryParse(@params[0], out speedValue) || speedValue < 0 || speedValue > maxSpeed)
-                    return ("Invalid speed value. Must be a number between 0 and 3.");
+                    return ("Invalid speed value. Must be a number between 0 and 2.");
             }
             else
             {

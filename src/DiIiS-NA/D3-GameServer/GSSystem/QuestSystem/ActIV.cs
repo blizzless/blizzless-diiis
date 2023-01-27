@@ -46,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 2,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 					UnlockTeleport(0); //{[World] SNOId: 182944 GlobalId: 117440513 Name: a4dun_heaven_1000_monsters_fight_entrance}
 					var Tyrael = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).GetActorBySNO(ActorSno._tyrael) as InteractiveNPC;
@@ -65,7 +65,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 17,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Tyrael
 					UnlockTeleport(1);
 					Game.AddOnLoadWorldAction(WorldSno.a4dun_heaven_1000_monsters_fight_entrance, () =>
@@ -92,7 +92,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 15,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to Hall of Light
 					//ListenProximity(182963, new AskBossEncounter(182960));
 					ListenTeleport(109149, new Advance());
@@ -104,7 +104,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 12,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Iskatu
 					if (!Game.Empty)
 					{
@@ -121,7 +121,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					Game.CurrentEncounter.activated = false;
 				})
@@ -136,7 +136,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 66,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -146,7 +146,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 58,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Iterael
 					var world = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight);
 					if (Game.Empty) UnlockTeleport(2);
@@ -171,7 +171,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 40,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Iterael
 
 					var Ityrael = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight).GetActorBySNO(ActorSno._fate) as InteractiveNPC;
@@ -191,7 +191,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 17,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Library of Fate
 					if (!Game.Empty) UnlockTeleport(2); 
 					if (Game.Empty) UnlockTeleport(3);
@@ -210,7 +210,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 11,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter the Library
 					ListenTeleport(143648, new Advance());
 				})
@@ -221,7 +221,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 13,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Rakanoth
 					if (!Game.Empty) UnlockTeleport(3);
 					var Library = Game.GetWorld(WorldSno.a4dun_libraryoffate);
@@ -253,7 +253,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 33,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //destroy Auriel's jail
 					Game.CurrentEncounter.activated = false;
 					
@@ -275,7 +275,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 38,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Auriel
 
 					var Library = Game.GetWorld(WorldSno.a4dun_libraryoffate);
@@ -303,7 +303,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 42,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //return to Gardens of Hope lv. 1
 					PlayCutscene(1);
 					var Library = Game.GetWorld(WorldSno.a4dun_libraryoffate);
@@ -327,7 +327,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 44,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find demonic rift
 					ListenProximity(ActorSno._a4_heaven_gardens_hellportal, new Advance());
 				})
@@ -338,7 +338,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 62,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //destroy Eye of Hell
 					ListenKill(ActorSno._a4dun_garden_hellportal_pillar, 1, new Advance());
 					
@@ -350,7 +350,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 50,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //leave demonic rift
 					var World = Game.GetWorld(WorldSno.a4dun_hell_portal_01);
 					World.SpawnMonster(ActorSno._diablo_vo, World.Players.Values.First().Position);
@@ -364,7 +364,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 52,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to 2nd lv. of Gardens of Hope
 					ListenTeleport(109516, new Advance());
 				})
@@ -375,7 +375,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 48,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find another demonic rift
 					if (Game.Empty) UnlockTeleport(4);
 					ListenProximity(ActorSno._a4_heaven_gardens_hellportal, new Advance());
@@ -387,7 +387,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 60,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //destroy Eye of Hell
 					ListenKill(ActorSno._a4dun_garden_hellportal_pillar, 1, new Advance());
 				})
@@ -398,7 +398,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 56,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //leave demonic rift
 					var World = Game.GetWorld(WorldSno.a4dun_hell_portal_02);
 					World.SpawnMonster(ActorSno._diablo_vo, World.Players.Values.First().Position);
@@ -412,7 +412,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 54,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find portal to Crystal Collonade
 					ListenProximity(ActorSno._coreelitedemon_a_nopod_unique, new Advance());
 				})
@@ -423,7 +423,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 23,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Tyrael
 					if (!Game.Empty) UnlockTeleport(4);
 					
@@ -444,7 +444,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 29,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to Crystal Collonade
 					ListenTeleport(119882, new Advance());
 				})
@@ -455,7 +455,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					Game.CurrentEncounter.activated = false;
 					PlayCutscene(2);
@@ -471,7 +471,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 14,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -481,7 +481,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 18,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Imperius
 					var CrystalWorld = Game.GetWorld(WorldSno.a4dun_garden3_spireentrance);
 					
@@ -504,7 +504,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 16,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Imperius
 					//ListenProximity(195606, new LaunchConversation(196579));
 					ListenConversation(196579, new Advance());
@@ -516,7 +516,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 12,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to road to Spire
 					Game.AddOnLoadWorldAction(WorldSno.a4dun_garden3_spireentrance, () =>
 					{
@@ -541,7 +541,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -555,7 +555,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 24,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -565,7 +565,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 26,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to Spire exterior
 					if (Game.Empty) UnlockTeleport(5);
 					ListenTeleport(215396, new Advance());
@@ -577,7 +577,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 7,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Izual
 					if (!Game.Empty) UnlockTeleport(5);
 					Game.AddOnLoadWorldAction(WorldSno.a4dun_spire_exterior, () =>
@@ -600,7 +600,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 20,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to Spire entrance (heavens peak)
 					if (Game.Empty) UnlockTeleport(6);
 					ListenTeleport(205434, new Advance());
@@ -612,7 +612,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 22,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Tyrael
 					if (!Game.Empty) UnlockTeleport(6);
 					if (Game.Empty) UnlockTeleport(7);
@@ -626,7 +626,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 10,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to Crystal Arch
 					ListenTeleport(109563, new Advance());
 				})
@@ -637,7 +637,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Diablo
 					if (!Game.Empty) UnlockTeleport(7);
 					Game.AddOnLoadWorldAction(WorldSno.a4dun_diablo_arena, () =>
@@ -653,7 +653,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 6,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Diablo (1st phase, to 50% hp)		
 					Game.AddOnLoadWorldAction(WorldSno.a4dun_diablo_arena, () =>
 					{
@@ -672,7 +672,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 12,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Diablo Shadow (2nd phase)
 					ListenKill(ActorSno._terrordiablo, 1, new Advance());
 				})
@@ -683,7 +683,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Diablo (3rd phase)
 					var targetWorld = Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3);
 					TeleportToWorld(Game.GetWorld(WorldSno.a4dun_diablo_shadowrealm_01), targetWorld, 172);
@@ -697,7 +697,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 17,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //destroy Diablo
 					StartConversation(Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3), 205783);
 					ListenConversation(205783, new Advance());
@@ -709,7 +709,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 5,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Auriel
 					Game.GetWorld(WorldSno.a4dun_diablo_arena_phase3).GetActorBySNO(ActorSno._hope).NotifyConversation(1);
 					if (Game.IsHardcore)
@@ -734,7 +734,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});

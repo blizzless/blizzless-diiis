@@ -7,7 +7,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
     public enum FixedAttribute
     {
         Invulnerable,
-        Speed
+        Speed,
+        Powerful
     }
     
     public class FixedMap

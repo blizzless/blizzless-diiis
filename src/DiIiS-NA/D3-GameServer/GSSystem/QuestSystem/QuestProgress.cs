@@ -42,8 +42,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			public int count;
 			public int counter;
 			public QuestEvent questEvent;
-		};
-
+		}
+		
 		public class Quest
 		{
 			public bool Completed;
@@ -52,7 +52,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			public int RewardXp;
 			public int RewardGold;
 			public bool Saveable;
-		};
+		}
 
 		public class QuestStep
 		{
@@ -61,13 +61,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			public int NextStep;
 			public Action OnAdvance;
 			public bool Saveable;
-		};
+		}
 
 		public class Objective
 		{
 			public int Limit;
 			public int Counter;
-		};
+			
+			public static Objective Default() => new () { Limit = 1, Counter = 0 };
+		}
 
 		// key can be ActorSno (also multiplied), DestLevelAreaSno, ConversationSno
 		public Dictionary<int, QuestTrigger> QuestTriggers { get; set; }

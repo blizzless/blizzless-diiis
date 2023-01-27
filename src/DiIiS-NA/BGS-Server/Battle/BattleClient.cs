@@ -43,24 +43,20 @@ namespace DiIiS_NA.LoginServer.Battle
 		private static int REQUEST_SERVICE_ID = 0;
 		private static int RESPONSE_SERVICE_ID = 254;
 		//public object clientLock = new object();
-		public readonly object _serviceLock = new object();
-		public object messageLock = new object();
+		public readonly object _serviceLock = new();
+		public object messageLock = new();
 		private ulong _listenerId; // last targeted rpc object.
 		public bool MOTDSent { get; private set; }
 		private ConcurrentDictionary<ulong, ulong> MappedObjects { get; set; }
 		public bool GuildChannelsRevealed = false;
 		public string GameTeamTag = "";
-
-		#region Overwatch
-		public byte[] k0, k1, k2, k3 = new byte[64];
 		public ulong CID = 0;
-		#endregion
 
 		#region current channel
 
-		public Dictionary<ulong, Channel> Channels = new Dictionary<ulong, Channel>();
+		public Dictionary<ulong, Channel> Channels = new();
 
-		public List<Channel> ChatChannels = new List<Channel>();
+		public List<Channel> ChatChannels = new();
 		public Channel PartyChannel; //Used for all non game related messages
 		public Channel GameChannel; //Used for all game related messages
 

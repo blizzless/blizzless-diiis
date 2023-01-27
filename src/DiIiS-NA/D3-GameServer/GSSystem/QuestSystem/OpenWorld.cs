@@ -44,7 +44,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 2,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 					script = new CryptPortals();
 					script.Execute(Game.GetWorld(WorldSno.trout_town));
@@ -83,7 +83,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -93,7 +93,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -108,7 +108,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 					
 				})
@@ -119,7 +119,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 
 					
@@ -132,7 +132,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					var NephalemWorld = Game.GetWorld(Game.WorldOfPortalNephalem);
 					ActorSystem.Actor BossOfPortal = null;
@@ -168,7 +168,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -178,7 +178,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					foreach (var plr in Game.Players.Values)
 					{
@@ -199,7 +199,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 					
 				})
@@ -210,7 +210,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 
 				})
@@ -221,7 +221,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					
 
@@ -233,7 +233,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 
 				})
@@ -244,7 +244,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
+				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					foreach (var plr in Game.Players.Values)
 					{
