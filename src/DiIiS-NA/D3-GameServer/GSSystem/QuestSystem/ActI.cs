@@ -262,7 +262,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 7,
                 Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
-                { 
+                {
                     StartConversation(Game.GetWorld(WorldSno.trout_town), 198541);
                 }
             });
@@ -456,7 +456,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 { //go to church				
                     var world = Game.GetWorld(WorldSno.trout_town);
                     ListenProximity(ActorSno._trdun_cath_cathedraldoorexterior, new Advance());
-                    var leah = world.GetActorByGlobalId(LeahTempId);
+                    var leah = world.GetActorBySNO(ActorSno._leah);
                     if (leah != null)
                         leah.Hidden = false;
                     SetActorVisible(world, ActorSno._tristram_mayor, false);
@@ -536,7 +536,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 }
             });
 
-            // TODO: this quest seems to be broken. Leah is not spawned in tristram.
             Game.QuestManager.Quests[72095].Steps.Add(32, new QuestStep
             {
                 Completed = false,
@@ -564,9 +563,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             leah.Hidden = false;
                             leah.SetVisible(true);
                         }
+                        else
+                        {
+                            Logger.Warn($"Leah not found in world {tristramWorld.SNO.ToString()} - quest 72095/step 32");
+                        }
                     }
-
-                    // SetActorVisible(tristramWorld, ActorSno._leah, true);
                     ListenConversation(198617, new Advance());
                 }
             });
