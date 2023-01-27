@@ -1299,7 +1299,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			{
 				int snoConversationList = WorldGenerator.DefaultConversationLists[(int)SNO];//Tags[MarkerKeys.ConversationList].Id;
 
-				Logger.Trace(" (ReadTags) actor {0} GlobalID {2} has a conversation list {1}", NameSNO, snoConversationList, GlobalID);
+				Logger.Debug(" (ReadTags) actor {0} GlobalID {2} has a conversation list {1}", NameSNO, snoConversationList, GlobalID);
 
 				if (MPQStorage.Data.Assets[SNOGroup.ConversationList].ContainsKey(snoConversationList))
 					ConversationList = MPQStorage.Data.Assets[SNOGroup.ConversationList][snoConversationList].Data as DiIiS_NA.Core.MPQ.FileFormats.ConversationList;
@@ -1362,10 +1362,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		#endregion
 
-		public override string ToString()
-		{
-			return $"[Actor] [Type: {ActorType}] SNOId:{SNO} GlobalId: {GlobalID} Position: {Position} Name: {Name}";
-		}
+		public override string ToString() => $"[Actor] [Type: {ActorType}] SNOId:{SNO} GlobalId: {GlobalID} Position: {Position} Name: {Name}";
 	}
 
 	// This should probably be the same as GBHandleType (probably merge them once all actor classes are created)

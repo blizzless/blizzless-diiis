@@ -302,7 +302,7 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
-    [CommandGroup("stashup", "Upgrade Stash.\n !stashup", Account.UserLevels.Tester)]
+    [CommandGroup("stashup", "Upgrade Stash.", Account.UserLevels.Tester)]
     public class StashUpCommand : CommandGroup
     {
         [DefaultCommand]

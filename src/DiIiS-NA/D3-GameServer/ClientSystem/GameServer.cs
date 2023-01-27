@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 	{
 		private new static readonly Logger Logger = LogManager.CreateLogger("GS"); // hide the Server.Logger so that tiny-logger can show the actual server as log source.
 
-		public static GSBackend GSBackend { get; set; }
+		public static GsBackend GSBackend { get; set; }
 
 		public static int MaintenanceTime = -1;
 		public Bot DiscordBot { get; set; }

@@ -2690,7 +2690,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			if (world.QuadTree.Query<Waypoint>(new Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 60f)).Count > 0 ||
 				world.QuadTree.Query<Portal>(new Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 5f)).Count > 0)
 			{
-				Logger.Trace("Load actor {0} ignored - waypoint nearby.", actorSno);
+				Logger.Debug("Load actor {0} ignored - waypoint nearby.", actorSno);
 				return 0;
 			}
 
@@ -2731,7 +2731,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			if (world.QuadTree.Query<Waypoint>(new DiIiS_NA.GameServer.Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 60f)).Count > 0 ||
 				world.QuadTree.Query<Portal>(new DiIiS_NA.GameServer.Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 40f)).Count > 0)
 			{
-				Logger.Trace("Load actor {0} ignored - waypoint nearby.", actorSno);
+				Logger.Debug("Load actor {0} ignored - waypoint nearby.", actorSno);
 				return;
 			}
 

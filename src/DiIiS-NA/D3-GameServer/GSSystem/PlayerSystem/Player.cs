@@ -2371,6 +2371,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				Message = "Пампам"
 			});
 			//*/
+			
 			#endregion
 			if (World == null) return;
 
@@ -2433,7 +2434,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			VacuumPickup();
 			if (World.Game.OnLoadWorldActions.ContainsKey(World.SNO))
 			{
-				Logger.Trace("OnLoadWorldActions: {0}", World.SNO);
+				Logger.Debug("OnLoadWorldActions: {0}", World.SNO);
 				lock (World.Game.OnLoadWorldActions[World.SNO])
 				{
 					try
@@ -2449,7 +2450,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 			if (World.Game.OnLoadSceneActions.ContainsKey(CurrentScene.SceneSNO.Id))
 			{
-				Logger.Trace("OnLoadSceneActions: {0}", CurrentScene.SceneSNO.Id);
+				Logger.Debug("OnLoadSceneActions: {0}", CurrentScene.SceneSNO.Id);
 				lock (World.Game.OnLoadSceneActions[CurrentScene.SceneSNO.Id])
 				{
 					try
@@ -2530,7 +2531,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			var wpWorld = World.Game.GetWayPointWorldById(tryWaypointMessage.nWaypoint);
 			var wayPoint = wpWorld.GetWayPointById(tryWaypointMessage.nWaypoint);
-			Logger.Warn("---Waypoint Debug---");
+			if (wayPoint == null) return;
+			Logger.Debug("---Waypoint Debug---");
 			var proximity = new RectangleF(wayPoint.Position.X - 1f, wayPoint.Position.Y - 1f, 2f, 2f);
 			var scenes = wpWorld.QuadTree.Query<Scene>(proximity);
 			if (scenes.Count == 0) return; // cork (is it real?)
@@ -2544,9 +2546,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 
 			var levelArea = scene.Specification.SNOLevelAreas[0];
-			Logger.Warn($"OnTryWaypoint: Id: {tryWaypointMessage.nWaypoint}, WorldId: {wpWorld.SNO}, levelArea: {levelArea}");
-			if (wayPoint == null) return;
-			Logger.Warn($"WpWorld: {wpWorld}, wayPoint: {wayPoint}");
+			Logger.Debug($"OnTryWaypoint: Id: {tryWaypointMessage.nWaypoint}, WorldId: {wpWorld.SNO}, levelArea: {levelArea}");
+			Logger.Debug($"WpWorld: {wpWorld}, wayPoint: {wayPoint}");
 			InGameClient.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
 			if (wpWorld == World)
 				Teleport(wayPoint.Position);
@@ -2577,19 +2578,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				PlayerIndex = PlayerIndex,
 				LevelAreaSNO = levelArea
 			});
-			Logger.Warn("---Waypoint Debug End---");
+			Logger.Debug("---Waypoint Debug End---");
 		}
 		public void RefreshReveal()
 		{
-			float Range = 200f;
+			float range = 200f;
 			if (InGameClient.Game.CurrentEncounter.activated)
-				Range = 360f;
+				range = 360f;
 
-			List<Actor> actors_around = GetActorsInRange(Range);
-
-			foreach (var actor in actors_around)
-				if (actor is not Player)
-					actor.Unreveal(this);
+			foreach (var actor in GetActorsInRange(range).Where(actor => actor is not Player))
+				actor.Unreveal(this);
 			RevealActorsToPlayer();
 		}
 		private void OnRequestBuyItem(GameClient client, RequestBuyItemMessage requestBuyItemMessage)

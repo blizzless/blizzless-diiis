@@ -90,7 +90,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			//*/
 			Channel channel = ChannelManager.GetChannelByDynamicId(((controller as HandlerController).LastCallHeader).ObjectId);
 			
-			Logger.Trace("UpdateChannelState(): {0}", request.ToString());
+			Logger.Debug("UpdateChannelState(): {0}", request.ToString());
 
 			foreach (bgs.protocol.Attribute attribute in request.StateChange.AttributeList)
 			{
@@ -99,7 +99,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 					if (attribute.HasValue && !attribute.Value.MessageValue.IsEmpty) //Sometimes not present -Egris
 					{
 						var gameCreateParams = D3.OnlineService.GameCreateParams.ParseFrom(attribute.Value.MessageValue);
-						Logger.Trace("D3.Party.GameCreateParams: {0}", gameCreateParams.ToString());
+						Logger.Debug("D3.Party.GameCreateParams: {0}", gameCreateParams.ToString());
 						//D3.OnlineService.EntityId hero = gameCreateParams.Coop.ResumeFromSaveHeroId;
 						bool clear_quests = ((controller as HandlerController).Client.GameChannel != null && gameCreateParams.CampaignOrAdventureMode.QuestStepId == -1 &&
 								(gameCreateParams.CampaignOrAdventureMode.SnoQuest == 87700 ||
@@ -205,7 +205,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.ScreenStatus = null");
+						Logger.Debug("D3.Party.ScreenStatus = null");
 					}
 					else
 					{
@@ -218,7 +218,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(oldScreen.ToByteString()));
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("Client moving to Screen: {0}, with Status: {1}", oldScreen.Screen, oldScreen.Status);
+						Logger.Debug("Client moving to Screen: {0}, with Status: {1}", oldScreen.Screen, oldScreen.Status);
 					}
 				}
 				else if (attribute.Name == "D3.Party.JoinPermissionPreviousToLock")
@@ -232,7 +232,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 						.SetValue(joinPermission);
 
 					channel.AddAttribute(attr.Build());
-					Logger.Trace("D3.Party.JoinPermissionPreviousToLock = {0}", joinPermission.IntValue);
+					Logger.Debug("D3.Party.JoinPermissionPreviousToLock = {0}", joinPermission.IntValue);
 				}
 				else if (attribute.Name == "D3.Party.JoinPermissionPreviousToClose")
 				{
@@ -245,7 +245,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 						.SetValue(joinPermission);
 
 					channel.AddAttribute(attr.Build());
-					Logger.Trace("D3.Party.JoinPermissionPreviousToClose = {0}", joinPermission.IntValue);
+					Logger.Debug("D3.Party.JoinPermissionPreviousToClose = {0}", joinPermission.IntValue);
 				}
 				else if (attribute.Name == "D3.Party.LockReasons")
 				{
@@ -258,7 +258,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 						.SetValue(lockReason);
 
 					channel.AddAttribute(attr.Build());
-					Logger.Trace("D3.Party.LockReasons = {0}", lockReason.IntValue);
+					Logger.Debug("D3.Party.LockReasons = {0}", lockReason.IntValue);
 				}
 				else if (attribute.Name == "D3.Party.GameId")
 				{
@@ -270,10 +270,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(gameId.ToByteString()).Build());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.GameId = {0}", gameId.GameInstanceId);
+						Logger.Debug("D3.Party.GameId = {0}", gameId.GameInstanceId);
 					}
 					else
-						Logger.Trace("D3.Party.GameId = null");
+						Logger.Debug("D3.Party.GameId = null");
 
 				}
 				else if (attribute.Name == "D3.Party.EnterGame.Members")
@@ -286,10 +286,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(members.ToByteString()).Build());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.EnterGame.Members = {0}", members.ToString());
+						Logger.Debug("D3.Party.EnterGame.Members = {0}", members.ToString());
 					}
 					else
-						Logger.Trace("D3.Party.EnterGame.Members = null");
+						Logger.Debug("D3.Party.EnterGame.Members = null");
 
 				}
 				else if (attribute.Name == "D3.Party.JoinPermission")
@@ -302,10 +302,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(permission.ToByteString()).Build());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.JoinPermission = {0}", permission.ToString());
+						Logger.Debug("D3.Party.JoinPermission = {0}", permission.ToString());
 					}
 					else
-						Logger.Trace("D3.Party.JoinPermission = null");
+						Logger.Debug("D3.Party.JoinPermission = null");
 
 				}
 				else if (attribute.Name == "D3.Party.EnterGame.Leader.AtQueueStart")
@@ -318,15 +318,15 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(queueStart.ToByteString()).Build());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.EnterGame.Leader.AtQueueStart = {0}", queueStart.ToString());
+						Logger.Debug("D3.Party.EnterGame.Leader.AtQueueStart = {0}", queueStart.ToString());
 					}
 					else
-						Logger.Trace("D3.Party.EnterGame.Leader.AtQueueStart = null");
+						Logger.Debug("D3.Party.EnterGame.Leader.AtQueueStart = null");
 
 				}
 				else
 				{
-					Logger.Warn("UpdateChannelState(): Unknown attribute: {0}", attribute.Name);
+					Logger.Debug("UpdateChannelState(): Unknown attribute: {0}", attribute.Name);
 				}
 			}
 

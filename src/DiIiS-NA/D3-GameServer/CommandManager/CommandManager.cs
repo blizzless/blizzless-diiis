@@ -111,15 +111,19 @@ namespace DiIiS_NA.GameServer.CommandManager
 			}
 
 			if (found == false)
-				output = string.Format("Unknown command: {0} {1}", command, parameters);
+				output = $"Unknown command: {command} {parameters}";
 
 			if (output == string.Empty)
 				return true;
 
-			output = "[System] " + output;
-
-			invokerClient.SendServerWhisper(output);
-
+			if (output.Contains("\n"))
+			{
+				invokerClient.SendServerWhisper("[SYSTEM]\n" + output + "\n\n");
+			}
+			else
+			{
+				invokerClient.SendServerWhisper("[SYSTEM] " + output);
+			}
 			return true;
 		}
 
@@ -149,14 +153,23 @@ namespace DiIiS_NA.GameServer.CommandManager
 			public override string Fallback(string[] parameters = null, BattleClient invokerClient = null)
 			{
 				var output = "Available commands: ";
-				foreach (var pair in CommandGroups)
+				if (invokerClient != null)
 				{
-					if (invokerClient != null && pair.Key.MinUserLevel > invokerClient.Account.UserLevel) continue;
-					output += pair.Key.Name + ", ";
+					foreach (var pair in CommandGroups.Where(pair =>
+						         pair.Key.MinUserLevel > invokerClient?.Account.UserLevel))
+					{
+						output += "!" + pair.Key.Name + ": " + pair.Key.Help + "\n\n";
+					}
+				}
+				else
+				{
+					foreach (var pair in CommandGroups)
+					{
+						output += "!" + pair.Key.Name + ": " + pair.Key.Help + "\n\n";
+					}
 				}
 
-				output = output.Substring(0, output.Length - 2) + ".";
-				return output + "\nType 'help <command>' to get help.";
+				return output + "Type 'help <command>' to get help about a specific command.";
 			}
 		}
 
@@ -165,7 +178,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		{
 			public override string Fallback(string[] parameters = null, BattleClient invokerClient = null)
 			{
-				return "usage: help <command>";
+				return "usage: help <command>\nType 'commands' to get a list of available commands.";
 			}
 
 			public override string Handle(string parameters, BattleClient invokerClient = null)

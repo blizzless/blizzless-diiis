@@ -15,7 +15,7 @@ using WatsonTcp;
 
 namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 {
-	public class GSBackend
+	public class GsBackend
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger("GSBackend");
 
@@ -23,17 +23,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public WatsonTcpClient BattleNetSocket;
 
-		public GSBackend(string BattletHost, int BattlePort)
+		public GsBackend(string battletHost, int battlePort)
 		{
-			BattleNetSocket = new WatsonTcpClient(BattletHost, BattlePort, _senderServerConnected, _senderServerDisconnected, _senderMessageReceived, false);
+			BattleNetSocket = new WatsonTcpClient(battletHost, battlePort, SenderServerConnected, SenderServerDisconnected, SenderMessageReceived, false);
 		}
 
 
-		private bool _senderMessageReceived(byte[] data)
+		private bool SenderMessageReceived(byte[] data)
 		{
 			string msg = "";
 			if (data != null && data.Length > 0) msg = Encoding.UTF8.GetString(data);
-			Logger.Trace("Сообщение от Battle.net: {0}", msg);
+			Logger.Debug("Message from Battle.net: {0}", msg);
 
 			var message = msg.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 			var args = message[1].Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
@@ -61,28 +61,28 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						}
 						catch (Exception e)
 						{
-							Logger.WarnException(e, "Ошибка создания игры: ");
+							Logger.WarnException(e, "Error creating game: ");
 						}
 					});
 					break;
 				default:
-					Logger.Warn("Неизвестное сообщение: {0}|{1}", message[0], message[1]);
+					Logger.Warn("Unknown message: {0}|{1}", message[0], message[1]);
 					break;
 			}
 			return true;
 		}
 
-		private bool _senderServerConnected()
+		private bool SenderServerConnected()
 		{
-			//Logger.Info("GameServer подключен к BattleNet.");
+			Logger.Info("GameServer connected to BattleNet.");
 			System.Threading.Thread.Sleep(3000);
-			string BackEndIP = Config.Instance.BindIP;
-			int BackEndPort = Config.Instance.Port;
-			bool PVP = false;
-			if (!PVP)
-				RegisterGameServer(BackEndIP, BackEndPort);
+			string backEndIp = Config.Instance.BindIP;
+			int backEndPort = Config.Instance.Port;
+			bool pvp = false;
+			if (!pvp)
+				RegisterGameServer(backEndIp, backEndPort);
 			else
-				RegisterPvPGameServer(BackEndIP, BackEndPort);
+				RegisterPvPGameServer(backEndIp, backEndPort);
 			return true;
 		}
 
@@ -97,7 +97,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			});
 		}
 
-		private bool _senderServerDisconnected()
+		private void BattleNetSocketSend(string data) => BattleNetSocketSend(Encoding.UTF8.GetBytes(data));
+
+		private bool SenderServerDisconnected()
 		{
 			Logger.Warn("MooNetServer was disconnected!");
 			return true;
@@ -105,128 +107,130 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void RegisterGameServer(string ip, int port)
 		{
-			Logger.Trace("RegisterGameServer(): ip {0}, port {1}", ip, port);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("rngsr|{0}/{1}", ip, port)));
+			Logger.Debug("RegisterGameServer(): ip {0}, port {1}", ip, port);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"rngsr|{ip}/{port}"));
 		}
 
 		public void RegisterPvPGameServer(string ip, int port)
 		{
-			Logger.Trace("RegisterPvPGameServer(): ip {0}, port {1}", ip, port);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("rnpvpgsr|{0}/{1}", ip, port)));
+			Logger.Debug("RegisterPvPGameServer(): ip {0}, port {1}", ip, port);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"rnpvpgsr|{ip}/{port}"));
 		}
 
 		public void GrantAchievement(ulong gameAccountId, ulong achievementId)
 		{
-			Logger.Trace("GrantAchievement(): gameAccountId {0}, achievementId {1}", gameAccountId, achievementId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("grachi|{0}/{1}", gameAccountId, achievementId)));
+			Logger.Debug("GrantAchievement(): gameAccountId {0}, achievementId {1}", gameAccountId, achievementId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"grachi|{gameAccountId}/{achievementId}"));
 		}
 
 		public void GrantCriteria(ulong gameAccountId, ulong criteriaId)
 		{
-			Logger.Trace("GrantCriteria(): gameAccountId {0}, criteriaId {1}", gameAccountId, criteriaId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("gcrit|{0}/{1}", gameAccountId, criteriaId)));
+			Logger.Debug("GrantCriteria(): gameAccountId {0}, criteriaId {1}", gameAccountId, criteriaId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"gcrit|{gameAccountId}/{criteriaId}"));
 		}
 
 		public void UpdateAchievementCounter(ulong gameAccountId, int type, uint addCounter, int comparand, ulong achievement = 0)
 		{
-			Logger.Trace("UpdateAchievementCounter(): type {0}, addCounter {1}, comparand {2}", type, addCounter, comparand);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("uoacce|{0}/{1}/{2}/{3}/{4}", gameAccountId, type, addCounter, comparand, achievement)));
+			Logger.Debug("UpdateAchievementCounter(): type {0}, addCounter {1}, comparand {2}", type, addCounter, comparand);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes(
+				$"uoacce|{gameAccountId}/{type}/{addCounter}/{comparand}/{achievement}"));
 		}
 
 		public void UpdateSingleAchievementCounter(ulong gameAccountId, ulong achId, uint addCounter)
 		{
-			Logger.Trace("UpdateSingleAchievementCounter(): type {0}, addCounter {1}", achId, addCounter);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("upsnaccr|{0}/{1}/{2}", gameAccountId, achId, addCounter)));
+			Logger.Debug("UpdateSingleAchievementCounter(): type {0}, addCounter {1}", achId, addCounter);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"upsnaccr|{gameAccountId}/{achId}/{addCounter}"));
 		}
 
 		public void UpdateQuantity(ulong gameAccountId, ulong achievementId, uint addCounter)
 		{
-			Logger.Trace("UpdateQuantity(): achievementId {0}, addCounter {1}", achievementId, addCounter);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("upequt|{0}/{1}/{2}", gameAccountId, achievementId, addCounter)));
+			Logger.Debug("UpdateQuantity(): achievementId {0}, addCounter {1}", achievementId, addCounter);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"upequt|{gameAccountId}/{achievementId}/{addCounter}"));
 		}
 
 		public void CheckQuestCriteria(ulong gameAccountId, int questId, bool isCoop)
 		{
-			Logger.Trace("CheckQuestCriteria(): gameAccountId {0}, questId {1}, coop {2}", gameAccountId, questId, isCoop);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("cqc|{0}/{1}/{2}", gameAccountId, questId, (isCoop ? "True" : "False"))));
+			Logger.Debug("CheckQuestCriteria(): gameAccountId {0}, questId {1}, coop {2}", gameAccountId, questId, isCoop);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"cqc|{gameAccountId}/{questId}/{(isCoop ? "True" : "False")}"));
 		}
 
 		public void CheckKillMonsterCriteria(ulong gameAccountId, int actorId, int type, bool isHardcore)
 		{
-			Logger.Trace("CheckKillMonsterCriteria(): gameAccountId {0}, actorId {1}, type {2}, hc {3}", gameAccountId, actorId, type, isHardcore);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("ckmc|{0}/{1}/{2}/{3}", gameAccountId, actorId, type, (isHardcore ? "True" : "False"))));
+			Logger.Debug("CheckKillMonsterCriteria(): gameAccountId {0}, actorId {1}, type {2}, hc {3}", gameAccountId, actorId, type, isHardcore);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes(
+				$"ckmc|{gameAccountId}/{actorId}/{type}/{(isHardcore ? "True" : "False")}"));
 		}
 
 		public void CheckSalvageItemCriteria(ulong gameAccountId, int itemId)
 		{
-			Logger.Trace("CheckSalvageItemCriteria(): gameAccountId {0}, itemId {1}", gameAccountId, itemId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("csic|{0}/{1}", gameAccountId, itemId)));
+			Logger.Debug("CheckSalvageItemCriteria(): gameAccountId {0}, itemId {1}", gameAccountId, itemId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"csic|{gameAccountId}/{itemId}"));
 		}
 
 		public void CheckLevelCap(ulong gameAccountId)
 		{
-			Logger.Trace("CheckLevelCap(): gameAccountId {0}", gameAccountId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("clc|{0}", gameAccountId)));
+			Logger.Debug("CheckLevelCap(): gameAccountId {0}", gameAccountId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"clc|{gameAccountId}"));
 		}
 
 		public void CheckConversationCriteria(ulong gameAccountId, int convId)
 		{
-			Logger.Trace("CheckConversationCriteria(): gameAccountId {0}, convId {1}", gameAccountId, convId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("ccc|{0}/{1}", gameAccountId, convId)));
+			Logger.Debug("CheckConversationCriteria(): gameAccountId {0}, convId {1}", gameAccountId, convId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"ccc|{gameAccountId}/{convId}"));
 		}
 
 		public void CheckLevelAreaCriteria(ulong gameAccountId, int laId)
 		{
-			Logger.Trace("CheckLevelAreaCriteria(): gameAccountId {0}, laId {1}", gameAccountId, laId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("clac|{0}/{1}", gameAccountId, laId)));
+			Logger.Debug("CheckLevelAreaCriteria(): gameAccountId {0}, laId {1}", gameAccountId, laId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"clac|{gameAccountId}/{laId}"));
 		}
 
 		public void UpdateClient(ulong gameAccountId, int level, int screen)
 		{
-			Logger.Trace("UpdateClient(): gameAccountId {0}", gameAccountId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("uc|{0}/{1}/{2}", gameAccountId, level, screen)));
+			Logger.Debug("UpdateClient(): gameAccountId {0}", gameAccountId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"uc|{gameAccountId}/{level}/{screen}"));
 		}
 
 		public void PlayerJoined(int gameId)
 		{
-			Logger.Trace("PlayerJoined(): gameId {0}", gameId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("gpj|{0}", gameId)));
+			Logger.Debug("PlayerJoined(): gameId {0}", gameId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"gpj|{gameId}"));
 		}
 
 		public void PlayerLeft(int gameId)
 		{
-			Logger.Trace("PlayerLeft(): gameId {0}", gameId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("gpl|{0}", gameId)));
+			Logger.Debug("PlayerLeft(): gameId {0}", gameId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"gpl|{gameId}"));
 		}
 
 		public void SetGamePublic(int gameId)
 		{
-			Logger.Trace("SetGamePublic(): gameId {0}", gameId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("gsp|{0}", gameId)));
+			Logger.Debug("SetGamePublic(): gameId {0}", gameId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"gsp|{gameId}"));
 		}
 
 		public void PvPSaveProgress(ulong gameAccountId, int kills, int wins, int gold)
 		{
-			Logger.Trace("PvPSaveProgress(): gameAccountId {0}", gameAccountId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("pvpsp|{0}/{1}/{2}/{3}", gameAccountId, kills, wins, gold)));
+			Logger.Debug("PvPSaveProgress(): gameAccountId {0}", gameAccountId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"pvpsp|{gameAccountId}/{kills}/{wins}/{gold}"));
 		}
 
 		public void ParagonLevelUp(ulong gameAccountId)
 		{
-			Logger.Trace("ParagonLevelUp(): gameAccountId {0}", gameAccountId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("plu|{0}", gameAccountId)));
+			Logger.Debug("ParagonLevelUp(): gameAccountId {0}", gameAccountId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"plu|{gameAccountId}"));
 		}
 
-		public void ToonStateChanged(ulong toonID)
+		public void ToonStateChanged(ulong toonId)
 		{
-			Logger.Trace("ToonStateChanged(): toonID {0}", toonID);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("tsc|{0}", toonID)));
+			Logger.Debug("ToonStateChanged(): toonID {0}", toonId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"tsc|{toonId}"));
 		}
 
 		public void UniqueItemIdentified(ulong gameAccountId, ulong itemId)
 		{
-			Logger.Trace("UniqueItemIdentified(): gameAccountId {0}, itemId {1}", gameAccountId, itemId);
-			BattleNetSocketSend(Encoding.UTF8.GetBytes(string.Format("uii|{0}/{1}", gameAccountId, itemId)));
+			Logger.Debug("UniqueItemIdentified(): gameAccountId {0}, itemId {1}", gameAccountId, itemId);
+			BattleNetSocketSend(Encoding.UTF8.GetBytes($"uii|{gameAccountId}/{itemId}"));
 		}
 	}
 }

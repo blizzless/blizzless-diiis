@@ -40,6 +40,7 @@ using System.Linq;
 using System.Net.Security;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
 
 namespace DiIiS_NA.LoginServer.Battle
 {
@@ -133,6 +134,14 @@ namespace DiIiS_NA.LoginServer.Battle
 				{
 					ListenerId = lid
 				}, notification, callback => { }));
+		}
+
+		public void SendServerMessage(string text)
+		{
+			InGameClient.SendMessage(new BroadcastTextMessage()
+			{
+				Field0 = text
+			});
 		}
 
 		public void LeaveAllChannels()
@@ -405,10 +414,8 @@ namespace DiIiS_NA.LoginServer.Battle
 				{
 					if (this.SocketConnection == null || !this.SocketConnection.Active) return;
 					var listenerId = this.GetRemoteObjectId(targetObject.DynamicId);
-#if DEBUG
-					Logger.Trace("[RPC: {0}] Method: {1} Target: {2} [localId: {3}, remoteId: {4}].", this, rpc.Method,
+					Logger.Debug("[RPC: {0}] Method: {1} Target: {2} [localId: {3}, remoteId: {4}].", this.GetType().Name, rpc.Method.Name,
 								 targetObject.ToString(), targetObject.DynamicId, listenerId);
-#endif
 
 					rpc(listenerId);
 				}
@@ -425,9 +432,7 @@ namespace DiIiS_NA.LoginServer.Battle
 				try
 				{
 					if (this.SocketConnection == null || !this.SocketConnection.Active) return;
-#if DEBUG
-					Logger.Trace("[RPC: {0}] Method: {1} Target: N/A", this, rpc.Method);
-#endif
+					Logger.Debug("[RPC: {0}] Method: {1} Target: N/A", this.GetType().Name, rpc.Method.Name);
 					rpc(0);
 				}
 				catch { }
