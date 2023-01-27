@@ -8,8 +8,6 @@ using Discord.Commands;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-using DiIiS_NA.Core.Storage;
-using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 using DiIiS_NA.LoginServer.Battle;
 using DiIiS_NA.LoginServer.GamesSystem;
 
