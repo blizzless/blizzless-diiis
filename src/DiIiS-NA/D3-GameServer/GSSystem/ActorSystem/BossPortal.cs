@@ -7,6 +7,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
 //using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
