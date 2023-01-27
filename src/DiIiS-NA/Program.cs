@@ -54,6 +54,7 @@ using System.Globalization;
 using System.Linq;
 //Blizzless Project 2022 
 using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 //Blizzless Project 2022 
 using System.Security;
 //Blizzless Project 2022 
@@ -67,10 +68,10 @@ using Environment = System.Environment;
 
 namespace DiIiS_NA
 {
-    
+
     class Program
     {
-        private static readonly Logger Logger = LogManager.CreateLogger("BZ.Net"); 
+        private static readonly Logger Logger = LogManager.CreateLogger("BZ.Net");
         public static readonly DateTime StartupTime = DateTime.Now;
         public static BattleBackend BattleBackend { get; set; }
         public bool GameServersAvailable = true;
@@ -80,9 +81,9 @@ namespace DiIiS_NA
         public static GameServer.ClientSystem.GameServer GameServer;
         public static Watchdog Watchdog;
 
-		public static Thread GameServerThread;
-		public static Thread WatchdogThread;
-        
+        public static Thread GameServerThread;
+        public static Thread WatchdogThread;
+
         public static string LOGINSERVERIP = DiIiS_NA.LoginServer.Config.Instance.BindIP;
         public static string GAMESERVERIP = DiIiS_NA.GameServer.Config.Instance.BindIP;
         public static string RESTSERVERIP = DiIiS_NA.REST.Config.Instance.IP;
@@ -93,19 +94,8 @@ namespace DiIiS_NA
         private static readonly string TypeBuild = "BETA";
         private static bool D3CoreEnabled = DiIiS_NA.GameServer.Config.Instance.CoreActive;
 
-        static bool SetTitle(string text)
-        {
-            try
-            {
-                Console.Title = text;
-                return true;
-            }
-            catch (PlatformNotSupportedException)
-            {
-                return false;
-            }
-        }
-        static async Task LoginServer()
+
+    static async Task LoginServer()
         {
 #if DEBUG
             D3CoreEnabled = true;
@@ -116,12 +106,13 @@ namespace DiIiS_NA
             
             string name = $"Blizzless: Build {Build}, Stage: {Stage} - {TypeBuild}";
             SetTitle(name);
+            Maximize();
             AnsiConsole.Write(new Rule("[dodgerblue1]Blizz[/][deepskyblue2]less[/]").RuleStyle("steelblue1"));
             AnsiConsole.Write(new Rule($"[dodgerblue3]Build [/][deepskyblue3]{Build}[/]").RightJustified().RuleStyle("steelblue1_1"));
             AnsiConsole.Write(new Rule($"[dodgerblue3]Stage [/][deepskyblue3]{Stage}[/]").RightJustified().RuleStyle("steelblue1_1"));
             AnsiConsole.Write(new Rule($"[deepskyblue3]{TypeBuild}[/]").RightJustified().RuleStyle("steelblue1_1"));
             AnsiConsole.Write(new Rule($"[red3_1]Diablo III[/] [red]RoS 2.7.4.84161[/] - [link=https://github.com/blizzless/blizzless-diiis]https://github.com/blizzless/blizzless-diiis[/]").RuleStyle("red"));
-
+        
             AnsiConsole.MarkupLine("");
             Console.WriteLine();
             Console.Title = name;
@@ -276,6 +267,8 @@ namespace DiIiS_NA
                     }
                     if (line.ToLower().StartsWith("!sno"))
                     {
+                        if (IsTargetEnabled("ansi"))
+                            Console.Clear();
                         MPQStorage.Data.SnoBreakdown(line.ToLower().Equals("!sno 1") || line.ToLower().Equals("!sno true"));
                         continue;
                     }
@@ -284,6 +277,7 @@ namespace DiIiS_NA
 
                 if (PlayerManager.OnlinePlayers.Count > 0)
                 {
+                    Logger.Info($"Server is shutting down in 1 minute, $[blue]${PlayerManager.OnlinePlayers.Count} players$[/]$ are still online.");
                     PlayerManager.SendWhisper("Server is shutting down in 1 minute.");
                     await Task.Delay(TimeSpan.FromMinutes(1));
                 }
@@ -343,7 +337,7 @@ namespace DiIiS_NA
         }
 
         static int TargetsEnabled(string target) => LogConfig.Instance.Targets.Count(t => t.Target.ToLower() == target && t.Enabled);
-        static bool IsTargetEnabled(string target) => TargetsEnabled(target) > 0;
+        public static bool IsTargetEnabled(string target) => TargetsEnabled(target) > 0;
         private static void InitLoggers()
         {
             LogManager.Enabled = true;
@@ -417,5 +411,42 @@ namespace DiIiS_NA
             return true;
         }
 
+        static bool SetTitle(string text)
+        {
+            try
+            {
+                Console.Title = text;
+                return true;
+            }
+            catch (PlatformNotSupportedException)
+            {
+                return false;
+            }
+        }
+        
+        [DllImport("kernel32.dll", ExactSpelling = true)]
+
+        static extern IntPtr GetConsoleWindow();
+        static IntPtr ThisConsole = GetConsoleWindow();
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        const int HIDE = 0;
+        const int MAXIMIZE = 3;
+        const int MINIMIZE = 6;
+        const int RESTORE = 9;
+        private static void Maximize()
+        {
+            // if it's running on windows
+            try
+            {
+                if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                {
+                    ShowWindow(ThisConsole, MAXIMIZE);
+                }
+            }
+            catch{ /*ignore*/ }
+        }
     }
 }

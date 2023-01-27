@@ -199,17 +199,19 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             this.LoadSNODict(DictSNOWeathers, SNOGroup.Weather);
             this.LoadSNODict(DictSNOWorlds, SNOGroup.Worlds);
             this.LoadDBCatalog();
-            
+            #if DEBUG
             SnoBreakdown();
+            #endif
         }
 
         public void SnoBreakdown(bool fullBreakdown = false)
         {
             Console.WriteLine();
+            if (Program.IsTargetEnabled("ansi"))
+                Console.Clear();
             var breakdownChart = new BreakdownChart()
                 .FullSize()
                 .AddItem("Actor", DictSNOActor.Count, Color.Blue)
-                .AddItem("Boss Encounter", DictSNOBossEncounter.Count, Color.Aquamarine1)
                 .AddItem("Effect Group", DictSNOEffectGroup.Count, Color.Yellow)
                 .AddItem("Game Balance", DictSNOGameBalance.Count, Color.Cyan3)
                 .AddItem("Monster", DictSNOMonster.Count, Color.Red)
@@ -217,17 +219,18 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
                 .AddItem("Quest", DictSNOQuest.Count, Color.Fuchsia)
                 .AddItem("Quest Range", DictSNOQuestRange.Count, Color.Magenta2_1)
                 .AddItem("Recipe", DictSNORecipe.Count, Color.Lime)
-                .AddItem("Scene", DictSNOScene.Count, Color.DarkOrange3)
-                .AddItem("Act", DictSNOAct.Count, Color.Green);
+                .AddItem("Scene", DictSNOScene.Count, Color.DarkOrange3);
 
             if (fullBreakdown)
             {
                 breakdownChart.AddItem("Accolade", DictSNOAccolade.Count, Color.Gold1)
+                    .AddItem("Boss Encounter", DictSNOBossEncounter.Count, Color.Cornsilk1)
+                    .AddItem("Act", DictSNOAct.Count, Color.IndianRed)
                     .AddItem("Adventure", DictSNOAdventure.Count, Color.Orange4_1)
                     .AddItem("Ambient Sound", DictSNOAmbientSound.Count, Color.OrangeRed1)
                     .AddItem("Animations", DictSNOAnim.Count, Color.Orchid)
                     .AddItem("Animation 2D", DictSNOAnimation2D.Count, Color.BlueViolet)
-                    .AddItem("Animation Set", DictSNOAnimSet.Count, Color.Blue3)
+                    .AddItem("Animation Set", DictSNOAnimSet.Count, Color.LightGoldenrod1)
                     .AddItem("Conversation", DictSNOConversation.Count, Color.Aquamarine1_1)
                     .AddItem("Encounter", DictSNOEncounter.Count, Color.Green3_1)
                     .AddItem("Level Area", DictSNOLevelArea.Count, Color.Grey62)
