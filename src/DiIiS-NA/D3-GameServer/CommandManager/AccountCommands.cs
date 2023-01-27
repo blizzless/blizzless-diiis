@@ -35,9 +35,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 			var account = AccountManager.GetAccountByEmail(email);
 
 			if (account == null)
-				return string.Format("No account with email '{0}' exists.", email);
+				return $"No account with email '{email}' exists.";
 
-			return string.Format("Email: {0} User Level: {1}", account.Email, account.UserLevel);
+			return $"Email: {account.Email} User Level: {account.UserLevel}";
 		}
 
 		[Command("add", "Allows you to add a new user account.\nUsage: account add <email> <password> <battletag> [userlevel]", Account.UserLevels.GM)]
@@ -77,7 +77,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 			}
 
 			if (!email.Contains('@'))
-				return string.Format("'{0}' is not a valid email address.", email);
+				return $"'{email}' is not a valid email address.";
 
 			if (battleTagName.Contains('#'))
 				return "BattleTag must not contain '#' or HashCode.";
@@ -86,12 +86,13 @@ namespace DiIiS_NA.GameServer.CommandManager
 				return "Password should be a minimum of 8 and a maximum of 16 characters.";
 
 			if (AccountManager.GetAccountByEmail(email) != null)
-				return string.Format("An account already exists for email address {0}.", email);
+				return $"An account already exists for email address {email}.";
 
 			var account = AccountManager.CreateAccount(email, password, battleTagName, userLevel);
 			var gameAccount = GameAccountManager.CreateGameAccount(account);
 			//account.DBAccount.DBGameAccounts.Add(gameAccount.DBGameAccount);
-			return string.Format("Created new account {0} [user-level: {1}] Full BattleTag: {2}.", account.Email, account.UserLevel, account.BattleTag);
+			return
+				$"Created new account {account.Email} [user-level: {account.UserLevel}] Full BattleTag: {account.BattleTag}.";
 		}
 
 		[Command("setpassword", "Allows you to set a new password for account\nUsage: account setpassword <email> <password>", Account.UserLevels.GM)]
@@ -106,13 +107,13 @@ namespace DiIiS_NA.GameServer.CommandManager
 			var account = AccountManager.GetAccountByEmail(email);
 
 			if (account == null)
-				return string.Format("No account with email '{0}' exists.", email);
+				return $"No account with email '{email}' exists.";
 
 			if (password.Length < 8 || password.Length > 16)
 				return "Password should be a minimum of 8 and a maximum of 16 characters.";
 
-			AccountManager.UpdatePassword(account, password);
-			return string.Format("Updated password for account {0}.", email);
+			account.UpdatePassword(password);
+			return $"Updated password for account {email}.";
 		}
 
 		[Command("setbtag", "Allows you to change battle tag for account\nUsage: account setbtag <email> <newname>", Account.UserLevels.GM)]
@@ -127,10 +128,10 @@ namespace DiIiS_NA.GameServer.CommandManager
 			var account = AccountManager.GetAccountByEmail(email);
 
 			if (account == null)
-				return string.Format("No account with email '{0}' exists.", email);
+				return $"No account with email '{email}' exists.";
 
-			AccountManager.UpdateBattleTag(account, newname);
-			return string.Format("Updated battle tag for account {0}.", email);
+			account.UpdateBattleTag(newname);
+			return $"Updated battle tag for account {email}.";
 		}
 
 		[Command("setuserlevel", "Allows you to set a new user level for account\nUsage: account setuserlevel <email> <user level>.\nAvailable user levels: owner, admin, gm, user.", Account.UserLevels.GM)]
@@ -146,7 +147,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 			var account = AccountManager.GetAccountByEmail(email);
 
 			if (account == null)
-				return string.Format("No account with email '{0}' exists.", email);
+				return $"No account with email '{email}' exists.";
 
 			switch (level)
 			{
@@ -169,7 +170,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 					return level + " is not a valid user level.";
 			}
 			account.UpdateUserLevel(userLevel);
-			return string.Format("Updated user level for account {0} [user-level: {1}].", email, userLevel);
+			return $"Updated user level for account {email} [user-level: {userLevel}].";
 		}
 	}
 
@@ -189,7 +190,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 			var account = AccountManager.GetAccountByName(bTagName);
 
 			if (account == null)
-				return string.Format("No account with bTagName '{0}' exists.", bTagName);
+				return $"No account with bTagName '{bTagName}' exists.";
 
 			account.MuteTime = DateTime.Now.ToUnixTime() + (muteTime * 60);
 

@@ -16,7 +16,11 @@ namespace DiIiS_NA.Core.Logging
 	{
 		public string Name { get; protected set; }
 
-		/// <param name="name">Name of the logger.</param>
+		/// <summary>
+		/// A logger base type is used to create a logger instance.
+		/// E.g. ConsoleTarget, FileTarget, etc.
+		/// </summary>
+		/// <param name="name">Logger name</param>
 		public Logger(string name)
 		{
 			Name = name;
@@ -25,80 +29,107 @@ namespace DiIiS_NA.Core.Logging
 		public enum Level
 		{
 			RenameAccountLog,
+			/// <summary>
+			/// Chat messages.
+			/// </summary>
 			ChatMessage,
 			BotCommand,
+			/// <summary>
+			/// The messages meant for debugging purposes.
+			/// Shouldn't be shown in production as they are not meant for the end user.
+			/// </summary>
 			Debug,
+			/// <summary>
+			/// The messages meant for tracing purposes.
+			/// Trace messages are rarer than debug messages and should be used for more precise tracing.
+			/// </summary>
 			Trace,
+			/// <summary>
+			/// Informational messages.
+			/// </summary>
 			Info,
+			/// <summary>
+			/// Warning messages.
+			/// </summary>
 			Warn,
+			/// <summary>
+			/// Error messages.
+			/// </summary>
 			Error,
+			/// <summary>
+			/// Fatal messages (usually unrecoverable errors that leads to client or server crashes).
+			/// </summary>
 			Fatal,
+			/// <summary>
+			/// Packet messages.
+			/// </summary>
 			PacketDump,
 		}
 
 		#region message loggers
 
 		/// <param name="message">The log message.</param>
-		public void ChatMessage(string message) { Log(Level.ChatMessage, message, null); }
-		/// <param name="message">The log message.</param>
-		/// <param name="args">Additional arguments.</param>
-		public void ChatMessage(string message, params object[] args) { Log(Level.ChatMessage, message, args); }
+		public void ChatMessage(string message) => Log(Level.ChatMessage, message, null);
 
 		/// <param name="message">The log message.</param>
-		public void BotCommand(string message) { Log(Level.BotCommand, message, null); }
+		/// <param name="args">Additional arguments.</param>
+		public void ChatMessage(string message, params object[] args) => Log(Level.ChatMessage, message, args);
+
+		/// <param name="message">The log message.</param>
+		public void BotCommand(string message) => Log(Level.BotCommand, message, null);
 
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
 		public void BotCommand(string message, params object[] args) { Log(Level.BotCommand, message, args); }
 
 		/// <param name="message">The log message.</param>
-		public void RenameAccount(string message) { Log(Level.RenameAccountLog, message, null); }
+		public void RenameAccount(string message) => Log(Level.RenameAccountLog, message, null);
 
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
-		public void RenameAccount(string message, params object[] args) { Log(Level.RenameAccountLog, message, args); }
+		public void RenameAccount(string message, params object[] args) => Log(Level.RenameAccountLog, message, args);
 
 		/// <param name="message">The log message.</param>
-		public void Trace(string message) { Log(Level.Trace, message, null); }
-
-		/// <param name="message">The log message.</param>
-		/// <param name="args">Additional arguments.</param>
-		public void Trace(string message, params object[] args) { Log(Level.Trace, message, args); }
-
-		/// <param name="message">The log message.</param>
-		public void Debug(string message) { Log(Level.Debug, message, null); }
+		public void Trace(string message) => Log(Level.Trace, message, null);
 
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
-		public void Debug(string message, params object[] args) { Log(Level.Debug, message, args); }
+		public void Trace(string message, params object[] args) => Log(Level.Trace, message, args);
 
 		/// <param name="message">The log message.</param>
-		public void Info(string message) { Log(Level.Info, message, null); }
-
-		/// <param name="message">The log message.</param>
-		/// <param name="args">Additional arguments.</param>
-		public void Info(string message, params object[] args) { Log(Level.Info, message, args); }
-
-		/// <param name="message">The log message.</param>
-		public void Warn(string message) { Log(Level.Warn, message, null); }
+		public void Debug(string message) => Log(Level.Debug, message, null);
 
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
-		public void Warn(string message, params object[] args) { Log(Level.Warn, message, args); }
+		public void Debug(string message, params object[] args) => Log(Level.Debug, message, args);
 
 		/// <param name="message">The log message.</param>
-		public void Error(string message) { Log(Level.Error, message, null); }
-
-		/// <param name="message">The log message.</param>
-		/// <param name="args">Additional arguments.</param>
-		public void Error(string message, params object[] args) { Log(Level.Error, message, args); }
-
-		/// <param name="message">The log message.</param>
-		public void Fatal(string message) { Log(Level.Fatal, message, null); }
+		public void Info(string message) => Log(Level.Info, message, null);
 
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
-		public void Fatal(string message, params object[] args) { Log(Level.Fatal, message, args); }
+		public void Info(string message, params object[] args) => Log(Level.Info, message, args);
+
+		/// <param name="message">The log message.</param>
+		public void Warn(string message) => Log(Level.Warn, message, null);
+
+		/// <param name="message">The log message.</param>
+		/// <param name="args">Additional arguments.</param>
+		public void Warn(string message, params object[] args) => Log(Level.Warn, message, args);
+
+		/// <param name="message">The log message.</param>
+		public void Error(string message) => Log(Level.Error, message, null);
+
+		/// <param name="message">The log message.</param>
+		/// <param name="args">Additional arguments.</param>
+		public void Error(string message, params object[] args) => Log(Level.Error, message, args);
+
+		/// <param name="message">The log message.</param>
+		public void Fatal(string message) => Log(Level.Fatal, message, null);
+
+		/// <param name="message">The log message.</param>
+		/// <param name="args">Additional arguments.</param>
+		public void Fatal(string message, params object[] args) => Log(Level.Fatal, message, args);
 
 		#endregion
 
