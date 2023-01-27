@@ -162,10 +162,8 @@ namespace DiIiS_NA
                     }
                 }
             });
-            
             AchievementManager.Initialize();
             Core.Storage.AccountDataBase.SessionProvider.RebuildSchema();
-            
             string GeneratePassword(int size) => new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", size)
                 .Select(s => s[new Random().Next(s.Length)]).ToArray());
             void LogAccountCreated(string username, string password)
@@ -333,15 +331,15 @@ namespace DiIiS_NA
                 Logger.ErrorException(ex, "A root error of the server was detected but was handled.");
         }
 
-        static bool IsTargetEnabled(string target) => LogConfig.Instance.Targets.Any(t => t.Target.ToLower() == target && t.Enabled);
+        static int TargetsEnabled(string target) => LogConfig.Instance.Targets.Count(t => t.Target.ToLower() == target && t.Enabled);
+        static bool IsTargetEnabled(string target) => TargetsEnabled(target) > 0;
         private static void InitLoggers()
         {
             LogManager.Enabled = true;
-
-
-            if (IsTargetEnabled("ansi") && IsTargetEnabled("console"))
+            
+            if (TargetsEnabled("ansi") > 1 || (IsTargetEnabled("console") && IsTargetEnabled("ansi")))
             {
-                AnsiConsole.MarkupLine("[underline red on white]Fatal:[/] [red]You can't use both ansi and console targets at the same time.[/]");
+                AnsiConsole.MarkupLine("[underline red on white]Fatal:[/] [red]You can't use both ansi and console targets at the same time, nor have more than one ansi target.[/]");
                 AnsiConsole.Progress().Start(ctx =>
                 {
                     var sd = ctx.AddTask("[red3_1]Shutting down[/]");

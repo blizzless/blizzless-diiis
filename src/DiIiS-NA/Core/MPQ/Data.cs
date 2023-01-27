@@ -24,6 +24,7 @@ using System.Reflection;
 using System.Text;
 //Blizzless Project 2022 
 using System.Threading.Tasks;
+using Spectre.Console;
 
 namespace DiIiS_NA.Core.MPQ
 {
@@ -198,6 +199,43 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             this.LoadSNODict(DictSNOWeathers, SNOGroup.Weather);
             this.LoadSNODict(DictSNOWorlds, SNOGroup.Worlds);
 
+            #if DEBUG
+            Console.WriteLine();
+            AnsiConsole.Write(new BreakdownChart()
+                .FullSize()
+                .AddItem("Accolade", DictSNOAccolade.Count, Color.Gold1)
+                .AddItem("Act", DictSNOAct.Count, Color.Green)
+                .AddItem("Actor", DictSNOActor.Count, Color.Blue)
+                .AddItem("Adventure", DictSNOAdventure.Count, Color.Orange4_1)
+                .AddItem("Ambient Sound", DictSNOAmbientSound.Count, Color.OrangeRed1)
+                .AddItem("Animations", DictSNOAnim.Count, Color.Orchid)
+                .AddItem("Animation 2D", DictSNOAnimation2D.Count, Color.BlueViolet)
+                .AddItem("Animation Set", DictSNOAnimSet.Count, Color.Blue3)
+                .AddItem("Boss Encounter", DictSNOBossEncounter.Count, Color.Aquamarine1)
+                .AddItem("Conversation", DictSNOConversation.Count, Color.Aquamarine1_1)
+                .AddItem("Effect Group", DictSNOEffectGroup.Count, Color.Yellow)
+                .AddItem("Encounter", DictSNOEncounter.Count, Color.Green3_1)
+                .AddItem("Game Balance", DictSNOGameBalance.Count, Color.GreenYellow)
+                .AddItem("Level Area", DictSNOLevelArea.Count, Color.Grey62)
+                .AddItem("Lore", DictSNOLore.Count, Color.Plum4)
+                .AddItem("Marker Set", DictSNOMarkerSet.Count, Color.Salmon1)
+                .AddItem("Monster", DictSNOMonster.Count, Color.Red)
+                .AddItem("Music", DictSNOMusic.Count, Color.Olive)
+                .AddItem("Observer", DictSNOObserver.Count, Color.Violet)
+                .AddItem("Phys Mesh", DictSNOPhysMesh.Count, Color.CornflowerBlue)
+                .AddItem("Power", DictSNOPower.Count, Color.LightPink1)
+                .AddItem("Quest", DictSNOQuest.Count, Color.LightGreen)
+                .AddItem("Quest Range", DictSNOQuestRange.Count, Color.LightGreen_1)
+                .AddItem("Recipe", DictSNORecipe.Count, Color.Yellow2)
+                .AddItem("Ropes", DictSNORopes.Count, Color.Yellow1)
+                .AddItem("Scene", DictSNOScene.Count, Color.DarkOrange3)
+                .AddItem("Skill Kit", DictSNOSkillKit.Count, Color.DeepPink4_1)
+                .AddItem("Tutorial", DictSNOTutorial.Count, Color.NavajoWhite3)
+                .AddItem("Weather", DictSNOWeathers.Count, Color.Navy)
+                .AddItem("Worlds", DictSNOWorlds.Count, Color.SlateBlue3_1)
+            );
+            Console.WriteLine();
+            #endif
             this.LoadDBCatalog();
         }
 

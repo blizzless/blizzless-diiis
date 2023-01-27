@@ -12,11 +12,11 @@ namespace DiIiS_NA.Core.Logging
 		public LogTargetConfig[] Targets = new[]
 		{
 			new LogTargetConfig("ConsoleLog"),
-			new LogTargetConfig("AnsiLog")
+			new LogTargetConfig("AnsiLog"),
 			//new LogTargetConfig("ServerLog"),
 			//new LogTargetConfig("ChatLog"),
 			//new LogTargetConfig("RenameAccountLog"),
-			//new LogTargetConfig("PacketLog")
+			new LogTargetConfig("PacketLog")
 		};
 
 		private LogConfig() :

@@ -63,7 +63,8 @@ public class AnsiTarget : LogTarget
         return text
             .Replace("Blizzless", "[dodgerblue1]Blizz[/][deepskyblue2]less[/]")
             .Replace("Diablo III", "[red3_1]Diablo[/] [red]III[/]")
-            .Replace("MPQ", "[underline yellow4]MPQ[/]");
+            .Replace("MPQ", "[underline yellow4]MPQ[/]")
+            .Replace("Discord", "[blue]Discord[/]");
     }
 
     

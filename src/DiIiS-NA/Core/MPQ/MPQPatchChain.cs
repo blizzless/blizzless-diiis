@@ -19,7 +19,7 @@ namespace DiIiS_NA.Core.MPQ
 {
     public class MPQPatchChain
     {
-        protected static readonly Logger Logger = LogManager.CreateLogger("FS");
+        protected static readonly Logger Logger = LogManager.CreateLogger("MPQPatchChain");
 
         public bool Loaded { get; private set; }
         public List<string> BaseMPQFiles = new List<string>();
