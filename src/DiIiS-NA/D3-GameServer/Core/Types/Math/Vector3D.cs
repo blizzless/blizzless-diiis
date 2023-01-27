@@ -10,6 +10,7 @@ using DiIiS_NA.GameServer.MessageSystem;
 using Gibbed.IO;
 //Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
+using System;
 
 namespace DiIiS_NA.GameServer.Core.Types.Math
 {
@@ -192,6 +193,14 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 		public override string ToString()
 		{
 			return string.Format("x:{0} y:{1} z:{2}", X, Y, Z);
+		}
+
+		public Vector3D Around2D(float f)
+		{
+			var angle = (float)(System.Math.PI * 2 * f);
+			var x = (float)(System.Math.Cos(angle) * X - System.Math.Sin(angle) * Y);
+			var y = (float)(System.Math.Sin(angle) * X + System.Math.Cos(angle) * Y);
+			return new Vector3D(x, y, Z);
 		}
 	}
 }

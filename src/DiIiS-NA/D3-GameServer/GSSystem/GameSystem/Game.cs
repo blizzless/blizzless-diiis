@@ -941,14 +941,24 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				CurrentQuest = QuestsOrder[0];
 				CurrentStep = -1;
 
-				if (CurrentAct is 3000 or 0)
+				if (CurrentAct is 3000)
 				{
 					QuestManager.Quests[CurrentQuest].Steps[-1].OnAdvance.Invoke();
 					return;
 				}
 
 				if (!(currQuest == QuestsOrder[0] && step == -1))
+				{
+					if (currQuest == -1 && step == -1)
+					{
+						currQuest = CurrentQuest;
+						QuestManager.Quests[currQuest].Steps[-1].OnAdvance.Invoke();
+						return;
+					}
+
 					QuestManager.AdvanceTo(currQuest, step);
+					return;
+				}
 
 				if (CurrentQuest == QuestsOrder[0] && CurrentStep == -1)
 					QuestManager.Quests[CurrentQuest].Steps[-1].OnAdvance.Invoke();

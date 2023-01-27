@@ -412,6 +412,18 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				if (cycle > 200) break;
 			}
 		}
+		public void AdvanceToFirstStep(int snoQuest)
+		{
+			var quest = Quests[snoQuest].Steps.OrderBy(s => s.Key).FirstOrDefault();
+			if (quest.Value != null)
+			{
+				AdvanceTo(snoQuest, quest.Key == -1 ? quest.Value.NextStep : quest.Key);
+			}
+			else
+			{
+				Logger.Error("AdvanceToNext: quest {0} not found", snoQuest);
+			}
+		}
 
 		public float QuestTimerEstimate = 0f;
 
