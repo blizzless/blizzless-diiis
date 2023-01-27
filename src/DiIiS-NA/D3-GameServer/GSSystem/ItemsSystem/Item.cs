@@ -894,7 +894,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             var Craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20)
                 .SetCount(playerAcc.BigPortalKey).Build(); // KeyStone Greater Rift.
 
-            object[] consumables =
+            D3.Items.CurrencyData[] consumables =
             {
                 GoldData, BloodShardData, PlatinumData, Craft1Data, Craft2Data, Craft3Data, Craft4Data, Craft5Data,
                 Craft7Data, Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data, Craft8Data,
@@ -1039,7 +1039,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 var craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20)
                     .SetCount(playerAcc.BigPortalKey).Build(); // KeyStone Greater Rift.
 
-                object[] consumables =
+                D3.Items.CurrencyData[] consumables =
                 {
                     goldData, bloodShardData, platinumData, craft1Data, craft2Data, craft3Data, craft4Data, craft5Data,
                     craft7Data, horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data, craft8Data,
@@ -1193,7 +1193,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
                 craft4Data = D3.Items.CurrencyData.CreateBuilder().SetId(6).SetCount(playerAcc.CraftItem4).Build();
 
-                object[] horadricBoxes = { horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data };
+                D3.Items.CurrencyData[] horadricBoxes = { horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data };
                 foreach (var horadricBoxe in horadricBoxes) moneys.AddCurrency(horadricBoxe);
 
                 player.InGameClient.SendMessage(

@@ -454,7 +454,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			if (PresetPowers.ContainsKey(powerSNO))
 			{
-				Logger.Warn($"Monster $[red]$\"{Body.Name}\"$[/]$ already has power {powerSNO}.");
+				Logger.Trace($"Monster $[red]$\"{Body.Name}\"$[/]$ already has power {powerSNO}.");
 				// Logger.Debug("AddPresetPower(): power sno {0} already defined for monster \"{1}\"",
 				//powerSNO, this.Body.ActorSNO.Name);
 				return;

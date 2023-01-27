@@ -2251,10 +2251,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public int GetGoldAmount()
 		{
+
 			if (_inventoryGold != null)
+			{
+				Logger.Warn($"InventoryGold is $[bold red]$NOT$[/]$ null: {_inventoryGold.Attributes[GameAttribute.Gold]}");
 				return _inventoryGold.Attributes[GameAttribute.Gold];
+			}
 			else
+			{
+				Logger.Warn($"InventoryGold is $[bold red]$NULL$[/]$");
+
 				return -1;
+			}
 		}
 
 		public void AddBloodShardsAmount(int amount, bool immediately = true)
@@ -2306,9 +2314,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			D3.Items.CurrencyData Craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20).SetCount(playerAcc.BigPortalKey).Build();      // KeyStone Greater Rift.
 
-			object[] consumables = {GoldData, BloodShardData, PlatinumData, Craft1Data, Craft2Data, Craft3Data, Craft4Data, Craft5Data, Craft7Data, Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data, Craft8Data, Craft9Data, Craft10Data, Craft11Data};
+			D3.Items.CurrencyData[] consumables = {GoldData, BloodShardData, PlatinumData, Craft1Data, Craft2Data, Craft3Data, Craft4Data, Craft5Data, Craft7Data, Horadric1Data, Horadric2Data, Horadric3Data, Horadric4Data, Horadric5Data, Craft8Data, Craft9Data, Craft10Data, Craft11Data};
 
-			foreach (object consumable in consumables)
+			foreach (var consumable in consumables)
 			{
 				Moneys.AddCurrency(consumable);
 			}
@@ -2340,6 +2348,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			Item item = null;
 			int goldAmount = (int)_owner.World.Game.GameDBSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).Gold;
+			Logger.Warn($"User {this._owner.Toon.PersistentID} has {goldAmount} gold.");
 			this.BloodShards = (int)_owner.World.Game.GameDBSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).BloodShards;
 			// Clear already present items
 			// LoadFromDB is called every time World is changed, even entering a dungeon
@@ -2402,9 +2411,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			//}).ContinueWith((a) =>{
 			_inventoryGold = ItemGenerator.CreateGold(_owner, goldAmount);
 			_inventoryGold.Attributes[GameAttribute.Gold] = goldAmount;
+			Logger.Warn($"User {this._owner.Toon.PersistentID} - inventory gold has {_inventoryGold.Attributes[GameAttribute.Gold]} gold.");
+
 			_inventoryGold.Attributes[GameAttribute.ItemStackQuantityLo] = goldAmount; // This is the attribute that makes the gold visible in gamethe gold visible in game
 			_inventoryGold.Owner = _owner;
 			_inventoryGold.SetInventoryLocation((int)EquipmentSlotId.Gold, 0, 0);
+			_inventoryGold.Attributes.SendChangedMessage(_owner.InGameClient);
 			
 			//this.inventoryPotion = ItemGenerator.CreateItem(this._owner, ItemGenerator.GetItemDefinition(DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("HealthPotionBottomless")));
 			//this.inventoryPotion.Owner = _owner;

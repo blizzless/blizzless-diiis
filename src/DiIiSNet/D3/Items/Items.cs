@@ -6579,9 +6579,7 @@ namespace D3.Items {
         return this;
       }
 
-            public void AddCurrency(object consumable)
-            {
-            }
+            
         }
     static CurrencySavedData() {
       object.ReferenceEquals(global::D3.Items.Items.Descriptor, null);
