@@ -43,6 +43,9 @@ Switch private Tag for connect
 ### !powerful
 Makes your character with absurd amount of damage. Useful for testing.
 
+### !resourceful
+Makes your character with full resource. Useful for testing.
+
 ### !info
 Get current game information.
 
