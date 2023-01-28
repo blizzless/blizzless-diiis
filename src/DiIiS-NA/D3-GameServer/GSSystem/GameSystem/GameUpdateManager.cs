@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			for (int coreId = 0; coreId < CPUCount; coreId++)
 			{
 				var thread = new GameUpdateThread();
-				thread.CPUAffinity = 1UL << coreId;
+				thread.CPUAffinity = (1UL << coreId);
 				UpdateWorkers.Add(thread);
 				var loopThread = new Thread(thread.Run) { Name = "UpdateWorkerThread", IsBackground = true }; ; // create the game update thread.
 				loopThread.Start();

@@ -455,7 +455,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					{
 						snoQuest = questId,
 						annMeter = Meterid,
-						flMeter = QuestTimerEstimate / duration
+						flMeter = (QuestTimerEstimate / duration)
 					});
 				};
 			}),
@@ -571,7 +571,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				if (trigger.Value.triggerType == QuestStepObjectiveType.HadConversation)
 					foreach (var world in Game.Worlds)
 					{
-						var actors = world.Actors.Values.Where(d => d.Visible && d is InteractiveNPC && (d as InteractiveNPC).Conversations.Any(c => c.ConversationSNO == trigger.Key));
+						var actors = world.Actors.Values.Where(d => d.Visible && (d is InteractiveNPC) && (d as InteractiveNPC).Conversations.Any(c => c.ConversationSNO == trigger.Key));
 						Actor actor = null;
 						if (actors.Count() == 1) actor = actors.First();
 						if (actor != null)
@@ -674,9 +674,9 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			{
 				if (strictFilter)
 				{
-					if (Game.CurrentQuest == snoQuest && Game.CurrentStep == Step
+					if ((Game.CurrentQuest == snoQuest) && (Game.CurrentStep == Step)
 						||
-					Game.CurrentSideQuest == snoQuest && Game.CurrentSideStep == Step)
+					(Game.CurrentSideQuest == snoQuest) && (Game.CurrentSideStep == Step))
 						return true;
 				}
 				else
@@ -718,7 +718,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		public bool IsInQuestRange(QuestRange range)
 		{
 			
-			if (range.Header.SNOId == 312431) return Game.CurrentAct == 3000;
+			if (range.Header.SNOId == 312431) return (Game.CurrentAct == 3000);
 			if (range.Header.SNOId == 214766) return true; 
 
 			bool started = false;
@@ -927,7 +927,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 						StepID = 4,
 						TaskIndex = AdditionalTaskId,
 						Counter = AdditionalTargetCounter,
-						Checked = AdditionalTargetNeed <= AdditionalTargetCounter ? 1 : 0
+						Checked = (AdditionalTargetNeed <= AdditionalTargetCounter) ? 1 : 0
 					});
 					if (MonsterCount < AdditionalTargetCounter + 20)
 					{
@@ -1015,7 +1015,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		{
 			foreach (var player in QuestManager.Game.Players.Values)
 			{
-				var xpReward = 1000 * player.Level * (1 + player.Level / 7) * QuestManager.Game.XPModifier;
+				var xpReward = 1000 * player.Level * (1 + (player.Level / 7)) * QuestManager.Game.XPModifier;
 				if (Type == BountyData.BountyType.KillUnique)
 					xpReward *= 1.8f;
 				if (Type == BountyData.BountyType.ClearDungeon)
