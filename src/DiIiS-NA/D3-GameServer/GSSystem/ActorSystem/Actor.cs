@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
 using Player = DiIiS_NA.GameServer.GSSystem.PlayerSystem.Player;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem

@@ -1,23 +1,28 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using DiIiS_NA.Core.Extensions;
+using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.Core.Logging;
+using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
+using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
+using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-using DiIiS_NA.Core.Helpers.Hash;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
-using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.Core.Logging;
-using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
+using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
+using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
 
-namespace DiIiS_NA.GameServer.GSSystem.GameSystem
+namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 {
 	public class QuestManager
 	{
@@ -73,91 +78,89 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			Bounties.Clear();
 			
-			var kill_boss_bounties = ItemGenerator.Bounties.Values
-				.Where(b => b.BountyData0.Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillBoss)
-				.Where(b => !Bounties.Select(b => b.LevelArea).Contains(b.BountyData0.LeveAreaSNO0))
-				.OrderBy(b => FastRandom.Instance.Next())
-				.Select(b => new Bounty()
+			var actToKillBossBounties = ItemGenerator.Bounties.Values
+				.Where(bounty => bounty.BountyData0.Type == BountyData.BountyType.KillBoss)
+				.Where(bounty => !Bounties.Select(b => b.LevelArea).Contains(bounty.BountyData0.LeveAreaSNO0))
+				.OrderBy(_ => FastRandom.Instance.Next())
+				.Select(bounty =>
 				{
-					QuestManager = this,
-					BountySNOid = b.Header.SNOId,
-					Act = b.BountyData0.ActData,
-					Type = b.BountyData0.Type,
-					LevelArea = b.BountyData0.LeveAreaSNO0,
-					World = WorldSno.__NONE,
-					Target = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Single(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster).SNOName1.Id,
-					TargetTaskId = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.ToList()
-								.FindIndex(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster),
-					AdditionalTaskId = 0,
-					AdditionalTargetCounter = 0,
-					AdditionalTargetNeed = 0,
-					LevelAreaChecks = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Where(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
-								.Select(o => o.SNOName1.Id)
-								.ToList()
-				});
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A1).Take(1)); //A1
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A2).Take(1)); //A2
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A3).Take(1)); //A3
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A4).Take(1)); //A4
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A5).Take(1)); //A5
+					var stepObjectives = bounty.QuestSteps
+						.SelectMany(s => s.StepObjectiveSets)
+						.SelectMany(s => s.StepObjectives)
+						.ToArray();
+					var killMonsterObjectiveIndex = stepObjectives
+						.FindIndex(o => o.ObjectiveType == QuestStepObjectiveType.KillMonster);
+					var levelAreaChecks = stepObjectives
+						.Where(o => o.ObjectiveType == QuestStepObjectiveType.EnterLevelArea)
+						.Select(o => o.SNOName1.Id)
+						.ToList();
+					
+					return new Bounty
+					{
+						QuestManager = this,
+						BountySNOid = bounty.Header.SNOId,
+						Act = bounty.BountyData0.ActData,
+						Type = bounty.BountyData0.Type,
+						LevelArea = bounty.BountyData0.LeveAreaSNO0,
+						World = WorldSno.__NONE,
+						Target = stepObjectives[killMonsterObjectiveIndex].SNOName1.Id,
+						TargetTaskId = killMonsterObjectiveIndex,
+						AdditionalTaskId = 0,
+						AdditionalTargetCounter = 0,
+						AdditionalTargetNeed = 0,
+						LevelAreaChecks = levelAreaChecks
+					};
+				})
+				.ToLookup(bounty => bounty.Act);
+			
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A1].Take(1));
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A2].Take(1));
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A3].Take(1));
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A4].Take(1));
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A5].Take(1));
 
-			var kill_unique_bounties = ItemGenerator.Bounties.Values
-				.Where(b => b.BountyData0.Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique)
-				.Where(b => !Bounties.Select(b => b.LevelArea).Contains(b.BountyData0.LeveAreaSNO0))
-				.OrderBy(b => FastRandom.Instance.Next())
-				.GroupBy(b => b.BountyData0.LeveAreaSNO0)//b.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Single(o => o.ObjectiveType == Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.KillAny).SNOName1.Id)
-				.Select(b => b.First())
-				.Select(b => new Bounty()
+			var actToKillUniqueBounties = ItemGenerator.Bounties.Values
+				.Where(bounty => bounty.BountyData0.Type == BountyData.BountyType.KillUnique)
+				.Where(bounty => !Bounties.Select(b => b.LevelArea).Contains(bounty.BountyData0.LeveAreaSNO0))
+				.OrderBy(_ => FastRandom.Instance.Next())
+				.GroupBy(bounty => bounty.BountyData0.LeveAreaSNO0)//b.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Single(o => o.ObjectiveType == Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.KillAny).SNOName1.Id)
+				.Select(group => group.First())
+				.Select(bounty =>
 				{
-					QuestManager = this,
-					BountySNOid = b.Header.SNOId,
-					Act = b.BountyData0.ActData,
-					Type = b.BountyData0.Type,
-					LevelArea = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Single(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillAny).SNOName1.Id,
-					World = WorldSno.__NONE,
-					Target = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Single(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster).SNOName1.Id,
-					TargetTaskId = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.ToList()
-								.FindIndex(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster),
-					AdditionalTaskId = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.ToList()
-								.FindIndex(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillAny),
-					AdditionalTargetCounter = 0,
-					AdditionalTargetNeed = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Single(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillAny).CounterTarget,
-					LevelAreaChecks = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Where(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
-								.Select(o => o.SNOName1.Id)
-								.ToList()
-				});
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A1).Take(4)); //A1
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A2).Take(4)); //A2
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A3).Take(4)); //A3
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A4).Take(4)); //A4
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A5).Take(4)); //A5
+					var stepObjectives = bounty.QuestSteps
+						.SelectMany(s => s.StepObjectiveSets)
+						.SelectMany(s => s.StepObjectives)
+						.ToArray();
+					var killMonsterObjectiveIndex = stepObjectives.FindIndex(o => o.ObjectiveType == QuestStepObjectiveType.KillMonster);
+					var killAnyObjectiveIndex = stepObjectives.FindIndex(o => o.ObjectiveType == QuestStepObjectiveType.KillAny);
+					var levelAreaChecks = stepObjectives
+						.Where(o => o.ObjectiveType == QuestStepObjectiveType.EnterLevelArea)
+						.Select(o => o.SNOName1.Id)
+						.ToList();
+
+					return new Bounty
+					{
+						QuestManager = this,
+						BountySNOid = bounty.Header.SNOId,
+						Act = bounty.BountyData0.ActData,
+						Type = bounty.BountyData0.Type,
+						LevelArea = stepObjectives[killAnyObjectiveIndex].SNOName1.Id,
+						World = WorldSno.__NONE,
+						Target = stepObjectives[killMonsterObjectiveIndex].SNOName1.Id,
+						TargetTaskId = killMonsterObjectiveIndex,
+						AdditionalTaskId = killAnyObjectiveIndex,
+						AdditionalTargetCounter = 0,
+						AdditionalTargetNeed = stepObjectives[killAnyObjectiveIndex].CounterTarget,
+						LevelAreaChecks = levelAreaChecks
+					};
+				})
+				.ToLookup(bounty => bounty.Act);
+			
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A1].Take(4));
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A2].Take(4));
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A3].Take(4));
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A4].Take(4));
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A5].Take(4));
 		}
 
 		/// <summary>
@@ -211,7 +214,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								//rewardXp = xpReward,
 								//rewardGold = goldReward
 							});
-							player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
+							player.InGameClient.SendMessage(new GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
 							{
 								Place = new WorldPlace()
 								{
@@ -220,9 +223,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								},
 
 								Amount = xpReward,
-								Type = MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Experience,
+								Type = GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Experience,
 							});
-							player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
+							player.InGameClient.SendMessage(new GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
 							{
 								Place = new WorldPlace()
 								{
@@ -231,7 +234,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								},
 
 								Amount = goldReward,
-								Type = MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Gold,
+								Type = GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Gold,
 							});
 							player.UpdateExp(xpReward);
 							player.Inventory.AddGoldAmount(goldReward);
@@ -266,7 +269,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 			OnQuestProgress();
 			AutoSetQuestMarker();
-			Logger.Trace("$[underline white]$(Advance)$[/]$ Advanced to quest $[underline white]${0}$[/]$, step $[underline white]${1}$[/]$", Game.CurrentQuest, Game.CurrentStep);
+			Logger.Trace(" (Advance) Advanced to quest {0}, step {1}", Game.CurrentQuest, Game.CurrentStep);
 		}
 
 		public void SideAdvance()
@@ -539,7 +542,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			{
 				Logger.MethodTrace(MethodBase.GetCurrentMethod(), $"{Game.QuestProgress.QuestTriggers.Count} triggers found");
 				var trigger = Game.QuestProgress.QuestTriggers.First();
-				if (trigger.Value.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
+				if (trigger.Value.triggerType == QuestStepObjectiveType.InteractWithActor)
 					foreach (var world in Game.Worlds)
 					{
 						var actors = world.GetActorsBySNO((ActorSno)trigger.Key).Where(d => d.Visible);
@@ -565,7 +568,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								});
 					}
 
-				if (trigger.Value.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation)
+				if (trigger.Value.triggerType == QuestStepObjectiveType.HadConversation)
 					foreach (var world in Game.Worlds)
 					{
 						var actors = world.Actors.Values.Where(d => d.Visible && (d is InteractiveNPC) && (d as InteractiveNPC).Conversations.Any(c => c.ConversationSNO == trigger.Key));
@@ -595,9 +598,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void SetBountyMarker(Player player)
 		{
-			foreach (var bounty in Bounties.Where(b => !b.Finished && b.Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique))
+			foreach (var bounty in Bounties.Where(b => !b.Finished && b.Type == BountyData.BountyType.KillUnique))
 			{
-				var unique = player.World.GetActorsBySNO((ActorSno)bounty.Target).Where(u => !u.Dead).FirstOrDefault();
+				var unique = player.World.GetActorsBySNO((ActorSno)bounty.Target).FirstOrDefault(u => !u.Dead);
 				if (unique == null) continue;
 				player.InGameClient.SendMessage(new MapMarkerInfoMessage
 				{
@@ -712,7 +715,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			return Quests.ContainsKey(snoQuest) && Quests[snoQuest].Completed;
 		}
 
-		public bool IsInQuestRange(DiIiS_NA.Core.MPQ.FileFormats.QuestRange range)
+		public bool IsInQuestRange(QuestRange range)
 		{
 			
 			if (range.Header.SNOId == 312431) return (Game.CurrentAct == 3000);
@@ -836,8 +839,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 	{
 		public QuestManager QuestManager { get; set; }
 		public int BountySNOid { get; set; }
-		public DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT Act { get; set; }
-		public DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType Type { get; set; }
+		public BountyData.ActT Act { get; set; }
+		public BountyData.BountyType Type { get; set; }
 		public int LevelArea { get; set; }
 		public WorldSno World { get; set; }
 		public bool PortalSpawned = false;
@@ -872,9 +875,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			if (Finished) return;
 			if (levelArea == 19943) levelArea = 19780;
-			if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique && LevelArea == levelArea && AdditionalTargetNeed != AdditionalTargetCounter)
+			if (Type == BountyData.BountyType.KillUnique && LevelArea == levelArea && AdditionalTargetNeed != AdditionalTargetCounter)
 			{
-				var Quest = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Quest][BountySNOid];
+				var Quest = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[GameServer.Core.Types.SNO.SNOGroup.Quest][BountySNOid];
 				AdditionalTargetCounter++;
 
 				foreach (var player in QuestManager.Game.Players.Values)
@@ -895,16 +898,16 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			//220789
 
 			if (Finished) return;
-			if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillBoss && Target == snoId)
+			if (Type == BountyData.BountyType.KillBoss && Target == snoId)
 			{
 				Complete();
 			}
-			if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique && (LevelArea == levelArea || (LevelAreaOverrides.ContainsKey(levelArea) && LevelAreaOverrides[levelArea] == LevelArea)))
+			if (Type == BountyData.BountyType.KillUnique && (LevelArea == levelArea || (LevelAreaOverrides.ContainsKey(levelArea) && LevelAreaOverrides[levelArea] == LevelArea)))
 			{
 				AdditionalTargetCounter++;
 				foreach (var player in QuestManager.Game.Players.Values)
 				{
-					List<MapSystem.Scene> Scenes = new List<MapSystem.Scene>();
+					List<GameServer.GSSystem.MapSystem.Scene> Scenes = new List<GameServer.GSSystem.MapSystem.Scene>();
 					int MonsterCount = 0;
 					foreach (var scene in QuestManager.Game.GetWorld(world).Scenes.Values)
 						if (!scene.SceneSNO.Name.ToLower().Contains("filler"))
@@ -930,15 +933,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					{
 						while (MonsterCount < AdditionalTargetCounter + 20)
 						{
-							Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count)].Position;
-							Core.Types.Math.Vector3D SP = null;
+							GameServer.Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count)].Position;
+							GameServer.Core.Types.Math.Vector3D SP = null;
 							while (true)
 							{
-								SP = new Core.Types.Math.Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
-								if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+								SP = new GameServer.Core.Types.Math.Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
+								if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, Scene.NavCellFlags.AllowWalk))
 									break;
 							}
-							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee[FastRandom.Instance.Next(GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.Count())], SP);
+							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee[FastRandom.Instance.Next(GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.Count())], SP);
 							MonsterCount++;
 						}
 					} //Нужен дополнительный спаун монстров, их мало
@@ -960,7 +963,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				if (!TargetSpawned)
 					if (QuestManager.Game.GetWorld(world).GetActorBySNO((ActorSno)Target) == null)
 					{
-						List<MapSystem.Scene> Scenes = new List<MapSystem.Scene>();
+						List<GameServer.GSSystem.MapSystem.Scene> Scenes = new List<GameServer.GSSystem.MapSystem.Scene>();
 						foreach (var scene in QuestManager.Game.GetWorld(world).Scenes.Values)
 						{
 							if (!scene.SceneSNO.Name.ToLower().Contains("filler"))
@@ -968,12 +971,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 									Scenes.Add(scene);
 						}
 
-						Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count - 1)].Position;
-						Core.Types.Math.Vector3D SP = null;
+						GameServer.Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count - 1)].Position;
+						GameServer.Core.Types.Math.Vector3D SP = null;
 						while (true)
 						{
-							SP = new Core.Types.Math.Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
-							if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+							SP = new GameServer.Core.Types.Math.Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
+							if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, Scene.NavCellFlags.AllowWalk))
 								break;
 						}
 						QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)Target, SP);
@@ -983,7 +986,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				if (AdditionalTargetNeed <= AdditionalTargetCounter && TargetKilled)
 					Complete();
 			}
-			if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.ClearDungeon && World == world)
+			if (Type == BountyData.BountyType.ClearDungeon && World == world)
 			{
 				if (QuestManager.Game.WorldCleared(world))
 					Complete();
@@ -1013,9 +1016,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			foreach (var player in QuestManager.Game.Players.Values)
 			{
 				var xpReward = 1000 * player.Level * (1 + (player.Level / 7)) * QuestManager.Game.XPModifier;
-				if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique)
+				if (Type == BountyData.BountyType.KillUnique)
 					xpReward *= 1.8f;
-				if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.ClearDungeon)
+				if (Type == BountyData.BountyType.ClearDungeon)
 					xpReward *= 5f;
 				var goldReward = 10000 * QuestManager.Game.GoldModifier;
 				player.InGameClient.SendMessage(new QuestUpdateMessage()
@@ -1051,19 +1054,19 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			{
 				switch (Act)
 				{
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A1:
+					case BountyData.ActT.A1:
 						QuestManager.LaunchSideQuest(356988, true); //x1_AdventureMode_BountyTurnin_A1
 						break;
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A2:
+					case BountyData.ActT.A2:
 						QuestManager.LaunchSideQuest(356994, true); //x1_AdventureMode_BountyTurnin_A2
 						break;
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A3:
+					case BountyData.ActT.A3:
 						QuestManager.LaunchSideQuest(356996, true); //x1_AdventureMode_BountyTurnin_A3
 						break;
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A4:
+					case BountyData.ActT.A4:
 						QuestManager.LaunchSideQuest(356999, true); //x1_AdventureMode_BountyTurnin_A4
 						break;
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A5:
+					case BountyData.ActT.A5:
 						QuestManager.LaunchSideQuest(357001, true); //x1_AdventureMode_BountyTurnin_A5
 						break;
 				}

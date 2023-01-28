@@ -124,11 +124,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 					if (targets.Count != 0 && PowerMath.Distance2D(Body.Position, (Body as Minion).Master.Position) < 80f)
 					{
-						var elites = targets.Where(t => t is Champion || t is Rare || t is RareMinion);
-						if (elites.Count() > 0)
-							_target = elites.First();
-						else
-							_target = targets.First();
+						var elite = targets.FirstOrDefault(target => target is Champion or Rare or RareMinion);
+						_target = elite ?? targets.First();
 
 						int powerToUse = PickPowerToUse();
 						if (powerToUse > 0)

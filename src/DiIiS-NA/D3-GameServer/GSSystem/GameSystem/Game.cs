@@ -33,6 +33,7 @@ using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using System.Diagnostics;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 {
