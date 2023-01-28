@@ -447,7 +447,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				}
 
 
-				Interlocked.Add(ref _tickCounter, (TickRate + MissedTicks)); // +6 ticks per 100ms. Verified by setting LogoutTickTimeMessage.Ticks to 600 which eventually renders a 10 sec logout timer on client. /raist
+				Interlocked.Add(ref _tickCounter, TickRate + MissedTicks); // +6 ticks per 100ms. Verified by setting LogoutTickTimeMessage.Ticks to 600 which eventually renders a 10 sec logout timer on client. /raist
 				MissedTicks = 0;
 
 				if (UpdateEnabled && !Paused)
@@ -490,7 +490,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				if (_tickWatch.ElapsedMilliseconds > UpdateFrequency)
 				{
 					Logger.Trace("Game.Update() took [{0}ms] more than Game.UpdateFrequency [{1}ms].", _tickWatch.ElapsedMilliseconds, UpdateFrequency);
-					compensation = (int)(UpdateFrequency - (_tickWatch.ElapsedMilliseconds % UpdateFrequency));
+					compensation = (int)(UpdateFrequency - _tickWatch.ElapsedMilliseconds % UpdateFrequency);
 					MissedTicks = TickRate * (int)(_tickWatch.ElapsedMilliseconds / UpdateFrequency);
 				}
 				_calcWatch.Stop();
@@ -646,7 +646,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								TiredRiftPaticipatingHeroID = new long[] { 0x0, 0x0, 0x0, 0x0 }, //TiredRiftPaticipatingHeroID
 							}
 						});
-						if ((CurrentStep == -1 || CurrentAct == 400) && (CurrentQuest == QuestsOrder[0]) && CurrentAct != 3000)
+						if ((CurrentStep == -1 || CurrentAct == 400) && CurrentQuest == QuestsOrder[0] && CurrentAct != 3000)
 						{
 							switch (CurrentAct)
 							{
@@ -748,7 +748,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					}
 					/**/
 					
-					if (!PvP && !((CurrentStep == -1) && (CurrentQuest == QuestsOrder[0])))
+					if (!PvP && !(CurrentStep == -1 && CurrentQuest == QuestsOrder[0]))
 					{
 						joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage()
 						{
@@ -1161,8 +1161,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				var handicapLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][256027].Data;
 				HPModifier = handicapLevels.HandicapLevelTables[diff].HPMod;
 				DmgModifier = handicapLevels.HandicapLevelTables[diff].DmgMod;
-				XPModifier = (1f + handicapLevels.HandicapLevelTables[diff].XPMod);
-				GoldModifier = (1f + handicapLevels.HandicapLevelTables[diff].GoldMod);
+				XPModifier = 1f + handicapLevels.HandicapLevelTables[diff].XPMod;
+				GoldModifier = 1f + handicapLevels.HandicapLevelTables[diff].GoldMod;
 			}
 			foreach (var wld in _worlds)
 				foreach (var monster in wld.Value.Monsters)
@@ -1258,7 +1258,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					BlueTeamWins++;
 			}
 
-			if (CurrentPvPRound > 5 || Math.Abs(RedTeamWins - BlueTeamWins) > (5 - CurrentPvPRound))
+			if (CurrentPvPRound > 5 || Math.Abs(RedTeamWins - BlueTeamWins) > 5 - CurrentPvPRound)
 			{
 				BroadcastMessage("Battle is over!");
 				try
@@ -1271,7 +1271,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				//foreach (var player in this.Players.Values)
 				//player.World.BuffManager.AddBuff(player, player, new Mooege.Core.GS.Powers.Implementations.PVPRoundEndBuff(TickTimer.WaitSeconds(this, 1200.0f)));
 				foreach (var plr in Players.Keys)
-					plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin) { Field0 = (RedTeamWins == BlueTeamWins ? 0 : (RedTeamWins < BlueTeamWins ? 2 : 3)) });
+					plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin) { Field0 = RedTeamWins == BlueTeamWins ? 0 : RedTeamWins < BlueTeamWins ? 2 : 3 });
 				return;
 			}
 
@@ -1294,7 +1294,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					//foreach (var player in this.Players.Values)
 					//player.World.BuffManager.AddBuff(player, player, new Mooege.Core.GS.Powers.Implementations.PVPRoundEndBuff(TickTimer.WaitSeconds(this, 1200.0f)));
 					foreach (var plr in Players.Keys)
-						plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin) { Field0 = (RedTeamWins == BlueTeamWins ? 0 : (RedTeamWins < BlueTeamWins ? 2 : 3)) });
+						plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin) { Field0 = RedTeamWins == BlueTeamWins ? 0 : RedTeamWins < BlueTeamWins ? 2 : 3 });
 				}));
 			}
 
@@ -1745,7 +1745,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							.Union(((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70018].Data).WayPointInfo)
 							.Union(((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][236915].Data).WayPointInfo)
 							.Where(w => w.SNOWorld != -1).ToList();
-			var wayPointInfo = actData.Where(w => w.Flags == 3 || (isOpenWorld ? (w.Flags == 2) : (w.Flags == 1))).ToList();
+			var wayPointInfo = actData.Where(w => w.Flags == 3 || (isOpenWorld ? w.Flags == 2 : w.Flags == 1)).ToList();
 			//Logger.Debug("GetWayPointWorldById: world id {0}", wayPointInfo[id].SNOWorld);
 			return GetWorld((WorldSno)wayPointInfo[id].SNOWorld);
 		}

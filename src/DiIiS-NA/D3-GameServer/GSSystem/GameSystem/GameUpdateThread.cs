@@ -96,7 +96,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				if (_tickWatch.ElapsedMilliseconds > 100)
 				{
 					Logger.Trace("Game.Update() took [{0}ms] more than Game.UpdateFrequency [{1}ms].", _tickWatch.ElapsedMilliseconds, 100);
-					compensation = (int)(100 - (_tickWatch.ElapsedMilliseconds % 100));
+					compensation = (int)(100 - _tickWatch.ElapsedMilliseconds % 100);
 					missedTicks = 6 * (int)(_tickWatch.ElapsedMilliseconds / 100);
 					Thread.Sleep(Math.Max(0, compensation)); // sleep until next Update().
 				}
