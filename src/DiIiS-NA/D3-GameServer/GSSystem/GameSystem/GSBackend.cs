@@ -92,7 +92,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			});
 		}
 
-		private void BattleNetSocketSend(string data) => BattleNetSocketSend(data);
+		private void BattleNetSocketSend(string data) => BattleNetSocketSend(Encoding.UTF8.GetBytes(data));
 
 		private bool SenderServerDisconnected()
 		{
