@@ -474,25 +474,25 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 		public static void CheckLevelCap(BattleClient client)
 		{
-			var capped_toons = DBSessions.SessionQueryWhere<DBToon>(dbt =>
+			var cappedToons = DBSessions.SessionQueryWhere<DBToon>(dbt =>
 						dbt.DBGameAccount.Id == client.Account.GameAccount.PersistentID &&
 						dbt.Level == 60);
-			if (capped_toons.Count() >= 2)
+			if (cappedToons.Count >= 2)
 				GrantAchievement(client, 74987243307116);
-			if (capped_toons.Count() >= 5)
+			if (cappedToons.Count >= 5)
 				GrantAchievement(client, 74987243307118);
-			if (capped_toons.Count() >= 10)
+			if (cappedToons.Count >= 10)
 				GrantAchievement(client, 74987243307120);
 
-			int different_classes = 0;
+			int differentClasses = 0;
 
-			foreach (ToonClass toon_class in (ToonClass[])Enum.GetValues(typeof(ToonClass)))
+			foreach (ToonClass toonClass in Enum.GetValues<ToonClass>())
 			{
-				var toons = capped_toons.Where(t => t.Class == toon_class);
-				if (toons.Count() > 0) different_classes++;
-				if (toons.Count() >= 2)
+				var toons = cappedToons.Where(t => t.Class == toonClass).ToArray();
+				if (toons.Length > 0) differentClasses++;
+				if (toons.Length >= 2)
 				{
-					switch (toon_class)
+					switch (toonClass)
 					{
 						case ToonClass.Barbarian:
 							GrantAchievement(client, 74987243307044);
@@ -513,10 +513,10 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 				}
 			}
 
-			if (different_classes >= 2)
+			if (differentClasses >= 2)
 				GrantAchievement(client, 74987243307121);
 
-			if (different_classes >= 5)
+			if (differentClasses >= 5)
 				GrantAchievement(client, 74987243307362);
 		}
 

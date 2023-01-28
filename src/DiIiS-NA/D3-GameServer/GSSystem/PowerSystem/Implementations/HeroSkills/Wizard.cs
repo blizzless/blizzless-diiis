@@ -1292,30 +1292,33 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				if (Rune_B > 0)     //Raging Storm
 				{
-					var twisters = Twister.GetActorsInRange<EffectActor>(5f).Where(i => ((i.SNO == ActorSno._wizard_tornado) && (i != Twister)));
-					if (twisters.Count() > 0)
+					var twisters = Twister.GetActorsInRange<EffectActor>(5f)
+						.Where(i => i.SNO == ActorSno._wizard_tornado && i != Twister)
+						.ToArray();
+					
+					if (twisters.Length > 0)
 					{
 						foreach (var twist in twisters)
 							twist.Destroy();
 
 						var bigMultiplier = ScriptFormula(2) * 0.5f / ScriptFormula(4);
 
-						var BigTwister = new EffectActor(this, ActorSno._wizard_tornado_big, Twister.Position);
-						BigTwister.Timeout = WaitSeconds(ScriptFormula(4));
-						BigTwister.Scale = 1f;
-						BigTwister.Spawn();
+						var bigTwister = new EffectActor(this, ActorSno._wizard_tornado_big, Twister.Position);
+						bigTwister.Timeout = WaitSeconds(ScriptFormula(4));
+						bigTwister.Scale = 1f;
+						bigTwister.Spawn();
 
-						BigTwister.UpdateDelay = 0.5f;
-						BigTwister.OnUpdate = () =>
+						bigTwister.UpdateDelay = 0.5f;
+						bigTwister.OnUpdate = () =>
 						{
-							ActorMover _bigTwisterMover = new ActorMover(BigTwister);
-							_bigTwisterMover.Move(TargetPosition, ScriptFormula(18), new ACDTranslateNormalMessage
+							ActorMover bigTwisterMover = new ActorMover(bigTwister);
+							bigTwisterMover.Move(TargetPosition, ScriptFormula(18), new ACDTranslateNormalMessage
 							{
 								SnapFacing = true,
 								AnimationTag = 69728,
 							});
-							TargetPosition = PowerMath.GenerateSpreadPositions(BigTwister.Position, TargetPosition, 20f, 3)[FastRandom.Instance.Next(0, 3)];
-							WeaponDamage(GetEnemiesInRadius(BigTwister.Position, 12f), bigMultiplier, DamageType.Arcane);
+							TargetPosition = PowerMath.GenerateSpreadPositions(bigTwister.Position, TargetPosition, 20f, 3)[FastRandom.Instance.Next(0, 3)];
+							WeaponDamage(GetEnemiesInRadius(bigTwister.Position, 12f), bigMultiplier, DamageType.Arcane);
 						};
 						Twister.Destroy();
 					}
@@ -1879,9 +1882,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 				if (Rune_B > 0 && Rand.NextDouble() < ScriptFormula(12))        //Cascade
 				{
-					var cascadeTargets = GetEnemiesInRadius(hitPayload.Target.Position, ScriptFormula(24)).Actors.Where(i => i != hitPayload.Target);
-					if (cascadeTargets.Count() == 0) return;
-
+					var cascadeTarget = GetEnemiesInRadius(hitPayload.Target.Position, ScriptFormula(24)).Actors.FirstOrDefault(i => i != hitPayload.Target);
+					if (cascadeTarget == null)
+					{
+						return;
+					}
+					
 					var proj = new Projectile(this, ActorSno._wizard_arcanetorrent_projectile_indigo_spawner, hitPayload.Target.Position);
 					proj.Position.Z += 5f;
 					proj.OnCollision = (hit) =>
@@ -1891,7 +1897,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						WeaponDamage(GetEnemiesInRadius(hit.Position, 5f), ScriptFormula(13) * EffectsPerSecond * User.Attributes[GameAttribute.Attacks_Per_Second_Total], DamageType.Arcane);
 						proj.Destroy();
 					};
-					proj.Launch(cascadeTargets.FirstOrDefault().Position, ScriptFormula(23));
+					proj.Launch(cascadeTarget.Position, ScriptFormula(23));
 				}
 				if (Rune_D > 0)         //Power Stone
 				{
@@ -3168,14 +3174,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 								}
 					}
 
-				var projectiles_around = TimeWarp.GetObjectsInRange<Projectile>(40f).Where(p => PowerMath.Distance2D(p.Position, TimeWarp.Position) > 20f);
-				if (projectiles_around.Count() > 0)
-					foreach (Projectile actor in projectiles_around)
-						if (actor.Slowed)
-						{
-							actor.Slowed = false;
-							actor.Attributes[GameAttribute.Projectile_Speed] *= 10f;
-						}
+				var projectilesAround = TimeWarp.GetObjectsInRange<Projectile>(40f).Where(p => PowerMath.Distance2D(p.Position, TimeWarp.Position) > 20f);
+				foreach (Projectile actor in projectilesAround)
+				{
+					if (actor.Slowed)
+					{
+						actor.Slowed = false;
+						actor.Attributes[GameAttribute.Projectile_Speed] *= 10f;
+					}
+				}
 
 				var projectiles = TimeWarp.GetObjectsInRange<Projectile>(20f);
 				if (projectiles.Count > 0)
@@ -3943,17 +3950,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							AddBuff(actor, new SlowTimeDebuff(ScriptFormula(3), WaitSeconds(0.2f + ScriptFormula(1))));
 					}
 
-					var projectiles_around = User.GetObjectsInRange<Projectile>(40f).Where(p => PowerMath.Distance2D(p.Position, User.Position) > 20f);
-					if (projectiles_around.Count() > 0)
-						foreach (Projectile actor in projectiles_around)
-							if (actor.Slowed)
-							{
-								actor.Slowed = false;
-								actor.Attributes[GameAttribute.Projectile_Speed] *= 10f;
-							}
+					var projectilesAround = User.GetObjectsInRange<Projectile>(40f).Where(p => PowerMath.Distance2D(p.Position, User.Position) > 20f);
+					foreach (Projectile actor in projectilesAround)
+					{
+						if (actor.Slowed)
+						{
+							actor.Slowed = false;
+							actor.Attributes[GameAttribute.Projectile_Speed] *= 10f;
+						}
+					}
 
 					var projectiles = User.GetObjectsInRange<Projectile>(20f);
-					if (projectiles.Count() > 0)
+					if (projectiles.Count > 0)
 						foreach (Projectile actor in projectiles)
 							if (!actor.Slowed)
 							{
