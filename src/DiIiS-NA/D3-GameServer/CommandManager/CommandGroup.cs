@@ -11,7 +11,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 {
 	public class CommandGroup
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger("Commands");
+		private static readonly Logger Logger = LogManager.CreateLogger("CmdGrp");
 
 		public CommandGroupAttribute Attributes { get; private set; }
 
@@ -83,7 +83,11 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 			// check if the user has enough privileges to invoke the command.
 			if (invokerClient != null && target.MinUserLevel > invokerClient.Account.UserLevel)
+#if DEBUG
+				return $"You don't have enough privileges to invoke that command (Min. level: {Attributes.MinUserLevel}).";
+#else
 				return "You don't have enough privileges to invoke that command.";
+#endif
 
 			return (string)_commands[target].Invoke(this, new object[] { @params, invokerClient });
 		}

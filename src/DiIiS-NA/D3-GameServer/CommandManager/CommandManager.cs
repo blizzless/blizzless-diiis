@@ -11,7 +11,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 {
 	public static class CommandManager
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger("CM");
+		private static readonly Logger Logger = LogManager.CreateLogger("CmdMan");
 		private static readonly Dictionary<CommandGroupAttribute, CommandGroup> CommandGroups = new Dictionary<CommandGroupAttribute, CommandGroup>();
 
 		static CommandManager()
