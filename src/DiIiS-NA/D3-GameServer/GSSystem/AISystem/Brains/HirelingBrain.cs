@@ -104,11 +104,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					int powerToUse = PickPowerToUse();
 					if (powerToUse > 0)
 					{
-						var elites = targets.Where(t => t is Champion || t is Rare || t is RareMinion);
-						if (elites.Count() > 0)
-							_target = elites.First();
-						else
-							_target = targets.First();
+						var elite = targets.FirstOrDefault(t => t is Champion or Rare or RareMinion);
+						_target = elite ?? targets.First();
 
 						PowerScript power = PowerLoader.CreateImplementationForPowerSNO(powerToUse);
 						power.User = Body;
