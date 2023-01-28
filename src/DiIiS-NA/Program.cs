@@ -81,7 +81,7 @@ namespace DiIiS_NA
             AnsiConsole.Write(new Rule($"[dodgerblue3]Build [/][deepskyblue3]{Build}[/]").RightJustified().RuleStyle("steelblue1_1"));
             AnsiConsole.Write(new Rule($"[dodgerblue3]Stage [/][deepskyblue3]{Stage}[/]").RightJustified().RuleStyle("steelblue1_1"));
             AnsiConsole.Write(new Rule($"[deepskyblue3]{TypeBuild}[/]").RightJustified().RuleStyle("steelblue1_1"));
-            AnsiConsole.Write(new Rule($"[red3_1]Diablo III[/] [red]RoS 2.7.4.84161[/] - [link=https://github.com/blizzless/blizzless-diiis]https://github.com/blizzless/blizzless-diiis[/]").RuleStyle("red"));
+            AnsiConsole.Write(new Rule($"Diablo III [red]RoS 2.7.4.84161[/] - [link=https://github.com/blizzless/blizzless-diiis]https://github.com/blizzless/blizzless-diiis[/]").RuleStyle("red"));
         
             AnsiConsole.MarkupLine("");
             Console.WriteLine();

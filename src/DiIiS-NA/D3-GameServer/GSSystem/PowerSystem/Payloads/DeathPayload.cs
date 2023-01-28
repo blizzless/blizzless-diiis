@@ -405,7 +405,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				{
 					grantedExp = (int)(grantedExp * plr.World.Game.XPModifier);
 
-					float tempEXP = grantedExp * Config.Instance.RateEXP;
+					float tempEXP = grantedExp * Config.Instance.RateExp;
 
 					plr.UpdateExp(Math.Max((int)tempEXP, 1));
 					var a = (int)plr.Attributes[GameAttribute.Experience_Bonus];

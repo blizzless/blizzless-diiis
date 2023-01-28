@@ -52,7 +52,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			ItemsSystem.Item item = _vendorGrid.GetItemByDynId(player, itemId);
 			if (item == null)
 				return;
-			if (player.Toon.isSeassoned)
+			if (player.Toon.IsSeasoned)
 			{
 				player.GrantCriteria(74987248526596);
 			}

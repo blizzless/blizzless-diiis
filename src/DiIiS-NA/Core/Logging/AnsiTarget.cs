@@ -64,9 +64,9 @@ public class AnsiTarget : LogTarget
             .Replace("Blizzless", "[dodgerblue1]Blizz[/][deepskyblue2]less[/]", StringComparison.CurrentCultureIgnoreCase)
             .Replace("Diablo III", "[red3_1]Diablo[/] [red]III[/]", StringComparison.CurrentCultureIgnoreCase)
             .Replace("MPQ", "[underline yellow4]MPQ[/]")
-            .Replace("Discord", "[blue]Discord[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("Discord", "[underline blue]Discord[/]", StringComparison.CurrentCultureIgnoreCase)
             .Replace("not null", "[green]is not null[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("null", "[red]is null[/]", StringComparison.CurrentCultureIgnoreCase);
+            .Replace("null", "[underline red]is null[/]", StringComparison.CurrentCultureIgnoreCase);
     }
 
     

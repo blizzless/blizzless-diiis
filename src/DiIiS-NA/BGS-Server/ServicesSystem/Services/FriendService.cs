@@ -143,33 +143,33 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			(controller as HandlerController).Client.Account.NotifyUpdate();
 			(controller as HandlerController).Client.Account.GameAccount.NotifyUpdate();
 		}
-		public override void AcceptInvitation(IRpcController controller, AcceptInvitationRequest request, Action<bgs.protocol.NoData> done)
+		public override void AcceptInvitation(IRpcController controller, AcceptInvitationRequest request, Action<NoData> done)
 		{
 			Logger.Trace("{0} accepted friend invitation.", ((controller as HandlerController).Client).Account);
 
-			var response = bgs.protocol.NoData.CreateBuilder();
+			var response = NoData.CreateBuilder();
 			done(response.Build());
 
 			FriendManager.HandleAccept(((controller as HandlerController).Client), request);
 		}
-		public override void RevokeInvitation(IRpcController controller, RevokeInvitationRequest request, Action<bgs.protocol.NoData> done)
+		public override void RevokeInvitation(IRpcController controller, RevokeInvitationRequest request, Action<NoData> done)
 		{
 			throw new NotImplementedException();
 		}
-		public override void DeclineInvitation(IRpcController controller, DeclineInvitationRequest request, Action<bgs.protocol.NoData> done)
+		public override void DeclineInvitation(IRpcController controller, DeclineInvitationRequest request, Action<NoData> done)
 		{
 			Logger.Trace("{0} declined friend invitation.", ((controller as HandlerController).Client).Account);
 
-			var response = bgs.protocol.NoData.CreateBuilder();
+			var response = NoData.CreateBuilder();
 			done(response.Build());
 
 			FriendManager.HandleDecline(((controller as HandlerController).Client), request);
 		}
-		public override void IgnoreInvitation(IRpcController controller, IgnoreInvitationRequest request, Action<bgs.protocol.NoData> done)
+		public override void IgnoreInvitation(IRpcController controller, IgnoreInvitationRequest request, Action<NoData> done)
 		{
 
 			//throw new NotImplementedException();
-			var response = bgs.protocol.NoData.CreateBuilder();
+			var response = NoData.CreateBuilder();
 			done(response.Build());
 
 			FriendManager.HandleIgnore(((controller as HandlerController).Client), request);

@@ -88,21 +88,21 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 }
             switch (request.Locale)
             {
-                case "deDE": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.deDE; break;
-                case "enGB": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.enGB; break;
-                case "enSG": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.enSG; break;
-                case "enUS": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.enUS; break;
-                case "esES": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.esES; break;
-                case "esMX": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.esMX; break;
-                case "frFR": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.frFR; break;
-                case "itIT": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.itIT; break;
-                case "koKR": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.koKR; break;
-                case "plPL": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.plPL; break;
-                case "ptBR": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.ptBR; break;
-                case "ptPT": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.ptPT; break;
-                case "ruRU": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.ruRU; break;
-                case "trTR": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.trTR; break;
-                case "zhCN": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.zhCN; break;
+                case "deDE": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.deDE; break;
+                case "enGB": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.enGB; break;
+                case "enSG": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.enSG; break;
+                case "enUS": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.enUS; break;
+                case "esES": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.esES; break;
+                case "esMX": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.esMX; break;
+                case "frFR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.frFR; break;
+                case "itIT": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.itIT; break;
+                case "koKR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.koKR; break;
+                case "plPL": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.plPL; break;
+                case "ptBR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ptBR; break;
+                case "ptPT": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ptPT; break;
+                case "ruRU": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ruRU; break;
+                case "trTR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.trTR; break;
+                case "zhCN": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.zhCN; break;
             }
             done(NoData.CreateBuilder().Build());
             var builder = ChallengeExternalRequest.CreateBuilder();

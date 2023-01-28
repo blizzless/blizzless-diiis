@@ -75,9 +75,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         public override void RequestDisconnect(IRpcController controller, DisconnectRequest request, Action<NO_RESPONSE> done)
         {
             Logger.Info("Client - {0} , disconnected", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
-            this.DisconnectClient(controller as HandlerController);
+            DisconnectClient(controller as HandlerController);
             if ((controller as HandlerController).Client.Account != null)
-                (controller as HandlerController).Client.Account.GameAccount.Logined = false;
+                (controller as HandlerController).Client.Account.GameAccount.IsLoggedIn = false;
             ((controller as HandlerController).Client).Connect.CloseAsync();
             (controller as HandlerController).Client.SocketConnection.CloseAsync();
             /*
@@ -98,7 +98,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         private void DisconnectClient(HandlerController controller)
         {
             if (controller.Client.Account != null && controller.Client.Account.GameAccount != null) controller.Client.Account.GameAccount.LoggedInClient = null;
-            LoginServer.Battle.PlayerManager.PlayerDisconnected(controller.Client);
+            Battle.PlayerManager.PlayerDisconnected(controller.Client);
         }
     }
 }

@@ -7,7 +7,7 @@ using System;
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 {
     [Service(serviceID: 0x26, serviceHash: 2119327385)]
-    public class ChannelMembershipService_ : bgs.protocol.channel.v2.membership.ChannelMembershipService, IServerService
+    public class ChannelMembershipService_ : ChannelMembershipService, IServerService
     {
         public override void GetState(IRpcController controller, GetStateRequest request, Action<GetStateResponse> done)
         {

@@ -1814,7 +1814,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					_achievementGranted = true;
 					_owner.GrantAchievement(74987243307784);
 				}
-				if (_owner.Toon.isSeassoned)
+				if (_owner.Toon.IsSeasoned)
 					if (Int32.Parse(reward.ItemDefinition.Name.Split('_')[2]) >= 7)
 					{
 						_owner.GrantCriteria(74987245885431);

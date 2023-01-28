@@ -21,12 +21,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		private static readonly Logger Logger = LogManager.CreateLogger();
 
 		
-		public override void Dissolve(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.DissolveRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void Dissolve(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.DissolveRequest request, Action<bgs.protocol.NoData> done)
 		{
 			throw new NotImplementedException();
 		}
 
-		public override void RemoveMember(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.RemoveMemberRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void RemoveMember(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.RemoveMemberRequest request, Action<bgs.protocol.NoData> done)
 		{
 			Logger.Trace("RemoveMember()");
 			var channel = ChannelManager.GetChannelByDynamicId(((controller as HandlerController).LastCallHeader).ObjectId);
@@ -39,13 +39,13 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			if (request.Reason == 0)
 			{
 				ulong invId = ChannelInvitationManager.FindInvAsForClient((controller as HandlerController).Client);
-				if (invId != System.UInt64.MaxValue)
+				if (invId != UInt64.MaxValue)
 					ChannelInvitationManager.AltConnectToJoin((controller as HandlerController).Client, bgs.protocol.channel.v1.AcceptInvitationRequest.CreateBuilder().SetInvitationId(invId).SetObjectId(0).Build());
 				//ServicesSystem.Services.ChannelInvitationService.CreateStub((controller as HandlerController).Client).AcceptInvitation(controller, bgs.protocol.channel.v1.AcceptInvitationRequest.CreateBuilder().SetInvitationId(invId).SetObjectId(0).Build(), callback => { });
 			}
 		}
 
-		public override void SendMessage(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.SendMessageRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void SendMessage(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.SendMessageRequest request, Action<bgs.protocol.NoData> done)
 		{
 			var channel = ChannelManager.GetChannelByDynamicId(((controller as HandlerController).LastCallHeader).ObjectId);
 			//Logger.Trace("{0} sent a message to channel {1}.", ((controller as HandlerController).Client).Account.GameAccount.CurrentToon, channel);
@@ -65,7 +65,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 				channel.SendMessage(((controller as HandlerController).Client), request.Message); // if it's not parsed as an command - let channel itself to broadcast message to it's members.			  
 		}
 
-		public override void UpdateChannelState(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.UpdateChannelStateRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void UpdateChannelState(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.UpdateChannelStateRequest request, Action<bgs.protocol.NoData> done)
 		{
 			/*
 			if (this._loggedInClient.CurrentChannel != channel)
@@ -349,7 +349,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			}
 		}
 
-		public override void UpdateMemberState(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.UpdateMemberStateRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void UpdateMemberState(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.UpdateMemberStateRequest request, Action<bgs.protocol.NoData> done)
 		{
 			var channel = ChannelManager.GetChannelByDynamicId(((controller as HandlerController).LastCallHeader).ObjectId);
 			var builder = bgs.protocol.NoData.CreateBuilder();

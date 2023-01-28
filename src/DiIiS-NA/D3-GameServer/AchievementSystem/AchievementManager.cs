@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,33 +18,39 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 {
 	public class AchievementManager : RPCObject
 	{
-		private static readonly AchievementManager _instance = new AchievementManager();
-		public static AchievementManager Instance { get { return _instance; } }
-		public static string AchievementFileHash = "2c11c0ec90a821ecc3dac6b81db355b2a2ff9f15e1d4f9512f3a96380c980887";
-		public static string AchievementFilename = AchievementFileHash + ".achu";
-		public static string AchievementURL = "http://eu.depot.battle.net:1119/" + AchievementFilename;
+		public static AchievementManager Instance = new();
+		private static readonly string _achievementFileHash = "2c11c0ec90a821ecc3dac6b81db355b2a2ff9f15e1d4f9512f3a96380c980887";
+		private static readonly string _achievementFilename = $"{_achievementFileHash}.achu";
+		private static readonly string _achievementHost = $"eu.depot.battle.net";
+		private static readonly string _achievementUrl = $"http://{_achievementHost}:1119/{_achievementFilename}";
 
-		public static D3.AchievementsStaticData.AchievementFile Achievements;
+		private static D3.AchievementsStaticData.AchievementFile _achievements;
 
 		public static void Initialize()
 		{
-			if (File.Exists(Path.Combine(FileHelpers.AssemblyRoot, AchievementFilename)))
+			if (File.Exists(Path.Combine(FileHelpers.AssemblyRoot, _achievementFilename)))
 			{
-				var br = new BinaryReader(File.Open(Path.Combine(FileHelpers.AssemblyRoot, AchievementFilename), FileMode.Open));
-				Achievements = D3.AchievementsStaticData.AchievementFile.ParseFrom(br.ReadBytes((int)br.BaseStream.Length));
+				var br = new BinaryReader(File.Open(Path.Combine(FileHelpers.AssemblyRoot, _achievementFilename), FileMode.Open));
+				_achievements = D3.AchievementsStaticData.AchievementFile.ParseFrom(br.ReadBytes((int)br.BaseStream.Length));
 				br.Close();
-				Logger.Info("Achievements loaded from file.");
+				Logger.Info($"$[underline white]${_achievements.AchievementCount} achievements$[/]$ loaded from file.");
 			}
 			else
 			{
-				Logger.Info("Achimevement file not founded! Try download...");
+				Logger.Info("Achievement file not found! Trying to download...");
+				var hostEntry = Dns.GetHostEntry(_achievementHost);
+				if (hostEntry.AddressList.Length == 0)
+				{
+					Logger.Fatal($"Unable to resolve host $[darkred]${_achievementHost}$[/]$!");
+					return;
+				}
 				var attempts = 0;
 				byte[] data = new byte[] { };
 				while (attempts < 5)
 				{
 					try
 					{
-						data = new System.Net.WebClient().DownloadData(AchievementURL);
+						data = new System.Net.WebClient().DownloadData(_achievementUrl);
 						break;
 					}
 					catch (System.Net.WebException)
@@ -53,27 +60,27 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 				}
 				try
 				{
-					Achievements = D3.AchievementsStaticData.AchievementFile.ParseFrom(data);
+					_achievements = D3.AchievementsStaticData.AchievementFile.ParseFrom(data);
 					if (attempts < 5)
 					{
-						var br = new BinaryWriter(File.Open(AchievementFilename, FileMode.CreateNew));
+						var br = new BinaryWriter(File.Open(_achievementFilename, FileMode.CreateNew));
 						br.Write(data);
 						br.Close();
 
 					}
 					else
 					{
-						Logger.Error("Error of Downloading.");
+						Logger.Error("Error Downloading achievement (.achu).");
 					}
 				}
 				catch (Google.ProtocolBuffers.InvalidProtocolBufferException)
 				{
-					Achievements = D3.AchievementsStaticData.AchievementFile.CreateBuilder().Build();
-					Logger.Error("File was downloaded, but error of read.");
+					_achievements = D3.AchievementsStaticData.AchievementFile.CreateBuilder().Build();
+					Logger.Error("File was downloaded, but there was an error of read.");
 				}
 				catch (IOException)
 				{
-					Logger.Error("{0} error permission.", AchievementFilename);
+					Logger.Error("{0} IO error.", _achievementFilename);
 				}
 
 			}
@@ -81,29 +88,29 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 		public static int TotalAchievements
 		{
-			get { return Achievements.AchievementCount; }
+			get { return _achievements.AchievementCount; }
 		}
 		public static int TotalCategories
 		{
-			get { return Achievements.CategoryCount; }
+			get { return _achievements.CategoryCount; }
 		}
 		public static int TotalCriteria
 		{
-			get { return Achievements.CriteriaCount; }
+			get { return _achievements.CriteriaCount; }
 		}
 		public static IList<D3.AchievementsStaticData.StaticAchievementDefinition> GetAllAchievements
 		{
-			get { return Achievements.AchievementList; }
+			get { return _achievements.AchievementList; }
 		}
 
 		public static bool IsHardcore(ulong achId)
 		{
-			ulong category_id = Achievements.AchievementList.Single(a => a.Id == achId).CategoryId;
+			ulong category_id = _achievements.AchievementList.Single(a => a.Id == achId).CategoryId;
 			while (category_id != 0)
 			{
 				if (category_id == 5505028)
 					return true;
-				var category_data = Achievements.CategoryList.Single(a => a.Id == category_id);
+				var category_data = _achievements.CategoryList.Single(a => a.Id == category_id);
 				if (!category_data.HasParentId)
 					break;
 
@@ -122,7 +129,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 		public static D3.AchievementsStaticData.StaticAchievementDefinition GetAchievementById(ulong id)
 		{
-			D3.AchievementsStaticData.StaticAchievementDefinition Achi = Achievements.AchievementList.Where(ach => ach.Id == id).FirstOrDefault();
+			D3.AchievementsStaticData.StaticAchievementDefinition Achi = _achievements.AchievementList.Where(ach => ach.Id == id).FirstOrDefault();
 			if (Achi != null)
 				return Achi;
 			else
@@ -150,14 +157,14 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 		public static ulong GetMainCriteria(ulong achievementId)
 		{
-			return Achievements.CriteriaList.Where(c =>
+			return _achievements.CriteriaList.Where(c =>
 				c.ParentAchievementId == achievementId
 			).Select(c => c.CriteriaId).FirstOrDefault();
 		}
 
 		public static List<D3.AchievementsStaticData.StaticCriteriaDefinition> GetCriterias(ulong achievementId)
 		{
-			var a = Achievements.CriteriaList.Where(c =>
+			var a = _achievements.CriteriaList.Where(c =>
 				c.ParentAchievementId == achievementId
 			).Select(c => c).ToList();
 			return a;
@@ -219,7 +226,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 					if (client.Account.GameAccount.Clan != null)
 						client.Account.GameAccount.Clan.AddNews(client.Account.GameAccount, 1, D3.Guild.AchievementNews.CreateBuilder().SetAchievementId(achievementId).Build().ToByteArray());
 
-					var criterias = Achievements.CriteriaList.Where(c =>
+					var criterias = _achievements.CriteriaList.Where(c =>
 						(c.AdvanceEvent.Id == 200 && c.AdvanceEvent.Comparand == achievementId)
 					).ToList();
 					foreach (var criteria in criterias)
@@ -239,7 +246,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 					uint UCriteriaId = (uint)criteriaId;
 
-					var criteria_datas = Achievements.CriteriaList.Where(c => c.CriteriaId == criteriaId).ToList();
+					var criteria_datas = _achievements.CriteriaList.Where(c => c.CriteriaId == criteriaId).ToList();
 					if (criteriaId != 3367569)
 					{
 						if (criteria_datas.Count == 0)
@@ -290,7 +297,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 						client.Account.GameAccount.AchievementCriteria.Add(record);
 
 						int critCount = UnserializeBytes(achievement.Criteria).Count;
-						int neededCritCount = Achievements.CriteriaList.Where(c => c.ParentAchievementId == definition.ParentAchievementId).ToList().Count;
+						int neededCritCount = _achievements.CriteriaList.Where(c => c.ParentAchievementId == definition.ParentAchievementId).ToList().Count;
 
 						if (critCount >= neededCritCount)
 						{
@@ -298,7 +305,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 							return;
 						}
 
-						var ach_data = Achievements.AchievementList.Single(a => a.Id == definition.ParentAchievementId);
+						var ach_data = _achievements.AchievementList.Single(a => a.Id == definition.ParentAchievementId);
 						if (!ach_data.HasSupersedingAchievementId || client.Account.GameAccount.Achievements.Where(a => a.AchievementId == ach_data.SupersedingAchievementId && a.Completion > 0).Count() > 0)
 							UpdateSnapshot(client, 0, criteriaId);
 					}
@@ -386,7 +393,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 								.SetQuantity32(0)
 								.Build();
 
-					var criteria_data = Achievements.CriteriaList.Single(c => c.CriteriaId == mainCriteriaId);
+					var criteria_data = _achievements.CriteriaList.Single(c => c.CriteriaId == mainCriteriaId);
 
 					uint newQuantity = Math.Min(mainCriteria.Quantity32 + additionalQuantity, (uint)criteria_data.NecessaryQuantity);
 
@@ -427,7 +434,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 					client.Account.GameAccount.AchievementCriteria.Add(
 						mainCriteria.ToBuilder().SetQuantity32(newQuantity).Build()
 					);
-					var ach_data = Achievements.AchievementList.Single(a => a.Id == achievementId);
+					var ach_data = _achievements.AchievementList.Single(a => a.Id == achievementId);
 					if (!ach_data.HasSupersedingAchievementId/* || client.Account.GameAccount.Achievements.Where(a => a.AchievementId == ach_data.SupersedingAchievementId && a.Completion > 0).Count() > 0*/)
 						UpdateSnapshot(client, 0, (ulong)mainCriteria.CriteriaId32AndFlags8, newQuantity);
 				}
@@ -436,7 +443,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		
 		public static void UpdateAllCounters(BattleClient client, int type, uint addCounter, int comparand)
 		{
-			var criterias = Achievements.CriteriaList.Where(c => c.AdvanceEvent.Id == (ulong)type);
+			var criterias = _achievements.CriteriaList.Where(c => c.AdvanceEvent.Id == (ulong)type);
 			if (comparand != -1)
 				criterias = criterias.Where(c => c.AdvanceEvent.ModifierList.First().Comparand == (ulong)comparand);
 			foreach (var criteria in criterias)
@@ -447,7 +454,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 		public static void CheckQuestCriteria(BattleClient client, int questId, bool isCoop)
 		{
-			var criterias = Achievements.CriteriaList.Where(c =>
+			var criterias = _achievements.CriteriaList.Where(c =>
 				(c.AdvanceEvent.Id == 406 && c.AdvanceEvent.Comparand == Convert.ToUInt64(questId))
 				&&
 				(isCoop ? true : (c.AdvanceEvent.ModifierCount == 0))
@@ -508,7 +515,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 		public static void CheckSalvageItemCriteria(BattleClient client, int itemGbId)
 		{
-			var criterias = Achievements.CriteriaList.Where(c =>
+			var criterias = _achievements.CriteriaList.Where(c =>
 				(c.AdvanceEvent.Id == 9 && c.AdvanceEvent.Comparand == Convert.ToUInt64(unchecked((ulong)itemGbId)))).ToList();
 			foreach (var criteria in criterias)
 				GrantCriteria(client, criteria.CriteriaId);
@@ -518,7 +525,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			var actorId64 = Convert.ToUInt64(actorId);
 			var type64 = Convert.ToUInt64(type);
-			var criterias = Achievements.CriteriaList.Where(c =>
+			var criterias = _achievements.CriteriaList.Where(c =>
 				(c.AdvanceEvent.Id == 105 && c.AdvanceEvent.Comparand == actorId64)).ToList();
 
 			if (!isHardcore)
@@ -532,7 +539,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 		public static void CheckConversationCriteria(BattleClient client, int convId)
 		{
-			var criterias = Achievements.CriteriaList.Where(c =>
+			var criterias = _achievements.CriteriaList.Where(c =>
 				(c.AdvanceEvent.Id == 604 && c.AdvanceEvent.Comparand == Convert.ToUInt64(convId))
 				||
 				(c.AdvanceEvent.Id == 601 && c.AdvanceEvent.Comparand == Convert.ToUInt64(convId))
@@ -545,7 +552,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			if (laId != -1)
 			{
-				var criterias = Achievements.CriteriaList.Where(c =>
+				var criterias = _achievements.CriteriaList.Where(c =>
 					(c.AdvanceEvent.Id == 407 && c.AdvanceEvent.Comparand == Convert.ToUInt64(laId))
 				).ToList();
 				foreach (var criteria in criterias)

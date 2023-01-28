@@ -1015,7 +1015,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		// generates a random equip item (for vendors)
 		public static Item GenerateRandomEquip(ActorSystem.Actor owner, int level, int minQuality = 1,
 			int maxQuality = -1, ItemTypeTable type = null, ToonClass ownerClass = ToonClass.Unknown,
-			bool crafted = false)
+			bool crafted = false, bool canBeUnidentified = true)
 		{
 			if (level < 0) level = owner.Attributes[GameAttribute.Level];
 			int quality = minQuality;
@@ -1053,7 +1053,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				legaDefinition.CrafterRequiredLevel = level;
 				for (int i = 0; i < 6; i++)
 					legaDefinition.MaxAffixLevel[i] = level;
-				return CreateItem(owner, legaDefinition, quality, crafted);
+				return CreateItem(owner, legaDefinition, quality, crafted, canBeUnidentified: canBeUnidentified);
 			}
 
 			var itemDefinition = GetRandom(AllowedItems.Values
@@ -1083,7 +1083,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				, false //(quality > 8)
 			);
 
-			return CreateItem(owner, itemDefinition, quality, crafted);
+			return CreateItem(owner, itemDefinition, quality, crafted, canBeUnidentified: canBeUnidentified);
 		}
 
 		// generates a random dye (for vendors)
@@ -1317,35 +1317,50 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			return clonedItem;
 		}
 
-		public static Item GetRandomItemOfType(Player player, ItemTypeTable itemType)
+		public static Item GetRandomItemOfType(Player player, ItemTypeTable itemType, bool canBeUnidentified = true)
 		{
 			int minQuality = 1;
 			if (ItemGroup.HierarchyToHashList(itemType).Contains(-740765630)) //jewelry
 				minQuality = 3;
 
 			Item item = GenerateRandomEquip(player, player.Level, minQuality, 10, itemType);
-
-			item.Unidentified = FastRandom.Instance.Chance(10f);
+			if (canBeUnidentified)
+				RandomSetUnidentified(item);
 			return item;
 		}
 
 		// Creates an item based on supplied definition.
 		public static Item CreateItem(ActorSystem.Actor owner, ItemTable definition, int forceQuality = -1,
-			bool crafted = false, int seed = -1)
+			bool crafted = false, int seed = -1, bool canBeUnidentified = true)
 		{
-			// Logger.Trace("Creating item: {0} [sno:{1}, gbid {2}]", definition.Name, definition.SNOActor, StringHashHelper.HashItemName(definition.Name));
-
-			if (definition == null) return null;
+			Logger.Debug("Creating item: $[underline blue]${0}$[/]$ [sno:$[underline blue]${1}$[/]$, gbid $[underline blue]${2}$[/]$]", definition.Name, definition.SNOActor, StringHashHelper.HashItemName(definition.Name));
 
 			Type type = GetItemClass(definition);
 
-			var item = (Item)Activator.CreateInstance(type,
-				new object[] { owner.World, definition, forceQuality, crafted, seed });
+			var item = (Item)Activator.CreateInstance(type, owner.World, definition, forceQuality, crafted, seed);
+			if (item == null)
+			{
+				Logger.Warn($"Could not create item $[red]${definition.Name}$[/]$ [sno:$[red]${definition.SNOActor}$[/]$, gbid $[red]${StringHashHelper.HashItemName(definition.Name)}]$[/]$");
+				return null;
+			}
 			if (forceQuality == 9)
 				item.Attributes[GameAttribute.Item_Quality_Level] = 9;
-			item.Unidentified = FastRandom.Instance.Chance(10f);
+			if (canBeUnidentified)
+				RandomSetUnidentified(item);
 			return item;
 		}
+		
+		/// <summary>
+		/// Randomly sets unidentified flag on item.
+		/// If the item is unique, legendary, special or set, it will have <see cref="Config.ChanceHighQualityUnidentified"/>% chance to be unidentified.
+		/// Otherwise, it will have <see cref="Config.ChanceNormalUnidentified"/>% chance to be unidentified.
+		/// </summary>
+		/// <param name="item">The item to set the flag</param>
+		private static void RandomSetUnidentified(Item item) => item.Unidentified = 
+			FastRandom.Instance.Chance(item.Name.Contains("unique", StringComparison.InvariantCultureIgnoreCase) 
+			|| item.ItemDefinition.Quality is ItemTable.ItemQuality.Legendary or ItemTable.ItemQuality.Special or ItemTable.ItemQuality.Set 
+			? Config.Instance.ChanceHighQualityUnidentified 
+			: Config.Instance.ChanceNormalUnidentified);
 
 		// Allows cooking a custom item.
 		public static Item Cook(Player player, string name)
@@ -1355,9 +1370,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			//Unique items level scaling
 			if (definition.Name.ToLower().Contains("unique") ||
-			    definition.Quality == ItemTable.ItemQuality.Legendary ||
-			    definition.Quality == ItemTable.ItemQuality.Special ||
-			    definition.Quality == ItemTable.ItemQuality.Set)
+			    definition.Quality is ItemTable.ItemQuality.Legendary or ItemTable.ItemQuality.Special or ItemTable.ItemQuality.Set)
 			{
 				definition.ItemLevel = player.Attributes[GameAttribute.Level];
 				definition.RequiredLevel = player.Attributes[GameAttribute.Level];

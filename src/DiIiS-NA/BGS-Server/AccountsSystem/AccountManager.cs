@@ -22,7 +22,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public static int TotalAccounts => DBSessions.SessionQuery<DBAccount>().Count();
 
-		public static readonly ConcurrentDictionary<ulong, Account> LoadedAccounts = new ConcurrentDictionary<ulong, Account>();
+		public static readonly ConcurrentDictionary<ulong, Account> LoadedAccounts = new();
 
 		public static void PreLoadAccounts()
 		{

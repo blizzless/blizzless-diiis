@@ -12,7 +12,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger("DataBaseSystem");
 
-		public static readonly ConcurrentDictionary<ulong, GameAccount> LoadedGameAccounts = new ConcurrentDictionary<ulong, GameAccount>();
+		public static readonly ConcurrentDictionary<ulong, GameAccount> LoadedGameAccounts = new();
 
 		public static int TotalAccounts
 		{
@@ -38,7 +38,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				return null;
 			if (LoadedGameAccounts.ContainsKey(dbGameAccount.Id))
 			{
-				LoadedGameAccounts[dbGameAccount.Id].DBGameAccount = dbGameAccount;
+				// LoadedGameAccounts[dbGameAccount.Id].DBGameAccount = dbGameAccount;
 				return LoadedGameAccounts[dbGameAccount.Id];
 			}
 			else

@@ -712,7 +712,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			AddHP(quantity, GuidingLight);
 		}
 
-		public virtual void AddHP(float quantity, bool GuidingLight = false)
+		public virtual void AddHP(float quantity, bool guidingLight = false)
 		{
 			if (quantity > 0)
 			{

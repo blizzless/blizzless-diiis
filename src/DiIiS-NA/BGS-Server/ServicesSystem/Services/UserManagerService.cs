@@ -16,9 +16,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger();
 
-		public override void Subscribe(Google.ProtocolBuffers.IRpcController controller, SubscribeRequest request, System.Action<SubscribeResponse> done)
+		public override void Subscribe(IRpcController controller, SubscribeRequest request, Action<SubscribeResponse> done)
 		{
-			Logger.Trace("Subscribe() {0}", ((controller as HandlerController).Client));
+			Logger.MethodTrace("Subscribe({0})", ((controller as HandlerController).Client));
 
 			UserManager.Instance.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
 
@@ -41,7 +41,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void AddRecentPlayers(IRpcController controller, AddRecentPlayersRequest request, Action<NoData> done)
 		{
-			Logger.Trace("AddRecentPlayers()");
+			Logger.MethodTrace("AddRecentPlayers()");
 			done(NoData.DefaultInstance);
 		}
 
@@ -52,7 +52,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void BlockPlayer(IRpcController controller, BlockPlayerRequest request, Action<NoData> done)
 		{
-			Logger.Trace("BlockEntity()");
+			Logger.MethodTrace("BlockEntity()");
 			done(NoData.CreateBuilder().Build());
 
 			UserManager.BlockAccount(((controller as HandlerController).Client), request);
@@ -60,7 +60,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void UnblockPlayer(IRpcController controller, UnblockPlayerRequest request, Action<NoData> done)
 		{
-			Logger.Trace("UnblockPlayer()");
+			Logger.MethodTrace("UnblockPlayer()");
 			done(NoData.CreateBuilder().Build());
 
 			UserManager.UnblockAccount(((controller as HandlerController).Client), request);

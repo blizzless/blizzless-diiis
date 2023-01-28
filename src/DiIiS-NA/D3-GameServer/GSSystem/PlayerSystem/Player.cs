@@ -167,10 +167,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public bool EnableGolem = false;
 		public bool IsInPvPWorld
 		{
-			get
-			{
-				return (World != null && World.IsPvP);
-			}
+			get => (World != null && World.IsPvP);
 			set { }
 		}
 
@@ -219,7 +216,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// <summary>
 		/// ActorType = Player.
 		/// </summary>
-		public override ActorType ActorType { get { return ActorType.Player; } }
+		public override ActorType ActorType => ActorType.Player;
 
 		/// <summary>
 		/// Revealed objects to player.
@@ -256,10 +253,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public int _spiritGenHit = 0;
 		public int _SpiritGeneratorHit
 		{
-			get
-			{
-				return _spiritGenHit;
-			}
+			get => _spiritGenHit;
 
 			set
 			{
@@ -281,7 +275,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		private Hireling _questHireling = null;
 		public Hireling ActiveHireling
 		{
-			get { return _activeHireling; }
+			get => _activeHireling;
 			set
 			{
 				if (value == null)
@@ -318,7 +312,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 		public Hireling QuestHireling
 		{
-			get { return _questHireling; }
+			get => _questHireling;
 			set
 			{
 				if (_questHireling != null)
@@ -3928,13 +3922,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public float TotalStrength
-		{
-			get
-			{
-				return Attributes[GameAttribute.Strength] + Inventory.GetItemBonus(GameAttribute.Strength_Item);
-			}
-		}
+		public float TotalStrength => Attributes[GameAttribute.Strength] + Inventory.GetItemBonus(GameAttribute.Strength_Item);
 
 		public float Dexterity
 		{
@@ -3947,29 +3935,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public float TotalDexterity
-		{
-			get
-			{
-				return Attributes[GameAttribute.Dexterity] + Inventory.GetItemBonus(GameAttribute.Dexterity_Item);
-			}
-		}
+		public float TotalDexterity => Attributes[GameAttribute.Dexterity] + Inventory.GetItemBonus(GameAttribute.Dexterity_Item);
 
-		public float Vitality
-		{
-			get
-			{
-				return Toon.HeroTable.Vitality + ((Level - 1) * 2);
-			}
-		}
+		public float Vitality => Toon.HeroTable.Vitality + ((Level - 1) * 2);
 
-		public float TotalVitality
-		{
-			get
-			{
-				return Attributes[GameAttribute.Vitality] + Inventory.GetItemBonus(GameAttribute.Vitality_Item);
-			}
-		}
+		public float TotalVitality => Attributes[GameAttribute.Vitality] + Inventory.GetItemBonus(GameAttribute.Vitality_Item);
 
 		public float Intelligence
 		{
@@ -3982,13 +3952,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public float TotalIntelligence
-		{
-			get
-			{
-				return Attributes[GameAttribute.Intelligence] + Inventory.GetItemBonus(GameAttribute.Intelligence_Item);
-			}
-		}
+		public float TotalIntelligence => Attributes[GameAttribute.Intelligence] + Inventory.GetItemBonus(GameAttribute.Intelligence_Item);
 
 		public float PrimaryAttribute
 		{
@@ -4164,7 +4128,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			get
 			{
 				var result = new List<PlayerQuestRewardHistoryEntry>();
-				var quests = InGameClient.Game.QuestManager.Quests.Where(q => q.Value.Completed == true).ToList();
+				var quests = InGameClient.Game.QuestManager.Quests.Where(q => q.Value.Completed).ToList();
 				foreach (var quest in quests)
 				{
 					InGameClient.SendMessage(new QuestUpdateMessage()
@@ -4201,10 +4165,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 				return _hirelingInfo;
 			}
-			set
-			{
-				_hirelingInfo = value;
-			}
+			set => _hirelingInfo = value;
 		}
 
 #endregion
@@ -4718,7 +4679,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public int castingsnopower = -1;
+		public int CastingSnoPower = -1;
 
 		public void StartCasting(int durationTicks, Action result, int skillsno = -1)
 		{
@@ -4726,13 +4687,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			CastResult = result;
 			Attributes[GameAttribute.Looping_Animation_Start_Time] = World.Game.TickCounter;
 			Attributes[GameAttribute.Looping_Animation_End_Time] = World.Game.TickCounter + durationTicks;
-			castingsnopower = skillsno;
-			if (castingsnopower != -1)
+			CastingSnoPower = skillsno;
+			if (CastingSnoPower != -1)
 			{
-				Attributes[GameAttribute.Buff_Icon_Start_Tick0, castingsnopower] = World.Game.TickCounter;
-				Attributes[GameAttribute.Buff_Icon_End_Tick0, castingsnopower] = World.Game.TickCounter + durationTicks;
-				Attributes[GameAttribute.Buff_Icon_Count0, castingsnopower] = 1;
-				Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, castingsnopower] = true;
+				Attributes[GameAttribute.Buff_Icon_Start_Tick0, CastingSnoPower] = World.Game.TickCounter;
+				Attributes[GameAttribute.Buff_Icon_End_Tick0, CastingSnoPower] = World.Game.TickCounter + durationTicks;
+				Attributes[GameAttribute.Buff_Icon_Count0, CastingSnoPower] = 1;
+				Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, CastingSnoPower] = true;
 
 			}
 			Attributes.BroadcastChangedIfRevealed();
@@ -4743,12 +4704,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			IsCasting = false;
 			Attributes[GameAttribute.Looping_Animation_Start_Time] = -1;
 			Attributes[GameAttribute.Looping_Animation_End_Time] = -1;
-			if (castingsnopower != -1)
+			if (CastingSnoPower != -1)
 			{
-				Attributes[GameAttribute.Buff_Icon_Start_Tick0, castingsnopower] = -1;
-				Attributes[GameAttribute.Buff_Icon_End_Tick0, castingsnopower] = -1;
-				Attributes[GameAttribute.Buff_Icon_Count0, castingsnopower] = 0;
-				Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, castingsnopower] = false;
+				Attributes[GameAttribute.Buff_Icon_Start_Tick0, CastingSnoPower] = -1;
+				Attributes[GameAttribute.Buff_Icon_End_Tick0, CastingSnoPower] = -1;
+				Attributes[GameAttribute.Buff_Icon_Count0, CastingSnoPower] = 0;
+				Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, CastingSnoPower] = false;
 			}
 			Attributes.BroadcastChangedIfRevealed();
 		}
@@ -4777,21 +4738,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 #region generic properties
 
-		public int ClassSNO
-		{
-			get
-			{
-
-				if (Toon.Gender == 0)
-				{
-					return Toon.HeroTable.SNOMaleActor;
-				}
-				else
-				{
-					return Toon.HeroTable.SNOFemaleActor;
-				}
-			}
-		}
+		public int ClassSNO => Toon.Gender == 0 ? Toon.HeroTable.SNOMaleActor : Toon.HeroTable.SNOFemaleActor;
 
 		public int AdditionalLootItems
 		{
@@ -4805,50 +4752,28 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 		}
 
-		public float ModelScale
-		{
-			get
+		public float ModelScale =>
+			Toon.Class switch
 			{
-				switch (Toon.Class)
-				{
-					case ToonClass.Barbarian:
-						return 1.2f;
-					case ToonClass.Crusader:
-						return 1.2f;
-					case ToonClass.DemonHunter:
-						return 1.35f;
-					case ToonClass.Monk:
-						return 1.43f;
-					case ToonClass.WitchDoctor:
-						return 1.1f;
-					case ToonClass.Wizard:
-						return 1.3f;
-				}
-				return 1.43f;
-			}
-		}
+				ToonClass.Barbarian => 1.2f,
+				ToonClass.Crusader => 1.2f,
+				ToonClass.DemonHunter => 1.35f,
+				ToonClass.Monk => 1.43f,
+				ToonClass.WitchDoctor => 1.1f,
+				ToonClass.Wizard => 1.3f,
+				_ => 1.43f
+			};
 
-		public int PrimaryResourceID
-		{
-			get
-			{
-				return (int)Toon.HeroTable.PrimaryResource;
-			}
-		}
+		public int PrimaryResourceID => (int)Toon.HeroTable.PrimaryResource;
 
-		public int SecondaryResourceID
-		{
-			get
-			{
-				return (int)Toon.HeroTable.SecondaryResource;
-			}
-		}
+		public int SecondaryResourceID => (int)Toon.HeroTable.SecondaryResource;
 
+		[Obsolete]
 		public bool IsInTown
 		{
 			get
 			{
-				var town_areas = new List<int> { 19947, 168314, 92945, 197101 };
+				var townAreas = new List<int> { 19947, 168314, 92945, 197101 };
 				var proximity = new RectangleF(Position.X - 1f, Position.Y - 1f, 2f, 2f);
 				var scenes = World.QuadTree.Query<Scene>(proximity);
 				if (scenes.Count == 0) return false;
@@ -4861,7 +4786,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						scene = scenes[1];
 				}
 
-				return town_areas.Contains(scene.Specification.SNOLevelAreas[0]);
+				return townAreas.Contains(scene.Specification.SNOLevelAreas[0]);
 			}
 		}
 
@@ -5084,7 +5009,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						{
 							SyncedData = new GameSyncedData
 							{
-								GameSyncedFlags = InGameClient.Game.IsSeasoned == true ? InGameClient.Game.IsHardcore == true ? 3 : 2 : InGameClient.Game.IsHardcore == true ? 1 : 0,
+								GameSyncedFlags = InGameClient.Game.IsSeasoned ? InGameClient.Game.IsHardcore ? 3 : 2 : InGameClient.Game.IsHardcore ? 1 : 0,
 								Act = Math.Min(InGameClient.Game.CurrentAct, 3000),       //act id
 								InitialMonsterLevel = InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
 								MonsterLevel = 0x64E4425E, //MonsterLevel
@@ -5159,34 +5084,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					switch (Level)
 					{
 						case 10:
-							if (World.Game.IsHardcore)
-								GrantAchievement(74987243307034);
-							else
-								GrantAchievement(74987243307105);
+							GrantAchievement(World.Game.IsHardcore ? (ulong)74987243307034 : (ulong)74987243307105);
 							break;
 						case 20:
-							if (World.Game.IsHardcore)
-								GrantAchievement(74987243307035);
-							else
-								GrantAchievement(74987243307104);
+							GrantAchievement(World.Game.IsHardcore ? (ulong)74987243307035 : (ulong)74987243307104);
 							break;
 						case 30:
-							if (World.Game.IsHardcore)
-								GrantAchievement(74987243307036);
-							else
-								GrantAchievement(74987243307103);
+							GrantAchievement(World.Game.IsHardcore ? (ulong)74987243307036 : (ulong)74987243307103);
 							break;
 						case 40:
-							if (World.Game.IsHardcore)
-								GrantAchievement(74987243307037);
-							else
-								GrantAchievement(74987243307102);
+							GrantAchievement(World.Game.IsHardcore ? (ulong)74987243307037 : (ulong)74987243307102);
 							break;
 						case 50:
-							if (World.Game.IsHardcore)
-								GrantAchievement(74987243307038);
-							else
-								GrantAchievement(74987243307101);
+							GrantAchievement(World.Game.IsHardcore ? (ulong)74987243307038 : (ulong)74987243307101);
 							if (World.Game.IsSeasoned)
 								GrantCriteria(74987250038929);
 							break;
@@ -5226,7 +5136,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		#region gold, heath-glob collection
 		public void VacuumPickupHealthOrb(float radius = -1)
 		{
-			if (radius == -1)
+			if (Math.Abs(radius - (-1)) < 0.001)
 				radius = Attributes[GameAttribute.Gold_PickUp_Radius];
 			var itemList = GetItemsInRange(radius);
 			foreach (Item item in itemList)
@@ -5406,7 +5316,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 				else if (item.ItemDefinition.Name == "p1_normal_rifts_Orb" || item.ItemDefinition.Name == "p1_tiered_rifts_Orb")
 				{
-					if (InGameClient.Game.ActiveNephalemTimer == true && InGameClient.Game.ActiveNephalemKilledMobs == false)
+					if (InGameClient.Game.ActiveNephalemTimer && InGameClient.Game.ActiveNephalemKilledMobs == false)
 					{
 						InGameClient.Game.ActiveNephalemProgress += 15f;
 						foreach (var plr in InGameClient.Game.Players.Values)
@@ -5573,7 +5483,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			AddHP(quantity, GuidingLight);
 		}
 
-		public override void AddHP(float quantity, bool GuidingLight = false)
+		public override void AddHP(float quantity, bool guidingLight = false)
 		{
 			if (Dead) return;
 			if (quantity == 0) return;
@@ -5585,7 +5495,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						if (SkillSet.HasPassive(205217))
 							quantity += 0.01f * Attributes[GameAttribute.Health_Globe_Bonus_Health];
 
-					if (GuidingLight)       //Monk -> Guiding Light
+					if (guidingLight)       //Monk -> Guiding Light
 					{
 						float missingHP = (Attributes[GameAttribute.Hitpoints_Max_Total] - Attributes[GameAttribute.Hitpoints_Cur]) / Attributes[GameAttribute.Hitpoints_Max_Total];
 						if (missingHP > 0.05f)

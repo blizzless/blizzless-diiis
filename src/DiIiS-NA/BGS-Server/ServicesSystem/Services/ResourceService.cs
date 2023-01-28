@@ -11,7 +11,7 @@ using Google.ProtocolBuffers;
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 {
     [Service(serviceID: 0x3d, serviceName: "bnet.protocol.resources.Resources")]
-    public class ResourceService : bgs.protocol.resources.v1.ResourcesService, IServerService
+    public class ResourceService : ResourcesService, IServerService
     {
 		private static readonly Logger Logger = LogManager.CreateLogger();
 		private static byte[] PFTY_HASH = new byte[] { (byte)0xCF, (byte)0x61, (byte)0xE0, (byte)0x81, (byte)0x09, (byte)0x19, (byte)0xC6, (byte)0xA6, (byte)0xF9, (byte)0xC1, (byte)0xCB, (byte)0x24, (byte)0xB3, (byte)0xC6, (byte)0x9D, (byte)0x03, (byte)0xB0, (byte)0x37, (byte)0x08, (byte)0xEC, (byte)0x16, (byte)0xD9, (byte)0x44, (byte)0x51, (byte)0xC5, (byte)0x1F, (byte)0x90, (byte)0x38, (byte)0xE9, (byte)0x09, (byte)0xA7, (byte)0x5A };

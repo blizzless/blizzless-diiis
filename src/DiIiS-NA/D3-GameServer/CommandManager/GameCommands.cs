@@ -19,7 +19,10 @@ using System.Linq;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
+using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using DiIiS_NA.LoginServer.AccountsSystem;
+using FluentNHibernate.Utils;
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 
 namespace DiIiS_NA.GameServer.CommandManager
@@ -78,22 +81,25 @@ namespace DiIiS_NA.GameServer.CommandManager
             {
                 foreach (var world in game.Worlds)
                 {
-                    info.Add("");
-                    info.Add($"  World: {world.SNO.ToString()} - {(int)world.SNO}");
-                    info.Add($"  Players: {world.Players.Count}");
-                    info.Add($"  Monsters: {world.Monsters.Count}");
+                    info.Add($"World: {world.SNO.ToString()} - {(int)world.SNO}");
+                    info.Add($"Players: {world.Players.Count}");
+                    info.Add($"Monsters: {world.Monsters.Count}");
+                    info.Add($"{world.Monsters.Count} players in world: ");
                     foreach (var playerInWorld in world.Players)
                     {
-                        info.Add($">>>>> Player[{playerInWorld.Value.PlayerIndex}] <<<<<");
-                        info.Add($"Id: {playerInWorld.Value.GlobalID}");
+                        info.Add($"> Player[{playerInWorld.Value.PlayerIndex}]");
+                        info.Add($"> Id: {playerInWorld.Value.GlobalID}");
                         // info.Add($"Index: {playerInWorld.Value.PlayerIndex}");
-                        info.Add($"Name: {playerInWorld.Value.Name}");
-                        info.Add($"Class: {playerInWorld.Value.Toon.Class.ToString()}");
-                        info.Add($"Level: {playerInWorld.Value.Toon.Level}");
+                        info.Add($"> Name: {playerInWorld.Value.Name}");
+                        info.Add($"> Class: {playerInWorld.Value.Toon.Class.ToString()}");
+                        info.Add($"> Level: {playerInWorld.Value.Toon.Level}");
                         info.Add(
-                            $"    Health: {playerInWorld.Value.Attributes[GameAttribute.Hitpoints_Cur]} / {playerInWorld.Value.Attributes[GameAttribute.Hitpoints_Max]}");
-                        info.Add($"    Damage: {playerInWorld.Value.Attributes[GameAttribute.Damage_Min, 0]}");
+                            $"> Health: {playerInWorld.Value.Attributes[GameAttribute.Hitpoints_Cur]} / {playerInWorld.Value.Attributes[GameAttribute.Hitpoints_Max]}");
+                        info.Add($"> Damage: {playerInWorld.Value.Attributes[GameAttribute.Damage_Min, 0]}");
+                        info.Add("");
                     }
+                    
+                    info.Add("");
                 }
             }
 
@@ -101,9 +107,43 @@ namespace DiIiS_NA.GameServer.CommandManager
         }
     }
 
+    [CommandGroup("identify", "Identifies all items in your inventory.", Account.UserLevels.Tester)]
+    public class IdentifyCommand
+    {
+        [DefaultCommand()]
+        public string Identify(string[] @params, BattleClient invokerClient)
+        {
+            if (invokerClient?.InGameClient?.Player is not { } player)
+                return "You must be in game to use this command.";
+
+            var unidentified = player.Inventory.GetBackPackItems().Where(i => i.Unidentified).ToArray();
+            int count = unidentified.Length;
+            player.StartCasting(60*2, new Action(() =>
+            {
+                foreach (var item in unidentified)
+                    item.Identify();
+            }));
+            return $"Identified {count} items.";
+        }
+    }
     [CommandGroup("followers", "Manage your followers.", Account.UserLevels.Tester)]
     public class FollowersCommand : CommandGroup
     {
+        [Command("list", "List all followers.")]
+        public string List(string[] @params, BattleClient invokerClient)
+        {
+            if (invokerClient?.InGameClient?.Player is not { } player)
+                return "You must be in game to use this command.";
+
+            List<string> followers = new();
+            foreach (var follower in player.Followers.OrderBy(s=>s.Value))
+            {
+                followers.Add($"[{follower.Key}] {follower.Value.ToString()}");
+            }
+
+            return string.Join('\n', followers);
+        }
+        
         [Command("dismiss", "Dismisses all followers.")]
         public string DismissAllCommand(string[] @params, BattleClient invokerClient)
         {
@@ -129,6 +169,8 @@ namespace DiIiS_NA.GameServer.CommandManager
         {
             if (invokerClient?.InGameClient is null)
                 return "You must execute this command in-game.";
+            if (invokerClient.InGameClient.Player.World.Game.Difficulty == 19)
+                return "You can't increase difficulty any more.";
             invokerClient.InGameClient.Player.World.Game.RaiseDifficulty(invokerClient.InGameClient, null);
             return $"Difficulty increased - set to {invokerClient.InGameClient.Player.World.Game.Difficulty}";
         }
@@ -149,8 +191,8 @@ namespace DiIiS_NA.GameServer.CommandManager
         {
             if (invokerClient?.InGameClient is null)
                 return "You must execute this command in-game.";
-            if (!int.TryParse(@params[0], out var difficulty) || difficulty is < 0 or > 100)
-                return "Invalid difficulty";
+            if (!int.TryParse(@params[0], out var difficulty) || difficulty is < 0 or > 19)
+                return "Invalid difficulty. Must be between 0 and 19.";
             invokerClient.InGameClient.Player.World.Game.SetDifficulty(difficulty);
             return $"Difficulty set to {invokerClient.InGameClient.Player.World.Game.Difficulty}";
         }
@@ -621,12 +663,12 @@ namespace DiIiS_NA.GameServer.CommandManager
             try
             {
                 for (int i = 0; i < amount; i++)
-                    player.World.SpawnRandomEquip(player, player, 11, player.Level, toonClass: player.Toon.Class);
+                    player.World.SpawnRandomEquip(player, player, 11, player.Level, toonClass: player.Toon.Class, canBeUnidentified: false);
             }
             catch
             {
                 for (int i = 0; i < amount; i++)
-                    player.World.SpawnRandomEquip(player, player, 8, player.Level, toonClass: player.Toon.Class);
+                    player.World.SpawnRandomEquip(player, player, 8, player.Level, toonClass: player.Toon.Class, canBeUnidentified: false);
             }
             return $"Dropped {amount} random equipment.";
         }

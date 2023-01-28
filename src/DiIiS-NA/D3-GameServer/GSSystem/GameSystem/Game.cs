@@ -1152,6 +1152,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public void SetDifficulty(int diff)
 		{
 			Difficulty = diff;
+			if (Difficulty < 0) Difficulty = 0;
+			if (Difficulty > 19) Difficulty = 19;
 			diff++;
 			if (diff > 0)
 			{

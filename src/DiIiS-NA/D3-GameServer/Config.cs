@@ -10,90 +10,121 @@ namespace DiIiS_NA.GameServer
 	{
 		public bool Enabled
 		{
-			get => GetBoolean("Enabled", true);
-			set => Set("Enabled", value);
+			get => GetBoolean(nameof(Enabled), true);
+			set => Set(nameof(Enabled), value);
 		}
 
 		public string BindIP
 		{
-			get => GetString("BindIP", "127.0.0.1");
-			set => Set("BindIP", value);
+			get => GetString(nameof(BindIP), "127.0.0.1");
+			set => Set(nameof(BindIP), value);
 		}
 
 		public int WebPort
 		{
-			get => GetInt("WebPort", 9001);
-			set => Set("WebPort", value);
+			get => GetInt(nameof(WebPort), 9001);
+			set => Set(nameof(WebPort), value);
 		}
 
 		public int Port
 		{
-			get => GetInt("Port", 1345);
-			set => Set("Port", value);
+			get => GetInt(nameof(Port), 1345);
+			set => Set(nameof(Port), value);
 		}
 
 		public string BindIPv6
 		{
-			get => GetString("BindIPv6", "::1");
-			set => Set("BindIPv6", value);
+			get => GetString(nameof(BindIPv6), "::1");
+			set => Set(nameof(BindIPv6), value);
 		}
 
 		public bool DRLGemu
 		{
-			get => GetBoolean("DRLGemu", true);
-			set => Set("DRLGemu", value);
+			get => GetBoolean(nameof(DRLGemu), true);
+			set => Set(nameof(DRLGemu), value);
 		}
 
 		public bool CoreActive
 		{
-			get => GetBoolean("CoreActive", true);
-			set => Set("CoreActive", value);
+			get => GetBoolean(nameof(CoreActive), true);
+			set => Set(nameof(CoreActive), value);
 		}
 
-		//Modding of Game-Server
-		public float RateEXP
+		/// <summary>
+		/// Rate of experience gain.
+		/// </summary>
+		public float RateExp
 		{
-			get => GetFloat("RateExp", 1);
-			set => Set("RateExp", value);
+			get => GetFloat(nameof(RateExp), 1);
+			set => Set(nameof(RateExp), value);
 		}
 
+		/// <summary>
+		/// Rate of gold gain.
+		/// </summary>
 		public float RateMoney
 		{
-			get => GetFloat("RateMoney", 1);
-			set => Set("RateMoney", value);
+			get => GetFloat(nameof(RateMoney), 1);
+			set => Set(nameof(RateMoney), value);
 		}
 
+		/// <summary>
+		/// Rate of item drop.
+		/// </summary>
 		public float RateDrop
 		{
-			get => GetFloat("RateDrop", 1);
-			set => Set("RateDrop", value);
+			get => GetFloat(nameof(RateDrop), 1);
+			set => Set(nameof(RateDrop), value);
 		}
 
 		public float RateChangeDrop
 		{
-			get => GetFloat("RateChangeDrop", 1);
-			set => Set("RateChangeDrop", value);
+			get => GetFloat(nameof(RateChangeDrop), 1);
+			set => Set(nameof(RateChangeDrop), value);
 		}
 
+		/// <summary>
+		/// Rate of monster's HP.
+		/// </summary>
 		public float RateMonsterHP
 		{
-			get => GetFloat("RateMonsterHP", 1);
-			set => Set("RateMonsterHP", value);
+			get => GetFloat(nameof(RateMonsterHP), 1);
+			set => Set(nameof(RateMonsterHP), value);
 		}
 
+		/// <summary>
+		/// Rate of monster's damage.
+		/// </summary>
 		public float RateMonsterDMG
 		{
-			get => GetFloat("RateMonsterHP", 1);
-			set => Set("RateMonsterHP", value);
+			get => GetFloat(nameof(RateMonsterDMG), 1);
+			set => Set(nameof(RateMonsterDMG), value);
 		}
-
-
+		
 		public bool IWServer
 		{
-			get => GetBoolean("IWServer", true);
-			set => Set("IWServer", value);
+			get => GetBoolean(nameof(IWServer), true);
+			set => Set(nameof(IWServer), value);
 		}
 
+		/// <summary>
+		/// Percentage that a unique, legendary, set or special item created is unidentified
+		/// </summary>
+		public float ChanceHighQualityUnidentified
+		{
+			get => GetFloat(nameof(ChanceHighQualityUnidentified), 30f);
+			set => Set(nameof(ChanceHighQualityUnidentified), value);
+		}
+		
+		/// <summary>
+		/// Percentage that a normal item created is unidentified
+		/// </summary>
+		public float ChanceNormalUnidentified
+		{
+			get => GetFloat(nameof(ChanceNormalUnidentified), 5f);
+			set => Set(nameof(ChanceNormalUnidentified), value);
+		}
+		
 		public static Config Instance { get; } = new();
 
 		private Config() : base("Game-Server")

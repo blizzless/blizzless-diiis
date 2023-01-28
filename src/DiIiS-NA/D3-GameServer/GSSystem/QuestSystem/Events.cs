@@ -862,7 +862,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
-						if(plr.Toon.isSeassoned) plr.GrantCriteria(74987258781748);
+						if(plr.Toon.IsSeasoned) plr.GrantCriteria(74987258781748);
 					}
 				})
 			});
@@ -906,7 +906,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
-						if (plr.Toon.isSeassoned) plr.GrantCriteria(74987247833299);
+						if (plr.Toon.IsSeasoned) plr.GrantCriteria(74987247833299);
 					}
 				})
 			});
@@ -951,7 +951,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 
-						if (plr.Toon.isSeassoned) plr.GrantCriteria(74987248811185);
+						if (plr.Toon.IsSeasoned) plr.GrantCriteria(74987248811185);
 					}
 				})
 			});
@@ -995,7 +995,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
-						if (plr.Toon.isSeassoned) plr.GrantCriteria(74987256262166);
+						if (plr.Toon.IsSeasoned) plr.GrantCriteria(74987256262166);
 					}
 				})
 			});
@@ -1039,7 +1039,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
 						cache.Attributes[GameAttribute.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
-						if (plr.Toon.isSeassoned) plr.GrantCriteria(74987249495955);
+						if (plr.Toon.IsSeasoned) plr.GrantCriteria(74987249495955);
 					}
 				})
 			});

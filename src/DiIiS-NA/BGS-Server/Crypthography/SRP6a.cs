@@ -82,7 +82,7 @@ namespace DiIiS_NA.LoginServer.Crypthography
 			// calculate server's public ephemeral value.
 			this.b = GetRandomBytes(128).ToBigInteger(); // server's secret ephemeral value.
 			var gModb = BigInteger.ModPow(g, b, N); // pow(g, b, N)
-			var k = H.ComputeHash(new byte[0].Concat(N.ToArray()).Concat(g.ToArray()).ToArray()).ToBigInteger(); // Multiplier parameter (k = H(N, g) in SRP-6a
+			var k = H.ComputeHash(Array.Empty<byte>().Concat(N.ToArray()).Concat(g.ToArray()).ToArray()).ToBigInteger(); // Multiplier parameter (k = H(N, g) in SRP-6a
 			this.B = BigInteger.Remainder((BigInteger.Add(BigInteger.Multiply(this.Account.PasswordVerifier.ToBigInteger(), k), gModb)), N); // B = (k * v + pow(g, b, N)) % N
 
 			// cook the logon challenge message
@@ -121,7 +121,7 @@ namespace DiIiS_NA.LoginServer.Crypthography
 		public bool Verify(byte[] A_bytes, byte[] M_client, byte[] seed)
 		{
 			var A = A_bytes.ToBigInteger(); // client's public ephemeral
-			var u = H.ComputeHash(new byte[0].Concat(A_bytes).Concat(B.ToArray(128)).ToArray()).ToBigInteger(); // Random scrambling parameter - u = H(A, B)
+			var u = H.ComputeHash(Array.Empty<byte>().Concat(A_bytes).Concat(B.ToArray(128)).ToArray()).ToBigInteger(); // Random scrambling parameter - u = H(A, B)
 
 			var S_s = BigInteger.ModPow(BigInteger.Multiply(A, BigInteger.ModPow(this.Account.PasswordVerifier.ToBigInteger(), u, N)), b, N); // calculate server session key - S = (Av^u) ^ b	 
 			this.SessionKey = Calc_K(S_s.ToArray(128)); //  K = H(S) - Shared, strong session key.
@@ -130,7 +130,7 @@ namespace DiIiS_NA.LoginServer.Crypthography
 			var hashgxorhashN = Hash_g_and_N_and_xor_them().ToBigInteger(); // H(N) ^ H(g)
 			var hashedIdentitySalt = H.ComputeHash(Encoding.ASCII.GetBytes(this.IdentitySalt)); // H(I)
 
-			var M = H.ComputeHash(new byte[0] // verify client M_client - H(H(N) ^ H(g), H(I), s, A, B, K_c)
+			var M = H.ComputeHash(Array.Empty<byte>() // verify client M_client - H(H(N) ^ H(g), H(I), s, A, B, K_c)
 				.Concat(hashgxorhashN.ToArray(32))
 				.Concat(hashedIdentitySalt)
 				.Concat(this.Account.Salt.ToArray())
@@ -143,14 +143,14 @@ namespace DiIiS_NA.LoginServer.Crypthography
 			// which allows authentication without the correct password, they should be also calculated for wrong-passsword auths. /raist.
 
 			// calculate server proof of session key
-			var M_server = H.ComputeHash(new byte[0] // M_server = H(A, M_client, K)
+			var M_server = H.ComputeHash(Array.Empty<byte>() // M_server = H(A, M_client, K)
 				.Concat(A_bytes)
 				.Concat(M_client)
 				.Concat(K_s)
 				.ToArray());
 
 			// cook logon proof message.
-			LogonProof = new byte[0]
+			LogonProof = Array.Empty<byte>()
 				.Concat(new byte[] { 3 }) // command = 3 - server sends proof of session key to client
 				.Concat(M_server) // server's proof of session key
 				.Concat(B.ToArray(128)) // second proof

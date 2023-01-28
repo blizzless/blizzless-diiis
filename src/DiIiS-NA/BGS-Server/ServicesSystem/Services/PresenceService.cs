@@ -74,7 +74,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         public override void Query(IRpcController controller, QueryRequest request, Action<QueryResponse> done)
         {
-            var builder = bgs.protocol.presence.v1.QueryResponse.CreateBuilder();
+            var builder = QueryResponse.CreateBuilder();
 
             switch (request.EntityId.GetHighIdType())
             {
@@ -113,7 +113,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             done(builder.Build());
         }
 
-        public override void Subscribe(IRpcController controller, bgs.protocol.presence.v1.SubscribeRequest request, Action<NoData> done)
+        public override void Subscribe(IRpcController controller, SubscribeRequest request, Action<NoData> done)
         {
             Task.Run(() =>
             {
@@ -145,12 +145,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 }
             });
 
-            var builder = bgs.protocol.NoData.CreateBuilder();
+            var builder = NoData.CreateBuilder();
             done(builder.Build());
 
         }
 
-        public override void Unsubscribe(IRpcController controller, bgs.protocol.presence.v1.UnsubscribeRequest request, Action<NoData> done)
+        public override void Unsubscribe(IRpcController controller, UnsubscribeRequest request, Action<NoData> done)
         {
             switch (request.EntityId.GetHighIdType())
             {
@@ -181,7 +181,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     break;
             }
 
-            var builder = bgs.protocol.NoData.CreateBuilder();
+            var builder = NoData.CreateBuilder();
             done(builder.Build());
         }
 
@@ -229,7 +229,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     break;
             }
 
-            var builder = bgs.protocol.NoData.CreateBuilder();
+            var builder = NoData.CreateBuilder();
             done(builder.Build());
         }
 

@@ -17,11 +17,11 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public readonly ChannelInvitationManager _invitationManager = new ChannelInvitationManager();
 
-		public override void Subscribe(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.SubscribeRequest request, Action<NoData> done)
+		public override void Subscribe(Google.ProtocolBuffers.IRpcController controller, SubscribeRequest request, Action<NoData> done)
 		{
 			Logger.Trace("Subscribe() {0}", ((controller as HandlerController).Client));
 
-			this._invitationManager.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
+			_invitationManager.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
 			
 			done(NoData.DefaultInstance);
 		}
@@ -32,7 +32,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			var response = AcceptInvitationResponse.CreateBuilder().SetObjectId(channel.DynamicId).Build();
 			done(response);
 
-			this._invitationManager.HandleAccept(((controller as HandlerController).Client), request);
+			_invitationManager.HandleAccept(((controller as HandlerController).Client), request);
 		}
 
 		public override void DeclineInvitation(Google.ProtocolBuffers.IRpcController controller, DeclineInvitationRequest request, Action<NoData> done)
@@ -40,7 +40,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			var respone = NoData.CreateBuilder();
 			done(respone.Build());
 
-			this._invitationManager.HandleDecline(((controller as HandlerController).Client), request);
+			_invitationManager.HandleDecline(((controller as HandlerController).Client), request);
 		}
 
 		public override void RevokeInvitation(Google.ProtocolBuffers.IRpcController controller, RevokeInvitationRequest request, Action<NoData> done)
@@ -48,7 +48,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			var builder = NoData.CreateBuilder();
 			done(builder.Build());
 
-			this._invitationManager.Revoke(((controller as HandlerController).Client), request);
+			_invitationManager.Revoke(((controller as HandlerController).Client), request);
 		}
 
 		public override void SendInvitation(Google.ProtocolBuffers.IRpcController controller, SendInvitationRequest request, Action<NoData> done)
@@ -106,11 +106,11 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			(controller as HandlerController).Client.MakeTargetedRPC(channel, (lid) =>
 				ChannelListener.CreateStub((controller as HandlerController).Client).OnJoin(new HandlerController() { ListenerId = lid }, builder.Build(), callback => { }));
 
-			this._invitationManager.HandleInvitation((controller as HandlerController).Client, invitation.Build());
+			_invitationManager.HandleInvitation((controller as HandlerController).Client, invitation.Build());
 
 
 		}
-		public override void SuggestInvitation(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.SuggestInvitationRequest request, Action<NoData> done)
+		public override void SuggestInvitation(Google.ProtocolBuffers.IRpcController controller, SuggestInvitationRequest request, Action<NoData> done)
 		{
 			var suggester = GameAccountManager.GetAccountByPersistentID(request.TargetId.Low); 
 			var suggestee = GameAccountManager.GetAccountByPersistentID(request.ApprovalId.Low);
@@ -137,7 +137,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 			var notification = SuggestionAddedNotification.CreateBuilder().SetSuggestion(suggestion);
 
-			suggestee.LoggedInClient.MakeTargetedRPC(this._invitationManager, (lid) =>
+			suggestee.LoggedInClient.MakeTargetedRPC(_invitationManager, (lid) =>
 				ChannelInvitationListener.CreateStub(suggestee.LoggedInClient).OnReceivedSuggestionAdded(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
 		}
 

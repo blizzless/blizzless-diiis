@@ -17,14 +17,8 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		private DBAccount _dbAccount = null; //may be cached forever, as only MooNetServer changes it
 		public DBAccount DBAccount
 		{
-			get
-			{
-				return _dbAccount;
-			}
-			set
-			{
-				_dbAccount = value;
-			}
+			get => _dbAccount;
+			set => _dbAccount = value;
 		}
 
 		//public D3.PartyMessage.ScreenStatus ScreenStatus { get; set; }
@@ -54,13 +48,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			}
 		}
 
-		public StringPresenceField RealIDTagField
-		{
-			get
-			{
-				return new StringPresenceField(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 1, 0, string.Format(""));
-			}
-		}
+		public StringPresenceField RealIDTagField => new(FieldKeyHelper.Program.BNet, FieldKeyHelper.OriginatingClass.Account, 1, 0, string.Format(""));
 
 
 		public BoolPresenceField AccountOnlineField
@@ -123,34 +111,21 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public bool IsOnline
 		{
-			get
-			{
+			get =>
 				//check if gameAccount is online
-				return GameAccount.IsOnline;
-			}
-			set
-			{
-				GameAccount.IsOnline = value;
-			}
+				GameAccount.IsOnline;
+			set => GameAccount.IsOnline = value;
 		}
 
-		public List<ulong> FriendsIds = new List<ulong>();
+		public List<ulong> FriendsIds = new();
 
-		public List<ulong> IgnoreIds = new List<ulong>();
+		public List<ulong> IgnoreIds = new();
 
-		public string Email
-		{
-			get
-			{
-				return DBAccount.Email;
-			}
-			private set
-			{
-			}
-		} 
+		public string Email => DBAccount.Email;
+
 		public string SaltedTicket
 		{
-			get { return DBAccount.SaltedTicket; }
+			get => DBAccount.SaltedTicket;
 			internal set
 			{
 				DBAccount.SaltedTicket = value;
@@ -159,38 +134,38 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		} 
 		public byte[] Salt
 		{
-			get { return DBAccount.Salt.ToArray(); }
+			get => DBAccount.Salt.ToArray();
 			internal set
 			{
 				DBAccount.Salt = value;
 				DBSessions.SessionUpdate(DBAccount);
 			}
 		}  // s- User's salt.
-		public byte[] FullSalt
-		{
-			get { return DBAccount.Salt.ToArray(); }
-		}  // s- User's salt.
+		public byte[] FullSalt => DBAccount.Salt.ToArray(); // s- User's salt.
 
 		public byte[] PasswordVerifier
 		{
-			get { return DBAccount.PasswordVerifier; }
+			get => DBAccount.PasswordVerifier;
 			internal set
 			{
-				DBAccount.PasswordVerifier = value;
-				DBSessions.SessionUpdate(DBAccount);
+				lock (DBAccount)
+				{
+					DBAccount.PasswordVerifier = value;
+					DBSessions.SessionUpdate(DBAccount);
+				}
 			}
-		} // v - password verifier.
+		}
 
 		public int HashCode
 		{
-			get
-			{
-				return DBAccount.HashCode;
-			}
+			get => DBAccount.HashCode;
 			private set
 			{
-				DBAccount.HashCode = value;
-				DBSessions.SessionUpdate(DBAccount);
+				lock (DBAccount)
+				{
+					DBAccount.HashCode = value;
+					DBSessions.SessionUpdate(DBAccount);
+				}
 			}
 		}
 
@@ -242,7 +217,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public UserLevels UserLevel
 		{
-			get { return DBAccount.UserLevel; }
+			get => DBAccount.UserLevel;
 			internal set
 			{
 				DBAccount.UserLevel = value;
@@ -275,13 +250,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		public static readonly D3.OnlineService.EntityId AccountHasNoToons =
 			D3.OnlineService.EntityId.CreateBuilder().SetIdHigh(0).SetIdLow(0).Build();
 
-		public D3.OnlineService.EntityId LastSelectedGameAccount
-		{
-			get
-			{
-				return GameAccount.D3GameAccountId;
-			}
-		}
+		public D3.OnlineService.EntityId LastSelectedGameAccount => GameAccount.D3GameAccountId;
 
 		public string BroadcastMessage = "";
 
@@ -322,7 +291,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 						DoClear(operation.Field);
 						break;
 					default:
-						Logger.Warn("No operation type.");
+						Logger.Warn($"No operation type in $[olive]${nameof(Account)}.{nameof(Update)}(IList<FieldOperation>)$[/].");
 						break;
 				}
 			}
@@ -407,7 +376,8 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					}
 					else
 					{
-						Logger.Warn("Account Unknown query-key: {0}, {1}, {2}", queryKey.Program, queryKey.Group, queryKey.Field);
+						Logger.Warn(
+							$"Account Unknown query-key: $[underline yellow]${queryKey.Program}$[/]$, $[underline yellow]${queryKey.Group}$[/]$, $[underline yellow]${queryKey.Field}$[/]$");
 					}
 					break;
 				case FieldKeyHelper.Program.BNet:
@@ -421,7 +391,8 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					}
 					else
 					{
-						Logger.Warn("Account Unknown query-key: {0}, {1}, {2}", queryKey.Program, queryKey.Group, queryKey.Field);
+						Logger.Warn(
+							$"Account Unknown query-key: $[underline yellow]${queryKey.Program}$[/]$, $[underline yellow]${queryKey.Group}$[/]$, $[underline yellow]${queryKey.Field}$[/]$");
 					}
 					break;
 			}
@@ -459,7 +430,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			var operationList = new List<FieldOperation>();
 			//if (this.LastSelectedHero != AccountHasNoToons)
 			//operationList.Add(this.LastPlayedHeroIdField.GetFieldOperation());
-			if (LastSelectedGameAccount != AccountHasNoToons)
+			if (!Equals(LastSelectedGameAccount, AccountHasNoToons))
 			{
 				operationList.Add(LastPlayedToonIdField.GetFieldOperation());
 				operationList.Add(LastPlayedGameAccountIdField.GetFieldOperation());
@@ -477,21 +448,10 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 
 		#endregion
-		public bool VerifyPassword(string password)
-		{
-			if (string.IsNullOrEmpty(password))
-				return false;
-
-			if (password.Length < 8 || password.Length > 16)
-				return false;
-
-			var calculatedVerifier = SRP6a.CalculatePasswordVerifierForAccount(Email, password, FullSalt);
-			return calculatedVerifier.SequenceEqual(PasswordVerifier);
-		}
-
+		
 		public override string ToString()
 		{
-			return String.Format("{{ Account: {0} [lowId: {1}] }}", Email, BnetEntityId.Low);
+			return $"{{ Account: {Email} [lowId: {BnetEntityId.Low}] }}";
 		}
 
 		/// <summary>

@@ -37,7 +37,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         CommandManager.TryParse(request.AttributeList[0].Value.StringValue, (controller as HandlerController).Client); // try parsing it as a command and respond it if so.
                     else
                     {
-                        var notification = bgs.protocol.notification.v1.Notification.CreateBuilder(request)
+                        var notification = Notification.CreateBuilder(request)
                             .SetSenderId((controller as HandlerController).Client.Account.GameAccount.BnetEntityId)
                             .SetSenderAccountId((controller as HandlerController).Client.Account.BnetEntityId)
                             .Build();
@@ -51,20 +51,20 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     break;
             }
             //*/
-            var builder = bgs.protocol.NoData.CreateBuilder();
+            var builder = NoData.CreateBuilder();
             done(builder.Build());
         }
 
         public override void Subscribe(IRpcController controller, SubscribeRequest request, Action<NoData> done)
         {
             //throw new NotImplementedException();
-            var builder = bgs.protocol.NoData.CreateBuilder();
+            var builder = NoData.CreateBuilder();
             done(builder.Build());
         }
 
         public override void Unsubscribe(IRpcController controller, UnsubscribeRequest request, Action<NoData> done)
         {
-            var builder = bgs.protocol.NoData.CreateBuilder();
+            var builder = NoData.CreateBuilder();
             done(builder.Build());
             //throw new NotImplementedException();
         }

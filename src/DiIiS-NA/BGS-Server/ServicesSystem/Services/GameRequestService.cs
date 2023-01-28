@@ -114,7 +114,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                  var channelStatePermission = bgs.protocol.channel.v1.ChannelState.CreateBuilder()
                     .AddAttribute(bgs.protocol.Attribute.CreateBuilder()
                     .SetName("D3.Party.JoinPermissionPreviousToLock")
-                    .SetValue(bgs.protocol.Variant.CreateBuilder().SetIntValue(1).Build())
+                    .SetValue(Variant.CreateBuilder().SetIntValue(1).Build())
                     .Build()).Build();
 
                 var notificationPermission = bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder()
@@ -134,7 +134,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 .SetType("GQ_ENTRY");
             var attrF = bgs.protocol.Attribute.CreateBuilder()
                 .SetName("game_request_id")
-                .SetValue(bgs.protocol.Variant.CreateBuilder().SetUintValue(gameFound.RequestId).Build());
+                .SetValue(Variant.CreateBuilder().SetUintValue(gameFound.RequestId).Build());
             notificationFound.AddAttribute(attrF);
 
             (((HandlerController) controller).Client).MakeRPC((lid) =>

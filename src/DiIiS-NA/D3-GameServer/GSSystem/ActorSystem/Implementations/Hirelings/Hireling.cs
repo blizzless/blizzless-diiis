@@ -307,7 +307,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			}
 		}
 
-		public override void AddHP(float quantity, bool GuidingLight = false)
+		public override void AddHP(float quantity, bool guidingLight = false)
 		{
 			if (Dead) return;
 			if (quantity == 0) return;
