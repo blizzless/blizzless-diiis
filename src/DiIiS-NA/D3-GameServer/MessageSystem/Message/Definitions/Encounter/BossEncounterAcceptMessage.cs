@@ -17,7 +17,6 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter
 
         public void Handle(GameClient client)
         {
-            client.Player.ArtisanInteraction = "QueueAccepted";
             client.Game.AcceptBossEncounter();
         }
 

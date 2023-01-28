@@ -1,16 +1,10 @@
 ﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
+namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
 	[HandledSNO(ActorSno._pt_blacksmith /* PT_Blacksmith.acr */)]
 	public class Blacksmith : Artisan
@@ -25,8 +19,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 
 		public override void OnCraft(Player player)
 		{
-			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
-			player.ArtisanInteraction = "Blacksmith";
+			base.OnCraft(player);
+			player.CurrentArtisan = ArtisanType.Blacksmith;
 		}
 
 		public override bool Reveal(Player player)

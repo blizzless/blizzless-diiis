@@ -22,7 +22,6 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
 using DiIiS_NA.GameServer.ClientSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans;
 using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem

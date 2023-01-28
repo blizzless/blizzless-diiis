@@ -48,8 +48,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						var Cube = World.GetActorBySNO(ActorSno._p4_ruins_frost_kanaicube_altar);
 						Cube.PlayActionAnimation(AnimationSno.p4_ruins_frost_kanaicube_altar_active);
 						//{[Actor] [Type: Gizmo] SNOId:437895 GlobalId: 1017303610 Position: x:331.9304 y:867.761 z:5.41071 Name: p4_Ruins_Frost_KanaiCube_Altar}
+						// TODO: check all players OR all players at current map
 						foreach (var plr in player.InGameClient.Game.Players.Values)
+						{
 							plr.GrantCriteria(74987252674266);
+							plr.KanaiUnlocked = true;
+						}
 					}
 				}
 			}

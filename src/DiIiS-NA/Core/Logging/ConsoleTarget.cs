@@ -73,7 +73,7 @@ namespace DiIiS_NA.Core.Logging
 				case Logger.Level.Warn:
 					return $"[darkorange3_1{postfix}]";
 				case Logger.Level.Error:
-					return "[indianred1{postfix}]";
+					return $"[indianred1{postfix}]";
 				case Logger.Level.Fatal:
 					return $"[red3{postfix}]";
 				default:
