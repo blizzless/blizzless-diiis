@@ -13,6 +13,8 @@ using DiIiS_NA.REST.Data.Authentication;
 using DiIiS_NA.REST.JSON;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using System.IO;
+using System.Net.Security;
+using System.Web;
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.REST
@@ -97,7 +99,7 @@ namespace DiIiS_NA.REST
 
         void SendResponseHtml(HttpCode code, string response)
         {
-            AsyncWrite(HttpHelper.CreateResponse(code, response));
+            AsyncWrite(HttpHelper.CreateResponse(code, response, contentType: "text/html"));
         }
 
         public override void Start()

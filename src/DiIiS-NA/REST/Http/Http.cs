@@ -49,7 +49,7 @@ namespace DiIiS_NA.REST.Http
             return Encoding.UTF8.GetBytes(sb.ToString());
         }
 
-        public static byte[] CreateResponse(HttpCode httpCode, string content, bool closeConnection = false)
+        public static byte[] CreateResponse(HttpCode httpCode, string content, bool closeConnection = false, string contentType = "application/json;charset=UTF-8")
         {
             var sb = new StringBuilder();
 
@@ -60,7 +60,7 @@ namespace DiIiS_NA.REST.Http
                 if (closeConnection)
                     sw.WriteLine("Connection: close");
 
-                sw.WriteLine("Content-Type: application/json;charset=UTF-8");
+                sw.WriteLine("Content-Type: " + contentType);
                 sw.WriteLine();
 
                 sw.WriteLine(content);

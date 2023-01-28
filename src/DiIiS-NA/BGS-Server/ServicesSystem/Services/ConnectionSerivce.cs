@@ -50,7 +50,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             (controller as HandlerController).Client.Services.Add(2119327385, 0x26);
             
             done(builder.Build());
-            Logger.Info("Connect with $[dodgerblue1]$Blizz$[/]$$[deepskyblue2]$less$[/]$ established. Client - {0}", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
+            Logger.Info("Connect with Blizzless established. Client - {0}", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
         }
 
         public override void Echo(IRpcController controller, EchoRequest request, Action<EchoResponse> done)

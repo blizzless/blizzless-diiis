@@ -227,10 +227,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public string BattleTag
 		{
-			get
-			{
-				return BattleTagName + "#" + HashCode.ToString("D4");
-			}
+			get => BattleTagName + "#" + HashCode.ToString("D4");
 			set
 			{
 				if (!value.Contains('#'))

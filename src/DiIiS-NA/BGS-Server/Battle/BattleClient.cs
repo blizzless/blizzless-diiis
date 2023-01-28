@@ -266,12 +266,12 @@ namespace DiIiS_NA.LoginServer.Battle
 								if (method.Name == "KeepAlive")
 								{
 									Logger.Debug(
-										$"Call: {service.GetType().Name}, Service hash: {header.ServiceHash}, Method: {method.Name}, ID: {header.MethodId}");
+										$"Call: $[olive]{service.GetType().Name}$[/]$, Service hash: $[olive]{header.ServiceHash}$[/]$, Method: $[olive]{method.Name}$[/]$, ID: $[olive]{header.MethodId}$[/]$");
 								}
 								else
 								{
 									Logger.Trace(
-										$"Call: {service.GetType().Name}, Service hash: {header.ServiceHash}, Method: {method.Name}, ID: {header.MethodId}");
+										$"Call: $[olive]${service.GetType().Name}$[/]$, Service hash: $[olive]${header.ServiceHash}$[/]$, Method: $[olive]${method.Name}$[/]$, ID: $[olive]${header.MethodId}$[/]$");
 								}
 #endif
 

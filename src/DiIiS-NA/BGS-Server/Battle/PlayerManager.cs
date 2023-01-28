@@ -9,12 +9,12 @@ namespace DiIiS_NA.LoginServer.Battle
 {
 	public static class PlayerManager
 	{
-		public static readonly List<BattleClient> OnlinePlayers = new List<BattleClient>();
+		public static readonly List<BattleClient> OnlinePlayers = new();
 
 		public static void PlayerConnected(BattleClient client)
 		{
-			var already_logged = OnlinePlayers.Where(cli => cli.Account.Email == client.Account.Email);
-			foreach (var logged in already_logged)
+			var alreadyLoggedIn = OnlinePlayers.Where(cli => cli.Account.Email == client.Account.Email).ToArray();
+			foreach (var logged in alreadyLoggedIn)
 			{
 				OnlinePlayers.Remove(client);
 				logged.SocketConnection.DisconnectAsync();
@@ -22,6 +22,9 @@ namespace DiIiS_NA.LoginServer.Battle
 
 			OnlinePlayers.Add(client);
 		}
+
+		public static BattleClient GetClientByEmail(string email) => OnlinePlayers.FirstOrDefault(cli => cli.Account.Email == email);
+		public static BattleClient GetClientByBattleTag(string battleTag) => OnlinePlayers.FirstOrDefault(cli => cli.Account.BattleTag == battleTag);
 
 		public static BattleClient GetClientByCID(ulong cid)
 		{
