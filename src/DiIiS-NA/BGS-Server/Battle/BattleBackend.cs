@@ -16,19 +16,19 @@ namespace DiIiS_NA.LoginServer.Battle
 {
 	public class BattleBackend
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger("BattleNetEmu");
+		private static readonly Logger Logger = LogManager.CreateLogger("BattleBackend");
 
-		public WatsonTcpServer GameServerSocket;
+		public readonly WatsonTcpServer GameServerSocket;
 
 		public struct ServerDescriptor
 		{
-			public string GameIP;
+			public string GameIp;
 			public int GamePort;
 		};
 
-		public Dictionary<string, ServerDescriptor> GameServers = new Dictionary<string, ServerDescriptor>();
+		public readonly Dictionary<string, ServerDescriptor> GameServers = new();
 
-		public Dictionary<string, ServerDescriptor> PvPGameServers = new Dictionary<string, ServerDescriptor>();
+		private readonly Dictionary<string, ServerDescriptor> _pvPGameServers = new();
 
 		public BattleBackend(string battleHost, int port)
 		{
@@ -38,33 +38,36 @@ namespace DiIiS_NA.LoginServer.Battle
 
 		private bool ReceiverClientConnected(string ipPort)
 		{
-			Logger.Info($"Blizzless server loaded {ipPort} - connecting...");
+			Logger.Info($"Blizzless client connected {ipPort}...");
 			return true;
 		}
 
 		private bool ReceiverClientDisconnected(string ipPort)
 		{
-			Logger.Warn("Blizzless server at {0} was disconnected!", ipPort);
+			Logger.Warn("Blizzless client disconnected $[white]${0}$[/]$!", ipPort);
 			if (GameServers.ContainsKey(ipPort)) GameServers.Remove(ipPort);
-			if (PvPGameServers.ContainsKey(ipPort)) PvPGameServers.Remove(ipPort);
+			if (_pvPGameServers.ContainsKey(ipPort)) _pvPGameServers.Remove(ipPort);
 
 			if (GameServers.Count == 0)
 				Logger.Warn("GameServers list is empty! Unable to use PvE game activities atm.");
-			if (PvPGameServers.Count == 0)
+			if (_pvPGameServers.Count == 0)
 				Logger.Warn("PvPGameServers list is empty! Unable to use PvP game activities atm.");
 			return true;
 		}
 
-		public void CreateGame(string ipPort, int GameId, int level, int act, int difficulty, int questId, int questStepId, bool isHardcore, int gamemode, bool iSseasoned, int perftest_id = 0)
+		public void CreateGame(string ipPort, int gameId, int level, int act, int difficulty, int questId, int questStepId, bool isHardcore, int gameMode, bool isSeasoned, int perftestId = 0)
 		{
-			GameServerSocket.Send(ipPort, Encoding.UTF8.GetBytes(string.Format("diiiscg|{0}/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}", GameId, level, act, difficulty, questId, questStepId, isHardcore, gamemode, iSseasoned, perftest_id)));
+			Send(ipPort, $"diiiscg|{gameId}/{level}/{act}/{difficulty}/{questId}/{questStepId}/{isHardcore}/{gameMode}/{isSeasoned}");
 		}
+		
+		private void Send(string ipPort, string data)
+			=> GameServerSocket.Send(ipPort, Encoding.UTF8.GetBytes(data));
 
 		private bool ReceiverMessageReceived(string ipPort, byte[] data)
 		{
 			string msg = "";
 			if (data != null && data.Length > 0) msg = Encoding.UTF8.GetString(data);
-			Logger.Trace("Message received from {0}: {1}", ipPort, msg);
+			Logger.Trace("Message received from $[grey69]${0}$[/]$: $[white]${1}$[/]$", ipPort, msg);
 
 			var message = msg.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 			var args = message[1].Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
@@ -72,134 +75,134 @@ namespace DiIiS_NA.LoginServer.Battle
 			{
 				case "rngsr":
 					if (GameServers.ContainsKey(ipPort)) GameServers.Remove(ipPort);
-					string rgs_ip = args[0];
-					int rgs_port = int.Parse(args[1].Trim());
-					GameServers.Add(ipPort, new ServerDescriptor { GameIP = rgs_ip, GamePort = rgs_port });
-					Logger.Info("Game server was registered for Blizzless {0}:{1}.", rgs_ip, rgs_port);
+					string rgsIp = args[0];
+					int rgsPort = int.Parse(args[1].Trim());
+					GameServers.Add(ipPort, new ServerDescriptor { GameIp = rgsIp, GamePort = rgsPort });
+					Logger.Info("Game server was registered for Blizzless {0}:{1}.", rgsIp, rgsPort);
 					break;
 				case "rnpvpgsr":
-					if (PvPGameServers.ContainsKey(ipPort)) PvPGameServers.Remove(ipPort);
-					string rpgs_ip = args[0];
-					int rpgs_port = int.Parse(args[1].Trim());
-					PvPGameServers.Add(ipPort, new ServerDescriptor { GameIP = rpgs_ip, GamePort = rpgs_port });
-					Logger.Info("PvP GameServer at {0}:{1} successfully signed and ready to work.", rpgs_ip, rpgs_port);
+					if (_pvPGameServers.ContainsKey(ipPort)) _pvPGameServers.Remove(ipPort);
+					string rpgsIp = args[0];
+					int rpgsPort = int.Parse(args[1].Trim());
+					_pvPGameServers.Add(ipPort, new ServerDescriptor { GameIp = rpgsIp, GamePort = rpgsPort });
+					Logger.Info("PvP GameServer at {0}:{1} successfully signed and ready to work.", rpgsIp, rpgsPort);
 					break;
 				case "grachi":
-					ulong gachi_accId = ulong.Parse(args[0].Trim());
-					ulong gachi_achId = ulong.Parse(args[1].Trim());
+					ulong gachiAccId = ulong.Parse(args[0].Trim());
+					ulong gachiAchId = ulong.Parse(args[1].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var gachi_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == gachi_accId))
-							AchievementManager.GrantAchievement(gachi_invokerClient, gachi_achId);
+						foreach (var gachiInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == gachiAccId))
+							AchievementManager.GrantAchievement(gachiInvokerClient, gachiAchId);
 					});
 					break;
 				case "gcrit":
-					ulong gc_accId = ulong.Parse(args[0].Trim());
-					ulong gc_criId = ulong.Parse(args[1].Trim());
+					ulong gcAccId = ulong.Parse(args[0].Trim());
+					ulong gcCriId = ulong.Parse(args[1].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var gc_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == gc_accId))
-							AchievementManager.GrantCriteria(gc_invokerClient, gc_criId);
+						foreach (var gcInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == gcAccId))
+							AchievementManager.GrantCriteria(gcInvokerClient, gcCriId);
 					});
 					break;
 				case "upequt":
-					ulong uq_accId = ulong.Parse(args[0].Trim());
-					ulong uq_achId = ulong.Parse(args[1].Trim());
-					uint uq_addCounter = uint.Parse(args[2].Trim());
+					ulong uqAccId = ulong.Parse(args[0].Trim());
+					ulong uqAchId = ulong.Parse(args[1].Trim());
+					uint uqAddCounter = uint.Parse(args[2].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var uq_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == uq_accId))
-							AchievementManager.UpdateQuantity(uq_invokerClient, uq_achId, uq_addCounter);
+						foreach (var uqInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == uqAccId))
+							AchievementManager.UpdateQuantity(uqInvokerClient, uqAchId, uqAddCounter);
 					});
 					break;
 				case "uoacce":
-					ulong uac_accId = ulong.Parse(args[0].Trim());
-					int uac_typeId = int.Parse(args[1].Trim());
-					uint uac_addCounter = uint.Parse(args[2].Trim());
-					int uac_comparand = int.Parse(args[3].Trim());
-					ulong uac_achi = ulong.Parse(args[4].Trim());
+					ulong uacAccId = ulong.Parse(args[0].Trim());
+					int uacTypeId = int.Parse(args[1].Trim());
+					uint uacAddCounter = uint.Parse(args[2].Trim());
+					int uacComparand = int.Parse(args[3].Trim());
+					ulong uacAchi = ulong.Parse(args[4].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						if (uac_achi == 0)
-							foreach (var uac_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == uac_accId))
-								AchievementManager.UpdateAllCounters(uac_invokerClient, uac_typeId, uac_addCounter, uac_comparand);
+						if (uacAchi == 0)
+							foreach (var uacInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == uacAccId))
+								AchievementManager.UpdateAllCounters(uacInvokerClient, uacTypeId, uacAddCounter, uacComparand);
 						else
-							foreach (var uac_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == uac_accId))
-								AchievementManager.UpdateAllCounters(uac_invokerClient, uac_typeId, uac_addCounter, uac_comparand);
+							foreach (var uacInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == uacAccId))
+								AchievementManager.UpdateAllCounters(uacInvokerClient, uacTypeId, uacAddCounter, uacComparand);
 					});
 					break;
 				case "upsnaccr": //UpdateSingleAchievementCounter
-					ulong usac_accId = ulong.Parse(args[0].Trim());
-					ulong usac_achId = ulong.Parse(args[1].Trim());
-					uint usac_addCounter = uint.Parse(args[2].Trim());
+					ulong usacAccId = ulong.Parse(args[0].Trim());
+					ulong usacAchId = ulong.Parse(args[1].Trim());
+					uint usacAddCounter = uint.Parse(args[2].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var usac_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == usac_accId))
-							AchievementManager.UpdateQuantity(usac_invokerClient, usac_achId, usac_addCounter);
+						foreach (var usacInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == usacAccId))
+							AchievementManager.UpdateQuantity(usacInvokerClient, usacAchId, usacAddCounter);
 					});
 					break;
 				case "cqc": //CheckQuestCriteria
-					ulong cqc_accId = ulong.Parse(args[0].Trim());
-					int cqc_qId = int.Parse(args[1].Trim());
-					bool cqc_isCoop = (args[2].Trim() == "True" ? true : false);
+					ulong cqcAccId = ulong.Parse(args[0].Trim());
+					int cqcQId = int.Parse(args[1].Trim());
+					bool cqcIsCoop = (args[2].Trim() == "True" ? true : false);
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var cqc_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == cqc_accId))
-							AchievementManager.CheckQuestCriteria(cqc_invokerClient, cqc_qId, cqc_isCoop);
+						foreach (var cqcInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == cqcAccId))
+							AchievementManager.CheckQuestCriteria(cqcInvokerClient, cqcQId, cqcIsCoop);
 					});
 					break;
 				case "ckmc": //CheckKillMonsterCriteria
-					ulong ckmc_accId = ulong.Parse(args[0].Trim());
-					int ckmc_actorId = int.Parse(args[1].Trim());
-					int ckmc_type = int.Parse(args[2].Trim());
-					bool ckmc_isHardcore = (args[3].Trim() == "True" ? true : false);
+					ulong ckmcAccId = ulong.Parse(args[0].Trim());
+					int ckmcActorId = int.Parse(args[1].Trim());
+					int ckmcType = int.Parse(args[2].Trim());
+					bool ckmcIsHardcore = (args[3].Trim() == "True" ? true : false);
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var ckmc_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == ckmc_accId))
-							AchievementManager.CheckKillMonsterCriteria(ckmc_invokerClient, ckmc_actorId, ckmc_type, ckmc_isHardcore);
+						foreach (var ckmcInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == ckmcAccId))
+							AchievementManager.CheckKillMonsterCriteria(ckmcInvokerClient, ckmcActorId, ckmcType, ckmcIsHardcore);
 					});
 					break;
 				case "clc": //CheckLevelCap
-					ulong clc_accId = ulong.Parse(args[0].Trim());
+					ulong clcAccId = ulong.Parse(args[0].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var clc_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == clc_accId))
-							AchievementManager.CheckLevelCap(clc_invokerClient);
+						foreach (var clcInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == clcAccId))
+							AchievementManager.CheckLevelCap(clcInvokerClient);
 					});
 					break;
 				case "csic": //CheckSalvageItemCriteria
-					ulong csic_accId = ulong.Parse(args[0].Trim());
-					int csic_itemId = int.Parse(args[1].Trim());
+					ulong csicAccId = ulong.Parse(args[0].Trim());
+					int csicItemId = int.Parse(args[1].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var csic_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == csic_accId))
-							AchievementManager.CheckSalvageItemCriteria(csic_invokerClient, csic_itemId);
+						foreach (var csicInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == csicAccId))
+							AchievementManager.CheckSalvageItemCriteria(csicInvokerClient, csicItemId);
 					});
 					break;
 				case "clac": //CheckLevelAreaCriteria
-					ulong clac_accId = ulong.Parse(args[0].Trim());
-					int clac_laId = int.Parse(args[1].Trim());
+					ulong clacAccId = ulong.Parse(args[0].Trim());
+					int clacLaId = int.Parse(args[1].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var clac_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == clac_accId))
-							AchievementManager.CheckLevelAreaCriteria(clac_invokerClient, clac_laId);
+						foreach (var clacInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == clacAccId))
+							AchievementManager.CheckLevelAreaCriteria(clacInvokerClient, clacLaId);
 					});
 					break;
 				case "ccc": //CheckConversationCriteria
-					ulong ccc_accId = ulong.Parse(args[0].Trim());
-					int ccc_cId = int.Parse(args[1].Trim());
+					ulong cccAccId = ulong.Parse(args[0].Trim());
+					int cccCId = int.Parse(args[1].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						foreach (var ccc_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == ccc_accId))
-							AchievementManager.CheckConversationCriteria(ccc_invokerClient, ccc_cId);
+						foreach (var cccInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == cccAccId))
+							AchievementManager.CheckConversationCriteria(cccInvokerClient, cccCId);
 					});
 					
 					break;
 				case "plu": //ParagonLevelUp
-					ulong plu_accId = ulong.Parse(args[0].Trim());
+					ulong pluAccId = ulong.Parse(args[0].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						var plr_client = PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == plu_accId).FirstOrDefault();
-						if (plr_client != null && plr_client.Account.GameAccount. Clan != null)
-							plr_client.Account.GameAccount.Clan.ParagonRatings[plr_client.Account.GameAccount] = plr_client.Account.GameAccount.DBGameAccount.ParagonLevel;
+						var plrClient = PlayerManager.OnlinePlayers.FirstOrDefault(c => c.Account.GameAccount.PersistentID == pluAccId);
+						if (plrClient != null && plrClient.Account.GameAccount. Clan != null)
+							plrClient.Account.GameAccount.Clan.ParagonRatings[plrClient.Account.GameAccount] = plrClient.Account.GameAccount.DBGameAccount.ParagonLevel;
 					});
 					break;
 				case "uii": //UniqueItemIdentified
-					ulong uii_accId = ulong.Parse(args[0].Trim());
-					ulong uii_itemId = ulong.Parse(args[1].Trim());
+					ulong uiiAccId = ulong.Parse(args[0].Trim());
+					ulong uiiItemId = ulong.Parse(args[1].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						var plr_client = PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == uii_accId).FirstOrDefault();
-						if (plr_client != null && plr_client.Account.GameAccount.Clan != null)
+						var plrClient = PlayerManager.OnlinePlayers.FirstOrDefault(c => c.Account.GameAccount.PersistentID == uiiAccId);
+						if (plrClient != null && plrClient.Account.GameAccount.Clan != null)
 						{
-							var dbItem = DBSessions.SessionGet<DBInventory>(uii_itemId);
+							var dbItem = DBSessions.SessionGet<DBInventory>(uiiItemId);
 							if (dbItem != null)
 							{
 								var generator = D3.Items.Generator.CreateBuilder()
@@ -219,92 +222,92 @@ namespace DiIiS_NA.LoginServer.Battle
 									generator.AddBaseAffixes(result);
 								}
 
-								plr_client.Account.GameAccount.Clan.AddNews(plr_client.Account.GameAccount, 0, generator.Build().ToByteArray());
+								plrClient.Account.GameAccount.Clan.AddNews(plrClient.Account.GameAccount, 0, generator.Build().ToByteArray());
 							}
 						}
 					});
 					break;
 				case "uc": //UpdateClient
-					ulong uc_accId = ulong.Parse(args[0].Trim());
-					int uc_level = int.Parse(args[1].Trim());
-					int uc_screen = int.Parse(args[2].Trim());
+					ulong ucAccId = ulong.Parse(args[0].Trim());
+					int ucLevel = int.Parse(args[1].Trim());
+					int ucScreen = int.Parse(args[2].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
 						try
 						{
-							foreach (var uc_invokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == uc_accId))
+							foreach (var ucInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == ucAccId))
 							{
-								if (!uc_invokerClient.Account.IsOnline) continue;
-								uc_invokerClient.Account.GameAccount.ChangedFields.SetPresenceFieldValue(uc_invokerClient.Account.GameAccount.CurrentToon.HeroLevelField);
-								uc_invokerClient.Account.GameAccount.ChangedFields.SetPresenceFieldValue(uc_invokerClient.Account.GameAccount.CurrentToon.HeroParagonLevelField);
-								if (uc_screen != -1) uc_invokerClient.Account.GameAccount.ScreenStatus = D3.PartyMessage.ScreenStatus.CreateBuilder().SetScreen(uc_screen).SetStatus(0).Build();
-								uc_invokerClient.Account.GameAccount.NotifyUpdate();
+								if (!ucInvokerClient.Account.IsOnline) continue;
+								ucInvokerClient.Account.GameAccount.ChangedFields.SetPresenceFieldValue(ucInvokerClient.Account.GameAccount.CurrentToon.HeroLevelField);
+								ucInvokerClient.Account.GameAccount.ChangedFields.SetPresenceFieldValue(ucInvokerClient.Account.GameAccount.CurrentToon.HeroParagonLevelField);
+								if (ucScreen != -1) ucInvokerClient.Account.GameAccount.ScreenStatus = D3.PartyMessage.ScreenStatus.CreateBuilder().SetScreen(ucScreen).SetStatus(0).Build();
+								ucInvokerClient.Account.GameAccount.NotifyUpdate();
 							}
 						}
 						catch { }
 					});
 					break;
 				case "gpj": //PlayerJoined
-					int gpj_gameId = int.Parse(args[0].Trim());
+					int gpjGameId = int.Parse(args[0].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
 						try
 						{
-							GameFactoryManager.FindGameByDynamicId((ulong)gpj_gameId).PlayersCount++;
+							GameFactoryManager.FindGameByDynamicId((ulong)gpjGameId).PlayersCount++;
 						}
 						catch { }
 					});
 					break;
 				case "gpl": //PlayerLeft
-					int gpl_gameId = int.Parse(args[0].Trim());
+					int gplGameId = int.Parse(args[0].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
 						try
 						{
-							if (GameFactoryManager.FindGameByDynamicId((ulong)gpl_gameId) != null)
-								GameFactoryManager.FindGameByDynamicId((ulong)gpl_gameId).PlayersCount--;
+							if (GameFactoryManager.FindGameByDynamicId((ulong)gplGameId) != null)
+								GameFactoryManager.FindGameByDynamicId((ulong)gplGameId).PlayersCount--;
 							
 						}
 						catch { }
 					});
 					break;
 				case "gsp": //SetGamePublic
-					int gsp_gameId = int.Parse(args[0].Trim());
+					int gspGameId = int.Parse(args[0].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
 						try
 						{
-							GameFactoryManager.FindGameByDynamicId((ulong)gsp_gameId).Public = true;
+							GameFactoryManager.FindGameByDynamicId((ulong)gspGameId).Public = true;
 						}
 						catch { }
 					});
 					break;
 				case "tsc": //ToonStateChanged
-					int tsc_toonId = int.Parse(args[0].Trim());
+					int tscToonId = int.Parse(args[0].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
 						try
 						{
-							Toons.ToonManager.GetToonByLowID((ulong)tsc_toonId).StateChanged();
+							Toons.ToonManager.GetToonByLowID((ulong)tscToonId).StateChanged();
 						}
 						catch { }
 					});
 					break;
 				case "pvpsp":   //PvPSaveProgress
-					ulong pvpsp_gAccId = ulong.Parse(args[0].Trim());
-					int pvpsp_kills = int.Parse(args[1].Trim());
-					int pvpsp_wins = int.Parse(args[2].Trim());
-					int pvpsp_gold = int.Parse(args[3].Trim());
+					ulong pvpspGAccId = ulong.Parse(args[0].Trim());
+					int pvpspKills = int.Parse(args[1].Trim());
+					int pvpspWins = int.Parse(args[2].Trim());
+					int pvpspGold = int.Parse(args[3].Trim());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
-						var gAcc = GameAccountManager.GetAccountByPersistentID(pvpsp_gAccId);
+						var gAcc = GameAccountManager.GetAccountByPersistentID(pvpspGAccId);
 
 						lock (gAcc.DBGameAccount)
 						{
 							var dbGAcc = gAcc.DBGameAccount;
-							dbGAcc.PvPTotalKilled += (ulong)pvpsp_kills;
-							dbGAcc.PvPTotalWins += (ulong)pvpsp_wins;
-							dbGAcc.PvPTotalGold += (ulong)pvpsp_gold;
+							dbGAcc.PvPTotalKilled += (ulong)pvpspKills;
+							dbGAcc.PvPTotalWins += (ulong)pvpspWins;
+							dbGAcc.PvPTotalGold += (ulong)pvpspGold;
 							DBSessions.SessionUpdate(dbGAcc);
 						}
 					});
 					break;
 				default:
-					Logger.Warn("Unknown message type: {0}|{1}", message[0], message[1]);
+					Logger.Warn("Unknown message type: $[white]${0}|{1}$[/]$", message[0], message[1]);
 					break;
 			}
 			return true;

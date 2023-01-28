@@ -486,7 +486,7 @@ namespace DiIiS_NA.LoginServer.GuildSystem
 				.SetTargetAccountId(account.Owner.BnetEntityId)
 				.Build();
 
-			account.LoggedInClient.MakeRPC((lid) =>
+			account.LoggedInClient.MakeRpc((lid) =>
 				bgs.protocol.notification.v1.NotificationListener.CreateStub(account.LoggedInClient).OnNotificationReceived(new HandlerController() { ListenerId = lid 
 				}, notificationBuilder, callback => { }));
 
@@ -507,7 +507,7 @@ namespace DiIiS_NA.LoginServer.GuildSystem
 					.SetTargetAccountId(account.Owner.BnetEntityId)
 					.Build();
 
-				account.LoggedInClient.MakeRPC((lid) =>
+				account.LoggedInClient.MakeRpc((lid) =>
 					bgs.protocol.notification.v1.NotificationListener.CreateStub(account.LoggedInClient).OnNotificationReceived(new HandlerController() { ListenerId = lid
 					}, chatNotificationBuilder, callback => { }));
 			}
@@ -540,7 +540,7 @@ namespace DiIiS_NA.LoginServer.GuildSystem
 
 			foreach (var member in this.Channel.Members)
 				//member.Key.MakeTargetedRPC(this.Channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member.Key).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification, callback => { }));
-				member.Key.MakeTargetedRPC(this.Channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member.Key).OnJoin(new HandlerController() { ListenerId = lid }, altnotification, callback => { }));
+				member.Key.MakeTargetedRpc(this.Channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member.Key).OnJoin(new HandlerController() { ListenerId = lid }, altnotification, callback => { }));
 		}
 
 		public void UpdateMemberAttributes(GameAccount member)
@@ -565,7 +565,7 @@ namespace DiIiS_NA.LoginServer.GuildSystem
 				.Build();
 
 			foreach (var mbr in this.Channel.Members)
-				mbr.Key.MakeTargetedRPC(this.Channel, (lid) =>
+				mbr.Key.MakeTargetedRpc(this.Channel, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(mbr.Key).OnUpdateMemberState(new HandlerController() { ListenerId = lid }, notification, callback => { }));
 		}
 

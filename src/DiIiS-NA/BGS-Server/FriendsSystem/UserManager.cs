@@ -39,7 +39,7 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 			notifyBlock.SetPlayer(blockedPlayer);
 			notifyBlock.SetGameAccountId(blocked.BnetEntityId);
 
-			client.MakeTargetedRPC(UserManager.Instance, (lid) =>
+			client.MakeTargetedRpc(UserManager.Instance, (lid) =>
 				bgs.protocol.user_manager.v1.UserManagerListener.CreateStub(client).OnBlockedPlayerAdded(new HandlerController() { ListenerId = lid }, notifyBlock.Build(), callback => { }));
 		}
 
@@ -61,7 +61,7 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 			var notifyUnblock = bgs.protocol.user_manager.v1.BlockedPlayerRemovedNotification.CreateBuilder();
 			notifyUnblock.SetPlayer(blockedPlayer);
 
-			client.MakeTargetedRPC(UserManager.Instance, (lid) =>
+			client.MakeTargetedRpc(UserManager.Instance, (lid) =>
 				bgs.protocol.user_manager.v1.UserManagerListener.CreateStub(client).OnBlockedPlayerRemoved(new HandlerController() { ListenerId = lid }, notifyUnblock.Build(), callback => { }));
 		}
 

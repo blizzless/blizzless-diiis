@@ -88,21 +88,21 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 }
             switch (request.Locale)
             {
-                case "deDE": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.deDE; break;
-                case "enGB": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.enGB; break;
-                case "enSG": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.enSG; break;
-                case "enUS": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.enUS; break;
-                case "esES": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.esES; break;
-                case "esMX": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.esMX; break;
-                case "frFR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.frFR; break;
-                case "itIT": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.itIT; break;
-                case "koKR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.koKR; break;
-                case "plPL": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.plPL; break;
-                case "ptBR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ptBR; break;
-                case "ptPT": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ptPT; break;
-                case "ruRU": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ruRU; break;
-                case "trTR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.trTR; break;
-                case "zhCN": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.zhCN; break;
+                case "deDE": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.DE_DE; break;
+                case "enGB": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.EN_GB; break;
+                case "enSG": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.EN_SG; break;
+                case "enUS": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.EN_US; break;
+                case "esES": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ES_ES; break;
+                case "esMX": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ES_MX; break;
+                case "frFR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.FR_FR; break;
+                case "itIT": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.IT_IT; break;
+                case "koKR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.KO_KR; break;
+                case "plPL": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.PL_PL; break;
+                case "ptBR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.PT_BR; break;
+                case "ptPT": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.PT_PT; break;
+                case "ruRU": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.RU_RU; break;
+                case "trTR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.TR_TR; break;
+                case "zhCN": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ZH_CN; break;
             }
             done(NoData.CreateBuilder().Build());
             var builder = ChallengeExternalRequest.CreateBuilder();
@@ -124,7 +124,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             builder.SetPayload(ByteString.CopyFromUtf8(
                                 $"http://{Program.RESTSERVERIP}:{REST.Config.Instance.PORT}/battlenet/login"));
 
-                        ((HandlerController)controller).Client.MakeRPC((lid) => ChallengeListener.CreateStub(((HandlerController)controller).Client).OnExternalChallenge(controller, builder.Build(), callback => { }));
+                        ((HandlerController)controller).Client.MakeRpc((lid) => ChallengeListener.CreateStub(((HandlerController)controller).Client).OnExternalChallenge(controller, builder.Build(), callback => { }));
                         #endregion
                     }
                     break;
@@ -191,7 +191,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             if (((HandlerController)controller).Client.Account == null)
             {
                 var complete = LogonResult.CreateBuilder().SetErrorCode(2);
-                ((HandlerController)controller).Client.MakeRPC((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, complete.Build(), callback => { }));
+                ((HandlerController)controller).Client.MakeRpc((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, complete.Build(), callback => { }));
                 ((HandlerController)controller).Client.SocketConnection.CloseAsync();
                 ((HandlerController)controller).Client.Connect.CloseAsync();
             }
@@ -210,12 +210,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     .SetErrorCode(0)
                     .AddGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId); //D3
                 ((HandlerController)controller).Client.Account.GameAccount.LoggedInClient = ((HandlerController)controller).Client;
-                ((HandlerController)controller).Client.MakeRPC((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, complete.Build(), callback => { }));
+                ((HandlerController)controller).Client.MakeRpc((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, complete.Build(), callback => { }));
 
                 PlayerManager.PlayerConnected(((HandlerController)controller).Client);
 
                 var selectedGameAccount = GameAccountSelectedRequest.CreateBuilder().SetResult(0).SetGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId);
-                ((HandlerController)controller).Client.MakeRPC((lid) =>
+                ((HandlerController)controller).Client.MakeRpc((lid) =>
                     AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnGameAccountSelected(new HandlerController() { ListenerId = lid }, selectedGameAccount.Build(), callback => { }));
             }
             #endregion

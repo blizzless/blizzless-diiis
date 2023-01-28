@@ -101,9 +101,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 			var builder = JoinNotification.CreateBuilder().SetChannelState(ChannelState.CreateBuilder().AddInvitation(invitation.Clone()));
 
-			((HandlerController) controller).Client.MakeTargetedRPC(channel, (lid) => ChannelListener.CreateStub(((HandlerController) controller).Client)
+			((HandlerController) controller).Client.MakeTargetedRpc(channel, (lid) => ChannelListener.CreateStub(((HandlerController) controller).Client)
 			.OnUpdateChannelState(controller, notification.Build(), callback => { }));
-			((HandlerController) controller).Client.MakeTargetedRPC(channel, (lid) =>
+			((HandlerController) controller).Client.MakeTargetedRpc(channel, (lid) =>
 				ChannelListener.CreateStub(((HandlerController) controller).Client).OnJoin(new HandlerController() { ListenerId = lid }, builder.Build(), callback => { }));
 
 			_invitationManager.HandleInvitation(((HandlerController) controller).Client, invitation.Build());
@@ -137,7 +137,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 			var notification = SuggestionAddedNotification.CreateBuilder().SetSuggestion(suggestion);
 
-			suggestee.LoggedInClient.MakeTargetedRPC(_invitationManager, (lid) =>
+			suggestee.LoggedInClient.MakeTargetedRpc(_invitationManager, (lid) =>
 				ChannelInvitationListener.CreateStub(suggestee.LoggedInClient).OnReceivedSuggestionAdded(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
 		}
 

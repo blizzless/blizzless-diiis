@@ -175,7 +175,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			Task.Run(() =>
 			{
-				lock (client._serviceLock)
+				lock (client.ServiceLock)
 				{
 					Logger.MethodTrace(MethodBase.GetCurrentMethod(), "id {0}", achievementId);
 					if (client.Account.GameAccount.Achievements.Where(a => a.AchievementId == achievementId && a.Completion != -1).Count() > 0) return;
@@ -240,7 +240,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			Task.Run(() =>
 			{
-				lock (client._serviceLock)
+				lock (client.ServiceLock)
 				{
 					Logger.MethodTrace(MethodBase.GetCurrentMethod(), "id {0}", criteriaId);
 					D3.AchievementsStaticData.StaticCriteriaDefinition definition = null;
@@ -375,7 +375,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 		{
 			Task.Run(() =>
 			{
-				lock (client._serviceLock)
+				lock (client.ServiceLock)
 				{
 					if (additionalQuantity == 0) return;
 					Logger.MethodTrace(MethodBase.GetCurrentMethod(), "id {0}", achievementId);

@@ -93,7 +93,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			this.IsGuildChatChannel = false;
 
 			if ((client != null) && (remoteObjectId != 0))
-				client.MapLocalObjectID(this.DynamicId, remoteObjectId);
+				client.MapLocalObjectId(this.DynamicId, remoteObjectId);
 
 			if (this.IsChatChannel)
 				Program.Watchdog.AddTask(10, new Action(() =>
@@ -175,7 +175,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 				.AddStateChange(channelMember)
 				.Build();
 
-			client.MakeTargetedRPC(this, (lid) =>
+			client.MakeTargetedRpc(this, (lid) =>
 				bgs.protocol.channel.v1.ChannelListener.CreateStub(client).OnUpdateMemberState(new HandlerController() { ListenerId = lid } , notification, callback => { }));
 		}
 
@@ -201,7 +201,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 				//Notify all Channel members
 				foreach (var n_member in this.Members.Keys)
 				{
-					n_member.MakeTargetedRPC(this, (lid) =>
+					n_member.MakeTargetedRpc(this, (lid) =>
 						bgs.protocol.channel.v1.ChannelListener.CreateStub(n_member).OnUpdateMemberState(new HandlerController() { ListenerId = lid }, notification, callback => { }));
 				}
 			}
@@ -213,7 +213,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 		public void Join(BattleClient client, ulong remoteObjectId)
 		{
-			client.MapLocalObjectID(this.DynamicId, remoteObjectId);
+			client.MapLocalObjectId(this.DynamicId, remoteObjectId);
 			this.AddMember(client);
 		}
 
@@ -249,7 +249,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 				.AddRangeMember(members)
 				.Build();
 
-			client.MakeTargetedRPC(this, (lid) =>
+			client.MakeTargetedRpc(this, (lid) =>
 				bgs.protocol.channel.v1.ChannelListener.CreateStub(client).OnJoin(new HandlerController() { ListenerId = lid }, joinNotification, callback => { }));
 
 
@@ -276,7 +276,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 			foreach (var pair in this.Members.Where(pair => pair.Value != addedMember)) // only send this to previous members of the channel.
 			{
-				pair.Key.MakeTargetedRPC(this, (lid) =>
+				pair.Key.MakeTargetedRpc(this, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(pair.Key).OnMemberAdded(new HandlerController() { ListenerId = lid }, addNotification, callback => { }));
 			}
 
@@ -348,10 +348,10 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 				foreach (var pair in this.Members)
 				{
 					if (pair.Key != client)
-						pair.Key.MakeTargetedRPC(this, (lid) =>
+						pair.Key.MakeTargetedRpc(this, (lid) =>
 							bgs.protocol.channel.v1.ChannelListener.CreateStub(pair.Key).OnMemberRemoved(new HandlerController() { ListenerId = lid }, removeMessage, callback => { }));
 				}
-				client.MakeTargetedRPC(this, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(client).OnLeave(new HandlerController() { ListenerId = lid }, leaveMessage, callback => 
+				client.MakeTargetedRpc(this, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(client).OnLeave(new HandlerController() { ListenerId = lid }, leaveMessage, callback => 
 					{ 
 						client.UnmapLocalObjectId(this.DynamicId); }));
 
@@ -431,7 +431,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			foreach (var pair in this.Members) // send to all members of channel even to the actual one that sent the message else he'll not see his own message.
 			{
 				if (pair.Key.Account.IgnoreIds.Contains(client.Account.PersistentID)) continue;
-				pair.Key.MakeTargetedRPC(this, (lid) =>
+				pair.Key.MakeTargetedRpc(this, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(pair.Key).OnSendMessage(new HandlerController() { ListenerId = lid }, notification, callback => { }));
 			}
 		}

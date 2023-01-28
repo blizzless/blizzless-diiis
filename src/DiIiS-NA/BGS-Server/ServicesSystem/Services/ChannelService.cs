@@ -346,7 +346,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			//Notify all Channel members
 			foreach (var member in channel.Members.Keys)
 			{
-				member.MakeTargetedRPC(channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification, callback => {  }));
+				member.MakeTargetedRpc(channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification, callback => {  }));
 			}
 		}
 
@@ -401,7 +401,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			//Notify all Channel members
 			foreach (var member in channel.Members.Keys)
 			{
-				member.MakeTargetedRPC(channel, (lid) =>
+				member.MakeTargetedRpc(channel, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateMemberState(new HandlerController() { ListenerId = lid }, notification, callback => { }));
 			}
 			//*/

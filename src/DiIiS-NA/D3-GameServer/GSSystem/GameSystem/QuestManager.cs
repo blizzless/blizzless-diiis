@@ -26,18 +26,18 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 {
 	public class QuestManager
 	{
-		private static readonly Logger Logger = new Logger("QuestManager");
+		private static readonly Logger Logger = new(nameof(QuestManager));
 
 		/// <summary>
 		/// Accessor for quests
 		/// </summary>
 		/// <param name="snoQuest">snoId of the quest to retrieve</param>
 		/// <returns></returns>
-		public Dictionary<int, QuestRegistry.Quest> Quests = new Dictionary<int, QuestRegistry.Quest>();
+		public readonly Dictionary<int, QuestRegistry.Quest> Quests = new();
 
-		public Dictionary<int, QuestRegistry.Quest> SideQuests = new Dictionary<int, QuestRegistry.Quest>();
+		public readonly Dictionary<int, QuestRegistry.Quest> SideQuests = new();
 
-		public List<Bounty> Bounties = new List<Bounty>(); 
+		public readonly List<Bounty> Bounties = new(); 
 		
 		public Game Game { get; set; }
 
@@ -191,7 +191,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				if (!Game.Empty)
 				{
 					SaveQuestProgress(true);
-					Logger.Trace(" (Advance) quest {0} completed: {1}", Game.CurrentQuest, Quests[Game.CurrentQuest].Completed);
+					Logger.Trace($"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/], completed $[underline white]${Quests[Game.CurrentQuest].Completed}$[/]$");
 					foreach (var player in Game.Players.Values)
 					{
 						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp * Game.XPModifier);
@@ -269,7 +269,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			}
 			OnQuestProgress();
 			AutoSetQuestMarker();
-			Logger.Trace(" (Advance) Advanced to quest {0}, step {1}", Game.CurrentQuest, Game.CurrentStep);
+			Logger.Trace($"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/], step $[underline white]${Game.CurrentStep}$[/]$");
 		}
 
 		public void SideAdvance()
@@ -295,7 +295,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				SideQuests[Game.CurrentSideQuest].Steps[Game.CurrentSideStep] == SideQuests[Game.CurrentSideQuest].Steps.Last().Value)
 			{
 				SideQuests[Game.CurrentSideQuest].Completed = true;
-				Logger.Trace(" (SideAdvance) quest {0} completed: {1}", Game.CurrentSideQuest, SideQuests[Game.CurrentSideQuest].Completed);
+				Logger.Trace($"$[white]$(Side-Advance)$[/]$ Game {Game.GameId} Side-Advanced to quest {Game.CurrentSideQuest} completed: {SideQuests[Game.CurrentSideQuest].Completed}");
 
 				foreach (var player in Game.Players.Values)
 				{
@@ -339,7 +339,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			}
 
 			OnQuestProgress();
-			Logger.Trace(" (SideAdvance) Advanced to side quest {0}, step {1}", Game.CurrentSideQuest, Game.CurrentSideStep);
+			Logger.Trace($"$[white]$(Side-Advance)$[/]$ Game {Game.GameId} Side-Advanced to side-quest {Game.CurrentSideQuest} completed: {Game.CurrentSideStep}");
 		}
 
 		public void LaunchSideQuest(int questId, bool forceAbandon = false)
@@ -855,7 +855,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		public List<int> LevelAreaChecks { get; set; }
 		public bool Finished = false;
 
-		public static Dictionary<int, int> LevelAreaOverrides = new Dictionary<int, int>() //first is in-game, second is in-data
+		public static Dictionary<int, int> LevelAreaOverrides = new() //first is in-game, second is in-data
 		{
 			{338602, 377700}, //battlefields of eterntity
 			{271234, 370512}, //x1 fortress lv1

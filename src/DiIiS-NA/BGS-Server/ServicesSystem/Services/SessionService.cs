@@ -28,7 +28,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             n.SetIdentity(request.Identity)
              .SetReason(0)
              .SetSessionId(session);
-            ((HandlerController) controller).Client.MakeRPC((lid) => SessionListener.CreateStub(((HandlerController) controller).Client).OnSessionCreated(controller, n.Build(), callback => { }));
+            ((HandlerController) controller).Client.MakeRpc((lid) => SessionListener.CreateStub(((HandlerController) controller).Client).OnSessionCreated(controller, n.Build(), callback => { }));
         }
 
         private void DisconnectClient(HandlerController controller)

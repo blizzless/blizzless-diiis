@@ -948,7 +948,7 @@ public class GameAccount : PersistentRPCObject
             .SetName("D3.NotificationMessage.Payload")
             .SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(update.Build().ToByteString())));
 
-        LoggedInClient.MakeRPC((lid) =>
+        LoggedInClient.MakeRpc((lid) =>
             bgs.protocol.notification.v1.NotificationListener.CreateStub(LoggedInClient).OnNotificationReceived(
                 new HandlerController()
                 {

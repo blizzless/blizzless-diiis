@@ -197,7 +197,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             builder.AddAttribute(messageId);
             builder.AddAttribute(payload);
 
-            Client.MakeRPC((lid) =>
+            Client.MakeRpc((lid) =>
                 NotificationListener.CreateStub(Client)
                     .OnNotificationReceived(new HandlerController() { ListenerId = lid }, builder.Build(),
                         callback => { }));

@@ -95,7 +95,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 
 			foreach (var client in clients)
 			{
-				client.MapLocalObjectID(this.DynamicId, objectId);
+				client.MapLocalObjectId(this.DynamicId, objectId);
 				this.SendConnectionInfo(client);
 				client.Account.GameAccount.ScreenStatus = D3.PartyMessage.ScreenStatus.CreateBuilder().SetScreen(0).SetStatus(0).Build();
 				client.Account.GameAccount.NotifyUpdate();
@@ -109,7 +109,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 		{
 			foreach (var client in clients) 
 			{
-				client.MapLocalObjectID(this.DynamicId, objectId); 
+				client.MapLocalObjectId(this.DynamicId, objectId); 
 				this.SendConnectionInfo(client);
 				client.Account.GameAccount.ScreenStatus = D3.PartyMessage.ScreenStatus.CreateBuilder().SetScreen(1).SetStatus(1).Build();
 				client.Account.GameAccount.NotifyUpdate();
@@ -119,7 +119,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 		public bgs.protocol.games.v2.ConnectInfo GetConnectionInfoForClient(BattleClient client)
 		{
 			return bgs.protocol.games.v2.ConnectInfo.CreateBuilder()
-				.SetAddress(bgs.protocol.Address.CreateBuilder().SetAddress_(this.GServer.Value.GameIP).SetPort((uint)this.GServer.Value.GamePort))
+				.SetAddress(bgs.protocol.Address.CreateBuilder().SetAddress_(this.GServer.Value.GameIp).SetPort((uint)this.GServer.Value.GamePort))
 				.SetToken(Google.ProtocolBuffers.ByteString.CopyFrom(new byte[] { 0x31, 0x33, 0x38, 0x38, 0x35, 0x34, 0x33, 0x33, 0x32, 0x30, 0x38, 0x34, 0x30, 0x30, 0x38, 0x38, 0x35, 0x37, 0x39, 0x36 }))
 				.AddAttribute(bgs.protocol.Attribute.CreateBuilder().SetName("Token").SetValue(bgs.protocol.Variant.CreateBuilder().SetUintValue(0xee34d06ffe821c43L)))
 
@@ -146,7 +146,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 					.SetChannelState(channelStatePrivacyLevel)
 					.Build();
 
-				client.MakeTargetedRPC(client.CurrentChannel, (lid) =>
+				client.MakeTargetedRpc(client.CurrentChannel, (lid) =>
 				   bgs.protocol.channel.v1.ChannelListener.CreateStub(client).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notificationPrivacyLevel, callback => { }));
 		
 
@@ -166,7 +166,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 					.SetChannelState(channelStatePartyLock)
 					.Build();
 
-				client.MakeTargetedRPC(client.CurrentChannel, (lid) =>
+				client.MakeTargetedRpc(client.CurrentChannel, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(client).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notificationPartyLock, callback => { }));
 			}
 		}

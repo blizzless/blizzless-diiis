@@ -42,7 +42,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             .SetSenderAccountId(((HandlerController) controller).Client.Account.BnetEntityId)
                             .Build();
 
-                        targetAccount.LoggedInClient.MakeRPC((lid) =>
+                        targetAccount.LoggedInClient.MakeRpc((lid) =>
                             NotificationListener.CreateStub(targetAccount.LoggedInClient).OnNotificationReceived(controller, notification, callback => { }));
                     }
                     break;
