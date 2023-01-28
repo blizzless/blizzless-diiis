@@ -1,11 +1,9 @@
-﻿//Blizzless Project 2022
+//Blizzless Project 2022
 using System;
 //Blizzless Project 2022
 using System.Collections.Generic;
 //Blizzless Project 2022
 using System.Linq;
-//Blizzless Project 2022
-using System.Text;
 //Blizzless Project 2022
 using System.Threading.Tasks;
 //Blizzless Project 2022
@@ -248,7 +246,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				//Темные жрецы
 				case ActorSno._triunevessel_event31:
 				//Падшие
-				case ActorSno._fallengrunt_a: 
+				case ActorSno._fallengrunt_a:
                     Target.PlayAnimation(11, AnimationSno.triunesummoner_death_02_persistentblood, 1f);
                     break;
 				//Разнощик чумы
@@ -259,7 +257,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					Target.PlayAnimation(11, AnimationSno.fleshpitflyer_death, 1f);
 					break;
 				//X1_LR_Boss_Angel_Corrupt_A
-				case ActorSno._x1_lr_boss_angel_corrupt_a: 
+				case ActorSno._x1_lr_boss_angel_corrupt_a:
                     Target.PlayAnimation(11, AnimationSno.angel_corrupt_death_01, 1f);
                     break;
 				default:

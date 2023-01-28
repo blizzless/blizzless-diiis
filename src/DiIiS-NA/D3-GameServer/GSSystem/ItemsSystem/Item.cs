@@ -935,7 +935,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 Logger.Trace("Learning recipe...");
                 for (var i = 0; i < 10; i++)
                     if (ItemDefinition.RecipeToGrant[i] != -1)
-                        player.LearnRecipe(player.ArtisanInteraction, ItemDefinition.RecipeToGrant[i]);
+                        player.LearnRecipe(player.CurrentArtisan, ItemDefinition.RecipeToGrant[i]);
                     else
                         break;
 

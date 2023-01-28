@@ -2122,7 +2122,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					yield return WaitSeconds(0.2f);
 				}
 			}
-			if (Rune_E > 0)
+			else if (Rune_E > 0)
 			{
 				for (int i = 0; i < ScriptFormula(13); i++)
 				{
@@ -2133,13 +2133,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 			}
 			yield return WaitSeconds(0.5f);
-			foreach (var Fetish in fetishes)
+			foreach (var fetish in fetishes)
 			{
-				Fetish.MakeFetishLive(customLifeTime: null);
+				fetish.MakeFetishLive(customLifeTime: null);
 				if (Rune_A > 0)
 				{
-					Fetish.PlayEffectGroup(133761);
-					WeaponDamage(GetEnemiesInRadius(Fetish.Position, 5f), ScriptFormula(5), DamageType.Physical);
+					fetish.PlayEffectGroup(133761);
+					WeaponDamage(GetEnemiesInRadius(fetish.Position, 5f), ScriptFormula(5), DamageType.Physical);
 				}
 			}
 

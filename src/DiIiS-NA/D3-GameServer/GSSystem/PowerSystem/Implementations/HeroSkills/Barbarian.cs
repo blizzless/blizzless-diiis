@@ -1,4 +1,4 @@
-﻿//Blizzless Project 2022
+//Blizzless Project 2022
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Minions;
 using DiIiS_NA.GameServer.Core.Types.Math;
@@ -2338,7 +2338,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			else
 				StartCooldown(60f);
 
-			List<Actor> ancients = new List<Actor>();
+			var ancients = new List<AncientBarbarian>();
 			for (int i = 0; i < 3; i++)
 			{
 				var ancient = SpawnAncient(i);
@@ -2352,9 +2352,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			yield return WaitSeconds(0.8f);
 
-			foreach (Actor ancient in ancients)
+			foreach (var ancient in ancients)
 			{
-				(ancient as Minion).Brain.Activate();
+				ancient.Brain.Activate();
 				ancient.Attributes[GameAttribute.Untargetable] = false;
 				ancient.Attributes.BroadcastChangedIfRevealed();
 			}
