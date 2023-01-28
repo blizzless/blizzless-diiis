@@ -1,10 +1,14 @@
-﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem;
+using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
-namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
+namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
     [HandledSNO(
         ActorSno._pt_blacksmith_forgeweaponshortcut /* PT_Blacksmith_ForgeWeaponShortcut.acr */,
@@ -14,10 +18,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
         ActorSno._pt_jeweler_combineshortcut /* Actor PT_Jeweler_CombineShortcut */,
         ActorSno._pt_jeweler_removegemshortcut /* Actor PT_Jeweler_RemoveGemShortcut */,
         ActorSno._pt_mystic_enhanceshortcut /* Actor PT_Mystic_EnhanceShortcut */,
-        ActorSno._pt_mystic_identifyshortcut /* Actor PT_Mystic_IdentifyShortcut */
+        ActorSno._pt_mystic_identifyshortcut /* Actor PT_Mystic_IdentifyShortcut */,
+        ActorSno._kanaicube_stand /* Actor KanaiCube_Stand */
     )]
     public class ArtisanShortcut : InteractiveNPC
     {
+        private static readonly Logger logger = LogManager.CreateLogger();
         /*
         [437895]p4_Ruins_Frost_KanaiCube_Altar
         [439695] Lore_P3_ZoltunKulle_CubeHistory_01
@@ -40,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
         [442282] kanai_Cube_Wash
         [138979] NephalemCube
         //*/
-        public ArtisanShortcut(MapSystem.World world, ActorSno sno, TagMap tags)
+        public ArtisanShortcut(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
             Attributes[GameAttribute.MinimapActive] = false;
@@ -49,24 +55,26 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
-            player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
-            switch (SNO)
+            player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
+            player.CurrentArtisan = SNO switch
             {
-                case ActorSno._pt_blacksmith_repairshortcut:
-                case ActorSno._pt_blacksmith_forgeweaponshortcut:
-                case ActorSno._pt_blacksmith_forgearmorshortcut:
-                    player.ArtisanInteraction = "Blacksmith";
-                    break;
-                case ActorSno._pt_jeweler_combineshortcut:
-                case ActorSno._pt_jeweler_addsocketshortcut:
-                case ActorSno._pt_jeweler_removegemshortcut:
-                    player.ArtisanInteraction = "Jeweler";
-                    break;
-                case ActorSno._pt_mystic_identifyshortcut:
-                case ActorSno._pt_mystic_enhanceshortcut:
-                    player.ArtisanInteraction = "Mystic";
-                    break;
-            }
+                ActorSno._pt_blacksmith_repairshortcut or
+                ActorSno._pt_blacksmith_forgeweaponshortcut or
+                ActorSno._pt_blacksmith_forgearmorshortcut => ArtisanType.Blacksmith,
+
+                ActorSno._pt_jeweler_combineshortcut or
+                ActorSno._pt_jeweler_addsocketshortcut or
+                ActorSno._pt_jeweler_removegemshortcut => ArtisanType.Jeweler,
+
+                ActorSno._pt_mystic_identifyshortcut or
+                ActorSno._pt_mystic_enhanceshortcut => ArtisanType.Mystic,
+
+                ActorSno._kanaicube_stand => ArtisanType.Cube,
+
+                _ => null,
+            };
+            if (player.CurrentArtisan == null)
+                logger.Error("Unhandled SNO {}", SNO);
         }
         public override bool Reveal(Player player)
         {
@@ -93,6 +101,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
                         break;
                 }
             }
+            if (SNO == ActorSno._kanaicube_stand && !player.KanaiUnlocked)
+                return false;
+            
 
             return base.Reveal(player);
         }

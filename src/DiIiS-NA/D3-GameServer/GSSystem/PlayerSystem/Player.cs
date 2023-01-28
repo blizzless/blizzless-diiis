@@ -118,6 +118,9 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
 //Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.UI;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans;
+using DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem;
+using NHibernate.Util;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 {
@@ -143,7 +146,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// <summary>
 		/// Current crafting NPC type(for learning recipes)
 		/// </summary>
-		public string ArtisanInteraction = "None";
+		public ArtisanType? CurrentArtisan { get; set; }
 
 		/// <summary>
 		/// The player's toon.
@@ -380,22 +383,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			var achievements = InGameClient.Game.GameDBSession.SessionQueryWhere<DBAchievements>(dba => dba.DBGameAccount.Id == Toon.GameAccount.PersistentID);
 
-			BlacksmithUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307766).Count() > 0;
-			JewelerUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307780).Count() > 0;
-			MysticUnlocked = achievements.Where(dba => dba.AchievementId == 74987247205955).Count() > 0;
+			BlacksmithUnlocked = achievements.Any(dba => dba.AchievementId == 74987243307766);
+			JewelerUnlocked = achievements.Any(dba => dba.AchievementId == 74987243307780);
+			MysticUnlocked = achievements.Any(dba => dba.AchievementId == 74987247205955);
 
-			KanaiUnlocked = false;
-			foreach (var achi in achievements.Where(dba => dba.AchievementId == 74987254626662).ToList())
-				foreach (var crit in AchievementSystem.AchievementManager.UnserializeBytes(achi.Criteria))
-					if (crit == unchecked((uint)74987252674266))
-						KanaiUnlocked = true;
+			KanaiUnlocked = achievements.Where(dba => dba.AchievementId == 74987254626662)
+				.SelectMany(x => AchievementSystem.AchievementManager.UnserializeBytes(x.Criteria))
+				.Any(x => x == unchecked((uint)74987252674266));
 
 			if (Level >= 70)
 				GrantCriteria(74987254853541);
 
-			HirelingTemplarUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307073).Count() > 0;
-			HirelingScoundrelUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307147).Count() > 0;
-			HirelingEnchantressUnlocked = achievements.Where(dba => dba.AchievementId == 74987243307145).Count() > 0;
+			HirelingTemplarUnlocked = achievements.Any(dba => dba.AchievementId == 74987243307073);
+			HirelingScoundrelUnlocked = achievements.Any(dba => dba.AchievementId == 74987243307147);
+			HirelingEnchantressUnlocked = achievements.Any(dba => dba.AchievementId == 74987243307145);
 			SkillSet = new SkillSet(this, Toon.Class, Toon);
 			GroundItems = new Dictionary<uint, Item>();
 			Followers = new Dictionary<uint, ActorSno>();
@@ -1533,7 +1534,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		}
 		public void AcceptBossEncounter()
 		{
-			ArtisanInteraction = "QueueAccepted";
 			InGameClient.Game.AcceptBossEncounter();
 		}
 		public void DeclineBossEncounter()
@@ -2706,213 +2706,56 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		private void OnArtisanWindowClosed()
 		{
-
+			CurrentArtisan = null;
 		}
 		//*
 		private void TrainArtisan(GameClient client, RequestTrainArtisanMessage message)
 		{
-			int AnimByLevel = 0;
-			int IdleByLevel = 0;
-
-			if (ArtisanInteraction == "Blacksmith")
-			{
-				if (blacksmith_data.Level > 55) return;
-				var recipeDefinition = ItemGenerator.GetRecipeDefinition(string.Format("BlackSmith_Train_Level{0}", Math.Min(blacksmith_data.Level, 55)));
-
-				//Logger.Trace(string.Format("BlackSmith_Train_Level{0}", Math.Min(blacksmith_data.Level, 45)));
-				if (Inventory.GetGoldAmount() < recipeDefinition.Gold) return;
-				bool haveEnoughIngredients = true;
-
-				foreach (var ingr in recipeDefinition.Ingredients) //first loop (checking)
-				{
-					if (ingr.ItemsGBID == -1) continue;
-					if (!Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
-				}
-
-				if (!haveEnoughIngredients) return;
-				Inventory.RemoveGoldAmount(recipeDefinition.Gold);
-
-				foreach (var ingr in recipeDefinition.Ingredients) //second loop (getting)
-				{
-					if (ingr.ItemsGBID == -1) continue;
-					Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
-				}
-
-				blacksmith_data.Level++;
-				World.Game.GameDBSession.SessionUpdate(blacksmith_data);
-				if (blacksmith_data.Level == 2)
-					GrantAchievement(74987243307767);
-				if (blacksmith_data.Level == 5)
-					GrantAchievement(74987243307768);
-				if (blacksmith_data.Level == 10)
-				{
-					GrantAchievement(74987243307769);
-					GrantCriteria(74987249071497);
-				}
-				if (blacksmith_data.Level == 12)
-				{
-					GrantAchievement(74987251817289);
-					//74987249993545
-					if (jeweler_data.Level == 12 && mystic_data.Level == 12)
-					{
-						GrantCriteria(74987249993545);
-					}
-				}
-
-				switch (blacksmith_data.Level)
-				{
-					case 1: AnimByLevel = 0x00011500; IdleByLevel = 0x00011210; break;
-					case 2: AnimByLevel = 0x00011510; IdleByLevel = 0x00011220; break;
-					case 3: AnimByLevel = 0x00011520; IdleByLevel = 0x00011230; break;
-					case 4: AnimByLevel = 0x00011530; IdleByLevel = 0x00011240; break;
-					case 5: AnimByLevel = 0x00011540; IdleByLevel = 0x00011250; break;
-					case 6: AnimByLevel = 0x00011550; IdleByLevel = 0x00011260; break;
-					case 7: AnimByLevel = 0x00011560; IdleByLevel = 0x00011270; break;
-					case 8: AnimByLevel = 0x00011570; IdleByLevel = 0x00011280; break;
-					case 9: AnimByLevel = 0x00011580; IdleByLevel = 0x00011290; break;
-					case 10: AnimByLevel = 0x00011590; IdleByLevel = 0x00011300; break;
-					case 11: AnimByLevel = 0x00011600; IdleByLevel = 0x00011310; break;
-					case 12: AnimByLevel = 0x00011610; IdleByLevel = 0x00011320; break;
-				}
-				client.SendMessage(new CrafterLevelUpMessage
-				{
-					Type = 0,
-					AnimTag = AnimByLevel,
-					NewIdle = IdleByLevel,
-					Level = blacksmith_data.Level
-				});
-
+			if (CurrentArtisan == null || !artisanTrainHelpers.ContainsKey(CurrentArtisan.Value)) {
+				Logger.Warn("Training for artisan {} is not supported", CurrentArtisan);
+				return;
 			}
-			if (ArtisanInteraction == "Jeweler")
+
+			var trainHelper = artisanTrainHelpers[CurrentArtisan.Value];
+            if (trainHelper.HasMaxLevel)
+				return;
+
+			var recipeDefinition = ItemGenerator.GetRecipeDefinition(trainHelper.TrainRecipeName);
+            if (Inventory.GetGoldAmount() < recipeDefinition.Gold)
+				return;
+
+			var requiredIngridients = recipeDefinition.Ingredients.Where(x => x.ItemsGBID > 0);
+            // FIXME: Inventory.HaveEnough doesn't work for some craft consumables
+            var haveEnoughIngredients = requiredIngridients.All(x => Inventory.HaveEnough(x.ItemsGBID, x.Count));
+            if (!haveEnoughIngredients)
+				return;
+
+            Inventory.RemoveGoldAmount(recipeDefinition.Gold);
+			foreach (var ingr in requiredIngridients)
 			{
-				if (jeweler_data.Level > 12) return;
-				var recipeDefinition = ItemGenerator.GetRecipeDefinition(string.Format("Jeweler_Train_Level{0}", Math.Min(jeweler_data.Level, 11)));
+                // FIXME: Inventory.GrabSomeItems doesn't work for some craft consumables
+                Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
+            }
 
-				if (Inventory.GetGoldAmount() < recipeDefinition.Gold) return;
-				bool haveEnoughIngredients = true;
+			trainHelper.DbRef.Level++;
+			World.Game.GameDBSession.SessionUpdate(trainHelper.DbRef);
 
-				foreach (var ingr in recipeDefinition.Ingredients) //first loop (checking)
-				{
-					if (ingr.ItemsGBID == -1) continue;
-					if (!Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
-				}
+			if (trainHelper.Achievement is not null) 
+				GrantAchievement(trainHelper.Achievement.Value);
+			if (trainHelper.Criteria is not null)
+                GrantCriteria(trainHelper.Criteria.Value);
 
-				if (!haveEnoughIngredients) return;
-				Inventory.RemoveGoldAmount(recipeDefinition.Gold);
+			if (artisanTrainHelpers.All(x => x.Value.HasMaxLevel))
+                GrantCriteria(74987249993545);
 
-				foreach (var ingr in recipeDefinition.Ingredients) //second loop (getting)
-				{
-					if (ingr.ItemsGBID == -1) continue;
-					Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
-				}
+            client.SendMessage(new CrafterLevelUpMessage
+            {
+                Type = trainHelper.Type,
+                AnimTag = trainHelper.AnimationTag,
+                NewIdle = trainHelper.IdleAnimationTag,
+                Level = trainHelper.DbRef.Level
+            });
 
-				jeweler_data.Level++;
-				World.Game.GameDBSession.SessionUpdate(jeweler_data);
-				if (jeweler_data.Level == 2)
-					GrantAchievement(74987243307781);
-				if (jeweler_data.Level == 5)
-					GrantAchievement(74987243307782);
-				if (jeweler_data.Level == 10)
-				{
-					GrantAchievement(74987243307783);
-					GrantCriteria(74987245845978);
-				}
-				if (jeweler_data.Level == 12)
-				{
-					GrantAchievement(74987257153995);
-					if (blacksmith_data.Level == 12 && mystic_data.Level == 12)
-					{
-						GrantCriteria(74987249993545);
-					}
-				}
-				switch (jeweler_data.Level)
-				{
-					case 1: AnimByLevel = 0x00011500; IdleByLevel = 0x00011210; break;
-					case 2: AnimByLevel = 0x00011510; IdleByLevel = 0x00011220; break;
-					case 3: AnimByLevel = 0x00011520; IdleByLevel = 0x00011230; break;
-					case 4: AnimByLevel = 0x00011530; IdleByLevel = 0x00011240; break;
-					case 5: AnimByLevel = 0x00011540; IdleByLevel = 0x00011250; break;
-					case 6: AnimByLevel = 0x00011550; IdleByLevel = 0x00011260; break;
-					case 7: AnimByLevel = 0x00011560; IdleByLevel = 0x00011270; break;
-					case 8: AnimByLevel = 0x00011570; IdleByLevel = 0x00011280; break;
-					case 9: AnimByLevel = 0x00011580; IdleByLevel = 0x00011290; break;
-					case 10: AnimByLevel = 0x00011590; IdleByLevel = 0x00011300; break;
-					case 11: AnimByLevel = 0x00011600; IdleByLevel = 0x00011310; break;
-					case 12: AnimByLevel = 0x00011610; IdleByLevel = 0x00011320; break;
-				}
-				client.SendMessage(new CrafterLevelUpMessage
-				{
-					Type = 1,
-					AnimTag = AnimByLevel,
-					NewIdle = IdleByLevel,
-					Level = jeweler_data.Level
-				});
-			}
-			if (ArtisanInteraction == "Mystic")
-			{
-				if (mystic_data.Level > 12) return;
-				var recipeDefinition = ItemGenerator.GetRecipeDefinition(string.Format("Mystic_Train_Level{0}", Math.Min(mystic_data.Level, 11)));
-
-				if (Inventory.GetGoldAmount() < recipeDefinition.Gold) return;
-				bool haveEnoughIngredients = true;
-
-				foreach (var ingr in recipeDefinition.Ingredients) //first loop (checking)
-				{
-					if (ingr.ItemsGBID == -1) continue;
-					if (!Inventory.HaveEnough(ingr.ItemsGBID, ingr.Count)) { haveEnoughIngredients = false; break; } //if havent enough then exit
-				}
-
-				if (!haveEnoughIngredients) return;
-				Inventory.RemoveGoldAmount(recipeDefinition.Gold);
-
-				foreach (var ingr in recipeDefinition.Ingredients) //second loop (getting)
-				{
-					if (ingr.ItemsGBID == -1) continue;
-					Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
-				}
-
-				mystic_data.Level++;
-				World.Game.GameDBSession.SessionUpdate(mystic_data);
-				if (mystic_data.Level == 2)
-					GrantAchievement(74987253584575);
-				if (mystic_data.Level == 5)
-					GrantAchievement(74987256660015);
-				if (mystic_data.Level == 10)
-				{
-					GrantAchievement(74987248802163);
-					GrantCriteria(74987259424359);
-				}
-				if (mystic_data.Level == 12)
-				{
-					//this.GrantAchievement(74987256206128);
-					if (jeweler_data.Level == 12 && blacksmith_data.Level == 12)
-					{
-						GrantCriteria(74987249993545);
-					}
-				}
-				switch (mystic_data.Level)
-				{
-					case 1: AnimByLevel = 0x00011500; IdleByLevel = 0x00011210; break;
-					case 2: AnimByLevel = 0x00011510; IdleByLevel = 0x00011220; break;
-					case 3: AnimByLevel = 0x00011520; IdleByLevel = 0x00011230; break;
-					case 4: AnimByLevel = 0x00011530; IdleByLevel = 0x00011240; break;
-					case 5: AnimByLevel = 0x00011540; IdleByLevel = 0x00011250; break;
-					case 6: AnimByLevel = 0x00011550; IdleByLevel = 0x00011260; break;
-					case 7: AnimByLevel = 0x00011560; IdleByLevel = 0x00011270; break;
-					case 8: AnimByLevel = 0x00011570; IdleByLevel = 0x00011280; break;
-					case 9: AnimByLevel = 0x00011580; IdleByLevel = 0x00011290; break;
-					case 10: AnimByLevel = 0x00011590; IdleByLevel = 0x00011300; break;
-					case 11: AnimByLevel = 0x00011600; IdleByLevel = 0x00011310; break;
-					case 12: AnimByLevel = 0x00011610; IdleByLevel = 0x00011320; break;
-				}
-				client.SendMessage(new CrafterLevelUpMessage
-				{
-					Type = 2,
-					AnimTag = AnimByLevel,
-					NewIdle = IdleByLevel,
-					Level = mystic_data.Level
-				});
-			}
 			LoadCrafterData();
 
 
@@ -4312,7 +4155,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			return data.SelectMany(BitConverter.GetBytes).ToArray();
 		}
 
-		public void LearnRecipe(string artisan, int recipe)
+		public void LearnRecipe(ArtisanType? artisan, int recipe)
 		{
 			Logger.Trace("Learning recipe #{0}, Artisan type: {1}", recipe, artisan);
 			/*var query = this.World.Game.GameDBSession.SessionQuerySingle<DBCraft>(
@@ -4320,14 +4163,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					dbi.DBGameAccount.Id == this.Toon.GameAccount.PersistentID &&
 					dbi.Artisan == artisan &&
 					dbi.isHardcore == this.World.Game.IsHardcore);*/
-			if (artisan == "Blacksmith")
+			if (artisan == ArtisanType.Blacksmith)
 			{
 				learnedBlacksmithRecipes.Add(recipe);
 				blacksmith_data.LearnedRecipes = SerializeBytes(learnedBlacksmithRecipes);
 				World.Game.GameDBSession.SessionUpdate(blacksmith_data);
 				UpdateAchievementCounter(404, 1, 0);
 			}
-			if (artisan == "Jeweler")
+			else if (artisan == ArtisanType.Jeweler)
 			{
 				learnedJewelerRecipes.Add(recipe);
 				jeweler_data.LearnedRecipes = SerializeBytes(learnedJewelerRecipes);
@@ -4361,6 +4204,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		private DBCraft blacksmith_data = null;
 		private DBCraft jeweler_data = null;
 		private DBCraft mystic_data = null;
+		private Dictionary<ArtisanType, ArtisanTrainHelper> artisanTrainHelpers = new();
 
 		public void LoadCrafterData()
 		{
@@ -4371,6 +4215,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				blacksmith_data = craft_data.Single(dbc => dbc.Artisan == "Blacksmith" && dbc.isHardcore == World.Game.IsHardcore && dbc.isSeasoned == World.Game.IsSeasoned);
 				jeweler_data = craft_data.Single(dbc => dbc.Artisan == "Jeweler" && dbc.isHardcore == World.Game.IsHardcore && dbc.isSeasoned == World.Game.IsSeasoned);
 				mystic_data = craft_data.Single(dbc => dbc.Artisan == "Mystic" && dbc.isHardcore == World.Game.IsHardcore && dbc.isSeasoned == World.Game.IsSeasoned);
+
+				artisanTrainHelpers[ArtisanType.Blacksmith] = new ArtisanTrainHelper(blacksmith_data, ArtisanType.Blacksmith);
+				artisanTrainHelpers[ArtisanType.Jeweler] = new ArtisanTrainHelper(jeweler_data, ArtisanType.Jeweler);
+				artisanTrainHelpers[ArtisanType.Mystic] = new ArtisanTrainHelper(mystic_data, ArtisanType.Mystic);
 			}
 
 

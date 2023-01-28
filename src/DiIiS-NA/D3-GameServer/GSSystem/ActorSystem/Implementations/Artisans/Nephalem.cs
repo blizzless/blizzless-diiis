@@ -1,13 +1,12 @@
 ﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 
-namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
+namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
 {
 	[HandledSNO(ActorSno._p1_lr_tieredrift_nephalem /* P1_LR_TieredRift_Nephalem.acr */)]
 	public class Nephalem : Artisan
@@ -15,14 +14,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 		public Nephalem(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.NPC_Is_Operatable] = true;
-			Attributes[GameAttribute.Is_NPC] = true;
 			Attributes[GameAttribute.In_Tiered_Loot_Run_Level] = 0;
-			Attributes[GameAttribute.MinimapActive] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 1] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 2] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 3] = true;
 			//this.Attributes[GameAttribute.Conversation_Icon] = 2;
 			//this.ForceConversationSNO = 
 		}
@@ -55,8 +47,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Artisans
 				}
 			}
 
-			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
-			player.ArtisanInteraction = "Mystic";
+			base.OnCraft(player);
+			player.CurrentArtisan = ArtisanType.Nephalem;
 		}
 
 		public override bool Reveal(Player player)
