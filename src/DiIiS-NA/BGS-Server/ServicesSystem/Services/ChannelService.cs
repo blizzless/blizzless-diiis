@@ -29,7 +29,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void RemoveMember(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.RemoveMemberRequest request, Action<bgs.protocol.NoData> done)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod());
+			Logger.MethodTrace("");
 			var channel = ChannelManager.GetChannelByDynamicId((((HandlerController) controller).LastCallHeader).ObjectId);
 			var gameAccount = GameAccountManager.GetAccountByPersistentID(request.MemberId.Low);
 
@@ -78,7 +78,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			//*/
 			Channel channel = ChannelManager.GetChannelByDynamicId((((HandlerController) controller).LastCallHeader).ObjectId);
 			
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0}", request.ToString());
+			Logger.MethodTrace(request.ToString());
 
 			foreach (bgs.protocol.Attribute attribute in request.StateChange.AttributeList)
 			{
@@ -314,7 +314,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 				}
 				else
 				{
-					Logger.MethodTrace(MethodBase.GetCurrentMethod(), "Unknown attribute: {0}", attribute.Name);
+					Logger.MethodTrace($"Unknown attribute: {attribute.Name}");
 				}
 			}
 

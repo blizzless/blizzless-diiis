@@ -24,7 +24,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 
 		public override void Execute(MapSystem.World world)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0}", QuestId);
+			Logger.MethodTrace($"{QuestId}");
 			world.Game.QuestManager.LaunchSideQuest(QuestId, ForceAbandon);
 		}
 	}

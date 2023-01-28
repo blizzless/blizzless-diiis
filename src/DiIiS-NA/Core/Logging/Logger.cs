@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.MessageSystem;
@@ -101,13 +102,8 @@ namespace DiIiS_NA.Core.Logging
 		public void Trace(string message, params object[] args) => Log(Level.Trace, message, args);
 
 		/// <param name="message">The log message.</param>
-		public void MethodTrace(MethodBase method, string message) => Log(Level.MethodTrace, $"$[olive]${method.Name}()$[/]$: " + message, null);
-		public void MethodTrace(MethodBase method) => Log(Level.MethodTrace, $"$[olive]${method.Name}()$[/]$", null);
+		public void MethodTrace(string message, [CallerMemberName] string methodName = "") => Log(Level.MethodTrace, $"$[olive]${methodName}()$[/]$: " + message, null);
 
-		/// <param name="message">The log message.</param>
-		/// <param name="args">Additional arguments.</param>
-		public void MethodTrace(MethodBase method, string message, params object[] args) => Log(Level.MethodTrace, $"$[olive]${method.Name}()$[/]$: " +message, args);
-		
 		/// <param name="message">The log message.</param>
 		public void Debug(string message) => Log(Level.Debug, message, null);
 

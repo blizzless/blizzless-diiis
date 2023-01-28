@@ -788,7 +788,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public Item SpawnRandomEquip(Actor source, Player player, int forceQuality = -1, int forceLevel = -1,
 			GameBalance.ItemTypeTable type = null, bool canBeUnidentified = true, ToonClass toonClass = ToonClass.Unknown)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "quality {0}", forceQuality);
+			Logger.MethodTrace($"quality {forceQuality}");
 			if (player != null)
 			{
 				int level = (forceLevel > 0 ? forceLevel : source.Attributes[GameAttribute.Level]);
@@ -816,7 +816,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		}
 		public void SpawnRandomLegOrSetEquip(Actor source, Player player)
 		{
-			//Logger.MethodTrace(MethodBase.GetCurrentMethod(), "quality {0}", forceQuality);
+			//Logger.MethodTrace("quality {0}", forceQuality);
 			if (player != null)
 			{
 				var item = ItemGenerator.GenerateLegOrSetRandom(player);

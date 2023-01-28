@@ -1331,7 +1331,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 return;
             }
 
-            Logger.MethodTrace(MethodBase.GetCurrentMethod(), "gbid {0} not implemented", GBHandle.GBID);
+            Logger.MethodTrace($"gbid {GBHandle.GBID} not implemented");
         }
 
         private void SwitchWingsBuff(Player player, int powerId)

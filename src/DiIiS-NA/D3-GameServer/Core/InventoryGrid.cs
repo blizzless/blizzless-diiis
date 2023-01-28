@@ -167,7 +167,7 @@ namespace DiIiS_NA.GameServer.Core
 			foreach (var itm in baseItems)
 				have += itm.Attributes[GameAttribute.ItemStackQuantityLo];
 
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "gbid {0}, count {1}", GBid, have);
+			Logger.MethodTrace($"gbid {GBid}, count {have}");
 
 			return (have >= count);
 		}

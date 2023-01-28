@@ -39,7 +39,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         public override void DestroySession(IRpcController controller, DestroySessionRequest request, Action<NoData> done)
         {
-            Logger.MethodTrace(MethodBase.GetCurrentMethod());
+            Logger.MethodTrace("");
             Logger.Trace("Destroying game session for client {0}", ((HandlerController) controller).Client);
             if (controller is HandlerController handlerController)
             {

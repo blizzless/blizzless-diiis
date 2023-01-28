@@ -100,7 +100,7 @@ namespace DiIiS_NA.Core.Helpers.Math
 			a = (uint)temp;
 			b = (uint)(temp >> 32);
 
-			//Logger.MethodTrace(MethodBase.GetCurrentMethod(), "a {0}, b {1}", a, b);
+			//Logger.MethodTrace("a {0}, b {1}", a, b);
 			return (uint)a;
 		}
 

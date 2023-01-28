@@ -75,7 +75,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 
 		public void StartGame(List<BattleClient> clients, ulong objectId)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), ": objectId: {0}", objectId);
+			Logger.MethodTrace($"objectId: {objectId}");
 			var owner = this.Owner.Account.GameAccount.CurrentToon.DBToon;
 
 			if (Program.BattleBackend.GameServers.Count == 0) return;

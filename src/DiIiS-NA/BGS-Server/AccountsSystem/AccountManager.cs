@@ -142,7 +142,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 					return null;
 				}
 
-				Logger.MethodTrace(MethodBase.GetCurrentMethod(), $"id - {dbAcc.First().Id}");
+				Logger.MethodTrace($"id - {dbAcc.First().Id}");
 				return GetAccountByDBAccount(dbAcc.First());
 			}
 		}

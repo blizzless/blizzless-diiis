@@ -19,7 +19,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void Subscribe(IRpcController controller, SubscribeRequest request, Action<SubscribeResponse> done)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0}", (((HandlerController) controller).Client));
+			Logger.MethodTrace((((HandlerController) controller).Client).ToString());
 
 			UserManager.Instance.AddSubscriber((((HandlerController) controller).Client), request.ObjectId);
 
@@ -42,7 +42,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void AddRecentPlayers(IRpcController controller, AddRecentPlayersRequest request, Action<NoData> done)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod());
+			Logger.MethodTrace("");
 			done(NoData.DefaultInstance);
 		}
 
@@ -53,7 +53,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void BlockPlayer(IRpcController controller, BlockPlayerRequest request, Action<NoData> done)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod());
+			Logger.MethodTrace("");
 			done(NoData.CreateBuilder().Build());
 
 			UserManager.BlockAccount((((HandlerController) controller).Client), request);
@@ -61,7 +61,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void UnblockPlayer(IRpcController controller, UnblockPlayerRequest request, Action<NoData> done)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod());
+			Logger.MethodTrace("");
 			done(NoData.CreateBuilder().Build());
 
 			UserManager.UnblockAccount((((HandlerController) controller).Client), request);

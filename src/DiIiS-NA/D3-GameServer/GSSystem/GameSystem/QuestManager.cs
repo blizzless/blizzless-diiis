@@ -540,7 +540,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		{
 			if (Game.QuestProgress.QuestTriggers.Count == 1)
 			{
-				Logger.MethodTrace(MethodBase.GetCurrentMethod(), $"{Game.QuestProgress.QuestTriggers.Count} triggers found");
+				Logger.MethodTrace($"{Game.QuestProgress.QuestTriggers.Count} triggers found");
 				var trigger = Game.QuestProgress.QuestTriggers.First();
 				if (trigger.Value.triggerType == QuestStepObjectiveType.InteractWithActor)
 					foreach (var world in Game.Worlds)

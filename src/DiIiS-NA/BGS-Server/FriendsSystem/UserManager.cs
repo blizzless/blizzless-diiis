@@ -67,7 +67,7 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 
 		private static void AddIgnoreToDB(Account owner, Account target)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), ": owner {0}, target {1}", owner.PersistentID, target.PersistentID);
+			Logger.MethodTrace($": owner {owner.PersistentID}, target {target.PersistentID}");
 			try
 			{
 				if (DBSessions.SessionQueryWhere<DBAccountLists>(dbl => dbl.ListOwner.Id == owner.PersistentID && dbl.ListTarget.Id == target.PersistentID && dbl.Type == "IGNORE").Count() > 0) return;
@@ -88,7 +88,7 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 
 		private static void RemoveIgnoreFromDB(Account owner, Account target)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), ": owner {0}, target {1}", owner.PersistentID, target.PersistentID);
+			Logger.MethodTrace($": owner {owner.PersistentID}, target {target.PersistentID}");
 			try
 			{
 				var blockRecords = DBSessions.SessionQueryWhere<DBAccountLists>(dbl => dbl.ListOwner.Id == owner.PersistentID && dbl.ListTarget.Id == target.PersistentID && dbl.Type == "IGNORE");

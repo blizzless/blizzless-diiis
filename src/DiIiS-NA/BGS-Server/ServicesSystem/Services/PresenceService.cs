@@ -35,7 +35,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             var account = AccountManager.GetAccountByPersistentID(req.Low);
                             if (account != null)
                             {
-                                Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0} {1}", (((HandlerController)controller).Client), account);
+                                Logger.MethodTrace($"{(((HandlerController)controller).Client)} {account}");
                                 account.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                                 response.AddSubscribeFailed(SubscribeResult.CreateBuilder().SetEntityId(req)
                                     .SetResult(0));
@@ -47,8 +47,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                             var gameAccount = GameAccountManager.GetAccountByPersistentID(req.Low);
                             if (gameAccount != null)
                             {
-                                Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0} {1}", (((HandlerController)controller).Client),
-                                    gameAccount);
+                                Logger.MethodTrace($"{(((HandlerController)controller).Client)} {gameAccount}");
                                 gameAccount.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                                 response.AddSubscribeFailed(SubscribeResult.CreateBuilder().SetEntityId(req)
                                     .SetResult(0));
@@ -84,9 +83,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     var gameAccount = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
                     foreach (var key in request.KeyList)
                     {
-                        Logger.MethodTrace(MethodBase.GetCurrentMethod(),"{0} {1} - {2}, {3}, {4}", (((HandlerController)controller).Client),
-                            gameAccount, (FieldKeyHelper.Program)key.Program, (FieldKeyHelper.OriginatingClass)key.Group,
-                            key.Field);
+                        Logger.MethodTrace(
+                            $"{(((HandlerController)controller).Client)} {gameAccount} - {(FieldKeyHelper.Program)key.Program}, {(FieldKeyHelper.OriginatingClass)key.Group}, {key.Field}");
                         var field = gameAccount.QueryField(key);
                         if (field != null) builder.AddField(field);
                     }
@@ -98,9 +96,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     var gameAccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
                     foreach (var key in request.KeyList)
                     {
-                        Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0} {1} - {2}, {3}, {4}", (((HandlerController)controller).Client),
-                            gameAccount, (FieldKeyHelper.Program)key.Program,
-                            (FieldKeyHelper.OriginatingClass)key.Group, key.Field);
+                        Logger.MethodTrace(
+                            $"{(((HandlerController)controller).Client)} {gameAccount} - {(FieldKeyHelper.Program)key.Program}, {(FieldKeyHelper.OriginatingClass)key.Group}, {key.Field}");
                         var field = gameAccount.QueryField(key);
                         if (field != null) builder.AddField(field);
                     }
@@ -125,7 +122,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         var gameAccount = AccountManager.GetAccountByPersistentID(request.EntityId.Low);
                         if (gameAccount != null)
                         {
-                            Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0} {1}", (((HandlerController)controller).Client), gameAccount);
+                            Logger.MethodTrace($"{(((HandlerController)controller).Client)} {gameAccount}");
                             gameAccount.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                         }
                     }
@@ -135,7 +132,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         var gameaccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
                         if (gameaccount != null)
                         {
-                            Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0} {1}", (((HandlerController)controller).Client), gameaccount);
+                            Logger.MethodTrace($"{(((HandlerController)controller).Client)} {gameaccount}");
                             gameaccount.AddSubscriber((((HandlerController)controller).Client), request.ObjectId);
                         }
                     }
@@ -162,7 +159,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     if (gameAccount != null)
                     {
                         gameAccount.RemoveSubscriber((((HandlerController) controller).Client));
-                        Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0} {1}", (((HandlerController) controller).Client), gameAccount);
+                        Logger.MethodTrace($"{(((HandlerController)controller).Client)} {gameAccount}");
                     }
                 }
                     break;
@@ -171,8 +168,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     var gameAccount = GameAccountManager.GetAccountByPersistentID(request.EntityId.Low);
                     if (gameAccount != null)
                     {
-                        gameAccount.RemoveSubscriber((((HandlerController) controller).Client));
-                        Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0} {1}", (((HandlerController) controller).Client), gameAccount);
+                        gameAccount.RemoveSubscriber((((HandlerController)controller).Client));
+                        Logger.MethodTrace($"{(((HandlerController)controller).Client)} {gameAccount}");
                     }
                 }
                     break;
@@ -204,7 +201,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     }
 
                     gameAccount.Update(request.FieldOperationList);
-                    Logger.MethodTrace(MethodBase.GetCurrentMethod(), traceData);
+                    Logger.MethodTrace(traceData);
                 }
                     break;
                 case EntityIdHelper.HighIdType.GameAccountId:
@@ -221,7 +218,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     }
 
                     gameAccount.Update(request.FieldOperationList);
-                    Logger.MethodTrace(MethodBase.GetCurrentMethod(), traceData);
+                    Logger.MethodTrace(traceData);
                     break;
                 }
                 default:

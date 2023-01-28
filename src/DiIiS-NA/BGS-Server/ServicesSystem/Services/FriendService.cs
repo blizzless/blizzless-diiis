@@ -191,7 +191,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		}
 		public override void ViewFriends(IRpcController controller, ViewFriendsRequest request, Action<ViewFriendsResponse> done)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0}.", request.ToString());
+			Logger.MethodTrace(request.ToString());
 
 			var builder = ViewFriendsResponse.CreateBuilder();
 			var friendsIDs = AccountManager.GetAccountByPersistentID(request.TargetId.Low).FriendsIds;
@@ -210,7 +210,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		}
 		public override void UpdateFriendState(IRpcController controller, UpdateFriendStateRequest request, Action<NoData> done)
 		{
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0}.", request.ToString());
+			Logger.MethodTrace(request.ToString());
 
 			done(NoData.CreateBuilder().Build());
 		}

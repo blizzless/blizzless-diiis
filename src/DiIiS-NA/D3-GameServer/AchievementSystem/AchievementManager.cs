@@ -177,7 +177,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 			{
 				lock (client.ServiceLock)
 				{
-					Logger.MethodTrace(MethodBase.GetCurrentMethod(), "id {0}", achievementId);
+					Logger.MethodTrace($"id {achievementId}");
 					if (client.Account.GameAccount.Achievements.Where(a => a.AchievementId == achievementId && a.Completion != -1).Count() > 0) return;
 					DBAchievements achievement = null;
 					var achs = DBSessions.SessionQueryWhere<DBAchievements>(dbi =>
@@ -242,7 +242,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 			{
 				lock (client.ServiceLock)
 				{
-					Logger.MethodTrace(MethodBase.GetCurrentMethod(), "id {0}", criteriaId);
+					Logger.MethodTrace($"id {criteriaId}");
 					D3.AchievementsStaticData.StaticCriteriaDefinition definition = null;
 
 					uint UCriteriaId = (uint)criteriaId;
@@ -262,7 +262,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 						var achievement = new DBAchievements();
 						if (achs.Count == 0)
 						{
-							Logger.MethodTrace(MethodBase.GetCurrentMethod(), "creating new ach data");
+							Logger.MethodTrace("creating new ach data");
 							achievement.DBGameAccount = client.Account.GameAccount.DBGameAccount;
 							achievement.AchievementId = definition.ParentAchievementId;
 							achievement.IsHardcore = IsHardcore(definition.ParentAchievementId);
@@ -271,7 +271,8 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 							List<uint> crits = new List<uint>();
 							crits.Add(UCriteriaId);
 							achievement.Criteria = SerializeBytes(crits);
-							Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0} - {1} - {2} - {3}", client.Account.GameAccount.PersistentID, definition.ParentAchievementId, achievement.CompleteTime, UCriteriaId);
+							Logger.MethodTrace(
+								$"{client.Account.GameAccount.PersistentID} - {definition.ParentAchievementId} - {achievement.CompleteTime} - {UCriteriaId}");
 							DBSessions.SessionSave(achievement);
 						}
 						else
@@ -279,7 +280,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 							achievement = achs.First();
 							if (!UnserializeBytes(achievement.Criteria).Contains(UCriteriaId))
 							{
-								Logger.MethodTrace(MethodBase.GetCurrentMethod(), "editing ach data, id: {0}", achievement.Id);
+								Logger.MethodTrace($"editing ach data, id: {achievement.Id}");
 								List<uint> crits = UnserializeBytes(achievement.Criteria);
 								crits.Add(UCriteriaId);
 								achievement.Criteria = SerializeBytes(crits);
@@ -288,7 +289,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 							else return;
 						}
 
-						Logger.MethodTrace(MethodBase.GetCurrentMethod(), "achievement data updated");
+						Logger.MethodTrace("achievement data updated");
 
 						var record = D3.Achievements.CriteriaUpdateRecord.CreateBuilder()
 								.SetCriteriaId32AndFlags8(UCriteriaId)
@@ -341,7 +342,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 						{
 							achievement = achs.First();
 							
-							Logger.MethodTrace(MethodBase.GetCurrentMethod(), "editing ach data, id: {0}", achievement.Id);
+							Logger.MethodTrace($"editing ach data, id: {achievement.Id}");
 							List<uint> crits = UnserializeBytes(achievement.Criteria);
 							crits.Add(UCriteriaId);
 							achievement.Criteria = SerializeBytes(crits);
@@ -378,7 +379,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 				lock (client.ServiceLock)
 				{
 					if (additionalQuantity == 0) return;
-					Logger.MethodTrace(MethodBase.GetCurrentMethod(), "id {0}", achievementId);
+					Logger.MethodTrace($"id {achievementId}");
 					if (client.Account.GameAccount.Achievements.Where(a => a.AchievementId == achievementId && a.Completion != -1).Count() > 0) return;
 
 					ulong mainCriteriaId = GetMainCriteria(achievementId);
@@ -411,7 +412,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 					var achievement = new DBAchievements();
 					if (achs.Count == 0)
 					{
-						Logger.MethodTrace(MethodBase.GetCurrentMethod(), "creating new ach data");
+						Logger.MethodTrace("creating new ach data");
 						achievement.DBGameAccount = client.Account.GameAccount.DBGameAccount;
 						achievement.AchievementId = achievementId;
 						achievement.IsHardcore = IsHardcore(achievementId);
@@ -424,7 +425,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 					else
 					{
 						achievement = achs.First();
-						Logger.MethodTrace(MethodBase.GetCurrentMethod(), "editing ach data, id: {0}", achievement.Id);
+						Logger.MethodTrace($"editing ach data, id: {achievement.Id}");
 						achievement.Quantity = (int)newQuantity;
 						DBSessions.SessionUpdate(achievement);
 					}

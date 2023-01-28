@@ -20,7 +20,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		public override void GetContentHandle(IRpcController controller, ContentHandleRequest request, Action<ContentHandle> done)
         {
 
-			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "ProgramId: 0x{0:X8} StreamId: 0x{1:X8}", request.Program, request.Stream);
+			Logger.MethodTrace($"ProgramId: 0x{request.Program:X8} StreamId: 0x{request.Stream:X8}");
 			if (request.Program == (uint)FieldKeyHelper.Program.BNet)
 			{
 				var builder = ContentHandle.CreateBuilder()
