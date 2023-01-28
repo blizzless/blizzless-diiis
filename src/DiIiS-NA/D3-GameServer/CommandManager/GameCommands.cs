@@ -55,6 +55,33 @@ public class PowerfulCommand : CommandGroup
     }
 }
 
+[CommandGroup("resourcefull", "Makes your character with full resource. Useful for testing.",
+    Account.UserLevels.Tester)]
+public class ResourcefullCommand : CommandGroup
+{
+    [DefaultCommand]
+    public string Resourcefull(string[] @params, BattleClient invokerClient)
+    {
+        if (invokerClient?.InGameClient?.Player is not { } player)
+            return "You must be in game to use this command.";
+
+        if (player.Attributes.FixedMap.Contains(FixedAttribute.Resourcefull))
+        {
+            player.Attributes.FixedMap.Remove(FixedAttribute.Resourcefull);
+            player.Attributes.BroadcastChangedIfRevealed();
+            return "You are no longer Resourcefull.";
+        }
+
+        player.Attributes.FixedMap.Add(FixedAttribute.Resourcefull, (attributes) =>
+        {
+            attributes[GameAttribute.Resource_Cur, 1] = 100;
+        });
+
+        player.Attributes.BroadcastChangedIfRevealed();
+        return "You are full resource.";
+    }
+}
+
 [CommandGroup("info", "Get current game information.")]
 public class InfoCommand : CommandGroup
 {
