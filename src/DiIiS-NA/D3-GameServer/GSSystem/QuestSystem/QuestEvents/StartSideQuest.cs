@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 
 		public override void Execute(MapSystem.World world)
 		{
-			Logger.Trace("StartSideQuest(): {0}", QuestId);
+			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0}", QuestId);
 			world.Game.QuestManager.LaunchSideQuest(QuestId, ForceAbandon);
 		}
 	}

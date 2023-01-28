@@ -438,8 +438,8 @@ namespace DiIiS_NA.LoginServer.Battle
 
 			if (controller is HandlerController)
 			{
-				status = (controller as HandlerController).Status;
-				_listenerId = (controller as HandlerController).ListenerId;
+				status = ((HandlerController) controller).Status;
+				_listenerId = ((HandlerController) controller).ListenerId;
 			}
 		
 			var serviceId = Services[serviceHash];

@@ -28,29 +28,29 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             if (request.HasUseBindlessRpc)
                 builder.SetUseBindlessRpc(true);
             
-            (controller as HandlerController).Client.Services.Add(0x54DFDA17, 0x01);
-            (controller as HandlerController).Client.Services.Add(0xD4DCD093, 0x02);
-            (controller as HandlerController).Client.Services.Add(0x71240E35, 0x03);
-            (controller as HandlerController).Client.Services.Add(0xBBDA171F, 0x04);
-            (controller as HandlerController).Client.Services.Add(0xF084FC20, 0x05);
-            (controller as HandlerController).Client.Services.Add(0xBF8C8094, 0x06);
-            (controller as HandlerController).Client.Services.Add(0x166FE4A1, 0x07);
-            (controller as HandlerController).Client.Services.Add(0xB96F5297, 0x08);
-            (controller as HandlerController).Client.Services.Add(0x6F259A13, 0x09);
-            (controller as HandlerController).Client.Services.Add(0xE1CB2EA8, 0x0A);
-            (controller as HandlerController).Client.Services.Add(0xBC872C22, 0x0B);
-            (controller as HandlerController).Client.Services.Add(0x7FE36B32, 0x0C);
-            (controller as HandlerController).Client.Services.Add(233634817, 0x0D);
-            (controller as HandlerController).Client.Services.Add(0x62DA0891, 0x0E); //AccountService
-            (controller as HandlerController).Client.Services.Add(510168069, 0x0F);
-            (controller as HandlerController).Client.Services.Add(0x45E59C4D, 0x10);
-            (controller as HandlerController).Client.Services.Add(0x135185EF, 0x11);
-            (controller as HandlerController).Client.Services.Add(1910276758, 0x51);
-            //(controller as HandlerController).Client.Services.Add(2495170438, 0x25);
-            (controller as HandlerController).Client.Services.Add(2119327385, 0x26);
+            ((HandlerController) controller).Client.Services.Add(0x54DFDA17, 0x01);
+            ((HandlerController) controller).Client.Services.Add(0xD4DCD093, 0x02);
+            ((HandlerController) controller).Client.Services.Add(0x71240E35, 0x03);
+            ((HandlerController) controller).Client.Services.Add(0xBBDA171F, 0x04);
+            ((HandlerController) controller).Client.Services.Add(0xF084FC20, 0x05);
+            ((HandlerController) controller).Client.Services.Add(0xBF8C8094, 0x06);
+            ((HandlerController) controller).Client.Services.Add(0x166FE4A1, 0x07);
+            ((HandlerController) controller).Client.Services.Add(0xB96F5297, 0x08);
+            ((HandlerController) controller).Client.Services.Add(0x6F259A13, 0x09);
+            ((HandlerController) controller).Client.Services.Add(0xE1CB2EA8, 0x0A);
+            ((HandlerController) controller).Client.Services.Add(0xBC872C22, 0x0B);
+            ((HandlerController) controller).Client.Services.Add(0x7FE36B32, 0x0C);
+            ((HandlerController) controller).Client.Services.Add(233634817, 0x0D);
+            ((HandlerController) controller).Client.Services.Add(0x62DA0891, 0x0E); //AccountService
+            ((HandlerController) controller).Client.Services.Add(510168069, 0x0F);
+            ((HandlerController) controller).Client.Services.Add(0x45E59C4D, 0x10);
+            ((HandlerController) controller).Client.Services.Add(0x135185EF, 0x11);
+            ((HandlerController) controller).Client.Services.Add(1910276758, 0x51);
+            //((HandlerController) controller).Client.Services.Add(2495170438, 0x25);
+            ((HandlerController) controller).Client.Services.Add(2119327385, 0x26);
             
             done(builder.Build());
-            Logger.Info("Connect with Blizzless established. Client - {0}", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
+            Logger.Info("Connect with Blizzless established. Client - {0}", ((HandlerController) controller).Client.SocketConnection.RemoteAddress);
         }
 
         public override void Echo(IRpcController controller, EchoRequest request, Action<EchoResponse> done)
@@ -74,22 +74,22 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         public override void RequestDisconnect(IRpcController controller, DisconnectRequest request, Action<NO_RESPONSE> done)
         {
-            Logger.Info("Client - {0} , disconnected", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
-            DisconnectClient(controller as HandlerController);
-            if ((controller as HandlerController).Client.Account != null)
-                (controller as HandlerController).Client.Account.GameAccount.IsLoggedIn = false;
-            ((controller as HandlerController).Client).Connect.CloseAsync();
-            (controller as HandlerController).Client.SocketConnection.CloseAsync();
+            Logger.Info("Client - {0} , disconnected", ((HandlerController) controller).Client.SocketConnection.RemoteAddress);
+            DisconnectClient((HandlerController) controller);
+            if (((HandlerController) controller).Client.Account != null)
+                ((HandlerController) controller).Client.Account.GameAccount.IsLoggedIn = false;
+            (((HandlerController) controller).Client).Connect.CloseAsync();
+            ((HandlerController) controller).Client.SocketConnection.CloseAsync();
             /*
-            if ((controller as HandlerController).Client.Account != null)
+            if (((HandlerController) controller).Client.Account != null)
             {
-                (controller as HandlerController).Client.Account.CurrentGameAccount.Logined = false;
-                AccountManager.SaveToDB((controller as HandlerController).Client.Account);
-                if ((controller as HandlerController).Client.Account.CurrentGameAccount != null)
+                ((HandlerController) controller).Client.Account.CurrentGameAccount.Logined = false;
+                AccountManager.SaveToDB(((HandlerController) controller).Client.Account);
+                if (((HandlerController) controller).Client.Account.CurrentGameAccount != null)
                 {
-                    GameAccountManager.SaveToDB((controller as HandlerController).Client.Account.CurrentGameAccount);
-                    (controller as HandlerController).Client.SocketConnection.CloseAsync();
-                    (controller as HandlerController).Client.Connect.CloseAsync();
+                    GameAccountManager.SaveToDB(((HandlerController) controller).Client.Account.CurrentGameAccount);
+                    ((HandlerController) controller).Client.SocketConnection.CloseAsync();
+                    ((HandlerController) controller).Client.Connect.CloseAsync();
                 }
             }
             //*/

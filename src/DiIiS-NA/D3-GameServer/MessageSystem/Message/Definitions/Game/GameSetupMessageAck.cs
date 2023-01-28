@@ -40,7 +40,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game
 
         public void Handle(GameClient client)
         {
-            Logger.Info("Client {0}, enter in game. Server loaded.", client.BnetClient.Account.BattleTag);
+            Logger.Info("Client $[underline]${0}$[/]$, joined game.", client.BnetClient.Account.Email);
         }
     }
 }

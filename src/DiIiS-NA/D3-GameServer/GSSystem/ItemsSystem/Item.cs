@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
@@ -1330,7 +1331,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 return;
             }
 
-            Logger.Warn("OnRequestUse(): gbid {0} not implemented", GBHandle.GBID);
+            Logger.MethodTrace(MethodBase.GetCurrentMethod(), "gbid {0} not implemented", GBHandle.GBID);
         }
 
         private void SwitchWingsBuff(Player player, int powerId)

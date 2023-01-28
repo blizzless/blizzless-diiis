@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022
 using System;
+using System.Reflection;
 using bgs.protocol;
 using bgs.protocol.session.v1;
 using DiIiS_NA.Core.Helpers.Math;
@@ -38,13 +39,16 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         public override void DestroySession(IRpcController controller, DestroySessionRequest request, Action<NoData> done)
         {
-            Logger.MethodTrace(nameof(SessionService));
+            Logger.MethodTrace(MethodBase.GetCurrentMethod());
             Logger.Trace("Destroying game session for client {0}", ((HandlerController) controller).Client);
-            DisconnectClient((HandlerController) controller);
-            if (((HandlerController) controller).Client.Account != null)
-                ((HandlerController) controller).Client.Account.GameAccount.IsLoggedIn = false;
-            (((HandlerController) controller).Client).Connect.CloseAsync();
-            ((HandlerController) controller).Client.SocketConnection.CloseAsync();
+            if (controller is HandlerController handlerController)
+            {
+                DisconnectClient(handlerController);
+                if (handlerController.Client.Account != null)
+                    handlerController.Client.Account.GameAccount.IsLoggedIn = false;
+                (handlerController.Client).Connect.CloseAsync();
+                handlerController.Client.SocketConnection.CloseAsync();
+            }
 
             done(NoData.CreateBuilder().Build());
         }

@@ -19,9 +19,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void Subscribe(Google.ProtocolBuffers.IRpcController controller, SubscribeRequest request, Action<NoData> done)
 		{
-			Logger.Trace("Subscribe() {0}", ((controller as HandlerController).Client));
+			Logger.Trace("Subscribe() {0}", (((HandlerController) controller).Client));
 
-			_invitationManager.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
+			_invitationManager.AddSubscriber((((HandlerController) controller).Client), request.ObjectId);
 			
 			done(NoData.DefaultInstance);
 		}
@@ -32,7 +32,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			var response = AcceptInvitationResponse.CreateBuilder().SetObjectId(channel.DynamicId).Build();
 			done(response);
 
-			_invitationManager.HandleAccept(((controller as HandlerController).Client), request);
+			_invitationManager.HandleAccept((((HandlerController) controller).Client), request);
 		}
 
 		public override void DeclineInvitation(Google.ProtocolBuffers.IRpcController controller, DeclineInvitationRequest request, Action<NoData> done)
@@ -40,7 +40,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			var respone = NoData.CreateBuilder();
 			done(respone.Build());
 
-			_invitationManager.HandleDecline(((controller as HandlerController).Client), request);
+			_invitationManager.HandleDecline((((HandlerController) controller).Client), request);
 		}
 
 		public override void RevokeInvitation(Google.ProtocolBuffers.IRpcController controller, RevokeInvitationRequest request, Action<NoData> done)
@@ -48,16 +48,16 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			var builder = NoData.CreateBuilder();
 			done(builder.Build());
 
-			_invitationManager.Revoke(((controller as HandlerController).Client), request);
+			_invitationManager.Revoke((((HandlerController) controller).Client), request);
 		}
 
 		public override void SendInvitation(Google.ProtocolBuffers.IRpcController controller, SendInvitationRequest request, Action<NoData> done)
 		{
 			var invitee = GameAccountManager.GetAccountByPersistentID(request.TargetId.Low);
 			
-			if (invitee.Owner.IgnoreIds.Contains((controller as HandlerController).Client.Account.PersistentID))
+			if (invitee.Owner.IgnoreIds.Contains(((HandlerController) controller).Client.Account.PersistentID))
 			{
-				((controller as HandlerController).Status) = 403;
+				(((HandlerController) controller).Status) = 403;
 				done(NoData.CreateBuilder().Build());
 				return;
 			}
@@ -82,8 +82,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			
 			var invitation = Invitation.CreateBuilder();
 			invitation.SetId(ChannelInvitationManager.InvitationIdCounter++)
-				.SetInviterIdentity(Identity.CreateBuilder().SetGameAccountId((controller as HandlerController).Client.Account.GameAccount.BnetEntityId).Build())
-				.SetInviterName((controller as HandlerController).Client.Account.GameAccount.Owner.BattleTag)
+				.SetInviterIdentity(Identity.CreateBuilder().SetGameAccountId(((HandlerController) controller).Client.Account.GameAccount.BnetEntityId).Build())
+				.SetInviterName(((HandlerController) controller).Client.Account.GameAccount.Owner.BattleTag)
 				.SetInviteeIdentity(Identity.CreateBuilder().SetGameAccountId(request.TargetId).Build())
 				.SetInviteeName(invitee.Owner.BattleTag)
 				.SetInvitationMessage(request.Params.InvitationMessage)
@@ -101,12 +101,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 			var builder = JoinNotification.CreateBuilder().SetChannelState(ChannelState.CreateBuilder().AddInvitation(invitation.Clone()));
 
-			(controller as HandlerController).Client.MakeTargetedRPC(channel, (lid) => ChannelListener.CreateStub((controller as HandlerController).Client)
+			((HandlerController) controller).Client.MakeTargetedRPC(channel, (lid) => ChannelListener.CreateStub(((HandlerController) controller).Client)
 			.OnUpdateChannelState(controller, notification.Build(), callback => { }));
-			(controller as HandlerController).Client.MakeTargetedRPC(channel, (lid) =>
-				ChannelListener.CreateStub((controller as HandlerController).Client).OnJoin(new HandlerController() { ListenerId = lid }, builder.Build(), callback => { }));
+			((HandlerController) controller).Client.MakeTargetedRPC(channel, (lid) =>
+				ChannelListener.CreateStub(((HandlerController) controller).Client).OnJoin(new HandlerController() { ListenerId = lid }, builder.Build(), callback => { }));
 
-			_invitationManager.HandleInvitation((controller as HandlerController).Client, invitation.Build());
+			_invitationManager.HandleInvitation(((HandlerController) controller).Client, invitation.Build());
 
 
 		}
@@ -118,7 +118,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 			if (suggestee.Owner.IgnoreIds.Contains(suggester.Owner.PersistentID))
 			{
-				((controller as HandlerController).Status) = 403;
+				(((HandlerController) controller).Status) = 403;
 				done(NoData.CreateBuilder().Build());
 				return;
 			}

@@ -60,6 +60,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
 using DiIiS_NA.LoginServer.AccountsSystem;
 //Blizzless Project 2022
 using System.Drawing;
+using System.Reflection;
 //Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 //Blizzless Project 2022
@@ -2887,7 +2888,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     //*
     private void OnHirelingDismiss(GameClient client, PetAwayMessage message)
     {
-        Logger.Trace("OnPetDismiss(): {0}", message.ActorID);
+        Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0}", message.ActorID);
         var petId = World.GetGlobalId(this, message.ActorID);
         var pet = World.GetActorByGlobalId(petId);
         if (pet is Hireling)
@@ -2898,7 +2899,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     private void OnHirelingRequestLearnSkill(GameClient client, HirelingRequestLearnSkillMessage message)
     {
-        Logger.Debug("OnHirelingRequestLearnSkill(): {0} - {1}", message.HirelingID, message.PowerSNOId);
+        Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0} - {1}", message.HirelingID, message.PowerSNOId);
         var hireling = World.GetActorByGlobalId(World.GetGlobalId(this, message.HirelingID));
         if (hireling == null) return;
         switch (hireling.Attributes[GameAttribute.Hireling_Class])
@@ -4232,7 +4233,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void SaveStats() //Save 6 primary stats into DB for showing on hero screen
     {
-        //Logger.Debug("SaveStats(): Strength {0}", this.Inventory.GetItemBonus(GameAttribute.Strength_Item).ToString("F0"));
+        //Logger.MethodTrace(MethodBase.GetCurrentMethod(), "Strength {0}", this.Inventory.GetItemBonus(GameAttribute.Strength_Item).ToString("F0"));
         var damageFromWeapon =
             (Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min_Total, 0) +
              Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta_Total, 0)) * (1f + PrimaryAttribute / 100f);

@@ -8,6 +8,7 @@ using DiIiS_NA.LoginServer.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -74,7 +75,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 
 		public void StartGame(List<BattleClient> clients, ulong objectId)
 		{
-			Logger.Trace("StartGame(): objectId: {0}", objectId);
+			Logger.MethodTrace(MethodBase.GetCurrentMethod(), ": objectId: {0}", objectId);
 			var owner = this.Owner.Account.GameAccount.CurrentToon.DBToon;
 
 			if (Program.BattleBackend.GameServers.Count == 0) return;

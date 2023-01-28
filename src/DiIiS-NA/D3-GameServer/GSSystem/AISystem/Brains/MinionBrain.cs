@@ -216,7 +216,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			if (PresetPowers.ContainsKey(powerSNO))
 			{
-				// Logger.Debug("AddPresetPower(): power sno {0} already defined for monster \"{1}\"",
+				// Logger.MethodTrace(MethodBase.GetCurrentMethod(), "power sno {0} already defined for monster \"{1}\"",
 				//powerSNO, this.Body.ActorSNO.Name);
 				return;
 			}

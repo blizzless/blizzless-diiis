@@ -1,5 +1,6 @@
 ﻿//Blizzless Project 2022
 using System;
+using System.Reflection;
 using bgs.protocol;
 using bgs.protocol.resources.v1;
 using DiIiS_NA.Core.Extensions;
@@ -19,7 +20,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		public override void GetContentHandle(IRpcController controller, ContentHandleRequest request, Action<ContentHandle> done)
         {
 
-			Logger.Trace("GetContentHandle(): ProgramId: 0x{0:X8} StreamId: 0x{1:X8}", request.Program, request.Stream);
+			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "ProgramId: 0x{0:X8} StreamId: 0x{1:X8}", request.Program, request.Stream);
 			if (request.Program == (uint)FieldKeyHelper.Program.BNet)
 			{
 				var builder = ContentHandle.CreateBuilder()
@@ -54,7 +55,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 					default:
 						Logger.Warn("Unknown StreamId: 0x{0:X8}", request.Stream);
 						builder.SetHash(ByteString.Empty);
-						(controller as HandlerController).Status = 4;
+						((HandlerController) controller).Status = 4;
 						break;
 				}
 				done(builder.Build());

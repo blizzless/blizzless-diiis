@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
@@ -265,7 +266,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 			OnQuestProgress();
 			AutoSetQuestMarker();
-			Logger.Trace(" (Advance) Advanced to quest {0}, step {1}", Game.CurrentQuest, Game.CurrentStep);
+			Logger.Trace("$[underline white]$(Advance)$[/]$ Advanced to quest $[underline white]${0}$[/]$, step $[underline white]${1}$[/]$", Game.CurrentQuest, Game.CurrentStep);
 		}
 
 		public void SideAdvance()
@@ -536,7 +537,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			if (Game.QuestProgress.QuestTriggers.Count == 1)
 			{
-				Logger.MethodTrace($"AutoSetQuestMarker() - {Game.QuestProgress.QuestTriggers.Count} triggers found");
+				Logger.MethodTrace(MethodBase.GetCurrentMethod(), $"{Game.QuestProgress.QuestTriggers.Count} triggers found");
 				var trigger = Game.QuestProgress.QuestTriggers.First();
 				if (trigger.Value.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 					foreach (var world in Game.Worlds)

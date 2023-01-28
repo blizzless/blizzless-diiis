@@ -8,6 +8,7 @@ using DiIiS_NA.LoginServer.FriendsSystem;
 using DiIiS_NA.LoginServer.Helpers;
 using Google.ProtocolBuffers;
 using System;
+using System.Reflection;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 {
@@ -18,13 +19,13 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void Subscribe(IRpcController controller, SubscribeRequest request, Action<SubscribeResponse> done)
 		{
-			Logger.MethodTrace("Subscribe({0})", ((controller as HandlerController).Client));
+			Logger.MethodTrace(MethodBase.GetCurrentMethod(), "{0}", (((HandlerController) controller).Client));
 
-			UserManager.Instance.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
+			UserManager.Instance.AddSubscriber((((HandlerController) controller).Client), request.ObjectId);
 
 			var builder = SubscribeResponse.CreateBuilder();
 
-			var blockedIds = (controller as HandlerController).Client.Account.IgnoreIds;
+			var blockedIds = ((HandlerController) controller).Client.Account.IgnoreIds;
 
 			foreach (var blocked in blockedIds)
 			{
@@ -41,7 +42,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void AddRecentPlayers(IRpcController controller, AddRecentPlayersRequest request, Action<NoData> done)
 		{
-			Logger.MethodTrace("AddRecentPlayers()");
+			Logger.MethodTrace(MethodBase.GetCurrentMethod());
 			done(NoData.DefaultInstance);
 		}
 
@@ -52,18 +53,18 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void BlockPlayer(IRpcController controller, BlockPlayerRequest request, Action<NoData> done)
 		{
-			Logger.MethodTrace("BlockEntity()");
+			Logger.MethodTrace(MethodBase.GetCurrentMethod());
 			done(NoData.CreateBuilder().Build());
 
-			UserManager.BlockAccount(((controller as HandlerController).Client), request);
+			UserManager.BlockAccount((((HandlerController) controller).Client), request);
 		}
 
 		public override void UnblockPlayer(IRpcController controller, UnblockPlayerRequest request, Action<NoData> done)
 		{
-			Logger.MethodTrace("UnblockPlayer()");
+			Logger.MethodTrace(MethodBase.GetCurrentMethod());
 			done(NoData.CreateBuilder().Build());
 
-			UserManager.UnblockAccount(((controller as HandlerController).Client), request);
+			UserManager.UnblockAccount((((HandlerController) controller).Client), request);
 		}
 
         public override void BlockPlayerForSession(IRpcController controller, BlockPlayerRequest request, Action<NoData> done)

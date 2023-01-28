@@ -175,7 +175,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			{
 				var bTag = DBAccount.BattleTagName;
 
-				//(controller as HandlerController).Client.Account.GameAccount.ProgramField.Value
+				//((HandlerController) controller).Client.Account.GameAccount.ProgramField.Value
 				if(GameAccount.ProgramField.Value == "APP")
 					return bTag;
 				

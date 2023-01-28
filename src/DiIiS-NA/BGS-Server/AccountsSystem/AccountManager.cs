@@ -9,6 +9,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Spectre.Console;
@@ -132,16 +133,16 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				List<DBAccount> dbAcc = DBSessions.SessionQueryWhere<DBAccount>(dba => dba.Email == email);
 				if (dbAcc.Count == 0)
 				{
-					Logger.Warn($"$[olive]$GetAccountByEmail(\"{email}\")$[/]$: DBAccount is null!");
+					Logger.Warn($"DBAccount is null from email {email}!");
 					return null;
 				}
 				if (dbAcc.First() == null)
 				{
-					Logger.Warn($"$[olive]$GetAccountByEmail(\"{email}\")$[/]$: DBAccount id is not null!");
+					Logger.Warn($"DBAccount is null from email {email}!");
 					return null;
 				}
-				else
-					Logger.MethodTrace($"$[olive]$GetAccountByEmail(\"{email}\")$[/]$: id - {dbAcc.First().Id}");
+
+				Logger.MethodTrace(MethodBase.GetCurrentMethod(), $"id - {dbAcc.First().Id}");
 				return GetAccountByDBAccount(dbAcc.First());
 			}
 		}
