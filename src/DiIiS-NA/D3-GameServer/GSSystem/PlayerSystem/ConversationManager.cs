@@ -100,20 +100,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		// Find a childnode with a matching class id, that one holds information about how long the speaker talks
 		// If there is no matching childnode, there must be one with -1 which only combines all class specific into one
-		private int duration
+		private int GetDuration()
 		{
-			get
-			{
-				var node = from a in currentLineNode.ChildNodes
-					where a.ClassFilter == player.Toon.VoiceClassID
-					select a;
-				if (node.Count() == 0)
-					node = from a in currentLineNode.ChildNodes where a.ClassFilter == -1 select a;
-				if (node.Count() == 0) return 1;
+			var node = currentLineNode.ChildNodes.FirstOrDefault(a => a.ClassFilter == player.Toon.VoiceClassID);
+			node ??= currentLineNode.ChildNodes.FirstOrDefault(a => a.ClassFilter == -1);
 
-				return node.First().CompressedDisplayTimes.ElementAt((int)manager.ClientLanguage)
-					.Languages[player.Toon.VoiceClassID * 2 + (player.Toon.Gender == 0 ? 0 : 1)];
+			if (node == null)
+			{
+				return 1;
 			}
+
+			return node.CompressedDisplayTimes[(int)manager.ClientLanguage]
+				.Languages[player.Toon.VoiceClassID * 2 + (player.Toon.Gender == 0 ? 0 : 1)];
 		}
 
 		// This returns the dynamicID of other conversation partners. The client uses its position to identify where you can hear the conversation.
@@ -564,26 +562,27 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// <summary>
 		/// Starts readout and display of a certain conversation line
 		/// </summary>
-		/// <param name="LineIndex">index of the line withing the rootnodes</param>
-		private void PlayLine(int LineIndex)
+		/// <param name="lineIndex">index of the line withing the rootnodes</param>
+		private void PlayLine(int lineIndex)
 		{
-			if (asset.RootTreeNodes[LineIndex].ConvNodeType == 6)
+			if (asset.RootTreeNodes[lineIndex].ConvNodeType == 6)
 			{
 				currentLineNode = null;
 				return;
 			}
 
-			if (asset.RootTreeNodes[LineIndex].ConvNodeType == 4)
-				currentLineNode = asset.RootTreeNodes[LineIndex]
-					.ChildNodes[RandomHelper.Next(asset.RootTreeNodes[LineIndex].ChildNodes.Count)];
+			if (asset.RootTreeNodes[lineIndex].ConvNodeType == 4)
+				currentLineNode = asset.RootTreeNodes[lineIndex]
+					.ChildNodes[RandomHelper.Next(asset.RootTreeNodes[lineIndex].ChildNodes.Count)];
 			else
-				currentLineNode = asset.RootTreeNodes[LineIndex];
+				currentLineNode = asset.RootTreeNodes[lineIndex];
 
 			currentUniqueLineID = manager.GetNextUniqueLineID();
 
 			if (!GetSpeaker(currentLineNode.LineSpeaker).IsRevealedToPlayer(player))
 				GetSpeaker(currentLineNode.LineSpeaker).Reveal(player);
 
+			var duration = GetDuration();
 			startTick = player.World.Game.TickCounter;
 			endTick = startTick + duration;
 
@@ -592,7 +591,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				ActorID = GetSpeaker(currentLineNode.LineSpeaker)
 					.DynamicID(player), // GetActorBySNO(asset.SNOPrimaryNpc).DynamicID,
-				Field1 = new uint[9]
+				Field1 = new[]
 				{
 					player.DynamicID(player),
 					asset.SNOPrimaryNpc != -1

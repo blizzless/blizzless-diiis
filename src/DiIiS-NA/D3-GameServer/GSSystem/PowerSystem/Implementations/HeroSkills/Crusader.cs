@@ -286,18 +286,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			yield return WaitSeconds(0.2f);
 
-			var additional_targets = GetEnemiesInRadius(User.Position, ScriptFormula(3)).Actors.OrderBy(actor => PowerMath.Distance2D(actor.Position, User.Position)).Take((int)ScriptFormula(4));
+			var additionalTargets = GetEnemiesInRadius(User.Position, ScriptFormula(3)).Actors
+				.OrderBy(actor => PowerMath.Distance2D(actor.Position, User.Position))
+				.Take((int)ScriptFormula(4))
+				.ToArray();
 
-			foreach (var target in additional_targets)
+			foreach (var target in additionalTargets)
 			{
 				target.PlayEffectGroup(RuneSelect(336292, 338256, 338255, 338254, 343105, 336292));
-				AttackPayload additional_attack = new AttackPayload(this);
-				additional_attack.SetSingleTarget(target);
-				additional_attack.AddWeaponDamage(ScriptFormula(9), DamageType.Holy);
-				additional_attack.Apply();
+				AttackPayload additionalAttack = new AttackPayload(this);
+				additionalAttack.SetSingleTarget(target);
+				additionalAttack.AddWeaponDamage(ScriptFormula(9), DamageType.Holy);
+				additionalAttack.Apply();
 				if (Rune_A > 0)         //Shared fates (buff slot 0)
-					foreach (var otherTarget in additional_targets)
-						if (!(otherTarget == target))
+					foreach (var otherTarget in additionalTargets)
+						if (otherTarget != target)
 							if (PowerMath.Distance2D(otherTarget.Position, target.Position) > 10f)      //for now
 								if (!HasBuff<DebuffStunned>(otherTarget))
 									AddBuff(otherTarget, new DebuffStunned(WaitSeconds(ScriptFormula(32))));
@@ -308,14 +311,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				if (Rune_C > 0)         //Shatter
 				{
-					AttackPayload explosion_attack = new AttackPayload(this);
-					explosion_attack.Targets = GetEnemiesInRadius(target.Position, ScriptFormula(23));
-					explosion_attack.AddWeaponDamage(ScriptFormula(6), DamageType.Holy);
-					explosion_attack.Apply();
+					AttackPayload explosionAttack = new AttackPayload(this);
+					explosionAttack.Targets = GetEnemiesInRadius(target.Position, ScriptFormula(23));
+					explosionAttack.AddWeaponDamage(ScriptFormula(6), DamageType.Holy);
+					explosionAttack.Apply();
 				}
 			}
-
-			yield break;
 		}
 
 		[ImplementsPowerBuff(1, true)]
