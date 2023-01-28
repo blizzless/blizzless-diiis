@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Spectre.Console;
+using System.Text.RegularExpressions;
 
 namespace DiIiS_NA.LoginServer.AccountsSystem
 {
@@ -18,10 +20,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger("DataBaseSystem");
 
-		public static int TotalAccounts
-		{
-			get { return DBSessions.SessionQuery<DBAccount>().Count(); }
-		}
+		public static int TotalAccounts => DBSessions.SessionQuery<DBAccount>().Count();
 
 		public static readonly ConcurrentDictionary<ulong, Account> LoadedAccounts = new ConcurrentDictionary<ulong, Account>();
 
@@ -67,7 +66,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			try
 			{
-				if (DBSessions.SessionQueryWhere<DBAccount>(dba => dba.DiscordId == discordId).Count() > 0)
+				if (DBSessions.SessionQueryWhere<DBAccount>(dba => dba.DiscordId == discordId).Any())
 					return false;
 
 				var account = GetAccountByEmail(email);
@@ -131,18 +130,18 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			else
 			{
 				List<DBAccount> dbAcc = DBSessions.SessionQueryWhere<DBAccount>(dba => dba.Email == email);
-				if (dbAcc.Count() == 0)
+				if (dbAcc.Count == 0)
 				{
-					Logger.Warn("GetAccountByEmail {0}: DBAccount is null!", email);
+					Logger.Warn($"$[olive]$GetAccountByEmail(\"{email}\")$[/]$: DBAccount is null!");
 					return null;
 				}
 				if (dbAcc.First() == null)
 				{
-					Logger.Warn("GetAccountByEmail {0}: DBAccount id is null!", email);
+					Logger.Warn($"$[olive]$GetAccountByEmail(\"{email}\")$[/]$: DBAccount id is not null!");
 					return null;
 				}
 				else
-					Logger.MethodTrace("GetAccountByEmail id -  \"{0}\"", dbAcc.First().Id);
+					Logger.MethodTrace($"$[olive]$GetAccountByEmail(\"{email}\")$[/]$: id - {dbAcc.First().Id}");
 				return GetAccountByDBAccount(dbAcc.First());
 			}
 		}
@@ -152,18 +151,22 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			string[] tagparts = battletag.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
 			int taghash = Convert.ToInt32(tagparts[1], 10);
 
-			if (tagparts[0].StartsWith(" {icon"))
-				tagparts[0] = tagparts[0].Substring(13);
-			//Logger.Debug("trying GetAccountByBattletag {0}", battletag);
-			if (tagparts[0].StartsWith("{c_legendary"))
-			{
-				tagparts[0] = tagparts[0].Substring(13);
-				tagparts[0] = tagparts[0].Split('{')[0];
-			}
+			// remove everything inside the brackets and empty spaces in tagparts[0] using regex
+			tagparts[0] = Regex.Replace(tagparts[0], @"\s*?{[^}]+}\s*?", string.Empty).Trim();
+			tagparts[0] = Regex.Replace(tagparts[0], @"\s*?", string.Empty).Trim();
+			
+			// if (tagparts[0].StartsWith(" {icon"))
+			// 	tagparts[0] = tagparts[0].Substring(13);
+			// //Logger.Debug("trying GetAccountByBattletag {0}", battletag);
+			// if (tagparts[0].StartsWith("{c_legendary"))
+			// {
+			// 	tagparts[0] = tagparts[0].Substring(13);
+			// 	tagparts[0] = tagparts[0].Split('{')[0];
+			// }
 			List<DBAccount> dbAcc = DBSessions.SessionQueryWhere<DBAccount>(dba => dba.BattleTagName == tagparts[0] && dba.HashCode == taghash);
-			if (dbAcc.Count() == 0)
+			if (dbAcc.Count == 0)
 			{
-				Logger.Warn("GetAccountByBattletag {0}: DBAccount is null!", battletag);
+				Logger.Warn($"$[olive]$GetAccountByBattleTag(\"{battletag})$[/]$ DBAccount is null!");
 				return null;
 			}
 			//else
@@ -174,9 +177,9 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		public static Account GetAccountByName(string btname) //pretty bad to use it
 		{
 			List<DBAccount> dbAcc = DBSessions.SessionQueryWhere<DBAccount>(dba => dba.BattleTagName == btname);
-			if (dbAcc.Count() == 0)
+			if (dbAcc.Count == 0)
 			{
-				Logger.Warn("GetAccountByName {0}: DBAccount is null!", btname);
+				Logger.Warn("$[olive]$GetAccountByName(\"{0}\")$[/]$: DBAccount is null!", btname);
 				return null;
 			}
 			return GetAccountByDBAccount(dbAcc.First());
@@ -267,7 +270,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public static Account GetAccountBySaltTicket(string ticket)
 		{
-			if (DBSessions.SessionQueryWhere<DBAccount>(dba => dba.SaltedTicket == ticket).Count() > 0)
+			if (DBSessions.SessionQueryWhere<DBAccount>(dba => dba.SaltedTicket == ticket).Any())
 				return LoadedAccounts[LoadedAccounts.Single(a => a.Value.SaltedTicket == ticket).Key];
 			return null;
 		}

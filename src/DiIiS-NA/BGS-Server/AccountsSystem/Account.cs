@@ -198,15 +198,24 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		{
 			get
 			{
-				bool staff = (DBAccount.UserLevel > UserLevels.Tester);
+				var bTag = DBAccount.BattleTagName;
+
 				//(controller as HandlerController).Client.Account.GameAccount.ProgramField.Value
 				if(GameAccount.ProgramField.Value == "APP")
-					return string.Format("{0}", DBAccount.BattleTagName);
-				else if (GameAccount.ProgramField.Value == "D3")
-					//return string.Format("{0}", DBAccount.BattleTagName);
-					return string.Format(staff ? " {{icon:bnet}} {{c_legendary}}{0}{{/c}}" : ("{0}"), this.DBAccount.BattleTagName);
-				else
-					return string.Format("{0}", DBAccount.BattleTagName);
+					return bTag;
+				
+				if (GameAccount.ProgramField.Value == "D3")
+				{
+					return DBAccount.UserLevel switch
+					{
+						>= UserLevels.Owner => " {icon:bnet} {c_epic}" + bTag + "{/c}",
+						>= UserLevels.GM => " {icon:bnet} {c_legendary}" + bTag + "{/c}",
+						>= UserLevels.Tester => " {icon:bnet} {c_rare}" + bTag + "{/c}",
+						_ => " {icon:bnet} " + bTag
+					};
+				}
+				
+				return bTag;
 				//return (staff ? " {icon:bnet} " : (premium ? " {icon:gold} " : "")) + dbAcc.BattleTagName;
 			}  //{c_blue}{/c}
 			private set

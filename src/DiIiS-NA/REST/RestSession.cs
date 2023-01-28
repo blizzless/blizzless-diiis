@@ -38,21 +38,12 @@ namespace DiIiS_NA.REST
             }
             else
             {
+                Logger.Info($"$[yellow]$REST Request: $[/]$ {httpRequest.Method} {httpRequest.Path}");
                 if (httpRequest.Path == "200")
                 {
 
                 }
-                else if (httpRequest.Path == "/client/alert?targetRegion=ruRU")
-                {
-                    switch (httpRequest.Method)
-                    {
-                        case "GET":
-                        default:
-                            HandleInfoRequest(httpRequest);
-                            break;
-                    }
-                }
-                else if (httpRequest.Path == "/D3/ruRU/client/alert?targetRegion=127")
+                else if (httpRequest.Path.Contains("/client/alert"))
                 {
                     switch (httpRequest.Method)
                     {
@@ -117,7 +108,7 @@ namespace DiIiS_NA.REST
         {
             LogonData loginForm = Json.CreateObject<LogonData>(request.Content);
             LogonResult loginResult = new LogonResult();
-            if (loginForm == null)
+            if (loginForm == default(LogonData))
             {
                 loginResult.AuthenticationState = "LOGIN";
                 loginResult.ErrorCode = "UNABLE_TO_DECODE";

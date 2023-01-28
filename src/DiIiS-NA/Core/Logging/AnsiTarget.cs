@@ -61,10 +61,12 @@ public class AnsiTarget : LogTarget
     public static string Filter(string text)
     {
         return text
-            .Replace("Blizzless", "[dodgerblue1]Blizz[/][deepskyblue2]less[/]")
-            .Replace("Diablo III", "[red3_1]Diablo[/] [red]III[/]")
+            .Replace("Blizzless", "[dodgerblue1]Blizz[/][deepskyblue2]less[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("Diablo III", "[red3_1]Diablo[/] [red]III[/]", StringComparison.CurrentCultureIgnoreCase)
             .Replace("MPQ", "[underline yellow4]MPQ[/]")
-            .Replace("Discord", "[blue]Discord[/]");
+            .Replace("Discord", "[blue]Discord[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("not null", "[green]is not null[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("null", "[red]is null[/]", StringComparison.CurrentCultureIgnoreCase);
     }
 
     

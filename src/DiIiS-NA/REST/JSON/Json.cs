@@ -5,12 +5,14 @@ using System.Runtime.Serialization.Json;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.REST.Extensions;
 
 namespace DiIiS_NA.REST.JSON
 {
     public class Json
     {
+        private static readonly Logger _logger = LogManager.CreateLogger(nameof(Json));
         public static string CreateString<T>(T dataObject)
         {
             return Encoding.UTF8.GetString(CreateArray(dataObject));
@@ -28,9 +30,16 @@ namespace DiIiS_NA.REST.JSON
 
         public static T CreateObject<T>(Stream jsonData)
         {
-            var serializer = new DataContractJsonSerializer(typeof(T));
-
-            return (T)serializer.ReadObject(jsonData);
+            try
+            {
+                var serializer = new DataContractJsonSerializer(typeof(T));
+                return (T)serializer.ReadObject(jsonData);
+            }
+            catch (Exception ex)
+            {
+                _logger.FatalException(ex, "Could not deserialize JSON data");
+                return default(T);
+            }
         }
 
         public static T CreateObject<T>(string jsonData, bool split = false)
