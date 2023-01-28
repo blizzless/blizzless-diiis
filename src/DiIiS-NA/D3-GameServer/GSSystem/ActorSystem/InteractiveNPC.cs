@@ -23,6 +23,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {

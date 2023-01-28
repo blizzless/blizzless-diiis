@@ -77,6 +77,11 @@ namespace DiIiS_NA.Core.Extensions
 			do action(array, walker.Position);
 			while (walker.Step());
 		}
+
+		public static int FindIndex<T>(this T[] source, Predicate<T> match)
+		{
+			return Array.FindIndex(source, match);
+		}
 	}
 
 	internal class ArrayTraverse
