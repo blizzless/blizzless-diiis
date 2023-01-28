@@ -337,7 +337,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					ListenConversation(134266, new Advance());
 					try
 					{
-						Game.GetWorld(WorldSno.a3dun_hub_keep).FindAt(ActorSno._a3dun_hub_drawbridge_01, new Vector3D { X = 127.121f, Y = 353.211f, Z = 0.22f }, 25f).Hidden = true;
+						Game.GetWorld(WorldSno.a3dun_hub_keep).FindActorAt(ActorSno._a3dun_hub_drawbridge_01, new Vector3D { X = 127.121f, Y = 353.211f, Z = 0.22f }, 25f).Hidden = true;
 						var world = Game.GetWorld(WorldSno.a3dun_keep_hub_inn);
 						var NStone = world.GetActorBySNO(ActorSno._a2dun_zolt_black_soulstone);//156328
 						foreach (var atr in world.GetActorsBySNO(ActorSno._leah))
@@ -653,8 +653,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						try
 						{
 							var world = Game.GetWorld(WorldSno.a3dun_crater_st_level04b);
-							(world.FindAt(ActorSno._a3dun_crater_st_demon_chainpylon_fire_mistressofpain, new Vector3D { X = 457.04f, Y = 359.03f, Z = 0.39f }, 20f) as Door).Open();
-							(world.FindAt(ActorSno._a3dun_crater_st_demon_chainpylon_fire_mistressofpain, new Vector3D { X = 356.04f, Y = 267.03f, Z = 0.28f }, 20f) as Door).Open();
+							(world.FindActorAt(ActorSno._a3dun_crater_st_demon_chainpylon_fire_mistressofpain, new Vector3D { X = 457.04f, Y = 359.03f, Z = 0.39f }, 20f) as Door).Open();
+							(world.FindActorAt(ActorSno._a3dun_crater_st_demon_chainpylon_fire_mistressofpain, new Vector3D { X = 356.04f, Y = 267.03f, Z = 0.28f }, 20f) as Door).Open();
 							SetActorOperable(world, ActorSno._a3dun_crater_st_giantdemonheart_mob, false);
 						}
 						catch { }

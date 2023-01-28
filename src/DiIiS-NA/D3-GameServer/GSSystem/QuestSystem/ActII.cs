@@ -96,7 +96,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //go through canyon
 					try 
 					{
-						Door TDoor = (Game.GetWorld(WorldSno.caout_town).FindAt(ActorSno._a2dun_cald_exit_gate, new Vector3D { X = 2905.62f, Y = 1568.82f, Z = 250.75f }, 6.0f) as Door);
+						Door TDoor = (Game.GetWorld(WorldSno.caout_town).FindActorAt(ActorSno._a2dun_cald_exit_gate, new Vector3D { X = 2905.62f, Y = 1568.82f, Z = 250.75f }, 6.0f) as Door);
 						//ListenProximity(TDoor, )
 						TDoor.Open();
 					} catch { }
@@ -926,7 +926,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					var world = Game.GetWorld(WorldSno.a2dun_aqd_special_01);
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_special_01, () =>
 					{
-						(world.FindAt(ActorSno._a2dun_aqd_act_stone_slab_a_01, new Vector3D { X = 175.1f, Y = 62.275f, Z = 50.17f }, 20.0f) as Door).Open();
+						(world.FindActorAt(ActorSno._a2dun_aqd_act_stone_slab_a_01, new Vector3D { X = 175.1f, Y = 62.275f, Z = 50.17f }, 20.0f) as Door).Open();
 					});
 					ListenInteract(ActorSno._a2dun_aqd_act_waterwheel_lever_a_01, 1, new CompleteObjective(0));
 					ListenInteract(ActorSno._a2dun_aqd_act_waterwheel_lever_b_01, 1, new Advance());
@@ -948,7 +948,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						Open(world, ActorSno._a2dun_aqd_act_stone_slab_a_01);
 						Open(world, ActorSno._a2dun_aqd_special_01_waterfall);
 						Open(world, ActorSno._a2dun_aqd_mainpuzzle_door);
-						(world.FindAt(ActorSno._a2dun_aqd_act_stone_slab_a_01, new Vector3D { X = 80.5f, Y = 155.631f, Z = 50.33f }, 20.0f) as Door).Open();
+						(world.FindActorAt(ActorSno._a2dun_aqd_act_stone_slab_a_01, new Vector3D { X = 80.5f, Y = 155.631f, Z = 50.33f }, 20.0f) as Door).Open();
 					});
 					//try {(this.Game.GetWorld(59486).FindAt(83629, new Vector3D{X = 80.5f, Y = 155.631f, Z = 50.33f}, 20.0f) as Door).Open();} catch {}
 					ListenTeleport(192694, new Advance());
@@ -1365,7 +1365,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //todo: timed event 115494
 					var world = Game.GetWorld(WorldSno.caout_town);
-					try { (world.FindAt(ActorSno._a2dun_cald_exit_gate, new Vector3D { X = 3135.3f, Y = 1546.1f, Z = 250.545f }, 15.0f) as Door).Open(); } catch { }
+					try { (world.FindActorAt(ActorSno._a2dun_cald_exit_gate, new Vector3D { X = 3135.3f, Y = 1546.1f, Z = 250.545f }, 15.0f) as Door).Open(); } catch { }
 					foreach (var Ashe in world.GetActorsBySNO(ActorSno._asheara))
 						RemoveConversations(Ashe);
 					StartConversation(world, 178852);

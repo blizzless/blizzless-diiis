@@ -11,7 +11,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 {
 	public class CommandGroup
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger("CM");
+		private static readonly Logger Logger = LogManager.CreateLogger("Commands");
 
 		public CommandGroupAttribute Attributes { get; private set; }
 
@@ -37,7 +37,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				if (!_commands.ContainsKey(attribute))
 					_commands.Add(attribute, method);
 				else
-					Logger.Error("Command '{0}' already exists.", attribute.Name);
+					Logger.Fatal("Command '$[underline white]${0}$[/]$' already exists.", attribute.Name);
 			}
 		}
 
@@ -62,8 +62,11 @@ namespace DiIiS_NA.GameServer.CommandManager
 			// check if the user has enough privileges to access command group.
 			// check if the user has enough privileges to invoke the command.
 			if (invokerClient != null && Attributes.MinUserLevel > invokerClient.Account.UserLevel)
+#if DEBUG
+				return $"You don't have enough privileges to invoke that command (Min. level: {Attributes.MinUserLevel}).";
+#else
 				return "You don't have enough privileges to invoke that command.";
-
+#endif
 			string[] @params = null;
 			CommandAttribute target = null;
 
@@ -99,13 +102,10 @@ namespace DiIiS_NA.GameServer.CommandManager
 		[DefaultCommand]
 		public virtual string Fallback(string[] @params = null, BattleClient invokerClient = null)
 		{
-			var output = "Available subcommands: ";
-			foreach (var pair in _commands)
-			{
-				if (pair.Key.Name.Trim() == string.Empty) continue; // skip fallback command.
-				if (invokerClient != null && pair.Key.MinUserLevel > invokerClient.Account.UserLevel) continue;
-				output += pair.Key.Name + ", ";
-			}
+			var output = _commands
+				.Where(pair => pair.Key.Name.Trim() != string.Empty)
+				.Where(pair => invokerClient == null || pair.Key.MinUserLevel <= invokerClient.Account.UserLevel)
+				.Aggregate("Available subcommands: ", (current, pair) => current + (pair.Key.Name + ", "));
 
 			return output.Substring(0, output.Length - 2) + ".";
 		}

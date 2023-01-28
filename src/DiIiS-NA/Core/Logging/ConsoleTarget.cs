@@ -52,7 +52,7 @@ namespace DiIiS_NA.Core.Logging
 		/// </summary>
 		/// <param name="x"></param>
 		/// <returns></returns>
-		string Cleanup(string x) => AnsiTarget.Filter(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
+		string Cleanup(string x) => AnsiTarget.Beautify(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
 
 		/// <param name="level"></param>
 		private static string SetColor(Logger.Level level, bool withBackground = false)

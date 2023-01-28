@@ -57,8 +57,14 @@ public class AnsiTarget : LogTarget
         CancellationTokenSource.Cancel();
     }
     
-    
-    public static string Filter(string text)
+    /// <summary>
+    /// Logging keywords to beautify the output.
+    /// It's ugly, I know.
+    /// Changes are welcome - @iamdroppy
+    /// </summary>
+    /// <param name="text">Text to "beautify"</param>
+    /// <returns>Replaced with color changes</returns>
+    public static string Beautify(string text)
     {
         return text
             .Replace("Blizzless", "[dodgerblue1]Blizz[/][deepskyblue2]less[/]", StringComparison.CurrentCultureIgnoreCase)
@@ -81,7 +87,7 @@ public class AnsiTarget : LogTarget
     /// </summary>
     /// <param name="x"></param>
     /// <returns></returns>
-    string Cleanup(string x) => Filter(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
+    string Cleanup(string x) => Beautify(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
 
     public override void LogMessage(Logger.Level level, string logger, string message)
     {

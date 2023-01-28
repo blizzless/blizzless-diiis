@@ -122,31 +122,31 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = -1,
 				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
-					var NephalemWorld = Game.GetWorld(Game.WorldOfPortalNephalem);
+					var nephalem = Game.GetWorld(Game.WorldOfPortalNephalem);
 					ActorSystem.Actor BossOfPortal = null;
 					
 					switch (Game.WorldOfPortalNephalem)
 					{
 						default:
-							List<MapSystem.Scene> Scenes = new List<MapSystem.Scene>();
-							foreach (var scene in NephalemWorld.Scenes.Values)
+							List<MapSystem.Scene> scenes = new List<MapSystem.Scene>();
+							foreach (var scene in nephalem.Scenes.Values)
 							{
 								if (!scene.SceneSNO.Name.ToLower().Contains("filler"))
-									Scenes.Add(scene);
+									scenes.Add(scene);
 							}
-							int SceneNum = Scenes.Count - DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 3);
-							Vector3D SSV = Scenes[SceneNum - 1].Position;
-							Vector3D SP = null;
+							int sceneNum = scenes.Count - DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 3);
+							Vector3D SSV = scenes[sceneNum - 1].Position;
+							Vector3D location = null;
 							while (true)
 							{
-								SP = new Vector3D(SSV.X + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 240), SSV.Y + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 240), SSV.Z);
-								if (NephalemWorld.CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+								location = new Vector3D(SSV.X + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 240), SSV.Y + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, 240), SSV.Z);
+								if (nephalem.CheckLocationForFlag(location, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 									break;
 							}
-							BossOfPortal = NephalemWorld.SpawnMonster(ActorSno._x1_lr_boss_mistressofpain, SP);
+							BossOfPortal = nephalem.SpawnMonster(ActorSno._x1_lr_boss_mistressofpain, location);
 							break;
 					}
-					ActiveArrow(NephalemWorld, BossOfPortal.SNO);
+					ActiveArrow(nephalem, BossOfPortal.SNO);
 					ListenKill(BossOfPortal.SNO, 1, new QuestEvents.SideAdvance());
                 })
 			});

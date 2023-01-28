@@ -117,7 +117,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// <summary>
 		/// Attribute map.
 		/// </summary>
-		public GameAttributeMap Attributes { get; set; } //TODO: this needs to be "private set", but without errors on speed modifications
+		public GameAttributeMap Attributes { get; }
 
 		/// <summary>
 		/// Affix list.

@@ -166,7 +166,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					{
 						if (Game.CurrentQuest == 251355 && Game.CurrentStep == 14)
 						{
-							try { world.FindAt(ActorSno._x1_westm_door_cloister_locked, new Vector3D { X = 555.9f, Y = 403.47f, Z = 10.2f }, 5.0f).Destroy(); } catch { }
+							try { world.FindActorAt(ActorSno._x1_westm_door_cloister_locked, new Vector3D { X = 555.9f, Y = 403.47f, Z = 10.2f }, 5.0f).Destroy(); } catch { }
 						}
 					});
 					ListenKill(ActorSno._x1_skeleton_westmarch_a, 10, new Advance());

@@ -150,21 +150,12 @@ namespace DiIiS_NA.GameServer.CommandManager
 			public override string Fallback(string[] parameters = null, BattleClient invokerClient = null)
 			{
 				var output = "Available commands: ";
-				if (invokerClient != null)
-				{
-					foreach (var pair in CommandGroups.Where(pair =>
-						         pair.Key.MinUserLevel > invokerClient?.Account.UserLevel))
-					{
-						output += "!" + pair.Key.Name + ": " + pair.Key.Help + "\n\n";
-					}
-				}
-				else
-				{
-					foreach (var pair in CommandGroups)
-					{
-						output += "!" + pair.Key.Name + ": " + pair.Key.Help + "\n\n";
-					}
-				}
+				output = 
+					invokerClient != null 
+						? CommandGroups.Where(pair => pair.Key.MinUserLevel > invokerClient?.Account.UserLevel)
+							.Aggregate(output, (current, pair) => current + ($"{Config.Instance.CommandPrefix}{pair.Key.Name}: {pair.Key.Help}\n\n")) 
+						: CommandGroups
+							.Aggregate(output, (current, pair) => current + (($"$[underline green]${Config.Instance.CommandPrefix}{pair.Key.Name}$[/]$: {pair.Key.Help}\n\n")));
 
 				return output + "Type 'help <command>' to get help about a specific command.";
 			}
@@ -173,10 +164,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		[CommandGroup("help", "usage: help <command>\nType 'commands' to get a list of available commands.")]
 		public class HelpCommandGroup : CommandGroup
 		{
-			public override string Fallback(string[] parameters = null, BattleClient invokerClient = null)
-			{
-				return "usage: help <command>\nType 'commands' to get a list of available commands.";
-			}
+			public override string Fallback(string[] parameters = null, BattleClient invokerClient = null) => "usage: help <command>\nType 'commands' to get a list of available commands.";
 
 			public override string Handle(string parameters, BattleClient invokerClient = null)
 			{
@@ -189,11 +177,8 @@ namespace DiIiS_NA.GameServer.CommandManager
 				var group = @params[0];
 				var command = @params.Count() > 1 ? @params[1] : string.Empty;
 
-				foreach (var pair in CommandGroups)
+				foreach (var pair in CommandGroups.Where(pair => group == pair.Key.Name))
 				{
-					if (group != pair.Key.Name)
-						continue;
-
 					if (command == string.Empty)
 						return pair.Key.Help;
 
@@ -202,7 +187,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				}
 
 				if (!found)
-					output = string.Format("Unknown command: {0} {1}", group, command);
+					output = $"Unknown command: {group} {command}";
 
 				return output;
 			}
