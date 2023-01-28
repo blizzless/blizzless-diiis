@@ -397,7 +397,6 @@ namespace DiIiS_NA
         [DllImport("kernel32.dll", ExactSpelling = true)]
 
         static extern IntPtr GetConsoleWindow();
-        static IntPtr ThisConsole = GetConsoleWindow();
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 
@@ -413,7 +412,7 @@ namespace DiIiS_NA
             {
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
-                    ShowWindow(ThisConsole, MAXIMIZE);
+                    ShowWindow(GetConsoleWindow(), MAXIMIZE);
                 }
             }
             catch{ /*ignore*/ }
