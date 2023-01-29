@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -3300,10 +3301,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Remove();
 
                         var newms = payload.Target.GetMonstersInRange(40f);
-
-                        if (newms.Count > 0)
+                        if (newms.TryPickRandom(out var target))
                         {
-                            var target = RandomHelper.RandomItem(newms);
                             AddBuff(target, new Rune_B_Buff());
                         }
                     }
@@ -4497,7 +4496,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     {
                         Founded = true;
                         var possibleTargets = projectile.GetMonstersInRange(25f);
-                        var target = RandomHelper.RandomItem(possibleTargets);
+                        var target = possibleTargets.PickRandom();
                         projectile.Launch(target.Position, 1f);
                     }
             };

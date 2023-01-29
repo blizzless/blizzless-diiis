@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using DiIiS_NA.Core.Logging;
 
 namespace DiIiS_NA.Core.Helpers.Math;
 
@@ -45,6 +44,26 @@ public static class RandomHelper
 		var randomIndex = Next(collection.Count);
 		return collection.ElementAt(randomIndex);
 	}
+	
+	public static bool TryGetRandomItem<T>(IEnumerable<T> source, out T randomItem)
+	{
+		var collection = source as IReadOnlyCollection<T> ?? source?.ToArray();
+		if (collection == null)
+		{
+			throw new ArgumentException("Cannot be null", nameof(source));
+		}
+
+		if (collection.Count == 0)
+		{
+			randomItem = default;
+			return false;
+		}
+		
+		var randomIndex = Next(collection.Count);
+		randomItem = collection.ElementAt(randomIndex);
+
+		return true;
+	}
 
 	/// <summary>
 	/// Picks a random item from a list
@@ -74,26 +93,26 @@ public static class RandomHelper
 
 public class ItemRandomHelper
 {
-	uint a;
-	uint b;
+	uint _a;
+	uint _b;
 	public ItemRandomHelper(int seed)
 	{
-		a = (uint)seed;
-		b = 666;
+		_a = (uint)seed;
+		_b = 666;
 	}
 
 	public void ReinitSeed()
 	{
-		b = 666;
+		_b = 666;
 	}
 
 	public uint Next()
 	{
-		ulong temp = 1791398085UL * a + b;
-		a = (uint)temp;
-		b = (uint)(temp >> 32);
+		ulong temp = 1791398085UL * _a + _b;
+		_a = (uint)temp;
+		_b = (uint)(temp >> 32);
 
-		return a;
+		return _a;
 	}
 
 	public float Next(float min, float max)

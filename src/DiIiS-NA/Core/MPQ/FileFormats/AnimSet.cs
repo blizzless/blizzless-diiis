@@ -7,6 +7,7 @@ using DiIiS_NA.Core.MPQ.FileFormats.Types;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using System.Linq;
 using System;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -104,7 +105,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             }
 
             var possibleDeaths = deathTags.Select(GetAniSNO).Where(x => x != AnimationSno._NONE);
-            return RandomHelper.RandomItem(possibleDeaths);
+            return possibleDeaths.PickRandom();
         }
     }
     public enum AnimationTags

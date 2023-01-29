@@ -302,11 +302,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						else
 						{
 							var entries = clusterSelected[sceneChunk.SceneSpecification.ClusterID];
-							SubSceneEntry subSceneEntry = null;
-
-							if (entries.Count > 0)
+							if (entries.TryPickRandom(out var subSceneEntry))
 							{
-								subSceneEntry = RandomHelper.RandomItem(entries);
 								entries.Remove(subSceneEntry);
 							}
 							else
@@ -1975,7 +1972,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			for (int i = 0; i < count; i++)
 			{
 				//Chose a random exit to test
-				Vector3D chosenExitPosition = RandomHelper.RandomItem(exitTypes).Value;
+				Vector3D chosenExitPosition = exitTypes.PickRandom().Value;
 				var chosenExitDirection = (from pair in exitTypes
 										   where pair.Value == chosenExitPosition
 										   select pair.Key).FirstOrDefault();
@@ -2087,7 +2084,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				return null;
 			}
 
-			return RandomHelper.RandomItem(tilesWithRightDirection);
+			return tilesWithRightDirection.PickRandom();
 		}
 
 		private TileInfo GetTile(Dictionary<int, TileInfo> tiles, int snoId)
@@ -2105,7 +2102,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		private TileInfo GetTileInfo(Dictionary<int, TileInfo> tiles, TileTypes tileType)
 		{
 			var tilesWithRightType = tiles.Values.Where(tile => tile.TileType == (int)tileType);
-			return RandomHelper.RandomItem(tilesWithRightType);
+			return tilesWithRightType.PickRandom();
 		}
 
 		private TileInfo GetTileInfo(Dictionary<int, TileInfo> tiles, TileTypes tileType, int exitDirectionBits)
