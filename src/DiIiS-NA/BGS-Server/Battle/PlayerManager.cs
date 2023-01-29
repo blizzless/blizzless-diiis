@@ -26,9 +26,9 @@ namespace DiIiS_NA.LoginServer.Battle
 		public static BattleClient GetClientByEmail(string email) => OnlinePlayers.FirstOrDefault(cli => cli.Account.Email == email);
 		public static BattleClient GetClientByBattleTag(string battleTag) => OnlinePlayers.FirstOrDefault(cli => cli.Account.BattleTag == battleTag);
 
-		public static BattleClient GetClientByCID(ulong cid)
+		public static BattleClient GetClientByCid(ulong cid)
 		{
-			return OnlinePlayers.FirstOrDefault(bc => bc.CID == cid);
+			return OnlinePlayers.FirstOrDefault(bc => bc.Cid == cid);
 		}
 
 		public static void SendWhisper(string message)

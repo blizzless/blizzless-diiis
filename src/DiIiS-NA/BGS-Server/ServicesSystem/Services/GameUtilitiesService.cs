@@ -21,6 +21,7 @@ using Google.ProtocolBuffers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 {
@@ -196,7 +197,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             builder.AddAttribute(messageId);
             builder.AddAttribute(payload);
 
-            Client.MakeRPC((lid) =>
+            Client.MakeRpc((lid) =>
                 NotificationListener.CreateStub(Client)
                     .OnNotificationReceived(new HandlerController() { ListenerId = lid }, builder.Build(),
                         callback => { }));
@@ -1184,7 +1185,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         private ByteString SearchGuilds(BattleClient client, ByteString data)
         {
             GuildSearch request = GuildSearch.ParseFrom(data);
-            Logger.Debug("GuildSearch(): {0}", request.ToString());
+            Logger.MethodTrace(request.ToString());
             var builder = D3.Guild.GuildSearchResultList.CreateBuilder();
 
             List<Guild> allGuilds = request.ClanOrGroup == 1 ? GuildManager.GetCommunities() : GuildManager.GetClans();
@@ -1260,7 +1261,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         private void GuildKickMemberP(BattleClient client, GuildKickMember request)
         {
-            Logger.Debug("GuildKickMember(): {0}", request.ToString());
+            Logger.MethodTrace(request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId);
             if (guild != null && client.Account.GameAccount.PersistentID == guild.Owner.PersistentID)
@@ -1272,7 +1273,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         private void GuildDisband(BattleClient client, GuildId request)
         {
-            Logger.Debug("GuildDisband(): {0}", request.ToString());
+            Logger.MethodTrace(request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId_);
             if (guild != null && client.Account.GameAccount.PersistentID == guild.Owner.PersistentID)
@@ -1288,7 +1289,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         private ByteString GuildFetchNews(BattleClient client, GuildFetchNews request)
         {
-            Logger.Debug("GuildFetchNews(): {0}", request.ToString());
+            Logger.MethodTrace(request.ToString());
             var builder = D3.Guild.NewsList.CreateBuilder();
 
             /* news types:
@@ -1325,7 +1326,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         private ByteString GuildPromoteMember(BattleClient client, GuildPromoteMember request)
         {
-            Logger.Debug("GuildPromoteMember(): {0}", request.ToString());
+            Logger.MethodTrace(request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId);
             var account = GameAccountManager.GetAccountByPersistentID(request.MemberId);
@@ -1346,7 +1347,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
         private ByteString GuildDemoteMember(BattleClient client, GuildDemoteMember request)
         {
-            Logger.Debug("GuildDemoteMember(): {0}", request.ToString());
+            Logger.MethodTrace(request.ToString());
 
             var guild = GuildManager.GetGuildById(request.GuildId);
             var account = GameAccountManager.GetAccountByPersistentID(request.MemberId);
@@ -1510,7 +1511,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         private ByteString CreateCommunity(BattleClient client, ByteString data)
         {
             var request = GroupCreate.ParseFrom(data);
-            Logger.Debug("CreateCommunity(): {0}", request.ToString());
+            Logger.MethodTrace(request.ToString());
 
             var guild = GuildManager.CreateNewGuild(client.Account.GameAccount, request.Name, "", false,
                 request.SearchCategory, false, request.Language);

@@ -1,5 +1,14 @@
-﻿using DiIiS_NA.Core.Helpers.Math;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Reflection;
+using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.Core.Types.QuadTrees;
@@ -7,27 +16,22 @@ using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.LoginServer.Toons;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
 using Circle = DiIiS_NA.GameServer.Core.Types.Misc.Circle;
+using Environment = DiIiS_NA.Core.MPQ.FileFormats.Environment;
 using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
 using ResolvedPortalDestination = DiIiS_NA.GameServer.MessageSystem.Message.Fields.ResolvedPortalDestination;
 
@@ -36,8 +40,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 	public sealed class World : DynamicObject, IRevealable, IUpdateable
 	{
 		static readonly Logger Logger = LogManager.CreateLogger();
-		public readonly Dictionary<World, List<Item>> DbItems = new Dictionary<World, List<Item>>(); //we need this list to delete item_instances from items which have no owner anymore.
-		public readonly Dictionary<ulong, Item> CachedItems = new Dictionary<ulong, Item>();
+		public readonly Dictionary<World, List<Item>> DbItems = new(); //we need this list to delete item_instances from items which have no owner anymore.
+		public readonly Dictionary<ulong, Item> CachedItems = new();
 
 		public int LastCEId = 3000;
 
@@ -52,30 +56,24 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// SNOHandle for the world.
 		/// </summary>
 		public SNOHandle WorldSNO { get; private set; }
-        public WorldSno SNO
-        {
-			get { return (WorldSno)WorldSNO.Id; } 
-		}
+        public WorldSno SNO => (WorldSno)WorldSNO.Id;
 
-		/// <summary>
+        /// <summary>
 		/// QuadTree that contains scenes & actors.
 		/// </summary>
 		private QuadTree _quadTree;
-		public static QuadTree _PvPQuadTree = new QuadTree(new Size(60, 60), 0);
+		public static QuadTree _PvPQuadTree = new(new Size(60, 60), 0);
 
 		public QuadTree QuadTree
 		{
-			get
-			{
-				return (IsPvP ? _PvPQuadTree : _quadTree);
-			}
+			get => (IsPvP ? _PvPQuadTree : _quadTree);
 			set { }
 		}
 
 		/// <summary>
 		/// WorldData loaded from MPQs/DB
 		/// </summary>
-		public DiIiS_NA.Core.MPQ.FileFormats.World worldData = new DiIiS_NA.Core.MPQ.FileFormats.World();
+		public DiIiS_NA.Core.MPQ.FileFormats.World worldData = new();
 
 		/// <summary>
 		/// Destination for portals(on Exit and DungeonStone)
@@ -92,14 +90,11 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		private readonly ConcurrentDictionary<uint, Scene> _scenes;
 
-		private static readonly ConcurrentDictionary<uint, Scene> _PvPscenes = new ConcurrentDictionary<uint, Scene>();
+		private static readonly ConcurrentDictionary<uint, Scene> _PvPscenes = new();
 
 		public ConcurrentDictionary<uint, Scene> Scenes
 		{
-			get
-			{
-				return (IsPvP ? _PvPscenes : _scenes);
-			}
+			get => (IsPvP ? _PvPscenes : _scenes);
 			set { }
 		}
 
@@ -108,46 +103,36 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		private readonly ConcurrentDictionary<uint, Actor> _actors;
 
-		public static readonly ConcurrentDictionary<uint, Actor> _PvPActors = new ConcurrentDictionary<uint, Actor>();
+		public static readonly ConcurrentDictionary<uint, Actor> _PvPActors = new();
 
 		public ConcurrentDictionary<uint, Actor> Actors
 		{
-			get
-			{
-				return (IsPvP ? _PvPActors : _actors);
-			}
+			get => (IsPvP ? _PvPActors : _actors);
 			set { }
 		}
 
-		public Dictionary<int, WorldSno> PortalOverrides = new Dictionary<int, WorldSno>();
+		public Dictionary<int, WorldSno> PortalOverrides = new();
 
 		/// <summary>
 		/// List of players contained in the world.
 		/// </summary>
 		private readonly ConcurrentDictionary<uint, Player> _players;
 
-		public static readonly ConcurrentDictionary<uint, Player> _PvPPlayers = new ConcurrentDictionary<uint, Player>();
+		public static readonly ConcurrentDictionary<uint, Player> _PvPPlayers = new();
 
-		public ConcurrentDictionary<uint, Player> Players
-		{
-			get
-			{
-				return (IsPvP ? _PvPPlayers : _players);
-			}
-			set { }
-		}
+		public ConcurrentDictionary<uint, Player> Players => (IsPvP ? _PvPPlayers : _players);
 
 		/// <summary>
 		/// Returns true if the world has players in.
 		/// </summary>
-		public bool HasPlayersIn { get { return Players.Count > 0; } }
+		public bool HasPlayersIn => Players.Count > 0;
 
 		/// <summary>
 		/// Returns a new dynamicId for scenes.
 		/// </summary>
-		public uint NewSceneID { get { return IsPvP ? NewPvPSceneID : Game.NewSceneID; } }
+		public uint NewSceneID => IsPvP ? NewPvPSceneID : Game.NewSceneID;
 
-		public bool IsPvP { get { return SNO == WorldSno.pvp_duel_small_multi; } } //PvP_Duel_Small
+		public bool IsPvP => SNO == WorldSno.pvp_duel_small_multi; //PvP_Duel_Small
 
 		public static bool PvPMapLoaded = false;
 
@@ -164,21 +149,15 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		}
 
 		// Environment
-		public DiIiS_NA.Core.MPQ.FileFormats.Environment Environment
-		{
-			get
-			{
-				return ((DiIiS_NA.Core.MPQ.FileFormats.World)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Worlds][WorldSNO.Id].Data).Environment;
-			}
-		}
+		public Environment Environment => ((DiIiS_NA.Core.MPQ.FileFormats.World)MPQStorage.Data.Assets[SNOGroup.Worlds][WorldSNO.Id].Data).Environment;
 
 		private static uint _lastPvPObjectID = 10001;
-		private static object obj = new object();
+		private static readonly object _obj = new();
 		public static uint NewActorPvPID
 		{
 			get
 			{
-				lock (obj)
+				lock (_obj)
 				{
 					_lastPvPObjectID++;
 					return _lastPvPObjectID;
@@ -191,7 +170,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			get
 			{
-				lock (obj)
+				lock (_obj)
 				{
 					_lastPvPSceneID++;
 					return _lastPvPSceneID;
@@ -218,14 +197,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		}
 
 		private PowerManager _powerManager;
-		public static PowerManager _PvPPowerManager = new PowerManager();
+		public static PowerManager _PvPPowerManager = new();
 
-		public PowerManager PowerManager { get { return IsPvP ? _PvPPowerManager : _powerManager; } }
+		public PowerManager PowerManager => IsPvP ? _PvPPowerManager : _powerManager;
 
 		private BuffManager _buffManager;
-		public static BuffManager _PvPBuffManager = new BuffManager();
+		public static BuffManager _PvPBuffManager = new();
 
-		public BuffManager BuffManager { get { return IsPvP ? _PvPBuffManager : _buffManager; } }
+		public BuffManager BuffManager => IsPvP ? _PvPBuffManager : _buffManager;
 
 		/// <summary>
 		/// Creates a new world for the given game with given snoId.
@@ -257,8 +236,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 			if (SNO == WorldSno.x1_bog_01) //Blood Marsh
 			{
-				var worlds = new List<WorldSno>() { WorldSno.x1_catacombs_level01, WorldSno.x1_catacombs_fakeentrance_02, WorldSno.x1_catacombs_fakeentrance_03, WorldSno.x1_catacombs_fakeentrance_04 };
-				var scenes = new List<int>() { 265624, 265655, 265678, 265693 };
+				var worlds = new List<WorldSno> { WorldSno.x1_catacombs_level01, WorldSno.x1_catacombs_fakeentrance_02, WorldSno.x1_catacombs_fakeentrance_03, WorldSno.x1_catacombs_fakeentrance_04 };
+				var scenes = new List<int> { 265624, 265655, 265678, 265693 };
 				foreach (var scene in scenes)
 				{
 					var wld = worlds[FastRandom.Instance.Next(worlds.Count)];
@@ -283,17 +262,17 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			{
 				foreach (var actor in player.GetActorsInRange().OfType<IUpdateable>()) // get IUpdateable actors in range.
 				{
-					if (actorsToUpdate.Contains(actor as IUpdateable)) // don't let a single actor in range of more than players to get updated more thance per tick /raist.
+					if (actorsToUpdate.Contains(actor)) // don't let a single actor in range of more than players to get updated more thance per tick /raist.
 						continue;
 
-					actorsToUpdate.Add(actor as IUpdateable);
+					actorsToUpdate.Add(actor);
 				}
 			}
 			foreach (var minion in Actors.Values.OfType<Minion>())
 			{
-				if (actorsToUpdate.Contains(minion as IUpdateable))
+				if (actorsToUpdate.Contains(minion))
 					continue;
-				actorsToUpdate.Add(minion as IUpdateable);
+				actorsToUpdate.Add(minion);
 			}
 			foreach (var actor in actorsToUpdate) // trigger the updates.
 			{
@@ -313,6 +292,49 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		#region message broadcasting
 
+		/// <summary>
+		/// Broadcasts a message to all players in the world.
+		/// </summary>
+		/// <param name="action">The action that will be invoked to all players</param>
+		/// <exception cref="Exception">If there was an error to broadcast to player.</exception>
+		public void BroadcastOperation(Action<Player> action)
+		{
+			foreach (var player in Players.Values)
+			{
+				if (player == null) continue;
+				try
+				{
+					action(player);
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Error while broadcasting to player " + player.Name, ex);
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Broadcasts a message to all players in the world where the <param name="predicate"></param> is true.
+		/// </summary>
+		/// <param name="predicate">Players matching criteria</param>
+		/// <param name="action">The action that will be invoked to all players</param>
+		/// <exception cref="Exception">If there was an error to broadcast to player</exception>
+		public void BroadcastOperation(Func<Player, bool> predicate, Action<Player> action)
+		{
+			foreach (var player in Players.Values.Where(predicate))
+			{
+				if (player == null) continue;
+				try
+				{
+					action(player);
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Error while broadcasting to player " + player.Name, ex);
+				}
+			}
+		}
+
 		// NOTE: Scenes are actually laid out in cells with Subscenes filling in certain areas under a Scene.
 		// We can use this design feature to track Actors' current scene and send updates to it and neighboring
 		// scenes instead of distance checking for broadcasting messages. / komiga
@@ -325,11 +347,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="actor">The actor.</param>
 		public void BroadcastIfRevealed(Func<Player, GameMessage> message, Actor actor)
 		{
-			foreach (var player in Players.Values)
-			{
-				if (player.RevealedObjects.ContainsKey(actor.GlobalID))
-					player.InGameClient.SendMessage(message(player));
-			}
+			BroadcastOperation(player => player.RevealedObjects.ContainsKey(actor.GlobalID), player => player.InGameClient.SendMessage(message(player)));
 		}
 
 		/// <summary>
@@ -338,10 +356,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="message"></param>
 		public void BroadcastGlobal(Func<Player, GameMessage> message)
 		{
-			foreach (var player in Players.Values)
-			{
-				player.InGameClient.SendMessage(message(player));
-			}
+			BroadcastOperation(player => player.InGameClient.SendMessage(message(player)));
 		}
 
 		/// <summary>
@@ -349,9 +364,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		/// <param name="message">The message to broadcast.</param>
 		/// <param name="actor">The actor.</param>
-		public void BroadcastInclusive(Func<Player, GameMessage> message, Actor actor)
+		public void BroadcastInclusive(Func<Player, GameMessage> message, Actor actor, float? radius = null)
 		{
-			var players = actor.GetPlayersInRange();
+			var players = actor.GetPlayersInRange(radius);
 			foreach (var player in players)
 			{
 				player.InGameClient.SendMessage(message(player));
@@ -404,12 +419,12 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 					WorldSizeInFeetY = 5040,
 					snoDungeonFinderSourceWorld = -1
 				});
-				player.InGameClient.SendMessage(new WorldStatusMessage() { WorldID = GlobalID, Field1 = false });
+				player.InGameClient.SendMessage(new WorldStatusMessage { WorldID = GlobalID, Field1 = false });
 				//*
-				player.InGameClient.SendMessage(new WorldSyncedDataMessage()
+				player.InGameClient.SendMessage(new WorldSyncedDataMessage
 				{
 					WorldID = GlobalID,
-					SyncedData = new WorldSyncedData()
+					SyncedData = new WorldSyncedData
 					{
 						SnoWeatherOverride = -1,
 						WeatherIntensityOverride = 0,
@@ -436,7 +451,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			foreach (var scene in Scenes.Values) scene.Unreveal(player);
 			player.RevealedObjects.Remove(GlobalID);
 
-			player.InGameClient.SendMessage(new WorldStatusMessage() { WorldID = GlobalID, Field1 = true });
+			player.InGameClient.SendMessage(new WorldStatusMessage { WorldID = GlobalID, Field1 = true });
 			player.InGameClient.SendMessage(new PrefetchDataMessage(Opcodes.PrefetchWorldMessage) { SNO = WorldSNO.Id });
 			//player.InGameClient.SendMessage(new WorldDeletedMessage() { WorldID = this.GlobalID });
 
@@ -560,7 +575,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 							UnitAniimStartTime = 0,
 							tAnim = new PlayAnimationMessageSpec[]
 							{
-								new PlayAnimationMessageSpec()
+								new()
 								{
 									Duration = 150,
 									AnimationSNO = monster.AnimationSet.TagMapAnimDefault[animationTag],
@@ -576,7 +591,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			return monster;
         }
 
-        private Queue<Queue<Action>> _flippyTimers = new Queue<Queue<Action>>();
+        private Queue<Queue<Action>> _flippyTimers = new();
 
 		private const int FlippyDurationInTicks = 10;
 		private const int FlippyMaxDistanceManhattan = 10;  // length of one side of the square around the player where the item will appear
@@ -592,14 +607,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public void PlayPieAnimation(Actor actor, Actor User, int PowerSNO, Vector3D TargetPosition)
 		{
 
-			BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateDetPathPieWedgeMessage
+			BroadcastIfRevealed(plr => new ACDTranslateDetPathPieWedgeMessage
 			{
 				ann = (int)actor.DynamicID(plr),
 				StartPos = User.Position,
 				FirstTagetPos = User.Position,
 				MoveFlags = 9,
 				AnimTag = 1,
-				PieData = new DPathPieData()
+				PieData = new DPathPieData
 				{
 					Field0 = TargetPosition,
 					Field1 = 1,
@@ -613,7 +628,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public void PlayCircleAnimation(Actor actor, Actor User, int PowerSNO, Vector3D TargetPosition)
 		{
 
-			BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateDetPathSinMessage
+			BroadcastIfRevealed(plr => new ACDTranslateDetPathSinMessage
 			{
 				ActorID = actor.DynamicID(plr),
 				DPath = 6,
@@ -625,14 +640,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				Seed = 1,
 				Carry = 1,
 				TargetPostition = TargetPosition,
-				Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
+				Angle = MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
 				StartPosition = User.Position,
 				MoveFlags = 1,
 				AnimTag = 1,
 				PowerSNO = PowerSNO,
 				Var0Int = 1,
 				Var0Fl = 1f,
-				SinData = new DPathSinData()
+				SinData = new DPathSinData
 				{
 					annOwner = (int)actor.DynamicID(plr),
 					SinIncAccel = 0f,
@@ -649,28 +664,28 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public void PlayZigAnimation(Actor actor, Actor User, int PowerSNO, Vector3D TargetPosition)
 		{
 
-			BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateFacingMessage
+			BroadcastIfRevealed(plr => new ACDTranslateFacingMessage
 			{
 				ActorId = actor.DynamicID(plr),
-				Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
+				Angle = MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
 				TurnImmediately = true
 			}, actor);
 
-			BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateDetPathSinMessage
+			BroadcastIfRevealed(plr => new ACDTranslateDetPathSinMessage
 			{
 				ActorID = actor.DynamicID(plr),
 				DPath = 5,
 				Seed = 1,
 				Carry = 1,
 				TargetPostition = TargetPosition,
-				Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
+				Angle = MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
 				StartPosition = User.Position,
 				MoveFlags = 1,
 				AnimTag = 1,
 				PowerSNO = PowerSNO,
 				Var0Int = 1,
 				Var0Fl = 1f,
-				SinData = new DPathSinData()
+				SinData = new DPathSinData
 				{
 					annOwner = (int)actor.DynamicID(plr),
 					SinIncAccel = 0f,
@@ -687,14 +702,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public void PlayReverSpiralAnimation(Actor actor, Actor User, int PowerSNO, Vector3D TargetPosition)
 		{
 
-			BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateFacingMessage
+			BroadcastIfRevealed(plr => new ACDTranslateFacingMessage
 			{
 				ActorId = actor.DynamicID(plr),
-				Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
+				Angle = MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
 				TurnImmediately = true
 			}, actor);
 
-			BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateDetPathSinMessage
+			BroadcastIfRevealed(plr => new ACDTranslateDetPathSinMessage
 			{
 				ActorID = actor.DynamicID(plr),
 				DPath = 4,
@@ -706,14 +721,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				Seed = 1,
 				Carry = 1,
 				TargetPostition = TargetPosition,
-				Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
+				Angle = MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
 				StartPosition = User.Position,
 				MoveFlags = 1,
 				AnimTag = 1,
 				PowerSNO = PowerSNO,
 				Var0Int = 1,
 				Var0Fl = 1f,
-				SinData = new DPathSinData()
+				SinData = new DPathSinData
 				{
 					annOwner = (int)actor.DynamicID(plr),
 					SinIncAccel = 0.2f,
@@ -730,14 +745,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public void PlaySpiralAnimation(Actor actor, Actor User, int PowerSNO, Vector3D TargetPosition)
 		{
 			
-			BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateFacingMessage
+			BroadcastIfRevealed(plr => new ACDTranslateFacingMessage
 			{
 				ActorId = actor.DynamicID(plr),
-				Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
+				Angle = MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
 				TurnImmediately = true
 			}, actor);
 
-			BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateDetPathSinMessage 
+			BroadcastIfRevealed(plr => new ACDTranslateDetPathSinMessage 
 			{
 				ActorID = actor.DynamicID(plr),
 				DPath = 3,
@@ -749,14 +764,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				Seed = 1,
 				Carry = 1,
 				TargetPostition = TargetPosition,
-				Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
+				Angle = MovementHelpers.GetFacingAngle(User.Position, TargetPosition),
 				StartPosition = User.Position,
 				MoveFlags = 1,
 				AnimTag = 1,
 				PowerSNO = PowerSNO,
 				Var0Int = 1,
 				Var0Fl = 1f,
-				SinData = new DPathSinData()
+				SinData = new DPathSinData
 				{
 					annOwner = (int)actor.DynamicID(plr),
 					SinIncAccel = 0.2f,
@@ -773,7 +788,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public Item SpawnRandomEquip(Actor source, Player player, int forceQuality = -1, int forceLevel = -1,
 			GameBalance.ItemTypeTable type = null, bool canBeUnidentified = true, ToonClass toonClass = ToonClass.Unknown)
 		{
-			Logger.Debug("SpawnRandomEquip(): quality {0}", forceQuality);
+			Logger.MethodTrace($"quality {forceQuality}");
 			if (player != null)
 			{
 				int level = (forceLevel > 0 ? forceLevel : source.Attributes[GameAttribute.Level]);
@@ -801,7 +816,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		}
 		public void SpawnRandomLegOrSetEquip(Actor source, Player player)
 		{
-			//Logger.Debug("SpawnRandomEquip(): quality {0}", forceQuality);
+			//Logger.MethodTrace("quality {0}", forceQuality);
 			if (player != null)
 			{
 				var item = ItemGenerator.GenerateLegOrSetRandom(player);
@@ -857,7 +872,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		}
 		public void SpawnRandomPotion(Actor source, Player player)
 		{
-			if (player != null && !player.Inventory.HaveEnough(DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("HealthPotionBottomless"), 1))
+			if (player != null && !player.Inventory.HaveEnough(StringHashHelper.HashItemName("HealthPotionBottomless"), 1))
 			{
 				var item = ItemGenerator.GenerateRandomPotion(player);
 				if (item == null) return;
@@ -946,7 +961,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <returns></returns>
 		public bool HasActorsInGroup(string group)
 		{
-			var groupHash = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName(group);
+			var groupHash = StringHashHelper.HashItemName(group);
 			foreach (var actor in Actors.Values)
 			{
 				if (actor.Tags != null)
@@ -963,7 +978,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public List<Actor> GetActorsInGroup(string group)
 		{
 			List<Actor> matchingActors = new List<Actor>();
-			var groupHash = DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName(group);
+			var groupHash = StringHashHelper.HashItemName(group);
 			foreach (var actor in Actors.Values)
 			{
 				if (actor.Tags != null)
@@ -1087,7 +1102,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public void AddScene(Scene scene)
 		{
 			if (scene.GlobalID == 0 || HasScene(scene.GlobalID))
-				throw new Exception(String.Format("Scene has an invalid ID or was already present (ID = {0})", scene.GlobalID));
+				throw new Exception($"Scene has an invalid ID or was already present (ID = {scene.GlobalID})");
 
 			Scenes.TryAdd(scene.GlobalID, scene); // add to scenes collection.
 			QuadTree.Insert(scene); // add it to quad-tree too.
@@ -1100,10 +1115,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public void RemoveScene(Scene scene)
 		{
 			if (scene.GlobalID == 0 || !HasScene(scene.GlobalID))
-				throw new Exception(String.Format("Scene has an invalid ID or was not present (ID = {0})", scene.GlobalID));
+				throw new Exception($"Scene has an invalid ID or was not present (ID = {scene.GlobalID})");
 
-			Scene remotedScene;
-			Scenes.TryRemove(scene.GlobalID, out remotedScene); // remove it from scenes collection.
+			Scenes.TryRemove(scene.GlobalID, out _); // remove it from scenes collection.
 			QuadTree.Remove(scene); // remove from quad-tree too.
 		}
 
@@ -1114,8 +1128,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <returns></returns>
 		public Scene GetScene(uint dynamicID)
 		{
-			Scene scene;
-			Scenes.TryGetValue(dynamicID, out scene);
+			Scenes.TryGetValue(dynamicID, out var scene);
 			return scene;
 		}
 
@@ -1161,10 +1174,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		private void RemoveActor(Actor actor)
 		{
 			if (actor.GlobalID == 0 || !Actors.ContainsKey(actor.GlobalID))
-				throw new Exception(String.Format("Actor has an invalid ID or was not present (ID = {0})", actor.GlobalID));
+				throw new Exception($"Actor has an invalid ID or was not present (ID = {actor.GlobalID})");
 
-			Actor removedActor;
-			Actors.TryRemove(actor.GlobalID, out removedActor); // remove it from actors collection.
+			Actors.TryRemove(actor.GlobalID, out _); // remove it from actors collection.
 			QuadTree.Remove(actor); // remove from quad-tree too.
 
 			if (actor.ActorType == ActorType.Player) // if actors is a player, remove it from players collection too.
@@ -1173,8 +1185,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public Actor GetActorByGlobalId(uint globalID)
 		{
-			Actor actor;
-			Actors.TryGetValue(globalID, out actor);
+			Actors.TryGetValue(globalID, out var actor);
 			return actor;
 		}
 
@@ -1204,9 +1215,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			{
 				if (actor.ActorType == matchType)
 					return actor;
-				else
-					Logger.Warn("Attempted to get actor ID {0} as a {1}, whereas the actor is type {2}",
-						dynamicID, Enum.GetName(typeof(ActorType), matchType), Enum.GetName(typeof(ActorType), actor.ActorType));
+				Logger.Warn("Attempted to get actor ID {0} as a {1}, whereas the actor is type {2}",
+					dynamicID, Enum.GetName(typeof(ActorType), matchType), Enum.GetName(typeof(ActorType), actor.ActorType));
 			}
 			return null;
 		}
@@ -1247,37 +1257,42 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// Adds given player to world.
 		/// </summary>
 		/// <param name="player">The player to add.</param>
-		private void AddPlayer(Player player)
+		private bool AddPlayer(Player player)
 		{
+			if (player == null)
+				throw new Exception($"Player in world {SNO} is null and cannot be removed.");
+			
 			if (player.GlobalID == 0 || HasPlayer(player.GlobalID))
-				throw new Exception(String.Format("Player has an invalid ID or was already present (ID = {0})", player.GlobalID));
+				throw new Exception($"Player has an invalid ID or was already present (ID = {player.GlobalID})");
 
-			Players.TryAdd(player.GlobalID, player); // add it to players collection.
+			return Players.TryAdd(player.GlobalID, player); // add it to players collection.
 		}
 
 		/// <summary>
 		/// Removes given player from world.
 		/// </summary>
 		/// <param name="player"></param>
-		private void RemovePlayer(Player player)
+		private bool RemovePlayer(Player player)
 		{
+			if (player == null)
+				throw new Exception($"Player in world {SNO} is null and cannot be removed.");
+			
 			if (player.GlobalID == 0 || !Players.ContainsKey(player.GlobalID))
-				throw new Exception(String.Format("Player has an invalid ID or was not present (ID = {0})", player.GlobalID));
+				throw new Exception($"Player has an invalid ID or was not present (ID = {player.GlobalID})");
 
-			Player removedPlayer;
-			Players.TryRemove(player.GlobalID, out removedPlayer); // remove it from players collection.
+			return Players.TryRemove(player.GlobalID, out _); // remove it from players collection.
 		}
 
 		/// <summary>
-		/// Returns player with given dynamicId.
+		/// Returns player with a given predicate
 		/// </summary>
-		/// <param name="dynamicID">The dynamicId of the player.</param>
-		/// <returns></returns>
-		public Player GetPlayer(uint dynamicID)
+		/// <param name="predicate">Predicate to find player</param>
+		/// <param name="player">Player result</param>
+		/// <returns>Whether the player was found.</returns>
+		public bool TryGetPlayer(Func<Player, bool> predicate, out Player player)
 		{
-			Player player;
-			Players.TryGetValue(dynamicID, out player);
-			return player;
+			player = Players.Values.FirstOrDefault(predicate);
+			return player != null;
 		}
 
 		/// <summary>
@@ -1285,40 +1300,28 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		/// <param name="dynamicID">The dynamicId of the player.</param>
 		/// <returns><see cref="bool"/></returns>
-		public bool HasPlayer(uint dynamicID)
-		{
-			return Players.ContainsKey(dynamicID);
-		}
+		public bool HasPlayer(uint dynamicID) => Players.ContainsKey(dynamicID);
 
 		/// <summary>
 		/// Returns item with given dynamicId.
 		/// </summary>
 		/// <param name="dynamicID">The dynamicId of the item.</param>
 		/// <returns></returns>
-		public Item GetItem(uint dynamicID)
-		{
-			return (Item)GetActorByGlobalId(dynamicID, ActorType.Item);
-		}
+		public Item GetItem(uint dynamicID) => (Item)GetActorByGlobalId(dynamicID, ActorType.Item);
 
 		/// <summary>
 		/// Returns true if world contains a monster with given dynamicId.
 		/// </summary>
 		/// <param name="dynamicID">The dynamicId of the monster.</param>
 		/// <returns><see cref="bool"/></returns>
-		public bool HasMonster(uint dynamicID)
-		{
-			return HasActor(dynamicID, ActorType.Monster);
-		}
+		public bool HasMonster(uint dynamicID) => HasActor(dynamicID, ActorType.Monster);
 
 		/// <summary>
 		/// Returns true if world contains an item with given dynamicId.
 		/// </summary>
 		/// <param name="dynamicID">The dynamicId of the item.</param>
 		/// <returns><see cref="bool"/></returns>
-		public bool HasItem(uint dynamicID)
-		{
-			return HasActor(dynamicID, ActorType.Item);
-		}
+		public bool HasItem(uint dynamicID) => HasActor(dynamicID, ActorType.Item);
 
 		#endregion
 
@@ -1330,17 +1333,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="id">The id of the StartingPoint.</param>
 		/// <returns><see cref="StartingPoint"/></returns>
 
-		public StartingPoint GetStartingPointById(int id)
-		{
-			return Actors.Values.OfType<StartingPoint>().Where(sp => sp.TargetId == id).ToList().FirstOrDefault();
-		}
+		public StartingPoint GetStartingPointById(int id) => Actors.Values.OfType<StartingPoint>().Where(sp => sp.TargetId == id).ToList().FirstOrDefault();
 
-		public Actor FindAt(ActorSno actorSno, Vector3D position, float radius = 3.0f)
+		public Actor FindActorAt(ActorSno actorSno, Vector3D position, float radius = 3.0f)
 		{
 			var proximityCircle = new Circle(position.X, position.Y, radius);
 			var actors = QuadTree.Query<Actor>(proximityCircle);
-			foreach (var actr in actors)
-				if (actr.Attributes[GameAttribute.Disabled] == false && actr.Attributes[GameAttribute.Gizmo_Has_Been_Operated] == false && actr.SNO == actorSno) return actr;
+			foreach (var actor in actors)
+				if (actor.Attributes[GameAttribute.Disabled] == false && actor.Attributes[GameAttribute.Gizmo_Has_Been_Operated] == false && actor.SNO == actorSno) return actor;
 			return null;
 		}
 
@@ -1349,10 +1349,13 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		/// <param name="id">The id of the WayPoint</param>
 		/// <returns><see cref="Waypoint"/></returns>
-		public Waypoint GetWayPointById(int id)
-		{
-			return Actors.Values.OfType<Waypoint>().FirstOrDefault(waypoint => waypoint.WaypointId == id);
-		}
+		public Waypoint GetWayPointById(int id) => Actors.Values.OfType<Waypoint>().FirstOrDefault(waypoint => waypoint.WaypointId == id);
+
+		public Waypoint[] GetAllWaypoints() => Actors.Values.OfType<Waypoint>().ToArray();
+
+		public Waypoint[] GetAllWaypointsInWorld(WorldSno worldSno) => Actors.Values.OfType<Waypoint>().Where(waypoint => waypoint.World.SNO == worldSno).ToArray();
+
+		public Waypoint[] GetAllWaypointsInWorld(World world) => Actors.Values.OfType<Waypoint>().Where(waypoint => waypoint.World == world).ToArray();
 
 		#endregion
 
@@ -1360,8 +1363,27 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public override void Destroy()
 		{
-			// TODO: Destroy all objects /raist
-
+			Logger.Trace($"$[red]$Destroying$[/]$ World #{GlobalID} $[underline red]${SNO}$[/]$");
+			// TODO: Destroy all objects @iamdroppy - solution below added for testing on 21/01/2023
+			// foreach (var actor in Actors.Values)
+			// 	try
+			// 	{
+			// 		actor.Destroy();
+			// 	}
+			// 	catch {}
+			//
+			// foreach (var player in Players.Values)
+			// 	try
+			// 	{
+			// 		player.Destroy();
+			// 	}
+			// 	catch{}
+			// foreach (var portal in Portals)
+			// 	try
+			// 	{
+			// 		portal.Destroy();
+			// 	}
+			// 	catch{}
 			// TODO: Destroy pre-generated tile set
 
 			worldData = null;
@@ -1384,18 +1406,15 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 					if (s.Parent != null) { scene = s.Parent; }
 					if (s.Subscenes.Count > 0)
 					{
-						foreach (var subscene in s.Subscenes)
+						foreach (var subScene in s.Subscenes.Where(subScene => subScene.Bounds.Contains(location.X, location.Y)))
 						{
-							if (subscene.Bounds.Contains(location.X, location.Y))
-							{
-								scene = subscene;
-							}
+							scene = subScene;
 						}
 					}
 
 					int x = (int)((location.X - scene.Bounds.Left) / 2.5f);
 					int y = (int)((location.Y - scene.Bounds.Top) / 2.5f);
-					int total = (int)((y * scene.NavMesh.SquaresCountX) + x);
+					int total = (y * scene.NavMesh.SquaresCountX) + x;
 					if (total < 0 || total > scene.NavMesh.NavMeshSquareCount)
 					{
 						Logger.Error("Navmesh overflow!");
@@ -1413,57 +1432,59 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public float GetZForLocation(Vector3D location, float defaultZ)
 		{
-			foreach (Scene s in Scenes.Values)
+			foreach (Scene s in Scenes.Values.Where(s => s.Bounds.Contains(location.X, location.Y)))
 			{
-				if (s.Bounds.Contains(location.X, location.Y))
+				Scene scene = s;
+				if (s.Parent != null)
 				{
-					Scene scene = s;
-					if (s.Parent != null) { scene = s.Parent; }
-					if (s.Subscenes.Count > 0)
+					scene = s.Parent;
+				}
+
+				if (s.Subscenes.Count > 0)
+				{
+					foreach (var subScene in s.Subscenes)
 					{
-						foreach (var subscene in s.Subscenes)
+						if (subScene.Bounds.Contains(location.X, location.Y))
 						{
-							if (subscene.Bounds.Contains(location.X, location.Y))
-							{
-								scene = subscene;
-							}
+							scene = subScene;
 						}
 					}
+				}
 
-					int x = (int)((location.X - scene.Bounds.Left) / 2.5f);
-					int y = (int)((location.Y - scene.Bounds.Top) / 2.5f);
-					int total = (int)((y * scene.NavMesh.SquaresCountX) + x);
-					if (total < 0 || total > scene.NavMesh.NavMeshSquareCount)
-					{
-						Logger.Error("Navmesh overflow!");
-						return defaultZ;
-					}
-					try
-					{
-						return scene.NavMesh.Squares[total].Z;
-					}
-					catch
-					{
-						return defaultZ;
-					}
+				int x = (int)((location.X - scene.Bounds.Left) / 2.5f);
+				int y = (int)((location.Y - scene.Bounds.Top) / 2.5f);
+				int total = (y * scene.NavMesh.SquaresCountX) + x;
+				if (total < 0 || total > scene.NavMesh.NavMeshSquareCount)
+				{
+					Logger.Error("Navmesh overflow!");
+					return defaultZ;
+				}
+
+				try
+				{
+					return scene.NavMesh.Squares[total].Z;
+				}
+				catch
+				{
+					return defaultZ;
 				}
 			}
+
 			return defaultZ;
 		}
 
+		[Obsolete("Isn't used anymore")] // made obsolete by @iamdroppy on 28/01/2023
 		public bool CheckRayPath(Vector3D start, Vector3D destination)
 		{
-
 			var proximity = new RectangleF(start.X - 1f, start.Y - 1f, 2f, 2f);
 			var scenes = QuadTree.Query<Scene>(proximity);
 			if (scenes.Count == 0) return false;
 
-			var scene = scenes[0]; // Parent scene /fasbat
-
 			if (scenes.Count == 2) // What if it's a subscene? /fasbat
 			{
 				if (scenes[1].ParentChunkID != 0xFFFFFFFF)
-					scene = scenes[1];
+				{
+				}
 			}
 
 			return true;
@@ -1471,7 +1492,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public override string ToString()
 		{
-			return string.Format("[World] SNOId: {0} GlobalId: {1} Name: {2}", WorldSNO.Id, GlobalID, WorldSNO.Name);
+			return $"[World] SNOId: {WorldSNO.Id} GlobalId: {GlobalID} Name: {WorldSNO.Name}";
 		}
 	}
 }

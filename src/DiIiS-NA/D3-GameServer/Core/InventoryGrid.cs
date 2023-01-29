@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
@@ -12,7 +13,7 @@ namespace DiIiS_NA.GameServer.Core
 {
 	public class InventoryGrid : IRevealable
 	{
-		static readonly Logger Logger = LogManager.CreateLogger("IG");
+		static readonly Logger Logger = LogManager.CreateLogger(nameof(InventoryGrid));
 
 		public int EquipmentSlot { get; private set; }
 		public int Rows { get { return _backpack.GetLength(0); } }
@@ -74,7 +75,6 @@ namespace DiIiS_NA.GameServer.Core
 			}
 
 			return new InventorySize() { Width = 1, Height = 1 };
-
 		}
 
 
@@ -167,7 +167,7 @@ namespace DiIiS_NA.GameServer.Core
 			foreach (var itm in baseItems)
 				have += itm.Attributes[GameAttribute.ItemStackQuantityLo];
 
-			Logger.Trace("HaveEnough(): gbid {0}, count {1}", GBid, have);
+			Logger.MethodTrace($"gbid {GBid}, count {have}");
 
 			return (have >= count);
 		}

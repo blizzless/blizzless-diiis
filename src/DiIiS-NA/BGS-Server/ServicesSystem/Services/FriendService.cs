@@ -9,6 +9,7 @@ using DiIiS_NA.LoginServer.Helpers;
 using Google.ProtocolBuffers;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 {
@@ -19,10 +20,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void Subscribe(IRpcController controller, SubscribeRequest request, Action<SubscribeResponse> done)
 		{
-			Logger.Trace("Subscribe() {0}", ((controller as HandlerController).Client));
+			Logger.Trace("Subscribe() {0}", (((HandlerController) controller).Client));
 
 
-			FriendManager.Instance.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
+			FriendManager.Instance.AddSubscriber((((HandlerController) controller).Client), request.ObjectId);
 
 			var builder = SubscribeResponse.CreateBuilder()
 				.SetMaxFriends(127)
@@ -31,7 +32,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 				.AddRole(Role.CreateBuilder().SetId(1).SetName("battle_tag_friend").Build())
 				.AddRole(Role.CreateBuilder().SetId(2).SetName("real_id_friend").Build());
 
-			var friendsIDs = ((controller as HandlerController).Client).Account.FriendsIds;
+			var friendsIDs = (((HandlerController) controller).Client).Account.FriendsIds;
 			foreach (var dbidFriend in friendsIDs) // send friends list.
 			{
 				var resp = Friend.CreateBuilder()
@@ -46,7 +47,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 			foreach (var invitation in FriendManager.OnGoingInvitations.Values)
 			{
-				if (invitation.InviteeIdentity.AccountId == ((controller as HandlerController).Client).Account.BnetEntityId && !friendsIDs.Contains(invitation.InviterIdentity.AccountId.Low))
+				if (invitation.InviteeIdentity.AccountId == (((HandlerController) controller).Client).Account.BnetEntityId && !friendsIDs.Contains(invitation.InviterIdentity.AccountId.Low))
 				{
 					invitations.Add(invitation);
 				}
@@ -64,16 +65,16 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 			var response = NoData.CreateBuilder();
 
-			if (friendRequest.TargetEmail.ToLower() == ((controller as HandlerController).Client).Account.Email.ToLower())
+			if (friendRequest.TargetEmail.ToLower() == (((HandlerController) controller).Client).Account.Email.ToLower())
 			{
-				((controller as HandlerController).Status) = 317202;
+				(((HandlerController) controller).Status) = 317202;
 				done(response.Build());
 				return;
 			}
 
-			if (friendRequest.TargetBattleTag == ((controller as HandlerController).Client).Account.BattleTag)
+			if (friendRequest.TargetBattleTag == (((HandlerController) controller).Client).Account.BattleTag)
 			{
-				((controller as HandlerController).Status) = 317202;
+				(((HandlerController) controller).Status) = 317202;
 				done(response.Build());
 				return;
 			}
@@ -90,44 +91,44 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			if (invitee == null)
 			{
 				if (friendRequest.HasTargetEmail)
-					((controller as HandlerController).Status) = 4;
+					(((HandlerController) controller).Status) = 4;
 				else
-					((controller as HandlerController).Status) = 317203;
+					(((HandlerController) controller).Status) = 317203;
 				done(response.Build());
 				return;
 			}
-			else if (FriendManager.AreFriends(((controller as HandlerController).Client).Account, invitee))
+			else if (FriendManager.AreFriends((((HandlerController) controller).Client).Account, invitee))
 			{
 				if (friendRequest.HasTargetEmail)
-					((controller as HandlerController).Status) = 317201;
+					(((HandlerController) controller).Status) = 317201;
 				else
-					((controller as HandlerController).Status) = 5003;
+					(((HandlerController) controller).Status) = 5003;
 				done(response.Build());
 				return;
 			}
-			else if (FriendManager.InvitationExists(((controller as HandlerController).Client).Account, invitee))
+			else if (FriendManager.InvitationExists((((HandlerController) controller).Client).Account, invitee))
 			{
 				if (friendRequest.HasTargetEmail)
-					((controller as HandlerController).Status) = 317200;
+					(((HandlerController) controller).Status) = 317200;
 				else
-					((controller as HandlerController).Status) = 5005;
+					(((HandlerController) controller).Status) = 5005;
 				done(response.Build());
 				return;
 			}
-			else if (invitee.IgnoreIds.Contains((controller as HandlerController).Client.Account.PersistentID))
+			else if (invitee.IgnoreIds.Contains(((HandlerController) controller).Client.Account.PersistentID))
 			{
-				((controller as HandlerController).Status) = 5006;
+				(((HandlerController) controller).Status) = 5006;
 				done(response.Build());
 				return;
 			}
 
-			Logger.Trace("{0} sent {1} friend invitation.", ((controller as HandlerController).Client).Account, invitee);
+			Logger.Trace("{0} sent {1} friend invitation.", (((HandlerController) controller).Client).Account, invitee);
 
 			var invitation = ReceivedInvitation.CreateBuilder()
 				.SetId(FriendManager.InvitationIdCounter++) // we may actually need to store invitation ids in database with the actual invitation there. /raist.				
-				.SetInviterIdentity(Identity.CreateBuilder().SetAccountId(((controller as HandlerController).Client).Account.BnetEntityId))
+				.SetInviterIdentity(Identity.CreateBuilder().SetAccountId((((HandlerController) controller).Client).Account.BnetEntityId))
 				.SetInviteeIdentity(Identity.CreateBuilder().SetAccountId(invitee.BnetEntityId))
-				.SetInviterName(((controller as HandlerController).Client).Account.BattleTagName)
+				.SetInviterName((((HandlerController) controller).Client).Account.BattleTagName)
 				.SetInviteeName(invitee.BattleTagName)
 				.SetCreationTime(DateTime.Now.ToUnixTime())
 				.SetUnknownFields(UnknownFieldSet.CreateBuilder()
@@ -138,19 +139,19 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			done(response.Build());
 
 			// notify the invitee on invitation.
-			FriendManager.HandleInvitation(((controller as HandlerController).Client), invitation.Build());
+			FriendManager.HandleInvitation((((HandlerController) controller).Client), invitation.Build());
 			FriendManager.Instance.NotifyUpdate();
-			(controller as HandlerController).Client.Account.NotifyUpdate();
-			(controller as HandlerController).Client.Account.GameAccount.NotifyUpdate();
+			((HandlerController) controller).Client.Account.NotifyUpdate();
+			((HandlerController) controller).Client.Account.GameAccount.NotifyUpdate();
 		}
 		public override void AcceptInvitation(IRpcController controller, AcceptInvitationRequest request, Action<NoData> done)
 		{
-			Logger.Trace("{0} accepted friend invitation.", ((controller as HandlerController).Client).Account);
+			Logger.Trace("{0} accepted friend invitation.", (((HandlerController) controller).Client).Account);
 
 			var response = NoData.CreateBuilder();
 			done(response.Build());
 
-			FriendManager.HandleAccept(((controller as HandlerController).Client), request);
+			FriendManager.HandleAccept((((HandlerController) controller).Client), request);
 		}
 		public override void RevokeInvitation(IRpcController controller, RevokeInvitationRequest request, Action<NoData> done)
 		{
@@ -158,12 +159,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		}
 		public override void DeclineInvitation(IRpcController controller, DeclineInvitationRequest request, Action<NoData> done)
 		{
-			Logger.Trace("{0} declined friend invitation.", ((controller as HandlerController).Client).Account);
+			Logger.Trace("{0} declined friend invitation.", (((HandlerController) controller).Client).Account);
 
 			var response = NoData.CreateBuilder();
 			done(response.Build());
 
-			FriendManager.HandleDecline(((controller as HandlerController).Client), request);
+			FriendManager.HandleDecline((((HandlerController) controller).Client), request);
 		}
 		public override void IgnoreInvitation(IRpcController controller, IgnoreInvitationRequest request, Action<NoData> done)
 		{
@@ -172,25 +173,25 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			var response = NoData.CreateBuilder();
 			done(response.Build());
 
-			FriendManager.HandleIgnore(((controller as HandlerController).Client), request);
+			FriendManager.HandleIgnore((((HandlerController) controller).Client), request);
 
 		}
 		public override void RemoveFriend(IRpcController controller, RemoveFriendRequest request, Action<NoData> done)
 		{
-			Logger.Trace("{0} removed friend with id {1}.", ((controller as HandlerController).Client).Account, request.TargetId);
+			Logger.Trace("{0} removed friend with id {1}.", (((HandlerController) controller).Client).Account, request.TargetId);
 
 
 			done(NoData.DefaultInstance);
 
-			FriendManager.HandleRemove(((controller as HandlerController).Client), request);
+			FriendManager.HandleRemove((((HandlerController) controller).Client), request);
 			FriendManager.Instance.NotifyUpdate();
-			(controller as HandlerController).Client.Account.NotifyUpdate();
-			(controller as HandlerController).Client.Account.GameAccount.NotifyUpdate();
+			((HandlerController) controller).Client.Account.NotifyUpdate();
+			((HandlerController) controller).Client.Account.GameAccount.NotifyUpdate();
 
 		}
 		public override void ViewFriends(IRpcController controller, ViewFriendsRequest request, Action<ViewFriendsResponse> done)
 		{
-			Logger.Trace("ViewFriends(): {0}.", request.ToString());
+			Logger.MethodTrace(request.ToString());
 
 			var builder = ViewFriendsResponse.CreateBuilder();
 			var friendsIDs = AccountManager.GetAccountByPersistentID(request.TargetId.Low).FriendsIds;
@@ -209,7 +210,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		}
 		public override void UpdateFriendState(IRpcController controller, UpdateFriendStateRequest request, Action<NoData> done)
 		{
-			Logger.Trace("UpdateFriendState(): {0}.", request.ToString());
+			Logger.MethodTrace(request.ToString());
 
 			done(NoData.CreateBuilder().Build());
 		}

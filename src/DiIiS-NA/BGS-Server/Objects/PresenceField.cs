@@ -9,7 +9,7 @@ namespace DiIiS_NA.LoginServer.Objects
 {
 	public class EntityIdPresenceFieldList
 	{
-		public List<bgs.protocol.EntityId> Value = new List<bgs.protocol.EntityId>();
+		public List<bgs.protocol.EntityId> Value = new();
 
 		protected FieldKeyHelper.Program _program;
 		protected FieldKeyHelper.OriginatingClass _originatingClass;

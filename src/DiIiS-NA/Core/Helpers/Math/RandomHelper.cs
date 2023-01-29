@@ -74,7 +74,6 @@ public static class RandomHelper
 
 public class ItemRandomHelper
 {
-	private static readonly Logger Logger = LogManager.CreateLogger("RH");
 	uint a;
 	uint b;
 	public ItemRandomHelper(int seed)
@@ -94,7 +93,6 @@ public class ItemRandomHelper
 		a = (uint)temp;
 		b = (uint)(temp >> 32);
 
-		//Logger.Debug("Next(): a {0}, b {1}", a, b);
 		return a;
 	}
 

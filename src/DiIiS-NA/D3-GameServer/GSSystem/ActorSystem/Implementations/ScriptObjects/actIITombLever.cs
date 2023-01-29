@@ -43,12 +43,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			if (Attributes[GameAttribute.Disabled] == true) return;
 			try
 			{
-				Door waterfall = World.FindAt(ActorSno._caout_oasis_door_aqueduct_a_top, Position, 80.0f) as Door;
+				Door waterfall = World.FindActorAt(ActorSno._caout_oasis_door_aqueduct_a_top, Position, 80.0f) as Door;
 				if (waterfall == null)
 				{
-					Door gate = World.FindAt(ActorSno._caout_oasis_door_aqueduct_a, Position, 80.0f) as Door;
+					Door gate = World.FindActorAt(ActorSno._caout_oasis_door_aqueduct_a, Position, 80.0f) as Door;
 					if (gate == null)
-						(World.FindAt(ActorSno._caout_oasis_cenote_door, Position, 80.0f) as Door).Open();
+						(World.FindActorAt(ActorSno._caout_oasis_cenote_door, Position, 80.0f) as Door).Open();
 					else
 						gate.Open();
 				}

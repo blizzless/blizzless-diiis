@@ -28,6 +28,118 @@
 |                         |             | `!lookup actor zombie`   |                                                              |
 |                         |             | `!lookup power Punch`    |                                                              |
 
+# All Commands
+Available commands from `!commands`: 
+
+### !account
+Provides account management commands.
+
+### !mute
+Disables chat messages for the account for some defined time span.
+
+### !tag
+Switch private Tag for connect
+
+### !powerful
+Makes your character with absurd amount of damage. Useful for testing.
+
+### !resourceful
+Makes your character with full resource. Useful for testing.
+
+### !info
+Get current game information.
+
+### !followers
+Manage your followers.
+
+### !difficulty
+Changes difficulty of the game
+
+### !heal
+Heals yourself
+
+### !invulnerable
+Makes you invulnerable
+
+### !spawn
+Spawns a mob.
+
+Usage: spawn [actorSNO] [amount]
+
+### !levelup
+Levels your character.
+
+Optionally specify the number of levels: !levelup [count]
+
+### !unlockart
+Unlock all artisans: !unlockart
+
+### !platinum
+Platinum for your character.
+
+Optionally specify the number of levels: !platinum [count]
+
+### !stashup
+Upgrade Stash.
+
+### !gold
+Gold for your character.
+
+Optionally specify the number of gold: !gold [count]
+
+### !achiplatinum
+Platinum for your character.
+
+Optionally specify the number of levels: !platinum [count]
+
+### !eff
+Platinum for your character.
+
+Optionally specify the number of levels: !eff [count]
+
+### !item
+Spawns an item (with a name or type).
+
+Usage: item [type <type>|<name>] [amount]
+
+### !drop
+Drops an epic item for your class.
+
+Optionally specify the number of items: !drop [1-20]
+
+### !tp
+Transfers your character to another world.
+
+### !conversation
+Starts a conversation.
+
+ Usage: conversation snoConversation
+
+### !speed
+Modify speed walk of you character.
+
+Usage: !speed <value>
+
+Reset: !speed
+
+### !commands
+Lists available commands for your user-level.
+
+### !help
+usage: help <command>
+
+Type 'commands' to get a list of available commands.
+
+### !quest
+Retrieves information about quest states and manipulates quest progress.
+
+ Usage: quest [triggers | trigger eventType eventValue | advance snoQuest]
+
+### !lookup
+Searches in sno databases.
+
+Usage: lookup [actor|conv|power|scene|la|sp|weather] <pattern>
+
 # Item List
 
 You can use the official website to search items: https://eu.diablo3.blizzard.com/en-us/item/

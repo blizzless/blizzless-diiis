@@ -41,7 +41,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		{
 			try
 			{
-				(World.FindAt(ActorSno._a3dun_keep_bridge, Position, 60.0f) as Door).Open();
+				(World.FindActorAt(ActorSno._a3dun_keep_bridge, Position, 60.0f) as Door).Open();
 			}
 			catch { }
 		}

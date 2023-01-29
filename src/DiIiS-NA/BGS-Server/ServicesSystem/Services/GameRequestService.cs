@@ -72,7 +72,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
             QueueEntryNotification.Builder qen = QueueEntryNotification.CreateBuilder();
             qen.SetRequestId(id).SetWaitTimes(timers).AddMember(member).SetRequestInitiator(member);
-            ((HandlerController) controller).Client.MakeRPC((lid) => GameRequestListener.CreateStub(((HandlerController) controller).Client).OnQueueEntry(new HandlerController() { ListenerId = lid }, qen.Build(), callback => { }));
+            ((HandlerController) controller).Client.MakeRpc((lid) => GameRequestListener.CreateStub(((HandlerController) controller).Client).OnQueueEntry(new HandlerController() { ListenerId = lid }, qen.Build(), callback => { }));
             #endregion
 
             #region Update Queue
@@ -80,7 +80,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             qun.SetRequestId(id)
                 .SetWaitTimes(timers)
                 .SetIsMatchmaking(true);
-            ((HandlerController) controller).Client.MakeRPC((lid) => GameRequestListener.CreateStub(((HandlerController) controller).Client).OnQueueUpdate(new HandlerController() { ListenerId = lid }, qun.Build(), callback => { }));
+            ((HandlerController) controller).Client.MakeRpc((lid) => GameRequestListener.CreateStub(((HandlerController) controller).Client).OnQueueUpdate(new HandlerController() { ListenerId = lid }, qun.Build(), callback => { }));
             #endregion
 
 
@@ -124,7 +124,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
                 var joinNotification = bgs.protocol.channel.v1.JoinNotification.CreateBuilder().SetChannelState(channelStatePermission).Build();
 
-                (((HandlerController) controller).Client).MakeTargetedRPC((((HandlerController) controller).Client).CurrentChannel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub((((HandlerController) controller).Client)).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notificationPermission, callback => { }));
+                (((HandlerController) controller).Client).MakeTargetedRpc((((HandlerController) controller).Client).CurrentChannel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub((((HandlerController) controller).Client)).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notificationPermission, callback => { }));
             }            
             gameFound.StartGame(clients, gameFound.DynamicId);
             
@@ -137,7 +137,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 .SetValue(Variant.CreateBuilder().SetUintValue(gameFound.RequestId).Build());
             notificationFound.AddAttribute(attrF);
 
-            (((HandlerController) controller).Client).MakeRPC((lid) =>
+            (((HandlerController) controller).Client).MakeRpc((lid) =>
                 bgs.protocol.notification.v1.NotificationListener.CreateStub((((HandlerController) controller).Client)).OnNotificationReceived(new HandlerController() { ListenerId = lid }, notificationFound.Build(), callback => { }));
 
 
@@ -152,7 +152,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             notification.SetGameHandle(gh);
 
             System.Threading.Tasks.Task.Delay(2000).ContinueWith(delegate {
-                ((HandlerController) controller).Client.MakeRPC((lid) => GameRequestListener.CreateStub(((HandlerController) controller).Client).OnMatchmakingResult(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
+                ((HandlerController) controller).Client.MakeRpc((lid) => GameRequestListener.CreateStub(((HandlerController) controller).Client).OnMatchmakingResult(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
             });
         }
     }

@@ -30,33 +30,33 @@ namespace DiIiS_NA.LoginServer.Battle
 		public ISocketChannel SocketConnection { get; private set; }
 		public IChannelHandlerContext Connect { get; private set; }
 		public bool AuthenticationStatus = false;
-		public ClientLocale ClientLanguage = ClientLocale.enUS;
+		public ClientLocale ClientLanguage = ClientLocale.EN_US;
 		public IRpcController ListenerController;
 		private uint _tokenCounter = 0;
-		public static NO_RESPONSE NO_RESPONSE = NO_RESPONSE.CreateBuilder().Build();
+		public static NO_RESPONSE NoResponse = NO_RESPONSE.CreateBuilder().Build();
 		private readonly Dictionary<int, RPCCallBack> _pendingResponses = new(); // TODO: Check usage and remove if not needed
 		public bgs.protocol.v2.Attribute AttributeOfServer { get; set; }
 
 		public Account Account { get; set; }
-		public const byte ServiceReply = 0xFE;
+		public const byte SERVICE_REPLY = 0xFE;
 		public SslStream Ssl = null;
-		private static int REQUEST_SERVICE_ID = 0;
-		private static int RESPONSE_SERVICE_ID = 254;
+		private static int _requestServiceId = 0;
+		private static int _responseServiceId = 254;
 		//public object clientLock = new object();
-		public readonly object _serviceLock = new();
-		public object messageLock = new();
+		public readonly object ServiceLock = new();
+		public object MessageLock = new();
 		private ulong _listenerId; // last targeted rpc object.
-		public bool MOTDSent { get; private set; }
+		public bool MotdSent { get; private set; }
 		private ConcurrentDictionary<ulong, ulong> MappedObjects { get; set; }
 		public bool GuildChannelsRevealed = false;
 		public string GameTeamTag = "";
-		public ulong CID = 0;
+		public readonly ulong Cid = 0;
 
 		#region current channel
 
-		public Dictionary<ulong, Channel> Channels = new();
+		public readonly Dictionary<ulong, Channel> Channels = new();
 
-		public List<Channel> ChatChannels = new();
+		public readonly List<Channel> ChatChannels = new();
 		public Channel PartyChannel; //Used for all non game related messages
 		public Channel GameChannel; //Used for all game related messages
 
@@ -103,7 +103,7 @@ namespace DiIiS_NA.LoginServer.Battle
 				.AddAttribute(bgs.protocol.Attribute.CreateBuilder().SetName("whisper")
 				.SetValue(Variant.CreateBuilder().SetStringValue(text).Build()).Build()).Build();
 
-			MakeRPC((lid) => bgs.protocol.notification.v1.NotificationListener.CreateStub(this).
+			MakeRpc((lid) => bgs.protocol.notification.v1.NotificationListener.CreateStub(this).
 				OnNotificationReceived(new HandlerController()
 				{
 					ListenerId = lid
@@ -120,8 +120,8 @@ namespace DiIiS_NA.LoginServer.Battle
 
 		public void LeaveAllChannels()
 		{
-			List<Channel> _channels = Channels.Values.ToList();
-			foreach (var channel in _channels)
+			List<Channel> channels = Channels.Values.ToList();
+			foreach (var channel in channels)
 			{
 				try
 				{
@@ -134,12 +134,12 @@ namespace DiIiS_NA.LoginServer.Battle
 
 		#endregion
 
-		public BattleClient(ISocketChannel socketChannel, DotNetty.Handlers.Tls.TlsHandler TLS)
+		public BattleClient(ISocketChannel socketChannel, DotNetty.Handlers.Tls.TlsHandler tls)
 		{
 			SocketConnection = socketChannel;
 			Services = new Dictionary<uint, uint>();
 			MappedObjects = new ConcurrentDictionary<ulong, ulong>();
-			MOTDSent = false;
+			MotdSent = false;
 			if (SocketConnection.Active)
 				Logger.Trace("Client - {0} - successfully encrypted the connection", socketChannel.RemoteAddress);
 		}
@@ -150,7 +150,7 @@ namespace DiIiS_NA.LoginServer.Battle
 			Header header = msg.GetHeader();
 			byte[] payload = (byte[])msg.GetPayload();
 
-			if (msg.GetHeader().ServiceId == RESPONSE_SERVICE_ID)
+			if (msg.GetHeader().ServiceId == _responseServiceId)
 			{
 				if (_pendingResponses.Count == 0) return;
 				RPCCallBack done = _pendingResponses[(int)header.Token];
@@ -276,7 +276,7 @@ namespace DiIiS_NA.LoginServer.Battle
 #endif
 
 								service.CallMethod(method, controller, message,
-									(IMessage m) => { sendResponse(ctx, (int)header.Token, m, controller.Status); });
+									(IMessage m) => { SendResponse(ctx, (int)header.Token, m, controller.Status); });
 							}
 						}
 						catch (NotImplementedException)
@@ -319,69 +319,69 @@ namespace DiIiS_NA.LoginServer.Battle
 			/// <summary>
 			/// Deutsch.
 			/// </summary>
-			deDE,
+			DE_DE,
 			/// <summary>
 			/// English (EU)
 			/// </summary>
-			enGB,
+			EN_GB,
 			/// <summary>
 			/// English (Singapore)
 			/// </summary>
-			enSG,
+			EN_SG,
 			/// <summary>
 			/// English (US)
 			/// </summary>
-			enUS,
+			EN_US,
 			/// <summary>
 			/// Espanol
 			/// </summary>
-			esES,
+			ES_ES,
 			/// <summary>
 			/// Espanol (Mexico)
 			/// </summary>
-			esMX,
+			ES_MX,
 			/// <summary>
 			/// French
 			/// </summary>
-			frFR,
+			FR_FR,
 			/// <summary>
 			/// Italian
 			/// </summary>
-			itIT,
+			IT_IT,
 			/// <summary>
 			/// Korean
 			/// </summary>
-			koKR,
+			KO_KR,
 			/// <summary>
 			/// Polish
 			/// </summary>
-			plPL,
+			PL_PL,
 			/// <summary>
 			/// Portuguese
 			/// </summary>
-			ptPT,
+			PT_PT,
 			/// <summary>
 			/// Portuguese (Brazil)
 			/// </summary>
-			ptBR,
+			PT_BR,
 			/// <summary>
 			/// Russian
 			/// </summary>
-			ruRU,
+			RU_RU,
 			/// <summary>
 			/// Turkish
 			/// </summary>
-			trTR,
+			TR_TR,
 			/// <summary>
 			/// Chinese
 			/// </summary>
-			zhCN,
+			ZH_CN,
 			/// <summary>
 			/// Chinese (Taiwan)
 			/// </summary>
-			zhTW
+			ZH_TW
 		}
-		public virtual void MakeTargetedRPC(RPCObject targetObject, Action<ulong> rpc)
+		public virtual void MakeTargetedRpc(RPCObject targetObject, Action<ulong> rpc)
 		{
 			Task.Run(() =>
 			{
@@ -400,7 +400,7 @@ namespace DiIiS_NA.LoginServer.Battle
 				//}
 			});
 		}
-		public virtual void MakeRPC(Action<ulong> rpc)
+		public virtual void MakeRpc(Action<ulong> rpc)
 		{
 			Task.Run(() =>
 			{
@@ -438,18 +438,18 @@ namespace DiIiS_NA.LoginServer.Battle
 
 			if (controller is HandlerController)
 			{
-				status = (controller as HandlerController).Status;
-				_listenerId = (controller as HandlerController).ListenerId;
+				status = ((HandlerController) controller).Status;
+				_listenerId = ((HandlerController) controller).ListenerId;
 			}
 		
 			var serviceId = Services[serviceHash];
 			var token = _tokenCounter++;
-			sendRequest(Connect, serviceHash, GetMethodId(method), token, request, (uint)_listenerId, status);
+			SendRequest(Connect, serviceHash, GetMethodId(method), token, request, (uint)_listenerId, status);
 		}
-		public static void sendRequest(IChannelHandlerContext ctx, uint serviceHash, uint methodId, uint token, IMessage request, uint listenerId, uint status)
+		public static void SendRequest(IChannelHandlerContext ctx, uint serviceHash, uint methodId, uint token, IMessage request, uint listenerId, uint status)
 		{
 			Header.Builder builder = Header.CreateBuilder();
-			builder.SetServiceId((uint)REQUEST_SERVICE_ID);
+			builder.SetServiceId((uint)_requestServiceId);
 			builder.SetServiceHash(serviceHash);
 			builder.SetMethodId(methodId);
 			if (listenerId != 0)
@@ -462,7 +462,7 @@ namespace DiIiS_NA.LoginServer.Battle
 		}
 		/// <param name="localObjectId">The local objectId.</param>
 		/// <param name="remoteObjectId">The remote objectId over client.</param>
-		public void MapLocalObjectID(ulong localObjectId, ulong remoteObjectId)
+		public void MapLocalObjectId(ulong localObjectId, ulong remoteObjectId)
 		{
 			try
 			{
@@ -501,10 +501,10 @@ namespace DiIiS_NA.LoginServer.Battle
 				return (uint)(method.Index) + 1;
 			}
 		}
-		public static void sendResponse(IChannelHandlerContext ctx, int token, IMessage response, uint status)
+		public static void SendResponse(IChannelHandlerContext ctx, int token, IMessage response, uint status)
 		{
 			Header.Builder builder = Header.CreateBuilder();
-			builder.SetServiceId((uint)RESPONSE_SERVICE_ID);
+			builder.SetServiceId((uint)_responseServiceId);
 			builder.SetToken((uint)token);
 			builder.SetStatus(status);
 			if (response != null)
@@ -512,15 +512,15 @@ namespace DiIiS_NA.LoginServer.Battle
 
 			ctx.Channel.WriteAndFlushAsync(new BNetPacket(builder.Build(), response));
 		}
-		public void SendMOTD()
+		public void SendMotd()
 		{
-			if (MOTDSent)
+			if (MotdSent)
 				return;
 
 			var motd = "Welcome to BlizzLess.Net Alpha-Build Server!";
 
 			SendServerWhisper(motd);
-			MOTDSent = true;
+			MotdSent = true;
 		}
 
         public override void ChannelInactive(IChannelHandlerContext context)

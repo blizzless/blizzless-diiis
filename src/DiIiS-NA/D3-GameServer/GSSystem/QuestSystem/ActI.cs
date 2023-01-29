@@ -1357,7 +1357,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     var world = Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(ActorSno._leah);
                     AddFollower(world, ActorSno._leah);
-                    try { (world.FindAt(ActorSno._trout_tristramfield_field_gate, new Vector3D { X = 1523.13f, Y = 857.71f, Z = 39.26f }, 5.0f) as Door).Open(); } catch { }
+                    try { (world.FindActorAt(ActorSno._trout_tristramfield_field_gate, new Vector3D { X = 1523.13f, Y = 857.71f, Z = 39.26f }, 5.0f) as Door).Open(); } catch { }
                     StartConversation(world, 167677);
                     ListenConversation(167677, new Advance());
                 }
@@ -1405,7 +1405,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     var world = Game.GetWorld(WorldSno.trout_town);
                     DestroyFollower(ActorSno._leah);
                     AddFollower(world, ActorSno._leah);
-                    try { (world.FindAt(ActorSno._trout_tristramfield_field_gate, new Vector3D { X = 1444.1f, Y = 786.64f, Z = 39.7f }, 4.0f) as Door).Open(); } catch { }
+                    try { (world.FindActorAt(ActorSno._trout_tristramfield_field_gate, new Vector3D { X = 1444.1f, Y = 786.64f, Z = 39.7f }, 4.0f) as Door).Open(); } catch { }
                     SetActorOperable(world, ActorSno._keybox_trout_tristramfield_02, false);
                     SetActorOperable(world, ActorSno._keybox_trout_tristramfield, false);
                     ListenProximity(ActorSno._waypoint, new Advance());

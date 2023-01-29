@@ -16,15 +16,15 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void CreateChannel(IRpcController controller, CreateChannelRequest request, Action<CreateChannelResponse> done)
 		{
-			var channel = ChannelManager.CreateNewChannel(((controller as HandlerController).Client), request.ObjectId);
+			var channel = ChannelManager.CreateNewChannel((((HandlerController) controller).Client), request.ObjectId);
 			var builder = CreateChannelResponse.CreateBuilder()
 				.SetObjectId(channel.DynamicId)
 				.SetChannelId(channel.BnetEntityId)
 				;
 
 			done(builder.Build());
-			channel.SetOwner(((controller as HandlerController).Client));
-			channel.AddMember(((controller as HandlerController).Client));
+			channel.SetOwner((((HandlerController) controller).Client));
+			channel.AddMember((((HandlerController) controller).Client));
 		}
 		
 		public override void ListChannels(IRpcController controller, ListChannelsRequest request, Action<ListChannelsResponse> done)
@@ -34,7 +34,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			
 			foreach (Channel channel in chatChannels)
 			{
-				if (!channel.HasUser(((controller as HandlerController).Client)) && (request.Options.HasName ? request.Options.Name == channel.Name : true) && channel.MaxMembers > channel.Members.Count)
+				if (!channel.HasUser((((HandlerController) controller).Client)) && (request.Options.HasName ? request.Options.Name == channel.Name : true) && channel.MaxMembers > channel.Members.Count)
 					builder.AddChannel(ChannelDescription.CreateBuilder().SetCurrentMembers((uint)channel.Members.Count)
 						.SetChannelId(bgs.protocol.EntityId.CreateBuilder().SetHigh(channel.BnetEntityId.High).SetLow(channel.BnetEntityId.Low))
 						.SetState(channel.State));
@@ -59,10 +59,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		{
 			var channel = ChannelManager.GetChannelByEntityId(request.ChannelId);
 
-			channel.Join(((controller as HandlerController).Client), request.ObjectId);
-			var builder = JoinChannelResponse.CreateBuilder().SetObjectId(channel.DynamicId).SetMemberId((controller as HandlerController).Client.Account.BnetEntityId);
+			channel.Join((((HandlerController) controller).Client), request.ObjectId);
+			var builder = JoinChannelResponse.CreateBuilder().SetObjectId(channel.DynamicId).SetMemberId(((HandlerController) controller).Client.Account.BnetEntityId);
 			
-			((controller as HandlerController).Client).ChatChannels.Add(channel);
+			(((HandlerController) controller).Client).ChatChannels.Add(channel);
 			
 			done(builder.Build());
 		}
@@ -77,8 +77,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			builder.SetObjectId(channel.DynamicId);
 			done(builder.Build());
 			
-			((controller as HandlerController).Client).ChatChannels.Add(channel);
-			channel.Join(((controller as HandlerController).Client), request.ObjectId);
+			(((HandlerController) controller).Client).ChatChannels.Add(channel);
+			channel.Join((((HandlerController) controller).Client), request.ObjectId);
 
 		}
 	}
