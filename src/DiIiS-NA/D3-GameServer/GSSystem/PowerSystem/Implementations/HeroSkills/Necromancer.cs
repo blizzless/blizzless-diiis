@@ -3302,7 +3302,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         var newms = payload.Target.GetMonstersInRange(40f);
 
                         if (newms.Count > 0)
-                            AddBuff(newms.OrderBy(x => Guid.NewGuid()).Take(1).Single(), new Rune_B_Buff());
+                        {
+                            var target = RandomHelper.RandomItem(newms);
+                            AddBuff(target, new Rune_B_Buff());
+                        }
                     }
                 }
             }
