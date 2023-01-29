@@ -1,4 +1,6 @@
 ﻿//Blizzless Project 2022
+
+using System;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
@@ -167,7 +169,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			crafting.DBGameAccount = dbGAcc;
 			crafting.isHardcore = hardcore;
 			crafting.isSeasoned = seasoned;
-			crafting.LearnedRecipes = new byte[0];
+			crafting.LearnedRecipes = Array.Empty<byte>();
 			crafting.Level = 1;
 			DBSessions.SessionSave(crafting);
 		}

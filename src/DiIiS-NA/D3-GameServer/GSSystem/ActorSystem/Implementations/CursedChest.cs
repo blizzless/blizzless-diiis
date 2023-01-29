@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -31,7 +32,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					_collapsed = true;
 
 					World.Game.SideQuestGizmo = this;
-					World.Game.QuestManager.LaunchSideQuest(eventIds[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, eventIds.Count)], true);
+					World.Game.QuestManager.LaunchSideQuest(eventIds.PickRandom(), true);
 				}
 			}
 			catch { }

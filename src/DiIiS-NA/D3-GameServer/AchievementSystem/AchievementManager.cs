@@ -195,7 +195,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 						{
 							DBGameAccount = client.Account.GameAccount.DBGameAccount,
 							AchievementId = achievementId,
-							Criteria = new byte[0],
+							Criteria = Array.Empty<byte>(),
 							IsHardcore = IsHardcore(achievementId),
 							CompleteTime = (int)DateTime.Now.ToUnixTime()
 						};

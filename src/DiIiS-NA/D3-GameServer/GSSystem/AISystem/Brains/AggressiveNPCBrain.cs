@@ -71,7 +71,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					{
 						_target = monsters[0];
 						int powerToUse = PickPowerToUse();
-						if (powerToUse > 0) // FIXME: probably >= 0 as 0 can be a valid power?
+						if (powerToUse > 0)
 						{
 							PowerSystem.PowerScript power = PowerSystem.PowerLoader.CreateImplementationForPowerSNO(powerToUse);
 							power.User = Body;
@@ -107,16 +107,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		protected virtual int PickPowerToUse()
 		{
-			if (PresetPowers.Count > 0)
-			{
-				var randomPower = PresetPowers.PickRandom();
-				
-				// should we try several times or pick random from implemented only powers?
-				if (PowerSystem.PowerLoader.HasImplementationForPowerSNO(randomPower))
-					return randomPower;
-			}
-
-			return -1;
+			var implementedPowers = PresetPowers.Where(PowerSystem.PowerLoader.HasImplementationForPowerSNO);
+			return implementedPowers.TryPickRandom(out var randomPower)
+				? randomPower
+				: -1;
 		}
 
 		public void AddPresetPower(int powerSNO)

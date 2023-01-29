@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -1270,7 +1271,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					SnapFacing = true,
 					AnimationTag = 69728,
 				});
-				TargetPosition = PowerMath.GenerateSpreadPositions(Twister.Position, TargetPosition, 20f, 3)[FastRandom.Instance.Next(0, 3)];
+				TargetPosition = PowerMath.GenerateSpreadPositions(Twister.Position, TargetPosition, 20f, 3).PickRandom();
 
 				if (Rune_B > 0)     //Raging Storm
 				{
@@ -1299,7 +1300,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 								SnapFacing = true,
 								AnimationTag = 69728,
 							});
-							TargetPosition = PowerMath.GenerateSpreadPositions(bigTwister.Position, TargetPosition, 20f, 3)[FastRandom.Instance.Next(0, 3)];
+							TargetPosition = PowerMath.GenerateSpreadPositions(bigTwister.Position, TargetPosition, 20f, 3).PickRandom();
 							WeaponDamage(GetEnemiesInRadius(bigTwister.Position, 12f), bigMultiplier, DamageType.Arcane);
 						};
 						Twister.Destroy();
@@ -2816,7 +2817,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (!(Rune_B > 0 || Rune_C > 0))
 						proj.Destroy();
 				};
-				var destination = ((Rune_B > 0 || Rune_C > 0) ? TargetPosition : PowerMath.GenerateSpreadPositions(User.Position, TargetPosition, 5f, 9)[FastRandom.Instance.Next(0, 9)]);
+				var destination = ((Rune_B > 0 || Rune_C > 0) ? TargetPosition : PowerMath.GenerateSpreadPositions(User.Position, TargetPosition, 5f, 9).PickRandom());
 				proj.Launch(destination, ScriptFormula(6));
 				//WaitSeconds(ScriptFormula(25));
 			}

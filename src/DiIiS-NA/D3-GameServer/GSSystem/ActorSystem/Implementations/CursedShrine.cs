@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
@@ -35,7 +36,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					_collapsed = true;
 
 					World.Game.SideQuestGizmo = this;
-					World.Game.QuestManager.LaunchSideQuest(eventIds[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, eventIds.Count)], true);
+					World.Game.QuestManager.LaunchSideQuest(eventIds.PickRandom(), true);
 				}
 			}
 			catch { }

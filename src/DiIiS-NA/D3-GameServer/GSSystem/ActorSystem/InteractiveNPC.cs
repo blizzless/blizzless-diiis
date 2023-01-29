@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
@@ -207,10 +208,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					{
 						if (ConversationList != null)
 						{
-							var suitable_entries = ConversationList.AmbientConversationListEntries.Where(entry => entry.SpecialEventFlag == World.Game.CurrentAct).ToList();
-							if (suitable_entries.Count > 0)
+							var suitableEntries = ConversationList.AmbientConversationListEntries.Where(entry => entry.SpecialEventFlag == World.Game.CurrentAct).ToList();
+							if (suitableEntries.Count > 0)
 							{
-								var random_conv = suitable_entries[FastRandom.Instance.Next(suitable_entries.Count)];
+								var random_conv = suitableEntries.PickRandom();
 								player.Conversations.StartConversation(random_conv.SNOConversation);
 								if (ForceConversationSNO == Conversations[0].ConversationSNO) ForceConversationSNO = -1;
 							}

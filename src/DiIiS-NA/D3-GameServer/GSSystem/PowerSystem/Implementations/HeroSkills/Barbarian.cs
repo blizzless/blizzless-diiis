@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 //Blizzless Project 2022
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -1098,20 +1099,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					//once collision with target, RopeEffect up to ScriptFromula(5) times.
 					Actor curSource = hit;
 					var enemies = GetEnemiesInRadius(curSource.Position, ScriptFormula(12)).Actors.Where(actor => actor != curSource).ToList();
-					Actor curTarget = (enemies.Count > 0 ? enemies[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, enemies.Count)] : null);
+					enemies.TryPickRandom(out var curTarget);
+
 					for (int i = 0; i <= ScriptFormula(5); i++)
 					{
 						if (curTarget == null) break;
 						curSource.AddRopeEffect(166450, curTarget);
 						curSource = curTarget;
 
-						AttackPayload ricochet_attack = new AttackPayload(this);
-						ricochet_attack.AddWeaponDamage(ScriptFormula(15), DamageType.Physical);
-						ricochet_attack.SetSingleTarget(curTarget);
-						ricochet_attack.Apply();
+						AttackPayload ricochetAttack = new AttackPayload(this);
+						ricochetAttack.AddWeaponDamage(ScriptFormula(15), DamageType.Physical);
+						ricochetAttack.SetSingleTarget(curTarget);
+						ricochetAttack.Apply();
 
-						var next_enemies = GetEnemiesInRadius(curSource.Position, ScriptFormula(12)).Actors.Where(actor => actor != curSource).ToList();
-						curTarget = (next_enemies.Count > 0 ? next_enemies[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, next_enemies.Count)] : null);
+						var nextEnemies = GetEnemiesInRadius(curSource.Position, ScriptFormula(12)).Actors.Where(actor => actor != curSource).ToList();
+						nextEnemies.TryPickRandom(out curTarget);
 					}
 				}
 				if (Rune_D > 0)

@@ -23,7 +23,7 @@ namespace DiIiS_NA.REST.Extensions
                         if (instance == null)
                         {
                             ConstructorInfo constructorInfo = typeof(T).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
-                            instance = (T)constructorInfo.Invoke(new object[0]);
+                            instance = (T)constructorInfo.Invoke(Array.Empty<object>());
                         }
                     }
                 }

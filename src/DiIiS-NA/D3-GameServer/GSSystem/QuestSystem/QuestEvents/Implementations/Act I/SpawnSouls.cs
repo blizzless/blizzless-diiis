@@ -7,6 +7,7 @@ using DiIiS_NA.GameServer.MessageSystem;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
@@ -56,9 +57,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 			for (int i = 0; i < 6; i++)
 			{
-				var rand_pos = ActorsVector3D[FastRandom.Instance.Next(ActorsVector3D.Count)];
-				world.SpawnMonster(ActorSno._ghost_jail_prisoner, rand_pos);
-				ActorsVector3D.Remove(rand_pos);
+				var randPos = ActorsVector3D.PickRandom();
+				world.SpawnMonster(ActorSno._ghost_jail_prisoner, randPos);
+				ActorsVector3D.Remove(randPos);
 			}
 		}
 

@@ -5681,13 +5681,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public Actor SpawnNephalemBoss(World world)
     {
-        var Boss = world.SpawnMonster(
-            ActorSnoExtensions.nephalemPortalBosses[
-                RandomHelper.Next(0, ActorSnoExtensions.nephalemPortalBosses.Length - 1)], Position);
-        Boss.Attributes[GameAttribute.Bounty_Objective] = true;
-        Boss.Attributes[GameAttribute.Is_Loot_Run_Boss] = true;
-        Boss.Attributes.BroadcastChangedIfRevealed();
-
+        var boss = world.SpawnMonster(ActorSnoExtensions.nephalemPortalBosses.PickRandom(), Position);
+        boss.Attributes[GameAttribute.Bounty_Objective] = true;
+        boss.Attributes[GameAttribute.Is_Loot_Run_Boss] = true;
+        boss.Attributes.BroadcastChangedIfRevealed();
 
         foreach (var plr in world.Players.Values)
             plr.InGameClient.SendMessage(new WorldSyncedDataMessage()
@@ -5702,7 +5699,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             });
 
 
-        return Boss;
+        return boss;
     }
 
     public bool StartConversation(World world, int conversationId)
