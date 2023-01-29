@@ -2202,10 +2202,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public Item GetItemByDynId(Player plr, uint dynId)
 		{
-			if (_inventoryGrid.Items.Values.Union(_stashGrid.Items.Values).Union(_equipment.Items.Values).Where(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId).Count() > 0)
+			if (_inventoryGrid.Items.Values.Union(_stashGrid.Items.Values).Union(_equipment.Items.Values).Any(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId))
 				return _inventoryGrid.Items.Values.Union(_stashGrid.Items.Values).Union(_equipment.Items.Values).Single(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
-			else
-				return null;
+
+			return null;
 		}
 
 		public bool HasItem(int GBid)
@@ -2618,7 +2618,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public bool GetItemBonus(GameAttributeB attributeB)
 		{
-			return Loaded ? (GetEquippedItems().Where(item => item.Attributes[attributeB] == true).Count() > 0) : _owner.Attributes[attributeB];
+			return Loaded ? GetEquippedItems().Any(item => item.Attributes[attributeB]) : _owner.Attributes[attributeB];
 		}
 
 		public float GetItemBonus(GameAttributeF attributeF, int attributeKey)

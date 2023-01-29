@@ -940,7 +940,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					{
 						while (monsterCount < AdditionalTargetCounter + 20)
 						{
-							GameServer.Core.Types.Math.Vector3D scenePoint = Scenes[RandomHelper.Next(0, Scenes.Count)].Position;
+							GameServer.Core.Types.Math.Vector3D scenePoint = Scenes.PickRandom().Position;
 							GameServer.Core.Types.Math.Vector3D point = null;
 							while (true)
 							{
@@ -978,6 +978,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 									scenes.Add(scene);
 						}
 
+						// FIXME: Probably RandomHelper.Next(0, scenes.Count)???
 						GameServer.Core.Types.Math.Vector3D scenePoint = scenes[RandomHelper.Next(0, scenes.Count - 1)].Position;
 						GameServer.Core.Types.Math.Vector3D point = null;
 						while (true)

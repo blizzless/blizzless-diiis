@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.GameServer.Core.Types.Math;
@@ -102,7 +103,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				if (targets.Count != 0 && PowerMath.Distance2D(Body.Position, Owner.Position) < 80f)
 				{
 					int powerToUse = PickPowerToUse();
-					if (powerToUse > 0)
+					if (powerToUse > 0) // maybe >= 0 as 0 can be a valid power???
 					{
 						var elite = targets.FirstOrDefault(t => t is Champion or Rare or RareMinion);
 						_target = elite ?? targets.First();
@@ -149,12 +150,14 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		protected virtual int PickPowerToUse()
 		{
-											  // randomly used an implemented power
+			// randomly used an implemented power
 			if (PresetPowers.Count > 0)
 			{
-				int powerIndex = RandomHelper.Next(PresetPowers.Count);
-				if (PowerLoader.HasImplementationForPowerSNO(PresetPowers[powerIndex]))
-					return PresetPowers[powerIndex];
+				var randomPower = PresetPowers.PickRandom();
+				
+				// should we try several times or pick random from implemented only powers?
+				if (PowerLoader.HasImplementationForPowerSNO(randomPower))
+					return randomPower;
 			}
 
 			// no usable power

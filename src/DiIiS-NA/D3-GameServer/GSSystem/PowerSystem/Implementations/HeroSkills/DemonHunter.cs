@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -300,10 +301,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			for (int i = 0; i < 8; i++)
 			{
 				var targets = GetEnemiesInRadius(User.Position, ScriptFormula(18)).Actors;
-				Actor target = null;
-
-				if (targets.Any())
-					target = targets[Rand.Next(targets.Count())];
+				targets.TryPickRandom(out var target);
 
 				var position = target == null ? RandomDirection(User.Position, 1f, 15f) : target.Position;
 				_CreateArrowPool(ActorSno._demonhunter_rainofarrows_indigo_buff, position, ScriptFormula(16), 2f);

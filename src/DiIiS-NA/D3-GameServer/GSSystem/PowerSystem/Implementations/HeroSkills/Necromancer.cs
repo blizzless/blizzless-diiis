@@ -2588,8 +2588,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 {
                     if (Rune_C > 0)
                     {
-                        int[] Effects = new int[] { 47400, 474402, 474435, 474437, 474453, 474455, 474464, 474466 };
-                        Tar.PlayEffectGroup(Effects[RandomHelper.Next(0, 7)]);
+                        int[] Effects = { 47400, 474402, 474435, 474437, 474453, 474455, 474464, 474466 };
+                        Tar.PlayEffectGroup(Effects[RandomHelper.Next(0, 7)]); // FIXME: looks like we can't pick the last effect
                         yield return WaitSeconds(0.5f);
                         WeaponDamage(Tar, Damage, DType);
 
