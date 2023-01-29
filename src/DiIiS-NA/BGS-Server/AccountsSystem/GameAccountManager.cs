@@ -14,10 +14,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 		public static readonly ConcurrentDictionary<ulong, GameAccount> LoadedGameAccounts = new();
 
-		public static int TotalAccounts
-		{
-			get { return DBSessions.SessionQuery<DBGameAccount>().Count(); }
-		}
+		public static int TotalAccounts => DBSessions.SessionQuery<DBGameAccount>().Count;
 
 		public static void PreLoadGameAccounts()
 		{

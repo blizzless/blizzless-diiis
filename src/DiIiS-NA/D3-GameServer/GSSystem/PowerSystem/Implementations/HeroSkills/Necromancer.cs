@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -2587,8 +2588,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 {
                     if (Rune_C > 0)
                     {
-                        int[] Effects = new int[] { 47400, 474402, 474435, 474437, 474453, 474455, 474464, 474466 };
-                        Tar.PlayEffectGroup(Effects[RandomHelper.Next(0, 7)]);
+                        int[] Effects = { 47400, 474402, 474435, 474437, 474453, 474455, 474464, 474466 };
+                        Tar.PlayEffectGroup(Effects[RandomHelper.Next(0, 7)]); // FIXME: looks like we can't pick the last effect
                         yield return WaitSeconds(0.5f);
                         WeaponDamage(Tar, Damage, DType);
 
@@ -3300,9 +3301,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Remove();
 
                         var newms = payload.Target.GetMonstersInRange(40f);
-
-                        if (newms.Count > 0)
-                            AddBuff(newms.OrderBy(x => Guid.NewGuid()).Take(1).Single(), new Rune_B_Buff());
+                        if (newms.TryPickRandom(out var target))
+                        {
+                            AddBuff(target, new Rune_B_Buff());
+                        }
                     }
                 }
             }
@@ -4493,8 +4495,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     if (projectile.GetMonstersInRange(15f).Count > 0)
                     {
                         Founded = true;
-                        var Target = projectile.GetMonstersInRange(25f).OrderBy(x => Guid.NewGuid()).Take(1).Single();
-                        projectile.Launch(Target.Position, 1f);
+                        var possibleTargets = projectile.GetMonstersInRange(25f);
+                        var target = possibleTargets.PickRandom();
+                        projectile.Launch(target.Position, 1f);
                     }
             };
             yield break;

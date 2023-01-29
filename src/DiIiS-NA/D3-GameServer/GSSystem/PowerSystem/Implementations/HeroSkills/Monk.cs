@@ -1350,7 +1350,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_A > 0)     //Barrage
 			{
-				if (dash.Targets.Actors.Count() > 0)
+				if (dash.Targets.Actors.Any())
 					AddBuff(dash.Targets.GetClosestTo(TargetPosition), new DashingBarrageDotBuff());
 			}
 
@@ -3114,7 +3114,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						Target.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] -= _unityDamageBonus;
 						Target.Attributes[GameAttribute.Damage_Percent_All_From_Skills] -= _unityDamageBonus;
 
-						_unityDamageBonus = 0.05f * Target.GetActorsInRange<Player>(ScriptFormula(0)).Count();
+						_unityDamageBonus = 0.05f * Target.GetActorsInRange<Player>(ScriptFormula(0)).Count;
 
 						Target.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += _unityDamageBonus;
 						Target.Attributes[GameAttribute.Damage_Percent_All_From_Skills] += _unityDamageBonus;
@@ -3657,7 +3657,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Rune_B > 0)     //Water Ally
 			{
 				var targets = GetEnemiesInRadius(petAlly.Position, 20f, 7).Actors;
-				if (targets.Count() <= 0) yield break;
+				if (!targets.Any()) yield break;
 
 				foreach (var target in targets)
 				{

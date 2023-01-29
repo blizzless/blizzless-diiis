@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 {
@@ -70,7 +71,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					{
 						_target = monsters[0];
 						int powerToUse = PickPowerToUse();
-						if (powerToUse > 0)
+						if (powerToUse > 0) // FIXME: probably >= 0 as 0 can be a valid power?
 						{
 							PowerSystem.PowerScript power = PowerSystem.PowerLoader.CreateImplementationForPowerSNO(powerToUse);
 							power.User = Body;
@@ -108,9 +109,11 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			if (PresetPowers.Count > 0)
 			{
-				int powerIndex = RandomHelper.Next(PresetPowers.Count);
-				if (PowerSystem.PowerLoader.HasImplementationForPowerSNO(PresetPowers[powerIndex]))
-					return PresetPowers[powerIndex];
+				var randomPower = PresetPowers.PickRandom();
+				
+				// should we try several times or pick random from implemented only powers?
+				if (PowerSystem.PowerLoader.HasImplementationForPowerSNO(randomPower))
+					return randomPower;
 			}
 
 			return -1;

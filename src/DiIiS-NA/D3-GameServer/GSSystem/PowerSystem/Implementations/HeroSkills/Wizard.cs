@@ -724,7 +724,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				Vector3D[] spawnPoints = PowerMath.GenerateSpreadPositions(TgtPosition, TgtPosition + new Vector3D(3f, 0, 0), 120, 3);
 
-				for (int i = 0; i < spawnPoints.Count(); i++)
+				for (int i = 0; i < spawnPoints.Length; i++)
 				{
 					if (!User.World.CheckLocationForFlag(spawnPoints[i], DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 						continue;
@@ -801,7 +801,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							Actor curTarget = target;
 							Actor nextTarget = null;
 							var c = 0;
-							while (targets.Count() < 3)
+							while (targets.Count < 3)
 							{
 								nextTarget = GetEnemiesInRadius(curTarget.Position, 6f).Actors.FirstOrDefault(a => !targets.Contains(a));
 								if (nextTarget == null) break;
@@ -1980,7 +1980,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						AddBuff(hitPayload.Target, new ShatterDebuff(User, ScriptFormula(14), WaitSeconds(2f)));
 				}
 				if (Rune_E > 0)         //Deep Freeze
-					if (nova.Targets.Actors.Count() > ScriptFormula(13))
+					if (nova.Targets.Actors.Count > ScriptFormula(13))
 						if (!HasBuff<DeepFreezeChCBuff>(User))
 							AddBuff(User, new DeepFreezeChCBuff(ScriptFormula(18), WaitSeconds(ScriptFormula(19))));
 			};

@@ -1,6 +1,7 @@
 ﻿using DiIiS_NA.Core.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
@@ -250,14 +251,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 		public static int GeneratePrefixName()
 		{
-			var randomPrefix = NamesList.Where(n => n.AffixType == AffixType.Prefix).OrderBy(x => RandomHelper.Next()).ToList().First();
+			var randomPrefix = NamesList.Where(n => n.AffixType == AffixType.Prefix).PickRandom();
 			return randomPrefix.Hash;
 		}
 
 		public static int GenerateSuffixName()
 		{
-			var randomSuffix = NamesList.Where(n => n.AffixType == AffixType.Suffix).OrderBy(x => RandomHelper.Next()).ToList().First();
-			return randomSuffix.Hash;
+			var randomPrefix = NamesList.Where(n => n.AffixType == AffixType.Suffix).PickRandom();
+			return randomPrefix.Hash;
 		}
 	}
 }

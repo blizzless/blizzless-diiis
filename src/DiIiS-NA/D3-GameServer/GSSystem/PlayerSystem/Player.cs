@@ -1869,7 +1869,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 foreach (var oldp in World.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal,
                              ActorSno._x1_openworld_tiered_rifts_portal)) oldp.Destroy();
 
-                map = maps[RandomHelper.Next(0, maps.Length)];
+                map = maps.PickRandom();
                 //map = 288823;
                 newTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //World
                 newTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Zone
@@ -1878,7 +1878,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
                 while (true)
                 {
-                    map = maps[RandomHelper.Next(0, maps.Length)];
+                    map = maps.PickRandom();
                     if (map != InGameClient.Game.WorldOfPortalNephalem) break;
                 }
 
@@ -2068,7 +2068,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 InGameClient.Game.NephalemGreater = true;
                 //disable banner while greater is active enable once boss is killed or portal is closed /advocaite
                 Attributes[GameAttribute.Banner_Usable] = false;
-                map = maps[RandomHelper.Next(0, maps.Length)];
+                map = maps.PickRandom();
                 newTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //World
                 newTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Zone
                 newTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 172, 0)); //Entry-Pointа
@@ -4652,8 +4652,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void GrantAchievement(ulong id)
     {
         if (_unlockedAchievements.Contains(id)) return;
-        if (InGameClient.BnetClient.Account.GameAccount.Achievements
-                .Where(a => a.AchievementId == id && a.Completion != -1).Count() > 0) return;
+        if (InGameClient.BnetClient.Account.GameAccount.Achievements.Any(a => a.AchievementId == id && a.Completion != -1)) return;
         if (_unlockedAchievements.Contains(id)) return;
         _unlockedAchievements.Add(id);
         try
@@ -6130,13 +6129,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public int FindFollowerIndex(ActorSno sno)
     {
         if (HaveFollower(sno))
-            return _followerIndexes.Where(i => i.Value == sno).FirstOrDefault().Key;
-        else return 0;
+            return _followerIndexes.FirstOrDefault(i => i.Value == sno).Key;
+        return 0;
     }
 
     public int CountFollowers(ActorSno sno)
     {
-        return Followers.Values.Where(f => f == sno).Count();
+        return Followers.Values.Count(f => f == sno);
     }
 
     public int CountAllFollowers()

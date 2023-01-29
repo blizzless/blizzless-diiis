@@ -510,12 +510,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			UnequipItem(owner, slot, item);
 		}
 
-		public Item GetItemByDynId(Player player, uint DynamicId)
+		public Item GetItemByDynId(Player player, uint dynamicId)
 		{
-			if (_equipment[player].Values.Where(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == DynamicId).Count() > 0)
-				return _equipment[player].Values.Single(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == DynamicId);
-			else
-				return null;
+			if (_equipment[player].Values.Any(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == dynamicId))
+				return _equipment[player].Values.Single(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == dynamicId);
+
+			return null;
 		}
 
 		public void RefreshEquipment(Player player)
@@ -530,18 +530,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 		#region EqupimentStats
 
-		public List<Item> GetEquippedItems(Player player)
+		public IEnumerable<Item> GetEquippedItems(Player player)
 		{
-			return _equipment[player].Values.ToList();
+			return _equipment[player].Values;
 		}
 
 		public float GetItemBonus(GameAttributeF attributeF)
 		{
-			var stats = GetEquippedItems(owner).Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 || item.Attributes[GameAttribute.Durability_Max] == 0);
+			var stats = GetEquippedItems(owner)
+				.Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 ||
+				               item.Attributes[GameAttribute.Durability_Max] == 0);
 
 			if (attributeF == GameAttribute.Attacks_Per_Second_Item)
-				return stats.Count() > 0 ? stats.Select(item => item.Attributes[attributeF]).Where(a => a > 0f).Aggregate(1f, (x, y) => x * y) : 0f;
-
+			{
+				return stats.Any()
+					? stats.Select(item => item.Attributes[attributeF]).Where(a => a > 0f).Aggregate(1f, (x, y) => x * y)
+					: 0f;
+			}
 			return stats.Sum(item => item.Attributes[attributeF]);
 		}
 
@@ -552,7 +557,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 		public bool GetItemBonus(GameAttributeB attributeB)
 		{
-			return GetEquippedItems(owner).Where(item => item.Attributes[attributeB] == true).Count() > 0;
+			return GetEquippedItems(owner).Any(item => item.Attributes[attributeB]);
 		}
 
 		public float GetItemBonus(GameAttributeF attributeF, int attributeKey)

@@ -33,7 +33,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		[Command("add", "Allows you to add a new user account.\nUsage: account add <email> <password> <battletag> [userlevel]", Account.UserLevels.GM)]
 		public string Add(string[] @params, BattleClient invokerClient)
 		{
-			if (@params.Count() < 3)
+			if (@params.Length < 3)
 				return "Invalid arguments. Type 'help account add' to get help.";
 
 			var email = @params[0];
@@ -41,7 +41,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 			var battleTagName = @params[2];
 			var userLevel = Account.UserLevels.User;
 
-			if (@params.Count() == 4)
+			if (@params.Length == 4)
 			{
 				var level = @params[3].ToLower();
 				switch (level)
@@ -88,7 +88,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		[Command("setpassword", "Allows you to set a new password for account\nUsage: account setpassword <email> <password>", Account.UserLevels.GM)]
 		public string SetPassword(string[] @params, BattleClient invokerClient)
 		{
-			if (@params.Count() < 2)
+			if (@params.Length < 2)
 				return "Invalid arguments. Type 'help account setpassword' to get help.";
 
 			var email = @params[0];
@@ -109,7 +109,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		[Command("setbtag", "Allows you to change battle tag for account\nUsage: account setbtag <email> <newname>", Account.UserLevels.GM)]
 		public string SetBTag(string[] @params, BattleClient invokerClient)
 		{
-			if (@params.Count() < 2)
+			if (@params.Length < 2)
 				return "Invalid arguments. Type 'help account setbtag' to get help.";
 
 			var email = @params[0];
@@ -127,7 +127,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		[Command("setuserlevel", "Allows you to set a new user level for account\nUsage: account setuserlevel <email> <user level>.\nAvailable user levels: owner, admin, gm, user.", Account.UserLevels.GM)]
 		public string SetLevel(string[] @params, BattleClient invokerClient)
 		{
-			if (@params.Count() < 2)
+			if (@params.Length < 2)
 				return "Invalid arguments. Type 'help account setuserlevel' to get help.";
 
 			var email = @params[0];
@@ -170,7 +170,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		[DefaultCommand(Account.UserLevels.GM)]
 		public string Mute(string[] @params, BattleClient invokerClient)
 		{
-			if (@params.Count() < 2)
+			if (@params.Length < 2)
 				return "Invalid arguments. Type 'help mute' to get help.";
 
 			var bTagName = @params[0];
@@ -196,7 +196,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		{
 			if(@params == null)
 				return "Wrong game tag. Example: !tag mytag";
-			if (@params.Count() != 1)
+			if (@params.Length != 1)
 				return "Invalid arguments. Enter one string tag.";
 
 			string Tag = @params[0];

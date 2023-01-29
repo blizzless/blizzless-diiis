@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
@@ -196,13 +197,12 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			// randomly used an implemented power
 			if (PresetPowers.Count > 0)
 			{
-				//int power = this.PresetPowers[RandomHelper.Next(this.PresetPowers.Count)].Key;
-				List<int> availablePowers = Enumerable.ToList(PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key));
-				if (availablePowers.Where(p => p != 30592).Count() > 0)
-					return availablePowers.Where(p => p != 30592).ToList()[RandomHelper.Next(availablePowers.Where(p => p != 30592).ToList().Count())];
-				else
-					if (availablePowers.Contains(30592))
-					return 30592; //melee attack
+				// int power = this.PresetPowers[RandomHelper.Next(this.PresetPowers.Count)].Key;
+				List<int> availablePowers = PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key).ToList();
+				if (availablePowers.Where(p => p != 30592).TryPickRandom(out var randomItem))
+					return randomItem;
+				if (availablePowers.Contains(30592))
+					return 30592; // melee attack
 			}
 
 			// no usable power
