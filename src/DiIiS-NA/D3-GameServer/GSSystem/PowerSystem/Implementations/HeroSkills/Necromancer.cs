@@ -4493,8 +4493,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     if (projectile.GetMonstersInRange(15f).Count > 0)
                     {
                         Founded = true;
-                        var Target = projectile.GetMonstersInRange(25f).OrderBy(x => Guid.NewGuid()).Take(1).Single();
-                        projectile.Launch(Target.Position, 1f);
+                        var possibleTargets = projectile.GetMonstersInRange(25f);
+                        var target = RandomHelper.RandomItem(possibleTargets);
+                        projectile.Launch(target.Position, 1f);
                     }
             };
             yield break;

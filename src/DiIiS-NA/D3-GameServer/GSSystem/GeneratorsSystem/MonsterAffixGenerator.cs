@@ -250,14 +250,18 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 		public static int GeneratePrefixName()
 		{
-			var randomPrefix = NamesList.Where(n => n.AffixType == AffixType.Prefix).OrderBy(x => RandomHelper.Next()).ToList().First();
+			var prefixes = NamesList.Where(n => n.AffixType == AffixType.Prefix);
+			var randomPrefix = RandomHelper.RandomItem(prefixes);
+
 			return randomPrefix.Hash;
 		}
 
 		public static int GenerateSuffixName()
 		{
-			var randomSuffix = NamesList.Where(n => n.AffixType == AffixType.Suffix).OrderBy(x => RandomHelper.Next()).ToList().First();
-			return randomSuffix.Hash;
+			var prefixes = NamesList.Where(n => n.AffixType == AffixType.Suffix);
+			var randomPrefix = RandomHelper.RandomItem(prefixes);
+
+			return randomPrefix.Hash;
 		}
 	}
 }

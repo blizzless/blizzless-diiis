@@ -102,7 +102,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             {
                 return AnimationSno._NONE;
             }
-            return deathTags.Select(x => GetAniSNO(x)).Where(x => x != AnimationSno._NONE).OrderBy(x => RandomHelper.Next()).First();
+
+            var possibleDeaths = deathTags.Select(GetAniSNO).Where(x => x != AnimationSno._NONE);
+            return RandomHelper.RandomItem(possibleDeaths);
         }
     }
     public enum AnimationTags
