@@ -1967,7 +1967,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				_stashGrid.ResizeGrid(_owner.Attributes[GameAttribute.Shared_Stash_Slots] / 7, 7);
 				var dbGAcc = _owner.Toon.GameAccount.DBGameAccount;
 				dbGAcc.StashSize = _owner.Attributes[GameAttribute.Shared_Stash_Slots];
-				_owner.World.Game.GameDBSession.SessionUpdate(dbGAcc);
+				_owner.World.Game.GameDbSession.SessionUpdate(dbGAcc);
 			}
 
 			if (_owner.Attributes[GameAttribute.Shared_Stash_Slots] >= 280)
@@ -1994,15 +1994,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				case 1:
 					item.DBInventory.FirstGem = gem.GBHandle.GBID;
-					_owner.World.Game.GameDBSession.SessionUpdate(item.DBInventory);
+					_owner.World.Game.GameDbSession.SessionUpdate(item.DBInventory);
 					break;
 				case 2:
 					item.DBInventory.SecondGem = gem.GBHandle.GBID;
-					_owner.World.Game.GameDBSession.SessionUpdate(item.DBInventory);
+					_owner.World.Game.GameDbSession.SessionUpdate(item.DBInventory);
 					break;
 				case 3:
 					item.DBInventory.ThirdGem = gem.GBHandle.GBID;
-					_owner.World.Game.GameDBSession.SessionUpdate(item.DBInventory);
+					_owner.World.Game.GameDbSession.SessionUpdate(item.DBInventory);
 					break;
 			}
 
@@ -2067,7 +2067,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			item.DBInventory.SecondGem = -1;
 			item.DBInventory.ThirdGem = -1;
 
-			_owner.World.Game.GameDBSession.SessionUpdate(item.DBInventory);
+			_owner.World.Game.GameDbSession.SessionUpdate(item.DBInventory);
 
 			foreach (var gem in item.Gems)
 				gem.Unreveal(_owner);
@@ -2346,14 +2346,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			//load everything and make a switch on slot_id
 
 			Item item = null;
-			int goldAmount = (int)_owner.World.Game.GameDBSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).Gold;
+			int goldAmount = (int)_owner.World.Game.GameDbSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).Gold;
 			// Logger.Warn($"User {this._owner.Toon.PersistentID} has {goldAmount} gold.");
-			this.BloodShards = (int)_owner.World.Game.GameDBSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).BloodShards;
+			this.BloodShards = (int)_owner.World.Game.GameDbSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).BloodShards;
 			// Clear already present items
 			// LoadFromDB is called every time World is changed, even entering a dungeon
 			_inventoryGrid.Clear();
 			// first of all load stash size
-			var slots = _owner.World.Game.GameDBSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).StashSize;
+			var slots = _owner.World.Game.GameDbSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).StashSize;
 			if (slots > 0)
 			{
 				_owner.Attributes[GameAttribute.Shared_Stash_Slots] = slots;
@@ -2364,7 +2364,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 
 			// next read all items
-			var allInventoryItems = _owner.World.Game.GameDBSession.SessionQueryWhere<DBInventory>(
+			var allInventoryItems = _owner.World.Game.GameDbSession.SessionQueryWhere<DBInventory>(
 					dbi =>
 					dbi.DBToon != null &&
 					dbi.HirelingId == 0 &&
@@ -2435,7 +2435,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			// next load all stash items
 			var stashInventoryItems =
-				_owner.World.Game.GameDBSession.SessionQueryWhere<DBInventory>(
+				_owner.World.Game.GameDbSession.SessionQueryWhere<DBInventory>(
 					dbi =>
 					dbi.DBGameAccount.Id == _owner.Toon.GameAccount.PersistentID &&
 					dbi.HirelingId == 0 &&
@@ -2540,7 +2540,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			ItemGenerator.SaveToDB(item);
 
 			//Logger.Debug("SaveItemToDB, SessionSave");
-			_owner.World.Game.GameDBSession.SessionSave(item.DBInventory);
+			_owner.World.Game.GameDbSession.SessionSave(item.DBInventory);
 			//Logger.Debug("SaveItemToDB success, item dbid: {0}", item.DBInventory.Id);
 		}
 
@@ -2553,7 +2553,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				return;
 			//var inventory = item.Owner.World.Game.GameDBSession.SessionGet<DBInventory>(item.DBInventory.Id);
 
-			_owner.World.Game.GameDBSession.SessionDelete(item.DBInventory);
+			_owner.World.Game.GameDbSession.SessionDelete(item.DBInventory);
 
 			//Logger.Debug("RemoveItemFromDB success, item dbid: {0}", item.DBInventory.Id);
 			item.DBInventory = null;
@@ -2576,7 +2576,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			else
 				item.DBInventory.DBToon = (_owner as Player).Toon.DBToon;
 
-			item.Owner.World.Game.GameDBSession.SessionUpdate(item.DBInventory);
+			item.Owner.World.Game.GameDbSession.SessionUpdate(item.DBInventory);
 			//Logger.Debug("ChangeItemSlotDB success, item dbid: {0}", item.DBInventory.Id);
 		}
 
@@ -2591,7 +2591,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			item.DBInventory.LocationX = locX;
 			item.DBInventory.LocationY = locY;
 
-			item.Owner.World.Game.GameDBSession.SessionUpdate(item.DBInventory);
+			item.Owner.World.Game.GameDbSession.SessionUpdate(item.DBInventory);
 			//Logger.Debug("ChangeItemLocationDB success, item dbid: {0}", item.DBInventory.Id);
 		}
 

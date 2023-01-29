@@ -45,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		private void ReadWaypointId()
 		{
 			bool isOpenWorld = World.Game.CurrentAct == 3000;
-			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][World.Game.CurrentActSNOid].Data).WayPointInfo.ToList();
+			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][World.Game.CurrentActSnoId].Data).WayPointInfo.ToList();
 			if (isOpenWorld)
 				actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70015].Data).WayPointInfo
 							.Union(((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70016].Data).WayPointInfo)
@@ -234,7 +234,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				if (World.Game.OpenedWaypoints.Contains(WaypointId) || World.Game.CurrentAct == 3000) return;
 
-				Logger.Debug("(OnTargeted) Waypoint has been activated: {0}, levelArea: {1}", WaypointId, SNOLevelArea);
+				Logger.MethodTrace($"Waypoint has been activated: {WaypointId}, levelArea: {SNOLevelArea}");
 
 				World.BroadcastIfRevealed(plr => new WaypointActivatedMessage
 				{

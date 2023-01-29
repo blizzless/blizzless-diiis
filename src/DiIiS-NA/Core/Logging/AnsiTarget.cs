@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Spectre.Console;
@@ -93,39 +94,57 @@ public class AnsiTarget : LogTarget
     {
         if (CancellationTokenSource.IsCancellationRequested)
             return;
-        if (IncludeTimeStamps)
-            _table.AddRow(
-                new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
-                new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
-                new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
-                new Markup("", new Style(foreground: Color.Green3_1)).Centered());
-        else
-            _table.AddRow(
-                new Markup(level.ToString()).RightJustified(),
-                new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
-                new Markup("", new Style(foreground: Color.Green3_1)).Centered());
+        try
+        {
+            if (IncludeTimeStamps)
+                _table.AddRow(
+                    new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
+                    new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
+                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
+                    new Markup("", new Style(foreground: Color.Green3_1)).Centered());
+            else
+                _table.AddRow(
+                    new Markup(level.ToString()).RightJustified(),
+                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
+                    new Markup("", new Style(foreground: Color.Green3_1)).Centered());
+        }
+        catch (Exception ex)
+        {
+            Debugger.Break();
+        }
     }
 
     public override void LogException(Logger.Level level, string logger, string message, Exception exception)
     {
         if (CancellationTokenSource.IsCancellationRequested)
             return;
-        if (IncludeTimeStamps)
-            _table.AddRow(
-                new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)), 
-                new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(), 
-                new Markup(logger, GetStyleByLevel(level)).LeftJustified(), 
-                new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(), 
-                new Markup($"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message), new Style(foreground: Color.Red3_1)).Centered());
-        else
-            _table.AddRow(
-                new Markup(level.ToString()).RightJustified(), 
-                new Markup(logger, GetStyleByLevel(level)).LeftJustified(), 
-                new Markup(message, GetStyleByLevel(level)).LeftJustified(),
-                new Markup($"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message), new Style(foreground: Color.Red3_1)).Centered());
-    }
+        try
+        {
+            if (IncludeTimeStamps)
+                _table.AddRow(
+                    new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
+                    new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
+                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(
+                        $"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message),
+                        new Style(foreground: Color.Red3_1)).Centered());
+            else
+                _table.AddRow(
+                    new Markup(level.ToString()).RightJustified(),
+                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(message, GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(
+                        $"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message),
+                        new Style(foreground: Color.Red3_1)).Centered());
+        }
+        catch (Exception ex)
+        {
+            Debugger.Break();
+        }
+}
 
     private static Style GetStyleByLevel(Logger.Level level)
     {

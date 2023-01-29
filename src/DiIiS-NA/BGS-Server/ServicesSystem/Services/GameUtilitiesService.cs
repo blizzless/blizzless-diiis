@@ -77,9 +77,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             const int seasonState = 1;
             const int leaderboardEra = 1;
             const int anniversaryEventStatus = 1;
-            const int challangeRiftNumber = 1;
+            const int challengeRiftNumber = 1;
             const bool freeToPlay = true;
-            const bool storeStatus = true; // false
+            const bool storeStatus = false; // false
             const string catalogDigest = "C42DC6117A7008EDA2006542D6C07EAD096DAD90";
             const string catalogVersion = "633565800390338000";
             const int regionId = 1;
@@ -89,7 +89,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 $" OnlineService.Season.State={seasonState}" + //Season status, 1 - Activated, 0 - Deactivated
                 $" OnlineService.Leaderboard.Era={leaderboardEra}" +
                 $" OnlineService.AnniversaryEvent.Status={anniversaryEventStatus}" + //Anniversary Event, 1st Old Tristam
-                $" ChallengeRift.ChallengeNumber={challangeRiftNumber}" + //Rift portal number.
+                $" ChallengeRift.ChallengeNumber={challengeRiftNumber}" + //Rift portal number.
                 $" OnlineService.FreeToPlay={freeToPlay}" + //Shop for Platinum
                 $" OnlineService.Store.Status={(storeStatus ? "1" : "0")}" + //Store Status, 0 - Enabled, 1 - Disabled
                 $" OnlineService.Store.ProductCatalogDigest={catalogDigest}" + //China

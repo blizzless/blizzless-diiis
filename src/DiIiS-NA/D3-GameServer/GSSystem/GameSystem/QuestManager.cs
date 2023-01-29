@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using DiIiS_NA.Core.Extensions;
@@ -191,10 +192,10 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				if (!Game.Empty)
 				{
 					SaveQuestProgress(true);
-					Logger.Trace($"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/], completed $[underline white]${Quests[Game.CurrentQuest].Completed}$[/]$");
+					Logger.Trace($"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, completed $[underline white]${Quests[Game.CurrentQuest].Completed}$[/]$");
 					foreach (var player in Game.Players.Values)
 					{
-						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp * Game.XPModifier);
+						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp * Game.XpModifier);
 						int goldReward = (int)(Quests[Game.CurrentQuest].RewardGold * Game.GoldModifier);
 						if (Game.CurrentQuest != 312429)
 						{
@@ -269,7 +270,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			}
 			OnQuestProgress();
 			AutoSetQuestMarker();
-			Logger.Trace($"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/], step $[underline white]${Game.CurrentStep}$[/]$");
+			Logger.Trace($"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, step $[underline white]${Game.CurrentStep}$[/]$");
 		}
 
 		public void SideAdvance()
@@ -299,7 +300,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 				foreach (var player in Game.Players.Values)
 				{
-					int xpReward = (int)(SideQuests[Game.CurrentSideQuest].RewardXp * Game.XPModifier);
+					int xpReward = (int)(SideQuests[Game.CurrentSideQuest].RewardXp * Game.XpModifier);
 					int goldReward = (int)(SideQuests[Game.CurrentSideQuest].RewardGold * Game.GoldModifier);
 
 					player.InGameClient.SendMessage(new QuestStepCompleteMessage()
@@ -330,7 +331,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					}
 					var toon = player.Toon.DBToon;
 					toon.EventsCompleted++;
-					Game.GameDBSession.SessionUpdate(toon);
+					Game.GameDbSession.SessionUpdate(toon);
 					player.CheckQuestCriteria(Game.CurrentSideQuest);
 				};
 
@@ -538,61 +539,75 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 		public void AutoSetQuestMarker()
 		{
+			Logger.MethodTrace(
+				$"{Game.QuestProgress.QuestTriggers.Count} triggers found on {Game.CurrentActEnum.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep}");
+
+			// TODO: more triggers?
+			#if DEBUG
+			if (Game.QuestProgress.QuestTriggers.Count > 1)
+				Logger.Warn($"Found {Game.QuestProgress.QuestTriggers.Count} triggers on {Game.CurrentActEnum.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep} but only one is supported");
+			#endif
 			if (Game.QuestProgress.QuestTriggers.Count == 1)
 			{
-				Logger.MethodTrace($"{Game.QuestProgress.QuestTriggers.Count} triggers found");
 				var trigger = Game.QuestProgress.QuestTriggers.First();
-				if (trigger.Value.triggerType == QuestStepObjectiveType.InteractWithActor)
-					foreach (var world in Game.Worlds)
+				switch (trigger.Value.triggerType)
+				{
+					case QuestStepObjectiveType.InteractWithActor:
 					{
-						var actors = world.GetActorsBySNO((ActorSno)trigger.Key).Where(d => d.Visible);
-						Actor actor = null;
-						if (actors.Count() == 1) actor = actors.First();
-						if (actor != null)
-							foreach (var plr in world.Players.Values)
-								plr.InGameClient.SendMessage(new MapMarkerInfoMessage
-								{
-									HashedName = StringHashHelper.HashItemName("QuestMarker"),
-									Place = new WorldPlace { Position = actor.Position, WorldID = world.GlobalID },
-									ImageInfo = 81058,
-									Label = -1,
-									snoStringList = -1,
-									snoKnownActorOverride = -1,
-									snoQuestSource = -1,
-									Image = -1,
-									Active = true,
-									CanBecomeArrow = true,
-									RespectsFoW = false,
-									IsPing = true,
-									PlayerUseFlags = 0
-								});
-					}
+						foreach (var world in Game.Worlds)
+						{
+							var actor = world.GetActorsBySNO((ActorSno)trigger.Key).FirstOrDefault(d => d.Visible);
+							if (actor != null)
+								world.BroadcastOperation(player =>
+									player.InGameClient.SendMessage(new MapMarkerInfoMessage
+									{
+										HashedName = StringHashHelper.HashItemName("QuestMarker"),
+										Place = new WorldPlace { Position = actor.Position, WorldID = world.GlobalID },
+										ImageInfo = 81058,
+										Label = -1,
+										snoStringList = -1,
+										snoKnownActorOverride = -1,
+										snoQuestSource = -1,
+										Image = -1,
+										Active = true,
+										CanBecomeArrow = true,
+										RespectsFoW = false,
+										IsPing = true,
+										PlayerUseFlags = 0
+									}));
+						}
 
-				if (trigger.Value.triggerType == QuestStepObjectiveType.HadConversation)
-					foreach (var world in Game.Worlds)
-					{
-						var actors = world.Actors.Values.Where(d => d.Visible && (d is InteractiveNPC) && (d as InteractiveNPC).Conversations.Any(c => c.ConversationSNO == trigger.Key));
-						Actor actor = null;
-						if (actors.Count() == 1) actor = actors.First();
-						if (actor != null)
-							foreach (var plr in world.Players.Values)
-								plr.InGameClient.SendMessage(new MapMarkerInfoMessage
-								{
-									HashedName = StringHashHelper.HashItemName("QuestMarker"),
-									Place = new WorldPlace { Position = actor.Position, WorldID = world.GlobalID },
-									ImageInfo = 81058,
-									Label = -1,
-									snoStringList = -1,
-									snoKnownActorOverride = -1,
-									snoQuestSource = -1,
-									Image = -1,
-									Active = true,
-									CanBecomeArrow = true,
-									RespectsFoW = false,
-									IsPing = true,
-									PlayerUseFlags = 0
-								});
+						break;
 					}
+					case QuestStepObjectiveType.HadConversation:
+					{
+						foreach (var world in Game.Worlds)
+						{
+							var actor = world.Actors.Values.FirstOrDefault(d => d.Visible && (d is InteractiveNPC npc) 
+								&& npc.Conversations.Any(c => c.ConversationSNO == trigger.Key));
+							if (actor != null)
+								world.BroadcastOperation(player =>
+									player.InGameClient.SendMessage(new MapMarkerInfoMessage
+									{
+										HashedName = StringHashHelper.HashItemName("QuestMarker"),
+										Place = new WorldPlace { Position = actor.Position, WorldID = world.GlobalID },
+										ImageInfo = 81058,
+										Label = -1,
+										snoStringList = -1,
+										snoKnownActorOverride = -1,
+										snoQuestSource = -1,
+										Image = -1,
+										Active = true,
+										CanBecomeArrow = true,
+										RespectsFoW = false,
+										IsPing = true,
+										PlayerUseFlags = 0
+									}));
+						}
+
+						break;
+					}
+				}
 			}
 		}
 
@@ -670,30 +685,26 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 		public bool HasCurrentQuest(int snoQuest, int Step, bool strictFilter)
 		{
-			if (Quests.ContainsKey(snoQuest) || SideQuests.ContainsKey(snoQuest))
+			if (!Quests.ContainsKey(snoQuest) && !SideQuests.ContainsKey(snoQuest)) return false;
+			if (strictFilter)
 			{
-				if (strictFilter)
-				{
-					if ((Game.CurrentQuest == snoQuest) && (Game.CurrentStep == Step)
-						||
-					(Game.CurrentSideQuest == snoQuest) && (Game.CurrentSideStep == Step))
-						return true;
-				}
-				else
-				{
-					if ((Game.CurrentQuest == snoQuest || snoQuest == -1) && (Game.CurrentStep == Step || Step == -1 || Step == 0)
-						||
-					(Game.CurrentSideQuest == snoQuest || snoQuest == -1) && (Game.CurrentSideStep == Step || Step == -1 || Step == 0))
-						return true;
-				}
+				if ((Game.CurrentQuest == snoQuest) && (Game.CurrentStep == Step) ||
+				    (Game.CurrentSideQuest == snoQuest) && (Game.CurrentSideStep == Step))
+					return true;
 			}
+			else
+			{
+				if ((Game.CurrentQuest == snoQuest || snoQuest == -1) &&
+				    (Game.CurrentStep == Step || Step == -1 || Step == 0) ||
+				    (Game.CurrentSideQuest == snoQuest || snoQuest == -1) &&
+				    (Game.CurrentSideStep == Step || Step == -1 || Step == 0))
+					return true;
+			}
+
 			return false;
 		}
 
-		public bool HasQuest(int snoQuest)
-		{
-			return Quests.ContainsKey(snoQuest);
-		}
+		public bool HasQuest(int snoQuest) => Quests.ContainsKey(snoQuest);
 
 		public void SetQuestsForJoined(Player joinedPlayer)
 		{
@@ -710,14 +721,10 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			});
 		}
 
-		public bool IsDone(int snoQuest)
-		{
-			return Quests.ContainsKey(snoQuest) && Quests[snoQuest].Completed;
-		}
+		public bool IsDone(int snoQuest) => Quests.ContainsKey(snoQuest) && Quests[snoQuest].Completed;
 
 		public bool IsInQuestRange(QuestRange range)
 		{
-			
 			if (range.Header.SNOId == 312431) return (Game.CurrentAct == 3000);
 			if (range.Header.SNOId == 214766) return true; 
 
@@ -725,19 +732,19 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			bool ended = false;
 
 
-			foreach (var range_entry in range.Enitys)
+			foreach (var rangeEntry in range.Enitys)
 			{
-				if (range_entry != null)
+				if (rangeEntry != null)
 				{
-					if (range_entry.Start.SNOQuest == -1 || range_entry.Start.StepID == -1)
+					if (rangeEntry.Start.SNOQuest == -1 || rangeEntry.Start.StepID == -1)
 						started = true;
 					else
 					{
-						if (Quests.ContainsKey(range_entry.Start.SNOQuest) && Quests[range_entry.Start.SNOQuest].Steps.ContainsKey(range_entry.Start.StepID))
+						if (Quests.ContainsKey(rangeEntry.Start.SNOQuest) && Quests[rangeEntry.Start.SNOQuest].Steps.ContainsKey(rangeEntry.Start.StepID))
 						{
-							if (Quests[range_entry.Start.SNOQuest].Completed ||
-							Quests[range_entry.Start.SNOQuest].Steps[range_entry.Start.StepID].Completed ||
-							(Game.CurrentQuest == range_entry.Start.SNOQuest && Game.CurrentStep == range_entry.Start.StepID)) // rumford conversation needs current step
+							if (Quests[rangeEntry.Start.SNOQuest].Completed ||
+							Quests[rangeEntry.Start.SNOQuest].Steps[rangeEntry.Start.StepID].Completed ||
+							(Game.CurrentQuest == rangeEntry.Start.SNOQuest && Game.CurrentStep == rangeEntry.Start.StepID)) // rumford conversation needs current step
 								started = true;
 						}
 						//else logger.Warn("QuestRange {0} references unknown quest {1}", range.Header.SNOId, range.Start.SNOQuest);
@@ -745,14 +752,14 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 					//Logger.Debug("IsInQuestRange {0} and started? {1} ", range.Header.SNOId, started);
 
-					if (range_entry.End.SNOQuest == -1 || range_entry.End.StepID < 0)
+					if (rangeEntry.End.SNOQuest == -1 || rangeEntry.End.StepID < 0)
 						ended = false;
 					else
 					{
-						if (Quests.ContainsKey(range_entry.End.SNOQuest) && Quests[range_entry.End.SNOQuest].Steps.ContainsKey(range_entry.End.StepID))
+						if (Quests.ContainsKey(rangeEntry.End.SNOQuest) && Quests[rangeEntry.End.SNOQuest].Steps.ContainsKey(rangeEntry.End.StepID))
 						{
-							if (Quests[range_entry.End.SNOQuest].Completed ||
-								Quests[range_entry.End.SNOQuest].Steps[range_entry.End.StepID].Completed)
+							if (Quests[rangeEntry.End.SNOQuest].Completed ||
+								Quests[rangeEntry.End.SNOQuest].Steps[rangeEntry.End.StepID].Completed)
 								ended = true;
 						}
 						//else logger.Warn("QuestRange {0} references unknown quest {1}", range.Header.SNOId, range.End.SNOQuest);
@@ -811,7 +818,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				player.Toon.CurrentQuestId = Game.CurrentQuest;
 				player.Toon.CurrentQuestStepId = Game.CurrentStep;
 
-				List<DBQuestHistory> query = Game.GameDBSession.SessionQueryWhere<DBQuestHistory>(
+				List<DBQuestHistory> query = Game.GameDbSession.SessionQueryWhere<DBQuestHistory>(
 					dbi => dbi.DBToon.Id == player.Toon.PersistentID && dbi.QuestId == Game.CurrentQuest);
 				if (query.Count == 0)
 				{
@@ -819,7 +826,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					questHistory.DBToon = player.Toon.DBToon;
 					questHistory.QuestId = Game.CurrentQuest;
 					questHistory.QuestStep = Game.CurrentStep;
-					Game.GameDBSession.SessionSave(questHistory);
+					Game.GameDbSession.SessionSave(questHistory);
 				}
 				else
 				{
@@ -828,7 +835,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					{
 						questHistory.QuestStep = Game.CurrentStep;
 						if (questCompleted) questHistory.isCompleted = true;
-						Game.GameDBSession.SessionUpdate(questHistory);
+						Game.GameDbSession.SessionUpdate(questHistory);
 					}
 				}
 			}
@@ -908,7 +915,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				foreach (var player in QuestManager.Game.Players.Values)
 				{
 					List<GameServer.GSSystem.MapSystem.Scene> Scenes = new List<GameServer.GSSystem.MapSystem.Scene>();
-					int MonsterCount = 0;
+					int monsterCount = 0;
 					foreach (var scene in QuestManager.Game.GetWorld(world).Scenes.Values)
 						if (!scene.SceneSNO.Name.ToLower().Contains("filler"))
 							if (scene.Specification.SNOLevelAreas[0] == LevelArea)
@@ -916,7 +923,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 								Scenes.Add(scene);
 								foreach (var act in scene.Actors)
 									if (act is Monster)
-										MonsterCount++;
+										monsterCount++;
 							}
 
 
@@ -929,22 +936,22 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 						Counter = AdditionalTargetCounter,
 						Checked = (AdditionalTargetNeed <= AdditionalTargetCounter) ? 1 : 0
 					});
-					if (MonsterCount < AdditionalTargetCounter + 20)
+					if (monsterCount < AdditionalTargetCounter + 20)
 					{
-						while (MonsterCount < AdditionalTargetCounter + 20)
+						while (monsterCount < AdditionalTargetCounter + 20)
 						{
-							GameServer.Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count)].Position;
-							GameServer.Core.Types.Math.Vector3D SP = null;
+							GameServer.Core.Types.Math.Vector3D scenePoint = Scenes[RandomHelper.Next(0, Scenes.Count)].Position;
+							GameServer.Core.Types.Math.Vector3D point = null;
 							while (true)
 							{
-								SP = new GameServer.Core.Types.Math.Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
-								if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, Scene.NavCellFlags.AllowWalk))
+								point = new GameServer.Core.Types.Math.Vector3D(scenePoint.X + RandomHelper.Next(0, 240), scenePoint.Y + RandomHelper.Next(0, 240), scenePoint.Z);
+								if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(point, Scene.NavCellFlags.AllowWalk))
 									break;
 							}
-							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee[FastRandom.Instance.Next(GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.Count())], SP);
-							MonsterCount++;
+							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee[FastRandom.Instance.Next(GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.Count())], point);
+							monsterCount++;
 						}
-					} //Нужен дополнительный спаун монстров, их мало
+					} // Need additional monster spawn, there are few of them
 				}
 				if (Target == snoId)
 				{
@@ -963,23 +970,23 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				if (!TargetSpawned)
 					if (QuestManager.Game.GetWorld(world).GetActorBySNO((ActorSno)Target) == null)
 					{
-						List<GameServer.GSSystem.MapSystem.Scene> Scenes = new List<GameServer.GSSystem.MapSystem.Scene>();
+						List<GameServer.GSSystem.MapSystem.Scene> scenes = new List<GameServer.GSSystem.MapSystem.Scene>();
 						foreach (var scene in QuestManager.Game.GetWorld(world).Scenes.Values)
 						{
 							if (!scene.SceneSNO.Name.ToLower().Contains("filler"))
 								if (scene.Specification.SNOLevelAreas[0] == LevelArea)
-									Scenes.Add(scene);
+									scenes.Add(scene);
 						}
 
-						GameServer.Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count - 1)].Position;
-						GameServer.Core.Types.Math.Vector3D SP = null;
+						GameServer.Core.Types.Math.Vector3D scenePoint = scenes[RandomHelper.Next(0, scenes.Count - 1)].Position;
+						GameServer.Core.Types.Math.Vector3D point = null;
 						while (true)
 						{
-							SP = new GameServer.Core.Types.Math.Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
-							if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, Scene.NavCellFlags.AllowWalk))
+							point = new GameServer.Core.Types.Math.Vector3D(scenePoint.X + RandomHelper.Next(0, 240), scenePoint.Y + RandomHelper.Next(0, 240), scenePoint.Z);
+							if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(point, Scene.NavCellFlags.AllowWalk))
 								break;
 						}
-						QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)Target, SP);
+						QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)Target, point);
 						TargetSpawned = true;
 					}
 
@@ -1015,7 +1022,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		{
 			foreach (var player in QuestManager.Game.Players.Values)
 			{
-				var xpReward = 1000 * player.Level * (1 + (player.Level / 7)) * QuestManager.Game.XPModifier;
+				var xpReward = 1000 * player.Level * (1 + (player.Level / 7)) * QuestManager.Game.XpModifier;
 				if (Type == BountyData.BountyType.KillUnique)
 					xpReward *= 1.8f;
 				if (Type == BountyData.BountyType.ClearDungeon)
@@ -1049,8 +1056,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				player.UpdateAchievementCounter(412, 1);
 			}
 			Finished = true;
-			QuestManager.Game.BountiesCompleted[Act]++;
-			if (QuestManager.Game.BountiesCompleted[Act] == 5)
+			if (++QuestManager.Game.BountiesCompleted[Act] == 5)
 			{
 				switch (Act)
 				{

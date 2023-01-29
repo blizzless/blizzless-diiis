@@ -511,7 +511,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go with Cain
-                    Game.CurrentEncounter.activated = false;
+                    Game.CurrentEncounter.Activated = false;
                     StartConversation(Game.GetWorld(WorldSno.trdun_cain_intro), 72496);
                     ListenTeleport(19938, new Advance());
                 }
@@ -1111,7 +1111,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to fallen star room
-                    Game.CurrentEncounter.activated = false;
+                    Game.CurrentEncounter.Activated = false;
                     ListenTeleport(117411, new Advance());
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
@@ -1890,7 +1890,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 2;
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
                     ListenConversation(93337, new Advance());
-                    Game.CurrentEncounter.activated = false;
+                    Game.CurrentEncounter.Activated = false;
                 }
             });
 
@@ -2259,7 +2259,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find Tyrael
-                    Game.CurrentEncounter.activated = false;
+                    Game.CurrentEncounter.Activated = false;
                     Game.AddOnLoadWorldAction(WorldSno.trdun_butcherslair_02, () =>
                     {
                         SetActorOperable(Game.GetWorld(WorldSno.trdun_butcherslair_02), ActorSno._a1dun_leor_gate_a, true);

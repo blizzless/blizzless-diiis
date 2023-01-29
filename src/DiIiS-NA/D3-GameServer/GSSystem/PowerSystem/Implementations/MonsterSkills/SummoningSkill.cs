@@ -51,7 +51,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			InFrontPostion();
-			SummonMonster((User as Monster).SNOSummons[0]);
+			SummonMonster((User as Monster).SnoSummons[0]);
 			yield break;
 		}
 	}
@@ -76,7 +76,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (payload.Target == User && payload is DeathPayload)
 				{
 					if (User.GetActorsInRange(80f).Count > 100) return;
-					var monster = ActorFactory.Create(User.World, (User as Monster).SNOSummons[0], new TagMap());
+					var monster = ActorFactory.Create(User.World, (User as Monster).SnoSummons[0], new TagMap());
 					if (monster != null)
 					{
 						monster.Scale = 1.35f;
@@ -111,7 +111,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					User.PlayAnimation(11, (AnimationSno)User.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Explode]);
 					for (int i = 0; i < 3; i++)
 					{
-						var monster = ActorFactory.Create(User.World, (User as Monster).SNOSummons[0], new TagMap());
+						var monster = ActorFactory.Create(User.World, (User as Monster).SnoSummons[0], new TagMap());
 						monster.Scale = 1.35f;
 						monster.EnterWorld(RandomDirection(User.Position, 1, 3));
 						World.BuffManager.AddBuff(User, monster, new SummonedBuff());
@@ -185,7 +185,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			RandomPostion();
 			if (User is Monster)
-				SummonMonster((User as Monster).SNOSummons[0]);
+				SummonMonster((User as Monster).SnoSummons[0]);
 			yield break;
 		}
 	}
@@ -206,7 +206,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			UserPostion();
-			SummonMonster((User as Monster).SNOSummons[0]);
+			SummonMonster((User as Monster).SnoSummons[0]);
 			yield break;
 		}
 	}

@@ -124,6 +124,15 @@ namespace DiIiS_NA.GameServer
 			get => GetFloat(nameof(ChanceNormalUnidentified), 5f);
 			set => Set(nameof(ChanceNormalUnidentified), value);
 		}
+
+		/// <summary>
+		/// Resurrection charges on changing worlds
+		/// </summary>
+		public int ResurrectionCharges
+		{
+			get => GetInt(nameof(ResurrectionCharges), 3);
+			set => Set(nameof(ResurrectionCharges), value);
+		}
 		
 		public static Config Instance { get; } = new();
 

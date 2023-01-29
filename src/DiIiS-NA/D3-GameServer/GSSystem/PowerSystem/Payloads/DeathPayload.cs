@@ -390,7 +390,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			{
 				int grantedExp = 0;
 				if (plr.Attributes[GameAttribute.Level] <= Target.Attributes[GameAttribute.Level])
-					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttribute.Level]] / (40 * Target.Attributes[GameAttribute.Level] * 0.85f) * (Target is Monster ? Math.Min((Target as Monster).HPMultiplier, 3f) : 1f));
+					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttribute.Level]] / (40 * Target.Attributes[GameAttribute.Level] * 0.85f) * (Target is Monster ? Math.Min((Target as Monster).HpMultiplier, 3f) : 1f));
 				else
 					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttribute.Level]] / (40 * Target.Attributes[GameAttribute.Level] * 0.85f) * (1 - Math.Abs(plr.Attributes[GameAttribute.Level] - Target.Attributes[GameAttribute.Level]) / 20));
 
@@ -401,7 +401,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 				if (LootAndExp)
 				{
-					grantedExp = (int)(grantedExp * plr.World.Game.XPModifier);
+					grantedExp = (int)(grantedExp * plr.World.Game.XpModifier);
 
 					float tempEXP = grantedExp * Config.Instance.RateExp;
 
@@ -1152,7 +1152,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					player.AddTimedAction(3f, new Action<int>((q) => player.Revive(player.CheckPointPosition)));
 					var toon = player.Toon.DBToon;
 					toon.Deaths++;
-					player.World.Game.GameDBSession.SessionUpdate(toon);
+					player.World.Game.GameDbSession.SessionUpdate(toon);
 				}
 			}
 			//}

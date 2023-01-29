@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Logging;
+using DiIiS_NA.Core.MPQ.FileFormats;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -66,6 +68,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 	)/*Act Bosses*/]
 	public sealed class Boss : Monster
 	{
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(Boss));
 		public Boss(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
@@ -74,9 +77,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
 			Attributes[GameAttribute.using_Bossbar] = true;
 			Attributes[GameAttribute.InBossEncounter] = true;
-			Attributes[GameAttribute.Hitpoints_Max] *= 10.0f;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 7.8f;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 7.8f;
+			Attributes[GameAttribute.Hitpoints_Max] *= 4f;
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 3f;
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 3f;
 			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
 			Attributes[GameAttribute.TeamID] = 10;
 			
@@ -181,14 +184,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override int Quality
 		{
-			get
-			{
-				return (int)DiIiS_NA.Core.MPQ.FileFormats.SpawnType.Boss;
-			}
-			set
-			{
-				// TODO MonsterQuality setter not implemented. Throwing a NotImplementedError is catched as message not beeing implemented and nothing works anymore...
-			}
+			get => (int) SpawnType.Boss;
+			set => Logger.Warn("Boss MonsterQuality setter not implemented.");
+			// TODO MonsterQuality setter not implemented. Throwing a NotImplementedError is catched as message not beeing implemented and nothing works anymore...
 		}
 
 

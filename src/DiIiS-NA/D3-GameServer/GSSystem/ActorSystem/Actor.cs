@@ -220,7 +220,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// <param name="sno">SNOId of the actor.</param>
 		/// <param name="tags">TagMapEntry dictionary read for the actor from MPQ's..</param>		   
 		protected Actor(World world, ActorSno sno, TagMap tags, bool isMarker = false)
-			: base(world, world.IsPvP ? World.NewActorPvPID : world.Game.NewActorGameID)
+			: base(world, world.IsPvP ? World.NewActorPvPID : world.Game.NewActorGameId)
 		{
 			Tags = tags;
 
