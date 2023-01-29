@@ -301,7 +301,7 @@ public class SpawnCommand : CommandGroup
                 actorSNO = 6652;
 
 
-            if (@params.Count() > 1)
+            if (@params.Length > 1)
                 if (!int.TryParse(@params[1], out amount))
                     amount = 1;
             if (amount > 100) amount = 100;
@@ -563,7 +563,7 @@ public class ItemCommand : CommandGroup
             return "You need to specify a valid item name!";
 
 
-        if (@params.Count() == 1 || !int.TryParse(@params[1], out amount))
+        if (@params.Length == 1 || !int.TryParse(@params[1], out amount))
             amount = 1;
 
         if (amount > 100) amount = 100;
@@ -605,7 +605,7 @@ public class ItemCommand : CommandGroup
         if (type == null)
             return "The type given is not a valid item type.";
 
-        if (@params.Count() == 1 || !int.TryParse(@params[1], out amount))
+        if (@params.Length == 1 || !int.TryParse(@params[1], out amount))
             amount = 1;
 
         if (amount > 100) amount = 100;
@@ -766,7 +766,7 @@ public class ConversationCommand : CommandGroup
         if (invokerClient.InGameClient == null)
             return "You can only invoke this command while in-game.";
 
-        if (@params.Count() != 1)
+        if (@params.Length != 1)
             return "Invalid arguments. Type 'help conversation' to get help.";
 
         try
@@ -875,7 +875,7 @@ public class ModifySpeedCommand : CommandGroup
             if (@params == null)
                 return Fallback();
 
-            if (@params.Count() != 1)
+            if (@params.Length != 1)
                 return "Invalid arguments. Type 'help text public' to get help.";
 
             var questId = int.Parse(@params[0]);
@@ -897,7 +897,7 @@ public class ModifySpeedCommand : CommandGroup
             if (@params == null)
                 return Fallback();
 
-            if (@params.Count() != 2)
+            if (@params.Length != 2)
                 return "Invalid arguments. Type 'help text public' to get help.";
 
             var eventId = int.Parse(@params[0]);

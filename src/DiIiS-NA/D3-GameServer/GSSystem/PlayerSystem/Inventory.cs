@@ -286,9 +286,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				string itemType = originalItem.ItemDefinition.Name.Substring(3);
 				if (itemType.Contains("1HWeapon"))
-					itemType = OneHandedWeapons[FastRandom.Instance.Next(OneHandedWeapons.Count())];
+					itemType = OneHandedWeapons[FastRandom.Instance.Next(OneHandedWeapons.Count)];
 				if (itemType.Contains("2HWeapon"))
-					itemType = TwoHandedWeapons[FastRandom.Instance.Next(TwoHandedWeapons.Count())];
+					itemType = TwoHandedWeapons[FastRandom.Instance.Next(TwoHandedWeapons.Count)];
 				if (itemType.Contains("Pants"))
 					itemType = "Legs";
 				_inventoryGrid.AddItem(ItemGenerator.GetRandomItemOfType(_owner, ItemGroup.FromString(itemType)));
@@ -739,15 +739,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				_owner.GrantAchievement(74987243307126);
 
 			var items = GetEquippedItems();
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "Belt_Barbarian")).Count() > 0 && (items.Where(item => ItemGroup.IsSubType(item.ItemType, "MightyWeapon1H")).Count() > 0 || items.Where(item => ItemGroup.IsSubType(item.ItemType, "MightyWeapon2H")).Count() > 0)) //barb
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "Belt_Barbarian")) && (items.Any(item => ItemGroup.IsSubType(item.ItemType, "MightyWeapon1H")) || items.Any(item => ItemGroup.IsSubType(item.ItemType, "MightyWeapon2H")))) //barb
 				_owner.GrantAchievement(74987243307046);
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "Cloak")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "HandXbow")).Count() > 0) //dh
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "Cloak")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "HandXbow"))) //dh
 				_owner.GrantAchievement(74987243307058);
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "SpiritStone_Monk")).Count() > 0 && (items.Where(item => ItemGroup.IsSubType(item.ItemType, "FistWeapon")).Count() > 0 || items.Where(item => ItemGroup.IsSubType(item.ItemType, "CombatStaff")).Count() > 0)) //monk
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "SpiritStone_Monk")) && (items.Any(item => ItemGroup.IsSubType(item.ItemType, "FistWeapon")) || items.Any(item => ItemGroup.IsSubType(item.ItemType, "CombatStaff")))) //monk
 				_owner.GrantAchievement(74987243307544);
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "VoodooMask")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "CeremonialDagger")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "Mojo")).Count() > 0) //wd
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "VoodooMask")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "CeremonialDagger")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "Mojo"))) //wd
 				_owner.GrantAchievement(74987243307561);
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "WizardHat")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "Wand")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "Orb")).Count() > 0) //wiz
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "WizardHat")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "Wand")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "Orb"))) //wiz
 				_owner.GrantAchievement(74987243307582);
 		}
 

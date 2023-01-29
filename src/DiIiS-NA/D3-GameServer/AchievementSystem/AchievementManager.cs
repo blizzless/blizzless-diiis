@@ -178,7 +178,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 				lock (client.ServiceLock)
 				{
 					Logger.MethodTrace($"id {achievementId}");
-					if (client.Account.GameAccount.Achievements.Where(a => a.AchievementId == achievementId && a.Completion != -1).Count() > 0) return;
+					if (client.Account.GameAccount.Achievements.Any(a => a.AchievementId == achievementId && a.Completion != -1)) return;
 					DBAchievements achievement = null;
 					var achs = DBSessions.SessionQueryWhere<DBAchievements>(dbi =>
 							dbi.DBGameAccount.Id == client.Account.GameAccount.PersistentID);
@@ -218,7 +218,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 
 					if (IsHardcore(achievementId))
 					{
-						if (achs.Where(a => a.CompleteTime != -1 && a.IsHardcore == true).Count() >= 30) //31 in total
+						if (achs.Count(a => a.CompleteTime != -1 && a.IsHardcore) >= 30) //31 in total
 						{
 							var toons = DBSessions.SessionQueryWhere<DBToon>(dbt => dbt.DBGameAccount.Id == client.Account.GameAccount.PersistentID && dbt.isHardcore == true && dbt.Archieved == false);
 						}
@@ -308,7 +308,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 						}
 
 						var ach_data = _achievements.AchievementList.Single(a => a.Id == definition.ParentAchievementId);
-						if (!ach_data.HasSupersedingAchievementId || client.Account.GameAccount.Achievements.Where(a => a.AchievementId == ach_data.SupersedingAchievementId && a.Completion > 0).Count() > 0)
+						if (!ach_data.HasSupersedingAchievementId || client.Account.GameAccount.Achievements.Any(a => a.AchievementId == ach_data.SupersedingAchievementId && a.Completion > 0))
 							UpdateSnapshot(client, 0, criteriaId);
 					}
 					else
@@ -380,14 +380,14 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 				{
 					if (additionalQuantity == 0) return;
 					Logger.MethodTrace($"id {achievementId}");
-					if (client.Account.GameAccount.Achievements.Where(a => a.AchievementId == achievementId && a.Completion != -1).Count() > 0) return;
+					if (client.Account.GameAccount.Achievements.Any(a => a.AchievementId == achievementId && a.Completion != -1)) return;
 
 					ulong mainCriteriaId = GetMainCriteria(achievementId);
 					var aa = client.Account.GameAccount.AchievementCriteria;
 					D3.Achievements.CriteriaUpdateRecord mainCriteria;
 					lock (client.Account.GameAccount.AchievementCriteria)
 					{
-						mainCriteria = client.Account.GameAccount.AchievementCriteria.Where(c => c.CriteriaId32AndFlags8 == (uint)mainCriteriaId).FirstOrDefault();
+						mainCriteria = client.Account.GameAccount.AchievementCriteria.FirstOrDefault(c => c.CriteriaId32AndFlags8 == (uint)mainCriteriaId);
 					}
 					if (mainCriteria == null)
 						mainCriteria = D3.Achievements.CriteriaUpdateRecord.CreateBuilder()
@@ -531,7 +531,7 @@ namespace DiIiS_NA.GameServer.AchievementSystem
 				(c.AdvanceEvent.Id == 105 && c.AdvanceEvent.Comparand == actorId64)).ToList();
 
 			if (!isHardcore)
-				criterias = criterias.Where(c => c.AdvanceEvent.ModifierList.Where(m => m.NecessaryCondition == 306).Count() == 0).ToList();
+				criterias = criterias.Where(c => c.AdvanceEvent.ModifierList.All(m => m.NecessaryCondition != 306)).ToList();
 
 			criterias = criterias.Where(c => c.AdvanceEvent.ModifierList.Single(m => m.NecessaryCondition == 103).Comparand == type64).ToList();
 

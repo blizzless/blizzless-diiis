@@ -59,7 +59,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			}
 			var monsterData = (DiIiS_NA.Core.MPQ.FileFormats.Monster)MPQStorage.Data.Assets[SNOGroup.Monster][body.ActorData.MonsterSNO].Data;
 			_mpqPowerCount = monsterData.SkillDeclarations.Count(e => e.SNOPower != -1);
-			for (int i = 0; i < monsterData.SkillDeclarations.Count(); i++)
+			for (int i = 0; i < monsterData.SkillDeclarations.Length; i++)
 			{
 				if (monsterData.SkillDeclarations[i].SNOPower == -1) continue;
 				if (PowerLoader.HasImplementationForPowerSNO(monsterData.SkillDeclarations[i].SNOPower))
@@ -437,7 +437,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			var availablePowers = PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key).ToList();
 			if (availablePowers.Count(p => p != 30592) > 0)
 			{
-				int SelectedPower = availablePowers.Where(p => p != 30592).ToList()[RandomHelper.Next(availablePowers.Where(p => p != 30592).ToList().Count())];
+				int SelectedPower = availablePowers.Where(p => p != 30592).ToList()[RandomHelper.Next(availablePowers.Count(p => p != 30592))];
 				//if(SelectedPower == 73824)
 				//if(SkeletonKingWhirlwind)
 				return SelectedPower;

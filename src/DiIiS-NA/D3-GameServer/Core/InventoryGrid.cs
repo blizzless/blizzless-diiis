@@ -436,10 +436,10 @@ namespace DiIiS_NA.GameServer.Core
 
 		public Item GetItemByDynId(Player plr, uint dynId)
 		{
-			if (Items.Values.Where(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId).Count() > 0)
+			if (Items.Values.Any(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId))
 				return Items.Values.Single(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
-			else
-				return null;
+
+			return null;
 		}
 	}
 }

@@ -1197,7 +1197,7 @@ public class GameAccount : PersistentRPCObject
 
     public uint AchievementPoints
     {
-        get { return (uint)Achievements.Where(a => a.Completion != -1).Count() * 10U; }
+        get { return (uint)Achievements.Count(a => a.Completion != -1) * 10U; }
     }
 
     public bool IsLoggedIn { get; set; }

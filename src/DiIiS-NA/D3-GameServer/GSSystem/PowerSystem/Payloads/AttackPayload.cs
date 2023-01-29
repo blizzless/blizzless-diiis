@@ -141,7 +141,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			float additionalCritChance = chcBonus;
 
 			if (user is Player && (user as Player).SkillSet.HasPassive(338859)) //Single Out
-				if (target.GetMonstersInRange(20f).Where(m => m != target).Count() == 0)
+				if (target.GetMonstersInRange(20f).All(m => m == target))
 					additionalCritChance += 0.25f;
 
 			//Wizard -> Spectral Blade -> Ice Blades

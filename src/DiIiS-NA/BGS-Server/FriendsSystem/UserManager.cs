@@ -70,7 +70,7 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 			Logger.MethodTrace($": owner {owner.PersistentID}, target {target.PersistentID}");
 			try
 			{
-				if (DBSessions.SessionQueryWhere<DBAccountLists>(dbl => dbl.ListOwner.Id == owner.PersistentID && dbl.ListTarget.Id == target.PersistentID && dbl.Type == "IGNORE").Count() > 0) return;
+				if (DBSessions.SessionQueryWhere<DBAccountLists>(dbl => dbl.ListOwner.Id == owner.PersistentID && dbl.ListTarget.Id == target.PersistentID && dbl.Type == "IGNORE").Any()) return;
 
 				var blockRecord = new DBAccountLists
 				{

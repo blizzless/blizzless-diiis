@@ -1726,7 +1726,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public bool WorldCleared(WorldSno worldSNO)
 		{
-			return _worlds[worldSNO].Actors.Values.OfType<Monster>().Where(m => m.OriginalLevelArea != -1 && !m.Dead).Count() < 5;
+			return _worlds[worldSNO].Actors.Values.OfType<Monster>().Count(m => m.OriginalLevelArea != -1 && !m.Dead) < 5;
 		}
 
 		/// <summary>

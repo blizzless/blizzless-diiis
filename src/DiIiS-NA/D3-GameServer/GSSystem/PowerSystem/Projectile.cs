@@ -256,7 +256,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 				var targets = Context.GetEnemiesInRadius(ChainCurrent.Position, ChainRadius);
 				targets.Actors.Remove(ChainCurrent);
-				if (targets.Actors.Count() == 0)
+				if (!targets.Actors.Any())
 				{
 					Destroy();
 					return;
@@ -266,7 +266,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				nextProj.Position.Z += 5f;
 
 				nextProj.ChainCurrent = ChainCurrent;
-				nextProj.ChainNextPos = targets.Actors[PowerContext.Rand.Next(targets.Actors.Count())].Position;
+				nextProj.ChainNextPos = targets.Actors[PowerContext.Rand.Next(targets.Actors.Count)].Position;
 
 				nextProj.ChainTargetsRemain = ChainTargetsRemain;
 				nextProj.ChainIteration = ChainIteration + 1;

@@ -302,7 +302,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				var targets = GetEnemiesInRadius(User.Position, ScriptFormula(18)).Actors;
 				Actor target = null;
 
-				if (targets.Count() > 0)
+				if (targets.Any())
 					target = targets[Rand.Next(targets.Count())];
 
 				var position = target == null ? RandomDirection(User.Position, 1f, 15f) : target.Position;

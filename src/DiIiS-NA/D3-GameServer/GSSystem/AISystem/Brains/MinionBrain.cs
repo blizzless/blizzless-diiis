@@ -197,11 +197,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			if (PresetPowers.Count > 0)
 			{
 				//int power = this.PresetPowers[RandomHelper.Next(this.PresetPowers.Count)].Key;
-				List<int> availablePowers = Enumerable.ToList(PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key));
-				if (availablePowers.Where(p => p != 30592).Count() > 0)
-					return availablePowers.Where(p => p != 30592).ToList()[RandomHelper.Next(availablePowers.Where(p => p != 30592).ToList().Count())];
-				else
-					if (availablePowers.Contains(30592))
+				List<int> availablePowers = PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key).ToList();
+				if (availablePowers.Any(p => p != 30592))
+					return availablePowers.Where(p => p != 30592).ToList()[RandomHelper.Next(availablePowers.Count(p => p != 30592))];
+				if (availablePowers.Contains(30592))
 					return 30592; //melee attack
 			}
 

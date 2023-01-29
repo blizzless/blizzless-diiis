@@ -282,7 +282,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			BuffManager.Update();
 			PowerManager.Update();
 
-			if (tickCounter % 6 == 0 && _flippyTimers.Count() > 0)
+			if (tickCounter % 6 == 0 && _flippyTimers.Any())
 			{
 				UpdateFlippy(tickCounter);
 			}
@@ -1033,7 +1033,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			else
 			{
 				_flippyTimers.Dequeue().Dequeue().Invoke();
-				if (_flippyTimers.Count() > 0)
+				if (_flippyTimers.Any())
 					_flippyTimers.Peek().Dequeue().Invoke();
 			}
 		}

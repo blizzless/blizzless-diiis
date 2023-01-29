@@ -56,7 +56,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 			for (int i = 0; i < 6; i++)
 			{
-				var rand_pos = ActorsVector3D[FastRandom.Instance.Next(ActorsVector3D.Count())];
+				var rand_pos = ActorsVector3D[FastRandom.Instance.Next(ActorsVector3D.Count)];
 				world.SpawnMonster(ActorSno._ghost_jail_prisoner, rand_pos);
 				ActorsVector3D.Remove(rand_pos);
 			}

@@ -19,7 +19,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 		{
 			get
 			{
-				return GameCreators.Values.Where(game => game.PlayersCount > 0).Count();
+				return GameCreators.Values.Count(game => game.PlayersCount > 0);
 			}
 			set { }
 		}

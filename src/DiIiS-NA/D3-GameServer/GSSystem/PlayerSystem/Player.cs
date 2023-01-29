@@ -4645,8 +4645,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void GrantAchievement(ulong id)
     {
         if (_unlockedAchievements.Contains(id)) return;
-        if (InGameClient.BnetClient.Account.GameAccount.Achievements
-                .Where(a => a.AchievementId == id && a.Completion != -1).Count() > 0) return;
+        if (InGameClient.BnetClient.Account.GameAccount.Achievements.Any(a => a.AchievementId == id && a.Completion != -1)) return;
         if (_unlockedAchievements.Contains(id)) return;
         _unlockedAchievements.Add(id);
         try

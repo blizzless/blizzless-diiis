@@ -941,7 +941,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 								if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, Scene.NavCellFlags.AllowWalk))
 									break;
 							}
-							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee[FastRandom.Instance.Next(GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.Count())], SP);
+							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee[FastRandom.Instance.Next(GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.Count)], SP);
 							MonsterCount++;
 						}
 					} //Нужен дополнительный спаун монстров, их мало

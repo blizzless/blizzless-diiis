@@ -54,7 +54,7 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
         {
             try
             {
-                if (_newSockets.Count() == 0)
+                if (!_newSockets.Any())
                     return;
 
                 lock (_newSockets)

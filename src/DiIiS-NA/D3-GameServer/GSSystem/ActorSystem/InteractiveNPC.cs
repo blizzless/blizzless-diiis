@@ -208,9 +208,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 						if (ConversationList != null)
 						{
 							var suitable_entries = ConversationList.AmbientConversationListEntries.Where(entry => entry.SpecialEventFlag == World.Game.CurrentAct).ToList();
-							if (suitable_entries.Count() > 0)
+							if (suitable_entries.Count > 0)
 							{
-								var random_conv = suitable_entries[FastRandom.Instance.Next(suitable_entries.Count())];
+								var random_conv = suitable_entries[FastRandom.Instance.Next(suitable_entries.Count)];
 								player.Conversations.StartConversation(random_conv.SNOConversation);
 								if (ForceConversationSNO == Conversations[0].ConversationSNO) ForceConversationSNO = -1;
 							}

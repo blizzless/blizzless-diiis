@@ -2316,7 +2316,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (!HasBuff<GargantuanEnrageCDBuff>(Target))
 					{
 						var targets = GetEnemiesInRadius(Target.Position, 10f);
-						if (targets.Actors.Count >= 5 || targets.Actors.Where(a => a is Boss || a is Champion || a is Rare || a is Unique).Count() > 1)
+						if (targets.Actors.Count >= 5 || targets.Actors.Count(a => a is Boss or Champion or Rare or Unique) > 1)
 						{
 							AddBuff(Target, new GargantuanEnrageCDBuff());
 							AddBuff(Target, new GargantuanEnrageBuff());
@@ -2704,7 +2704,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (payload is HitPayload && payload.Target == Target)
 			{
 				Player usr = (Target as Player);
-				float dmg = (payload as HitPayload).TotalDamage * ScriptFormula(9) / usr.Followers.Values.Where(a => a == ActorSno._wd_zombiedog).Count();
+				float dmg = (payload as HitPayload).TotalDamage * ScriptFormula(9) / usr.Followers.Values.Count(a => a == ActorSno._wd_zombiedog);
 				(payload as HitPayload).TotalDamage *= 1 - ScriptFormula(9);
 				//List<Actor> dogs = GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.ActorSNO.Id == 51353).ToList();
 				foreach (var dog in GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.SNO == ActorSno._wd_zombiedog))
@@ -2738,7 +2738,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (payload is HitPayload && payload.Context.User == Target)
 			{
 				Player master = (Target as ZombieDog).Master as Player;
-				float heal = (payload as HitPayload).TotalDamage * ScriptFormula(8) / (master.Followers.Values.Where(a => a == ActorSno._wd_zombiedog).Count() + 1);
+				float heal = (payload as HitPayload).TotalDamage * ScriptFormula(8) / (master.Followers.Values.Count(a => a == ActorSno._wd_zombiedog) + 1);
 				(payload as HitPayload).TotalDamage *= 1 - ScriptFormula(9);
 				master.AddHP(heal);
 				foreach (var dog in GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.SNO == ActorSno._wd_zombiedog))
