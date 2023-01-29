@@ -12,7 +12,7 @@ namespace DiIiS_NA.REST.JSON
 {
     public class Json
     {
-        private static readonly Logger _logger = LogManager.CreateLogger(nameof(Json));
+        private static readonly Logger Logger = LogManager.CreateLogger(nameof(Json));
         public static string CreateString<T>(T dataObject)
         {
             return Encoding.UTF8.GetString(CreateArray(dataObject));
@@ -37,14 +37,22 @@ namespace DiIiS_NA.REST.JSON
             }
             catch (Exception ex)
             {
-                _logger.FatalException(ex, "Could not deserialize JSON data");
-                return default(T);
+                Logger.FatalException(ex, "Could not deserialize JSON data");
+                return default;
             }
         }
 
         public static T CreateObject<T>(string jsonData, bool split = false)
         {
-            return CreateObject<T>(Encoding.UTF8.GetBytes(split ? jsonData.Split(new[] { ':' }, 2)[1] : jsonData));
+            try
+            {
+                return CreateObject<T>(Encoding.UTF8.GetBytes(split ? jsonData.Split(new[] { ':' }, 2)[1] : jsonData));
+            }
+            catch (Exception ex)
+            {
+                Logger.FatalException(ex, "Could not deserialize JSON data");
+                return default;
+            }
         }
 
         public static T CreateObject<T>(byte[] jsonData) => CreateObject<T>(new MemoryStream(jsonData));

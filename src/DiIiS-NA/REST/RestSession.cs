@@ -16,6 +16,7 @@ using System.IO;
 using System.Net.Security;
 using System.Web;
 using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.REST.Data.Forms;
 
 namespace DiIiS_NA.REST
 {
@@ -110,7 +111,7 @@ namespace DiIiS_NA.REST
         {
             LogonData loginForm = Json.CreateObject<LogonData>(request.Content);
             LogonResult loginResult = new LogonResult();
-            if (loginForm == default(LogonData))
+            if (loginForm?.Inputs is null or {Count: 0})
             {
                 loginResult.AuthenticationState = "LOGIN";
                 loginResult.ErrorCode = "UNABLE_TO_DECODE";
@@ -122,15 +123,15 @@ namespace DiIiS_NA.REST
             string login = "";
             string password = "";
 
-            for (int i = 0; i < loginForm.Inputs.Count; ++i)
+            foreach (var input in loginForm.Inputs)
             {
-                switch (loginForm.Inputs[i].Id)
+                switch (input.Id)
                 {
                     case "account_name":
-                        login = loginForm.Inputs[i].Value;
+                        login = input.Value;
                         break;
                     case "password":
-                        password = loginForm.Inputs[i].Value;
+                        password = input.Value;
                         break;
                 }
             }
