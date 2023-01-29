@@ -151,7 +151,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public void CheckKillMonsterCriteria(ulong gameAccountId, int actorId, int type, bool isHardcore)
 		{
 			Logger.MethodTrace($"gameAccountId {gameAccountId}, actorId {actorId}, type {type}, hc {isHardcore}");
-			BattleNetSocketSend($"ckmc|{gameAccountId}/{actorId}/{type}/{ (isHardcore ? "True" : "False")}");
+			BattleNetSocketSend($"ckmc|{gameAccountId}/{actorId}/{type}/{(isHardcore ? "True" : "False")}");
 		}
 
 		public void CheckSalvageItemCriteria(ulong gameAccountId, int itemId)
