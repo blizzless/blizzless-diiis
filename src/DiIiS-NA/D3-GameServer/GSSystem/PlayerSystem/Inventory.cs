@@ -1201,6 +1201,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (!ReloadAffix.Definition.Name.Contains("Secondary")) filteredList = filteredList.Where( a => !a.Name.Contains("Secondary") );
 			if (!ReloadAffix.Definition.Name.Contains("Experience")) filteredList = filteredList.Where(a => !a.Name.Contains("Experience"));
 			if (!ReloadAffix.Definition.Name.Contains("Archon")) filteredList = filteredList.Where(a => !a.Name.Contains("Archon"));
+			// FIXME: always true?
 			if (ReloadAffix.Definition.Hash == ReloadAffix.Definition.Hash) filteredList = filteredList.Where(a => a.Hash != ReloadAffix.Definition.Hash);
 			if (Item.GBHandle.GBID == -4139386) filteredList = filteredList.Where( a => !a.Name.Contains("Str") && !a.Name.Contains("Dex") && !a.Name.Contains("Int") && !a.Name.Contains("Vit" ));
 
@@ -1218,15 +1219,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			//if (bestDefinitions.Values.Where(a => a.Name.Contains("PoisonD")).Count() > 0) Logger.Debug("PoisonD in bestDefinitions");
 			List<AffixTable> selectedGroups = bestDefinitions.Values
-				.OrderBy(x => FastRandom.Instance.Next()) //random order
-				.GroupBy(x => (x.AffixFamily1 == -1) ? x.AffixFamily0 : x.AffixFamily1)
-				.Select(x => x.First()) //only one from group
-				.Take(1) //take needed amount
+				.OrderBy(_ => FastRandom.Instance.Next()) //random order
+				.GroupBy(x => x.AffixFamily1 == -1 ? x.AffixFamily0 : x.AffixFamily1)
+				.Select(x => x.First()) // only one from group
+				.Take(1) // take needed amount
 				.ToList();
 			if (selectedGroups.Count == 0)
 				if (ReloadAffix.Definition.Name.ToLower().Contains("socket"))
-					selectedGroups = SocketsAffixs.Where(x => x.OverrideLevelReq <= ReloadAffix.Definition.AffixLevelMax //&& x.AffixLevelMin == ReloadAffix.Definition.AffixLevelMin
-					).OrderBy(x => FastRandom.Instance.Next()).Take(1).ToList();
+				{
+					selectedGroups = SocketsAffixs
+						.Where(x => x.OverrideLevelReq <= ReloadAffix.Definition.AffixLevelMax) //&& x.AffixLevelMin == ReloadAffix.Definition.AffixLevelMin
+						.OrderBy(_ => FastRandom.Instance.Next())
+						.Take(1)
+						.ToList();
+				}
 				else
 					return;
 
