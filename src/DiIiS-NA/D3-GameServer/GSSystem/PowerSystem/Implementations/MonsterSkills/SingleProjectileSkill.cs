@@ -16,26 +16,24 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	public abstract class SingleProjectileSkill : ActionTimedSkill
 	{
 		protected Projectile projectile;
-		protected float speed;
+		private float _speed;
 
 		protected void SetProjectile(PowerContext context, ActorSno actorSNO, Vector3D position, float speed = 1f, Action<Actor> OnCollision = null)
 		{
-			if (User is Monster)
-				// FIXME: Non-exist world id
-				if (User.World.WorldSNO.Id == 1 ||
-					User.World.WorldSNO.Id == 1)
-						position.Z = (User as Monster).CorrectedPosition.Z;
-			projectile = new Projectile(context, actorSNO, position);
-
-
-			projectile.OnCollision = OnCollision;
-			this.speed = speed;
+			if (User is Monster monster)
+				// TODO: FIXME: Non-exist world id
+				if (monster.World.WorldSNO.Id is 1)
+						position.Z = monster.Position.Z;
+			projectile = new(context, actorSNO, position)
+			{
+				OnCollision = OnCollision
+			};
+			_speed = speed;
 		}
 
 		protected IEnumerable<TickTimer> Launch()
 		{
-
-			projectile.Launch(new Vector3D(Target.Position.X, Target.Position.Y, Target.Position.Z + 5f), speed);
+			projectile.Launch(new Vector3D(Target.Position.X, Target.Position.Y, Target.Position.Z + 5f), _speed);
 			yield break;
 		}
 	}

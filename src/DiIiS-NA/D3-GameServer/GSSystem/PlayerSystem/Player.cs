@@ -380,7 +380,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         EventWeatherEnabled = false;
 
         var achievements =
-            InGameClient.Game.GameDBSession.SessionQueryWhere<DBAchievements>(dba =>
+            InGameClient.Game.GameDbSession.SessionQueryWhere<DBAchievements>(dba =>
                 dba.DBGameAccount.Id == Toon.GameAccount.PersistentID);
 
         BlacksmithUnlocked = achievements.Any(dba => dba.AchievementId == 74987243307766);
@@ -1754,7 +1754,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void DeclineBossEncounter()
     {
-        InGameClient.Game.CurrentEncounter.activated = false;
+        InGameClient.Game.CurrentEncounter.Activated = false;
     }
 
     public void TransmuteItemsPlayer(GameClient client, TransmuteItemsMessage message)
@@ -1892,36 +1892,35 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         exitSceneSno = scene.SceneSNO.Id;
                 var exitSetted = false;
                 foreach (var actor in nephalemPWorld.Actors.Values)
-                    if (actor is Portal)
+                    if (actor is Portal actor1)
                     {
-                        var p = actor as Portal;
-                        if (!actor.CurrentScene.SceneSNO.Name.ToLower().Contains("entrance"))
+                        if (!actor1.CurrentScene.SceneSNO.Name.ToLower().Contains("entrance"))
                         {
-                            if (!actor.CurrentScene.SceneSNO.Name.ToLower().Contains("exit"))
+                            if (!actor1.CurrentScene.SceneSNO.Name.ToLower().Contains("exit"))
                             {
-                                actor.Destroy();
+                                actor1.Destroy();
                             }
                             else if (!exitSetted)
                             {
-                                p.Destination.DestLevelAreaSNO = 288684;
-                                p.Destination.WorldSNO = (int)InGameClient.Game.WorldOfPortalNephalemSec;
+                                actor1.Destination.DestLevelAreaSNO = 288684;
+                                actor1.Destination.WorldSNO = (int)InGameClient.Game.WorldOfPortalNephalemSec;
                                 exitSetted = true;
 
                                 var nephalemPWorldS2 =
                                     InGameClient.Game.GetWorld(InGameClient.Game.WorldOfPortalNephalemSec);
                                 foreach (var atr in nephalemPWorldS2.Actors.Values)
-                                    if (atr is Portal)
+                                    if (atr is Portal portal1)
                                     {
-                                        if (!atr.CurrentScene.SceneSNO.Name.ToLower().Contains("entrance"))
+                                        if (!portal1.CurrentScene.SceneSNO.Name.ToLower().Contains("entrance"))
                                         {
-                                            atr.Destroy();
+                                            portal1.Destroy();
                                         }
                                         else
                                         {
-                                            (atr as Portal).Destination.DestLevelAreaSNO = 332339;
-                                            (atr as Portal).Destination.WorldSNO =
+                                            portal1.Destination.DestLevelAreaSNO = 332339;
+                                            portal1.Destination.WorldSNO =
                                                 (int)WorldSno.x1_tristram_adventure_mode_hub;
-                                            (atr as Portal).Destination.StartingPointActorTag = 172;
+                                            portal1.Destination.StartingPointActorTag = 172;
                                         }
                                     }
                                     else if (atr is Waypoint)
@@ -1931,14 +1930,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             }
                             else
                             {
-                                actor.Destroy();
+                                actor1.Destroy();
                             }
                         }
                         else
                         {
-                            p.Destination.DestLevelAreaSNO = 332339;
-                            p.Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
-                            p.Destination.StartingPointActorTag = 24;
+                            actor1.Destination.DestLevelAreaSNO = 332339;
+                            actor1.Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
+                            actor1.Destination.StartingPointActorTag = 24;
                         }
                     }
                     else if (actor is Waypoint)
@@ -2077,17 +2076,17 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
                 nephalemPWorld = InGameClient.Game.GetWorld(map);
                 foreach (var actor in nephalemPWorld.Actors.Values)
-                    if (actor is Portal)
+                    if (actor is Portal portal1)
                     {
-                        if (!actor.CurrentScene.SceneSNO.Name.ToLower().Contains("entrance"))
+                        if (!portal1.CurrentScene.SceneSNO.Name.ToLower().Contains("entrance"))
                         {
-                            actor.Destroy();
+                            portal1.Destroy();
                         }
                         else
                         {
-                            (actor as Portal).Destination.DestLevelAreaSNO = 332339;
-                            (actor as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
-                            (actor as Portal).Destination.StartingPointActorTag = 24;
+                            portal1.Destination.DestLevelAreaSNO = 332339;
+                            portal1.Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
+                            portal1.Destination.StartingPointActorTag = 24;
                         }
                     }
                     else if (actor is Waypoint)
@@ -2267,7 +2266,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         var dbToon = Toon.DBToon;
         dbToon.ParagonBonuses = ParagonBonuses;
-        World.Game.GameDBSession.SessionUpdate(dbToon);
+        World.Game.GameDbSession.SessionUpdate(dbToon);
 
         SetAttributesByItems();
         SetAttributesByItemProcs();
@@ -2285,7 +2284,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         var dbToon = Toon.DBToon;
         dbToon.ParagonBonuses = ParagonBonuses;
-        World.Game.GameDBSession.SessionUpdate(dbToon);
+        World.Game.GameDbSession.SessionUpdate(dbToon);
 
         SetAttributesByItems();
         SetAttributesByItemProcs();
@@ -2304,10 +2303,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     private void OnMailRetrieve(GameClient client, MailRetrieveMessage message)
     {
-        var dbMail = World.Game.GameDBSession.SessionGet<DBMail>((ulong)message.MailId);
+        var dbMail = World.Game.GameDbSession.SessionGet<DBMail>((ulong)message.MailId);
         if (dbMail == null || dbMail.DBToon.Id != Toon.PersistentID) return;
         dbMail.Claimed = true;
-        World.Game.GameDBSession.SessionUpdate(dbMail);
+        World.Game.GameDbSession.SessionUpdate(dbMail);
 
         if (dbMail.ItemGBID != -1)
             Inventory.PickUp(ItemGenerator.CookFromDefinition(World, ItemGenerator.GetItemDefinition(dbMail.ItemGBID),
@@ -2686,32 +2685,42 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         VacuumPickup();
         if (World.Game.OnLoadWorldActions.ContainsKey(World.SNO))
         {
-            Logger.Debug("OnLoadWorldActions: {0}", World.SNO);
+            Logger.MethodTrace($"OnLoadWorldActions: {World.SNO}");
             lock (World.Game.OnLoadWorldActions[World.SNO])
             {
-                try
+                foreach (var action in World.Game.OnLoadWorldActions[World.SNO])
                 {
-                    foreach (var action in World.Game.OnLoadWorldActions[World.SNO]) action.Invoke();
+                    try
+                    {
+                        action();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WarnException(ex, "OnLoadWorldActions");
+                    }
                 }
-                catch
-                {
-                }
-
+                
                 World.Game.OnLoadWorldActions[World.SNO].Clear();
             }
         }
 
         if (World.Game.OnLoadSceneActions.ContainsKey(CurrentScene.SceneSNO.Id))
         {
-            Logger.Debug("OnLoadSceneActions: {0}", CurrentScene.SceneSNO.Id);
+            Logger.MethodTrace($"OnLoadSceneActions: {CurrentScene.SceneSNO.Id}");
+            
+            Logger.MethodTrace(World.SNO.ToString());
             lock (World.Game.OnLoadSceneActions[CurrentScene.SceneSNO.Id])
             {
-                try
+                foreach (var action in World.Game.OnLoadSceneActions[CurrentScene.SceneSNO.Id])
                 {
-                    foreach (var action in World.Game.OnLoadSceneActions[CurrentScene.SceneSNO.Id]) action.Invoke();
-                }
-                catch
-                {
+                    try
+                    {
+                        action();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WarnException(ex, "OnLoadSceneActions");
+                    }
                 }
 
                 World.Game.OnLoadSceneActions[CurrentScene.SceneSNO.Id].Clear();
@@ -2728,6 +2737,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
                     try
                     {
+                        Logger.MethodTrace($"EnterLevelArea: {levelArea}");
                         trigger.questEvent.Execute(World); // launch a questEvent
                     }
                     catch (Exception e)
@@ -2735,14 +2745,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         Logger.WarnException(e, "questEvent()");
                     }
             }
-
-            Attributes[GameAttribute.Corpse_Resurrection_Charges] =
-                3; // Reset resurrection charges on zone change (TODO: do not reset charges on reentering the same zone)
+            // Reset resurrection charges on zone change - TODO: do not reset charges on reentering the same zone
+            Attributes[GameAttribute.Corpse_Resurrection_Charges] = Config.Instance.ResurrectionCharges; 
 
 #if DEBUG
-            Logger.Warn("Player Location {0}, Scene: {1} SNO: {2} LevelArea: {3}", Toon.Name,
-                CurrentScene.SceneSNO.Name, CurrentScene.SceneSNO.Id, CurrentScene.Specification.SNOLevelAreas[0]);
-#else
+            Logger.Warn($"Player Location {Toon.Name}, Scene: {CurrentScene.SceneSNO.Name} SNO: {CurrentScene.SceneSNO.Id} LevelArea: {CurrentScene.Specification.SNOLevelAreas[0]}");
 #endif
         }
 
@@ -2838,7 +2845,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void RefreshReveal()
     {
         var range = 200f;
-        if (InGameClient.Game.CurrentEncounter.activated)
+        if (InGameClient.Game.CurrentEncounter.Activated)
             range = 360f;
 
         foreach (var actor in GetActorsInRange(range).Where(actor => actor is not Player))
@@ -2888,7 +2895,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     //*
     private void OnHirelingDismiss(GameClient client, PetAwayMessage message)
     {
-        Logger.MethodTrace($"{message.ActorID}");
+        Logger.MethodTrace(message.ActorID.ToString());
         var petId = World.GetGlobalId(this, message.ActorID);
         var pet = World.GetActorByGlobalId(petId);
         if (pet is Hireling)
@@ -2905,16 +2912,16 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         switch (hireling.Attributes[GameAttribute.Hireling_Class])
         {
             case 1:
-                if (!(hireling is Templar)) return;
-                (hireling as Templar).SetSkill(this, message.PowerSNOId);
+                if (hireling is not Templar templar) return;
+                templar.SetSkill(this, message.PowerSNOId);
                 break;
             case 2:
-                if (!(hireling is Scoundrel)) return;
-                (hireling as Scoundrel).SetSkill(this, message.PowerSNOId);
+                if (hireling is not Scoundrel scoundrel) return;
+                scoundrel.SetSkill(this, message.PowerSNOId);
                 break;
             case 3:
-                if (!(hireling is Enchantress)) return;
-                (hireling as Enchantress).SetSkill(this, message.PowerSNOId);
+                if (hireling is not Enchantress enchantress) return;
+                enchantress.SetSkill(this, message.PowerSNOId);
                 break;
             default:
                 break;
@@ -2950,7 +2957,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         var activeSkills = Toon.DBActiveSkills;
         activeSkills.PotionGBID = message.Field1;
-        World.Game.GameDBSession.SessionUpdate(activeSkills);
+        World.Game.GameDbSession.SessionUpdate(activeSkills);
     }
 
     public void ToonStateChanged()
@@ -2999,7 +3006,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
 
         trainHelper.DbRef.Level++;
-        World.Game.GameDBSession.SessionUpdate(trainHelper.DbRef);
+        World.Game.GameDbSession.SessionUpdate(trainHelper.DbRef);
 
         if (trainHelper.Achievement is not null)
             GrantAchievement(trainHelper.Achievement.Value);
@@ -3031,7 +3038,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         Logger.Trace("Learning transmog #{0}", transmogGBID);
         learnedTransmogs.Add(transmogGBID);
         mystic_data.LearnedRecipes = SerializeBytes(learnedTransmogs);
-        World.Game.GameDBSession.SessionUpdate(mystic_data);
+        World.Game.GameDbSession.SessionUpdate(mystic_data);
 
         LoadCrafterData();
     }
@@ -3487,7 +3494,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void RevealActorsToPlayer()
     {
         var Range = 200f;
-        if (InGameClient.Game.CurrentEncounter.activated)
+        if (InGameClient.Game.CurrentEncounter.Activated)
             Range = 360f;
 
         var specialWorlds = new WorldSno[]
@@ -3506,15 +3513,15 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             if (actor is Player) // if the actors is already revealed, skip it.
                 continue;
 
-            if (World.SNO == WorldSno.x1_tristram_adventure_mode_hub && actor is Portal)
-                if ((actor as Portal).Destination.WorldSNO == (int)WorldSno.x1_tristram_adventure_mode_hub)
+            if (World.SNO == WorldSno.x1_tristram_adventure_mode_hub && actor is Portal portal)
+                if (portal.Destination.WorldSNO == (int)WorldSno.x1_tristram_adventure_mode_hub)
                     continue;
-            if (World.SNO == WorldSno.trout_town && actor is Portal)
-                if ((actor as Portal).Destination.WorldSNO == (int)WorldSno.trout_town &&
-                    (actor as Portal).Destination.DestLevelAreaSNO == 19947)
+            if (World.SNO == WorldSno.trout_town && actor is Portal portal1)
+                if (portal1.Destination.WorldSNO == (int)WorldSno.trout_town &&
+                    portal1.Destination.DestLevelAreaSNO == 19947)
                 {
-                    (actor as Portal).Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
-                    (actor as Portal).Destination.StartingPointActorTag = 483;
+                    portal1.Destination.WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub;
+                    portal1.Destination.StartingPointActorTag = 483;
                 }
 
             if (actor.ActorType != ActorType.ClientEffect && actor.ActorType != ActorType.AxeSymbol &&
@@ -4258,7 +4265,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         serialized += totalDamage.ToString("F0");
         var dbStats = Toon.DBToon;
         dbStats.Stats = serialized;
-        World.Game.GameDBSession.SessionUpdate(dbStats);
+        World.Game.GameDbSession.SessionUpdate(dbStats);
     }
 
     public List<PlayerQuestRewardHistoryEntry> QuestRewardHistory
@@ -4326,7 +4333,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void CheckBonusSets()
     {
-        var sets = World.Game.GameDBSession
+        var sets = World.Game.GameDbSession
             .SessionQueryWhere<DBBonusSets>(dbi => dbi.DBAccount.Id == Toon.GameAccount.AccountId).ToList();
         foreach (var bonusSet in sets)
         {
@@ -4357,14 +4364,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             }
 
             //BonusSetsList.CollectionEditions[bonusSet.SetId].Claim(this);
-            World.Game.GameDBSession.SessionUpdate(bonusSet);
+            World.Game.GameDbSession.SessionUpdate(bonusSet);
             //this.InGameClient.SendMessage(new BroadcastTextMessage() { Field0 = "You have been granted with gifts from bonus pack!" });
         }
     }
 
     public HirelingInfo GetHirelingInfo(int type)
     {
-        var query = World.Game.GameDBSession
+        var query = World.Game.GameDbSession
             .SessionQueryWhere<DBHireling>(dbh => dbh.DBToon.Id == Toon.PersistentID && dbh.Class == type).ToList();
         if (query.Count == 0)
         {
@@ -4433,14 +4440,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         {
             learnedBlacksmithRecipes.Add(recipe);
             blacksmith_data.LearnedRecipes = SerializeBytes(learnedBlacksmithRecipes);
-            World.Game.GameDBSession.SessionUpdate(blacksmith_data);
+            World.Game.GameDbSession.SessionUpdate(blacksmith_data);
             UpdateAchievementCounter(404, 1, 0);
         }
         else if (artisan == ArtisanType.Jeweler)
         {
             learnedJewelerRecipes.Add(recipe);
             jeweler_data.LearnedRecipes = SerializeBytes(learnedJewelerRecipes);
-            World.Game.GameDBSession.SessionUpdate(jeweler_data);
+            World.Game.GameDbSession.SessionUpdate(jeweler_data);
             UpdateAchievementCounter(404, 1, 1);
         }
 
@@ -4478,7 +4485,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         if (blacksmith_data == null)
         {
             var craft_data =
-                World.Game.GameDBSession.SessionQueryWhere<DBCraft>(dbc =>
+                World.Game.GameDbSession.SessionQueryWhere<DBCraft>(dbc =>
                     dbc.DBGameAccount.Id == Toon.GameAccount.PersistentID);
 
             blacksmith_data = craft_data.Single(dbc =>
@@ -4555,7 +4562,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void LoadMailData()
     {
         var mail_data =
-            World.Game.GameDBSession.SessionQueryWhere<DBMail>(dbm =>
+            World.Game.GameDbSession.SessionQueryWhere<DBMail>(dbm =>
                 dbm.DBToon.Id == Toon.PersistentID && dbm.Claimed == false);
         var mails = D3.Items.Mails.CreateBuilder();
         foreach (var mail in mail_data)
@@ -4855,14 +4862,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void SetProgress(int act, int difficulty)
     {
         if (act > 400) return;
-        var dbGAcc = World.Game.GameDBSession.SessionGet<DBGameAccount>(Toon.GameAccount.PersistentID);
+        var dbGAcc = World.Game.GameDbSession.SessionGet<DBGameAccount>(Toon.GameAccount.PersistentID);
         var progress = dbGAcc.BossProgress;
         if (progress[act / 100] == 0xff || progress[act / 100] < (byte)difficulty)
         {
             progress[act / 100] = (byte)difficulty;
 
             dbGAcc.BossProgress = progress;
-            World.Game.GameDBSession.SessionUpdate(dbGAcc);
+            World.Game.GameDbSession.SessionUpdate(dbGAcc);
         }
     }
 
@@ -6018,7 +6025,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             Logger.Trace("Learning lore #{0}", loreSNOId);
             var dbToon = Toon.DBToon;
             dbToon.Lore = SerializeBytes(LearnedLore.m_snoLoreLearned.Take(LearnedLore.Count).ToList());
-            World.Game.GameDBSession.SessionUpdate(dbToon);
+            World.Game.GameDbSession.SessionUpdate(dbToon);
         }
     }
 

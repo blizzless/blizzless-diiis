@@ -56,17 +56,17 @@ namespace DiIiS_NA.GameServer.ClientSystem
 			var game = GameManager.GetGameById(message.SGameId);
 			Toon toon = null;
 			if (game != null)
-				toon = ToonManager.GetToonByLowID((ulong)message.HeroID, game.GameDBSession);
+				toon = ToonManager.GetToonByLowID((ulong)message.HeroID, game.GameDbSession);
 			bool PVP = false;
 			if (PVP)
-				toon = new Toon(ToonManager.CreateFakeDBToon(toon.GameAccount.Owner.BattleTag, toon.GameAccount.DBGameAccount), game.GameDBSession);
+				toon = new Toon(ToonManager.CreateFakeDBToon(toon.GameAccount.Owner.BattleTag, toon.GameAccount.DBGameAccount), game.GameDbSession);
 
 			if (game == null)
 			{
 				if (PVP)
 				{
 					game = GameManager.CreateGame(message.SGameId, 1);
-					toon = ToonManager.GetToonByLowID((ulong)message.HeroID, game.GameDBSession);
+					toon = ToonManager.GetToonByLowID((ulong)message.HeroID, game.GameDbSession);
 					game.SetAct(0);
 				}
 				else

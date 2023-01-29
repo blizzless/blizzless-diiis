@@ -59,7 +59,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				var toon = player.Toon.DBToon;
 				toon.ChestsOpened++;
-				World.Game.GameDBSession.SessionUpdate(toon);
+				World.Game.GameDbSession.SessionUpdate(toon);
 			}
 
 			base.OnTargeted(player, message);

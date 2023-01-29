@@ -24,7 +24,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem.Implementations
 			target.Attributes[GameAttribute.DyeType] = Attributes[GameAttribute.DyeType];
 			target.DBInventory.DyeType = Attributes[GameAttribute.DyeType];
 
-			player.World.Game.GameDBSession.SessionUpdate(target.DBInventory);
+			player.World.Game.GameDbSession.SessionUpdate(target.DBInventory);
 
 			player.Inventory.SendVisualInventory(player);
 

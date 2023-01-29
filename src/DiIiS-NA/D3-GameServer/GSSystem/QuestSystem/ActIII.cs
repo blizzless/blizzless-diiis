@@ -533,7 +533,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Adria
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					ListenProximity(ActorSno._adria, new LaunchConversation(196366));
 					ListenConversation(196366, new Advance());
 					if (Game.Empty) UnlockTeleport(6);
@@ -669,7 +669,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 1,
 				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //Destroy Heart of Sin
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					ListenKill(ActorSno._a3dun_crater_st_giantdemonheart_mob, 1, new Advance());
 					Game.AddOnLoadWorldAction(WorldSno.a3dun_crater_st_level04b, () =>
 					{
@@ -708,7 +708,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 5,
 				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //get Azmodan's soul
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					ListenProximity(ActorSno._azmodan_bss_soulremnants, new Advance());
 					Game.AddOnLoadWorldAction(WorldSno.a3dun_azmodan_arena, () =>
 					{
@@ -889,7 +889,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = -1,
 				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 				})
 			});
 
