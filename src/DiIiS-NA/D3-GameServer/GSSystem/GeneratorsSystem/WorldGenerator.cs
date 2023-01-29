@@ -306,7 +306,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 							if (entries.Count > 0)
 							{
-								subSceneEntry = RandomHelper.RandomItem<SubSceneEntry>(entries, entry => 1);
+								subSceneEntry = RandomHelper.RandomItem(entries);
 								entries.Remove(subSceneEntry);
 							}
 							else
@@ -1975,7 +1975,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			for (int i = 0; i < count; i++)
 			{
 				//Chose a random exit to test
-				Vector3D chosenExitPosition = RandomHelper.RandomValue(exitTypes);
+				Vector3D chosenExitPosition = RandomHelper.RandomItem(exitTypes).Value;
 				var chosenExitDirection = (from pair in exitTypes
 										   where pair.Value == chosenExitPosition
 										   select pair.Key).FirstOrDefault();
@@ -2077,7 +2077,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				//return filler
 				return GetTileInfo(tiles, TileTypes.Filler);
 			}
-			List<TileInfo> tilesWithRightDirection = (from pair in tiles where ((pair.Value.ExitDirectionBits & exitDirectionBits) > 0) select pair.Value).ToList<TileInfo>();
+			List<TileInfo> tilesWithRightDirection = (from pair in tiles where ((pair.Value.ExitDirectionBits & exitDirectionBits) > 0) select pair.Value).ToList();
 
 			if (tilesWithRightDirection.Count == 0)
 			{
@@ -2087,7 +2087,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				return null;
 			}
 
-			return RandomHelper.RandomItem(tilesWithRightDirection, x => 1.0f);
+			return RandomHelper.RandomItem(tilesWithRightDirection);
 		}
 
 		private TileInfo GetTile(Dictionary<int, TileInfo> tiles, int snoId)
@@ -2100,12 +2100,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		/// Returns a tileinfo from a list of tiles that has a specific type
 		/// </summary>
 		/// <param name="tiles"></param>
-		/// <param name="exitDirectionBits"></param>
+		/// <param name="tileType"></param>
 		/// <returns></returns>
 		private TileInfo GetTileInfo(Dictionary<int, TileInfo> tiles, TileTypes tileType)
 		{
-			var tilesWithRightType = (from pair in tiles where (pair.Value.TileType == (int)tileType) select pair.Value);
-			return RandomHelper.RandomItem(tilesWithRightType, x => 1);
+			var tilesWithRightType = tiles.Values.Where(tile => tile.TileType == (int)tileType);
+			return RandomHelper.RandomItem(tilesWithRightType);
 		}
 
 		private TileInfo GetTileInfo(Dictionary<int, TileInfo> tiles, TileTypes tileType, int exitDirectionBits)

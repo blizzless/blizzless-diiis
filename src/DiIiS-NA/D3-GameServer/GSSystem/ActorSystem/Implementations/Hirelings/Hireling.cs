@@ -510,12 +510,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			UnequipItem(owner, slot, item);
 		}
 
-		public Item GetItemByDynId(Player player, uint DynamicId)
+		public Item GetItemByDynId(Player player, uint dynamicId)
 		{
-			if (_equipment[player].Values.Where(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == DynamicId).Count() > 0)
-				return _equipment[player].Values.Single(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == DynamicId);
-			else
-				return null;
+			if (_equipment[player].Values.Any(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == dynamicId))
+				return _equipment[player].Values.Single(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == dynamicId);
+
+			return null;
 		}
 
 		public void RefreshEquipment(Player player)
@@ -552,7 +552,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 		public bool GetItemBonus(GameAttributeB attributeB)
 		{
-			return GetEquippedItems(owner).Where(item => item.Attributes[attributeB] == true).Count() > 0;
+			return GetEquippedItems(owner).Any(item => item.Attributes[attributeB]);
 		}
 
 		public float GetItemBonus(GameAttributeF attributeF, int attributeKey)
