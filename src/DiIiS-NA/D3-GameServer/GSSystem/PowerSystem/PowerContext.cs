@@ -109,34 +109,34 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public void GeneratePrimaryResource(float amount)
 		{
-			if (User is Player)
+			if (User is Player player)
 			{
-				(User as Player).GeneratePrimaryResource(amount);
+				player.GeneratePrimaryResource(amount);
 			}
 		}
 
 		public void UsePrimaryResource(float amount)
 		{
-			if (User is Player)
+			if (User is Player player)
 			{
-				if (User.Attributes[GameAttribute.Free_Cast_All] != true)
-					(User as Player).UsePrimaryResource(amount - User.Attributes[GameAttribute.Power_Resource_Reduction, PowerSNO]);
+				if (player.Attributes[GameAttribute.Free_Cast_All] != true)
+					player.UsePrimaryResource(amount - player.Attributes[GameAttribute.Power_Resource_Reduction, PowerSNO]);
 			}
 		}
 
 		public void GenerateSecondaryResource(float amount)
 		{
-			if (User is Player)
+			if (User is Player player)
 			{
-				(User as Player).GenerateSecondaryResource(amount);
+				player.GenerateSecondaryResource(amount);
 			}
 		}
 
 		public void UseSecondaryResource(float amount)
 		{
-			if (User is Player)
+			if (User is Player player)
 			{
-				(User as Player).UseSecondaryResource(amount - User.Attributes[GameAttribute.Power_Resource_Reduction, PowerSNO]);
+				player.UseSecondaryResource(amount - player.Attributes[GameAttribute.Power_Resource_Reduction, PowerSNO]);
 			}
 		}
 
@@ -275,7 +275,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			get
 			{
 				if (World.IsPvP)
-					return (actor) => ((actor is Player && actor.GlobalID != User.GlobalID) || (actor is Minion && actor.GlobalID != User.GlobalID && (actor as Minion).Master.GlobalID != User.GlobalID));
+					return (actor) => ((actor is Player && actor.GlobalID != User.GlobalID) || (actor is Minion minion && minion.GlobalID != User.GlobalID && minion.Master.GlobalID != User.GlobalID));
 				else
 				{
 					if (User is Player || User is Minion || User is Hireling || (User is Monster && User.Attributes[GameAttribute.Team_Override] == 1) || User.SNO == ActorSno._pt_blacksmith_nonvendor || (User is Monster && User.Attributes[GameAttribute.Team_Override] == 1))

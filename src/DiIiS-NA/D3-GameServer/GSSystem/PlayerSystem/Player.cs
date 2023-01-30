@@ -3255,6 +3255,23 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         if (ActiveSkeletons)
         {
+            if (Followers.All(s => s.Value != ActorSno._p6_necro_commandskeletons_a) && NecroSkeletons.Any())
+            {
+                foreach (var skel in NecroSkeletons)
+                {
+                    try
+                    {
+                        InGameClient.SendMessage(new PetDetachMessage()
+                        {
+                            PetId = skel.GlobalID
+                        });
+                        World.Leave(skel);
+                    }
+                    catch{}
+                }
+
+                NecroSkeletons.Clear();
+            }
             while (NecroSkeletons.Count < 7)
             {
                 var Skeleton = new NecromancerSkeleton_A(World, ActorSno._p6_necro_commandskeletons_a, this);
