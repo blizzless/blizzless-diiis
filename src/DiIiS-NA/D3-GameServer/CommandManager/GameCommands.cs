@@ -425,8 +425,8 @@ public class PlatinumCommand : CommandGroup
         });
 
         player.InGameClient.BnetClient.Account.GameAccount.Platinum += amount;
-
-        return "Platinum test";
+        player.Inventory.UpdateCurrencies();
+        return "Platinum given.";
     }
 }
 
