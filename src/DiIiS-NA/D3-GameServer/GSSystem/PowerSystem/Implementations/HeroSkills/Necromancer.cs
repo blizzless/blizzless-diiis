@@ -2051,7 +2051,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         if (!skeleton.Attributes.FixedMap.Contains(FixedAttribute.AttackSpeed))
                         {
                             var originalAttackSpeed = skeleton.Attributes[GameAttribute.Attacks_Per_Second];
-                            skeleton.Attributes.FixedMap.Add(FixedAttribute.AttackSpeed, attr => attr[GameAttribute.Attacks_Per_Second] = originalAttackSpeed * 1.25f);
+                            skeleton.Attributes.FixedMap.Add(FixedAttribute.AttackSpeed, 
+                                attr => attr[GameAttribute.Attacks_Per_Second] = originalAttackSpeed * 1.25f,
+                                () => skeleton.Attributes[GameAttribute.Attacks_Per_Second] = originalAttackSpeed);
                             skeleton.Attributes.BroadcastChangedIfRevealed();
                         }
                     }
@@ -2067,6 +2069,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     {
                         Target = Target
                     };
+                    
                     attack.AddWeaponDamage(greaterDamage ? 2.15f : 1.0f, damageType);
                     attack.OnHit = hit =>
                     {
