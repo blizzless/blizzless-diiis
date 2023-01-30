@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DiIiS_NA.Core.Extensions;
 using NHibernate.Linq;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.Storage;
@@ -335,7 +336,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						data.NumberOfCompletionSteps);
 					foreach (var step in data.QuestSteps)
 					{
-						int nextID = step.StepObjectiveSets.Count() > 0
+						int nextID = step.StepObjectiveSets.Any()
 							? step.StepObjectiveSets.First().FollowUpStepID
 							: -1;
 						Logger.Info("Step [{0}] {1} -> {2}", step.ID, step.Name, nextID);
@@ -1143,7 +1144,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public static Item GenerateRandomGem(ActorSystem.Actor player, int level, bool is_goblin)
 		{
-			string gemName = GemNames[FastRandom.Instance.Next(GemNames.Count)];
+			string gemName = GemNames.PickRandom();
 
 			int lvl = Math.Max(player.Attributes[GameAttribute.Level], 20);
 			int gem_grade = ((lvl - 10) / 8) + 1;
@@ -1168,7 +1169,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//var found = false;
 			//ItemTable itemDefinition = null;
 
-			if (pool.Count() == 0) return null;
+			if (pool.Count == 0) return null;
 			List<ItemTable> pool_filtered = pool.Where(it =>
 				it.SNOActor != -1 &&
 				it.WeaponDamageMin != 100.0f &&
@@ -1222,10 +1223,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				).ToList();
 			//*/
 
-			if (pool_filtered.Count() == 0) return null;
+			if (pool_filtered.Count == 0) return null;
 
 
-			ItemTable selected = pool_filtered[FastRandom.Instance.Next(0, pool_filtered.Count() - 1)];
+			ItemTable selected = pool_filtered.PickRandom();
 			return selected;
 		}
 
@@ -1234,7 +1235,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//var found = false;
 			//ItemTable itemDefinition = null;
 
-			if (pool.Count() == 0) return null;
+			if (pool.Count == 0) return null;
 			List<ItemTable> pool_filtered = pool.Where(it =>
 				it.SNOActor != -1 &&
 				it.WeaponDamageMin != 100.0f &&
@@ -1262,9 +1263,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				  (it.Cost == 0)) && // i hope it catches all lore with npc spawned /xsochor
 				!(!GBIDHandlers.ContainsKey(it.Hash) && !AllowedItemTypes.Contains(it.ItemTypesGBID))
 			).ToList();
-			if (pool_filtered.Count() == 0) return null;
+			if (pool_filtered.Count == 0) return null;
 
-			ItemTable selected = pool_filtered[FastRandom.Instance.Next(0, pool_filtered.Count() - 1)];
+			ItemTable selected = pool_filtered.PickRandom();
 			return selected;
 		}
 

@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -236,7 +237,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					for (int i = 0; i < frogs.Length; ++i)
 					{
 						if (frogs[i] == null) continue;
-						var target = PowerMath.GenerateSpreadPositions(frogs[i].Position, PowerMath.TranslateDirection2D(User.Position, TargetPosition, frogs[i].Position, 10f), 30f, 3)[FastRandom.Instance.Next(0, 3)];
+						var target = PowerMath.GenerateSpreadPositions(frogs[i].Position, PowerMath.TranslateDirection2D(User.Position, TargetPosition, frogs[i].Position, 10f), 30f, 3).PickRandom();
 						//frogs[i].LaunchArc(new Vector3D(RandomDirection(frogs[i].Position, 5f, 10f)), 3f, -0.03f);
 						frogs[i].LaunchArc(target, 3f, -0.03f);
 					}
@@ -1035,7 +1036,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					var targets = GetEnemiesInRadius(grenadeN.Position, ScriptFormula(11));
 					if (targets.Actors.Count > 0)
 					{
-						var target = targets.Actors[FastRandom.Instance.Next(0, targets.Actors.Count)];
+						var target = targets.Actors.PickRandom();
 
 						grenadeN.LaunchArc(PowerMath.TranslateDirection2D(grenadeN.Position, target.Position, grenadeN.Position, PowerMath.Distance2D(grenadeN.Position, target.Position)), height, ScriptFormula(2));
 						yield return grenadeN.ArrivalTime;
@@ -2316,7 +2317,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (!HasBuff<GargantuanEnrageCDBuff>(Target))
 					{
 						var targets = GetEnemiesInRadius(Target.Position, 10f);
-						if (targets.Actors.Count >= 5 || targets.Actors.Where(a => a is Boss || a is Champion || a is Rare || a is Unique).Count() > 1)
+						if (targets.Actors.Count >= 5 || targets.Actors.Count(a => a is Boss or Champion or Rare or Unique) > 1)
 						{
 							AddBuff(Target, new GargantuanEnrageCDBuff());
 							AddBuff(Target, new GargantuanEnrageBuff());
@@ -2704,7 +2705,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (payload is HitPayload && payload.Target == Target)
 			{
 				Player usr = (Target as Player);
-				float dmg = (payload as HitPayload).TotalDamage * ScriptFormula(9) / usr.Followers.Values.Where(a => a == ActorSno._wd_zombiedog).Count();
+				float dmg = (payload as HitPayload).TotalDamage * ScriptFormula(9) / usr.Followers.Values.Count(a => a == ActorSno._wd_zombiedog);
 				(payload as HitPayload).TotalDamage *= 1 - ScriptFormula(9);
 				//List<Actor> dogs = GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.ActorSNO.Id == 51353).ToList();
 				foreach (var dog in GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.SNO == ActorSno._wd_zombiedog))
@@ -2738,7 +2739,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (payload is HitPayload && payload.Context.User == Target)
 			{
 				Player master = (Target as ZombieDog).Master as Player;
-				float heal = (payload as HitPayload).TotalDamage * ScriptFormula(8) / (master.Followers.Values.Where(a => a == ActorSno._wd_zombiedog).Count() + 1);
+				float heal = (payload as HitPayload).TotalDamage * ScriptFormula(8) / (master.Followers.Values.Count(a => a == ActorSno._wd_zombiedog) + 1);
 				(payload as HitPayload).TotalDamage *= 1 - ScriptFormula(9);
 				master.AddHP(heal);
 				foreach (var dog in GetAlliesInRadius(Target.Position, 100f).Actors.Where(a => a.SNO == ActorSno._wd_zombiedog))

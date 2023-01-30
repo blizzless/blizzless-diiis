@@ -14,6 +14,9 @@ RateDrop = 1
 RateChangeDrop = 1
 RateMonsterHP = 1
 RateMonsterDMG = 1
+ChanceHighQualityUnidentified = 30
+ChanceNormalUnidentified = 5
+ResurrectionCharges = 3
 ```
 
 ## Description
@@ -26,4 +29,7 @@ RateMonsterDMG = 1
 | `RateChangeDrop` | Drop quality multiplier   |
 | `RateMonsterHP`  | Monsters HP multiplier    |
 | `RateMonsterDMG` | Monster damage multiplier |
+| `ChanceHighQualityUnidentified` | Percentage that a unique, legendary, set or special item created is unidentified |
+| `ChanceNormalUnidentified` | Percentage that normal item created is unidentified |
+| `ResurrectionCharges` | Amount of times user can resurrect at corpse |
 

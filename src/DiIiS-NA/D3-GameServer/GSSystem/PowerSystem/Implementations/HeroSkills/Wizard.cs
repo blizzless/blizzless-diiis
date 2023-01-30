@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -724,7 +725,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 				Vector3D[] spawnPoints = PowerMath.GenerateSpreadPositions(TgtPosition, TgtPosition + new Vector3D(3f, 0, 0), 120, 3);
 
-				for (int i = 0; i < spawnPoints.Count(); i++)
+				for (int i = 0; i < spawnPoints.Length; i++)
 				{
 					if (!User.World.CheckLocationForFlag(spawnPoints[i], DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 						continue;
@@ -801,7 +802,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 							Actor curTarget = target;
 							Actor nextTarget = null;
 							var c = 0;
-							while (targets.Count() < 3)
+							while (targets.Count < 3)
 							{
 								nextTarget = GetEnemiesInRadius(curTarget.Position, 6f).Actors.FirstOrDefault(a => !targets.Contains(a));
 								if (nextTarget == null) break;
@@ -1270,7 +1271,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					SnapFacing = true,
 					AnimationTag = 69728,
 				});
-				TargetPosition = PowerMath.GenerateSpreadPositions(Twister.Position, TargetPosition, 20f, 3)[FastRandom.Instance.Next(0, 3)];
+				TargetPosition = PowerMath.GenerateSpreadPositions(Twister.Position, TargetPosition, 20f, 3).PickRandom();
 
 				if (Rune_B > 0)     //Raging Storm
 				{
@@ -1299,7 +1300,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 								SnapFacing = true,
 								AnimationTag = 69728,
 							});
-							TargetPosition = PowerMath.GenerateSpreadPositions(bigTwister.Position, TargetPosition, 20f, 3)[FastRandom.Instance.Next(0, 3)];
+							TargetPosition = PowerMath.GenerateSpreadPositions(bigTwister.Position, TargetPosition, 20f, 3).PickRandom();
 							WeaponDamage(GetEnemiesInRadius(bigTwister.Position, 12f), bigMultiplier, DamageType.Arcane);
 						};
 						Twister.Destroy();
@@ -1980,7 +1981,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						AddBuff(hitPayload.Target, new ShatterDebuff(User, ScriptFormula(14), WaitSeconds(2f)));
 				}
 				if (Rune_E > 0)         //Deep Freeze
-					if (nova.Targets.Actors.Count() > ScriptFormula(13))
+					if (nova.Targets.Actors.Count > ScriptFormula(13))
 						if (!HasBuff<DeepFreezeChCBuff>(User))
 							AddBuff(User, new DeepFreezeChCBuff(ScriptFormula(18), WaitSeconds(ScriptFormula(19))));
 			};
@@ -2816,7 +2817,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (!(Rune_B > 0 || Rune_C > 0))
 						proj.Destroy();
 				};
-				var destination = ((Rune_B > 0 || Rune_C > 0) ? TargetPosition : PowerMath.GenerateSpreadPositions(User.Position, TargetPosition, 5f, 9)[FastRandom.Instance.Next(0, 9)]);
+				var destination = ((Rune_B > 0 || Rune_C > 0) ? TargetPosition : PowerMath.GenerateSpreadPositions(User.Position, TargetPosition, 5f, 9).PickRandom());
 				proj.Launch(destination, ScriptFormula(6));
 				//WaitSeconds(ScriptFormula(25));
 			}

@@ -34,12 +34,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 
 			LifeTime = TickTimer.WaitSeconds(world.Game, lifetime);
 
-			if (Master != null && context.ScriptFormula(1) < (Master as Player).Followers.Values.Where(f => f == SNO).Count())
+			if (Master != null && context.ScriptFormula(1) < (Master as Player).Followers.Values.Count(f => f == SNO))
 			{
 				if (Master is Player)
 				{
 					var rem = new List<uint>();
-					foreach (var fol in (Master as Player).Followers.Where(f => f.Key != GlobalID).Take((Master as Player).Followers.Values.Where(f => f == SNO).Count() - (int)context.ScriptFormula(1)))
+					foreach (var fol in (Master as Player).Followers.Where(f => f.Key != GlobalID).Take((Master as Player).Followers.Values.Count(f => f == SNO) - (int)context.ScriptFormula(1)))
 						if (fol.Value == SNO)
 							rem.Add(fol.Key);
 					foreach (var rm in rem)

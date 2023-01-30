@@ -33,11 +33,11 @@ namespace DiIiS_NA.Core.Discord.Modules
 			}
 
 
-			if (registerInfo.Count() == 3)
+			if (registerInfo.Length == 3)
 			{
 				if (!email.Contains('@'))
 				{
-					await ReplyAsync($"<@{Context.User.Id}> " + string.Format("'{0}' is not a valid email address.", email));
+					await ReplyAsync($"<@{Context.User.Id}> " + $"'{email}' is not a valid email address.");
 					return;
 				}
 				if (!IsValid(email))

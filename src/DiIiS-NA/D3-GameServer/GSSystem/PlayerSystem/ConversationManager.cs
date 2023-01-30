@@ -52,6 +52,7 @@ using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Conversation;
 //Blizzless Project 2022
 using System.Collections.Concurrent;
+using DiIiS_NA.Core.Extensions;
 //Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 //Blizzless Project 2022
@@ -572,8 +573,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 
 			if (asset.RootTreeNodes[lineIndex].ConvNodeType == 4)
-				currentLineNode = asset.RootTreeNodes[lineIndex]
-					.ChildNodes[RandomHelper.Next(asset.RootTreeNodes[lineIndex].ChildNodes.Count)];
+				currentLineNode = asset.RootTreeNodes[lineIndex].ChildNodes.PickRandom();
 			else
 				currentLineNode = asset.RootTreeNodes[lineIndex];
 

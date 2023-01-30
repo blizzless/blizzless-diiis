@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -300,10 +301,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			for (int i = 0; i < 8; i++)
 			{
 				var targets = GetEnemiesInRadius(User.Position, ScriptFormula(18)).Actors;
-				Actor target = null;
-
-				if (targets.Count() > 0)
-					target = targets[Rand.Next(targets.Count())];
+				targets.TryPickRandom(out var target);
 
 				var position = target == null ? RandomDirection(User.Position, 1f, 15f) : target.Position;
 				_CreateArrowPool(ActorSno._demonhunter_rainofarrows_indigo_buff, position, ScriptFormula(16), 2f);
@@ -1650,7 +1648,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				Vector3D targetPosition = RandomDirection(Target.Position, ScriptFormula(2));
 				var enemies = GetEnemiesInRadius(Target.Position, ScriptFormula(2)).Actors;
 				if (enemies.Count > 0)
-					targetPosition = enemies[FastRandom.Instance.Next(0, enemies.Count)].Position;
+					targetPosition = enemies.PickRandom().Position;
 				if (_damageTimer == null || _damageTimer.TimedOut)
 				{
 					_damageTimer = WaitSeconds(1f / 4f);
@@ -1700,11 +1698,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						var targets = GetEnemiesInRadius(Target.Position, ScriptFormula(2));
 						if (targets.Actors.Count > 0)
 						{
-							Vector3D nearby_position = targets.Actors[FastRandom.Instance.Next(0, targets.Actors.Count)].Position;
+							Vector3D nearbyPosition = targets.Actors.PickRandom().Position;
 							// TODO: check projectile actor
 							var rocket = new Projectile(this, ActorSno._dh_straferune_knives_knife, User.Position);
 							rocket.Position.Z += 6f;
-							rocket.Launch(nearby_position, ScriptFormula(10));
+							rocket.Launch(nearbyPosition, ScriptFormula(10));
 							rocket.OnCollision = (hit) =>
 							{
 								SpawnEffect(ActorSno._dh_strafe_sphereexplode, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 6f)); // impact effect (fix height)

@@ -286,9 +286,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				string itemType = originalItem.ItemDefinition.Name.Substring(3);
 				if (itemType.Contains("1HWeapon"))
-					itemType = OneHandedWeapons[FastRandom.Instance.Next(OneHandedWeapons.Count())];
+					itemType = OneHandedWeapons.PickRandom();
 				if (itemType.Contains("2HWeapon"))
-					itemType = TwoHandedWeapons[FastRandom.Instance.Next(TwoHandedWeapons.Count())];
+					itemType = TwoHandedWeapons.PickRandom();
 				if (itemType.Contains("Pants"))
 					itemType = "Legs";
 				_inventoryGrid.AddItem(ItemGenerator.GetRandomItemOfType(_owner, ItemGroup.FromString(itemType)));
@@ -739,15 +739,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				_owner.GrantAchievement(74987243307126);
 
 			var items = GetEquippedItems();
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "Belt_Barbarian")).Count() > 0 && (items.Where(item => ItemGroup.IsSubType(item.ItemType, "MightyWeapon1H")).Count() > 0 || items.Where(item => ItemGroup.IsSubType(item.ItemType, "MightyWeapon2H")).Count() > 0)) //barb
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "Belt_Barbarian")) && (items.Any(item => ItemGroup.IsSubType(item.ItemType, "MightyWeapon1H")) || items.Any(item => ItemGroup.IsSubType(item.ItemType, "MightyWeapon2H")))) //barb
 				_owner.GrantAchievement(74987243307046);
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "Cloak")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "HandXbow")).Count() > 0) //dh
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "Cloak")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "HandXbow"))) //dh
 				_owner.GrantAchievement(74987243307058);
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "SpiritStone_Monk")).Count() > 0 && (items.Where(item => ItemGroup.IsSubType(item.ItemType, "FistWeapon")).Count() > 0 || items.Where(item => ItemGroup.IsSubType(item.ItemType, "CombatStaff")).Count() > 0)) //monk
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "SpiritStone_Monk")) && (items.Any(item => ItemGroup.IsSubType(item.ItemType, "FistWeapon")) || items.Any(item => ItemGroup.IsSubType(item.ItemType, "CombatStaff")))) //monk
 				_owner.GrantAchievement(74987243307544);
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "VoodooMask")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "CeremonialDagger")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "Mojo")).Count() > 0) //wd
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "VoodooMask")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "CeremonialDagger")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "Mojo"))) //wd
 				_owner.GrantAchievement(74987243307561);
-			if (items.Where(item => ItemGroup.IsSubType(item.ItemType, "WizardHat")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "Wand")).Count() > 0 && items.Where(item => ItemGroup.IsSubType(item.ItemType, "Orb")).Count() > 0) //wiz
+			if (items.Any(item => ItemGroup.IsSubType(item.ItemType, "WizardHat")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "Wand")) && items.Any(item => ItemGroup.IsSubType(item.ItemType, "Orb"))) //wiz
 				_owner.GrantAchievement(74987243307582);
 		}
 
@@ -1099,23 +1099,23 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			if (client.Game.PvP) return;
 			if (_owner.IsCasting) _owner.StopCasting();
-			if (message is InventoryRequestMoveMessage) HandleInventoryRequestMoveMessage(message as InventoryRequestMoveMessage);
-			else if (message is InventoryRequestQuickMoveMessage) HandleInventoryRequestQuickMoveMessage(message as InventoryRequestQuickMoveMessage);
-			else if (message is InventorySplitStackMessage) OnInventorySplitStackMessage(message as InventorySplitStackMessage);
-			else if (message is InventoryStackTransferMessage) OnInventoryStackTransferMessage(message as InventoryStackTransferMessage);
-			else if (message is InventoryDropItemMessage) OnInventoryDropItemMessage(message as InventoryDropItemMessage);
-			else if (message is InventoryRequestUseMessage) OnInventoryRequestUseMessage(message as InventoryRequestUseMessage);
-			else if (message is InventoryRequestSocketMessage) OnSocketMessage(message as InventoryRequestSocketMessage);
-			else if (message is InventoryGemsExtractMessage) OnGemsExtractMessage(message as InventoryGemsExtractMessage);
-			else if (message is RequestBuySharedStashSlotsMessage) OnBuySharedStashSlots(message as RequestBuySharedStashSlotsMessage);
-			else if (message is InventoryIdentifyItemMessage) OnInventoryIdentifyItemMessage(message as InventoryIdentifyItemMessage);
-			else if (message is InventoryUseIdentifyItemMessage) OnInventoryUseIdentifyItemMessage(message as InventoryUseIdentifyItemMessage);
-			else if (message is TrySalvageMessage) OnTrySalvageMessage(message as TrySalvageMessage);
-			else if (message is TrySalvageAllMessage) OnTrySalvageAllMessage(message as TrySalvageAllMessage);
-			else if (message is CraftItemsMessage) OnCraftItemMessage(client, message as CraftItemsMessage);
-			else if (message is EnchantAffixMessage) OnEnchantAffixMessage(client, message as EnchantAffixMessage);
-			else if (message is TryTransmogItemMessage) OnTryTransmogItemMessage(client, message as TryTransmogItemMessage);
-			else if (message is DyeItemMessage) OnDyeItemMessage(client, message as DyeItemMessage);
+			if (message is InventoryRequestMoveMessage moveMessage) HandleInventoryRequestMoveMessage(moveMessage);
+			else if (message is InventoryRequestQuickMoveMessage quickMoveMessage) HandleInventoryRequestQuickMoveMessage(quickMoveMessage);
+			else if (message is InventorySplitStackMessage stackMessage) OnInventorySplitStackMessage(stackMessage);
+			else if (message is InventoryStackTransferMessage transferMessage) OnInventoryStackTransferMessage(transferMessage);
+			else if (message is InventoryDropItemMessage dropItemMessage) OnInventoryDropItemMessage(dropItemMessage);
+			else if (message is InventoryRequestUseMessage useMessage) OnInventoryRequestUseMessage(useMessage);
+			else if (message is InventoryRequestSocketMessage socketMessage) OnSocketMessage(socketMessage);
+			else if (message is InventoryGemsExtractMessage extractMessage) OnGemsExtractMessage(extractMessage);
+			else if (message is RequestBuySharedStashSlotsMessage slotsMessage) OnBuySharedStashSlots(slotsMessage);
+			else if (message is InventoryIdentifyItemMessage identifyItemMessage) OnInventoryIdentifyItemMessage(identifyItemMessage);
+			else if (message is InventoryUseIdentifyItemMessage itemMessage) OnInventoryUseIdentifyItemMessage(itemMessage);
+			else if (message is TrySalvageMessage salvageMessage) OnTrySalvageMessage(salvageMessage);
+			else if (message is TrySalvageAllMessage allMessage) OnTrySalvageAllMessage(allMessage);
+			else if (message is CraftItemsMessage itemsMessage) OnCraftItemMessage(client, itemsMessage);
+			else if (message is EnchantAffixMessage affixMessage) OnEnchantAffixMessage(client, affixMessage);
+			else if (message is TryTransmogItemMessage transmogItemMessage) OnTryTransmogItemMessage(client, transmogItemMessage);
+			else if (message is DyeItemMessage dyeItemMessage) OnDyeItemMessage(client, dyeItemMessage);
 			else if (message is InventoryRepairAllMessage) RepairAll();
 			else if (message is InventoryRepairEquippedMessage) RepairEquipment();
 
@@ -1201,6 +1201,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (!ReloadAffix.Definition.Name.Contains("Secondary")) filteredList = filteredList.Where( a => !a.Name.Contains("Secondary") );
 			if (!ReloadAffix.Definition.Name.Contains("Experience")) filteredList = filteredList.Where(a => !a.Name.Contains("Experience"));
 			if (!ReloadAffix.Definition.Name.Contains("Archon")) filteredList = filteredList.Where(a => !a.Name.Contains("Archon"));
+			// FIXME: always true?
 			if (ReloadAffix.Definition.Hash == ReloadAffix.Definition.Hash) filteredList = filteredList.Where(a => a.Hash != ReloadAffix.Definition.Hash);
 			if (Item.GBHandle.GBID == -4139386) filteredList = filteredList.Where( a => !a.Name.Contains("Str") && !a.Name.Contains("Dex") && !a.Name.Contains("Int") && !a.Name.Contains("Vit" ));
 
@@ -1211,22 +1212,27 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				if (Item.AffixFamilies.Contains(affix_group.First().AffixFamily0)) continue;
 				int s = Item.ItemDefinition.RequiredLevel;
 
-				bestDefinitions[affix_group.First().AffixFamily0] = affix_group.ToList()[FastRandom.Instance.Next(0, 1)];
+				bestDefinitions[affix_group.First().AffixFamily0] = affix_group.ToList()[FastRandom.Instance.Next(0, 1)]; // FIXME: random always returns 0
 			}
 
 			var SocketsAffixs = AffixGenerator.AllAffix.Where(a => a.Name.ToLower().Contains("1xx_socket") && itemTypes.ContainsAtLeastOne(a.ItemGroup)).ToList();
 
 			//if (bestDefinitions.Values.Where(a => a.Name.Contains("PoisonD")).Count() > 0) Logger.Debug("PoisonD in bestDefinitions");
 			List<AffixTable> selectedGroups = bestDefinitions.Values
-				.OrderBy(x => FastRandom.Instance.Next()) //random order
-				.GroupBy(x => (x.AffixFamily1 == -1) ? x.AffixFamily0 : x.AffixFamily1)
-				.Select(x => x.First()) //only one from group
-				.Take(1) //take needed amount
+				.OrderBy(_ => FastRandom.Instance.Next()) //random order
+				.GroupBy(x => x.AffixFamily1 == -1 ? x.AffixFamily0 : x.AffixFamily1)
+				.Select(x => x.First()) // only one from group
+				.Take(1) // take needed amount
 				.ToList();
 			if (selectedGroups.Count == 0)
 				if (ReloadAffix.Definition.Name.ToLower().Contains("socket"))
-					selectedGroups = SocketsAffixs.Where(x => x.OverrideLevelReq <= ReloadAffix.Definition.AffixLevelMax //&& x.AffixLevelMin == ReloadAffix.Definition.AffixLevelMin
-					).OrderBy(x => FastRandom.Instance.Next()).Take(1).ToList();
+				{
+					selectedGroups = SocketsAffixs
+						.Where(x => x.OverrideLevelReq <= ReloadAffix.Definition.AffixLevelMax) //&& x.AffixLevelMin == ReloadAffix.Definition.AffixLevelMin
+						.OrderBy(_ => FastRandom.Instance.Next())
+						.Take(1)
+						.ToList();
+				}
 				else
 					return;
 
@@ -2196,10 +2202,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public Item GetItemByDynId(Player plr, uint dynId)
 		{
-			if (_inventoryGrid.Items.Values.Union(_stashGrid.Items.Values).Union(_equipment.Items.Values).Where(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId).Count() > 0)
+			if (_inventoryGrid.Items.Values.Union(_stashGrid.Items.Values).Union(_equipment.Items.Values).Any(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId))
 				return _inventoryGrid.Items.Values.Union(_stashGrid.Items.Values).Union(_equipment.Items.Values).Single(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
-			else
-				return null;
+
+			return null;
 		}
 
 		public bool HasItem(int GBid)
@@ -2612,7 +2618,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public bool GetItemBonus(GameAttributeB attributeB)
 		{
-			return Loaded ? (GetEquippedItems().Where(item => item.Attributes[attributeB] == true).Count() > 0) : _owner.Attributes[attributeB];
+			return Loaded ? GetEquippedItems().Any(item => item.Attributes[attributeB]) : _owner.Attributes[attributeB];
 		}
 
 		public float GetItemBonus(GameAttributeF attributeF, int attributeKey)

@@ -302,11 +302,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						else
 						{
 							var entries = clusterSelected[sceneChunk.SceneSpecification.ClusterID];
-							SubSceneEntry subSceneEntry = null;
-
-							if (entries.Count > 0)
+							if (entries.TryPickRandom(out var subSceneEntry))
 							{
-								subSceneEntry = RandomHelper.RandomItem<SubSceneEntry>(entries, entry => 1);
 								entries.Remove(subSceneEntry);
 							}
 							else
@@ -566,8 +563,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			List<Scene> scenes = world.Scenes.Values.ToList();
 			if (levelArea != -1) scenes = scenes.Where(sc => sc.Specification.SNOLevelAreas[0] == levelArea && !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
 			else scenes = scenes.Where(sc => !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
-			int randomScene = RandomHelper.Next(0, scenes.Count - 1);
-			Vector3D SSV = scenes[randomScene].Position;
+			Vector3D SSV = scenes.PickRandom().Position;
 			Vector3D startingPoint = null;
 
 			while (true)
@@ -586,10 +582,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 			if (waypoints.Count > 1)
 			{
-				int RandomPoint = RandomHelper.Next(0, waypoints.Count - 1);
+				int randomPoint = RandomHelper.Next(0, waypoints.Count);
 				for (int i = 0; i < waypoints.Count; i++)
 				{
-					if (i != RandomPoint)
+					if (i != randomPoint)
 						waypoints[i].Destroy();
 				}
 			}
@@ -638,7 +634,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			bool rift = world.SNO.IsGenerated();
 			//Getting Enter
 			var loadedScene = new SceneChunk();
-			currentScene = DRLGContainers[0][RandomHelper.Next(0, DRLGContainers[0].Count)];
+			currentScene = DRLGContainers[0].PickRandom();
 			loadedScene.SNOHandle = new SNOHandle(SNOGroup.Scene, currentScene.SnoID);
 			loadedScene.PRTransform = new PRTransform(new Quaternion(new Vector3D(0f, 0f, 0f), 1), new Vector3D(0, 0, 0));
 			loadedScene.SceneSpecification = new SceneSpecification(
@@ -676,7 +672,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					{
 						if (prestScene.SNOHandle.Name.StartsWith("x1_Pand"))
 							positionOfNav = 3;
-						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						currentScene = DRLGContainers[2].PickRandom();
 						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
@@ -715,7 +711,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						if (prestScene.SNOHandle.Name.StartsWith("x1_Pand"))
 							positionOfNav = 3;
 
-						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						currentScene = DRLGContainers[2].PickRandom();
 						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
@@ -753,7 +749,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						if (prestScene.SNOHandle.Name.StartsWith("x1_Pand"))
 							positionOfNav = 3;
 
-						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						currentScene = DRLGContainers[2].PickRandom();
 						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
@@ -793,7 +789,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						if (prestScene.SNOHandle.Name.StartsWith("x1_Pand"))
 							positionOfNav = 3;
 
-						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						currentScene = DRLGContainers[2].PickRandom();
 						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
@@ -832,7 +828,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					currentNav = 'E';
 					while (true)
 					{
-						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						currentScene = DRLGContainers[2].PickRandom();
 						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
@@ -865,7 +861,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					currentNav = 'W';
 					while (true)
 					{
-						currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+						currentScene = DRLGContainers[2].PickRandom();
 						if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length > 1) //Way
 							break;
 					}
@@ -919,7 +915,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								{
 									if (hasExit)
 									{
-										currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
+										currentScene = DRLGContainers[3].PickRandom();
 										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //Way
 										{
@@ -929,7 +925,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									}
 									else
 									{
-										currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+										currentScene = DRLGContainers[1].PickRandom();
 										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav)) //Exit
 										{
@@ -941,7 +937,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								}
 								else
 								{
-									currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+									currentScene = DRLGContainers[2].PickRandom();
 									#region проверка на будущее
 									toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 									bool ForceStop = false;
@@ -955,7 +951,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -972,7 +968,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -989,7 +985,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1006,7 +1002,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														 (reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1067,7 +1063,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								{
 									if (hasExit)
 									{
-										currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
+										currentScene = DRLGContainers[3].PickRandom();
 										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //Way
 										{
@@ -1077,7 +1073,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									}
 									else
 									{
-										currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+										currentScene = DRLGContainers[1].PickRandom();
 										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav)) //Exit
 										{
@@ -1089,7 +1085,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								}
 								else
 								{
-									currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+									currentScene = DRLGContainers[2].PickRandom();
 									#region проверка на будущее
 									toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 									bool forceStop = false;
@@ -1103,7 +1099,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1119,7 +1115,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1135,7 +1131,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1151,7 +1147,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														 (reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;// else PosOfNav = 3;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1212,7 +1208,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								{
 									if (hasExit)
 									{
-										currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
+										currentScene = DRLGContainers[3].PickRandom();
 										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //Way
 										{
@@ -1222,7 +1218,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									}
 									else
 									{
-										currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+										currentScene = DRLGContainers[1].PickRandom();
 										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav)) //Exit
 										{
@@ -1234,7 +1230,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								}
 								else
 								{
-									currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+									currentScene = DRLGContainers[2].PickRandom();
 									#region проверка на будущее
 									toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 									bool ForceStop = false;
@@ -1252,7 +1248,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom();//CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1267,7 +1263,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom();//CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1282,7 +1278,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1297,7 +1293,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														 (reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1358,7 +1354,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								{
 									if (hasExit)
 									{
-										currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];
+										currentScene = DRLGContainers[3].PickRandom();
 										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //Way
 										{
@@ -1368,7 +1364,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									}
 									else
 									{
-										currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+										currentScene = DRLGContainers[1].PickRandom();
 										if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 										if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav)) //Exit
 										{
@@ -1380,7 +1376,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								}
 								else
 								{
-									currentScene = DRLGContainers[2][RandomHelper.Next(0, DRLGContainers[2].Count)];
+									currentScene = DRLGContainers[2].PickRandom();
 									#region проверка на будущее
 									toWaitChunks = currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray();
 									bool ForceStop = false;
@@ -1398,7 +1394,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X + RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1413,7 +1409,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X - RangetoNext, placeToNewScene.Y, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1428,7 +1424,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														(reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y + RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1443,7 +1439,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 														 (reservedChunks.Contains(new Vector3D(placeToNewScene.X, placeToNewScene.Y - RangetoNext, placeToNewScene.Z))))
 														while (true)
 														{
-															currentScene = DRLGContainers[3][RandomHelper.Next(0, DRLGContainers[3].Count)];//CurrentScene Switch
+															currentScene = DRLGContainers[3].PickRandom(); // CurrentScene Switch
 															if (currentScene.Asset.Name.ToLower().Contains("hexmaze_edge") || currentScene.Asset.Name.ToLower().Contains("hexmaze_exit")) positionOfNav = 4;
 															if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(currentNav) & currentScene.Asset.Name.Split('_')[positionOfNav].ToCharArray().Length == 1) //End
 															{
@@ -1540,7 +1536,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							char Nav = chunk.SNOHandle.Name.Split('_')[positionOfNav].ToCharArray()[0];
 							while (true)
 							{
-								currentScene = DRLGContainers[1][RandomHelper.Next(0, DRLGContainers[1].Count)];
+								currentScene = DRLGContainers[1].PickRandom();
 
 								if (currentScene.Asset.Name.Split('_')[positionOfNav].Contains(Nav)) //Exit
 								{
@@ -1603,7 +1599,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 						if (!busy)
 						{
-							currentScene = DRLGContainers[4][RandomHelper.Next(0, DRLGContainers[4].Count)];
+							currentScene = DRLGContainers[4].PickRandom();
 
 							var newscene = new SceneChunk
 							{
@@ -1678,7 +1674,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 					if (DRLGTemplate.Templates.ContainsKey(worldSNO))
 					{
-						DRLGTemplate.DRLGLayout world_layout = DRLGTemplate.Templates[worldSNO][FastRandom.Instance.Next(DRLGTemplate.Templates[worldSNO].Count)];
+						DRLGTemplate.DRLGLayout world_layout = DRLGTemplate.Templates[worldSNO].PickRandom();
 						int coordY = 0;
 
 						foreach (List<int> row in world_layout.map)
@@ -1975,7 +1971,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			for (int i = 0; i < count; i++)
 			{
 				//Chose a random exit to test
-				Vector3D chosenExitPosition = RandomHelper.RandomValue(exitTypes);
+				Vector3D chosenExitPosition = exitTypes.PickRandom().Value;
 				var chosenExitDirection = (from pair in exitTypes
 										   where pair.Value == chosenExitPosition
 										   select pair.Key).FirstOrDefault();
@@ -2077,7 +2073,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				//return filler
 				return GetTileInfo(tiles, TileTypes.Filler);
 			}
-			List<TileInfo> tilesWithRightDirection = (from pair in tiles where ((pair.Value.ExitDirectionBits & exitDirectionBits) > 0) select pair.Value).ToList<TileInfo>();
+			List<TileInfo> tilesWithRightDirection = (from pair in tiles where ((pair.Value.ExitDirectionBits & exitDirectionBits) > 0) select pair.Value).ToList();
 
 			if (tilesWithRightDirection.Count == 0)
 			{
@@ -2087,7 +2083,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				return null;
 			}
 
-			return RandomHelper.RandomItem(tilesWithRightDirection, x => 1.0f);
+			return tilesWithRightDirection.PickRandom();
 		}
 
 		private TileInfo GetTile(Dictionary<int, TileInfo> tiles, int snoId)
@@ -2100,12 +2096,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		/// Returns a tileinfo from a list of tiles that has a specific type
 		/// </summary>
 		/// <param name="tiles"></param>
-		/// <param name="exitDirectionBits"></param>
+		/// <param name="tileType"></param>
 		/// <returns></returns>
 		private TileInfo GetTileInfo(Dictionary<int, TileInfo> tiles, TileTypes tileType)
 		{
-			var tilesWithRightType = (from pair in tiles where (pair.Value.TileType == (int)tileType) select pair.Value);
-			return RandomHelper.RandomItem(tilesWithRightType, x => 1);
+			var tilesWithRightType = tiles.Values.Where(tile => tile.TileType == (int)tileType);
+			return tilesWithRightType.PickRandom();
 		}
 
 		private TileInfo GetTileInfo(Dictionary<int, TileInfo> tiles, TileTypes tileType, int exitDirectionBits)
@@ -2274,7 +2270,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				{
 					var handle = new SNOHandle(207706);
 					if (handle == null || gizmoLocations.Count == 0) continue;
-					LazyLoadActor(handle, gizmoLocations[FastRandom.Instance.Next(gizmoLocations.Count)], world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle.Target).TagMap);
+					LazyLoadActor(handle, gizmoLocations.PickRandom(), world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle.Target).TagMap);
 				}
 				else
 					foreach (var location in gizmoLocations)
@@ -2300,11 +2296,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 				if (gizmoLocations.Count > 0 && world.Game.MonsterLevel >= Program.MaxLevel && FastRandom.Instance.Next(100) < 30)
 				{
-					var handle_chest = new SNOHandle(96993); //leg chest
-					if (handle_chest == null) continue;
-					var golden_chest = LoadActor(handle_chest, gizmoLocations[FastRandom.Instance.Next(0, gizmoLocations.Count - 1)], world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle_chest.Target).TagMap);
-					if (golden_chest > 0)
-						(world.GetActorByGlobalId(golden_chest) as LegendaryChest).ChestActive = true;
+					var handleChest = new SNOHandle(96993); //leg chest
+					if (handleChest == null) continue;
+					var goldenChest = LoadActor(handleChest, gizmoLocations.PickRandom(), world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handleChest.Target).TagMap);
+					if (goldenChest > 0)
+						(world.GetActorByGlobalId(goldenChest) as LegendaryChest).ChestActive = true;
 				}
 
 				if (world.DRLGEmuActive)
@@ -2326,8 +2322,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					//unique spawn
 					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].dangerous.Count > 0 && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[wid].dangerous[FastRandom.Instance.Next(SpawnGenerator.Spawns[wid].dangerous.Count)]);
-						var scene = levelAreas.First().Value[FastRandom.Instance.Next(levelAreas.First().Value.Count)];
+						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[wid].dangerous.PickRandom());
+						var scene = levelAreas.First().Value.PickRandom();
 						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
 						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						int threshold = 0;
@@ -2368,9 +2364,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					//goblin spawn
 					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].can_spawn_goblin && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomGoblin = new SNOHandle(Goblins[FastRandom.Instance.Next(Goblins.Count)]);
+						var randomGoblin = new SNOHandle(Goblins.PickRandom());
 						if (world.Game.IsHardcore) randomGoblin = new SNOHandle(3852);
-						var scene = levelAreas.First().Value[FastRandom.Instance.Next(levelAreas.First().Value.Count)];
+						var scene = levelAreas.First().Value.PickRandom();
 						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
 						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						int threshold = 0;
@@ -2423,8 +2419,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					//unique spawn
 					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].dangerous.Count > 0 && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[la].dangerous[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].dangerous.Count)]);
-						var scene = levelAreas[la][FastRandom.Instance.Next(levelAreas[la].Count)];
+						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[la].dangerous.PickRandom());
+						var scene = levelAreas[la].PickRandom();
 						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
 						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						int threshold = 0;
@@ -2465,9 +2461,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					//goblin spawn
 					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].can_spawn_goblin && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomGoblin = new SNOHandle(Goblins[FastRandom.Instance.Next(Goblins.Count)]);
+						var randomGoblin = new SNOHandle(Goblins.PickRandom());
 						if (world.Game.IsHardcore) randomGoblin = new SNOHandle(3852);
-						var scene = levelAreas[la][FastRandom.Instance.Next(levelAreas[la].Count)];
+						var scene = levelAreas[la].PickRandom();
 						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
 						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
 						int threshold = 0;
@@ -2543,8 +2539,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						#region elite spawn
 						int randomMeleeMonsterId = -1;
 						int randomRangedMonsterId = -1;
-						if (SpawnGenerator.Spawns[la].melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].melee.Count)];
-						if (SpawnGenerator.Spawns[la].range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].range.Count)];
+						if (SpawnGenerator.Spawns[la].melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee.PickRandom();
+						if (SpawnGenerator.Spawns[la].range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range.PickRandom();
 						SNOHandle meleeMonsterHandle = (randomMeleeMonsterId == -1 ? null : new SNOHandle(randomMeleeMonsterId));
 						SNOHandle rangedMonsterHandle = (randomRangedMonsterId == -1 ? null : new SNOHandle(randomRangedMonsterId));
 						if (rangedMonsterHandle == null) rangedMonsterHandle = meleeMonsterHandle;
@@ -2588,8 +2584,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						{
 							int randomMeleeMonsterId = -1;
 							int randomRangedMonsterId = -1;
-							if (SpawnGenerator.Spawns[la].melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].melee.Count)];
-							if (SpawnGenerator.Spawns[la].range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].range.Count)];
+							if (SpawnGenerator.Spawns[la].melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee.PickRandom();
+							if (SpawnGenerator.Spawns[la].range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range.PickRandom();
 							SNOHandle meleeMonsterHandle = (randomMeleeMonsterId == -1 ? null : new SNOHandle(randomMeleeMonsterId));
 							SNOHandle rangedMonsterHandle = (randomRangedMonsterId == -1 ? null : new SNOHandle(randomRangedMonsterId));
 							//int maxMobsInStack = (SpawnGenerator.IsMelee(la, randomMonsterId) ? 6 : (SpawnGenerator.IsDangerous(la, randomMonsterId) ? 1 : 3));
@@ -2620,7 +2616,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						else //spawn champions
 						#region champion spawn
 						{
-							SNOHandle championHandle = new SNOHandle(SpawnGenerator.Spawns[la].melee[FastRandom.Instance.Next(SpawnGenerator.Spawns[la].melee.Count)]);
+							SNOHandle championHandle = new SNOHandle(SpawnGenerator.Spawns[la].melee.PickRandom());
 							groupId = FastRandom.Instance.Next();
 							for (int n = 0; n < 4; n++)
 							{

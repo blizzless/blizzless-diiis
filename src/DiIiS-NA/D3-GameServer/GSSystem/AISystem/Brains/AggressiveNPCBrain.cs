@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 {
@@ -106,14 +107,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		protected virtual int PickPowerToUse()
 		{
-			if (PresetPowers.Count > 0)
-			{
-				int powerIndex = RandomHelper.Next(PresetPowers.Count);
-				if (PowerSystem.PowerLoader.HasImplementationForPowerSNO(PresetPowers[powerIndex]))
-					return PresetPowers[powerIndex];
-			}
-
-			return -1;
+			var implementedPowers = PresetPowers.Where(PowerSystem.PowerLoader.HasImplementationForPowerSNO);
+			return implementedPowers.TryPickRandom(out var randomPower)
+				? randomPower
+				: -1;
 		}
 
 		public void AddPresetPower(int powerSNO)

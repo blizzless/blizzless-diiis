@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.GameServer.Core.Types.SNO;
@@ -115,15 +116,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		protected virtual int PickPowerToUse()
 		{
 			// randomly used an implemented power
-			if (PresetPowers.Count > 0)
-			{
-				int powerIndex = RandomHelper.Next(PresetPowers.Count);
-				if (PowerLoader.HasImplementationForPowerSNO(PresetPowers[powerIndex]))
-					return PresetPowers[powerIndex];
-			}
-
-			// no usable power
-			return -1;
+			var implementedPowers = PresetPowers.Where(PowerLoader.HasImplementationForPowerSNO);
+			return implementedPowers.TryPickRandom(out var randomPower)
+				? randomPower
+				: -1;
 		}
 
 		public void AddPresetPower(int powerSNO)

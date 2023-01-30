@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -1126,16 +1127,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				var portals = GetActorsInRange<Portal>(5f).Where(p => p.Destination != null && p.Destination.DestLevelAreaSNO != -1).ToList();
 				if (portals.Count >= 2)
 				{
-					var random_portal = portals[FastRandom.Instance.Next(portals.Count)];
+					var randomPortal = portals.PickRandom();
 					var bounty_portals = World.Game.QuestManager.Bounties.Where(b => !b.PortalSpawned).SelectMany(b => b.LevelAreaChecks).Intersect(portals.Select(p => p.Destination.DestLevelAreaSNO));
 					if (bounty_portals.Any())
 					{
-						random_portal = portals.First(p => World.Game.QuestManager.Bounties.SelectMany(b => b.LevelAreaChecks).Where(w => w != -1).Contains(p.Destination.DestLevelAreaSNO));
-						World.Game.QuestManager.Bounties.First(b => b.LevelAreaChecks.Contains(random_portal.Destination.DestLevelAreaSNO)).PortalSpawned = true;
+						randomPortal = portals.First(p => World.Game.QuestManager.Bounties.SelectMany(b => b.LevelAreaChecks).Where(w => w != -1).Contains(p.Destination.DestLevelAreaSNO));
+						World.Game.QuestManager.Bounties.First(b => b.LevelAreaChecks.Contains(randomPortal.Destination.DestLevelAreaSNO)).PortalSpawned = true;
 					}
 					foreach (var portal in portals)
 						portal.randomed = false;
-					random_portal.randomed = true;
+					randomPortal.randomed = true;
 				}
 			}
 

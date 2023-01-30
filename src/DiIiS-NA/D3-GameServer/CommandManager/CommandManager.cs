@@ -175,7 +175,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				bool found = false;
 				var @params = parameters.Split(' ');
 				var group = @params[0];
-				var command = @params.Count() > 1 ? @params[1] : string.Empty;
+				var command = @params.Length > 1 ? @params[1] : string.Empty;
 
 				foreach (var pair in CommandGroups.Where(pair => group == pair.Key.Name))
 				{

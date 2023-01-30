@@ -7,6 +7,7 @@ using DiIiS_NA.LoginServer.ChannelSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.LoginServer.GamesSystem
 {
@@ -19,7 +20,7 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 		{
 			get
 			{
-				return GameCreators.Values.Where(game => game.PlayersCount > 0).Count();
+				return GameCreators.Values.Count(game => game.PlayersCount > 0);
 			}
 			set { }
 		}
@@ -95,13 +96,12 @@ namespace DiIiS_NA.LoginServer.GamesSystem
 			GameDescriptor TagGame = null;
 			if (client.GameTeamTag != "") TagGame = FindTagGame(client.GameTeamTag);
 
-			var rand = new Random();
 			GameDescriptor gameDescriptor = null;
 			
 			if(TagGame != null)
 				gameDescriptor = TagGame;
 			else if (request_type == "find" && matchingGames.Count > 0)
-				gameDescriptor = matchingGames[rand.Next(matchingGames.Count)];
+				gameDescriptor = matchingGames.PickRandom();
 			else
 				gameDescriptor = CreateGame(client, request.Options, requestId);
 

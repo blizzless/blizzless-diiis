@@ -9,6 +9,7 @@ using DiIiS_NA.GameServer.MessageSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -380,7 +381,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_large);
 					SetActorOperable(world, ActorSno._a2dun_aqd_godhead_door_largepuzzle, false);
 					var spots = world.GetActorsBySNO(ActorSno._boxtrigger__one_shot_);
-					world.SpawnMonster(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, spots[FastRandom.Instance.Next(spots.Count)].Position);
+					world.SpawnMonster(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, spots.PickRandom().Position);
 					ListenInteract(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, 1, new SideAdvance());
 				})
 			});
@@ -460,7 +461,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_randomfacepuzzle_small);
                     SetActorOperable(world, ActorSno._a2dun_aqd_godhead_door, false);
 					var spots = world.GetActorsBySNO(ActorSno._boxtrigger__one_shot_);
-                    world.SpawnMonster(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, spots[FastRandom.Instance.Next(spots.Count)].Position);
+                    world.SpawnMonster(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, spots.PickRandom().Position);
                     ListenInteract(ActorSno._a2dun_aqd_act_lever_facepuzzle_01, 1, new SideAdvance());
 				})
 			});

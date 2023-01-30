@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -1544,7 +1545,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					if (!targets.Actors.Any()) return;
 
 					AttackPayload shock = new AttackPayload(this);
-					shock.SetSingleTarget(targets.Actors[Rand.Next(targets.Actors.Count())]);
+					shock.SetSingleTarget(targets.Actors.PickRandom());
 					shock.Targets.Actors.First().PlayEffectGroup(312568);
 					shock.AddWeaponDamage(ScriptFormula(21), DamageType.Lightning);
 					shock.OnHit = (hitPayload) =>

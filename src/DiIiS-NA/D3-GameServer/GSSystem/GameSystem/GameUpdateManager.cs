@@ -32,7 +32,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public static GameUpdateThread FindWorker()
 		{
-			return UpdateWorkers.OrderBy(t => t.Games.Count()).First();
+			return UpdateWorkers.OrderBy(t => t.Games.Count).First();
 		}
 	}
 }

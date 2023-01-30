@@ -85,7 +85,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 		public static Account GetAccountByDiscordId(ulong discordId)
 		{
 			List<DBAccount> dbAcc = DBSessions.SessionQueryWhere<DBAccount>(dba => dba.DiscordId == discordId).ToList();
-			if (dbAcc.Count() == 0)
+			if (!dbAcc.Any())
 			{
 				Logger.Warn("GetAccountByDiscordId {0}: DBAccount is null!", discordId);
 				return null;

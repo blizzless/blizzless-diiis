@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -1985,42 +1986,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             User.PlayEffect(Effect.PlayEffectGroup, 466026);
             if (Target != null)
             {
-                DamageType damageType = DamageType.Physical;
-                bool greaterDamage = false;
-                
-                // Enforcer
                 if (Rune_A > 0)
-                {
-                }
-                // Frenzy
-                else if (Rune_B > 0)
-                {
                     UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                }
-                // Dark Mending
-                else if (Rune_C > 0)
-                {
-                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                    damageType = DamageType.Cold;
-                }
-                // Freezing Grasp
-                else if (Rune_D > 0)
-                {
-                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                    damageType = DamageType.Poison;
-                }
-                else if (Rune_E > 0)
-                {
-                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                    greaterDamage = true;
-                    damageType = DamageType.Poison;
-                    Logger.Warn("Rune E not implemented for Necromancer's Command Skeletons");
-                }
+                UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 
-                foreach (var skeleton in ((Player)User).NecroSkeletons)
+                foreach (var Skelet in (User as PlayerSystem.Player).NecroSkeletons)
                 {
                     //User.PlayEffectGroup(474172);
-                    ActorMover mover = new ActorMover(skeleton);
+                    ActorMover mover = new ActorMover(Skelet);
                     mover.MoveArc(Target.Position, 6, -0.1f, new ACDTranslateArcMessage
                     {
                         //Field3 = 303110, // used for male barb leap, not needed?
@@ -2029,65 +2002,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Gravity = 0.6f,
                         PowerSNO = PowerSNO
                     });
-                    skeleton.Position = Target.Position;
-                    skeleton.SetVisible(true);
-                    skeleton.Hidden = false;
-                    skeleton.PlayEffectGroup(474172);
+                    Skelet.Position = Target.Position;
+                    Skelet.PlayEffectGroup(474172);
 
-                    AttackPayload attack = new AttackPayload(this)
-                    {
-                        Target = Target
-                    };
-                    attack.AddWeaponDamage(greaterDamage ? skeleton.Attributes[GameAttribute.Damage_Min, 0] * 2.15f : skeleton.Attributes[GameAttribute.Damage_Min, 0], damageType);
-                    attack.OnHit = hit =>
-                    {
-                        if (Rune_C > 0)
-                        {
-                            if (!HasBuff<DebuffFrozen>(hit.Target))
-                            {
-                                AddBuff(hit.Target, new DebuffFrozen(WaitSeconds(3.0f)));
-                            }
-                        }
-                    };
-                    attack.Apply();
+
+                    WeaponDamage(Target, 0.50f, DamageType.Physical);
                     //AddBuff(Target, new DebuffStunned(WaitSeconds(0.3f)));
                 }
-
-                // var player = (Player)User;
-                // if (player.ActiveSkeletons)
-                // {
-                //     while (player.NecroSkeletons.Count < 7)
-                //     {
-                //         var skeleton = new NecromancerSkeleton_A(World, ActorSno._p6_necro_commandskeletons_a, player);
-                //         skeleton.Brain.DeActivate();
-                //         skeleton.Scale = 1.2f;
-                //
-                //         skeleton.EnterWorld(PowerContext.RandomDirection(player.Position, 3f, 8f));
-                //         player.NecroSkeletons.Add(skeleton);
-                //         /*this.InGameClient.SendMessage(new PetMessage()
-                //         {
-                //             Owner = this.PlayerIndex,
-                //             Index = this.CountFollowers(473147),
-                //             PetId = Skeleton.DynamicID(this),
-                //             Type = 70,
-                //         });
-                //         //*/
-                //         skeleton.Brain.Activate();
-                //     }
-                // }
-                // else
-                // {
-                //     foreach (var skel in player.NecroSkeletons)
-                //     {
-                //         player.InGameClient.SendMessage(new PetDetachMessage()
-                //         {
-                //             PetId = skel.GlobalID
-                //         });
-                //         World.Leave(skel);
-                //     }
-                //
-                //     player.NecroSkeletons.Clear();
-                // }
             }
             yield break;
         }
