@@ -50,11 +50,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (_floatMessage != null)
 			{
-				if (User is Player)
+				if (User is Player user)
 				{
-					(User as Player).InGameClient.SendMessage(new FloatingNumberMessage
+					user.InGameClient.SendMessage(new FloatingNumberMessage
 					{
-						ActorID = Target.DynamicID(User as Player),
+						ActorID = Target.DynamicID(user),
 						Type = _floatMessage.Value
 					});
 				}
@@ -451,15 +451,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override bool Apply()
 		{
-			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity] == true)
+			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity])
 				return false;
 
-			if (Target is Player)
+			if (Target is Player player)
 			{
-				if ((Target as Player).SkillSet.HasPassive(205707)) //Juggernaut (barbarian)
+				if (player.SkillSet.HasPassive(205707)) //Juggernaut (barbarian)
 					if (FastRandom.Instance.Next(100) < 30)
-						(Target as Player).AddPercentageHP(20);
-				if ((Target as Player).SkillSet.HasPassive(209813)) //Provocation (Monk)
+						player.AddPercentageHP(20);
+				if (player.SkillSet.HasPassive(209813)) //Provocation (Monk)
 					AddBuff(Target, new ProvocationBuff());
 			}
 			return true;

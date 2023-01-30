@@ -2011,6 +2011,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 {
                     UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
                     damageType = DamageType.Poison;
+                    greaterDamage = true;
                 }
                 else if (Rune_E > 0)
                 {
@@ -2020,7 +2021,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     Logger.Warn("Rune E not implemented for Necromancer's Command Skeletons");
                 }
 
-                foreach (var skeleton in (User as PlayerSystem.Player).NecroSkeletons)
+                foreach (var skeleton in ((Player)User).NecroSkeletons)
                 {
                     //User.PlayEffectGroup(474172);
                     ActorMover mover = new ActorMover(skeleton);
