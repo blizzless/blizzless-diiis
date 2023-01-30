@@ -3257,15 +3257,15 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         {
             if (Followers.All(s => s.Value != ActorSno._p6_necro_commandskeletons_a) && NecroSkeletons.Any())
             {
-                foreach (var skel in NecroSkeletons)
+                foreach (var skeleton in NecroSkeletons)
                 {
                     try
                     {
                         InGameClient.SendMessage(new PetDetachMessage()
                         {
-                            PetId = skel.GlobalID
+                            PetId = skeleton.GlobalID
                         });
-                        World.Leave(skel);
+                        World.Leave(skeleton);
                     }
                     catch{}
                 }

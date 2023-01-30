@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
 using DiIiS_NA.Core.Extensions;
+using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -935,13 +936,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             else if (Rune_C > 0)
             {
-                (User as PlayerSystem.Player).AddPercentageHP(-10f);
+                ((Player)User).AddPercentageHP(-10f);
                 UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
             }
             else
                 UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
             
-             var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
+             var dataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             
             var Mage = new SkeletalMage(
                 World,
@@ -964,15 +965,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             Mage.EnterWorld(Mage.Position);
             yield return WaitSeconds(0.05f);
 
-            (Mage as Minion).Brain.Activate();
+            Mage.Brain.Activate();
             Mage.PlayEffectGroup(RuneSelect(472276, 472596, 472614, 472718, 472781, 472803));
-            ((Mage as Minion).Brain as AISystem.Brains.MinionBrain).PresetPowers.Clear();
+            ((MinionBrain)Mage.Brain).PresetPowers.Clear();
             if (Rune_D > 0)//Заражение
                 AddBuff(Mage, new BustBuff7());
             else if (Rune_E > 0)//Лучник морозный
-                ((Mage as Minion).Brain as AISystem.Brains.MinionBrain).AddPresetPower(30499);
+                ((MinionBrain)Mage.Brain).AddPresetPower(30499);
             else
-                ((Mage as Minion).Brain as AISystem.Brains.MinionBrain).AddPresetPower(466879);
+                ((MinionBrain)Mage.Brain).AddPresetPower(466879);
 
             Mage.Attributes[GameAttribute.Untargetable] = false;
             Mage.Attributes.BroadcastChangedIfRevealed();
@@ -1860,8 +1861,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         RevivedTemp.Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 1.2f;
                         RevivedTemp.Attributes.BroadcastChangedIfRevealed();
                     }
-                    (RevivedTemp as Minion).SetBrain(new AISystem.Brains.MinionBrain(RevivedTemp));
-                    (RevivedTemp as Minion).Brain.Activate();
+                    RevivedTemp.SetBrain(new AISystem.Brains.MinionBrain(RevivedTemp));
+                    RevivedTemp.Brain.Activate();
                     RevivedTemp.PlayEffectGroup(RuneSelect(464739, 464900, 464872, 464954, 464859, 464746));
                     (User as PlayerSystem.Player).Revived.Add(RevivedTemp);
                     Resurrected = true;
@@ -1986,14 +1987,42 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             User.PlayEffect(Effect.PlayEffectGroup, 466026);
             if (Target != null)
             {
+                DamageType damageType = DamageType.Physical;
+                bool greaterDamage = false;
+                
+                // Enforcer
                 if (Rune_A > 0)
+                {
+                }
+                // Frenzy
+                else if (Rune_B > 0)
+                {
                     UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
+                }
+                // Dark Mending
+                else if (Rune_C > 0)
+                {
+                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
+                    damageType = DamageType.Cold;
+                }
+                // Freezing Grasp
+                else if (Rune_D > 0)
+                {
+                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
+                    damageType = DamageType.Poison;
+                }
+                else if (Rune_E > 0)
+                {
+                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
+                    greaterDamage = true;
+                    damageType = DamageType.Poison;
+                    Logger.Warn("Rune E not implemented for Necromancer's Command Skeletons");
+                }
 
-                foreach (var Skelet in (User as PlayerSystem.Player).NecroSkeletons)
+                foreach (var skeleton in (User as PlayerSystem.Player).NecroSkeletons)
                 {
                     //User.PlayEffectGroup(474172);
-                    ActorMover mover = new ActorMover(Skelet);
+                    ActorMover mover = new ActorMover(skeleton);
                     mover.MoveArc(Target.Position, 6, -0.1f, new ACDTranslateArcMessage
                     {
                         //Field3 = 303110, // used for male barb leap, not needed?
@@ -2002,8 +2031,27 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Gravity = 0.6f,
                         PowerSNO = PowerSNO
                     });
-                    Skelet.Position = Target.Position;
-                    Skelet.PlayEffectGroup(474172);
+                    skeleton.Position = Target.Position;
+                    skeleton.SetVisible(true);
+                    skeleton.Hidden = false;
+                    skeleton.PlayEffectGroup(474172);
+
+                    AttackPayload attack = new AttackPayload(this)
+                    {
+                        Target = Target
+                    };
+                    attack.AddWeaponDamage(greaterDamage ? skeleton.Attributes[GameAttribute.Damage_Min, 0] * 2.15f : skeleton.Attributes[GameAttribute.Damage_Min, 0], damageType);
+                    attack.OnHit = hit =>
+                    {
+                        if (Rune_C > 0)
+                        {
+                            if (!HasBuff<DebuffFrozen>(hit.Target))
+                            {
+                                AddBuff(hit.Target, new DebuffFrozen(WaitSeconds(3.0f)));
+                            }
+                        }
+                    };
+                    attack.Apply();
 
 
                     WeaponDamage(Target, 0.50f, DamageType.Physical);
