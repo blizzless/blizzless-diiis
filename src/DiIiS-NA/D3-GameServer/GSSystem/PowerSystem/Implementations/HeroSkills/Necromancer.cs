@@ -1993,6 +1993,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 // Enforcer
                 if (Rune_A > 0)
                 {
+                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost) / 2);
                 }
                 // Frenzy
                 else if (Rune_B > 0)
@@ -2040,7 +2041,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     {
                         Target = Target
                     };
-                    attack.AddWeaponDamage(greaterDamage ? skeleton.Attributes[GameAttribute.Damage_Min, 0] * 2.15f : skeleton.Attributes[GameAttribute.Damage_Min, 0], damageType);
+                    attack.AddWeaponDamage(greaterDamage ? 2.15f : 1.0f, damageType);
                     attack.OnHit = hit =>
                     {
                         if (Rune_C > 0)
@@ -2054,7 +2055,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     attack.Apply();
 
 
-                    WeaponDamage(Target, 0.50f, DamageType.Physical);
+                    // WeaponDamage(Target, 0.50f, DamageType.Physical);
                     //AddBuff(Target, new DebuffStunned(WaitSeconds(0.3f)));
                 }
             }
