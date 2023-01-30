@@ -168,6 +168,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public List<Actor> NecroSkeletons = new() { };
     public bool ActiveSkeletons = false;
+    
     public Actor ActiveGolem = null;
     public bool EnableGolem = false;
 
@@ -189,13 +190,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public int GearScore
     {
-        get
-        {
-            if (Inventory == null)
-                return 0;
-            else
-                return Inventory.GetGearScore();
-        }
+        get => Inventory?.GetGearScore() ?? 0;
         private set { }
     }
 
@@ -272,7 +267,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     }
 
     /// <summary>
-    /// NPC currently interaced with
+    /// NPC currently interacted with
     /// </summary>
     public InteractiveNPC SelectedNPC { get; set; }
 
@@ -448,14 +443,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         SetAttributesMovement();
         SetAttributesMisc();
         SetAttributesOther();
-        if (Inventory == null)
-            Inventory = new Inventory(this);
+        Inventory ??= new Inventory(this);
         SetAttributesByItems(); //needs the Inventory
         SetAttributesByItemProcs();
         SetAttributesByGems();
         SetAttributesByItemSets();
-        if (SkillSet == null)
-            SkillSet = new SkillSet(this, Toon.Class, Toon);
+        SkillSet ??= new SkillSet(this, Toon.Class, Toon);
         SetAttributesByPassives(); //needs the SkillSet
         SetAttributesByParagon();
         SetNewAttributes();

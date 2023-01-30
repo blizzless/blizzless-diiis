@@ -9,7 +9,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
         Invulnerable,
         Speed,
         Powerful,
-        Resourcefull
+        Resourceful,
+        AttackSpeed
     }
     
     public class FixedMap

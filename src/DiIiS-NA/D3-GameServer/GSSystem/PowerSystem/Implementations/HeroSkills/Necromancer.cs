@@ -21,6 +21,7 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
+using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -1990,36 +1991,42 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 DamageType damageType = DamageType.Physical;
                 bool greaterDamage = false;
                 
+                /*
+                 * Enforcer: Reduces the active Essence cost to 25.
+                 * Frenzy: Commanded skeletons go into a frenzy, gaining 25% increased attack speed as long as they attacked the Commanded target (in addition to damage bonus).
+                 * Dark Mending: Skeletal minions will heal the Necromancer for 0.5% of total Life per hit while being Commanded (i.e. as long as the skill is activated).
+                 * Freezing Grasp: Damage type is changed to Cold, and the target of Command is frozen for 3 seconds.
+                 * Kill Command: Damage type changes to Poison, and Command activation will instead make each Skeleton explode, killing them and dealing 215% damage as Poison to enemies within 15 yards each. They will still rush to their target before exploding.
+                 */
+                bool enforcer = Rune_A > 0,
+                     frenzy = Rune_B > 0,
+                     darkMending = Rune_C > 0,
+                     freezingGrasp = Rune_D > 0,
+                     killCommand = Rune_E > 0;
+                
                 // Enforcer
-                if (Rune_A > 0)
+                if (enforcer)
                 {
-                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost) / 2);
+                    UsePrimaryResource(25);
                 }
-                // Frenzy
-                else if (Rune_B > 0)
-                {
-                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                }
-                // Dark Mending
-                else if (Rune_C > 0)
+                else
                 {
                     UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                    damageType = DamageType.Cold;
+                    if (darkMending)
+                    {
+                        ((Player)User).AddPercentageHP(25f); // add per hit : TODO: Life per hit while being Commanded (i.e. as long as the skill is activated).
+                    }
+                    else if (freezingGrasp)
+                    {
+                        damageType = DamageType.Cold;
+                    }
+                    else if (killCommand)
+                    {
+                        damageType = DamageType.Poison;
+                        greaterDamage = true; // TODO: Implement Kill Command to Explode instead of attacking
+                    }
                 }
-                // Freezing Grasp
-                else if (Rune_D > 0)
-                {
-                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                    damageType = DamageType.Poison;
-                    greaterDamage = true;
-                }
-                else if (Rune_E > 0)
-                {
-                    UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                    greaterDamage = true;
-                    damageType = DamageType.Poison;
-                    Logger.Warn("Rune E not implemented for Necromancer's Command Skeletons");
-                }
+                
 
                 foreach (var skeleton in ((Player)User).NecroSkeletons)
                 {
@@ -2037,7 +2044,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     skeleton.SetVisible(true);
                     skeleton.Hidden = false;
                     skeleton.PlayEffectGroup(474172);
-
+                    
+                    // Commanded skeletons go into a frenzy, gaining 25% increased attack speed as long as they attacked the Commanded target (in addition to damage bonus).
+                    if (frenzy)
+                    {
+                        if (!skeleton.Attributes.FixedMap.Contains(FixedAttribute.AttackSpeed))
+                        {
+                            var originalAttackSpeed = skeleton.Attributes[GameAttribute.Attacks_Per_Second];
+                            skeleton.Attributes.FixedMap.Add(FixedAttribute.AttackSpeed, attr => attr[GameAttribute.Attacks_Per_Second] = originalAttackSpeed * 1.25f);
+                            skeleton.Attributes.BroadcastChangedIfRevealed();
+                        }
+                    }
+                    else
+                    {
+                        if (skeleton.Attributes.FixedMap.Contains(FixedAttribute.AttackSpeed))
+                        {
+                            skeleton.Attributes.FixedMap.Remove(FixedAttribute.AttackSpeed);
+                            skeleton.Attributes.BroadcastChangedIfRevealed();
+                        }
+                    }
                     AttackPayload attack = new AttackPayload(this)
                     {
                         Target = Target
@@ -2045,10 +2070,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     attack.AddWeaponDamage(greaterDamage ? 2.15f : 1.0f, damageType);
                     attack.OnHit = hit =>
                     {
-                        if (Rune_C > 0)
+                        if (freezingGrasp)
                         {
                             if (!HasBuff<DebuffFrozen>(hit.Target))
                             {
+                                hit.Target.PlayEffect(Effect.IcyEffect);
                                 AddBuff(hit.Target, new DebuffFrozen(WaitSeconds(3.0f)));
                             }
                         }

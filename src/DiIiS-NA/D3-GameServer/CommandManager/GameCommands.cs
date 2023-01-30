@@ -55,30 +55,30 @@ public class PowerfulCommand : CommandGroup
     }
 }
 
-[CommandGroup("resourcefull", "Makes your character with full resource. Useful for testing.",
+[CommandGroup("resourceful", "Makes your character with full resource. Useful for testing.",
     Account.UserLevels.Tester)]
-public class ResourcefullCommand : CommandGroup
+public class ResourcefulCommand : CommandGroup
 {
     [DefaultCommand]
-    public string Resourcefull(string[] @params, BattleClient invokerClient)
+    public string Resourceful(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not { } player)
             return "You must be in game to use this command.";
 
-        if (player.Attributes.FixedMap.Contains(FixedAttribute.Resourcefull))
+        if (player.Attributes.FixedMap.Contains(FixedAttribute.Resourceful))
         {
-            player.Attributes.FixedMap.Remove(FixedAttribute.Resourcefull);
+            player.Attributes.FixedMap.Remove(FixedAttribute.Resourceful);
             player.Attributes.BroadcastChangedIfRevealed();
-            return "You are no longer Resourcefull.";
+            return "You are no longer Resourceful.";
         }
 
-        player.Attributes.FixedMap.Add(FixedAttribute.Resourcefull, (attributes) =>
+        player.Attributes.FixedMap.Add(FixedAttribute.Resourceful, (attributes) =>
         {
             attributes[GameAttribute.Resource_Cur, 1] = 100;
         });
 
         player.Attributes.BroadcastChangedIfRevealed();
-        return "You are full resource.";
+        return "You are now resourceful.";
     }
 }
 
