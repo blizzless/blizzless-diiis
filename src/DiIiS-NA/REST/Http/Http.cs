@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Logging;
 
 namespace DiIiS_NA.REST.Http
 {
@@ -87,27 +88,34 @@ namespace DiIiS_NA.REST.Http
 
                 while (!sr.EndOfStream)
                 {
-                    info = sr.ReadLine().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (info.Length == 2)
-                        headerValues.Add(info[0].Replace("-", "").ToLower(), info[1]);
-                    else if (info.Length > 2)
+                    try
                     {
-                        var val = "";
+                        info = sr.ReadLine().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
 
-                        info.Skip(1);
+                        if (info.Length == 2)
+                            headerValues.Add(info[0].Replace("-", "").ToLower(), info[1]);
+                        else if (info.Length > 2)
+                        {
+                            var val = "";
 
-                        headerValues.Add(info[0].Replace("-", "").ToLower(), val);
+                            info.Skip(1);
+
+                            headerValues.Add(info[0].Replace("-", "").ToLower(), val);
+                        }
+                        else
+                        {
+                            // We are at content here.
+                            var content = sr.ReadLine();
+
+                            headerValues.Add("content", content);
+
+                            // There shouldn't be anything after the content!
+                            break;
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        // We are at content here.
-                        var content = sr.ReadLine();
-
-                        headerValues.Add("content", content);
-
-                        // There shouldn't be anything after the content!
-                        break;
+                        return null;
                     }
                 }
             }
