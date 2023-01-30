@@ -819,7 +819,6 @@ public class ModifySpeedCommand : CommandGroup
             playerSpeed[GameAttribute.Running_Rate] = baseSpeed;
             return $"Speed reset to Base Speed ({baseSpeed:0.000}).";
         }
-
         playerSpeed.FixedMap.Add(FixedAttribute.Speed, attr => attr[GameAttribute.Running_Rate] = speedValue);
         playerSpeed.BroadcastChangedIfRevealed();
         return $"Speed changed to {speedValue}";
@@ -838,7 +837,7 @@ public class ModifySpeedCommand : CommandGroup
             if (invokerClient.InGameClient == null)
                 return "You can only invoke this command while in-game.";
 
-            return "";
+            return Info(@params, invokerClient);
         }
 
         [Command("advance", "Advances a quest by a single step\n Usage: advance")]
@@ -912,7 +911,9 @@ public class ModifySpeedCommand : CommandGroup
         [Command("info", "Retrieves information about quest states.\n Usage: info")]
         public string Info(string[] @params, BattleClient invokerClient)
         {
-            var questManager = invokerClient.InGameClient.Game.QuestManager;
+            if (invokerClient?.InGameClient?.Game?.QuestManager is not {} questManager)
+                return "You can only invoke this command while in-game.";
+            
             var act = questManager.CurrentAct;
             var quest = questManager.Game.CurrentQuest;
             var questStep = questManager.Game.CurrentStep;
