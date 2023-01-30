@@ -1884,7 +1884,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
     }
     #endregion
-    //TODO: Runes
+    //TODO: Rune_E and overall buff check
     #region CommandSkeleton
     [ImplementsPowerSNO(SkillsSystem.Skills.Necromancer.ExtraSkills.CommandSkeleton)]
     public class CommandSkeleton : Skill
