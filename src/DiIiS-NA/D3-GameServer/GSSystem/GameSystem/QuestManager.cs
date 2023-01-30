@@ -948,7 +948,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 								if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(point, Scene.NavCellFlags.AllowWalk))
 									break;
 							}
-							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee[FastRandom.Instance.Next(GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.Count)], point);
+							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.PickRandom(), point);
 							monsterCount++;
 						}
 					} // Need additional monster spawn, there are few of them
@@ -978,8 +978,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 									scenes.Add(scene);
 						}
 
-						// FIXME: Probably RandomHelper.Next(0, scenes.Count)???
-						GameServer.Core.Types.Math.Vector3D scenePoint = scenes[RandomHelper.Next(0, scenes.Count - 1)].Position;
+						GameServer.Core.Types.Math.Vector3D scenePoint = scenes.PickRandom().Position;
 						GameServer.Core.Types.Math.Vector3D point = null;
 						while (true)
 						{

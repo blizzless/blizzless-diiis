@@ -1088,7 +1088,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                                 break;
                         }
 
-                        it = items[RandomHelper.Next(@base, @base + 1)]; // FIXME: this random always returns @base
+                        it = items[RandomHelper.Next(@base, @base + 2)];
                         player.Inventory.PickUp(ItemGenerator.Cook(player, it));
                         break;
                     case -1249067448:
@@ -1102,7 +1102,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                             "Unique_Shoulder_Set_09_x1", "Unique_Boots_Set_09_x1",
                             "Unique_Shoulder_Set_06_x1", "Unique_Boots_Set_06_x1"
                         };
-                        it = items[RandomHelper.Next(@base, @base + 1)]; // FIXME: this random always returns @base
+                        it = items[RandomHelper.Next(@base, @base + 2)];
                         player.Inventory.PickUp(ItemGenerator.Cook(player, it));
                         break;
                     case -1249067447:
@@ -1116,7 +1116,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                             "Unique_Chest_Set_09_x1", "Unique_Pants_Set_09_x1",
                             "Unique_Chest_Set_06_x1", "Unique_Pants_Set_06_x1"
                         };
-                        it = items[RandomHelper.Next(@base, @base + 1)]; // FIXME: this random always returns @base
+                        it = items[RandomHelper.Next(@base, @base + 2)];
                         player.Inventory.PickUp(ItemGenerator.Cook(player, it));
                         break;
 

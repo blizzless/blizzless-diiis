@@ -286,9 +286,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				string itemType = originalItem.ItemDefinition.Name.Substring(3);
 				if (itemType.Contains("1HWeapon"))
-					itemType = OneHandedWeapons[FastRandom.Instance.Next(OneHandedWeapons.Count)];
+					itemType = OneHandedWeapons.PickRandom();
 				if (itemType.Contains("2HWeapon"))
-					itemType = TwoHandedWeapons[FastRandom.Instance.Next(TwoHandedWeapons.Count)];
+					itemType = TwoHandedWeapons.PickRandom();
 				if (itemType.Contains("Pants"))
 					itemType = "Legs";
 				_inventoryGrid.AddItem(ItemGenerator.GetRandomItemOfType(_owner, ItemGroup.FromString(itemType)));
@@ -1212,7 +1212,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				if (Item.AffixFamilies.Contains(affix_group.First().AffixFamily0)) continue;
 				int s = Item.ItemDefinition.RequiredLevel;
 
-				bestDefinitions[affix_group.First().AffixFamily0] = affix_group.ToList()[FastRandom.Instance.Next(0, 1)];
+				bestDefinitions[affix_group.First().AffixFamily0] = affix_group.ToList()[FastRandom.Instance.Next(0, 1)]; // FIXME: random always returns 0
 			}
 
 			var SocketsAffixs = AffixGenerator.AllAffix.Where(a => a.Name.ToLower().Contains("1xx_socket") && itemTypes.ContainsAtLeastOne(a.ItemGroup)).ToList();

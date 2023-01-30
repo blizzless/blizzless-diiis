@@ -187,8 +187,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			Parent = parent;
 			Subscenes = new List<Scene>();
 			Scale = 1.0f;
-			AppliedLabels = new int[0];
-			Field8 = new int[0];
+			AppliedLabels = Array.Empty<int>();
+			Field8 = Array.Empty<int>();
 			Size = new Size(NavZone.V0.X * (int)NavZone.Float0, NavZone.V0.Y * (int)NavZone.Float0);
 			Position = position;
 			World.AddScene(this); // add scene to the world.

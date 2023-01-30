@@ -226,7 +226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				if (item.AffixFamilies.Contains(affix_group.First().AffixFamily0)) continue;
 				int s = item.ItemDefinition.RequiredLevel;
 
-				bestDefinitions[affix_group.First().AffixFamily0] = affix_group.ToList()[FastRandom.Instance.Next(0, affix_group.Count())];
+				bestDefinitions[affix_group.First().AffixFamily0] = affix_group.PickRandom();
 			}
 
 			//if (bestDefinitions.Values.Where(a => a.Name.Contains("PoisonD")).Count() > 0) Logger.Debug("PoisonD in bestDefinitions");
@@ -363,8 +363,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			if (suitable.Count() > 1 && i18 && !secondGroup && suitable.Where(a => a.Name.Contains("Secondary")).Count() > 0)
 				suitable = suitable.Where(a => a.Name.Contains("Secondary"));*/
 
-			if (suitable.Any())
-				return suitable[FastRandom.Instance.Next(0, suitable.Length)].Hash;
+			if (suitable.TryPickRandom(out var randomAffix))
+				return randomAffix.Hash;
 
 			return -1;
 		}
@@ -504,7 +504,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			bool itemIsPrefix = (FastRandom.Instance.Next(0, 2) > 0);
 			var randomName = D3.Items.RareItemName.CreateBuilder()
 				.SetItemNameIsPrefix(itemIsPrefix)
-				.SetSnoAffixStringList(itemIsPrefix ? SuffixAffixLists[FastRandom.Instance.Next(0, SuffixAffixLists.Count)] : PrefixAffixLists[FastRandom.Instance.Next(0, PrefixAffixLists.Count)])
+				.SetSnoAffixStringList(itemIsPrefix ? SuffixAffixLists.PickRandom() : PrefixAffixLists.PickRandom())
 				.SetAffixStringListIndex(FastRandom.Instance.Next(0, 6))
 				.SetItemStringListIndex(FastRandom.Instance.Next(0, 6));
 			return randomName.Build();

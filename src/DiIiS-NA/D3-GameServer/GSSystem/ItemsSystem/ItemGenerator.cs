@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DiIiS_NA.Core.Extensions;
 using NHibernate.Linq;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.Storage;
@@ -1143,7 +1144,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public static Item GenerateRandomGem(ActorSystem.Actor player, int level, bool is_goblin)
 		{
-			string gemName = GemNames[FastRandom.Instance.Next(GemNames.Count)];
+			string gemName = GemNames.PickRandom();
 
 			int lvl = Math.Max(player.Attributes[GameAttribute.Level], 20);
 			int gem_grade = ((lvl - 10) / 8) + 1;
@@ -1225,7 +1226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			if (pool_filtered.Count == 0) return null;
 
 
-			ItemTable selected = pool_filtered[FastRandom.Instance.Next(0, pool_filtered.Count() - 1)];
+			ItemTable selected = pool_filtered.PickRandom();
 			return selected;
 		}
 
@@ -1264,7 +1265,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			).ToList();
 			if (pool_filtered.Count == 0) return null;
 
-			ItemTable selected = pool_filtered[FastRandom.Instance.Next(0, pool_filtered.Count() - 1)];
+			ItemTable selected = pool_filtered.PickRandom();
 			return selected;
 		}
 

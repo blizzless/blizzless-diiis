@@ -7,6 +7,7 @@ using DiIiS_NA.GameServer.MessageSystem;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
@@ -47,10 +48,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			if (portals.Count == 0) return;
 			foreach (var dest in PortalDests)
 			{
-				var random_portal = portals[FastRandom.Instance.Next(0, portals.Count - 1)];
-				random_portal.Destination = dest;
+				var randomPortal = portals.PickRandom();
+				randomPortal.Destination = dest;
 				//portal.EnterWorld(random_spot);
-				portals.Remove(random_portal);
+				portals.Remove(randomPortal);
 			}
 		}
 	}

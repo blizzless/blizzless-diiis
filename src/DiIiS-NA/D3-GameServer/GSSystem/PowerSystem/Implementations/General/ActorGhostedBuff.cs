@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -127,7 +128,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (_tickTimer == null || _tickTimer.TimedOut)
 			{
-				var monster = ActorFactory.Create(Target.World, Monsters[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, Monsters.Count())], new TagMap());
+				var monster = ActorFactory.Create(Target.World, Monsters.PickRandom(), new TagMap());
 				monster.EnterWorld(RandomDirection(Target.Position, 5f, Radius));
 				monster.HasLoot = (Target.World.Game.CurrentAct == 3000);
 				monster.Unstuck();
@@ -210,7 +211,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				for (int i = 0; i < 10; i++)
 				{
-					var monster = ActorFactory.Create(Target.World, Monsters[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, Monsters.Count())], new TagMap());
+					var monster = ActorFactory.Create(Target.World, Monsters.PickRandom(), new TagMap());
 					monster.EnterWorld(RandomDirection(Target.Position, 5f, Radius));
 					monster.HasLoot = (Target.World.Game.CurrentAct == 3000);
 					monster.Unstuck();

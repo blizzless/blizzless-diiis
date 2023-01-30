@@ -83,7 +83,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						//System.Console.Out.WriteLine("Enemy in range, use powers");
 						//This will only attack when you and your minions are not moving..TODO: FIX.
 						int powerToUse = PickPowerToUse();
-						if (powerToUse > 0) // maybe >= 0 as 0 can be a valid power?
+						if (powerToUse > 0)
 						{
 							PowerScript power = PowerLoader.CreateImplementationForPowerSNO(powerToUse);
 							power.User = Body;
@@ -116,17 +116,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		protected virtual int PickPowerToUse()
 		{
 			// randomly used an implemented power
-			if (PresetPowers.Count > 0)
-			{
-				var randomPower = PresetPowers.PickRandom();
-				
-				// should we try several times or pick from implemented only?
-				if (PowerLoader.HasImplementationForPowerSNO(randomPower))
-					return randomPower;
-			}
-
-			// no usable power
-			return -1;
+			var implementedPowers = PresetPowers.Where(PowerLoader.HasImplementationForPowerSNO);
+			return implementedPowers.TryPickRandom(out var randomPower)
+				? randomPower
+				: -1;
 		}
 
 		public void AddPresetPower(int powerSNO)
