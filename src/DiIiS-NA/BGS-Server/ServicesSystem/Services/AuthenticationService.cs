@@ -119,10 +119,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         builder.SetPayloadType("web_auth_url");
                         if (REST.Config.Instance.Public)
                             builder.SetPayload(ByteString.CopyFromUtf8(
-                                $"http://{REST.Config.Instance.PublicIP}:{REST.Config.Instance.PORT}/battlenet/login"));
+                                $"http://{REST.Config.Instance.PublicIP}:{REST.Config.Instance.Port}/battlenet/login"));
                         else
                             builder.SetPayload(ByteString.CopyFromUtf8(
-                                $"http://{Program.RESTSERVERIP}:{REST.Config.Instance.PORT}/battlenet/login"));
+                                $"http://{Program.RestServerIp}:{REST.Config.Instance.Port}/battlenet/login"));
 
                         ((HandlerController)controller).Client.MakeRpc((lid) => ChallengeListener.CreateStub(((HandlerController)controller).Client).OnExternalChallenge(controller, builder.Build(), callback => { }));
                         #endregion

@@ -40,7 +40,7 @@ namespace DiIiS_NA.REST.Http
         {
             var sb = new StringBuilder();
 
-                        using (var sw = new StringWriter(sb))
+            using (var sw = new StringWriter(sb))
             {
                 sw.WriteLine($"HTTP/1.1 {(int)httpCode} {httpCode}");
                 sw.WriteLine("Connection: close"); ;
@@ -54,7 +54,7 @@ namespace DiIiS_NA.REST.Http
         {
             var sb = new StringBuilder();
 
-                        using (var sw = new StringWriter(sb))
+            using (var sw = new StringWriter(sb))
             {
                 sw.WriteLine($"HTTP/1.1 {(int)httpCode} {httpCode}");
                 sw.WriteLine($"Content-Length: {content.Length}");
@@ -75,7 +75,7 @@ namespace DiIiS_NA.REST.Http
             var headerValues = new Dictionary<string, object>();
             var header = new HttpHeader();
 
-                        using (var sr = new StreamReader(new MemoryStream(data, 0, length)))
+            using (var sr = new StreamReader(new MemoryStream(data, 0, length)))
             {
                 var info = sr.ReadLine().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 

@@ -35,8 +35,8 @@ namespace DiIiS_NA.GameServer.ClientSystem
 		{
 			int Port = 2001;
 			 
-			if (!Listen(Program.GAMESERVERIP, Port)) return;
-			Logger.Info("Game Server Started - {0}:{1}...", Program.GAMESERVERIP, Port);
+			if (!Listen(Program.GameServerIp, Port)) return;
+			Logger.Info("Game Server Started - {0}:{1}...", Program.GameServerIp, Port);
 		}
 	}
 }

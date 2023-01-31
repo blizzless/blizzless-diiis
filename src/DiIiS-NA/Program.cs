@@ -46,7 +46,7 @@ namespace DiIiS_NA
         public static BattleBackend BattleBackend { get; set; }
         public bool GameServersAvailable = true;
 
-        public static int MaxLevel = 70;
+        public const int MaxLevel = 70;
 
         public static GameServer.ClientSystem.GameServer GameServer;
         public static Watchdog Watchdog;
@@ -54,24 +54,24 @@ namespace DiIiS_NA
         public static Thread GameServerThread;
         public static Thread WatchdogThread;
 
-        public static string LOGINSERVERIP = DiIiS_NA.LoginServer.Config.Instance.BindIP;
-        public static string GAMESERVERIP = DiIiS_NA.GameServer.Config.Instance.BindIP;
-        public static string RESTSERVERIP = DiIiS_NA.REST.Config.Instance.IP;
-        public static string PUBLICGAMESERVERIP = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
+        public static string LoginServerIp = DiIiS_NA.LoginServer.Config.Instance.BindIP;
+        public static string GameServerIp = DiIiS_NA.GameServer.Config.Instance.BindIP;
+        public static string RestServerIp = DiIiS_NA.REST.Config.Instance.IP;
+        public static string PublicGameServerIp = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
 
-        public static int Build = 30;
-        private static readonly int Stage = 1;
-        private static readonly string TypeBuild = "BETA";
+        public static int Build => 30;
+        public static int Stage => 1;
+        public static string TypeBuild => "BETA";
         private static bool D3CoreEnabled = DiIiS_NA.GameServer.Config.Instance.CoreActive;
-
-
+        
     static async Task LoginServer()
         {
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+
 #if DEBUG
             D3CoreEnabled = true;
 #endif
             DbProviderFactories.RegisterFactory("Npgsql", NpgsqlFactory.Instance);
-            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             
             string name = $"Blizzless: Build {Build}, Stage: {Stage} - {TypeBuild}";
@@ -192,13 +192,13 @@ namespace DiIiS_NA
             }
            
             var restSocketServer = new SocketManager<RestSession>();
-            if (!restSocketServer.StartNetwork(RESTSERVERIP, REST.Config.Instance.PORT))
+            if (!restSocketServer.StartNetwork(RestServerIp, REST.Config.Instance.Port))
             {
                 Logger.Fatal("REST socket server can't start.");
                 Shutdown();
                 return;
             }
-            Logger.Success($"REST server started - {REST.Config.Instance.IP}:{REST.Config.Instance.PORT}");
+            Logger.Success($"REST server started - {REST.Config.Instance.IP}:{REST.Config.Instance.Port}");
 
            
             //BGS

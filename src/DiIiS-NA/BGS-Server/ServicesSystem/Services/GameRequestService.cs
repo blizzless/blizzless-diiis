@@ -84,9 +84,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             #endregion
 
 
-            string gameServerIp = Program.GAMESERVERIP;
+            string gameServerIp = Program.GameServerIp;
             if (GameServer.NATConfig.Instance.Enabled)
-                gameServerIp = Program.PUBLICGAMESERVERIP;
+                gameServerIp = Program.PublicGameServerIp;
             uint gameServerPort = 2001;
 
             MatchmakingResultNotification.Builder notification = MatchmakingResultNotification.CreateBuilder();
@@ -94,7 +94,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             connectInfo.SetAddress(Address.CreateBuilder().SetAddress_(gameServerIp).SetPort(gameServerPort));
             connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("GameAccount").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetBlobValue(member.Build().ToByteString())));
             connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("Token").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetUintValue(0xEEF4364684EE186E))); // FIXME
-            connectInfo.AddAttribute(attributeOfServer); // Настройки игры
+            connectInfo.AddAttribute(attributeOfServer); // GameCreateParams
 
             GameHandle.Builder gh = GameHandle.CreateBuilder();
             gh.SetMatchmaker(MatchmakerHandle.CreateBuilder()

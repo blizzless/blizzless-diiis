@@ -114,9 +114,9 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 
 			#region
-			string GAME_SERVER_IP = Program.GAMESERVERIP;
+			string gameServerIp = Program.GameServerIp;
 			if (GameServer.NATConfig.Instance.Enabled)
-				GAME_SERVER_IP = Program.PUBLICGAMESERVERIP;
+				gameServerIp = Program.PublicGameServerIp;
 			uint GAME_SERVER_PORT = 2001;
 
 			var member = bgs.protocol.account.v1.GameAccountHandle.CreateBuilder();
@@ -124,7 +124,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 			var notification = bgs.protocol.matchmaking.v1.MatchmakingResultNotification.CreateBuilder();
 			var connectInfo = bgs.protocol.matchmaking.v1.ConnectInfo.CreateBuilder();
-			connectInfo.SetAddress(Address.CreateBuilder().SetAddress_(GAME_SERVER_IP).SetPort(GAME_SERVER_PORT));
+			connectInfo.SetAddress(Address.CreateBuilder().SetAddress_(gameServerIp).SetPort(GAME_SERVER_PORT));
 			connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("GameAccount").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetBlobValue(member.Build().ToByteString())));
 			connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("Token").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetUintValue(0xEEF4364684EE186E))); // FIXME
 			//connectInfo.AddAttribute(AttributeOfServer); // Game settings

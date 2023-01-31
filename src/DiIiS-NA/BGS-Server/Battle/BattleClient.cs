@@ -46,7 +46,6 @@ namespace DiIiS_NA.LoginServer.Battle
 		public readonly object ServiceLock = new();
 		public object MessageLock = new();
 		private ulong _listenerId; // last targeted rpc object.
-		public bool MotdSent { get; private set; }
 		private ConcurrentDictionary<ulong, ulong> MappedObjects { get; set; }
 		public bool GuildChannelsRevealed = false;
 		public string GameTeamTag = "";
@@ -139,9 +138,8 @@ namespace DiIiS_NA.LoginServer.Battle
 			SocketConnection = socketChannel;
 			Services = new Dictionary<uint, uint>();
 			MappedObjects = new ConcurrentDictionary<ulong, ulong>();
-			MotdSent = false;
 			if (SocketConnection.Active)
-				Logger.Trace("Client - {0} - successfully encrypted the connection", socketChannel.RemoteAddress);
+				Logger.Trace("Client - $[green]$ {0} $[/]$ - successfully encrypted the connection", socketChannel.RemoteAddress);
 		}
 
 		protected override void ChannelRead0(IChannelHandlerContext ctx, BNetPacket msg)
@@ -263,16 +261,9 @@ namespace DiIiS_NA.LoginServer.Battle
 									ListenerId = 0
 								};
 #if DEBUG
-								if (method.Name == "KeepAlive")
-								{
-									Logger.Debug(
-										$"Call: $[olive]${service.GetType().Name}$[/]$, Service hash: $[olive]${header.ServiceHash}$[/]$, Method: $[olive]${method.Name}$[/]$, ID: $[olive]${header.MethodId}$[/]$");
-								}
-								else
-								{
-									Logger.Trace(
-										$"Call: $[olive]${service.GetType().Name}$[/]$, Service hash: $[olive]${header.ServiceHash}$[/]$, Method: $[olive]${method.Name}$[/]$, ID: $[olive]${header.MethodId}$[/]$");
-								}
+								Logger.Debug(
+									$"Call: $[underline white]${service.GetType().Name}$[/]$, Service hash: $[underline white]${header.ServiceHash}$[/]$, Method: $[underline white]${method.Name}$[/]$, ID: $[olive]${header.MethodId}$[/]$");
+
 #endif
 
 								service.CallMethod(method, controller, message,
@@ -281,7 +272,7 @@ namespace DiIiS_NA.LoginServer.Battle
 						}
 						catch (NotImplementedException)
 						{
-							Logger.Warn("Unimplemented service method: {0}.{1}", service.GetType().Name, method.Name);
+							Logger.Warn("Unimplemented service method:$[red]$ {0}.{1} $[/]$", service.GetType().Name, method.Name);
 						}
 					}
 					else
@@ -391,7 +382,8 @@ namespace DiIiS_NA.LoginServer.Battle
 				{
 					if (SocketConnection == null || !SocketConnection.Active) return;
 					var listenerId = GetRemoteObjectId(targetObject.DynamicId);
-					Logger.Debug("[RPC: {0}] Method: {1} Target: {2} [localId: {3}, remoteId: {4}].", GetType().Name, rpc.Method.Name,
+					Logger.Debug("[$[underline yellow]$RPC: {0}$[/]$] Method: $[underline white]${1}$[/]$ Target: $[underline white]${2}$[/]$ " +
+					             "[localId: $[underline white]${3}$[/]$, remoteId: $[underline white]${4}$[/]$].", GetType().Name, rpc.Method.Name,
 								 targetObject.ToString(), targetObject.DynamicId, listenerId);
 
 					rpc(listenerId);
@@ -409,7 +401,7 @@ namespace DiIiS_NA.LoginServer.Battle
 				try
 				{
 					if (SocketConnection == null || !SocketConnection.Active) return;
-					Logger.Debug("[RPC: {0}] Method: {1} Target: N/A", GetType().Name, rpc.Method.Name);
+					Logger.Debug("[$[underline yellow]$RPC: {0}$[/]$] Method: $[underline yellow]${1}$[/]$ Target: $[underline red]$N/A$[/]$", GetType().Name, rpc.Method.Name);
 					rpc(0);
 				}
 				catch { }
@@ -429,17 +421,17 @@ namespace DiIiS_NA.LoginServer.Battle
 
 			if (!Services.ContainsKey(serviceHash))
 			{
-				Logger.Warn("Service not found for client {0} [0x{1}].", serviceName, serviceHash.ToString("X8"));
+				Logger.Warn("Service not found for client {0} [$[underline blue]$0x{1}$[/]$].", serviceName, serviceHash.ToString("X8"));
 				// in english: "Service not found for client {0} [0x{1}]."
 				return;
 			}
 
 			uint status = 0;
 
-			if (controller is HandlerController)
+			if (controller is HandlerController handlerController)
 			{
-				status = ((HandlerController) controller).Status;
-				_listenerId = ((HandlerController) controller).ListenerId;
+				status = handlerController.Status;
+				_listenerId = handlerController.ListenerId;
 			}
 		
 			var serviceId = Services[serviceHash];
@@ -514,13 +506,10 @@ namespace DiIiS_NA.LoginServer.Battle
 		}
 		public void SendMotd()
 		{
-			if (MotdSent)
+			if (string.IsNullOrWhiteSpace(Config.Instance.Motd) || !Config.Instance.MotdEnabled)
 				return;
-
-			var motd = "Welcome to BlizzLess.Net Alpha-Build Server!";
-
-			SendServerWhisper(motd);
-			MotdSent = true;
+			Logger.Debug($"Motd sent to {Account.BattleTag}.");
+			SendServerWhisper(Config.Instance.Motd);
 		}
 
         public override void ChannelInactive(IChannelHandlerContext context)

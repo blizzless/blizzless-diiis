@@ -14,7 +14,7 @@ namespace DiIiS_NA.REST.Manager
 
         public bool Initialize()
         {
-            int _port = Config.Instance.PORT;
+            int _port = Config.Instance.Port;
             if (_port < 0 || _port > 0xFFFF)
             {
                 _port = 8081;

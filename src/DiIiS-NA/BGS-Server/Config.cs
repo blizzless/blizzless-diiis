@@ -9,14 +9,60 @@ namespace DiIiS_NA.LoginServer
 {
 	public sealed class Config : Core.Config.Config
 	{
-		public bool Enabled { get { return this.GetBoolean("Enabled", true); } set { this.Set("Enabled", value); } }
-		public string BindIP { get { return this.GetString("BindIP", "127.0.0.1"); } set { this.Set("BindIP", value); } }
-		public int WebPort { get { return this.GetInt("WebPort", 9000); } set { this.Set("WebPort", value); } }
-		public int Port { get { return this.GetInt("Port", 1119); } set { this.Set("Port", value); } }
-		public string BindIPv6 { get { return this.GetString("BindIPv6", "::1"); } set { this.Set("BindIPv6", value); } }
+		public bool Enabled
+		{
+			get => GetBoolean(nameof(Enabled), true);
+			set => Set(nameof(Enabled), value);
+		}
 
-		private static readonly Config _instance = new Config();
-		public static Config Instance { get { return _instance; } }
-		private Config() : base("Battle-Server") { }
+		public string BindIP
+		{
+			get => GetString(nameof(BindIP), "127.0.0.1");
+			set => Set(nameof(BindIP), value);
+		}
+
+		public int WebPort
+		{
+			get => GetInt(nameof(WebPort), 9000);
+			set => Set(nameof(WebPort), value);
+		}
+
+		public int Port
+		{
+			get => GetInt(nameof(Port), 1119);
+			set => Set(nameof(Port), value);
+		}
+
+		[Obsolete]
+		public string BindIPv6
+		{
+			get => GetString(nameof(BindIPv6), "::1");
+			set => Set(nameof(BindIPv6), value);
+		}
+
+		/// <summary>
+		/// Whether Motd should be displayed on login.
+		/// </summary>
+		public bool MotdEnabled
+		{
+			get => GetBoolean(nameof(MotdEnabled), true);
+			set => Set(nameof(MotdEnabled), value);
+		}
+		
+		/// <summary>
+		///	Motd text
+		/// </summary>
+		public string Motd
+		{
+			get => GetString(nameof(Motd),
+				$"Welcome to Blizzless Server Build {Program.Build} - Stage: {Program.Stage} [{Program.TypeBuild}]!");
+			set => Set(nameof(Motd), value);
+		}
+
+		public static Config Instance => new();
+
+		private Config() : base("Battle-Server")
+		{
+		}
 	}
 }
