@@ -88,9 +88,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			Logger.Trace("Breaked barricade, id: {0}", SNO);
 
-			if (source != null && source is Player && tombs.Contains(SNO))
+			if (source is Player player && tombs.Contains(SNO))
 			{
-				(source as Player).AddAchievementCounter(74987243307171, 1);
+				player.AddAchievementCounter(74987243307171, 1);
 			}
 
 			if (AnimationSet.TagMapAnimDefault.ContainsKey(AnimationSetKeys.DeathDefault))

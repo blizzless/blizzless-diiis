@@ -694,7 +694,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					Game.AddOnLoadWorldAction(WorldSno.a3dun_azmodan_arena, () =>
 					{
 						var world = Game.GetWorld(WorldSno.a3dun_azmodan_arena);
-						OpenAll(world, ActorSno._a3dun_crater_st_demon_chainpylon_fire_azmodan);
+						Open(world, ActorSno._a3dun_crater_st_demon_chainpylon_fire_azmodan);
 						try { world.GetActorBySNO(ActorSno._azmodan).Destroy(); } catch { };
 						world.SpawnMonster(ActorSno._azmodan, new Vector3D { X = 395.553f, Y = 394.966f, Z = 0.1f });
 					});
@@ -811,7 +811,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 								if (World.Players.Values.First().Position.Y < 140)
 									break;
 							}
-								script.Execute(World);
+							script.Execute(World);
 						});
 						#region Описание скрипта
 						//Понеслась

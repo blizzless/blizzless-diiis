@@ -8,6 +8,7 @@ using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations;
 using System.Linq;
+using System.Threading.Tasks;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
@@ -1070,7 +1071,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
                     });
 
-                    ListenKill(ActorSno._skeletonking_shield_skeleton, 1, new Advance());
+                    ListenKill(ActorSno._skeletonking_shield_skeleton, 4, new Advance());
                 }
             });
 
@@ -1082,8 +1083,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //take crown on Leoric's head
-
-                    OpenAll(this.Game.GetWorld(WorldSno.a1trdun_king_level08));
+                    Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
+                    {
+                        var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
+                        if (world.Players.Any())
+                        {
+                            var player = world.Players.First();
+                            var portal = world.GetPortals(player.Value);
+                            portal.First().SetUsable(false);
+                        }
+                        
+                        Open(Game.GetWorld(WorldSno.a1trdun_king_level08), ActorSno._trdun_cath_gate_b_skeletonking);
+                    });
+                    //Open(this.Game.GetWorld(73261), 172645);
                     ListenInteract(ActorSno._skeletonkinggizmo, 1, new Advance());
                 }
             });
@@ -1096,6 +1108,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill Leoric
+                    Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
+                    {
+                        var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
+                        if (!world.Players.Any()) return;
+                        var player = world.Players.First();
+                        var portal = world.GetPortals(player.Value);
+                        portal.First().SetUsable(false);
+                    });
+
                     ListenKill(ActorSno._skeletonking, 1, new Advance());
                 }
             });
@@ -1108,13 +1129,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to fallen star room
-                    Open(Game.GetWorld(WorldSno.a1trdun_king_level08), ActorSno._trdun_cath_gate_b_skeletonking);
                     Game.CurrentEncounter.Activated = false;
-                    ListenTeleport(117411, new Advance());
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
-                        Open(Game.GetWorld(WorldSno.a1trdun_king_level08), ActorSno._trdun_crypt_skeleton_king_throne_parts);
+                        var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
+                        Open(world, ActorSno._trdun_crypt_skeleton_king_throne_parts);
+                        if (!world.Players.Any()) return;
+                        var player = world.Players.First();
+                        var portal = world.GetPortals(player.Value);
+                        portal.First().SetUsable(true);
                     });
+                    ListenTeleport(117411, new Advance());
                 }
             });
 

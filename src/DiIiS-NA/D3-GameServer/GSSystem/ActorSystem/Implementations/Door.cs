@@ -75,7 +75,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void Open()
 		{
-			Logger.MethodTrace($"Opening door $[underline green]${SNO}$[/]$ in world $[underline green]{World.SNO}$[/]$");
+			Logger.MethodTrace($"Opening door $[underline green]${SNO}$[/]$ in world $[underline green]${World.SNO}$[/]$");
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
 				ActorID = DynamicID(plr),

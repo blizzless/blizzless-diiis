@@ -174,28 +174,23 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		//opening gates or door(for getting pass)
 		protected bool Open(World world, ActorSno sno)
 		{
-			var actor = world.GetActorsBySNO(sno).Where(d => d.Visible).FirstOrDefault();
-            if (actor == null)
-                return false;
-            
-            (actor as Door).Open();
+			var doors = world.GetAllDoors(sno);
+			if (!doors.Any()) return false;
+			foreach (var door in doors)
+				door.Open();
             return true;
 		}
 		
 		//opening all doors
-		protected void OpenAll(World world)
+		protected bool OpenAll(World world)
 		{
-			foreach (var actor in world.Actors.Select(s=>s.Value).Where(t=>t is Door).Cast<Door>())
-				(actor).Open();
-		}
-
-		protected bool OpenAll(World world, ActorSno sno)
-		{
-			foreach (var actor in world.GetActorsBySNO(sno).Where(d => d.Visible).ToList())
-				(actor as Door).Open();
+			var doors = world.GetAllDoors();
+			if (!doors.Any()) return false;
+			foreach (var door in doors)
+				door.Open();
 			return true;
 		}
-
+		
 		protected void ListenKillBonus(ActorSno monsterSno, int monsterCount, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)monsterSno,

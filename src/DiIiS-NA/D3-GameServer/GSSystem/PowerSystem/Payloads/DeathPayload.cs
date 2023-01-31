@@ -556,7 +556,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					if (Context.DogsSummoned >= 3)
 						plr.GrantAchievement(74987243307567);
 			}
-			Logger.Trace("Killed monster, id: {0}, level {1}", Target.SNO, Target.Attributes[GameAttribute.Level]);
+			Logger.Trace("Killed monster, id: $[red]${0}$[/]$, level $[red]${1}$[/]$", Target.SNO, Target.Attributes[GameAttribute.Level]);
 
 
 			//handling quest triggers

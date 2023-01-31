@@ -188,10 +188,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			get { return Actors.Values.OfType<StartingPoint>().Select(actor => actor).ToList(); }
 		}
 
-		public List<Portal> Portals
-		{
-			get { return Actors.Values.OfType<Portal>().Select(actor => actor).ToList(); }
-		}
+		public List<Portal> Portals => Actors.Values.OfType<Portal>().Select(actor => actor).ToList();
 
 		public List<Monster> Monsters
 		{
@@ -250,6 +247,43 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		}
 
 		#region update & tick logic
+
+		/// <summary>
+		/// Retrieve all portals located within a specified <param name="radius"/> of the given <param name="actor"/>.
+		/// </summary>
+		/// <param name="actor">The actor located near the portals</param>
+		/// <param name="radius">The radius of the portals to be returned is to be specified.</param>
+		/// <returns>Order all existing portals in the world by ascending distance from a specified <param name="actor"></param>.</returns>
+		/// <exception cref="ArgumentNullException">If <param name="actor"></param> is null.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">If <param name="radius"></param> is not null but lesser than 0.</exception>
+		public ImmutableArray<Portal> GetPortals(Actor actor, float? radius = null)
+		{
+			if (actor == null)
+				throw new ArgumentNullException(nameof(actor));
+			if (radius <= 0)
+				throw new ArgumentOutOfRangeException(nameof(radius), "Radius must be greater than zero.");
+
+			if (radius is { } r)
+				Logger.MethodTrace(
+					$"All portals near $[underline]${actor.SNO} ({actor.GetType().Name})$[/]$ within $[underline]${r}$[/]$ radius");
+			else
+				Logger.MethodTrace($"All portals near $[underline]${actor.SNO} ({actor.GetType().Name})$[/]$");
+
+			return Portals
+				.Where(portal =>
+				{
+					if (radius is not { } r) return true;
+					var position = actor.Position;
+					var distance = portal.Position.DistanceSquared(ref position);
+					return distance <= radius.Value;
+				})
+				.OrderBy(s =>
+				{
+					var position = actor.Position;
+					return s.Position.DistanceSquared(ref position);
+				})
+				.ToImmutableArray();
+		}
 
 		public void Update(int tickCounter)
 		{
@@ -1499,6 +1533,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public ImmutableArray<Door> GetAllDoors() =>
 			Actors.Select(a => a.Value).Where(a => a is Door).Cast<Door>().ToImmutableArray();
+		public ImmutableArray<Door> GetAllDoors(ActorSno sno) =>
+			Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno).Cast<Door>().ToImmutableArray();
 		public ImmutableArray<Door> OpenAllDoors()
 		{
 			List<Door> openedDoors = new();

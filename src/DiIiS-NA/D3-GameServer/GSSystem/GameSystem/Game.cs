@@ -1630,7 +1630,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public void AddOnLoadWorldAction(WorldSno worldSno, Action action)
 		{
 			Logger.Trace("AddOnLoadWorldAction: {0}", worldSno);
-			if (Players.Values.Any(p => p.World != null && p.World.SNO == worldSno))
+			if (Players.Values.Any(p => p.World?.SNO == worldSno))
 			{
 				action.Invoke();
 			}
@@ -1649,7 +1649,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			if (!OnLoadSceneActions.ContainsKey(sceneSno))
 					OnLoadSceneActions.Add(sceneSno, new List<Action>());
 
-				OnLoadSceneActions[sceneSno].Add(action);
+	        OnLoadSceneActions[sceneSno].Add(action);
 		}
 
 #endregion
