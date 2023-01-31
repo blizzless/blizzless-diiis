@@ -17,6 +17,8 @@ RateMonsterDMG = 1
 ChanceHighQualityUnidentified = 30
 ChanceNormalUnidentified = 5
 ResurrectionCharges = 3
+BossHealthMultiplier = 6
+BossDamageMultiplier = 3
 ```
 
 ## Description
@@ -32,4 +34,6 @@ ResurrectionCharges = 3
 | `ChanceHighQualityUnidentified` | Percentage that a unique, legendary, set or special item created is unidentified |
 | `ChanceNormalUnidentified` | Percentage that normal item created is unidentified |
 | `ResurrectionCharges` | Amount of times user can resurrect at corpse |
+| `BossHealthMultiplier` | Boss Health Multiplier |
+| `BossDamageMultiplier` | Boss Damage Multiplier |
 
