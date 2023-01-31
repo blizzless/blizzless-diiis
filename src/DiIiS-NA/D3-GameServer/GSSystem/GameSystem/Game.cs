@@ -402,8 +402,56 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					GameManager.Games.Remove(GameId);
 				}
 			}));
+		}
 
+		/// <summary>
+		/// Executes an action to all players in the game.
+		/// </summary>
+		/// <param name="action">Action to execute</param>
+		public void BroadcastPlayers(Action<GameClient, Player> action)
+		{
+			foreach (var player in Players)
+			{
+				action(player.Key, player.Value);
+			}
+		}
+		
+		/// <summary>
+		/// Executes an action to all players in the game where the predicate is true.
+		/// </summary>
+		/// <param name="predicate">Predicate to check</param>
+		/// <param name="action">Action to execute</param>
+		public void BroadcastPlayers(Func<GameClient, Player, bool> predicate, Action<GameClient, Player> action)
+		{
+			foreach (var player in Players.Where(s=>predicate(s.Key, s.Value)))
+			{
+				action(player.Key, player.Value);
+			}
+		}
 
+		/// <summary>
+		/// Executes an action to all worlds in the game.
+		/// </summary>
+		/// <param name="action">Action to execute</param>
+		public void BroadcastWorlds(Action<World> action)
+		{
+			foreach (var world in Worlds)
+			{
+				action(world);
+			}
+		}
+
+		/// <summary>
+		/// Executes an action to all worlds in the game.
+		/// </summary>
+		/// <param name="predicate">Predicate to check</param>
+		/// <param name="action">Action to execute</param>
+		public void BroadcastWorlds(Func<World, bool> predicate, Action<World> action)
+		{
+			foreach (var world in Worlds.Where(predicate))
+			{
+				action(world);
+			}
 		}
 
 		#region update & tick managment

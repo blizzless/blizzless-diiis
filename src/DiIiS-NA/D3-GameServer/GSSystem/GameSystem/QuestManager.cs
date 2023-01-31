@@ -197,7 +197,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					{
 						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp * Game.XpModifier);
 						int goldReward = (int)(Quests[Game.CurrentQuest].RewardGold * Game.GoldModifier);
-						if (Game.CurrentQuest != 312429)
+						if (Game.CurrentQuest != 312429) // open world quest
 						{
 							player.InGameClient.SendMessage(new QuestStepCompleteMessage()
 							{
@@ -433,14 +433,14 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			onDone);
 		}
 
-		public void LaunchQuestTimer(int questId, float duration, Action<int> onDone, int Meterid = 0)
+		public void LaunchQuestTimer(int questId, float duration, Action<int> onDone, int masterId = 0)
 		{
 			foreach (var player in Game.Players.Values)
 			{
 				player.InGameClient.SendMessage(new QuestMeterMessage()
 				{
 					snoQuest = questId,
-					annMeter = Meterid,
+					annMeter = masterId,
 					flMeter = 1f
 				});
 			};
@@ -455,7 +455,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					player.InGameClient.SendMessage(new QuestMeterMessage()
 					{
 						snoQuest = questId,
-						annMeter = Meterid,
+						annMeter = masterId,
 						flMeter = (QuestTimerEstimate / duration)
 					});
 				};
