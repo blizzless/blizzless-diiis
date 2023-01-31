@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace DiIiS_NA.Core.Logging
@@ -24,48 +25,55 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="reset">Reset log file on application startup?</param>
 		public FileTarget(string fileName, Logger.Level minLevel, Logger.Level maxLevel, bool includeTimeStamps, bool reset = false)
 		{
-			this.MinimumLevel = minLevel;
-			this.MaximumLevel = maxLevel;
-			this.IncludeTimeStamps = includeTimeStamps;
-			this._fileName = fileName;
-			this._fileTimestamp = DateTime.Now.ToString("yyyyMMdd_HHmm");
-			this._filePath = string.Format("{0}/{1}/{2}", LogConfig.Instance.LoggingRoot, this._fileTimestamp, _fileName);
-			this._fileIndex = 0;
+			MinimumLevel = minLevel;
+			MaximumLevel = maxLevel;
+			IncludeTimeStamps = includeTimeStamps;
+			_fileName = fileName;
+			_fileTimestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+			_filePath = $"{LogConfig.Instance.LoggingRoot}/{_fileTimestamp}/{_fileName}";
+			_fileIndex = 0;
 
 			if (!Directory.Exists(LogConfig.Instance.LoggingRoot)) // create logging directory if it does not exist yet.
 				Directory.CreateDirectory(LogConfig.Instance.LoggingRoot);
 
-			if (!Directory.Exists(string.Format("{0}/{1}", LogConfig.Instance.LoggingRoot, this._fileTimestamp))) // create logging directory if it does not exist yet.
-				Directory.CreateDirectory(string.Format("{0}/{1}", LogConfig.Instance.LoggingRoot, this._fileTimestamp));
+			if (!Directory.Exists($"{LogConfig.Instance.LoggingRoot}/{_fileTimestamp}")) // create logging directory if it does not exist yet.
+				Directory.CreateDirectory($"{LogConfig.Instance.LoggingRoot}/{_fileTimestamp}");
 
-			this._fileStream = new FileStream(_filePath, reset ? FileMode.Create : FileMode.Append, FileAccess.Write, FileShare.Read); // init the file stream.
-			this._logStream = new StreamWriter(this._fileStream) { AutoFlush = true }; // init the stream writer.
-			this.TaskQueue = new ConcurrentQueue<Action>();
-			this.LoggerThread = new Thread(this.CheckQueue) { Name = "Logger", IsBackground = true };
-			this.LoggerThread.Start();
+			_fileStream = new FileStream(_filePath, reset ? FileMode.Create : FileMode.Append, FileAccess.Write, FileShare.Read); // init the file stream.
+			_logStream = new StreamWriter(_fileStream) { AutoFlush = true }; // init the stream writer.
+			TaskQueue = new ConcurrentQueue<Action>();
+			LoggerThread = new Thread(CheckQueue) { Name = "Logger", IsBackground = true };
+			LoggerThread.Start();
 		}
 
 		public void CheckQueue()
 		{
 			while (true)
 			{
-				Action action = null;
-				if (this.TaskQueue.TryDequeue(out action))
+				if (TaskQueue.TryDequeue(out var action))
 					action.Invoke();
 
 				Thread.Sleep(1);
 			}
 		}
 
+		/// <summary>
+		/// Replace the colors from AnsiColor so they do not appear in the log file.
+		/// </summary>
+		/// <param name="message"></param>
+		/// <returns></returns>
+		private string NoColors(string message) => Regex.Replace(message, @"\$\[[\w\W\d\s_\-\/]+\]\$", "");
+
 		/// <param name="level">Log level.</param>
 		/// <param name="logger">Source of the log message.</param>
 		/// <param name="message">Log message.</param>
 		public override void LogMessage(Logger.Level level, string logger, string message)
 		{
-			this.TaskQueue.Enqueue(() =>
+			TaskQueue.Enqueue(() =>
 			{
-				var timeStamp = this.IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
-				if (!this._disposed) // make sure we're not disposed.
+				message = NoColors(message);
+				var timeStamp = IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
+				if (!_disposed) // make sure we're not disposed.
 				{
 					/*
 					if (this._fileStream.Length >= 20971520) //20 MB limit
@@ -77,9 +85,9 @@ namespace DiIiS_NA.Core.Logging
 					}
 					//*/
 					if (level > Logger.Level.ChatMessage)
-						this._logStream.WriteLine(string.Format("{0}[{1}] [{2}]: {3}", timeStamp, level.ToString().PadLeft(5), logger, message));
+						_logStream.WriteLine($"{timeStamp}[{level.ToString(),5}] [{logger}]: {message}");
 					else
-						this._logStream.WriteLine(string.Format("{0}{1}", timeStamp, message));
+						_logStream.WriteLine($"{timeStamp}{message}");
 				}
 			});
 		}
@@ -90,12 +98,13 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="exception">Exception to be included with log message.</param>
 		public override void LogException(Logger.Level level, string logger, string message, Exception exception)
 		{
-			this.TaskQueue.Enqueue(() =>
+			TaskQueue.Enqueue(() =>
 			{
-				var timeStamp = this.IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
-				if (!this._disposed) // make sure we're not disposed.
+				message = NoColors(message);
+				var timeStamp = IncludeTimeStamps ? "[" + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + "] " : "";
+				if (!_disposed) // make sure we're not disposed.
 				{
-					this._logStream.WriteLine(
+					_logStream.WriteLine(
 						$"{timeStamp}[{level.ToString(),5}] [{logger}]: {message} - [Exception] {exception}");
 				}
 			});
@@ -109,23 +118,23 @@ namespace DiIiS_NA.Core.Logging
 		public void Dispose()
 		{
 			Dispose(true);
-			GC.SuppressFinalize(this); // Take object out the finalization queue to prevent finalization code for it from executing a second time.
+			GC.SuppressFinalize(this); // Take object out the finalization queue to prevent finalization code for it from executing (~FileTarget).
 		}
 
 		private void Dispose(bool disposing)
 		{
-			if (this._disposed) return; // if already disposed, just return
+			if (_disposed) return; // if already disposed, just return
 
 			if (disposing) // only dispose managed resources if we're called from directly or in-directly from user code.
 			{
-				this._logStream.Close();
-				this._logStream.Dispose();
-				this._fileStream.Close();
-				this._fileStream.Dispose();
+				_logStream.Close();
+				_logStream.Dispose();
+				_fileStream.Close();
+				_fileStream.Dispose();
 			}
 
-			this._logStream = null;
-			this._fileStream = null;
+			_logStream = null;
+			_fileStream = null;
 
 			_disposed = true;
 		}

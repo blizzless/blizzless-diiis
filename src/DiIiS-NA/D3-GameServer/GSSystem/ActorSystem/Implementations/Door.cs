@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	[HandledSNO(ActorSno._caout_stingingwinds_khamsin_gate)]
-	class Door : Gizmo
+	public class Door : Gizmo
 	{
 		public bool isOpened = false;
 		public Portal NearestPortal = null;
@@ -75,12 +75,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void Open()
 		{
+			Logger.MethodTrace($"Opening door $[underline green]${SNO}$[/]$ in world $[underline green]{World.SNO}$[/]$");
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
 				ActorID = DynamicID(plr),
 				AnimReason = 5,
 				UnitAniimStartTime = 0,
-				tAnim = new PlayAnimationMessageSpec[]
+				tAnim = new[]
 				{
 					new PlayAnimationMessageSpec()
 					{
@@ -115,8 +116,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			TickerSystem.TickTimer Timeout = new TickerSystem.SecondsTickTimer(World.Game, 1.8f);
 			if (NearestPortal != null)
 			{
-				var Boom = Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
-				Boom.ContinueWith(delegate
+				var nearestPortalOpen = Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
+				nearestPortalOpen.ContinueWith(delegate
 				{
 					NearestPortal.SetVisible(true);
 					foreach (var plr in World.Players.Values)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -1494,6 +1495,22 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public override string ToString()
 		{
 			return $"[World] SNOId: {WorldSNO.Id} GlobalId: {GlobalID} Name: {WorldSNO.Name}";
+		}
+
+		public ImmutableArray<Door> GetAllDoors() =>
+			Actors.Select(a => a.Value).Where(a => a is Door).Cast<Door>().ToImmutableArray();
+		public ImmutableArray<Door> OpenAllDoors()
+		{
+			List<Door> openedDoors = new();
+			var doors = GetAllDoors();
+			
+			foreach (var door in doors)
+			{
+				openedDoors.Add(door);
+				door.Open();
+			}
+
+			return openedDoors.ToImmutableArray();
 		}
 	}
 }

@@ -3,6 +3,7 @@
 using System;
 //Blizzless Project 2022
 using System.Collections.Generic;
+using System.Collections.Immutable;
 //Blizzless Project 2022
 using System.Linq;
 //Blizzless Project 2022
@@ -6180,5 +6181,24 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
         Attributes[GameAttribute.Hitpoints_Total_From_Level] = Attributes[GameAttribute.Hitpoints_Max_Total];
         Attributes.BroadcastChangedIfRevealed();
+    }
+
+    public ImmutableArray<Door> GetNearDoors(float distance = 50f)
+    {
+        var doors = World.GetAllDoors();
+        List<Door> doorList = doors.Where(door => door.Position.IsNear(Position, distance)).ToList();
+        return doorList.ToImmutableArray();
+    }
+
+    public ImmutableArray<Door> OpenNearDoors(float distance = 50f)
+    {
+        List<Door> openedDoors = new();
+        foreach (var door in GetNearDoors(distance))
+        {
+            openedDoors.Add(door);
+            door.Open();
+        }
+
+        return openedDoors.ToImmutableArray();
     }
 }

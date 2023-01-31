@@ -1070,7 +1070,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
                     });
 
-                    ListenKill(ActorSno._skeletonking_shield_skeleton, 4, new Advance());
+                    ListenKill(ActorSno._skeletonking_shield_skeleton, 1, new Advance());
                 }
             });
 
@@ -1082,11 +1082,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //take crown on Leoric's head
-                    Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
-                    {
-                        Open(Game.GetWorld(WorldSno.a1trdun_king_level08), ActorSno._trdun_cath_gate_b_skeletonking);
-                    });
-                    //Open(this.Game.GetWorld(73261), 172645);
+
+                    OpenAll(this.Game.GetWorld(WorldSno.a1trdun_king_level08));
                     ListenInteract(ActorSno._skeletonkinggizmo, 1, new Advance());
                 }
             });
@@ -1111,6 +1108,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to fallen star room
+                    Open(Game.GetWorld(WorldSno.a1trdun_king_level08), ActorSno._trdun_cath_gate_b_skeletonking);
                     Game.CurrentEncounter.Activated = false;
                     ListenTeleport(117411, new Advance());
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>

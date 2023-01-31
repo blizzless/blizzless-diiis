@@ -181,6 +181,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             (actor as Door).Open();
             return true;
 		}
+		
+		//opening all doors
+		protected void OpenAll(World world)
+		{
+			foreach (var actor in world.Actors.Select(s=>s.Value).Where(t=>t is Door).Cast<Door>())
+				(actor).Open();
+		}
 
 		protected bool OpenAll(World world, ActorSno sno)
 		{

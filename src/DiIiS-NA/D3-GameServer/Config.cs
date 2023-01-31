@@ -133,7 +133,25 @@ namespace DiIiS_NA.GameServer
 			get => GetInt(nameof(ResurrectionCharges), 3);
 			set => Set(nameof(ResurrectionCharges), value);
 		}
+
+		/// <summary>
+		/// Boss Health Multiplier
+		/// </summary>
+		public float BossHealthMultiplier
+		{
+			get => GetFloat(nameof(BossHealthMultiplier), 6f);
+			set => Set(nameof(BossHealthMultiplier), value);
+		}
 		
+		/// <summary>
+		/// Boss Damage Multiplier
+		/// </summary>
+		public float BossDamageMultiplier
+		{
+			get => GetFloat(nameof(BossDamageMultiplier), 3f);
+			set => Set(nameof(BossDamageMultiplier), value);
+		}
+
 		public static Config Instance { get; } = new();
 
 		private Config() : base("Game-Server")

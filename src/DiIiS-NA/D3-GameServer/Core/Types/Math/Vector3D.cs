@@ -104,7 +104,7 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 		/// </summary>
 		/// <param name="point">the second <see cref="Vector3" /></param>
 		/// <returns>the distance squared between the vectors</returns>
-		public float DistanceSquared(ref Vector3D point)
+		public float DistanceSquared(ref Vector3D point) // todo: remove ref
 		{
 			float x = point.X - X, 
 				y = point.Y - Y,
@@ -183,8 +183,6 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 		public override string ToString() => $"X:{X:F4}, Y:{Y:F4} Z:{Z:F4}";
 
-		public bool IsNear(Vector3D other, float distance) => DistanceSquared(ref other) < distance * distance;
-
-		public bool IsNearSquared(Vector3D other, float distanceSquared) => DistanceSquared(ref other) < distanceSquared;
+		public bool IsNear(Vector3D other, float distance) => DistanceSquared(ref other) < distance;
 	}
 }
