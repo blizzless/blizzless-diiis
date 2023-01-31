@@ -3745,9 +3745,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 WarpFadeInSecods = 0f
             });
 
-        if (SkillSet.HasSkill(460757))
+        if (SkillSet.HasSkill(460757)) // P6_Necro_Devour
             foreach (var skill in SkillSet.ActiveSkills)
-                if (skill.snoSkill == 460757)
+                if (skill.snoSkill == 460757) // P6_Necro_Devour
                     if (skill.snoRune == 3)
                         World.BuffManager.AddBuff(this, this, new P6_Necro_Devour_Aura());
                     else
@@ -3810,7 +3810,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         AllBuffs.Clear();
         BetweenWorlds = false;
 
-        if (_CurrentHPValue != -1)
+        if (Math.Abs(_CurrentHPValue - (-1)) > 0.0001)
         {
             Attributes[GameAttribute.Hitpoints_Cur] = _CurrentHPValue;
             Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = _CurrentResourceValue;
@@ -3828,7 +3828,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     #region hero-state
 
-    public void WTF()
+    [Obsolete("Does this make sense?")]
+    private void WTF()
     {
         Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, 208468] = true;
         Attributes[GameAttribute.Thorns_Fixed_Total, 0] = 0;

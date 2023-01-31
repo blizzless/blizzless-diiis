@@ -31,6 +31,7 @@ using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
@@ -408,8 +409,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Executes an action to all players in the game.
 		/// </summary>
 		/// <param name="action">Action to execute</param>
-		public void BroadcastPlayers(Action<GameClient, Player> action)
+		public void BroadcastPlayers(Action<GameClient, Player> action, [CallerMemberName] string methodName = "")
 		{
+			Logger.MethodTrace("Broadcasting to players", methodName);
 			foreach (var player in Players)
 			{
 				action(player.Key, player.Value);
@@ -421,8 +423,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// </summary>
 		/// <param name="predicate">Predicate to check</param>
 		/// <param name="action">Action to execute</param>
-		public void BroadcastPlayers(Func<GameClient, Player, bool> predicate, Action<GameClient, Player> action)
+		public void BroadcastPlayers(Func<GameClient, Player, bool> predicate, Action<GameClient, Player> action, [CallerMemberName] string methodName = "")
 		{
+			Logger.MethodTrace("Broadcasting to players", methodName);
 			foreach (var player in Players.Where(s=>predicate(s.Key, s.Value)))
 			{
 				action(player.Key, player.Value);
@@ -433,8 +436,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Executes an action to all worlds in the game.
 		/// </summary>
 		/// <param name="action">Action to execute</param>
-		public void BroadcastWorlds(Action<World> action)
+		public void BroadcastWorlds(Action<World> action, [CallerMemberName] string methodName = "")
 		{
+			Logger.MethodTrace("Broadcasting to players", methodName);
 			foreach (var world in Worlds)
 			{
 				action(world);
@@ -446,8 +450,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// </summary>
 		/// <param name="predicate">Predicate to check</param>
 		/// <param name="action">Action to execute</param>
-		public void BroadcastWorlds(Func<World, bool> predicate, Action<World> action)
+		public void BroadcastWorlds(Func<World, bool> predicate, Action<World> action, [CallerMemberName] string methodName = "")
 		{
+			Logger.MethodTrace("Broadcasting to players", methodName);
 			foreach (var world in Worlds.Where(predicate))
 			{
 				action(world);

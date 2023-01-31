@@ -204,6 +204,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public int? MarkerSetSNO { get; private set; }
 
 		public bool Hidden = false;
+		// TODO: check if the following is correct: @iamdroppy
+		// {
+		// 	get => Attributes[GameAttribute.Hidden];
+		// 	set => Attributes[GameAttribute.Hidden] = value;
+		// }
 
 		public bool AdjustPosition = true;
 
@@ -239,7 +244,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			ActorSNO = new SNOHandle(SNOGroup.Actor, (int)sno);
 			NameSNO = sno;
 			//Logger.Info("Loaded actor {0}, id {1}, type {2}", this.ActorSNO.Name, this.DynamicID, this.ActorData.Type);
-			Quality = 0;
+			//Quality = 0; - removed, 0 is default and you can't change the quality
 			HasLoot = true;
 
 			if (ActorData.TagMap.ContainsKey(ActorKeys.TeamID))
@@ -369,7 +374,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			CheckPointPosition = position;
 			if (this is Player)
-				world.BroadcastIfRevealed((ACDWorldPositionMessage), this);
+				world.BroadcastIfRevealed(ACDWorldPositionMessage, this);
 			AfterChangeWorld();
 
 			if (this is Player plr)
@@ -506,7 +511,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				int radius = (int)Math.Pow(2, i);
 				for (int a = 0; a < 8; a++)
 				{
-					float angle = (float)((0.125f * a) * (Math.PI * 2));
+					float angle = (float)(0.125f * a * (Math.PI * 2));
 					Vector3D correctPosition = Position + new Vector3D((float)Math.Cos(angle) * radius, (float)Math.Sin(angle) * radius, 0);
 					if (World.CheckLocationForFlag(correctPosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 					{
@@ -557,7 +562,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			World.BroadcastIfRevealed(plr => new PlayHitEffectMessage
 			{
 				ActorID = DynamicID(plr),
-				HitDealer = (hitDealer.IsRevealedToPlayer(plr) ? hitDealer.DynamicID(plr) : DynamicID(plr)),
+				HitDealer = hitDealer.IsRevealedToPlayer(plr) ? hitDealer.DynamicID(plr) : DynamicID(plr),
 				DamageType = hitEffect,
 				CriticalDamage = false
 			}, this);
@@ -709,7 +714,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void AddPercentHP(int percentage, bool GuidingLight = false)
 		{
-			float quantity = (percentage * Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
+			float quantity = percentage * Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
 			AddHP(quantity, GuidingLight);
 		}
 
@@ -762,7 +767,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void SetUsable(bool activated)
 		{
-			Attributes[GameAttribute.Team_Override] = (activated ? -1 : 2);
+			Attributes[GameAttribute.Team_Override] = activated ? -1 : 2;
 			Attributes[GameAttribute.Untargetable] = !activated;
 			Attributes[GameAttribute.NPC_Is_Operatable] = activated;
 			Attributes[GameAttribute.Operatable] = activated;
@@ -818,8 +823,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			lock (player.RevealedObjects)
 			{
 				if (Hidden || Dead || !Visible || World == null) return false;
-
-                var mysticHiddenWorlds = new WorldSno[] {
+				
+                var mysticHiddenWorlds = new[] {
                     WorldSno.trdun_crypt_falsepassage_01,
 					WorldSno.trdun_crypt_falsepassage_02,
 					WorldSno.trdun_crypt_fields_flooded_memories_level01,
@@ -833,7 +838,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 
 				//Destroy Bonewall and Jondar if Exit_S on Second Level of Cathedral
-				if (World.SNO == WorldSno.a1trdun_level04 && (SNO == ActorSno._trdun_cath_bonewall_a_door ||  SNO == ActorSno._adventurer_d_templarintrounique)) return false;
+				if (World.SNO == WorldSno.a1trdun_level04 && SNO is ActorSno._trdun_cath_bonewall_a_door or ActorSno._adventurer_d_templarintrounique) 
+					return false;
 
 				if (SNO.IsUberWorldActor() && !World.SNO.IsUberWorld()) return false;
 				if (SNO.IsAdventureModeActor() && World.Game.CurrentAct != 3000) return false;
@@ -850,15 +856,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				if (!(this is Item) && GetScenesInRange().Count > 0 && !GetScenesInRange().OrderBy(scene => PowerMath.Distance2D(scene.Position, Position)).First().IsRevealedToPlayer(player)) return false;
 
-				uint objId = player.NewDynamicID(GlobalID, (this is Player && (!(this as Player).IsInPvPWorld || this == player)) ? (int)(this as Player).PlayerIndex : -1);
+				uint objId = player.NewDynamicID(GlobalID, this is Player thisPlayer && (!thisPlayer.IsInPvPWorld || this == player) ? thisPlayer.PlayerIndex : -1);
 
 				player.RevealedObjects.Add(GlobalID, objId);
 
-				var gbidbank = new int[AffixList.Count];
+				var gbIdBank = new int[AffixList.Count];
 				int i = 0;
 				foreach (var affix in AffixList)
 				{
-					gbidbank[i] = affix.AffixGbid;
+					gbIdBank[i] = affix.AffixGbid;
 					i++;
 				}
 				/*
@@ -873,13 +879,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				var msg = ACDEnterKnown(player);
 
 				// normaly when we send acdenterknown for players own actor it's set to 0x09. But while sending the acdenterknown for another player's actor we should set it to 0x01. /raist
-				if ((this is Player) && this != player)
-					msg.Flags = 0x01;
+				if (this is Player)
+				{
+					msg.Flags = this == player ? 0x09 : 0x01;
+				}
 
 				player.InGameClient.SendMessage(msg);
 
 				// Collision Flags
-				if (!((this is Projectile) || (this is Item)))
+				if (this is not Projectile && this is not Item)
 				{
 					player.InGameClient.SendMessage(new ACDCollFlagsMessage
 					{
@@ -907,7 +915,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (this is Player || this is NPC || this is Goblin)
 					player.InGameClient.SendMessage(new ACDCreateActorMessage(objId));
 
-				TrickleMessage Trickle = new TrickleMessage()
+				TrickleMessage trickle = new TrickleMessage()
 				{
 					ActorId = DynamicID(player),
 					ActorSNO = (int)SNO,
@@ -920,10 +928,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					
 				};
 
-				if (this is Player)
-					Trickle.PlayerIndex = (this as Player).PlayerIndex;
+				if (this is Player playerTrickle)
+					trickle.PlayerIndex = playerTrickle.PlayerIndex;
 
-				player.InGameClient.SendMessage(Trickle);
+				player.InGameClient.SendMessage(trickle);
 
 
 				// Actor group
@@ -937,93 +945,103 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 
 				#region Special cases
-				// set idle animation for zombies in tristram - ZHRAAT
-				if (World.SNO == WorldSno.trout_town)
+
+				switch (World.SNO)
 				{
-					if (Tags != null)
-						if (Tags.ContainsKey(MarkerKeys.Group1Hash))
-							if (Tags[MarkerKeys.Group1Hash] == -1248096796)
-								PlayActionAnimation(AnimationSno.zombie_male_skinny_eating);
-				}
-				// set idle animation for workers
-				else if (World.SNO == WorldSno.trout_tristram_inn && SNO == ActorSno._omninpc_tristram_male_a)
-					PlayActionAnimation(AnimationSno.omninpc_male_hth_injured);
-				else if (SNO == ActorSno._leah)
-					player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Inventory.VisualInventoryMessage()
+					// set idle animation for zombies in tristram - ZHRAAT
+					case WorldSno.trout_town:
 					{
-						ActorID = DynamicID(player),
-						EquipmentList = new VisualEquipment()
-						{
-							Equipment = new VisualItem[]
+						if (Tags != null)
+							if (Tags.ContainsKey(MarkerKeys.Group1Hash))
+								if (Tags[MarkerKeys.Group1Hash] == -1248096796)
+									PlayActionAnimation(AnimationSno.zombie_male_skinny_eating);
+						break;
+					}
+					// set idle animation for workers
+					case WorldSno.trout_tristram_inn when SNO == ActorSno._omninpc_tristram_male_a:
+						PlayActionAnimation(AnimationSno.omninpc_male_hth_injured);
+						break;
+					default:
+					{
+						if (SNO == ActorSno._leah)
+							player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Inventory.VisualInventoryMessage()
 							{
-                                new()
+								ActorID = DynamicID(player),
+								EquipmentList = new VisualEquipment()
 								{
-									GbId = -1,
-									DyeType = 0,
-									ItemEffectType = 0,
-									EffectLevel = -1,
-								},
-								new()
-								{
-									GbId = -1,
-									DyeType = 0,
-									ItemEffectType = 0,
-									EffectLevel = -1,
-								},
-								new()
-								{
-									GbId = -1,
-									DyeType = 0,
-									ItemEffectType = 0,
-									EffectLevel = -1,
-								},
-								new()
-								{
-									GbId = -1,
-									DyeType = 0,
-									ItemEffectType = 0,
-									EffectLevel = -1,
-								},
-								new()
-								{
-									GbId = unchecked((int)-2091504072),
-									DyeType = 0,
-									ItemEffectType = 0,
-									EffectLevel = -1,
-								},
-								new()
-								{
-									GbId = -1,//0x6C3B0389,
-									DyeType = 0,
-									ItemEffectType = 0,
-									EffectLevel = -1,
-								},
-								new()
-								{
-									GbId = -1,
-									DyeType = 0,
-									ItemEffectType = 0,
-									EffectLevel = -1,
-								},
-								new()
-								{
-									GbId = -1,
-									DyeType = 0,
-									ItemEffectType = 0,
-									EffectLevel = -1,
-								},
-							}
-						}
-					});
+									Equipment = new VisualItem[]
+									{
+										new()
+										{
+											GbId = -1,
+											DyeType = 0,
+											ItemEffectType = 0,
+											EffectLevel = -1,
+										},
+										new()
+										{
+											GbId = -1,
+											DyeType = 0,
+											ItemEffectType = 0,
+											EffectLevel = -1,
+										},
+										new()
+										{
+											GbId = -1,
+											DyeType = 0,
+											ItemEffectType = 0,
+											EffectLevel = -1,
+										},
+										new()
+										{
+											GbId = -1,
+											DyeType = 0,
+											ItemEffectType = 0,
+											EffectLevel = -1,
+										},
+										new()
+										{
+											GbId = unchecked((int)-2091504072),
+											DyeType = 0,
+											ItemEffectType = 0,
+											EffectLevel = -1,
+										},
+										new()
+										{
+											GbId = -1,//0x6C3B0389,
+											DyeType = 0,
+											ItemEffectType = 0,
+											EffectLevel = -1,
+										},
+										new()
+										{
+											GbId = -1,
+											DyeType = 0,
+											ItemEffectType = 0,
+											EffectLevel = -1,
+										},
+										new()
+										{
+											GbId = -1,
+											DyeType = 0,
+											ItemEffectType = 0,
+											EffectLevel = -1,
+										},
+									}
+								}
+							});
+						break;
+					}
+				}
 
 				#endregion
-				if (this is NPC || this is InteractiveNPC)
-				{
-					//.Contains<TagMap>(AnimationSetKeys.Idle)
-					//if (this.AnimationSet.Animations.ContainsKey(AnimationSetKeys.Idle.ID))
-					//	this.SetIdleAnimation(this.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Idle]);
-					//this.PlayAnimation(0, this.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Idle]);
-				}
+				// if (this is NPC || this is InteractiveNPC)
+				// {
+				// 	//.Contains<TagMap>(AnimationSetKeys.Idle)
+				// 	//if (this.AnimationSet.Animations.ContainsKey(AnimationSetKeys.Idle.ID))
+				// 	//	this.SetIdleAnimation(this.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Idle]);
+				// 	//this.PlayAnimation(0, this.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Idle]);
+				// }
 
 				//Logger.Trace("Reveal actor [{2}]{0} as {1}", this.GlobalID, objId, this.ActorSNO.Name);
 

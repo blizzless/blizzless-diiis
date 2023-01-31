@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
+using D3.Quests;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.Core.Helpers.Math;
@@ -193,56 +194,51 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				{
 					SaveQuestProgress(true);
 					Logger.Trace($"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, completed $[underline white]${Quests[Game.CurrentQuest].Completed}$[/]$");
-					foreach (var player in Game.Players.Values)
+					Game.BroadcastPlayers((client, player) => 
 					{
+						if (Game.CurrentQuest == 312429) return; // open world quest
+						
 						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp * Game.XpModifier);
 						int goldReward = (int)(Quests[Game.CurrentQuest].RewardGold * Game.GoldModifier);
-						if (Game.CurrentQuest != 312429) // open world quest
+						player.InGameClient.SendMessage(new QuestStepCompleteMessage()
 						{
-							player.InGameClient.SendMessage(new QuestStepCompleteMessage()
-							{
-								QuestStepComplete = D3.Quests.QuestStepComplete.CreateBuilder()
+							QuestStepComplete = QuestStepComplete.CreateBuilder()
 
-								.SetReward(D3.Quests.QuestReward.CreateBuilder()
+								.SetReward(QuestReward.CreateBuilder()
 									.SetGoldGranted(goldReward)
 									.SetXpGranted((ulong)xpReward)
 									.SetSnoQuest(Game.CurrentQuest)
-									)
+								)
 								.SetIsQuestComplete(true)
 								.Build()
-								//snoQuest = this.Game.CurrentQuest,
-								//isQuestComplete = true,
-								//rewardXp = xpReward,
-								//rewardGold = goldReward
-							});
-							player.InGameClient.SendMessage(new GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
+						});
+						player.InGameClient.SendMessage(new GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
+						{
+							Place = new WorldPlace()
 							{
-								Place = new WorldPlace()
-								{
-									Position = player.Position,
-									WorldID = player.World.DynamicID(player),
-								},
+								Position = player.Position,
+								WorldID = player.World.DynamicID(player),
+							},
 
-								Amount = xpReward,
-								Type = GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Experience,
-							});
-							player.InGameClient.SendMessage(new GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
+							Amount = xpReward,
+							Type = GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Experience,
+						});
+						player.InGameClient.SendMessage(new GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
+						{
+							Place = new WorldPlace()
 							{
-								Place = new WorldPlace()
-								{
-									Position = player.Position,
-									WorldID = player.World.DynamicID(player),
-								},
+								Position = player.Position,
+								WorldID = player.World.DynamicID(player),
+							},
 
-								Amount = goldReward,
-								Type = GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Gold,
-							});
-							player.UpdateExp(xpReward);
-							player.Inventory.AddGoldAmount(goldReward);
-							player.AddAchievementCounter(74987243307173, (uint)goldReward);
-							player.CheckQuestCriteria(Game.CurrentQuest);
-						}
-					};
+							Amount = goldReward,
+							Type = GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Gold,
+						});
+						player.UpdateExp(xpReward);
+						player.Inventory.AddGoldAmount(goldReward);
+						player.AddAchievementCounter(74987243307173, (uint)goldReward);
+						player.CheckQuestCriteria(Game.CurrentQuest);
+					});
 				}
 
 				if (Quests[Game.CurrentQuest].NextQuest == -1) return;
@@ -305,9 +301,9 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 					player.InGameClient.SendMessage(new QuestStepCompleteMessage()
 					{
-						QuestStepComplete = D3.Quests.QuestStepComplete.CreateBuilder()
+						QuestStepComplete = QuestStepComplete.CreateBuilder()
 							
-							.SetReward(D3.Quests.QuestReward.CreateBuilder()
+							.SetReward(QuestReward.CreateBuilder()
 								.SetGoldGranted(goldReward)
 								.SetXpGranted((ulong)xpReward)
 								.SetSnoQuest(Game.CurrentSideQuest)
@@ -416,13 +412,8 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 		public float QuestTimerEstimate = 0f;
 
-		public void LaunchRiftQuestTimer(float duration, Action<int> onDone, int idSNO = 0)
+		public void LaunchRiftQuestTimer(float duration, Action<int> onDone)
 		{
-			foreach (var player in Game.Players.Values)
-			{
-				
-			};
-
 			QuestTimerEstimate = duration;
 
 			Game.QuestTimer = SteppedTickTimer.WaitSecondsStepped(Game, 1f, duration, new Action<int>((q) =>
@@ -435,7 +426,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 		public void LaunchQuestTimer(int questId, float duration, Action<int> onDone, int masterId = 0)
 		{
-			foreach (var player in Game.Players.Values)
+			Game.BroadcastPlayers((client, player) =>
 			{
 				player.InGameClient.SendMessage(new QuestMeterMessage()
 				{
@@ -443,7 +434,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					annMeter = masterId,
 					flMeter = 1f
 				});
-			};
+			});
 
 			QuestTimerEstimate = duration;
 
@@ -472,7 +463,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Objectives[objId].Counter++;
 
 			var objective = Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Objectives[objId];
-			foreach (var player in Game.Players.Values)
+			Game.BroadcastPlayers((client, player) =>
 				player.InGameClient.SendMessage(new QuestCounterMessage()
 				{
 					snoQuest = Game.CurrentQuest,
@@ -481,7 +472,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					TaskIndex = objId,
 					Counter = objective.Counter,
 					Checked = objective.Counter < objective.Limit ? 0 : 1,
-				});
+				}));
 
 			if (!Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Objectives.Any(obj => obj.Counter < obj.Limit))
 				Advance();
@@ -1038,9 +1029,9 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				});
 				player.InGameClient.SendMessage(new QuestStepCompleteMessage()
 				{
-					QuestStepComplete = D3.Quests.QuestStepComplete.CreateBuilder()
+					QuestStepComplete = QuestStepComplete.CreateBuilder()
 						.SetIsQuestComplete(true)
-						.SetReward(D3.Quests.QuestReward.CreateBuilder()
+						.SetReward(QuestReward.CreateBuilder()
 							.SetSnoQuest(BountySNOid)
 							.SetXpGranted((ulong)xpReward)
 							.SetGoldGranted((int)goldReward)
