@@ -3602,6 +3602,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 });
     }
 
+    private bool _motdSent;
     public override void OnEnter(World world)
     {
         world.Reveal(this);
@@ -3671,7 +3672,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         System.Threading.Tasks.Task.Delay(3).Wait();
         RevealActorsToPlayer();
-
+        if (!_motdSent && LoginServer.Config.Instance.MotdEnabled)
+            InGameClient.BnetClient.SendMotd();
         //
     }
 
