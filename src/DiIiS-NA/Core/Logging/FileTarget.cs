@@ -62,7 +62,7 @@ namespace DiIiS_NA.Core.Logging
 		/// </summary>
 		/// <param name="message"></param>
 		/// <returns></returns>
-		private string NoColors(string message) => Regex.Replace(message, @"\$\[[\w\W\d\s_\-\/]+\]\$", "");
+		private string NoColors(string message) => Regex.Replace(message, @"\$\[\[?[\w\W\d\s_\-\/]+\]\]?\$", "");
 
 		/// <param name="level">Log level.</param>
 		/// <param name="logger">Source of the log message.</param>
