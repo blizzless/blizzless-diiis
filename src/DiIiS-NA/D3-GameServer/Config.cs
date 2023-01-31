@@ -152,6 +152,15 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(BossDamageMultiplier), value);
 		}
 
+		/// <summary>
+		/// Whether to bypass the quest's settings of "Saveable" to TRUE (unless in OpenWorld)
+		/// </summary>
+		public bool AutoSaveQuests
+		{
+			get => GetBoolean(nameof(AutoSaveQuests), false);
+			set => Set(nameof(AutoSaveQuests), value);
+		}
+		
 		public static Config Instance { get; } = new();
 
 		private Config() : base("Game-Server")

@@ -11,6 +11,7 @@ using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
@@ -261,7 +262,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			if (!Game.Empty)
 			{
 				RevealQuestProgress();
-				if (Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Saveable)
+				if ((Game.CurrentActEnum != ActEnum.OpenWorld && Config.Instance.AutoSaveQuests) || Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Saveable)
 					SaveQuestProgress(false);
 			}
 			OnQuestProgress();
@@ -803,7 +804,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 		public void SaveQuestProgress(bool questCompleted)
 		{
-			foreach (var player in Game.Players.Values)
+			Game.BroadcastPlayers((client, player) =>
 			{
 				player.Toon.CurrentAct = CurrentAct;
 				player.Toon.CurrentQuestId = Game.CurrentQuest;
@@ -813,10 +814,12 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					dbi => dbi.DBToon.Id == player.Toon.PersistentID && dbi.QuestId == Game.CurrentQuest);
 				if (query.Count == 0)
 				{
-					var questHistory = new DBQuestHistory();
-					questHistory.DBToon = player.Toon.DBToon;
-					questHistory.QuestId = Game.CurrentQuest;
-					questHistory.QuestStep = Game.CurrentStep;
+					var questHistory = new DBQuestHistory
+					{
+						DBToon = player.Toon.DBToon,
+						QuestId = Game.CurrentQuest,
+						QuestStep = Game.CurrentStep
+					};
 					Game.GameDbSession.SessionSave(questHistory);
 				}
 				else
@@ -829,7 +832,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 						Game.GameDbSession.SessionUpdate(questHistory);
 					}
 				}
-			}
+			});
 		}
 	}
 
