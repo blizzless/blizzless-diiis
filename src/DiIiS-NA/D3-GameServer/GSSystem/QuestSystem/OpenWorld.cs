@@ -32,12 +32,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 2,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => {
+				OnAdvance = () => {
 					script = new CryptPortals();
 					script.Execute(Game.GetWorld(WorldSno.trout_town));
-                    Game.AddOnLoadWorldAction(WorldSno.a1dun_spidercave_02, () =>
-                    {
+					Game.AddOnLoadWorldAction(WorldSno.a1dun_spidercave_02, () =>
+					{
 						Game.GetWorld(WorldSno.a1dun_spidercave_02).SpawnMonster(ActorSno._spiderqueen, new Vector3D { X = 149.439f, Y = 121.452f, Z = 13.794f }); 
 					});//spawn spider queen
 					Game.AddOnLoadWorldAction(WorldSno.trdun_butcherslair_02, () => 
@@ -63,7 +62,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						world.SpawnMonster(ActorSno._siegebreakerdemon, new Vector3D { X = 396.565f, Y = 366.167f, Z = 0.1f });
 					}); //spawn Siegebreaker
 
-				})
+				}
 			});
 
 			Game.QuestManager.Quests[312429].Steps.Add(2, new QuestStep
@@ -71,9 +70,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => { //complete
-				})
+				OnAdvance = () => { //complete
+				}
 			});
 
 			Game.QuestManager.Quests[312429].Steps.Add(1, new QuestStep
@@ -81,9 +79,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => { //complete
-				})
+				OnAdvance = () => { //complete
+				}
 			});
 			#endregion
 
@@ -96,10 +93,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => {
+				OnAdvance = () => {
 					
-				})
+				}
 			});
 
 			Game.QuestManager.SideQuests[382695].Steps.Add(1, new QuestStep
@@ -107,12 +103,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => {
+				OnAdvance = () => {
 
 					
 					
-				})
+				}
 			});
 
 			Game.QuestManager.SideQuests[382695].Steps.Add(3, new QuestStep
@@ -120,8 +115,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => { //complete
+				OnAdvance = () => { //complete
 					var nephalem = Game.GetWorld(Game.WorldOfPortalNephalem);
 					ActorSystem.Actor BossOfPortal = null;
 					
@@ -148,7 +142,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					}
 					ActiveArrow(nephalem, BossOfPortal.SNO);
 					ListenKill(BossOfPortal.SNO, 1, new QuestEvents.SideAdvance());
-                })
+				}
 			});
 
 			Game.QuestManager.SideQuests[382695].Steps.Add(10, new QuestStep
@@ -156,9 +150,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => { //complete
-				})
+				OnAdvance = () => { //complete
+				}
 			});
 
 			Game.QuestManager.SideQuests[382695].Steps.Add(5, new QuestStep
@@ -166,13 +159,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => { //complete
+				OnAdvance = () => { //complete
 					foreach (var plr in Game.Players.Values)
 					{
 						
 					}
-				})
+				}
 			});
 
 			//*/
@@ -187,10 +179,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => {
-					
-				})
+				OnAdvance = () => { }
 			});
 
 			Game.QuestManager.SideQuests[337492].Steps.Add(1, new QuestStep
@@ -198,10 +187,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => {
-
-				})
+				OnAdvance = () => { } // complete
 			});
 
 			Game.QuestManager.SideQuests[337492].Steps.Add(3, new QuestStep
@@ -209,11 +195,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => { //complete
-					
-
-				})
+				OnAdvance = () => { } // complete
 			});
 
 			Game.QuestManager.SideQuests[337492].Steps.Add(10, new QuestStep
@@ -221,10 +203,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => { //complete
-
-				})
+				OnAdvance = () => { } // complete
 			});
 
 			Game.QuestManager.SideQuests[337492].Steps.Add(5, new QuestStep
@@ -232,13 +211,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
-				OnAdvance = new Action(() => { //complete
-					foreach (var plr in Game.Players.Values)
-					{
-
-					}
-				})
+				OnAdvance = () => { } // complete
 			});
 
 			//*/

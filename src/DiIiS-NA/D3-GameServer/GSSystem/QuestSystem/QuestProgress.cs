@@ -43,7 +43,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		public class QuestStep
 		{
 			public bool Completed;
-			public List<Objective> Objectives;
+			public List<Objective> Objectives = new() { Objective.Default() };
 			public int NextStep;
 			public Action OnAdvance;
 			public bool Saveable;

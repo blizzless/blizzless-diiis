@@ -59,7 +59,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 66,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -81,7 +80,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 42,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -101,7 +99,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 75,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go and talk to Leah
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -129,7 +126,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 46,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //fighting zombies
                     script = new LeahInn();
@@ -145,7 +141,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 50,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk to Leah again
                     ListenConversation(151167, new Advance());
@@ -162,7 +157,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 60,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go and talk to Rumford				
                     //ListenProximity(3739, new LaunchConversation(198503));
@@ -176,7 +170,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 27,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill wretched mother
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -200,7 +193,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 55,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //MOAR wretched mothers
                     StartConversation(Game.GetWorld(WorldSno.trout_town), 156223);
@@ -228,7 +220,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //complete
                 }
@@ -242,7 +233,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 7,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     StartConversation(Game.GetWorld(WorldSno.trout_town), 198541);
@@ -254,7 +244,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 28,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //use Tristram Portal
                     UnlockTeleport(1);
@@ -281,7 +270,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 49,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to gates
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -302,7 +290,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 39,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Adria house
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -323,7 +310,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 41,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //inspect house
                     ListenProximity(ActorSno._g_portal_square_blue_cellar, new Advance());
@@ -336,7 +322,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 51,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to cave
                     //DestroyFollower(4580);
@@ -361,7 +346,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 43,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //inspect cave
 
@@ -374,7 +358,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 45,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill Daltin (156801)
                     ActorSystem.Actor CapitanDaltyn = null;
@@ -408,7 +391,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 47,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk to Leah in cave
                     var world = Game.GetWorld(WorldSno.trout_adriascellar);
@@ -433,7 +415,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 23,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to church				
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -454,7 +435,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 11,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to 1st floor of church
                     ListenTeleport(19780, new Advance());
@@ -466,7 +446,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 15,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find Cain in 1st floor
                     ListenTeleport(60714, new Advance());
@@ -478,7 +457,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 17,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill skeletons //115403 elite
                     //this.Game.GetWorld(60713).SpawnMonster(115403, new Vector3D{X = 99.131f, Y = 211.501f, Z = 0.1f});
@@ -495,7 +473,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 19,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk to Cain
                     //this.Game.GetWorld(60713).GetActorBySNO(5723, true).Hidden = true;
@@ -509,7 +486,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 32,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go with Cain
                     Game.CurrentEncounter.Activated = false;
@@ -523,7 +499,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 21,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk to Leah in New Tristram
                     var tristramWorld = Game.GetWorld(WorldSno.trout_town);
@@ -559,7 +534,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //complete
                     //this.Game.GetWorld(71150).GetActorBySNO(196224).Destroy();
@@ -576,7 +550,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 41,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
@@ -605,7 +578,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 43,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk to Hedric
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -625,7 +597,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 51,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to cellar and kill zombies
                     var tristramWorld = Game.GetWorld(WorldSno.trout_town);
@@ -666,7 +637,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 45,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill Mira Imon
                     ListenProximity(ActorSno._blacksmithwife, new LaunchConversation(131345));
@@ -681,7 +651,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 35,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk to Hedric
                     var world = Game.GetWorld(WorldSno.trout_oldtristram_cellar_f);
@@ -704,7 +673,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 25,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //open north gates
                     ListenInteract(ActorSno._trout_newtristram_gate_town_nw, 1, new Advance());
@@ -728,7 +696,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 37,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to graveyard
                     ListenProximity(ActorSno._cemetary_gate_trout_wilderness_no_lock, new Advance());
@@ -740,7 +707,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 59,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find crown holder
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -759,7 +725,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 61,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill Imon advisor
                     if (!Game.Players.IsEmpty) UnlockTeleport(6);
@@ -777,7 +742,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 54,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //get Leoric crown
                     ListenInteract(ActorSno._a1dun_crypts_leoric_crown_holder_crowntreasureclass, 1, new Advance());
@@ -789,7 +753,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 17,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Tristram (by town portal) and talk to Hedric
                     ListenConversation(196041, new Advance());
@@ -801,7 +764,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //complete
                 }
@@ -815,7 +777,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 30,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     StartConversation(Game.GetWorld(WorldSno.trout_town), 80681);
@@ -827,7 +788,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 28,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to cathedral garden
                     ListenTeleport(19938, new BackToCath());
@@ -839,7 +799,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 3,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //enter Hall of Leoric
                     Game.AddOnLoadWorldAction(WorldSno.trdun_cain_intro, () =>
@@ -855,7 +814,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 6,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to 2nd level of Cath
                     ListenTeleport(19783, new Advance());
@@ -867,7 +825,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 37,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //we need to go deeper (to 3rd level of Cath)
                     ListenTeleport(87907, new Advance());
@@ -880,7 +837,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 40,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //help Cormac(kill cultists)
                     var Kormak_Imprisoned = Game.GetWorld(WorldSno.a1trdun_level05_templar).GetActorBySNO(ActorSno._templarnpc_imprisoned);
@@ -917,7 +873,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 42,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find Kormac's stuff 178657
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_level05_templar, () =>
@@ -942,7 +897,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 56,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find and kill Jondar
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_level05_templar, () =>
@@ -969,7 +923,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 44,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //join templar(wtf?)
                     var world = Game.GetWorld(WorldSno.a1trdun_level05_templar);
@@ -1012,7 +965,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 66,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //enter king's crypt
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_level05_templar, () =>
@@ -1031,7 +983,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 16,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find Leoric's crypt
                     ListenProximity(ActorSno._trdun_skeletonking_sealed_door, new Advance());
@@ -1043,7 +994,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 58,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //enter crypt
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
@@ -1061,7 +1011,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 19,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill skeletons
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
@@ -1080,7 +1029,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 21,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //take crown on Leoric's head
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
@@ -1105,7 +1053,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 48,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill Leoric
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
@@ -1126,7 +1073,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 50,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to fallen star room
                     Game.CurrentEncounter.Activated = false;
@@ -1148,7 +1094,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 52,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with Tyrael convList 117403 qr 176870
                     ListenInteract(ActorSno._stranger_crater, 1, new LaunchConversation(181910)); //cork
@@ -1162,7 +1107,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 54,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //return to New Tristram
                     ListenTeleport(19947, new Advance());
@@ -1174,7 +1118,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 24,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with Cain
                     UnlockTeleport(5);
@@ -1187,7 +1130,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //complete
                     PlayCutscene(2);
@@ -1202,7 +1144,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1216,7 +1157,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 10,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Wild Fields
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1239,7 +1179,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 3,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find Hazra cave
                     ListenTeleport(119893, new Advance());
@@ -1251,7 +1190,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 18,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find piece of sword
                     Game.AddOnLoadWorldAction(WorldSno.fields_cave_swordofjustice_level01, () =>
@@ -1271,7 +1209,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 13,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill cultists
                     UnlockTeleport(7);
@@ -1287,7 +1224,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = false,
                 NextStep = 5,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //get piece of sword
                     ListenInteract(ActorSno._trdun_cave_swordofjustice_blade, 1, new Advance());
@@ -1299,7 +1235,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 7,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {  //take piece to Cain
                     ListenConversation(118037, new Advance());
@@ -1311,7 +1246,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //complete
                     StartConversation(Game.GetWorld(WorldSno.trout_town), 198713);
@@ -1326,7 +1260,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 86,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1342,7 +1275,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 88,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Sunken Temple
                     AddFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
@@ -1356,7 +1288,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 90,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //follow Scoundrel NPC
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1374,7 +1305,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 92,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with bandits
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1391,7 +1321,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 94,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill the bandits
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1407,7 +1336,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 112,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with Scoundrel
                     DestroyFollower(ActorSno._leah);
@@ -1422,7 +1350,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 8,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //lead Scoundrel to waypoint
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1454,7 +1381,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 26,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Sunken Temple
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1471,7 +1397,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 28,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with Alaric
                     DestroyFollower(ActorSno._leah);
@@ -1486,7 +1411,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 12,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Rotten forest
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1536,7 +1460,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 38,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //enter the temple
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1553,7 +1476,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 69,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //explore the temple
                     DestroyFollower(ActorSno._leah);
@@ -1572,7 +1494,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 99,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill prophet Ezek and skeletons
                     DestroyFollower(ActorSno._leah);
@@ -1591,7 +1512,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 103,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with Alaric in temple
                     DestroyFollower(ActorSno._leah);
@@ -1606,7 +1526,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 71,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //defend the sword piece
                     DestroyFollower(ActorSno._leah);
@@ -1629,7 +1548,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 56,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //use the piece of sword
                     var world = Game.GetWorld(WorldSno.trout_town);
@@ -1647,7 +1565,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 21,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //return to Tristram
                     Game.AddOnLoadWorldAction(WorldSno.trdun_cave_nephalem_03, () =>
@@ -1667,7 +1584,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //complete
                 }
@@ -1681,7 +1597,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 34,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     StartConversation(Game.GetWorld(WorldSno.trout_town), 120357);
@@ -1693,7 +1608,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 20,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with parom man
                     ListenConversation(72817, new Advance());
@@ -1705,7 +1619,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 59,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {  //go to Vortem square
                     var AttackedTown = Game.GetWorld(WorldSno.trout_townattack);
@@ -1721,7 +1634,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 11,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {  //kill all cultists
                     int Count = 0;
@@ -1745,7 +1657,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 16,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {  
                     Game.AddOnLoadWorldAction(WorldSno.trout_townattack, () =>
@@ -1764,7 +1675,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 63,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {  //kill 3 berserkers
                     Game.AddOnLoadWorldAction(WorldSno.trout_townattack, () =>
@@ -1786,7 +1696,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 65,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {  //talk with priest
                     Game.AddOnLoadWorldAction(WorldSno.trout_townattack, () =>
@@ -1805,7 +1714,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 67,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {  //go to church cellar
                     //this.Game.AddOnLoadAction(72882, () =>
@@ -1821,7 +1729,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 69,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {  //find piece of sword
                     ListenInteract(ActorSno._trout_townattack_cellar_altar, 1, new LaunchConversation(165080));
@@ -1835,7 +1742,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 9,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {  //go to Cain's house
                      
@@ -1865,7 +1771,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     UnlockTeleport(10);
@@ -1880,7 +1785,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                 }
@@ -1891,7 +1795,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 8,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                     Game.AddOnLoadWorldAction(WorldSno.trout_townattack_chapelcellar_a, () =>
@@ -1922,7 +1825,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 17,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Aranea Cave
                     var LeahAfterEvent = Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._leah_afterevent31_exit);
@@ -1937,7 +1839,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 31,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find Aranea Queen lair
                     Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._leah_afterevent31_exit, true).Hidden = true;
@@ -1951,7 +1852,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 19,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with woman in web
                     var world = Game.GetWorld(WorldSno.a1dun_spidercave_02);
@@ -1966,7 +1866,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 21,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill Aranea Queen
                     Game.GetWorld(WorldSno.a1dun_spidercave_02).SpawnMonster(ActorSno._spiderqueen, new Vector3D { X = 149.439f, Y = 121.452f, Z = 13.794f });
@@ -1979,7 +1878,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 23,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //grab Aranea acid
                     SetActorOperable(Game.GetWorld(WorldSno.a1dun_spidercave_02), ActorSno._a2dun_spider_venom_pool, true);
@@ -1992,7 +1890,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 26,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //use acid on Karina
                     SetActorOperable(Game.GetWorld(WorldSno.a1dun_spidercave_02), ActorSno._a2dun_spider_queen_web_door, true);
@@ -2005,7 +1902,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 47,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Southern Highlands
                     ListenTeleport(93632, new Advance());
@@ -2017,7 +1913,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 29,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with Karina
                     SetActorOperable(Game.GetWorld(WorldSno.trout_town), ActorSno._trout_highlands_goatmen_chokepoint_gate, false);
@@ -2031,7 +1926,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 36,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find Hazra staff
                     ListenInteract(ActorSno._trout_highlands_mystic_wagon, 1, new Advance());
@@ -2044,7 +1938,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 10,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Hazra wall
                     SetActorOperable(Game.GetWorld(WorldSno.trout_town), ActorSno._trout_highlands_goatmen_chokepoint_gate, true);
@@ -2058,7 +1951,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 51,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to the Leoric's Manor
                     ListenInteract(ActorSno._trout_highlands_manor_front_gate, 1, new Advance());
@@ -2070,7 +1962,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 34,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //enter the Leoric's Manor
                     ListenTeleport(100854, new Advance());
@@ -2082,7 +1973,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 43,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //explore the Leoric's Manor
                     UnlockTeleport(12);
@@ -2095,7 +1985,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 16,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill cultists
                     if (!Game.Empty) StartConversation(Game.GetWorld(WorldSno.a1dun_leor_manor), 134968);
@@ -2113,7 +2002,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //complete
                 }
@@ -2127,7 +2015,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                 }
@@ -2138,7 +2025,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 21,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to 1st level of Torture Rooms
                     UnlockTeleport(13);
@@ -2151,7 +2037,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 65,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to 2nd level of Torture Rooms
                     ListenTeleport(19775, new Advance());
@@ -2163,7 +2048,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 2,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Highlands Bridge
                     if (Game.Empty) UnlockTeleport(14);
@@ -2176,7 +2060,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 34,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //go to Leoric's Jail
                     UnlockTeleport(14);
@@ -2189,7 +2072,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 17,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with Asilla Queen (npc 103381)
                     Game.AddOnLoadWorldAction(WorldSno.trdun_jail_level01, () =>
@@ -2205,7 +2087,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 19,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //free 6 souls
                     //spawn souls on 104104, 104106, 104108
@@ -2225,7 +2106,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 36,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill Overseer
                     Game.AddOnLoadWorldAction(WorldSno.trdun_jail_level01, () =>
@@ -2241,7 +2121,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 7,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find Butcher's Room		
                     if (Game.Empty) UnlockTeleport(15);
@@ -2258,7 +2137,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 41,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill Butcher
                     Game.AddOnLoadWorldAction(WorldSno.trdun_butcherslair_02, () =>
@@ -2279,7 +2157,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 39,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //find Tyrael
                     Game.CurrentEncounter.Activated = false;
@@ -2296,7 +2173,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 11,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //kill cultists
                     ListenKill(ActorSno._triunevessel_event31, 6, new Advance());
@@ -2308,7 +2184,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 13,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with Tyrael (npc 183117)
                     ListenProximity(ActorSno._stranger_ritual, new LaunchConversation(120220)); //cork
@@ -2321,7 +2196,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //complete
                 }
@@ -2335,7 +2209,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 {
                 }
@@ -2346,7 +2219,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 8,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with Tyrael
 
@@ -2360,7 +2232,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 4,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //talk with caravan leader
                     
@@ -2373,7 +2244,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = -1,
-                Objectives = new List<Objective> { Objective.Default() },
                 OnAdvance = () =>
                 { //complete
                 }

@@ -42,7 +42,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 82,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 					var world = Game.GetWorld(WorldSno.caout_town);
 					//ListenProximity(151989, new Advance());
@@ -65,7 +64,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 85,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to Caldeum
 					ListenTeleport(55313, new Advance());
 				})
@@ -76,7 +74,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 50,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Asheera (201085)
 					var world = Game.GetWorld(WorldSno.caout_town);
 					world.GetActorBySNO(ActorSno._a2duncald_deco_sewer_lid).SetUsable(false);
@@ -92,7 +89,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 61,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go through canyon
 					try 
 					{
@@ -110,7 +106,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 52,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill cultists
 					var world = Game.GetWorld(WorldSno.caout_town);
 					AddFollower(world, ActorSno._enchantressnpc);
@@ -127,7 +122,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 102,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with enchantress
 					DestroyFollower(ActorSno._enchantressnpc);
 					//ListenProximity(85843, new LaunchConversation(85832));
@@ -143,7 +137,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 106,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Lakuni's
 					var world = Game.GetWorld(WorldSno.caout_town);
 					world.GetActorBySNO(ActorSno._enchantressnpc).Hidden = true;
@@ -158,7 +151,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 91,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Steel Wolf's leader
 					var world = Game.GetWorld(WorldSno.caout_town);
 					DestroyFollower(ActorSno._enchantressnpc);
@@ -193,7 +185,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 117,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to Canyon Bridge
 					DestroyFollower(ActorSno._enchantressnpc);
 					AddFollower(Game.GetWorld(WorldSno.caout_town), ActorSno._enchantressnpc);
@@ -206,7 +197,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 10,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with enchantress
 					DestroyFollower(ActorSno._enchantressnpc);
 					AddFollower(Game.GetWorld(WorldSno.caout_town), ActorSno._enchantressnpc);
@@ -220,7 +210,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					DestroyFollower(ActorSno._enchantressnpc);
 					Open(Game.GetWorld(WorldSno.caout_town), ActorSno._caoutstingingwinds_illusion_bridge);
@@ -250,7 +239,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 76,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -260,7 +248,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 58,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go through Canyon bridge
 					ListenProximity(ActorSno._waypoint, new Advance());
 					
@@ -272,7 +259,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 46,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Khasim gate
 					var world = Game.GetWorld(WorldSno.caout_town);
 					ListenProximity(ActorSno._lore_belial_guardsorders, new Advance());
@@ -290,7 +276,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 74,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with leutenant Vahem
 					UnlockTeleport(2);
 					UnlockTeleport(3);
@@ -304,7 +289,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 30,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter HQ
 					ListenTeleport(61066, new Advance());
 				})
@@ -344,7 +328,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 48,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill stealthed demons
 					script = new SpawnSnakemans();
 					script.Execute(Game.GetWorld(WorldSno.caout_town));
@@ -357,7 +340,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 10,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with captain David
 					Game.GetWorld(WorldSno.caout_town).ShowOnlyNumNPC(ActorSno._davyd, 1);
 					//ListenProximity(80980, new LaunchConversation(60608));
@@ -370,7 +352,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					Open(Game.GetWorld(WorldSno.caout_town), ActorSno._caout_stingingwinds_khamsin_gate);
 				})
@@ -385,7 +366,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 5,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -407,7 +387,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 26,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Maghda's lair and optionally, free 8 cells
 					var encW = Game.GetWorld(WorldSno.caout_town);
 					encW.SpawnMonster(ActorSno._caout_cage, new Vector3D(528.7084f,	 1469.1945f, 197.2559f));
@@ -425,7 +404,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 9,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Maghda
 					UnlockTeleport(4);
 					ListenKill(ActorSno._maghda, 1, new Advance());
@@ -437,7 +415,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 10,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //return to camp
 					Game.CurrentEncounter.Activated = false;
 					Game.AddOnLoadWorldAction(WorldSno.caout_cellar_alcarnus_main, () =>
@@ -453,7 +430,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					PlayCutscene(1);
 				})
@@ -468,7 +444,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -478,7 +453,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 38,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Asheera
 											   //ListenProximity(3205, new LaunchConversation(201285));
 					Game.GetWorld(WorldSno.caout_town).ShowOnlyNumNPC(ActorSno._asheara, 0);
@@ -491,7 +465,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 18,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Asheera for reach emperor's palace
 											   //ListenConversation(165807, new Advance());
 					ListenProximity(ActorSno._caldeumguard_captain_b_ravd, new AskBossEncounter(162231));
@@ -504,7 +477,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 21,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Emperor
 					Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_intro, () =>
 					{
@@ -534,7 +506,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 2,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill demons
 					int snakes = 0;
 					Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_intro, () =>
@@ -564,7 +535,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 31,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //escape the emperor's palace
 					Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_intro, () =>
 					{
@@ -585,7 +555,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 34,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //destroy 4 demon summoners
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_cald, () =>
 					{
@@ -611,7 +580,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 7,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //hide into Caldeum drains
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_cald, () =>
 					{
@@ -633,7 +601,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_cald, () =>
 					{
@@ -658,7 +625,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 9,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -668,7 +634,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 2,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Cursed Pit
 					if (Game.Empty) UnlockTeleport(1);
 					ListenTeleport(58494, new Advance());
@@ -680,7 +645,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 15,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill guardians
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_swr_adria_level01, () =>
 					{
@@ -705,7 +669,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 21,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Adria in pit
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_swr_adria_level01, () =>
 					{
@@ -720,7 +683,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 8,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Adria in camp
 					var world = Game.GetWorld(WorldSno.a2dun_swr_adria_level01);
 					Game.CurrentEncounter.Activated = false;
@@ -755,7 +717,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					PlayCutscene(2);
 					Game.GetWorld(WorldSno.caout_town).GetActorBySNO(ActorSno._a2duncald_deco_sewer_lid).SetUsable(true);
@@ -772,7 +733,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 2,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -781,7 +741,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 34,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find passage to Oasis
 					if (Game.DestinationEnterQuest == 78266)
 						if (Game.DestinationEnterQuestStep == -1 || Game.DestinationEnterQuestStep == 2)
@@ -807,7 +766,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 31,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Emperor
 					ListenProximity(ActorSno._hakan, new Advance());
 				})
@@ -818,7 +776,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 4,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Oasis
 					ListenConversation(180063, new LaunchConversation(187093));
 					ListenTeleport(175367, new Advance());
@@ -837,7 +794,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 22,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter ruins in Oasis
 					ListenTeleport(61632, new Advance());
 					if (Game.Empty) UnlockTeleport(5);
@@ -849,7 +805,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 24,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Kulle's head
 					UnlockTeleport(5);
 					UnlockTeleport(6);
@@ -862,7 +817,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 26,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //get Kulle's head
 					ListenInteract(ActorSno._a2dun_zolt_head_container, 1, new Advance());
 				})
@@ -873,7 +827,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 11,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Adria in camp
 					ListenProximity(ActorSno._tyrael, new LaunchConversation(123146));
 					ListenConversation(123146, new Advance());
@@ -885,7 +838,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -899,7 +851,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 34,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -909,7 +860,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 40,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter to drain in Oasis
 					ListenTeleport(62752, new Advance());
 				})
@@ -940,7 +890,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 54,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter to drowned passage
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_special_01, () =>
 					{
@@ -960,7 +909,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 56,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Deceiveds
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
@@ -979,7 +927,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 58,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //break talking barrel
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
@@ -994,7 +941,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 60,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with jeweler
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
@@ -1011,7 +957,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 62,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find crucible
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
@@ -1029,7 +974,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 64,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Gevin
 					var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00);
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
@@ -1060,7 +1004,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 44,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //get crucible
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
@@ -1079,7 +1022,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 24,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter the ancient passage
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
 					{
@@ -1123,7 +1065,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					PlayCutscene(3);
 				})
@@ -1138,7 +1079,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 25,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -1148,7 +1088,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 39,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter the Kulle's archives				
 					UnlockTeleport(7);
 					UnlockTeleport(8);
@@ -1161,7 +1100,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 35,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter the Limit
 					ListenProximity(ActorSno._hakanprojection, new Advance());
 				})
@@ -1199,7 +1137,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 0,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter the shadows world
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_zolt_lobby, () =>
 					{
@@ -1215,7 +1152,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Kulle's body
 					ListenInteract(ActorSno._a2dun_zolt_body_container, 1, new Advance());
 				})
@@ -1226,7 +1162,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 26,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Leah
 					ListenProximity(ActorSno._leah, new LaunchConversation(62505));
 					foreach (var act in Game.GetWorld(WorldSno.a2dun_zolt_lobby).GetActorsBySNO(ActorSno._temp_zknavblocker))
@@ -1240,7 +1175,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 27,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter the soulstone storage
 					ListenTeleport(60194, new Advance());
 				})
@@ -1251,7 +1185,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 4,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Kulle
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_zolt_bossfight_level04, () =>
 					{
@@ -1269,7 +1202,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 31,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Kulle
 					ListenKill(ActorSno._zoltunkulle, 1, new Advance());
 				})
@@ -1280,7 +1212,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 33,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //get Soulstone
 					Game.AddOnLoadWorldAction(WorldSno.a2dun_zolt_bossfight_level04, () =>
 					{
@@ -1295,7 +1226,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 6,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Adria in camp
 					ListenProximity(ActorSno._adria, new LaunchConversation(80513));
 					ListenConversation(80513, new Advance());
@@ -1307,7 +1237,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -1321,7 +1250,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 34,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -1331,7 +1259,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 23,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Asheara
 					Game.AddOnLoadWorldAction(WorldSno.caout_town, () =>
 					{
@@ -1349,7 +1276,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 21,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Asheara
 					foreach (var Ashe in Game.GetWorld(WorldSno.caout_town).GetActorsBySNO(ActorSno._asheara))
 						AddQuestConversation(Ashe, 121359);
@@ -1362,7 +1288,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //todo: timed event 115494
 					var world = Game.GetWorld(WorldSno.caout_town);
 					try { (world.FindActorAt(ActorSno._a2dun_cald_exit_gate, new Vector3D { X = 3135.3f, Y = 1546.1f, Z = 250.545f }, 15.0f) as Door).Open(); } catch { }
@@ -1379,7 +1304,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -1393,7 +1317,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 10,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -1403,7 +1326,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 12,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //enter the Caldeum palace
 					AddFollower(Game.GetWorld(WorldSno.a2_belial_room_intro), ActorSno._leah);
 					AddFollower(Game.GetWorld(WorldSno.caout_refugeecamp), ActorSno._adria);
@@ -1416,7 +1338,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 29,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to emperor's palace
 					var world = Game.GetWorld(WorldSno.a2dun_cald_uprising);
 					foreach (var door in world.GetActorsBySNO(ActorSno._a2dun_cald_gate_belial_destroyable))
@@ -1442,7 +1363,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 13,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Belial
 					DestroyFollower(ActorSno._leah);
 					DestroyFollower(ActorSno._adria);
@@ -1499,7 +1419,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 27,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //get Belial's soul
 					Game.CurrentEncounter.Activated = false;
 					Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_01, () =>
@@ -1516,7 +1435,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 14,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Tyrael in camp
 					Game.AddOnLoadWorldAction(WorldSno.a2_belial_room_01, () =>
 					{
@@ -1534,7 +1452,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with caravan leader
 					ListenInteract(ActorSno._hub_caravanleader, 1, new LaunchConversation(177669));
 					ListenConversation(177669, new ChangeAct(200));
@@ -1547,7 +1464,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});

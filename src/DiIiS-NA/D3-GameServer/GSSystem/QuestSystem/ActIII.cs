@@ -36,7 +36,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 8,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 					Game.GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetActorBySNO(ActorSno._tyrael_act3, true).NotifyConversation(1);
 					ListenInteract(ActorSno._tyrael_act3, 1, new LaunchConversation(204905));
@@ -49,7 +48,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 26,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //use fire torches
 					var world = Game.GetWorld(WorldSno.a3dun_hub_adria_tower_intro);
 					ListenInteract(ActorSno._a3dunrmpt_interactives_signal_fire_a, 5, new Advance());
@@ -63,7 +61,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find sergeant Dalen
 					UnlockTeleport(0);
 					ListenProximity(ActorSno._bastionskeepguard_melee_b_02_sgt_dalen, new LaunchConversation(196152));
@@ -77,7 +74,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -91,7 +87,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 18,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -125,7 +120,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 2,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //return to base
 					UnlockTeleport(1);
 					ListenProximity(ActorSno._tyrael_act3, new Advance());
@@ -137,7 +131,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -151,7 +144,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 20,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -161,7 +153,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 18,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to 2nd level of bastion keep
 					ListenTeleport(93103, new Advance());
 				})
@@ -172,7 +163,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 22,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find breach on 2nd level
 					if (Game.Empty)
                     {
@@ -191,7 +181,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find bastion's ambar (gluttony boss)
 					ListenTeleport(111232, new Advance());
 				})
@@ -202,7 +191,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 16,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill gluttony
 					UnlockTeleport(3);
 					Game.AddOnLoadWorldAction(WorldSno.gluttony_boss, () =>
@@ -230,7 +218,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //return to base
 					ListenProximity(ActorSno._tyrael_act3, new Advance());
 				})
@@ -241,7 +228,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -255,7 +241,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 					var Tyrael = Game.GetWorld(WorldSno.a3dun_hub_keep).GetActorBySNO(ActorSno._tyrael_act3);
 					(Tyrael as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(183792));
@@ -270,7 +255,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 4,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to Armory
 					var Tyrael = Game.GetWorld(WorldSno.a3dun_hub_keep).GetActorBySNO(ActorSno._tyrael_act3);
 					(Tyrael as InteractiveNPC).Conversations.Clear();     
@@ -285,7 +269,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 6,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill shadows
 					Game.AddOnLoadWorldAction(WorldSno.a3dun_keep_hub_inn, () =>
 					{
@@ -331,7 +314,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 8,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Leah
 					ListenProximity(ActorSno._leah, new LaunchConversation(134266));
 					ListenConversation(134266, new Advance());
@@ -355,7 +337,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					PlayCutscene(1);
 				})
@@ -370,7 +351,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 4,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -380,7 +360,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 6,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to battlefields
 					ListenTeleport(154644, new Advance());
 				})
@@ -391,7 +370,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 9,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with sergeant Pale
 					var Serge = Game.GetWorld(WorldSno.a3_battlefields_02).GetActorBySNO(ActorSno._a3_battlefield_guard_sargeant);
 					(Serge as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(170486));
@@ -407,7 +385,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go through Korsikk bridge
 					Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_02, () =>
 					{
@@ -442,7 +419,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 21,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Rakkis bridge
 					if (!Game.Empty) UnlockTeleport(4);
 					//69504
@@ -456,7 +432,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Tyrael
 					Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_02, () =>
 					{
@@ -476,7 +451,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 				})
 			});
@@ -490,7 +464,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -500,7 +473,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 10,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find demonic gates to Siegebreaker
 					if (Game.Empty) UnlockTeleport(5);
 					ListenProximity(ActorSno._a3dun_crater_st_demon_chainpylon_fire_azmodan, new Advance());
@@ -513,7 +485,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 17,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Siegebreaker
 					if (!Game.Empty) UnlockTeleport(5);
 					Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_03, () =>
@@ -531,7 +502,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with Adria
 					Game.CurrentEncounter.Activated = false;
 					ListenProximity(ActorSno._adria, new LaunchConversation(196366));
@@ -545,7 +515,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					PlayCutscene(3);
 				})
@@ -560,7 +529,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 10,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -570,7 +538,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 41,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Tower of the Doomed lv. 1
 					Game.AddOnLoadWorldAction(WorldSno.a3_battlefields_03, () =>
 					{
@@ -589,7 +556,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 25,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Heart of Sin
 					if (!Game.Empty) UnlockTeleport(6);
 					if (Game.Empty) UnlockTeleport(7);
@@ -615,7 +581,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 29,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Tower of Damned lv. 1
 					if (Game.Empty) UnlockTeleport(8);
 					Game.AddOnLoadWorldAction(WorldSno.a3dun_crater_st_level04, () =>
@@ -631,7 +596,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 23,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //find Heart of Sin
 					if (!Game.Empty) UnlockTeleport(8);
 					if (Game.Empty) UnlockTeleport(9);
@@ -644,7 +608,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 27,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Cydaea
 					if (!Game.Empty) UnlockTeleport(9);
 					ListenKill(ActorSno._mistressofpain, 1, new Advance());
@@ -667,7 +630,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //Destroy Heart of Sin
 					Game.CurrentEncounter.Activated = false;
 					ListenKill(ActorSno._a3dun_crater_st_giantdemonheart_mob, 1, new Advance());
@@ -687,7 +649,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 32,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //kill Azmodan, finally
 					if (Game.Empty) UnlockTeleport(10);
 					ListenKill(ActorSno._azmodan, 1, new Advance());
@@ -706,7 +667,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 5,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //get Azmodan's soul
 					Game.CurrentEncounter.Activated = false;
 					ListenProximity(ActorSno._azmodan_bss_soulremnants, new Advance());
@@ -722,7 +682,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 39,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //return to base
 					ListenProximity(ActorSno._tyrael_act3, new Advance());
 					Game.AddOnLoadWorldAction(WorldSno.a3dun_azmodan_arena, () =>
@@ -737,7 +696,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 46,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //talk with leutenant Lavaile
 					ListenProximity(ActorSno._a3_rampart_guard_captain_alt, new LaunchConversation(160644));
 					ListenConversation(160644, new Advance());
@@ -749,7 +707,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 34,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //go to Armory
 					ListenTeleport(185228, new Advance());
 				})
@@ -760,7 +717,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 36,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() =>
 				{ //go to Adria tower event
 					var World = Game.GetWorld(WorldSno.a3dun_hub_adria_tower);
@@ -876,7 +832,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 4,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //use Heaven portal
 					ListenInteract(ActorSno._event47_bigportal, 1, new ChangeAct(300));
 				})
@@ -887,7 +842,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { Objective.Default() },
 				OnAdvance = new Action(() => { //complete
 					Game.CurrentEncounter.Activated = false;
 				})
