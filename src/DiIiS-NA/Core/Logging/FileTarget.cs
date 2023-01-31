@@ -84,10 +84,9 @@ namespace DiIiS_NA.Core.Logging
 						this._logStream = new StreamWriter(this._fileStream) { AutoFlush = true }; // init the stream writer.
 					}
 					//*/
-					if (level > Logger.Level.ChatMessage)
-						_logStream.WriteLine($"{timeStamp}[{level.ToString(),5}] [{logger}]: {message}");
-					else
-						_logStream.WriteLine($"{timeStamp}{message}");
+					_logStream.WriteLine(level > Logger.Level.ChatMessage
+						? $"{timeStamp}[{level.ToString(),5}] [{logger}]: {message}"
+						: $"{timeStamp}{message}");
 				}
 			});
 		}
