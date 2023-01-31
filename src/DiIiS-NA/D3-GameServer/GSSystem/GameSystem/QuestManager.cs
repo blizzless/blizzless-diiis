@@ -412,7 +412,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 		public float QuestTimerEstimate = 0f;
 
-		public void LaunchRiftQuestTimer(float duration, Action<int> onDone)
+		public void LaunchRiftQuestTimer(float duration, Action<int> onDone, int idSno = 0)
 		{
 			QuestTimerEstimate = duration;
 

@@ -77,9 +77,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		}
 
 
-		protected void SetRiftTimer(float duration, World world, QuestEvent qevent, int idSNO = 0)
+		protected void SetRiftTimer(float duration, World world, QuestEvent qevent, int idSno = 0)
 		{
-			Game.QuestManager.LaunchRiftQuestTimer(duration, new Action<int>((q) => { qevent.Execute(world); }), idSNO);
+			Game.QuestManager.LaunchRiftQuestTimer(duration, new Action<int>((q) => { qevent.Execute(world); }), idSno);
 		}
 
 		protected void SetQuestTimer(int questId, float duration, World world, QuestEvent qevent, int Meterid = 0)
