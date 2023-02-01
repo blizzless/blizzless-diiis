@@ -33,7 +33,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			WalkSpeed = 0f;
 			DamageCoefficient = context.ScriptFormula(2);
 			SetBrain(new MinionBrain(this));
-			(Brain as MinionBrain).AddPresetPower(129661); //DemonHunter_Sentry_TurretAttack.pow
+			((MinionBrain) Brain).AddPresetPower(129661); //DemonHunter_Sentry_TurretAttack.pow
 														   //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
 														   //Attributes[GameAttribute.Hitpoints_Max] = 20f;
 														   //Attributes[GameAttribute.Hitpoints_Cur] = 20f;
