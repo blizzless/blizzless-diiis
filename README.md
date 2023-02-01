@@ -49,7 +49,7 @@ The currently supported version of the client: **2.7.4.84161**
 7. Launch wait until server start, it creates a hierarchy.
 8. Create user account(s) using console: `!account add Login Password Tag`
 
-Example:
+### Example:
 
 > !account add username@ YourPassword YourBattleTag
 
