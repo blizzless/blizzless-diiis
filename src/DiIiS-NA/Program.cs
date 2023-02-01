@@ -33,6 +33,7 @@ using System.Security;
 using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 using Spectre.Console;
 using Environment = System.Environment;
 
