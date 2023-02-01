@@ -24,15 +24,15 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public EffectGroup(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.I0 = stream.ReadValueS32();
-            this.EffectItems = stream.ReadSerializedData<EffectItem>();
-            this.EffectItemsCount = stream.ReadValueS32();
+            Header = new Header(stream);
+            I0 = stream.ReadValueS32();
+            EffectItems = stream.ReadSerializedData<EffectItem>();
+            EffectItemsCount = stream.ReadValueS32();
             stream.Position += 12; // pad 1
-            this.I2 = stream.ReadValueS32();
-            this.I3 = stream.ReadValueS32();
-            this.I4 = stream.ReadValueS32();
-            this.SnoPower = stream.ReadValueS32();
+            I2 = stream.ReadValueS32();
+            I3 = stream.ReadValueS32();
+            I4 = stream.ReadValueS32();
+            SnoPower = stream.ReadValueS32();
 
             I5 = new int[16];
             for (int i = 0; i < I5.Length; i++)
@@ -49,9 +49,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.Weight = stream.ReadValueS32();
-            this.Hash = stream.ReadString(64, true);
-            this.TriggeredEvent.Read(stream);
+            Weight = stream.ReadValueS32();
+            Hash = stream.ReadString(64, true);
+            TriggeredEvent.Read(stream);
         }
     }
 }

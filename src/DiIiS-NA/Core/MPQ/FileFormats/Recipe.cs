@@ -14,7 +14,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Recipe(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
+            Header = new Header(stream);
             ItemSpecifierData = new ItemSpecifierData(stream);
             stream.Close();
         }

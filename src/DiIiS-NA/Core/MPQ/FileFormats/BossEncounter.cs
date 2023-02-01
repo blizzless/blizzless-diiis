@@ -32,29 +32,29 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public BossEncounter(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
-            this.I2 = stream.ReadValueS32();
-            this.I3 = stream.ReadValueS32();
-            this.I4 = stream.ReadValueS32();
-            this.I5 = stream.ReadValueS32();
-            this.I6 = stream.ReadValueS32();
-            this.I7 = stream.ReadValueS32();
-            this.I8 = stream.ReadValueS32();
-            this.I9 = stream.ReadValueS32();
-            this.I10 = stream.ReadValueS32();
-            this.I11 = stream.ReadValueS32();
-            this.F0 = stream.ReadValueF32();
-            this.SNOQuestRange = stream.ReadValueS32();
-            this.Worlds = new int[4];
+            Header = new Header(stream);
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
+            I2 = stream.ReadValueS32();
+            I3 = stream.ReadValueS32();
+            I4 = stream.ReadValueS32();
+            I5 = stream.ReadValueS32();
+            I6 = stream.ReadValueS32();
+            I7 = stream.ReadValueS32();
+            I8 = stream.ReadValueS32();
+            I9 = stream.ReadValueS32();
+            I10 = stream.ReadValueS32();
+            I11 = stream.ReadValueS32();
+            F0 = stream.ReadValueF32();
+            SNOQuestRange = stream.ReadValueS32();
+            Worlds = new int[4];
             for (int i = 0; i < 4; i++)
-                this.Worlds[i] = stream.ReadValueS32();
-            this.Scripts = new int[3];
+                Worlds[i] = stream.ReadValueS32();
+            Scripts = new int[3];
             for (int i = 0; i < 3; i++)
-                this.Scripts[i] = stream.ReadValueS32();
-            this.LevelAreaSNO = stream.ReadValueS32();
-            this.ActorSNO = stream.ReadValueS32();
+                Scripts[i] = stream.ReadValueS32();
+            LevelAreaSNO = stream.ReadValueS32();
+            ActorSNO = stream.ReadValueS32();
             stream.Close();
         }
     }

@@ -35,7 +35,5 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan
             b.Append(' ', --pad);
             b.AppendLine("}");
         }
-
-
     }
 }

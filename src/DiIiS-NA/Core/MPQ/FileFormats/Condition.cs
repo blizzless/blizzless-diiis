@@ -70,94 +70,94 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Condition(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream); //0
+            Header = new Header(stream); //0
             //+16
-            this.I0 = stream.ReadValueS32(); //12 + 16 = 28
-            this.I1 = stream.ReadValueS32(); //32
-            this.Class = new int[7]; //36
+            I0 = stream.ReadValueS32(); //12 + 16 = 28
+            I1 = stream.ReadValueS32(); //32
+            Class = new int[7]; //36
             for (int i = 0; i < 7; i++)
-                this.Class[i] = stream.ReadValueS32();
+                Class[i] = stream.ReadValueS32();
 
-            this.I2 = stream.ReadValueS32(); //48 + 16 = 64
-            this.I3 = stream.ReadValueS32(); //68
-            this.I4 = stream.ReadValueS32(); //72
-            this.I5 = stream.ReadValueS32(); //76
+            I2 = stream.ReadValueS32(); //48 + 16 = 64
+            I3 = stream.ReadValueS32(); //68
+            I4 = stream.ReadValueS32(); //72
+            I5 = stream.ReadValueS32(); //76
 
-            this.LoreCondition = new LoreSubcondition[3]; //80
+            LoreCondition = new LoreSubcondition[3]; //80
             for (int i = 0; i < 3; i++)
-                this.LoreCondition[i] = new LoreSubcondition(stream);
+                LoreCondition[i] = new LoreSubcondition(stream);
 
-            this.QuestCondition = new QuestSubcondition[3]; //104
+            QuestCondition = new QuestSubcondition[3]; //104
             for (int i = 0; i < 3; i++)
-                this.QuestCondition[i] = new QuestSubcondition(stream);
+                QuestCondition[i] = new QuestSubcondition(stream);
 
-            this.I6 = stream.ReadValueS32(); //152
-            this.I7 = stream.ReadValueS32(); //156
-            this.I8 = stream.ReadValueS32(); //160
-            this.ItemCondition = new ItemSubcondition[3]; //164
+            I6 = stream.ReadValueS32(); //152
+            I7 = stream.ReadValueS32(); //156
+            I8 = stream.ReadValueS32(); //160
+            ItemCondition = new ItemSubcondition[3]; //164
             for (int i = 0; i < 3; i++)
-                this.ItemCondition[i] = new ItemSubcondition(stream);
+                ItemCondition[i] = new ItemSubcondition(stream);
 
-            this.I9 = stream.ReadValueS32();  //212
-            this.I10 = stream.ReadValueS32(); //216
-            this.I11 = stream.ReadValueS32(); //220
-            this.I12 = stream.ReadValueS32(); //224
-            this.I13 = stream.ReadValueS32(); //228
+            I9 = stream.ReadValueS32();  //212
+            I10 = stream.ReadValueS32(); //216
+            I11 = stream.ReadValueS32(); //220
+            I12 = stream.ReadValueS32(); //224
+            I13 = stream.ReadValueS32(); //228
 
-            this.I14 = stream.ReadValueS32(); //232
-            this.I15 = stream.ReadValueS32(); //236
-            this.I16 = stream.ReadValueS32(); //240
+            I14 = stream.ReadValueS32(); //232
+            I15 = stream.ReadValueS32(); //236
+            I16 = stream.ReadValueS32(); //240
             stream.Position += 4;
-            this.I17 = stream.ReadValueS32(); //248
-            this.I18 = stream.ReadValueS32(); //252
+            I17 = stream.ReadValueS32(); //248
+            I18 = stream.ReadValueS32(); //252
 
-            this.I19 = stream.ReadValueS32(); //256
-            this.I20 = stream.ReadValueS32(); //260
+            I19 = stream.ReadValueS32(); //256
+            I20 = stream.ReadValueS32(); //260
 
-            this.SNOCurrentWorld = stream.ReadValueS32(); //264
-            this.SNOCurrentLevelArea = stream.ReadValueS32(); //268
-            this.SNOQuestRange = stream.ReadValueS32(); //272
-            this.FollowerCondition = new FollowerSubcondition(stream); //276
+            SNOCurrentWorld = stream.ReadValueS32(); //264
+            SNOCurrentLevelArea = stream.ReadValueS32(); //268
+            SNOQuestRange = stream.ReadValueS32(); //272
+            FollowerCondition = new FollowerSubcondition(stream); //276
 
-            this.LabelCondition = new LabelSubcondition[3]; //284
+            LabelCondition = new LabelSubcondition[3]; //284
             for (int i = 0; i < 3; i++)
-                this.LabelCondition[i] = new LabelSubcondition(stream);
+                LabelCondition[i] = new LabelSubcondition(stream);
 
-            this.SkillCondition = new SkillSubcondition[3]; //308
+            SkillCondition = new SkillSubcondition[3]; //308
             for (int i = 0; i < 3; i++)
-                this.SkillCondition[i] = new SkillSubcondition(stream);
+                SkillCondition[i] = new SkillSubcondition(stream);
 
 
-            this.I21 = stream.ReadValueS32(); //344
-            this.I22 = stream.ReadValueS32(); //348
-            this.I23 = stream.ReadValueS32(); //352
-            this.I24 = stream.ReadValueS32(); //356
-            this.I25 = stream.ReadValueS32(); //360
+            I21 = stream.ReadValueS32(); //344
+            I22 = stream.ReadValueS32(); //348
+            I23 = stream.ReadValueS32(); //352
+            I24 = stream.ReadValueS32(); //356
+            I25 = stream.ReadValueS32(); //360
 
-            this.I26 = stream.ReadValueS32(); //364
-            this.I27 = stream.ReadValueS32(); //368
-            this.I28 = stream.ReadValueS32(); //372
-            this.I29 = stream.ReadValueS32(); //376
+            I26 = stream.ReadValueS32(); //364
+            I27 = stream.ReadValueS32(); //368
+            I28 = stream.ReadValueS32(); //372
+            I29 = stream.ReadValueS32(); //376
 
-            this.MonsterCondition = new MonsterSubcondition[15]; //380
+            MonsterCondition = new MonsterSubcondition[15]; //380
             for (int i = 0; i < 15; i++)
-                this.MonsterCondition[i] = new MonsterSubcondition(stream);
+                MonsterCondition[i] = new MonsterSubcondition(stream);
 
-            this.GameFlagCondition = new GameFlagSubcondition[3]; //440
+            GameFlagCondition = new GameFlagSubcondition[3]; //440
             for (int i = 0; i < 3; i++)
-                this.GameFlagCondition[i] = new GameFlagSubcondition(stream);
+                GameFlagCondition[i] = new GameFlagSubcondition(stream);
 
-            this.PlayerFlagCondition = new PlayerFlagSubcondition[3]; //824
+            PlayerFlagCondition = new PlayerFlagSubcondition[3]; //824
             for (int i = 0; i < 3; i++)
-                this.PlayerFlagCondition[i] = new PlayerFlagSubcondition(stream);
+                PlayerFlagCondition[i] = new PlayerFlagSubcondition(stream);
 
-            this.BuffSubCondition = new BuffSubcondition[3]; //1208
+            BuffSubCondition = new BuffSubcondition[3]; //1208
             for (int i = 0; i < 3; i++)
-                this.BuffSubCondition[i] = new BuffSubcondition(stream);
+                BuffSubCondition[i] = new BuffSubcondition(stream);
 
-            this.I30 = stream.ReadValueS32(); //1244
-            this.I31 = stream.ReadValueS32(); //1248
-            this.I32 = stream.ReadValueS32(); //1252
+            I30 = stream.ReadValueS32(); //1244
+            I31 = stream.ReadValueS32(); //1248
+            I32 = stream.ReadValueS32(); //1252
 
             stream.Close();
         }
@@ -170,8 +170,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public LoreSubcondition(MpqFileStream stream)
         {
-            this.SNOLore = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
+            SNOLore = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
         }
     }
 
@@ -184,10 +184,10 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public QuestSubcondition(MpqFileStream stream)
         {
-            this.SNOQuest = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
-            this.I2 = stream.ReadValueS32();
+            SNOQuest = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
+            I2 = stream.ReadValueS32();
         }
     }
 
@@ -200,10 +200,10 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public ItemSubcondition(MpqFileStream stream)
         {
-            this.ItemGBId = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
-            this.I2 = stream.ReadValueS32();
+            ItemGBId = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
+            I2 = stream.ReadValueS32();
         }
     }
 
@@ -214,8 +214,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public FollowerSubcondition(MpqFileStream stream)
         {
-            this.Type = (FollowerType)stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
+            Type = (FollowerType)stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
         }
     }
 
@@ -226,8 +226,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public LabelSubcondition(MpqFileStream stream)
         {
-            this.LabelGBId = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
+            LabelGBId = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
         }
     }
 
@@ -239,9 +239,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public SkillSubcondition(MpqFileStream stream)
         {
-            this.SNOSkillPower = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
+            SNOSkillPower = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
         }
     }
 
@@ -251,7 +251,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public MonsterSubcondition(MpqFileStream stream)
         {
-            this.SNOMonsterActor = stream.ReadValueS32();
+            SNOMonsterActor = stream.ReadValueS32();
         }
     }
 
@@ -261,7 +261,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public GameFlagSubcondition(MpqFileStream stream)
         {
-            this.S0 = stream.ReadString(128, true);
+            S0 = stream.ReadString(128, true);
         }
     }
 
@@ -271,7 +271,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public PlayerFlagSubcondition(MpqFileStream stream)
         {
-            this.S0 = stream.ReadString(128, true);
+            S0 = stream.ReadString(128, true);
         }
     }
 
@@ -283,9 +283,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public BuffSubcondition(MpqFileStream stream)
         {
-            this.SNOPower = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
+            SNOPower = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
         }
     }
 

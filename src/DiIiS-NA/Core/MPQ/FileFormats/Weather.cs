@@ -45,7 +45,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         {
             var stream = file.Open();
 
-            this.Header = new Header(stream);
+            Header = new Header(stream);
 
 
             stream.Close();

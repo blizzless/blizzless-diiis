@@ -908,13 +908,13 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				AdditionalTargetCounter++;
 				foreach (var player in QuestManager.Game.Players.Values)
 				{
-					List<GameServer.GSSystem.MapSystem.Scene> Scenes = new List<GameServer.GSSystem.MapSystem.Scene>();
+					List<GameServer.GSSystem.MapSystem.Scene> scenes = new List<GameServer.GSSystem.MapSystem.Scene>();
 					int monsterCount = 0;
 					foreach (var scene in QuestManager.Game.GetWorld(world).Scenes.Values)
 						if (!scene.SceneSNO.Name.ToLower().Contains("filler"))
 							if (scene.Specification.SNOLevelAreas[0] == LevelArea)
 							{
-								Scenes.Add(scene);
+								scenes.Add(scene);
 								foreach (var act in scene.Actors)
 									if (act is Monster)
 										monsterCount++;
@@ -934,7 +934,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					{
 						while (monsterCount < AdditionalTargetCounter + 20)
 						{
-							GameServer.Core.Types.Math.Vector3D scenePoint = Scenes.PickRandom().Position;
+							GameServer.Core.Types.Math.Vector3D scenePoint = scenes.PickRandom().Position;
 							GameServer.Core.Types.Math.Vector3D point = null;
 							while (true)
 							{
