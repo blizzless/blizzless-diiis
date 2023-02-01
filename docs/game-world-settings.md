@@ -19,6 +19,7 @@ ChanceNormalUnidentified = 5
 ResurrectionCharges = 3
 BossHealthMultiplier = 6
 BossDamageMultiplier = 3
+AutoSaveQuests = true
 ```
 
 ## Description
@@ -36,4 +37,5 @@ BossDamageMultiplier = 3
 | `ResurrectionCharges` | Amount of times user can resurrect at corpse |
 | `BossHealthMultiplier` | Boss Health Multiplier |
 | `BossDamageMultiplier` | Boss Damage Multiplier |
+| `AutoSaveQuests` *in tests* | Auto Save Quests/Step, even if Act's quest setup marked as Saveable = FALSE. Doesn't apply to OpenWorld games. |
 
