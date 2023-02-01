@@ -20,13 +20,13 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Adventure(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.ActorSNO = stream.ReadValueS32();
-            this.F0 = stream.ReadValueF32();
-            this.Angle0 = stream.ReadValueF32();
-            this.Angle1 = stream.ReadValueF32();
-            this.Angle2 = stream.ReadValueF32();
-            this.MarkerSetSNO = stream.ReadValueS32();
+            Header = new Header(stream);
+            ActorSNO = stream.ReadValueS32();
+            F0 = stream.ReadValueF32();
+            Angle0 = stream.ReadValueF32();
+            Angle1 = stream.ReadValueF32();
+            Angle2 = stream.ReadValueF32();
+            MarkerSetSNO = stream.ReadValueS32();
             stream.Close();
         }
     }

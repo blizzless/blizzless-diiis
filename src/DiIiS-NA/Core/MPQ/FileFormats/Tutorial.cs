@@ -24,15 +24,15 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Tutorial(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.Flags = stream.ReadValueS32();
-            this.Label = stream.ReadValueS32();
-            this.TimeBeforeFading = stream.ReadValueS32();
-            this.RecurTime = stream.ReadValueS32();
-            this.OccurrencesUntilLearned = stream.ReadValueS32();
-            this.ArrowPosition = stream.ReadValueS32();
-            this.Offset = new Vector2D(stream);
-            this.Pad = stream.ReadValueS32();
+            Header = new Header(stream);
+            Flags = stream.ReadValueS32();
+            Label = stream.ReadValueS32();
+            TimeBeforeFading = stream.ReadValueS32();
+            RecurTime = stream.ReadValueS32();
+            OccurrencesUntilLearned = stream.ReadValueS32();
+            ArrowPosition = stream.ReadValueS32();
+            Offset = new Vector2D(stream);
+            Pad = stream.ReadValueS32();
             stream.Close();
         }
     }

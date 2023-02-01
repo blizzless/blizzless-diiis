@@ -25,12 +25,12 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public QuestRange(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream); //0
-            this.Pull = stream.ReadValueS32(); //12 + 16 = 28
-            this.I1 = stream.ReadValueS32(); //12 + 16 = 28
-            this.I2 = stream.ReadValueS32(); //12 + 16 = 28
-            this.I3 = stream.ReadValueS32(); //12 + 16 = 28
-            this.I4 = stream.ReadValueS32(); //12 + 16 = 28
+            Header = new Header(stream); //0
+            Pull = stream.ReadValueS32(); //12 + 16 = 28
+            I1 = stream.ReadValueS32(); //12 + 16 = 28
+            I2 = stream.ReadValueS32(); //12 + 16 = 28
+            I3 = stream.ReadValueS32(); //12 + 16 = 28
+            I4 = stream.ReadValueS32(); //12 + 16 = 28
             Enitys = new QuestTimeEntity[20];
             for (int i = 0; stream.Position < stream.Length; i++)
             {
@@ -59,8 +59,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public QuestTime(MpqFileStream stream)
         {
-            this.SNOQuest = stream.ReadValueS32();
-            this.StepID = stream.ReadValueS32();
+            SNOQuest = stream.ReadValueS32();
+            StepID = stream.ReadValueS32();
         }
 
     }

@@ -33,7 +33,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		public class Quest
 		{
 			public bool Completed;
-			public Dictionary<int, QuestStep> Steps;
+			public Dictionary<int, QuestStep> Steps = new();
 			public int NextQuest;
 			public int RewardXp;
 			public int RewardGold;

@@ -17,10 +17,10 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Encounter(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.SNOSpawn = stream.ReadValueS32();
+            Header = new Header(stream);
+            SNOSpawn = stream.ReadValueS32();
             stream.Position += (2 * 4);// pad 2 int
-            this.Spawnoptions = stream.ReadSerializedData<EncounterSpawnOptions>();
+            Spawnoptions = stream.ReadSerializedData<EncounterSpawnOptions>();
             stream.Close();
         }
     }
@@ -34,10 +34,10 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SNOSpawn = stream.ReadValueS32();
-            this.Probability = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
-            this.SNOCondition = stream.ReadValueS32();
+            SNOSpawn = stream.ReadValueS32();
+            Probability = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
+            SNOCondition = stream.ReadValueS32();
         }
     }
 }

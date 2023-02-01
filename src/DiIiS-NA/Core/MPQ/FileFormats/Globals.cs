@@ -127,50 +127,50 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Globals(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
+            Header = new Header(stream);
             stream.Position += (3 * 4);
-            this.ServerData = stream.ReadSerializedData<GlobalServerData>();
+            ServerData = stream.ReadSerializedData<GlobalServerData>();
 
             stream.Position += 4;
-            this.I0 = stream.ReadValueS32(); //32
+            I0 = stream.ReadValueS32(); //32
             stream.Position += 12;
-            this.StartLocationNames = new Dictionary<int, FileFormats.StartLocationName>();
+            StartLocationNames = new Dictionary<int, StartLocationName>();
             foreach (var startLocation in stream.ReadSerializedData<StartLocationName>())
                 StartLocationNames.Add(startLocation.I0, startLocation);
 
-            this.F0 = stream.ReadValueF32(); //56
-            this.F1 = stream.ReadValueF32(); //60
-            this.F2 = stream.ReadValueF32(); //64
-            this.F3 = stream.ReadValueF32(); //68
+            F0 = stream.ReadValueF32(); //56
+            F1 = stream.ReadValueF32(); //60
+            F2 = stream.ReadValueF32(); //64
+            F3 = stream.ReadValueF32(); //68
 
-            this.I1 = stream.ReadValueS32();
-            this.I2 = stream.ReadValueS32();
-            this.F4 = stream.ReadValueF32();
-            this.F5 = stream.ReadValueF32();
-            this.I3 = stream.ReadValueS32();
-            this.F6 = stream.ReadValueF32();
-            this.F7 = stream.ReadValueF32();
-            this.F8 = stream.ReadValueF32();
-            this.F9 = stream.ReadValueF32();
-            this.F10 = stream.ReadValueF32();
-            this.I4 = stream.ReadValueS32();
-            this.I6 = new int[4];
+            I1 = stream.ReadValueS32();
+            I2 = stream.ReadValueS32();
+            F4 = stream.ReadValueF32();
+            F5 = stream.ReadValueF32();
+            I3 = stream.ReadValueS32();
+            F6 = stream.ReadValueF32();
+            F7 = stream.ReadValueF32();
+            F8 = stream.ReadValueF32();
+            F9 = stream.ReadValueF32();
+            F10 = stream.ReadValueF32();
+            I4 = stream.ReadValueS32();
+            I6 = new int[4];
             for (int i = 0; i < 4; i++)
-                this.I6[i] = stream.ReadValueS32();
+                I6[i] = stream.ReadValueS32();
             stream.Position += 4;
-            this.BannerParams = new BannerParams(stream);
-            this.I5 = stream.ReadValueS32();
-            this.I7 = stream.ReadValueS32();
-            this.I8 = stream.ReadValueS32();
-            this.I9 = stream.ReadValueS32();
-            this.F11 = stream.ReadValueF32();
-            this.F12 = stream.ReadValueF32();
-            this.F13 = stream.ReadValueF32();
-            this.F14 = stream.ReadValueF32();
-            this.F15 = stream.ReadValueF32();
-            this.F16 = stream.ReadValueF32();
-            this.F17 = stream.ReadValueF32();
-            this.F18 = stream.ReadValueF32();
+            BannerParams = new BannerParams(stream);
+            I5 = stream.ReadValueS32();
+            I7 = stream.ReadValueS32();
+            I8 = stream.ReadValueS32();
+            I9 = stream.ReadValueS32();
+            F11 = stream.ReadValueF32();
+            F12 = stream.ReadValueF32();
+            F13 = stream.ReadValueF32();
+            F14 = stream.ReadValueF32();
+            F15 = stream.ReadValueF32();
+            F16 = stream.ReadValueF32();
+            F17 = stream.ReadValueF32();
+            F18 = stream.ReadValueF32();
             stream.Close();
         }
     }
@@ -190,16 +190,16 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public DifficultyTuningParams(MpqFileStream stream)
         {
-            this.F0 = stream.ReadValueF32();
-            this.F1 = stream.ReadValueF32();
-            this.F2 = stream.ReadValueF32();
-            this.F3 = stream.ReadValueF32();
-            this.F4 = stream.ReadValueF32();
-            this.F5 = stream.ReadValueF32();
-            this.F6 = stream.ReadValueF32();
-            this.F7 = stream.ReadValueF32();
-            this.F8 = stream.ReadValueF32();
-            this.F9 = stream.ReadValueF32();
+            F0 = stream.ReadValueF32();
+            F1 = stream.ReadValueF32();
+            F2 = stream.ReadValueF32();
+            F3 = stream.ReadValueF32();
+            F4 = stream.ReadValueF32();
+            F5 = stream.ReadValueF32();
+            F6 = stream.ReadValueF32();
+            F7 = stream.ReadValueF32();
+            F8 = stream.ReadValueF32();
+            F9 = stream.ReadValueF32();
         }
     }
 
@@ -210,8 +210,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.UHash = stream.ReadValueS32();
-            this.S0 = stream.ReadString(64, true);
+            UHash = stream.ReadValueS32();
+            S0 = stream.ReadString(64, true);
         }
     }
 
@@ -222,8 +222,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.S0 = stream.ReadString(64, true);
+            I0 = stream.ReadValueS32();
+            S0 = stream.ReadString(64, true);
         }
     }
 
@@ -235,9 +235,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.UHash = stream.ReadValueS32();
-            this.S0 = stream.ReadString(32, true);
-            this.F0 = stream.ReadValueF32();
+            UHash = stream.ReadValueS32();
+            S0 = stream.ReadString(32, true);
+            F0 = stream.ReadValueF32();
         }
     }
 
@@ -389,48 +389,48 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public float F65 { get; private set; }
         public void Read(MpqFileStream stream)
         {
-            this.ActorGroups = new Dictionary<int, FileFormats.ActorGroup>();
+            ActorGroups = new Dictionary<int, ActorGroup>();
             foreach (var group in stream.ReadSerializedData<ActorGroup>()) //166
-                this.ActorGroups.Add(group.UHash, group);
+                ActorGroups.Add(group.UHash, group);
 
             stream.Position += 8;
-            this.ScriptGlobalVars = stream.ReadSerializedData<GlobalScriptVariable>();
+            ScriptGlobalVars = stream.ReadSerializedData<GlobalScriptVariable>();
             stream.Position += 8;
-            this.TuningParams = new DifficultyTuningParams[4];
+            TuningParams = new DifficultyTuningParams[4];
             for (int i = 0; i < 4; i++)
-                this.TuningParams[i] = new DifficultyTuningParams(stream);
-            this.F0 = stream.ReadValueF32();
-            this.F1 = stream.ReadValueF32();
-            this.F2 = stream.ReadValueF32();
-            this.F3 = stream.ReadValueF32();
-            this.F4 = stream.ReadValueF32();
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
-            this.F5 = stream.ReadValueF32();
-            this.F6 = stream.ReadValueF32();
-            this.F7 = stream.ReadValueF32();
-            this.F8 = stream.ReadValueF32();
-            this.F20 = stream.ReadValueF32();
-            this.F21 = stream.ReadValueF32();
-            this.F22 = stream.ReadValueF32();
-            this.I5 = stream.ReadValueS32();
-            this.F23 = stream.ReadValueF32();
-            this.I2 = stream.ReadValueS32();
-            this.I3 = stream.ReadValueS32();
-            this.I4 = stream.ReadValueS32();
-            this.F9 = stream.ReadValueF32();
-            this.F10 = stream.ReadValueF32();
-            this.F11 = stream.ReadValueF32();
-            this.F12 = stream.ReadValueF32();
-            this.F13 = stream.ReadValueF32();
-            this.F14 = stream.ReadValueF32();
-            this.F15 = stream.ReadValueF32();
-            this.F16 = stream.ReadValueF32();
-            this.F17 = stream.ReadValueF32();
-            this.F18 = stream.ReadValueF32();
-            this.F28 = new float[17];
+                TuningParams[i] = new DifficultyTuningParams(stream);
+            F0 = stream.ReadValueF32();
+            F1 = stream.ReadValueF32();
+            F2 = stream.ReadValueF32();
+            F3 = stream.ReadValueF32();
+            F4 = stream.ReadValueF32();
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
+            F5 = stream.ReadValueF32();
+            F6 = stream.ReadValueF32();
+            F7 = stream.ReadValueF32();
+            F8 = stream.ReadValueF32();
+            F20 = stream.ReadValueF32();
+            F21 = stream.ReadValueF32();
+            F22 = stream.ReadValueF32();
+            I5 = stream.ReadValueS32();
+            F23 = stream.ReadValueF32();
+            I2 = stream.ReadValueS32();
+            I3 = stream.ReadValueS32();
+            I4 = stream.ReadValueS32();
+            F9 = stream.ReadValueF32();
+            F10 = stream.ReadValueF32();
+            F11 = stream.ReadValueF32();
+            F12 = stream.ReadValueF32();
+            F13 = stream.ReadValueF32();
+            F14 = stream.ReadValueF32();
+            F15 = stream.ReadValueF32();
+            F16 = stream.ReadValueF32();
+            F17 = stream.ReadValueF32();
+            F18 = stream.ReadValueF32();
+            F28 = new float[17];
             for (var i = 0; i < 17; i++)
-                this.F28[i] = stream.ReadValueF32();
+                F28[i] = stream.ReadValueF32();
         }
     }
 
@@ -454,33 +454,33 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public BannerParams(MpqFileStream stream)
         {
             stream.Position += 8;
-            this.TexBackgrounds = stream.ReadSerializedData<BannerTexturePair>();
-            this.I0 = stream.ReadValueS32(); //16
+            TexBackgrounds = stream.ReadSerializedData<BannerTexturePair>();
+            I0 = stream.ReadValueS32(); //16
             stream.Position += 12;
-            this.TexPatterns = stream.ReadSerializedData<BannerTexturePair>();
-            this.I0 = stream.ReadValueS32(); //40
+            TexPatterns = stream.ReadSerializedData<BannerTexturePair>();
+            I0 = stream.ReadValueS32(); //40
             stream.Position += 12;
-            this.TexMainSigils = stream.ReadSerializedData<BannerTexturePair>();
+            TexMainSigils = stream.ReadSerializedData<BannerTexturePair>();
             stream.Position += 8;
-            this.TexVariantSigils = stream.ReadSerializedData<BannerTexturePair>();
-            this.I0 = stream.ReadValueS32(); //80
+            TexVariantSigils = stream.ReadSerializedData<BannerTexturePair>();
+            I0 = stream.ReadValueS32(); //80
             stream.Position += 12;
-            this.TexSigilAccents = stream.ReadSerializedData<BannerTexturePair>();
-            this.I0 = stream.ReadValueS32(); //104
+            TexSigilAccents = stream.ReadSerializedData<BannerTexturePair>();
+            I0 = stream.ReadValueS32(); //104
             stream.Position += 12;
-            this.ColorSets = stream.ReadSerializedData<BannerColorSet>();
+            ColorSets = stream.ReadSerializedData<BannerColorSet>();
             stream.Position += 8;
-            this.SigilPlacements = stream.ReadSerializedData<BannerSigilPlacement>();
+            SigilPlacements = stream.ReadSerializedData<BannerSigilPlacement>();
             stream.Position += 8;
-            this.SNOActorBases = stream.ReadSerializedInts();
+            SNOActorBases = stream.ReadSerializedInts();
             stream.Position += 8;
-            this.SNOActorCaps = stream.ReadSerializedInts();
+            SNOActorCaps = stream.ReadSerializedInts();
             stream.Position += 8;
-            this.SNOActorPoles = stream.ReadSerializedInts();
+            SNOActorPoles = stream.ReadSerializedInts();
             stream.Position += 8;
-            this.SNOActorRibbons = stream.ReadSerializedInts();
+            SNOActorRibbons = stream.ReadSerializedInts();
             stream.Position += 8;
-            this.EpicBannerDescriptions = stream.ReadSerializedData<EpicBannerDescription>();
+            EpicBannerDescriptions = stream.ReadSerializedData<EpicBannerDescription>();
             stream.Position += 8;
         }
     }
@@ -492,8 +492,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SNOTexture = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
+            SNOTexture = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
             stream.Position += 4;
         }
     }
@@ -507,12 +507,12 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.Color = new RGBAColor[2];
+            Color = new RGBAColor[2];
             for (int i = 0; i < 2; i++)
-                this.Color[i] = new RGBAColor(stream);
-            this.String1 = stream.ReadString(64, true);
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
+                Color[i] = new RGBAColor(stream);
+            String1 = stream.ReadString(64, true);
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
             stream.Position += 4;
         }
     }
@@ -524,8 +524,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.S0 = stream.ReadString(64, true);
-            this.I0 = stream.ReadValueS32();
+            S0 = stream.ReadString(64, true);
+            I0 = stream.ReadValueS32();
         }
     }
 
@@ -539,11 +539,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SNOBannerShape = stream.ReadValueS32();
-            this.SNOBannerBase = stream.ReadValueS32();
-            this.SNOBannerPole = stream.ReadValueS32();
-            this.I3 = stream.ReadValueS32();
-            this.S0 = stream.ReadString(128, true);
+            SNOBannerShape = stream.ReadValueS32();
+            SNOBannerBase = stream.ReadValueS32();
+            SNOBannerPole = stream.ReadValueS32();
+            I3 = stream.ReadValueS32();
+            S0 = stream.ReadString(128, true);
         }
     }
 
@@ -554,8 +554,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
         }
     }
 }

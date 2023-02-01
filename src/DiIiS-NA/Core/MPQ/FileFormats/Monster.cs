@@ -76,17 +76,17 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Monster(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.Flags = stream.ReadValueS32(); //12
-            this.ActorSNO = stream.ReadValueS32(); //16
-            this.LookIndex = stream.ReadValueS32(); //20
-            this.Type = (MonsterType)stream.ReadValueS32(); //40 - 24
-            this.Race = (MonsterRace)stream.ReadValueS32(); //44 - 28
-            this.Size = (MonsterSize)stream.ReadValueS32(); //48 - 32
-            this.Monsterdef = new MonsterDef(stream); //52 - 36
-            this.Resists = (Resistance)stream.ReadValueS32(); //56
-            this.DefaultCountMin = stream.ReadValueS32(); //60
-            this.DefaultCountDelta = stream.ReadValueS32(); //64
+            Header = new Header(stream);
+            Flags = stream.ReadValueS32(); //12
+            ActorSNO = stream.ReadValueS32(); //16
+            LookIndex = stream.ReadValueS32(); //20
+            Type = (MonsterType)stream.ReadValueS32(); //40 - 24
+            Race = (MonsterRace)stream.ReadValueS32(); //44 - 28
+            Size = (MonsterSize)stream.ReadValueS32(); //48 - 32
+            Monsterdef = new MonsterDef(stream); //52 - 36
+            Resists = (Resistance)stream.ReadValueS32(); //56
+            DefaultCountMin = stream.ReadValueS32(); //60
+            DefaultCountDelta = stream.ReadValueS32(); //64
             AttributeModifiers = new float[146]; //68
             for (int i = 0; i < 146; i++)
             {
@@ -99,90 +99,90 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             HPMinion = stream.ReadValueF32();
             HPDeltaMinion = stream.ReadValueF32(); //672
 
-            this.GoldGranted = stream.ReadValueS32();
-            this.HealthDropNormal = new HealthDropInfo(stream);
-            this.HealthDropChampion = new HealthDropInfo(stream);
-            this.HealthDropRare = new HealthDropInfo(stream);
-            this.HealthDropMinion = new HealthDropInfo(stream);
+            GoldGranted = stream.ReadValueS32();
+            HealthDropNormal = new HealthDropInfo(stream);
+            HealthDropChampion = new HealthDropInfo(stream);
+            HealthDropRare = new HealthDropInfo(stream);
+            HealthDropMinion = new HealthDropInfo(stream);
             // 716
-            this.SNOSkillKit = stream.ReadValueS32();
-            this.SkillDeclarations = new SkillDeclaration[8];
+            SNOSkillKit = stream.ReadValueS32();
+            SkillDeclarations = new SkillDeclaration[8];
             for (int i = 0; i < 8; i++)
             {
-                this.SkillDeclarations[i] = new SkillDeclaration(stream);
+                SkillDeclarations[i] = new SkillDeclaration(stream);
             }
-            this.MonsterSkillDeclarations = new MonsterSkillDeclaration[8];
+            MonsterSkillDeclarations = new MonsterSkillDeclaration[8];
             for (int i = 0; i < 8; i++)
             {
-                this.MonsterSkillDeclarations[i] = new MonsterSkillDeclaration(stream);
+                MonsterSkillDeclarations[i] = new MonsterSkillDeclaration(stream);
             }
             // 912
-            this.SNOTreasureClassFirstKill = stream.ReadValueS32();
-            this.SNOTreasureClass = stream.ReadValueS32();
-            this.SNOTreasureClassRare = stream.ReadValueS32();
-            this.SNOTreasureClassChampion = stream.ReadValueS32();
-            this.SNOTreasureClassChampionLight = stream.ReadValueS32();
+            SNOTreasureClassFirstKill = stream.ReadValueS32();
+            SNOTreasureClass = stream.ReadValueS32();
+            SNOTreasureClassRare = stream.ReadValueS32();
+            SNOTreasureClassChampion = stream.ReadValueS32();
+            SNOTreasureClassChampionLight = stream.ReadValueS32();
             // 932
-            this.NoDropScalar = stream.ReadValueF32();
-            this.FleeChance = stream.ReadValueF32();
-            this.FleeCooldownMin = stream.ReadValueF32();
-            this.FleeCooldownDelta = stream.ReadValueF32();
-            this.SummonCountPer = stream.ReadValueS32();
-            this.SummonLifetime = stream.ReadValueF32();
-            this.SummonMaxConcurrent = stream.ReadValueS32();
-            this.SummonMaxTotal = stream.ReadValueS32();
-            this.SNOInventory = stream.ReadValueS32(); //3D0 - 976 + 28 =1004
-            this.SNOSecondaryInventory = stream.ReadValueS32();
-            this.SNOLore = stream.ReadValueS32();
-            this.AIBehavior = new int[6];
+            NoDropScalar = stream.ReadValueF32();
+            FleeChance = stream.ReadValueF32();
+            FleeCooldownMin = stream.ReadValueF32();
+            FleeCooldownDelta = stream.ReadValueF32();
+            SummonCountPer = stream.ReadValueS32();
+            SummonLifetime = stream.ReadValueF32();
+            SummonMaxConcurrent = stream.ReadValueS32();
+            SummonMaxTotal = stream.ReadValueS32();
+            SNOInventory = stream.ReadValueS32(); //3D0 - 976 + 28 =1004
+            SNOSecondaryInventory = stream.ReadValueS32();
+            SNOLore = stream.ReadValueS32();
+            AIBehavior = new int[6];
 
             for (int i = 0; i < 6; i++)
             {
-                this.AIBehavior[i] = stream.ReadValueS32();
+                AIBehavior[i] = stream.ReadValueS32();
             }
 
-            this.GBIdMovementStyles = new int[8];
+            GBIdMovementStyles = new int[8];
             for (int i = 0; i < 8; i++)
             {
-                this.GBIdMovementStyles[i] = stream.ReadValueS32();
+                GBIdMovementStyles[i] = stream.ReadValueS32();
             }
 
-            this.SNOSummonActor = new int[6];
+            SNOSummonActor = new int[6];
             for (int i = 0; i < 6; i++)
             {
-                this.SNOSummonActor[i] = stream.ReadValueS32();
+                SNOSummonActor[i] = stream.ReadValueS32();
             }
 
-            this.RandomAffixes = stream.ReadValueS32();
+            RandomAffixes = stream.ReadValueS32();
 
             GBIdAffixes = new int[4];
             for (int i = 0; i < 4; i++)
             {
-                this.GBIdAffixes[i] = stream.ReadValueS32();
+                GBIdAffixes[i] = stream.ReadValueS32();
             }
             GBIdDisallowedAffixes = new int[6];
             for (int i = 0; i < 6; i++)
             {
-                this.GBIdDisallowedAffixes[i] = stream.ReadValueS32();
+                GBIdDisallowedAffixes[i] = stream.ReadValueS32();
             }
             // 1096
-            this.AITargetStyleNormal = stream.ReadValueS32();
-            this.AITargetStyleChampion = stream.ReadValueS32();
-            this.AITargetStyleRare = stream.ReadValueS32();
-            this.PowerType = (MonsterPowerType)stream.ReadValueS32(); //1152
+            AITargetStyleNormal = stream.ReadValueS32();
+            AITargetStyleChampion = stream.ReadValueS32();
+            AITargetStyleRare = stream.ReadValueS32();
+            PowerType = (MonsterPowerType)stream.ReadValueS32(); //1152
             //0x468
             stream.Position += (3 * 4);
-            this.TagMap = stream.ReadSerializedItem<TagMap>(); //1180
+            TagMap = stream.ReadSerializedItem<TagMap>(); //1180
             stream.Position = 1196;
-            this.MinionSpawnGroupCount = stream.ReadValueS32(); //1196
+            MinionSpawnGroupCount = stream.ReadValueS32(); //1196
             stream.Position += (3 * 4);
-            this.MonsterMinionSpawngroup = stream.ReadSerializedData<MonsterMinionSpawnGroup>(); //1212
-            this.ChampionSpawnGroupCount = stream.ReadValueS32(); //1220
-            this.MonsterChampionSpawngroup = stream.ReadSerializedData<MonsterChampionSpawnGroup>(); //1236
-            this.Name = stream.ReadString(128, true); //1244
-            this.DoesNotDropNecroCorpse = stream.ReadValueS32(); //1344
-            this.Pad = stream.ReadValueS32(); //1344
-            this.snoAIStateAttackerCapReached = stream.ReadValueS32();
+            MonsterMinionSpawngroup = stream.ReadSerializedData<MonsterMinionSpawnGroup>(); //1212
+            ChampionSpawnGroupCount = stream.ReadValueS32(); //1220
+            MonsterChampionSpawngroup = stream.ReadSerializedData<MonsterChampionSpawnGroup>(); //1236
+            Name = stream.ReadString(128, true); //1244
+            DoesNotDropNecroCorpse = stream.ReadValueS32(); //1344
+            Pad = stream.ReadValueS32(); //1344
+            snoAIStateAttackerCapReached = stream.ReadValueS32();
 
 
             stream.Close();
@@ -195,8 +195,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             public List<MonsterMinionSpawnItem> SpawnItems = new List<MonsterMinionSpawnItem>();
             public void Read(MpqFileStream stream)
             {
-                this.Weight = stream.ReadValueF32();
-                this.SpawnItemCount = stream.ReadValueS32();
+                Weight = stream.ReadValueF32();
+                SpawnItemCount = stream.ReadValueS32();
                 stream.Position += 8;
                 SpawnItems = stream.ReadSerializedData<MonsterMinionSpawnItem>();
             }
@@ -209,8 +209,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             public List<MonsterChampionSpawnItem> SpawnItems = new List<MonsterChampionSpawnItem>();
             public void Read(MpqFileStream stream)
             {
-                this.Weight = stream.ReadValueF32();
-                this.SpawnItemCount = stream.ReadValueS32();
+                Weight = stream.ReadValueF32();
+                SpawnItemCount = stream.ReadValueS32();
                 stream.Position += 8;
                 SpawnItems = stream.ReadSerializedData<MonsterChampionSpawnItem>();
             }
@@ -226,11 +226,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
             public void Read(MpqFileStream stream)
             {
-                this.SNOSpawn = stream.ReadValueS32();
-                this.SpawnCountMin = stream.ReadValueS32();
-                this.SpawnCountMax = stream.ReadValueS32();
-                this.SpawnSpreadMin = stream.ReadValueS32();
-                this.SpawnSpreadMax = stream.ReadValueS32();
+                SNOSpawn = stream.ReadValueS32();
+                SpawnCountMin = stream.ReadValueS32();
+                SpawnCountMax = stream.ReadValueS32();
+                SpawnSpreadMin = stream.ReadValueS32();
+                SpawnSpreadMax = stream.ReadValueS32();
             }
         }
 
@@ -241,8 +241,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
             public void Read(MpqFileStream stream)
             {
-                this.SnoActor = stream.ReadValueS32();
-                this.SpawnCount = stream.ReadValueS32();
+                SnoActor = stream.ReadValueS32();
+                SpawnCount = stream.ReadValueS32();
             }
         }
 
@@ -311,9 +311,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
             public HealthDropInfo(MpqFileStream stream)
             {
-                this.DropChance = stream.ReadValueF32();
-                this.GBID = stream.ReadValueS32();
-                this.HealthDropStyle = stream.ReadValueS32();
+                DropChance = stream.ReadValueF32();
+                GBID = stream.ReadValueS32();
+                HealthDropStyle = stream.ReadValueS32();
             }
         }
 

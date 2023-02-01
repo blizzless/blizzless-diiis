@@ -63,8 +63,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public AnimSet(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.SNOParentAnimSet = stream.ReadValueS32();
+            Header = new Header(stream);
+            SNOParentAnimSet = stream.ReadValueS32();
             TagMapAnimDefault = stream.ReadSerializedItem<TagMap>();
             stream.Position += 8;
             AnimSetTagMaps = new TagMap[28];

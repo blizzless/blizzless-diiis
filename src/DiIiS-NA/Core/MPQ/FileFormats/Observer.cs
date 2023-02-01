@@ -38,23 +38,23 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Observer(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.I0 = stream.ReadValueS32();
-            this.F0 = stream.ReadValueF32();
-            this.Angle0 = stream.ReadValueF32();
-            this.F1 = stream.ReadValueF32();
-            this.Velocity = stream.ReadValueF32();
-            this.F8 = stream.ReadValueF32();
-            this.Angle1 = stream.ReadValueF32();
-            this.Angle2 = stream.ReadValueF32();
-            this.F2 = stream.ReadValueF32();
-            this.V0 = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
-            this.V1 = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
-            this.F3 = stream.ReadValueF32();
-            this.F4 = stream.ReadValueF32();
-            this.F5 = stream.ReadValueF32();
-            this.F6 = stream.ReadValueF32();
-            this.F7 = stream.ReadValueF32();
+            Header = new Header(stream);
+            I0 = stream.ReadValueS32();
+            F0 = stream.ReadValueF32();
+            Angle0 = stream.ReadValueF32();
+            F1 = stream.ReadValueF32();
+            Velocity = stream.ReadValueF32();
+            F8 = stream.ReadValueF32();
+            Angle1 = stream.ReadValueF32();
+            Angle2 = stream.ReadValueF32();
+            F2 = stream.ReadValueF32();
+            V0 = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
+            V1 = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
+            F3 = stream.ReadValueF32();
+            F4 = stream.ReadValueF32();
+            F5 = stream.ReadValueF32();
+            F6 = stream.ReadValueF32();
+            F7 = stream.ReadValueF32();
             stream.Close();
         }
     }

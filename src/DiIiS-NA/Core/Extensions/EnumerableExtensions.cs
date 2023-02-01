@@ -8,21 +8,29 @@ namespace DiIiS_NA.Core.Extensions;
 
 public static class EnumerableExtensions
 {
-	public static string HexDump(this IEnumerable<byte> collection)
+	public static string ToHex(this byte b) => b.ToString("X2");
+	public static string HexDump(this byte[] collection, bool skipSpace = false)
 	{
 		var sb = new StringBuilder();
 		foreach (byte value in collection)
 		{
-			sb.Append(value.ToString("X2"));
-			sb.Append(' ');
+			sb.Append(value.ToHex());
+			if (!skipSpace)
+				sb.Append(' ');
 		}
-		if (sb.Length > 0)
+		if (!skipSpace && sb.Length > 0)
 			sb.Remove(sb.Length - 1, 1);
 		return sb.ToString();
 	}
-
-	public static string ToEncodedString(this IEnumerable<byte> collection, Encoding encoding)
+	
+	public static string HexDump(this IEnumerable<byte> collection, bool skipSpace = false)
 	{
+		return collection.ToArray().HexDump(skipSpace);
+	}
+
+	public static string ToEncodedString(this IEnumerable<byte> collection, Encoding encoding = null)
+	{
+		encoding ??= Encoding.UTF8;
 		return encoding.GetString(collection.ToArray());
 	}
 
@@ -34,7 +42,7 @@ public static class EnumerableExtensions
 		int i = 0;
 		foreach (byte value in collection)
 		{
-			if (i > 0 && ((i % 16) == 0))
+			if (i > 0 && i % 16 == 0)
 			{
 				output.Append(hex);
 				output.Append(' ');
@@ -44,27 +52,21 @@ public static class EnumerableExtensions
 			}
 			hex.Append(value.ToString("X2"));
 			hex.Append(' ');
-			text.Append($"{((char.IsWhiteSpace((char)value) && (char)value != ' ') ? '.' : (char)value)}"); // prettify text
+			text.Append($"{(char.IsWhiteSpace((char)value) && (char)value != ' ' ? '.' : (char)value)}"); // prettify text
 			++i;
 		}
-		var hexstring = hex.ToString();
+		var hexRepresentation = hex.ToString();
 		if (text.Length < 16)
 		{
-			hexstring = hexstring.PadRight(48); // pad the hex representation in-case it's smaller than a regular 16 value line.
+			hexRepresentation = hexRepresentation.PadRight(48); // pad the hex representation in-case it's smaller than a regular 16 value line.
 		}
-		output.Append(hexstring);
+		output.Append(hexRepresentation);
 		output.Append(' ');
 		output.Append(text);
 		return output.ToString();
 	}
 
-	public static TItem PickRandom<TItem>(this IEnumerable<TItem> source)
-	{
-		return RandomHelper.RandomItem(source);
-	}
-	
-	public static bool TryPickRandom<TItem>(this IEnumerable<TItem> source, out TItem randomItem)
-	{
-		return RandomHelper.TryGetRandomItem(source, out randomItem);
-	}
+	public static TItem PickRandom<TItem>(this IEnumerable<TItem> source) => RandomHelper.RandomItem(source);
+
+	public static bool TryPickRandom<TItem>(this IEnumerable<TItem> source, out TItem randomItem) => RandomHelper.TryGetRandomItem(source, out randomItem);
 }

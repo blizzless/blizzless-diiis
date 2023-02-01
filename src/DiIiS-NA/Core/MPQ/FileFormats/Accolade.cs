@@ -17,8 +17,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         {
             var stream = file.Open();
 
-            this.Header = new Header(stream);
-            this.I0 = stream.ReadValueS32();
+            Header = new Header(stream);
+            I0 = stream.ReadValueS32();
 
             stream.Close();
         }

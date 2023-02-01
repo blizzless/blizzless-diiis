@@ -226,7 +226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Rescue Cain
-            Game.QuestManager.Quests.Add(72095, new Quest { RewardXp = 3630, RewardGold = 190, Completed = false, Saveable = true, NextQuest = 72221, Steps = new Dictionary<int, QuestStep> { } });
+            Game.QuestManager.Quests.Add(72095, new Quest { RewardXp = 3630, RewardGold = 190, Completed = false, Saveable = true, NextQuest = 72221});
 
             Game.QuestManager.Quests[72095].Steps.Add(-1, new QuestStep
             {
@@ -543,7 +543,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Shattered Crown
-            Game.QuestManager.Quests.Add(72221, new Quest { RewardXp = 900, RewardGold = 195, Completed = false, Saveable = true, NextQuest = 72061, Steps = new Dictionary<int, QuestStep> { } });
+            Game.QuestManager.Quests.Add(72221, new Quest { RewardXp = 900, RewardGold = 195, Completed = false, Saveable = true, NextQuest = 72061});
 
             Game.QuestManager.Quests[72221].Steps.Add(-1, new QuestStep
             {
@@ -770,7 +770,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Reign of Black King
-            Game.QuestManager.Quests.Add(72061, new Quest { RewardXp = 5625, RewardGold = 810, Completed = false, Saveable = true, NextQuest = 117779, Steps = new Dictionary<int, QuestStep> { } });
+            Game.QuestManager.Quests.Add(72061, new Quest { RewardXp = 5625, RewardGold = 810, Completed = false, Saveable = true, NextQuest = 117779});
 
             Game.QuestManager.Quests[72061].Steps.Add(-1, new QuestStep
             {
@@ -1137,7 +1137,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Tyrael Sword
-            Game.QuestManager.Quests.Add(117779, new Quest { RewardXp = 4125, RewardGold = 630, Completed = false, Saveable = true, NextQuest = 72738, Steps = new Dictionary<int, QuestStep> { } });
+            Game.QuestManager.Quests.Add(117779, new Quest { RewardXp = 4125, RewardGold = 630, Completed = false, Saveable = true, NextQuest = 72738});
 
             Game.QuestManager.Quests[117779].Steps.Add(-1, new QuestStep
             {
@@ -1253,7 +1253,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Broken Blade
-            Game.QuestManager.Quests.Add(72738, new Quest { RewardXp = 6205, RewardGold = 1065, Completed = false, Saveable = true, NextQuest = 73236, Steps = new Dictionary<int, QuestStep> { } });
+            Game.QuestManager.Quests.Add(72738, new Quest { RewardXp = 6205, RewardGold = 1065, Completed = false, Saveable = true, NextQuest = 73236});
 
             Game.QuestManager.Quests[72738].Steps.Add(-1, new QuestStep
             {
@@ -1590,7 +1590,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Doom of Vortham
-            Game.QuestManager.Quests.Add(73236, new Quest { RewardXp = 4950, RewardGold = 670, Completed = false, Saveable = true, NextQuest = 72546, Steps = new Dictionary<int, QuestStep> { } });
+            Game.QuestManager.Quests.Add(73236, new Quest { RewardXp = 4950, RewardGold = 670, Completed = false, Saveable = true, NextQuest = 72546});
 
             Game.QuestManager.Quests[73236].Steps.Add(-1, new QuestStep
             {
@@ -1778,7 +1778,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region To the Black Cult
-            Game.QuestManager.Quests.Add(72546, new Quest { RewardXp = 8275, RewardGold = 455, Completed = false, Saveable = true, NextQuest = 72801, Steps = new Dictionary<int, QuestStep> { } });
+            Game.QuestManager.Quests.Add(72546, new Quest { RewardXp = 8275, RewardGold = 455, Completed = false, Saveable = true, NextQuest = 72801});
 
             Game.QuestManager.Quests[72546].Steps.Add(-1, new QuestStep
             {
@@ -2008,7 +2008,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Captived Angel
-            Game.QuestManager.Quests.Add(72801, new Quest { RewardXp = 10925, RewardGold = 1465, Completed = false, Saveable = true, NextQuest = 136656, Steps = new Dictionary<int, QuestStep> { } });
+            Game.QuestManager.Quests.Add(72801, new Quest { RewardXp = 10925, RewardGold = 1465, Completed = false, Saveable = true, NextQuest = 136656});
 
             Game.QuestManager.Quests[72801].Steps.Add(-1, new QuestStep
             {
@@ -2202,7 +2202,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Return to New Tristram
-            Game.QuestManager.Quests.Add(136656, new Quest { RewardXp = 0, RewardGold = 0, Completed = false, Saveable = true, NextQuest = -1, Steps = new Dictionary<int, QuestStep> { } });
+            Game.QuestManager.Quests.Add(136656, new Quest { RewardXp = 0, RewardGold = 0, Completed = false, Saveable = true, NextQuest = -1});
 
             Game.QuestManager.Quests[136656].Steps.Add(-1, new QuestStep
             {

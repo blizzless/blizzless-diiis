@@ -1,4 +1,9 @@
 ﻿//Blizzless Project 2022
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace DiIiS_NA.Core.Extensions
 {
 	public static class StringExtensions
@@ -25,6 +30,7 @@ namespace DiIiS_NA.Core.Extensions
 			{
 				sB.Append((char)item);
 			}
+
 			ms.Close();
 			sw.Dispose();
 			ms.Dispose();
@@ -53,11 +59,14 @@ namespace DiIiS_NA.Core.Extensions
 			{
 				sB.Append((char)byteArray[i]);
 			}
+
 			sr.Close();
 			ms.Close();
 			sr.Dispose();
 			ms.Dispose();
 			return sB.ToString();
 		}
+		public static byte[] ToBytes(this string bytes, Encoding encoding) => encoding.GetBytes(bytes);
+		public static byte[] ToBytes(this string bytes) => bytes.ToBytes(Encoding.UTF8);
 	}
 }
