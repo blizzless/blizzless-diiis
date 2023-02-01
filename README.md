@@ -49,6 +49,16 @@ The currently supported version of the client: **2.7.4.84161**
 7. Launch wait until server start, it creates a hierarchy.
 8. Create user account(s) using console: `!account add Login Password Tag`
 
+### Example:
+
+> !account add username@ YourPassword YourBattleTag
+
+Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag`
+
+> !account add username@ YourPassword YourBattleTag owner
+
+Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag` with rank `owner`
+
 ## Prepare Client
 
 Do this for each client connecting to the server.
