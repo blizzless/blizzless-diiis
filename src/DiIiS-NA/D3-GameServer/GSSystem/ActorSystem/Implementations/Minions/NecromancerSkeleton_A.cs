@@ -20,10 +20,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 		{
 			Scale = 1.35f;
 			
-			PowerContext context = new PowerContext();
-			context.User = master as Player;
-			context.World = master.World;
-			context.PowerSNO = 453801;
+			PowerContext context = new()
+			{
+				User = master as Player,
+				World = master.World,
+				PowerSNO = 453801
+			};
 
 			WalkSpeed *= 3;
 			DamageCoefficient = context.ScriptFormula(14) * 2f;
@@ -35,7 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = 0;
 
 			Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
-			Attributes[GameAttribute.Hitpoints_Max] = 20f * (Master as Player).Toon.Level;
+			Attributes[GameAttribute.Hitpoints_Max] = 20f * ((Player) Master).Toon.Level;
 			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
 			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
 
@@ -43,8 +45,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			Attributes[GameAttribute.Summoned_By_SNO] = 453801;
 			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
 
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 0.5f * context.User.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 0.5f * context.User.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0];
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 0.5f * context!.User!.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];
+			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 0.5f * context!.User!.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0];
 
 			Attributes[GameAttribute.Pet_Type] = 0x8;
 			//Pet_Owner and Pet_Creator seems to be 0
