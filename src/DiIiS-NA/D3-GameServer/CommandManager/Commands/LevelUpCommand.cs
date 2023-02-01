@@ -22,8 +22,8 @@ public class LevelUpCommand : CommandGroup
         var amount = 1;
 
         if (@params != null)
-            if (!int.TryParse(@params[0], out amount))
-                amount = 1;
+            if (!int.TryParse(@params[0], out amount) || amount < 1)
+                return "Invalid amount of levels.";
 
         for (var i = 0; i < amount; i++)
             if (player.Level >= 70)
