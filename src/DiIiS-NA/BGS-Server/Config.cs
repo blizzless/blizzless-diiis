@@ -59,7 +59,7 @@ namespace DiIiS_NA.LoginServer
 			set => Set(nameof(Motd), value);
 		}
 
-		public static Config Instance => new();
+		public static readonly Config Instance = new();
 
 		private Config() : base("Battle-Server")
 		{
