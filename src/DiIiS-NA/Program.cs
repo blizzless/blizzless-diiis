@@ -39,7 +39,13 @@ using Environment = System.Environment;
 
 namespace DiIiS_NA
 {
-
+    public enum TypeBuildEnum
+    {
+        Alpha,
+        Beta,
+        Test,
+        Release
+    }
     class Program
     {
         private static readonly Logger Logger = LogManager.CreateLogger("BZ.Net");
@@ -57,21 +63,18 @@ namespace DiIiS_NA
 
         public static string LoginServerIp = DiIiS_NA.LoginServer.Config.Instance.BindIP;
         public static string GameServerIp = DiIiS_NA.GameServer.Config.Instance.BindIP;
-        public static string RestServerIp = DiIiS_NA.REST.Config.Instance.IP;
+        public static string RestServerIp = REST.Config.Instance.IP;
         public static string PublicGameServerIp = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
 
         public static int Build => 30;
         public static int Stage => 1;
-        public static string TypeBuild => "BETA";
-        private static bool D3CoreEnabled = DiIiS_NA.GameServer.Config.Instance.CoreActive;
+        public static TypeBuildEnum TypeBuild => TypeBuildEnum.Beta;
+        private static bool DiabloCoreEnabled = DiIiS_NA.GameServer.Config.Instance.CoreActive;
         
     static async Task LoginServer()
         {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
-#if DEBUG
-            D3CoreEnabled = true;
-#endif
             DbProviderFactories.RegisterFactory("Npgsql", NpgsqlFactory.Instance);
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             
@@ -89,6 +92,10 @@ namespace DiIiS_NA
             Console.Title = name;
 
             InitLoggers();
+#if DEBUG
+            DiabloCoreEnabled = true;
+            Logger.Warn("Diablo III Core forced enable on $[underline white on olive]$ DEBUG $[/]$");
+#endif
             
 #pragma warning disable CS4014
             Task.Run(async () =>
@@ -121,6 +128,7 @@ namespace DiIiS_NA
                     }
                     catch (Exception e)
                     {
+                        await Task.Delay(TimeSpan.FromMinutes(5));
                     }
                 }
             });
@@ -163,7 +171,7 @@ namespace DiIiS_NA
             
             if (DBSessions.SessionQuery<DBAccount>().Any())
             {
-                Logger.Success("Connection with database established.");
+                Logger.Success("Database connection has been $[underline bold italic]$successfully established$[/]$.");
             }
             //*/
             StartWatchdog();
@@ -174,13 +182,11 @@ namespace DiIiS_NA
             GuildManager.PreLoadGuilds();
 
             Logger.Info("Loading Diablo III - Core..."); 
-            if (D3CoreEnabled)
+            if (DiabloCoreEnabled)
             {
                 if (!MPQStorage.Initialized)
                 {
-                    Logger.Fatal("MPQ archives not found...");
-                    Shutdown();
-                    return;
+                    throw new Exception("MPQ archives not found...");
                 }
                 Logger.Info("Loaded - {0} items.", ItemGenerator.TotalItems); 
                 Logger.Info("Diablo III Core - Loaded"); 
@@ -188,44 +194,42 @@ namespace DiIiS_NA
             else
             {
                 Logger.Fatal("Diablo III Core - Disabled");
-                Shutdown();
-                return;
+                throw new Exception("Diablo III Core - Disabled");
             }
            
             var restSocketServer = new SocketManager<RestSession>();
             if (!restSocketServer.StartNetwork(RestServerIp, REST.Config.Instance.Port))
             {
-                Logger.Fatal("REST socket server can't start.");
-                Shutdown();
-                return;
+                throw new Exception("Diablo III Core - Disabled");
             }
-            Logger.Success($"REST server started - {REST.Config.Instance.IP}:{REST.Config.Instance.Port}");
-
-           
+            Logger.Success($"$[underline darkgreen]$REST$[/]$ server started - {REST.Config.Instance.IP}:{REST.Config.Instance.Port}");
+            
             //BGS
-            ServerBootstrap b = new ServerBootstrap();
-            IEventLoopGroup boss = new MultithreadEventLoopGroup(1);
-            IEventLoopGroup worker = new MultithreadEventLoopGroup();
-            b.LocalAddress(DiIiS_NA.LoginServer.Config.Instance.BindIP, DiIiS_NA.LoginServer.Config.Instance.Port);
-            Logger.Info(
-                $"Blizzless server started - {DiIiS_NA.LoginServer.Config.Instance.BindIP}:{DiIiS_NA.LoginServer.Config.Instance.Port}");
-            BattleBackend = new BattleBackend(DiIiS_NA.LoginServer.Config.Instance.BindIP, DiIiS_NA.LoginServer.Config.Instance.WebPort);
+            var loginConfig = DiIiS_NA.LoginServer.Config.Instance;
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            IEventLoopGroup boss = new MultithreadEventLoopGroup(1),
+                            worker = new MultithreadEventLoopGroup();
+            serverBootstrap.LocalAddress(loginConfig.BindIP, loginConfig.Port);
+            Logger.Success(
+                $"Blizzless server $[underline]$started$[/]$ - $[lightseagreen]${loginConfig.BindIP}:{loginConfig.Port}$[/]$");
+            BattleBackend = new BattleBackend(loginConfig.BindIP, loginConfig.WebPort);
 
             //Diablo 3 Game-Server
-            if (D3CoreEnabled) 
-                StartGS();
+            if (DiabloCoreEnabled) 
+                StartGameServer();
 
             try
             {
-                b.Group(boss, worker)
+                serverBootstrap.Group(boss, worker)
                     .Channel<TcpServerSocketChannel>()
                     .Handler(new LoggingHandler(LogLevel.DEBUG))
                     .ChildHandler(new ConnectHandler());
 
-                IChannel boundChannel = await b.BindAsync(DiIiS_NA.LoginServer.Config.Instance.Port);
+                IChannel boundChannel = await serverBootstrap.BindAsync(loginConfig.Port);
 
                 Logger.Info("$[bold red3_1]$Tip:$[/]$ graceful shutdown with $[red3_1]$CTRL+C$[/]$ or $[red3_1]$!q[uit]$[/]$ or $[red3_1]$!exit$[/]$.");
-                Logger.Info("$[bold red3_1]$Tip:$[/]$ SNO breakdown with $[red3_1]$!sno$[/]$ $[red]$<fullSnoBreakdown(true:false)>$[/]$.");
+                Logger.Info("$[bold red3_1]$" +
+                            "Tip:$[/]$ SNO breakdown with $[red3_1]$!sno$[/]$ $[red3_1]$<fullSnoBreakdown(true:false)>$[/]$.");
                 while (true)
                 {
                     var line = Console.ReadLine();
@@ -233,7 +237,8 @@ namespace DiIiS_NA
                         break;
                     if (line is "!cls" or "!clear" or "cls" or "clear")
                     {
-                        Console.Clear();
+                        AnsiConsole.Clear();
+                        AnsiConsole.Cursor.SetPosition(0, 0);
                         continue;
                     }
                     if (line.ToLower().StartsWith("!sno"))
@@ -257,7 +262,7 @@ namespace DiIiS_NA
             }
             catch (Exception e)
             {
-                Logger.Info(e.Message);
+                Shutdown(e, delay: 200);
             }
             finally
             {
@@ -267,10 +272,16 @@ namespace DiIiS_NA
             }
         }
 
-        public static void Shutdown(int delay = 50)
+        private static void Shutdown(Exception? exception = null, int delay = 200)
         {
-            if (!IsTargetEnabled("ansi"))
+            // if (!IsTargetEnabled("ansi"))
             {
+                AnsiTarget.StopIfRunning();
+                if (exception is { } ex)
+                {
+                    AnsiConsole.WriteLine("An unhandled exception occured at initialization. Please report this to the developers.");
+                    AnsiConsole.WriteException(ex);
+                }
                 AnsiConsole.Progress().Start(ctx =>
                 {
                     var task = ctx.AddTask("[red]Shutting down...[/]");
@@ -283,14 +294,21 @@ namespace DiIiS_NA
             }
             Environment.Exit(-1);
         }
-        
+
         [HandleProcessCorruptedStateExceptions]
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
-        static void Main() 
+        static async Task Main()
         {
-            LoginServer().Wait(); 
+            try
+            {
+                await LoginServer();
+            }
+            catch (Exception ex)
+            {
+                Shutdown(ex);
+            }
         }
-         
+
         [SecurityCritical]
         [HandleProcessCorruptedStateExceptionsAttribute]
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
@@ -299,9 +317,7 @@ namespace DiIiS_NA
 
             if (e.IsTerminating)
             {
-                Logger.Error(ex.StackTrace);
-                Logger.FatalException(ex, "A root error of the server was detected, disconnection.");
-                Shutdown();
+                Shutdown(ex);
             }
             else
                 Logger.ErrorException(ex, "A root error of the server was detected but was handled.");
@@ -353,21 +369,20 @@ namespace DiIiS_NA
                     LogManager.AttachLogTarget(target);
             }
         }
-        public static bool StartWatchdog()
+        public static void StartWatchdog()
         {
             Watchdog = new Watchdog();
             WatchdogThread = new Thread(Watchdog.Run) { Name = "Watchdog", IsBackground = true };
             WatchdogThread.Start();
-            return true;
         }
-        public static bool StartGS()
+        public static void StartGameServer()
         {
-            if (GameServer != null) return false;
+            if (GameServer != null) return;
 
             GameServer = new DiIiS_NA.GameServer.ClientSystem.GameServer();
             GameServerThread = new Thread(GameServer.Run) { Name = "GameServerThread", IsBackground = true };
             GameServerThread.Start();
-            if (DiIiS_NA.Core.Discord.Config.Instance.Enabled)
+            if (Core.Discord.Config.Instance.Enabled)
             {
                 Logger.Info("Starting Discord bot handler..");
                 GameServer.DiscordBot = new Core.Discord.Bot();
@@ -379,7 +394,6 @@ namespace DiIiS_NA
             }
             DiIiS_NA.GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.RegenerateDensity();
             DiIiS_NA.GameServer.ClientSystem.GameServer.GSBackend = new GsBackend(DiIiS_NA.LoginServer.Config.Instance.BindIP, DiIiS_NA.LoginServer.Config.Instance.WebPort);
-            return true;
         }
 
         static bool SetTitle(string text)
