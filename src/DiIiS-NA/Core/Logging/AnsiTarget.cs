@@ -49,13 +49,19 @@ public class AnsiTarget : LogTarget
                 }
                 await Task.Delay(100);
             }
-            
+
+            _shutdown = true;
         });
     }
     
     public static void StopIfRunning()
     {
         CancellationTokenSource.Cancel();
+        while(!_shutdown)
+            Thread.Sleep(100);
+        Thread.Sleep(1000);
+        AnsiConsole.Clear();
+        AnsiConsole.Cursor.SetPosition(0,0);
     }
     
     /// <summary>

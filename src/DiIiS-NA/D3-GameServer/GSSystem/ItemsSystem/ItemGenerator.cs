@@ -56,30 +56,30 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		static ItemGenerator()
 		{
 			Player.GeneratePLB();
-			Logger.Info("Loading Recipes...");
-			Logger.Info("Loading Items...");
+			Logger.Info("Loading $[underline]$Recipes$[/]$...");
+			Logger.Info("Loading $[underline]$Items$[/]$...");
 			LoadRecipes();
 			LoadItems();
-			Logger.Info("Loading Paragons...");
+			Logger.Info("Loading $[underline]$Paragons$[/]$...");
 			LoadParagonBonuses();
 			//LoadAffixes(); //just for checking values
 			//LoadPowers();
 			//LoadQuests();
-			Logger.Info("Loading Tutorials...");
+			Logger.Info("Loading $[underline]$Tutorials$[/]$...");
 			Tutorials = MPQStorage.Data.Assets[SNOGroup.Tutorial].Keys.OrderBy(i => i).ToList();
-			Logger.Info("Loading Bonuses...");
+			Logger.Info("Loading $[underline]$Bonuses$[/]$...");
 			LoadItemSetBonuses();
 			LoadGemBonuses();
-			Logger.Info("Loading Handlers...");
+			Logger.Info("Loading $[underline]$Handlers$[/]$...");
 			LoadHandlers();
-			Logger.Info("Loading Lore...");
+			Logger.Info("Loading $[underline]$Lore$[/]$...");
 			LoadLore();
-			Logger.Info("Loading Bounties...");
+			Logger.Info("Loading $[underline]$Bounties$[/]$...");
 			LoadBounties();
 			//LoadConversations();
 			//if (Net.GS.Config.Instance.Enabled)
 
-			Logger.Info("Loading Worlds...");
+			Logger.Info("Loading $[underline]$Worlds$[/]$...");
 			Scene.PreCacheMarkers();
 
 			SetAllowedTypes();
