@@ -2226,7 +2226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		/// <param name="world">The world to which to add loaded actors</param>
 		private void LoadLevelAreas(Dictionary<int, List<Scene>> levelAreas, World world)
 		{
-			Dictionary<PRTransform, DiIiS_NA.Core.MPQ.FileFormats.Actor> dict = new Dictionary<PRTransform, DiIiS_NA.Core.MPQ.FileFormats.Actor>();
+			Dictionary<PRTransform, DiIiS_NA.Core.MPQ.FileFormats.ActorData> dict = new Dictionary<PRTransform, DiIiS_NA.Core.MPQ.FileFormats.ActorData>();
 			foreach (int la in levelAreas.Keys)
 			{
 				SNOHandle levelAreaHandle = new SNOHandle(SNOGroup.LevelArea, la);
@@ -2270,7 +2270,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				{
 					var handle = new SNOHandle(207706);
 					if (handle == null || gizmoLocations.Count == 0) continue;
-					LazyLoadActor(handle, gizmoLocations.PickRandom(), world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handle.Target).TagMap);
+					LazyLoadActor(handle, gizmoLocations.PickRandom(), world, ((DiIiS_NA.Core.MPQ.FileFormats.ActorData)handle.Target).TagMap);
 				}
 				else
 					foreach (var location in gizmoLocations)
@@ -2290,7 +2290,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 									seed -= pair.Value;
 							}
 							if (gizmoHandle == null) continue;
-							LazyLoadActor(gizmoHandle, location, world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)gizmoHandle.Target).TagMap);
+							LazyLoadActor(gizmoHandle, location, world, ((DiIiS_NA.Core.MPQ.FileFormats.ActorData)gizmoHandle.Target).TagMap);
 						}
 					}
 
@@ -2298,7 +2298,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				{
 					var handleChest = new SNOHandle(96993); //leg chest
 					if (handleChest == null) continue;
-					var goldenChest = LoadActor(handleChest, gizmoLocations.PickRandom(), world, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)handleChest.Target).TagMap);
+					var goldenChest = LoadActor(handleChest, gizmoLocations.PickRandom(), world, ((DiIiS_NA.Core.MPQ.FileFormats.ActorData)handleChest.Target).TagMap);
 					if (goldenChest > 0)
 						(world.GetActorByGlobalId(goldenChest) as LegendaryChest).ChestActive = true;
 				}
@@ -2657,43 +2657,55 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		//TODO: Move this out as loading actors can happen even after world was generated
 		public uint LoadActor(SNOHandle actorHandle, PRTransform location, World world, TagMap tagMap, MonsterType monsterType = MonsterType.Default, int groupId = 0)
 		{
-			var actorSno = (ActorSno)actorHandle.Id; // TODO: maybe we can replace SNOHandle
-			if (world.QuadTree.Query<Waypoint>(new Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 60f)).Count > 0 ||
-				world.QuadTree.Query<Portal>(new Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 5f)).Count > 0)
+			try
 			{
-				Logger.Debug("Load actor {0} ignored - waypoint nearby.", actorSno);
+				var actorSno = (ActorSno)actorHandle.Id; // TODO: maybe we can replace SNOHandle
+				if (world.QuadTree
+					    .Query<Waypoint>(new Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 60f))
+					    .Count > 0 ||
+				    world.QuadTree
+					    .Query<Portal>(new Core.Types.Misc.Circle(location.Vector3D.X, location.Vector3D.Y, 5f)).Count >
+				    0)
+				{
+					Logger.Debug("Load actor {0} ignored - waypoint nearby.", actorSno);
+					return 0;
+				}
+
+				var actor = ActorFactory.Create(world, actorSno, tagMap);
+
+				switch (monsterType)
+				{
+					case MonsterType.Champion:
+						actor = new Champion(world, actorSno, tagMap);
+						actor.GroupId = groupId;
+						break;
+					case MonsterType.Elite:
+						actor = new Rare(world, actorSno, tagMap);
+						actor.GroupId = groupId;
+						break;
+					case MonsterType.EliteMinion:
+						actor = new RareMinion(world, actorSno, tagMap);
+						actor.GroupId = groupId;
+						break;
+				}
+
+				if (actor == null)
+				{
+					if (actorSno != ActorSno.__NONE)
+						Logger.Warn("ActorFactory did not load actor {0}", actorHandle);
+					return 0;
+				}
+
+				actor.RotationW = location.Quaternion.W;
+				actor.RotationAxis = location.Quaternion.Vector3D;
+				actor.EnterWorld(location.Vector3D);
+				return actor.GlobalID;
+			}
+			catch (Exception ex)
+			{
+				Logger.Error("Error loading actor {0} at {1}", actorHandle.Id, location);
 				return 0;
 			}
-
-			var actor = ActorFactory.Create(world, actorSno, tagMap);
-
-            switch (monsterType)
-            {
-                case MonsterType.Champion:
-                    actor = new Champion(world, actorSno, tagMap);
-                    actor.GroupId = groupId;
-                    break;
-                case MonsterType.Elite:
-                    actor = new Rare(world, actorSno, tagMap);
-                    actor.GroupId = groupId;
-                    break;
-                case MonsterType.EliteMinion:
-                    actor = new RareMinion(world, actorSno, tagMap);
-                    actor.GroupId = groupId;
-                    break;
-            }
-
-            if (actor == null)
-			{
-				if (actorSno != ActorSno.__NONE)
-					Logger.Warn("ActorFactory did not load actor {0}", actorHandle);
-				return 0;
-			}
-
-			actor.RotationW = location.Quaternion.W;
-			actor.RotationAxis = location.Quaternion.Vector3D;
-			actor.EnterWorld(location.Vector3D);
-			return actor.GlobalID;
 		}
 
 		public void LazyLoadActor(SNOHandle actorHandle, PRTransform location, World world, TagMap tagMap, MonsterType monsterType = MonsterType.Default)

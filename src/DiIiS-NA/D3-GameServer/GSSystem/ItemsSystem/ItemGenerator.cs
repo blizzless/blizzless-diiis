@@ -443,7 +443,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Actor].Values)
 			{
-				Actor data = asset.Data as Actor;
+				ActorData data = asset.Data as ActorData;
 				if (data != null && data.TagMap.ContainsKey(ActorKeys.Lore))
 				{
 					if (Lore.ContainsKey(data.TagMap[ActorKeys.Lore].Id)) continue;

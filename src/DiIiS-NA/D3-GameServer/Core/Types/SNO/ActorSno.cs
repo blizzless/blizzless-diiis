@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Core.MPQ;
 
 namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 {
@@ -7535,12 +7536,14 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_wizard_tornado_golden = 215324,
 		_inviscylindercollisionsmall = 215351,
 		_wizard_waveofforce_runecrimson_shell = 215420,
+		[SnoFileName("a1dun_Caves_Nephalem Altar_A_Chest_03")]
 		_a1dun_caves_nephalem_altar_a_chest_03 = 215434,
 		_arcanumorb_model = 215444,
 		_fallenshaman_a_unique01whipple = 215445,
 		_wizard_waveofforce_runeobsidian_shell = 215488,
 		_cow_gem_flippy = 215500,
 		_wizard_waveofforce_runegolden_shell = 215511,
+		[SnoFileName("a1dun_Caves_Nephalem Altar_A_Chest_03_B")]
 		_a1dun_caves_nephalem_altar_a_chest_03_b = 215512,
 		_wizard_frostnova_critbuff_swipe = 215516,
 		_monk_hol_stage03_ribbongeo = 215635,

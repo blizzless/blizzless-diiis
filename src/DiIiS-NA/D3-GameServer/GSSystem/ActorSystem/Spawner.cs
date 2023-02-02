@@ -96,7 +96,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			};
 
 			//this.World.Game.WorldGenerator.Actions.Enqueue(() =>
-			World.Game.WorldGenerator.LoadActor(ActorToSpawnSNO, location, World, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
+			World.Game.WorldGenerator.LoadActor(ActorToSpawnSNO, location, World, ((DiIiS_NA.Core.MPQ.FileFormats.ActorData)ActorToSpawnSNO.Target).TagMap);
 			//Mooege.Core.GS.Generators.WorldGenerator.loadActor(ActorToSpawnSNO, location, this.World, ((Mooege.Common.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
 		}
 

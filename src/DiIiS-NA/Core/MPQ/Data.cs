@@ -11,10 +11,21 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using Spectre.Console;
 
 namespace DiIiS_NA.Core.MPQ
 {
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
+    public class SnoFileNameAttribute : Attribute 
+    {
+        public string FileName { get; }
+
+        public SnoFileNameAttribute(string fileName)
+        {
+            FileName = fileName;
+        }
+    }
     public class Data : MPQPatchChain
     {
         public Dictionary<SNOGroup, ConcurrentDictionary<int, Asset>> Assets = new Dictionary<SNOGroup, ConcurrentDictionary<int, Asset>>();
@@ -56,12 +67,15 @@ namespace DiIiS_NA.Core.MPQ
         #endregion
 
 
-        private static new readonly Logger Logger = LogManager.CreateLogger("DataBaseWorker");
+        private new static readonly Logger Logger = LogManager.CreateLogger("MPQWorker");
 
         public Data()
             //: base(0, new List<string> { "CoreData.mpq", "ClientData.mpq" }, "/base/d3-update-base-(?<version>.*?).mpq")
-            : base(0, new List<string> { "Core.mpq", "Core1.mpq", "Core2.mpq", "Core3.mpq", "Core4.mpq" }, "/base/d3-update-base-(?<version>.*?).mpq")
-        { }
+            : base(0, new List<string> { "Core.mpq", "Core1.mpq", "Core2.mpq", "Core3.mpq", "Core4.mpq" },
+                "/base/d3-update-base-(?<version>.*?).mpq")
+        {
+            
+        }
 
         public void Init()
         {

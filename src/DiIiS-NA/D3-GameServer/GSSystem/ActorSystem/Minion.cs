@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MonsterFF = DiIiS_NA.Core.MPQ.FileFormats.Monster;
-using ActorFF = DiIiS_NA.Core.MPQ.FileFormats.Actor;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;

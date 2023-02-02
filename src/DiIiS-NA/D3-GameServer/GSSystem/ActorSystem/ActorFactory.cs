@@ -39,7 +39,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			if (!MPQStorage.Data.Assets[SNOGroup.Actor].ContainsKey((int)sno))
 			{
-				//Logger.Warn("Actor asset not found, Id: {0}", snoId);
+				Logger.Error("$[underline on white]$Actor asset not found$[/]$, Id: $[underline white]${0}$[/]$ - $[underline white]${1}$[/]$", (int)sno, sno.ToString());
 				return null;
 			}
 
@@ -77,7 +77,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				return null;
 
 			var actorAsset = MPQStorage.Data.Assets[SNOGroup.Actor][(int)sno];
-			var actorData = actorAsset.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor;
+			var actorData = actorAsset.Data as DiIiS_NA.Core.MPQ.FileFormats.ActorData;
 			if (actorData == null)
 			{
 				Logger.Warn("Actor data not found, Id: {0}", sno);

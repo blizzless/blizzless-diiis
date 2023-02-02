@@ -1680,7 +1680,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void OnHirelingSwapAgreeMessage()
     {
         Hireling hireling = null;
-        DiIiS_NA.Core.MPQ.FileFormats.Actor Data = null;
+        DiIiS_NA.Core.MPQ.FileFormats.ActorData Data = null;
         if (World.Game.Players.Count > 1) return;
 
 
@@ -1688,20 +1688,20 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         {
             case 72061:
                 //Templar
-                Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][52693].Data;
+                Data = (DiIiS_NA.Core.MPQ.FileFormats.ActorData)MPQStorage.Data.Assets[SNOGroup.Actor][52693].Data;
                 hireling = new Templar(World, ActorSno._hireling_templar, Data.TagMap);
                 hireling.GBHandle.GBID = StringHashHelper.HashItemName("Templar");
 
                 break;
             case 72738:
                 //Scoundrel
-                Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][52694].Data;
+                Data = (DiIiS_NA.Core.MPQ.FileFormats.ActorData)MPQStorage.Data.Assets[SNOGroup.Actor][52694].Data;
                 hireling = new Templar(World, ActorSno._hireling_scoundrel, Data.TagMap);
                 hireling.GBHandle.GBID = StringHashHelper.HashItemName("Scoundrel");
                 break;
             case 0:
                 //Enchantress
-                Data = (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][4482].Data;
+                Data = (DiIiS_NA.Core.MPQ.FileFormats.ActorData)MPQStorage.Data.Assets[SNOGroup.Actor][4482].Data;
                 hireling = new Templar(World, ActorSno._hireling_enchantress, Data.TagMap);
                 hireling.GBHandle.GBID = StringHashHelper.HashItemName("Enchantress");
                 break;

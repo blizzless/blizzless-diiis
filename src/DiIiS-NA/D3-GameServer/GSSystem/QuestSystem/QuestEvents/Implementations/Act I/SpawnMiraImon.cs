@@ -68,7 +68,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		{
 			var counter = 0;
 			var monsterSNOHandle = new Core.Types.SNO.SNOHandle(SnoId);
-			var monsterActor = monsterSNOHandle.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor;
+			var monsterActor = monsterSNOHandle.Target as DiIiS_NA.Core.MPQ.FileFormats.ActorData;
 
 			foreach (Vector3D coords in Coordinates)
 			{

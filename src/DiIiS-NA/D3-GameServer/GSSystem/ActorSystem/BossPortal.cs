@@ -48,7 +48,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			Attributes[GameAttribute.MinimapActive] = true;
 			Attributes[GameAttribute.Untargetable] = false;
-            var bossEncounter = ((ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter);
+            var bossEncounter = ((ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.ActorData).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter);
 			DestWorld = bossEncounter.Worlds[0];
 			switch (DestWorld)
 			{

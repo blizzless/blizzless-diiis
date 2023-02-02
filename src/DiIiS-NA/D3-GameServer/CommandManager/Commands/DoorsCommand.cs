@@ -5,8 +5,8 @@ using DiIiS_NA.LoginServer.AccountsSystem;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("doors", "Information about all doors in the vicinity. This is useful for testing purposes.. Useful for testing.", Account.UserLevels.Tester)]
-public class OpenDoorCommand : CommandGroup
+[CommandGroup("doors", "Information about all doors in the vicinity. This is useful for testing purposes.", Account.UserLevels.Tester)]
+public class DoorsCommand : CommandGroup
 {
     [Command("all", "Activate all doors. This is useful for testing purposes.\nUsage: !open all", Account.UserLevels.Tester)]
     public string OpenAllDoors(string[] @params, BattleClient invokerClient)

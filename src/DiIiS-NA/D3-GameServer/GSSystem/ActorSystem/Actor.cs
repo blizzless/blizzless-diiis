@@ -1,7 +1,6 @@
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
-using DiIiS_NA.GameServer.Core.Types.Misc;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
@@ -9,7 +8,6 @@ using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
@@ -26,8 +24,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
+using Circle = DiIiS_NA.GameServer.Core.Types.Misc.Circle;
 using Player = DiIiS_NA.GameServer.GSSystem.PlayerSystem.Player;
+using Scene = DiIiS_NA.GameServer.GSSystem.MapSystem.Scene;
+using World = DiIiS_NA.GameServer.GSSystem.MapSystem.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -168,13 +170,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// <summary>
 		/// The info set for actor. (erekose)
 		/// </summary>
-		public DiIiS_NA.Core.MPQ.FileFormats.Actor ActorData
-		{
-			get
-			{
-				return (DiIiS_NA.Core.MPQ.FileFormats.Actor)MPQStorage.Data.Assets[SNOGroup.Actor][(int)SNO].Data;
-			}
-		}
+		public DiIiS_NA.Core.MPQ.FileFormats.ActorData ActorData 
+			=> (DiIiS_NA.Core.MPQ.FileFormats.ActorData)MPQStorage.Data.Assets[SNOGroup.Actor][(int)SNO].Data;
 
 		/// <summary>
 		/// The animation set for actor.
@@ -235,8 +232,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			AffixList = new List<Affix>();
 
-			//if (tags != null && tags.ContainsKey(MarkerKeys.OnActorSpawnedScript) && tags[MarkerKeys.OnActorSpawnedScript].Id == 178440)
-			//	this.AnimationSet = (Mooege.Common.MPQ.FileFormats.AnimSet)Mooege.Common.MPQ.MPQStorage.Data.Assets[SNOGroup.AnimSet][11849].Data; //OminNPC_Male (Wounded)
+			// if (tags != null && tags.ContainsKey(MarkerKeys.OnActorSpawnedScript) && tags[MarkerKeys.OnActorSpawnedScript].Id == 178440)
+				// AnimationSet = (AnimSet)MPQStorage.Data.Assets[SNOGroup.AnimSet][11849].Data; //OminNPC_Male (Wounded)
 			//else
 			//	if (this.ActorData.AnimSetSNO != -1)
 			//		this.AnimationSet = (Mooege.Common.MPQ.FileFormats.AnimSet)Mooege.Common.MPQ.MPQStorage.Data.Assets[SNOGroup.AnimSet][this.ActorData.AnimSetSNO].Data;
@@ -261,7 +258,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			// Listen for quest progress if the actor has a QuestRange attached to it
 			//foreach (var quest in World.Game.QuestManager.Quests)
 			if (_questRange != null)
-				World.Game.QuestManager.OnQuestProgress += new QuestManager.QuestProgressDelegate(quest_OnQuestProgress);
+				World.Game.QuestManager.OnQuestProgress += quest_OnQuestProgress;
 			UpdateQuestRangeVisibility();
 		}
 

@@ -18,7 +18,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			//Logger.Trace("SpawnSnakemans event started");
 			var point = new Vector3D { X = 835.331f, Y = 410.121f, Z = 161.842f };
 			var snakeManHandle = new Core.Types.SNO.SNOHandle((int)ActorSno._khamsin_snakeman_melee);
-			var snakeManActor = snakeManHandle.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor;
+			var snakeManActor = snakeManHandle.Target as DiIiS_NA.Core.MPQ.FileFormats.ActorData;
 			try
 			{
 				var caldeumGuard = world.FindActorAt(ActorSno._caldeumguard_cleaver_a, point, 20.0f);

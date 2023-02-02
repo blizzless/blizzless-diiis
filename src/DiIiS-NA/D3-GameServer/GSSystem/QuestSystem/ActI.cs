@@ -1426,13 +1426,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 14,
-                Objectives = new List<Objective> { Objective.Default(), Objective.Default() },
+                Objectives = new List<Objective> { Objective.WithLimit(2) },
                 OnAdvance = () =>
                 { //find 2 Orbs
                     DestroyFollower(ActorSno._leah);
-                    AddFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
+                    var world = Game.GetWorld(WorldSno.trout_town);
+                    AddFollower(world, ActorSno._leah);
                     ListenInteract(ActorSno._a1dun_caves_nephalem_altar_a_chest_03, 1, new CompleteObjective(0));
-                    ListenInteract(ActorSno._a1dun_caves_nephalem_altar_a_chest_03_b, 1, new CompleteObjective(1));
+                    ListenInteract(ActorSno._a1dun_caves_nephalem_altar_a_chest_03_b, 1, new CompleteObjective(0));
                 }
             });
 
@@ -1441,7 +1442,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Completed = false,
                 Saveable = true,
                 NextStep = 30,
-                Objectives = new List<Objective> { new Objective { Limit = 2, Counter = 0 } },
+                Objectives = new List<Objective> { Objective.WithLimit(2) },
                 OnAdvance = () =>
                 { //use 2 stones
                     var world = Game.GetWorld(WorldSno.trout_town);

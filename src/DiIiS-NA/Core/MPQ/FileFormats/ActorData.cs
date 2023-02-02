@@ -12,7 +12,7 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 namespace DiIiS_NA.Core.MPQ.FileFormats
 {
     [FileFormat(SNOGroup.Actor)]
-    public class Actor : FileFormat
+    public class ActorData : FileFormat
     {
         public Header Header { get; private set; }
         public int Flags { get; private set; }
@@ -42,7 +42,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public string CastingNotes { get; private set; }
         public string VoiceOverRole { get; private set; }
 
-        public Actor(MpqFile file)
+        public ActorData(MpqFile file)
         {
             var stream = file.Open();
             Header = new Header(stream);

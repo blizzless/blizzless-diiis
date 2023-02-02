@@ -14,13 +14,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		/// </summary>
 		public uint GlobalID
 		{
-			get
-			{
-				if (GlobalIDOverride > 0)
-					return GlobalIDOverride;
-				else
-					return _globalID;
-			}
+			get => GlobalIDOverride > 0 ? GlobalIDOverride : _globalID;
 			private set
 			{ }
 		}

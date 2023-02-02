@@ -14,7 +14,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem.Implementations
 		public Book(MapSystem.World world, DiIiS_NA.Core.MPQ.FileFormats.GameBalance.ItemTable definition, int cork = -1, bool cork2 = false, int cork3 = -1)
 			: base(world, definition)
 		{
-			var actorData = ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor;
+			var actorData = ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.ActorData;
 
 			if (actorData.TagMap.ContainsKey(ActorKeys.Lore))
 			{

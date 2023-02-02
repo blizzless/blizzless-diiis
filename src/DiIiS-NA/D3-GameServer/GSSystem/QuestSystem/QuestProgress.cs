@@ -55,6 +55,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			public int Counter;
 			
 			public static Objective Default() => new () { Limit = 1, Counter = 0 };
+			public static Objective WithLimit(int limit) => new () { Limit = limit, Counter = 0 };
 		}
 
 		// key can be ActorSno (also multiplied), DestLevelAreaSno, ConversationSno

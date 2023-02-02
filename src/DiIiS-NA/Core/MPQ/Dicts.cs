@@ -202,7 +202,29 @@ namespace DiIiS_NA.Core.MPQ
         }
         public static Dictionary<string, int> LoadActors()
         {
-            return Enum.GetValues<ActorSno>().Where(x => x != ActorSno.__NONE).ToDictionary(x => x.ToString().Substring(1), x => (int)x);
+            var dict = Enum.GetValues<ActorSno>().Where(x => x != ActorSno.__NONE).ToDictionary(x => x.ToString().Substring(1), x => (int)x);
+            
+            // TODO: merge with LINQ above.
+            // this parses enum values that has SnoFileNameAttribute, in case the dict linq above didn't get a correct name
+            // for the actor file.
+            foreach (var d in Enum.GetValues<ActorSno>())
+            {
+                var enumType = typeof(ActorSno);
+                var memberInfos = 
+                    enumType.GetMember(d.ToString());
+                if (memberInfos.Length == 0)
+                    continue;
+                var enumValueMemberInfo = memberInfos.FirstOrDefault(m => m.DeclaringType == enumType);
+                if (enumValueMemberInfo == null) continue;
+                var valueAttributes = enumValueMemberInfo.GetCustomAttributes(typeof(SnoFileNameAttribute), false)
+                    .Select(s=>(SnoFileNameAttribute)s)
+                    .FirstOrDefault();
+                if (valueAttributes != null)
+                {
+                    dict.Add(valueAttributes.FileName, (int)d);
+                }
+            }
+            return dict;
         }
         public static Dictionary<string, int> LoadAdventure()
         {

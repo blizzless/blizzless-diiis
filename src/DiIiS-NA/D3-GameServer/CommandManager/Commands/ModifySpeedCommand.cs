@@ -9,7 +9,6 @@ using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.LoginServer.Battle;
-using Actor = DiIiS_NA.Core.MPQ.FileFormats.Actor;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
@@ -194,7 +193,7 @@ public class ModifySpeedCommand : CommandGroup
 
             return matches.Aggregate(matches.Count >= 1 ? "Actor Matches:\n" : "No match found.",
                 (current, match) => current +
-                                    $"[{match.SNOId:D6}] {match.Name} ({((Actor)match.Data).Type} {(((Actor)match.Data).Type == ActorType.Gizmo ? ((int)((Actor)match.Data).TagMap[ActorKeys.GizmoGroup]).ToString() : "")})\n");
+                                    $"[{match.SNOId:D6}] {match.Name} ({((ActorData)match.Data).Type} {(((ActorData)match.Data).Type == ActorType.Gizmo ? ((int)((ActorData)match.Data).TagMap[ActorKeys.GizmoGroup]).ToString() : "")})\n");
         }
 
         [Command("rope", "Allows you to search for an rope.\nUsage: lookup rope <pattern>")]
