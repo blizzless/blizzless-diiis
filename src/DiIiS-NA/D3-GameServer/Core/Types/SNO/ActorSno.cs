@@ -2579,6 +2579,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_temp_wizard_meteor_impact_frost_rune = 92031,
 		_temp_wizard_meteor_afterburn_frost_rune = 92032,
 		_a1dun_leor_fire_floor_coals = 92035,
+		[SnoFileName("a1dun_Caves_Nephalem Altar_Volume")]
 		_a1dun_caves_nephalem_altar_volume = 92121,
 		_nephalem_blue_glowsphere = 92154,
 		_skeletonking_brokencrown = 92168,
@@ -5615,6 +5616,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_shoulderpad_wizf_hell_base_01_l = 184771,
 		_diabloarena_firewall_heatdist = 184783,
 		_caout_oasis_celler_door = 184790,
+		[SnoFileName("Spawner_Triune_Summonable_C (Prison)")]
 		_spawner_triune_summonable_c__prison_ = 184867,
 		_wd_massconfusion_stun_model = 184968,
 		_wd_massconfusion_cooldown_model = 184999,
@@ -9678,7 +9680,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_x1_adria_arena_floorpanel_active = 292507,
 		_x1_adria_arena_floorpanel_telegraph = 292508,
 		_x1_crusader_crushingresolve_damageresolveenergy = 292608,
-		[SnoFileName("x1_Spawner_Zombie_Inferno_C (Skeleton_Rush)")
+		[SnoFileName("x1_Spawner_Zombie_Inferno_C (Skeleton_Rush)")]
 		_x1_spawner_zombie_inferno_c = 292760,
 		_x1_spawner_fleshpitflyer_inferno = 292762,
 		_x1_skeletonarcher_westmarch_corpsespawn = 292834,
@@ -20194,7 +20196,6 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 			ActorSno._spawner_monstrosity_scorpion_a,
 			ActorSno._fastmummy_spawner_a_portalroulette,
 			ActorSno._sandshark_mother_spawner,
-			[SnoFileName("Spawner_Triune_Summonable_C (Prison)")]
 			ActorSno._spawner_triune_summonable_c__prison_,
 			ActorSno._spawner_thousandpounder_a_fastspawn,
 			ActorSno._spawner_caldeumtortured_dogbitecellar,
@@ -20692,7 +20693,6 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		private static readonly ActorSno[] soundActors = new ActorSno[]
 		{
 			ActorSno._lustmissle_volume,
-			[SnoFileName("a1dun_Caves_Nephalem Altar_Volume")]
 			ActorSno._a1dun_caves_nephalem_altar_volume,
 			ActorSno._kullevoiceover,
 			ActorSno._belialvoiceover,
