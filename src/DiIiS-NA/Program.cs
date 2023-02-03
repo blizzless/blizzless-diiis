@@ -67,7 +67,7 @@ namespace DiIiS_NA
         public static string PublicGameServerIp = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
 
         public static int Build => 30;
-        public static int Stage => 1;
+        public static int Stage => 2;
         public static TypeBuildEnum TypeBuild => TypeBuildEnum.Beta;
         private static bool DiabloCoreEnabled = DiIiS_NA.GameServer.Config.Instance.CoreActive;
         
@@ -211,7 +211,7 @@ namespace DiIiS_NA
                             worker = new MultithreadEventLoopGroup();
             serverBootstrap.LocalAddress(loginConfig.BindIP, loginConfig.Port);
             Logger.Success(
-                $"Blizzless server $[underline]$started$[/]$ - $[lightseagreen]${loginConfig.BindIP}:{loginConfig.Port}$[/]$");
+                $"Blizzless server $[underline]$started$[/]$ - $[lightseagreen]${loginConfig.BindIP}:{loginConfig.Port}");
             BattleBackend = new BattleBackend(loginConfig.BindIP, loginConfig.WebPort);
 
             //Diablo 3 Game-Server

@@ -209,6 +209,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_arcanesummon_skeleton = 3198,
 		_arcanesummon_trailactor = 3199,
 		_asheara = 3205,
+		[SnoFileName("Assault Beast_stompPower")]
 		_assault_beast_stomppower = 3206,
 		_assaultbeast_dead = 3210,
 		_assaultbeast_dead_top = 3211,
@@ -344,6 +345,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_bow_norm_base_flippy_04 = 3456,
 		_bow_norm_base_flippy_05 = 3457,
 		_bow_norm_base_flippy_06 = 3458,
+		[SnoFileName("BoxTrigger (One Shot)")]
 		_boxtrigger__one_shot_ = 3461,
 		_boxtrigger = 3462,
 		_brazier_intacta_caout_towns = 3472,
@@ -1092,6 +1094,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_spear_norm_base_flippy_04 = 5460,
 		_spear_norm_base_flippy_05 = 5461,
 		_spectralshield_model_01 = 5463,
+		[SnoFileName("SphereTrigger (One Shot)")]
 		_spheretrigger__one_shot_ = 5465,
 		_spheretrigger = 5466,
 		_spiderling_a = 5467,
@@ -1283,6 +1286,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_trdun_incense_burner = 5884,
 		_trdun_incense_burner_glass = 5885,
 		_trdun_ironwork_ornament = 5886,
+		[SnoFileName("trDun_Lecturn_ Leoric's Journal")]
 		_trdun_lecturn__leorics_journal = 5891,
 		_trdun_lecturn_book = 5892,
 		_trdun_lightrayplane = 5894,
@@ -2441,7 +2445,9 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_lachdanansscroll3 = 85782,
 		_lachdanansscroll4 = 85783,
 		_lachdanansscroll5 = 85784,
+		[SnoFileName("Leoric_Lecturn_ Leoric's Journal")]
 		_leoric_lecturn__leorics_journal = 85789,
+		[SnoFileName("Cath_Lecturn_ LachdanansScroll")]
 		_cath_lecturn__lachdanansscroll = 85790,
 		_oldtristram_lore = 85791,
 		_healthglobe_02 = 85798,
@@ -2580,6 +2586,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_shoulderpad_wdm_nightmare_base_02_r = 92242,
 		_oldtristkey = 92244,
 		_helm_wdm_nightmare_base_02 = 92260,
+		[SnoFileName("a1dun_Caves_Nephalem Altar_Tablet_A")]
 		_a1dun_caves_nephalem_altar_tablet_a = 92387,
 		_caout_boneyards_bloodhawknest_base = 92514,
 		_caout_boneyards_bloodhawknest = 92519,
@@ -3114,6 +3121,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_spawner_ghoul_a_immediate = 110802,
 		_sword_norm_unique_03 = 110952,
 		_wd_zombiedogrune_healthlink = 110959,
+		[SnoFileName("OmniNPC_Tristram_Male_B_NoLook 2")]
 		_omninpc_tristram_male_b_nolook = 110982,
 		_a1dun_leor_swinging_chain_gore_a = 110989,
 		_lore_nephalembonustome = 111127,
@@ -3387,6 +3395,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_wd_acidcloudrune_damage = 121919,
 		_wd_acidcloudrune_disease = 121920,
 		_wd_acidcloudrune_slimes_head = 121960,
+		[SnoFileName("LeoricManor_Lecturn_ Leoric's Journal")]
 		_leoricmanor_lecturn__leorics_journal = 121966,
 		_a3dun_rmpt_oilvat_a = 122076,
 		_helm_dhm_norm_base_03 = 122111,
@@ -3654,6 +3663,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_shrine_global = 135384,
 		_dungeon_stone_lightbeam = 135532,
 		_dungeon_stone_lightbeam_mouseover = 135556,
+		[SnoFileName("Abd al-Hazir")]
 		_abd_al_hazir = 135598,
 		_shadowvermin_c = 135611,
 		_a3dun_bridge_statue_a = 135676,
@@ -3709,6 +3719,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_mistressofpain_spiderspawner = 137126,
 		_mistressofpain_spiderling = 137139,
 		_mistressofpain_spiderling_explosion = 137144,
+	    [SnoFileName("a1dun_Caves_Nephalem Altar_Tablet_Alone")]
 		_a1dun_caves_nephalem_altar_tablet_alone = 137167,
 		_drownedtemple_chest = 137189,
 		_monk_male_rapidstrikes_firecone_holydot = 137408,
@@ -4133,6 +4144,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_wd_wallofzombiesrune_spawn = 146534,
 		_monk_sweepingwindrune_sand_trail_stage2 = 146593,
 		_monk_sweepingwindrune_sand_trail_stage1 = 146596,
+		[SnoFileName("Chancellor Eamon")]
 		_chancellor_eamon = 146643,
 		_lore_darkzealot = 146701,
 		_trout_town_attack_church_roof_b_sidepeices = 146740,
@@ -4931,6 +4943,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_wizard_arcanetorrent_shard_model = 170169,
 		_wizard_teleport_castglow = 170199,
 		_lore_merchantsledger = 170204,
+		[SnoFileName("Travelling Merchant")]
 		_travelling_merchant = 170212,
 		_caldeumguard_cleaver_a_alcarnuscaptain = 170220,
 		_lore_guardcaptainjournal = 170227,
@@ -4964,6 +4977,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_wizard_arcanetorrent_projectile_golden_stone = 170574,
 		_arcanetorrent_target_golden = 170590,
 		_wizard_arcanetorrent_impact_golden = 170592,
+		[SnoFileName("trDun_Lecturn_ LloigortheCrazed")]
 		_trdun_lecturn__lloigorthecrazed = 170632,
 		_a1dun_crypts_leoric_crown_holder_nocrown = 170633,
 		_a3_battlefield_cart_a_breakable = 170657,
@@ -5640,6 +5654,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_wizard_blizzard_addtime_panels = 185459,
 		_wizard_blizzard_reducecost_panels = 185513,
 		_demonic_meteor_distortexplosion = 185517,
+	    [SnoFileName("CaOut_Oasis_Floating _Fish_A")]
 		_caout_oasis_floating__fish_a = 185553,
 		_shoulderpad_wizf_nightmare_base_03_l = 185562,
 		_demonic_groundmeteor = 185592,
@@ -5702,9 +5717,12 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_a4dun_spire_chest_rare = 187107,
 		_shoulderpad_wizf_hell_base_03_l = 187112,
 		_shoulderpad_wizm_hell_base_03_r = 187168,
+		[SnoFileName("CaOut_Oasis_Floating _Fish_B")]
 		_caout_oasis_floating__fish_b = 187230,
 		_a4dun_garden_corruption_angel_spawner = 187244,
+		[SnoFileName("CaOut_Oasis_Floating _Fish_C")]
 		_caout_oasis_floating__fish_c = 187252,
+		[SnoFileName("CaOut_Oasis_Floating _Fish_D")]
 		_caout_oasis_floating__fish_d = 187256,
 		_zoltunkullefollower = 187265,
 		_a3dun_keep_door_destructable_monsterbarricadeevent = 187296,
@@ -9328,6 +9346,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_x1_bogblight_pustule_projectile = 273844,
 		_p4_spiderbomb = 274133,
 		_pvp_stationary_defender = 274294,
+		[SnoFileName("X1_Westm_Soul_Cauldron_temp _A")]
 		_x1_westm_soul_cauldron_temp__a = 274303,
 		_x1_deathmaiden_unique_c = 274324,
 		_x1_westmarch_boss = 274343,
@@ -9659,6 +9678,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_x1_adria_arena_floorpanel_active = 292507,
 		_x1_adria_arena_floorpanel_telegraph = 292508,
 		_x1_crusader_crushingresolve_damageresolveenergy = 292608,
+		[SnoFileName("x1_Spawner_Zombie_Inferno_C (Skeleton_Rush)")
 		_x1_spawner_zombie_inferno_c = 292760,
 		_x1_spawner_fleshpitflyer_inferno = 292762,
 		_x1_skeletonarcher_westmarch_corpsespawn = 292834,
@@ -11474,6 +11494,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_x1_crusader_phalanx = 345682,
 		_x1_pand_batteringram_glow_bright = 345683,
 		_x1_pand_hexmaze_glow_sphere = 345730,
+		[SnoFileName("x1_Catacombs_Door_A_Ground _Center_FX")]
 		_x1_catacombs_door_a_ground__center_fx = 345761,
 		_x1_spawner_skeleton_monsteraffix_world_1 = 345764,
 		_x1_spawner_skeleton_monsteraffix_world_2 = 345765,
@@ -15163,6 +15184,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_p4_ruins_hazircage = 435561,
 		_px_bounty_camp_pinger_450 = 435630,
 		_p1_portal_anniversary_goblin_noaccess = 435639,
+		[SnoFileName("P4_Ruins_Abd al-Hazir")]
 		_p4_ruins_abd_al_hazir = 435670,
 		_p4_forest_coast_cellar_vase_a = 435674,
 		_px_ruins_frost_camp_cage = 435703,
@@ -15230,6 +15252,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_x1_spawner_hivemother_cursedchest_forestchest01 = 436356,
 		_p4_ruins_cannibalbarbarian_b_unique_02 = 436380,
 		_p4_forest_coast_cave_armorrack = 436451,
+		[SnoFileName("P4_Ruins_Abd al-Hazir_Captured")]
 		_p4_ruins_abd_al_hazir_captured = 436466,
 		_x1_bracers_norm_unique_21 = 436469,
 		_kkg_tester = 436483,
@@ -16737,6 +16760,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_p43_spawner_hallsoftheblind = 453781,
 		_p43_ad_rogue = 453821,
 		_p6_necro_commandskeleton_base_melee = 453835,
+		[SnoFileName("p43_trDun_Lecturn_ ZharTheMad")]
 		_p43_trdun_lecturn__zharthemad = 453978,
 		_p43_ad_lachdanan = 453993,
 		_p6_necro_male = 454021,
@@ -16803,6 +16827,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_p43_d1_succubus_3_unique_stareye = 454434,
 		_p43_d1_succubus_3_unique_blackjade = 454435,
 		_p43_d1_shield_skeleton_westmarch_4_unique_sirgorash = 454437,
+		[SnoFileName("p43_trDun_Lecturn_ ArkainesValor")]
 		_p43_trdun_lecturn__arkainesvalor = 454473,
 		_p43_ad_magicrock = 454487,
 		_p43_ad_trout_newtristram_adria_blackmushroom = 454492,
@@ -20169,6 +20194,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 			ActorSno._spawner_monstrosity_scorpion_a,
 			ActorSno._fastmummy_spawner_a_portalroulette,
 			ActorSno._sandshark_mother_spawner,
+			[SnoFileName("Spawner_Triune_Summonable_C (Prison)")]
 			ActorSno._spawner_triune_summonable_c__prison_,
 			ActorSno._spawner_thousandpounder_a_fastspawn,
 			ActorSno._spawner_caldeumtortured_dogbitecellar,
@@ -20666,6 +20692,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		private static readonly ActorSno[] soundActors = new ActorSno[]
 		{
 			ActorSno._lustmissle_volume,
+			[SnoFileName("a1dun_Caves_Nephalem Altar_Volume")]
 			ActorSno._a1dun_caves_nephalem_altar_volume,
 			ActorSno._kullevoiceover,
 			ActorSno._belialvoiceover,
