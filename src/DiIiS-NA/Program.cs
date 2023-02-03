@@ -211,7 +211,7 @@ namespace DiIiS_NA
                             worker = new MultithreadEventLoopGroup();
             serverBootstrap.LocalAddress(loginConfig.BindIP, loginConfig.Port);
             Logger.Success(
-                $"Blizzless server $[underline]$started$[/]$ - $[lightseagreen]${loginConfig.BindIP}:{loginConfig.Port}");
+                $"Blizzless server $[underline]$started$[/]$ - $[lightseagreen]${loginConfig.BindIP}:{loginConfig.Port}$[/]$");
             BattleBackend = new BattleBackend(loginConfig.BindIP, loginConfig.WebPort);
 
             //Diablo 3 Game-Server
