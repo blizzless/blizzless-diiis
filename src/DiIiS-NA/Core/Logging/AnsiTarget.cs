@@ -73,13 +73,29 @@ public class AnsiTarget : LogTarget
     /// <returns>Replaced with color changes</returns>
     public static string Beautify(string text)
     {
+        const string blizz = "dodgerblue1";
+        const string less = "deepskyblue2";
+        const string diablo = "red3_1";
+        const string d3 = "red";
+        const string mpq = "underline deepskyblue2";
+        const string sql = "underline dodgerblue1";
+        const string discord = "underline blue";
+        const string notNull = "green";
+        const string @null = "underline red";
+        const string unkNull = "underline yellow";
         return text
-            .Replace("Blizzless", "[dodgerblue1]Blizz[/][deepskyblue2]less[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("Diablo III", "[red3_1]Diablo[/] [red]III[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("MPQ", "[underline yellow4]MPQ[/]")
-            .Replace("Discord", "[underline blue]Discord[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("not null", "[green]is not null[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("null", "[underline red]is null[/]", StringComparison.CurrentCultureIgnoreCase);
+            .Replace("Blizzless", $"[{blizz}]Blizz[/][{less}]less[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("Diablo III", $"[{diablo}]Diablo[/] [{d3}]III[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace(@"D3\.", $"[{diablo}]D[/][{d3}]3[/]", StringComparison.CurrentCultureIgnoreCase) //D3.*
+            
+            .Replace("MPQ", $"[{mpq}]MPQ[/]")
+            .Replace("SQL", $"[{sql}]SQL[/]")
+            .Replace("Discord", $"[{discord}]Discord[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("not null", $"[{notNull}]is not null[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("!= null", $"[{notNull}]!= null[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("is null", $"[{@null}]is null[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("= null", $"[{@null}]= null[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("null", $"[{unkNull}]null[/]", StringComparison.CurrentCultureIgnoreCase);
     }
 
     

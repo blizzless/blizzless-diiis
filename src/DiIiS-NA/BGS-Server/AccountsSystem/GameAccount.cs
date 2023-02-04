@@ -1,57 +1,51 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022
-
-using System;
-//Blizzless Project 2022
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022
+using System.Collections.Immutable;
 using System.Linq;
-//Blizzless Project 2022
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using bgs.protocol.presence.v1;
-//Blizzless Project 2022
 using D3.Account;
-//Blizzless Project 2022
 using D3.Achievements;
-//Blizzless Project 2022
 using D3.Client;
-//Blizzless Project 2022
 using D3.OnlineService;
-//Blizzless Project 2022
 using D3.PartyMessage;
-//Blizzless Project 2022
 using D3.Profile;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.ChannelSystem;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.GuildSystem;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022
 using Google.ProtocolBuffers;
+using NHibernate.Mapping;
 
 namespace DiIiS_NA.LoginServer.AccountsSystem;
 
 public class GameAccount : PersistentRPCObject
 {
+    TSource GetField<TSource>(Func<DBGameAccount, TSource> execute) => DBSessions.GetField(PersistentID, execute);
+
+    void SetField(Action<DBGameAccount> execute, [CallerMemberName] string methodName = "")
+    {
+        DBSessions.SetField(PersistentID, execute);
+        #if DEBUG
+        if (methodName.StartsWith("set_"))
+            methodName = methodName.Substring(4);
+        Logger.MethodTrace($"Updated SQL fields for {PersistentID}", methodName);
+        #endif
+    }
+
     private Account _owner;
 
     public Account Owner
     {
-        get => _owner ?? (_owner = AccountManager.GetAccountByPersistentID(AccountId));
+        get => _owner ??= AccountManager.GetAccountByPersistentID(AccountId);
         set
         {
             lock (DBGameAccount)
@@ -220,9 +214,7 @@ public class GameAccount : PersistentRPCObject
 
                 lock (DBGameAccount)
                 {
-                    var dbGAcc = DBGameAccount;
-                    dbGAcc.Banner = res.Build().ToByteArray();
-                    DBSessions.SessionUpdate(dbGAcc);
+                    SetField(x=>x.Banner = res.Build().ToByteArray());
                 }
             }
             else
@@ -238,9 +230,7 @@ public class GameAccount : PersistentRPCObject
             _bannerConfiguration = value;
             lock (DBGameAccount)
             {
-                var dbGAcc = DBGameAccount;
-                dbGAcc.Banner = value.ToByteArray();
-                DBSessions.SessionUpdate(dbGAcc);
+                SetField(x=>x.Banner = value.ToByteArray());
             }
 
             ChangedFields.SetPresenceFieldValue(BannerConfigurationField);
@@ -281,9 +271,7 @@ public class GameAccount : PersistentRPCObject
             _currentToonId = value.PersistentID;
             lock (DBGameAccount)
             {
-                var dbGAcc = DBGameAccount;
-                dbGAcc.LastPlayedHero = value.DBToon;
-                DBSessions.SessionUpdate(dbGAcc);
+                SetField(x=>x.LastPlayedHero = value.DBToon);
             }
 
             ChangedFields.SetPresenceFieldValue(LastPlayedHeroIdField);
@@ -302,39 +290,36 @@ public class GameAccount : PersistentRPCObject
 
     public ulong Gold
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardcoreGold;
-
-            return DBGameAccount.Gold;
-        }
+        get => CurrentToon.IsHardcore ? GetField(s => s.HardcoreGold) : GetField(s => s.Gold);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardcoreGold = value;
-                else
-                    DBGameAccount.Gold = value;
-
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardcoreGold = value;
+                    else
+                        update.Gold = value;
+                });
             }
         }
     }
 
     public int BloodShards
     {
-        get => CurrentToon.IsHardcore ? DBGameAccount.HardcoreBloodShards : DBGameAccount.BloodShards;
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardcoreBloodShards) : GetField(x=>x.BloodShards);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardcoreBloodShards = value;
-                else
-                    DBGameAccount.BloodShards = value;
-
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardcoreBloodShards = value;
+                    else
+                        update.BloodShards = value;
+                });
             }
         }
     }
@@ -343,55 +328,57 @@ public class GameAccount : PersistentRPCObject
     {
         get
         {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardTotalBloodShards;
-
-            return DBGameAccount.TotalBloodShards;
+            return CurrentToon.IsHardcore ? GetField(x=>x.HardTotalBloodShards) : GetField(x=>x.TotalBloodShards);
         }
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardTotalBloodShards = value;
-                else
-                    DBGameAccount.TotalBloodShards = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardTotalBloodShards = value;
+                    else
+                        update.TotalBloodShards = value;
+                });
             }
         }
     }
 
     public int StashSize
     {
-        get => CurrentToon.IsHardcore ? DBGameAccount.HardcoreStashSize : DBGameAccount.StashSize;
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardcoreStashSize) : GetField(x=>x.StashSize);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardcoreStashSize = value;
-                else
-                    DBGameAccount.StashSize = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardcoreStashSize = value;
+                    else
+                        update.StashSize = value;
+                });
             }
         }
     }
-
     public int SeasonStashSize
     {
-        get => CurrentToon.IsHardcore ? DBGameAccount.HardSeasonStashSize : DBGameAccount.SeasonStashSize;
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardSeasonStashSize) : GetField(x=>x.SeasonStashSize);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardSeasonStashSize = value;
-                else
-                    DBGameAccount.SeasonStashSize = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardSeasonStashSize = value;
+                    else
+                        update.SeasonStashSize = value;
+                });
             }
         }
     }
-
     public ulong PvPTotalKilled
     {
         get => CurrentToon.IsHardcore ? DBGameAccount.HardPvPTotalKilled : DBGameAccount.PvPTotalKilled;
@@ -403,11 +390,9 @@ public class GameAccount : PersistentRPCObject
                     DBGameAccount.HardPvPTotalKilled = value;
                 else
                     DBGameAccount.PvPTotalKilled = value;
-                DBSessions.SessionUpdate(DBGameAccount);
             }
         }
     }
-
     public ulong PvPTotalWins
     {
         get => CurrentToon.IsHardcore ? DBGameAccount.HardPvPTotalWins : DBGameAccount.PvPTotalWins;
@@ -419,11 +404,9 @@ public class GameAccount : PersistentRPCObject
                     DBGameAccount.HardPvPTotalWins = value;
                 else
                     DBGameAccount.PvPTotalWins = value;
-                DBSessions.SessionUpdate(DBGameAccount);
             }
         }
     }
-
     public ulong PvPTotalGold
     {
         get
@@ -440,335 +423,284 @@ public class GameAccount : PersistentRPCObject
                     DBGameAccount.HardPvPTotalGold = value;
                 else
                     DBGameAccount.PvPTotalGold = value;
-                DBSessions.SessionUpdate(DBGameAccount);
             }
         }
     }
-
     public int CraftItem1
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardCraftItem1;
-
-            return DBGameAccount.CraftItem1;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardCraftItem1) : GetField(x=>x.CraftItem1);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardCraftItem1 = value;
-                else
-                    DBGameAccount.CraftItem1 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardCraftItem1 = value;
+                    else
+                        update.CraftItem1 = value;
+                });
             }
         }
     }
 
     public int CraftItem2
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardCraftItem2;
-
-            return DBGameAccount.CraftItem2;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardCraftItem2) : GetField(x=>x.CraftItem2);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardCraftItem2 = value;
-                else
-                    DBGameAccount.CraftItem2 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardCraftItem2 = value;
+                    else
+                        update.CraftItem2 = value;
+                });
             }
         }
     }
 
     public int CraftItem3
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardCraftItem3;
-
-            return DBGameAccount.CraftItem3;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardCraftItem3) : GetField(x=>x.CraftItem3);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardCraftItem3 = value;
-                else
-                    DBGameAccount.CraftItem3 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardCraftItem3 = value;
+                    else
+                        update.CraftItem3 = value;
+                });
             }
         }
     }
 
     public int CraftItem4
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardCraftItem4;
-
-            return DBGameAccount.CraftItem4;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardCraftItem4) : GetField(x=>x.CraftItem4);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardCraftItem4 = value;
-                else
-                    DBGameAccount.CraftItem4 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardCraftItem4 = value;
+                    else
+                        update.CraftItem4 = value;
+                });
             }
         }
     }
-
+    
     public int CraftItem5
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardCraftItem5;
-
-            return DBGameAccount.CraftItem5;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardCraftItem5) : GetField(x=>x.CraftItem5);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardCraftItem5 = value;
-                else
-                    DBGameAccount.CraftItem5 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardCraftItem5 = value;
+                    else
+                        update.CraftItem5 = value;
+                });
             }
         }
     }
 
     public int BigPortalKey
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardBigPortalKey;
-
-            return DBGameAccount.BigPortalKey;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardBigPortalKey) : GetField(x=>x.BigPortalKey);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardBigPortalKey = value;
-                else
-                    DBGameAccount.BigPortalKey = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardBigPortalKey = value;
+                    else
+                        update.BigPortalKey = value;
+                });
             }
         }
     }
-
+    
     public int LeorikKey
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardLeorikKey;
-
-            return DBGameAccount.LeorikKey;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardLeorikKey) : GetField(x=>x.LeorikKey);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardLeorikKey = value;
-                else
-                    DBGameAccount.LeorikKey = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardLeorikKey = value;
+                    else
+                        update.LeorikKey = value;
+                });
             }
         }
     }
-
+    
     public int VialofPutridness
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardVialofPutridness;
-
-            return DBGameAccount.VialofPutridness;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardVialofPutridness) : GetField(x=>x.VialofPutridness);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardVialofPutridness = value;
-                else
-                    DBGameAccount.VialofPutridness = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardVialofPutridness = value;
+                    else
+                        update.VialofPutridness = value;
+                });
             }
         }
     }
-
+    
     public int IdolofTerror
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardIdolofTerror;
-
-            return DBGameAccount.IdolofTerror;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardIdolofTerror) : GetField(x=>x.IdolofTerror);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardIdolofTerror = value;
-                else
-                    DBGameAccount.IdolofTerror = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardIdolofTerror = value;
+                    else
+                        update.IdolofTerror = value;
+                });
             }
         }
     }
-
+    
     public int HeartofFright
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardHeartofFright;
-
-            return DBGameAccount.HeartofFright;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardHeartofFright) : GetField(x=>x.HeartofFright);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardHeartofFright = value;
-                else
-                    DBGameAccount.HeartofFright = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardHeartofFright = value;
+                    else
+                        update.HeartofFright = value;
+                });
             }
         }
     }
-
+    
     public int HoradricA1Res
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardHoradricA1;
-
-            return DBGameAccount.HoradricA1;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardHoradricA1) : GetField(x=>x.HoradricA1);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardHoradricA1 = value;
-                else
-                    DBGameAccount.HoradricA1 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardHoradricA1 = value;
+                    else
+                        update.HoradricA1 = value;
+                });
             }
         }
     }
-
+    
     public int HoradricA2Res
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardHoradricA2;
-
-            return DBGameAccount.HoradricA2;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardHoradricA2) : GetField(x=>x.HoradricA2);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardHoradricA2 = value;
-                else
-                    DBGameAccount.HoradricA2 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardHoradricA2 = value;
+                    else
+                        update.HoradricA2 = value;
+                });
             }
         }
     }
-
+    
     public int HoradricA3Res
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardHoradricA3;
-
-            return DBGameAccount.HoradricA3;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardHoradricA3) : GetField(x=>x.HoradricA3);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardHoradricA3 = value;
-                else
-                    DBGameAccount.HoradricA3 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardHoradricA3 = value;
+                    else
+                        update.HoradricA3 = value;
+                });
             }
         }
     }
-
+    
     public int HoradricA4Res
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardHoradricA4;
-
-            return DBGameAccount.HoradricA4;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardHoradricA4) : GetField(x=>x.HoradricA4);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardHoradricA4 = value;
-                else
-                    DBGameAccount.HoradricA4 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardHoradricA4 = value;
+                    else
+                        update.HoradricA4 = value;
+                });
             }
         }
     }
-
+    
     public int HoradricA5Res
     {
-        get
-        {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardHoradricA5;
-
-            return DBGameAccount.HoradricA5;
-        }
+        get => CurrentToon.IsHardcore ? GetField(x=>x.HardHoradricA5) : GetField(x=>x.HoradricA5);
         set
         {
             lock (DBGameAccount)
             {
-                if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardHoradricA5 = value;
-                else
-                    DBGameAccount.HoradricA5 = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                SetField(update =>
+                {
+                    if (CurrentToon.IsHardcore)
+                        update.HardHoradricA5 = value;
+                    else
+                        update.HoradricA5 = value;
+                });
             }
         }
     }
+   
+    
 
-    public Guild Clan
-    {
-        get { return GuildManager.GetClans().Where(g => g.HasMember(this)).FirstOrDefault(); }
-    }
+    public Guild Clan => GuildManager.GetClans().FirstOrDefault(g => g.HasMember(this));
 
-    public List<Guild> Communities
-    {
-        get { return GuildManager.GetCommunities().Where(g => g.HasMember(this)).ToList(); }
-    }
+    public ImmutableArray<Guild> Communities => GuildManager.GetCommunities().Where(g => g.HasMember(this)).ToImmutableArray();
 
     public List<D3.Guild.InviteInfo> GuildInvites = new();
 
@@ -788,9 +720,7 @@ public class GameAccount : PersistentRPCObject
 
                 lock (DBGameAccount)
                 {
-                    var dbGAcc = DBGameAccount;
-                    dbGAcc.UISettings = res.ToByteArray();
-                    DBSessions.SessionUpdate(dbGAcc);
+                    SetField(x => x.UISettings = res.ToByteArray());
                 }
             }
             else
@@ -804,9 +734,7 @@ public class GameAccount : PersistentRPCObject
         {
             lock (DBGameAccount)
             {
-                var dbGAcc = DBGameAccount;
-                dbGAcc.UISettings = value.ToByteArray();
-                DBSessions.SessionUpdate(dbGAcc);
+                SetField(x => x.UISettings = value.ToByteArray());
             }
 
             ChangedFields.SetPresenceFieldValue(BannerConfigurationField);
@@ -830,9 +758,7 @@ public class GameAccount : PersistentRPCObject
 
                 lock (DBGameAccount)
                 {
-                    var dbGAcc = DBGameAccount;
-                    dbGAcc.UIPrefs = res.ToByteArray();
-                    DBSessions.SessionUpdate(dbGAcc);
+                    SetField(x => x.UIPrefs = res.ToByteArray());
                 }
             }
             else
@@ -846,9 +772,7 @@ public class GameAccount : PersistentRPCObject
         {
             lock (DBGameAccount)
             {
-                var dbGAcc = DBGameAccount;
-                dbGAcc.UIPrefs = value.ToByteArray();
-                DBSessions.SessionUpdate(dbGAcc);
+                SetField(x => x.UIPrefs = value.ToByteArray());
             }
 
             ChangedFields.SetPresenceFieldValue(BannerConfigurationField);
@@ -1018,26 +942,46 @@ public class GameAccount : PersistentRPCObject
         EntityId.CreateBuilder().SetIdHigh(0).SetIdLow(0).Build();
 
     //Platinum
+    // public int Platinum
+    // {
+    //     get
+    //     {
+    //         if (CurrentToon.IsHardcore) return DBGameAccount.HardPlatinum;
+    //
+    //         return DBGameAccount.Platinum;
+    //     }
+    //     set
+    //     {
+    //         lock (DBGameAccount)
+    //         {
+    //             if (CurrentToon.IsHardcore)
+    //                 DBGameAccount.HardPlatinum = value;
+    //             else
+    //                 DBGameAccount.Platinum = value;
+    //             DBSessions.SessionUpdate(DBGameAccount);
+    //         }
+    //     }
+    // }
+    // new version with GetField and SetField:
     public int Platinum
     {
         get
         {
-            if (CurrentToon.IsHardcore) return DBGameAccount.HardPlatinum;
-
-            return DBGameAccount.Platinum;
+            if (CurrentToon.IsHardcore) return GetField<int>(x=>x.Platinum);
+            return GetField<int>(x=>x.Platinum);
         }
         set
         {
             lock (DBGameAccount)
             {
                 if (CurrentToon.IsHardcore)
-                    DBGameAccount.HardPlatinum = value;
+                    SetField(x => x.HardPlatinum = value);
                 else
-                    DBGameAccount.Platinum = value;
-                DBSessions.SessionUpdate(DBGameAccount);
+                    SetField(x => x.HardPlatinum = value);
             }
         }
     }
+    
 
     public List<Toon> Toons => ToonManager.GetToonsForGameAccount(this);
 
@@ -1161,9 +1105,7 @@ public class GameAccount : PersistentRPCObject
         {
             lock (DBGameAccount)
             {
-                var dbGAcc = DBGameAccount;
-                dbGAcc.Flags = (int)value;
-                DBSessions.SessionUpdate(dbGAcc);
+                SetField(x => x.Flags = (int)value);
             }
         }
     }

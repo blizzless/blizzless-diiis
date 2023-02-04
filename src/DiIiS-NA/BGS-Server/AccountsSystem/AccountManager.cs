@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.Core.Extensions;
+﻿using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
@@ -90,7 +89,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				Logger.Warn("GetAccountByDiscordId {0}: DBAccount is null!", discordId);
 				return null;
 			}
-			return GetAccountByDBAccount(dbAcc.First());
+			return GetDatabaseAccountByPersistentID(dbAcc.First());
 		}
 
 		public static bool GenerateReferralCode(string email)
@@ -143,7 +142,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				}
 
 				Logger.MethodTrace($"id - {dbAcc.First().Id}");
-				return GetAccountByDBAccount(dbAcc.First());
+				return GetDatabaseAccountByPersistentID(dbAcc.First());
 			}
 		}
 
@@ -172,7 +171,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			}
 			//else
 			//Logger.Debug("GetAccountByBattletag \"{0}\"", battletag);
-			return GetAccountByDBAccount(dbAcc.First());
+			return GetDatabaseAccountByPersistentID(dbAcc.First());
 		}
 
 		public static Account GetAccountByName(string btname) //pretty bad to use it
@@ -183,7 +182,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				Logger.Warn("$[olive]$GetAccountByName(\"{0}\")$[/]$: DBAccount is null!", btname);
 				return null;
 			}
-			return GetAccountByDBAccount(dbAcc.First());
+			return GetDatabaseAccountByPersistentID(dbAcc.First());
 		}
 
 		public static Account GetAccountByPersistentID(ulong persistentId)
@@ -192,11 +191,11 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				return LoadedAccounts[persistentId];
 			else
 			{
-				return GetAccountByDBAccount(DBSessions.SessionGet<DBAccount>(persistentId));
+				return GetDatabaseAccountByPersistentID(DBSessions.SessionGet<DBAccount>(persistentId));
 			}
 		}
 
-		public static Account GetAccountByDBAccount(DBAccount dbAccount)
+		public static Account GetDatabaseAccountByPersistentID(DBAccount dbAccount)
 		{
 			if (dbAccount == null)
 				return null;

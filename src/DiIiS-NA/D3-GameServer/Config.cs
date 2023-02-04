@@ -160,6 +160,15 @@ namespace DiIiS_NA.GameServer
 			get => GetBoolean(nameof(AutoSaveQuests), false);
 			set => Set(nameof(AutoSaveQuests), value);
 		}
+
+		/// <summary>
+		/// Progress gained when killing a monster in Nephalem Rifts
+		/// </summary>
+		public float NephalemRiftProgressMultiplier
+		{
+			get => GetFloat(nameof(NephalemRiftProgressMultiplier), 1f);
+			set => Set(nameof(NephalemRiftProgressMultiplier), value);
+		}
 		
 		public static Config Instance { get; } = new();
 

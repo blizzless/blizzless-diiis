@@ -13,7 +13,7 @@ using DiIiS_NA.LoginServer.Battle;
 namespace DiIiS_NA.GameServer.CommandManager;
 
 [CommandGroup("speed", "Modify speed walk of you character.\nUsage: !speed <value>\nReset: !speed")]
-public class ModifySpeedCommand : CommandGroup
+public class SpeedCommand : CommandGroup
 {
     [DefaultCommand]
     public string ModifySpeed(string[] @params, BattleClient invokerClient)

@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.LoginServer.Objects;
+﻿using DiIiS_NA.LoginServer.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;

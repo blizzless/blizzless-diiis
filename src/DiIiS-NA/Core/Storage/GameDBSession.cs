@@ -247,14 +247,22 @@ namespace DiIiS_NA.Core.Storage
 			}
 		}
 
+		public void Update<T>(object obj, Action<T> execute)
+		{
+			using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+			var db = session.Get<T>(obj);
+			execute(db);
+			session.Update(db);
+		}
+		
 		public T SessionGet<T>(Object obj)
 		{
 			if (typeof(T) == typeof(DBAchievements))
 			{
 				try
 				{
-					using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-						return (T)session.Get<T>(obj);
+					using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+					return session.Get<T>(obj);
 				}
 				catch (Exception e)
 				{

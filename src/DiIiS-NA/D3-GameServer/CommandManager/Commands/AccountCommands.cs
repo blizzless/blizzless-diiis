@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.LoginServer.Battle;
+using FluentNHibernate.Utils;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 

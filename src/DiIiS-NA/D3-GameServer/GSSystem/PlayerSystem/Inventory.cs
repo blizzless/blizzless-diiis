@@ -2241,7 +2241,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 			else
 				_owner.GoldCollectedTempCount += amount;
-
 			UpdateCurrencies();
 		}
 
@@ -2259,12 +2258,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			if (_inventoryGold != null)
 			{
-				// Logger.Warn($"InventoryGold is $[bold red]$NOT$[/]$ null: {_inventoryGold.Attributes[GameAttribute.Gold]}");
+				//Logger.Warn($"InventoryGold is not null: $[yellow]${_inventoryGold.Attributes[GameAttribute.Gold]} / {_owner.Toon.GameAccount.Gold}$[/]$");
 				return _inventoryGold.Attributes[GameAttribute.Gold];
 			}
 			else
 			{
-				// Logger.Warn($"InventoryGold is $[bold red]$NULL$[/]$");
+				//Logger.Warn($"InventoryGold is null");
 
 				return -1;
 			}
@@ -2296,7 +2295,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			var moneys = D3.Items.CurrencySavedData.CreateBuilder();
 			var playerAcc = _owner.InGameClient.BnetClient.Account.GameAccount;
-			D3.Items.CurrencyData goldData = D3.Items.CurrencyData.CreateBuilder().SetId(0).SetCount((long)this.GetGoldAmount()).Build();
+			D3.Items.CurrencyData goldData = D3.Items.CurrencyData.CreateBuilder().SetId(0).SetCount(GetGoldAmount()).Build();
 			D3.Items.CurrencyData bloodShardData = D3.Items.CurrencyData.CreateBuilder().SetId(1).SetCount(playerAcc.BloodShards).Build();
 			D3.Items.CurrencyData platinumData = D3.Items.CurrencyData.CreateBuilder().SetId(2).SetCount(playerAcc.Platinum).Build();
 

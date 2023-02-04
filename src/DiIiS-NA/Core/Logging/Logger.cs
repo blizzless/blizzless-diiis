@@ -1,6 +1,7 @@
 ﻿//Blizzless Project 2022
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -106,7 +107,8 @@ namespace DiIiS_NA.Core.Logging
 		public void MethodTrace(string message, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
 			#if DEBUG
-			Log(Level.MethodTrace, $"$[darkolivegreen3_2]${methodName}()$[/]$ @ {lineNumber}: " + message, null);
+			var fileName = Path.GetFileName(filePath);
+			Log(Level.MethodTrace, $"$[underline white]${fileName}:{lineNumber}$[/]$ $[darkolivegreen3_2]${methodName}()$[/]$: $[black on white]$" + message + "$[/]$", null);
 			#else
 			Log(Level.MethodTrace, $"$[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
 			#endif

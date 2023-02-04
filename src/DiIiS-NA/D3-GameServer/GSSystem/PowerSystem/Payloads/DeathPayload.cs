@@ -125,7 +125,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		public void Apply()
 		{
-			var PositionOfDeath = Target.Position;
+			var positionOfDeath = Target.Position;
 			if (!Target.World.Game.Working) return;
 
 			if (Target.Attributes.Contains(GameAttribute.Quest_Monster))
@@ -145,7 +145,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				//(this.Target as NecromancerSkeleton_A).Master+
 				masterPlr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Pet.PetDetachMessage()
 				{
-					PetId = skeletonA.DynamicID((skeletonA.Master as Player))
+					PetId = skeletonA.DynamicID(skeletonA.Master as Player)
 				});
 				masterPlr.NecroSkeletons.Remove(skeletonA);
 			}
@@ -153,7 +153,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
             {
 				masterPlr2.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Pet.PetDetachMessage()
 				{
-					PetId = Target.DynamicID(((Target as Minion).Master as Player))
+					PetId = Target.DynamicID((Target as Minion).Master as Player)
 				});
 				masterPlr2.ActiveGolem = null;
 			}
@@ -331,24 +331,24 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				if (Target.World.SNO == WorldSno.a4dun_garden_of_hope_01)
 				{
 					//Check if there are portals
-					var PortalToHell = Target.World.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
-					if (PortalToHell.Count == 0)
+					var portalToHell = Target.World.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
+					if (portalToHell.Count == 0)
 					{
-						var Corruptions = Target.World.GetActorsBySNO(ActorSno._a4dun_garden_corruption_monster);
-						if (Corruptions.Count > 1)
+						var corruptions = Target.World.GetActorsBySNO(ActorSno._a4dun_garden_corruption_monster);
+						if (corruptions.Count > 1)
 						{
 							if (RandomHelper.Next(0, 30) > 26)
 							{
-								Portal HellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
-								HellPortal.EnterWorld(Target.Position);
+								Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
+								hellPortal.EnterWorld(Target.Position);
 								Context.User.World.SpawnMonster(ActorSno._diablo_vo, Context.User.Position);
 								StartConversation(Target.World, 217226);
 							}
 						}
 						else
 						{
-							Portal HellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
-							HellPortal.EnterWorld(Target.Position);
+							Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
+							hellPortal.EnterWorld(Target.Position);
 							Context.User.World.SpawnMonster(ActorSno._diablo_vo, Context.User.Position);
 							StartConversation(Target.World, 217226);
 						}
@@ -357,16 +357,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				//Second floor of the gardens of hope
 				else if (Target.World.SNO == WorldSno.a4dun_garden_of_hope_random)
 				{ //Check if there are portals
-					var PortalToHell = Target.World.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
-					if (PortalToHell.Count == 0)
+					var portalToHell = Target.World.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
+					if (portalToHell.Count == 0)
 					{
-						var Corruptions = Target.World.GetActorsBySNO(ActorSno._a4dun_garden_corruption_monster);
-						if (Corruptions.Count > 1)
+						var corruptions = Target.World.GetActorsBySNO(ActorSno._a4dun_garden_corruption_monster);
+						if (corruptions.Count > 1)
 						{
 							if (RandomHelper.Next(0, 30) > 26)
 							{
-								Portal HellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
-								HellPortal.EnterWorld(Target.Position);
+								Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
+								hellPortal.EnterWorld(Target.Position);
 								if (Context.User.World.GetActorsBySNO(ActorSno._diablo_vo).Count == 0)
 									Context.User.World.SpawnMonster(ActorSno._diablo_vo, Context.User.Position);
 								StartConversation(Target.World, 217228);
@@ -374,8 +374,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						}
 						else
 						{
-							Portal HellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
-							HellPortal.EnterWorld(Target.Position);
+							Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
+							hellPortal.EnterWorld(Target.Position);
 							if (Context.User.World.GetActorsBySNO(ActorSno._diablo_vo).Count == 0)
 								Context.User.World.SpawnMonster(ActorSno._diablo_vo, Context.User.Position);
 							StartConversation(Target.World, 217228);
@@ -403,9 +403,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				{
 					grantedExp = (int)(grantedExp * plr.World.Game.XpModifier);
 
-					float tempEXP = grantedExp * Config.Instance.RateExp;
+					float tempExp = grantedExp * Config.Instance.RateExp;
 
-					plr.UpdateExp(Math.Max((int)tempEXP, 1));
+					plr.UpdateExp(Math.Max((int)tempExp, 1));
 					var a = (int)plr.Attributes[GameAttribute.Experience_Bonus];
 					var a1 = (int)plr.Attributes[GameAttribute.Experience_Bonus_Percent];
 
@@ -556,7 +556,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					if (Context.DogsSummoned >= 3)
 						plr.GrantAchievement(74987243307567);
 			}
-			Logger.Trace("Killed monster, id: $[red]${0}$[/]$, level $[red]${1}$[/]$", Target.SNO, Target.Attributes[GameAttribute.Level]);
+			Logger.Trace(
+				$"$[green3_1]${Context?.User?.GetType().Name}$[/]$ killed monster, id: $[red]${{0}}$[/]$, level $[red]${{1}}$[/]$", Target.SNO, Target.Attributes[GameAttribute.Level]);
 
 
 			//handling quest triggers
@@ -594,14 +595,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}
 
 			//Nephalem Rift
-			if ((Target.CurrentScene.Specification.SNOLevelAreas[0] == 332339 || Target.CurrentScene.Specification.SNOLevelAreas[0] == 288482) && Target.World.Game.ActiveNephalemTimer && Target.World.Game.ActiveNephalemKilledMobs == false)
+			if ((Target.CurrentScene.Specification.SNOLevelAreas[0] is 332339 or 288482) && Target.World.Game.ActiveNephalemTimer && Target.World.Game.ActiveNephalemKilledMobs == false)
 			{
-				Target.World.Game.ActiveNephalemProgress += (1f * (Target.Quality + 1));
-				Player Master = null;
+				Target.World.Game.ActiveNephalemProgress += Config.Instance.NephalemRiftProgressMultiplier * (Target.Quality + 1);
+				Player master = null;
 				foreach (var plr in Target.World.Game.Players.Values)
 				{
 					if (plr.PlayerIndex == 0)
-						Master = plr;
+						master = plr;
 					plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.KillCounterRefresh)
 					{
 
@@ -611,8 +612,6 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					{
 						Field0 = Target.World.Game.ActiveNephalemProgress
 					});
-
-
 
 					if (Target.World.Game.ActiveNephalemProgress > 650)
 					{
@@ -683,11 +682,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						var position = new Core.Types.Math.Vector3D(Target.Position.X + (float)RandomHelper.NextDouble() * 30f,
 																	Target.Position.Y + (float)RandomHelper.NextDouble() * 30f,
 																	Target.Position.Z);
-						Item item = null;
-						if (Target.World.Game.NephalemGreater)
-							item = ItemGenerator.Cook(Master, "p1_tiered_rifts_Orb");
-						else
-							item = ItemGenerator.Cook(Master, "p1_normal_rifts_Orb");
+						Item item = ItemGenerator.Cook(master, Target.World.Game.NephalemGreater ? "p1_tiered_rifts_Orb" : "p1_normal_rifts_Orb");
 						if (item != null)
 							item.EnterWorld(position);
 					}
@@ -748,12 +743,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 						Target.World.SpawnRandomUniqueGem(Target, plr);
 
-						TagMap NewTagMap = new TagMap();
-						NewTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, 332336, 0)); //World
-						NewTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 332339, 0)); //Zone
-						NewTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 24, 0)); //Entry-Pointа
+						TagMap newTagMap = new TagMap();
+						newTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, 332336, 0)); //World
+						newTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 332339, 0)); //Zone
+						newTagMap.Add(new TagKeySNO(526851), new TagMapEntry(526851, 24, 0)); //Entry-Pointа
 
-						var portal = new Portal(Target.World, ActorSno._x1_openworld_lootrunportal, NewTagMap);
+						var portal = new Portal(Target.World, ActorSno._x1_openworld_lootrunportal, newTagMap);
 
 						portal.EnterWorld(new Core.Types.Math.Vector3D(Target.Position.X + 10f, Target.Position.Y + 10f, Target.Position.Z));
 					}
@@ -790,7 +785,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					});
 					//StartConversation(this.Target.World, 340878);
 					var hubWorld = this.Target.World.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
-					var orek = (hubWorld.GetActorBySNO(ActorSno._x1_lr_nephalem) as InteractiveNPC);
+					var orek = hubWorld.GetActorBySNO(ActorSno._x1_lr_nephalem) as InteractiveNPC;
 					orek.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(340878));
 					orek.ForceConversationSNO = 340878;
 					orek.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
@@ -881,9 +876,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							foreach (float rate in dropRates)
 							{
 								// if seed is less than the drop rate, drop the item
-								if (seed < (rate * (1f 
-								                    + plr.Attributes[GameAttribute.Magic_Find]) 
-								                    * Config.Instance.RateDrop))
+								if (seed < rate * (1f 
+								                   + plr.Attributes[GameAttribute.Magic_Find]) 
+								                * Config.Instance.RateDrop)
 								{
 									//Logger.Debug("rate: {0}", rate);
 									var lootQuality = Target.World.Game.IsHardcore
@@ -992,15 +987,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				if (Context.User is Player & Target is Monster)
 					if (RandomHelper.Next(0, 100) > 40 & (Context.User as Player).Toon.Class == ToonClass.Necromancer)
 					{
-						var Flesh = Context.User.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, PositionOfDeath);
-						Flesh.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO] = (int)Target.SNO;
-						Flesh.Attributes.BroadcastChangedIfRevealed();
+						var flesh = Context.User.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, positionOfDeath);
+						flesh.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO] = (int)Target.SNO;
+						flesh.Attributes.BroadcastChangedIfRevealed();
 					}
 			}
 			if (Target is Monster)
 				(Target as Monster).PlayLore();
 
-			bool isCoop = (Target.World.Game.Players.Count > 1);
+			bool isCoop = Target.World.Game.Players.Count > 1;
 			bool isHardcore = Target.World.Game.IsHardcore;
 			bool isSeasoned = Target.World.Game.IsSeasoned;
 			//114917

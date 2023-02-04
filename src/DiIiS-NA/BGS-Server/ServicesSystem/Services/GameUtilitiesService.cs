@@ -102,7 +102,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             Init.SetMatchmakingPool("Default");
 
             var guildInfo = D3.Guild.GuildInfoList.CreateBuilder();
-            if (Client.Account.GameAccount.Clan != null || Client.Account.GameAccount.Communities.Count > 0)
+            if (Client.Account.GameAccount.Clan != null || Client.Account.GameAccount.Communities.Length > 0)
             {
                 //*
                 if (Client.Account.GameAccount.Clan != null)

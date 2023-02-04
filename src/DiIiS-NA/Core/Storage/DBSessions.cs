@@ -34,26 +34,41 @@ namespace DiIiS_NA.Core.Storage
 		{
 			try
 			{
-				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-					session.Insert(obj);
+				using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+				session.Insert(obj);
 			}
 			catch (Exception e)
 			{
-				Logger.WarnException(e, "Unhandled DB exception caught:");
+				Logger.ErrorException(e, "Unhandled DB exception caught:");
 				throw;
 			}
+		}
+
+		public static TResult GetField<TSource, TResult>(object obj, Func<TSource, TResult> execute)
+		{
+			using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+			var db = session.Get<TSource>(obj);
+			return execute(db);
+		}
+
+		public static void SetField<TSource>(object obj, Action<TSource> execute)
+		{
+			using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+			var db = session.Get<TSource>(obj);
+			execute(db);
+			session.Update(db);
 		}
 
 		public static void SessionUpdate(Object obj)
 		{
 			try
 			{
-				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-					session.Update(obj);
+				using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+				session.Update(obj);
 			}
 			catch (Exception e)
 			{
-				Logger.WarnException(e, "Unhandled DB exception caught:");
+				Logger.ErrorException(e, "Unhandled DB exception caught:");
 				throw;
 			}
 		}
@@ -62,12 +77,12 @@ namespace DiIiS_NA.Core.Storage
 		{
 			try
 			{
-				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-					session.Delete(obj);
+				using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+				session.Delete(obj);
 			}
 			catch (Exception e)
 			{
-				Logger.WarnException(e, "Unhandled DB exception caught:");
+				Logger.ErrorException(e, "Unhandled DB exception caught:");
 				throw;
 			}
 		}
@@ -76,12 +91,12 @@ namespace DiIiS_NA.Core.Storage
 		{
 			try
 			{
-				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-					return session.QueryOver<T>().WhereRestrictionOn(expression).IsIn(list).List().ToList();
+				using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+				return session.QueryOver<T>().WhereRestrictionOn(expression).IsIn(list).List().ToList();
 			}
 			catch (Exception e)
 			{
-				Logger.WarnException(e, "Unhandled DB exception caught:");
+				Logger.ErrorException(e, "Unhandled DB exception caught:");
 				throw;
 			}
 		}
@@ -90,12 +105,12 @@ namespace DiIiS_NA.Core.Storage
 		{
 			try
 			{
-				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-					return session.Query<T>().ToList();
+				using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+				return session.Query<T>().ToList();
 			}
 			catch (Exception e)
 			{
-				Logger.WarnException(e, "Unhandled DB exception caught:");
+				Logger.ErrorException(e, "Unhandled DB exception caught:");
 				throw;
 			}
 		}
@@ -104,12 +119,12 @@ namespace DiIiS_NA.Core.Storage
 		{
 			try
 			{
-				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-					return session.QueryOver<T>().Where(predicate).List().ToList();
+				using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+				return session.QueryOver<T>().Where(predicate).List().ToList();
 			}
 			catch (Exception e)
 			{
-				Logger.WarnException(e, "Unhandled DB exception caught:");
+				Logger.ErrorException(e, "Unhandled DB exception caught:");
 				throw;
 			}
 		}
@@ -118,12 +133,12 @@ namespace DiIiS_NA.Core.Storage
 		{
 			try
 			{
-				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-					return session.Query<T>().Single(predicate);
+				using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+				return session.Query<T>().Single(predicate);
 			}
 			catch (Exception e)
 			{
-				Logger.WarnException(e, "Unhandled DB exception caught:");
+				Logger.ErrorException(e, "Unhandled DB exception caught:");
 				throw;
 			}
 		}
@@ -132,12 +147,12 @@ namespace DiIiS_NA.Core.Storage
 		{
 			try
 			{
-				using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-					return (T)session.Get<T>(obj);
+				using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+				return (T)session.Get<T>(obj);
 			}
 			catch (Exception e)
 			{
-				Logger.WarnException(e, "Unhandled DB exception caught:");
+				Logger.ErrorException(e, "Unhandled DB exception caught:");
 				throw;
 			}
 		}
