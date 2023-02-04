@@ -272,15 +272,15 @@ namespace DiIiS_NA
             }
         }
 
-        private static void Shutdown(Exception? exception = null, int delay = 200)
+        private static void Shutdown(Exception exception = null, int delay = 200)
         {
             // if (!IsTargetEnabled("ansi"))
             {
                 AnsiTarget.StopIfRunning();
-                if (exception is { } ex)
+                if (exception != null)
                 {
                     AnsiConsole.WriteLine("An unhandled exception occured at initialization. Please report this to the developers.");
-                    AnsiConsole.WriteException(ex);
+                    AnsiConsole.WriteException(exception);
                 }
                 AnsiConsole.Progress().Start(ctx =>
                 {
