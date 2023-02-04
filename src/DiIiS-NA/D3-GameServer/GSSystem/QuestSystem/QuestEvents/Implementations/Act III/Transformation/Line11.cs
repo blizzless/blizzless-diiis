@@ -15,8 +15,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		public override void Execute(MapSystem.World world)
 		{
 			StartConversation(world, 195767);
-			var Leah = world.GetActorBySNO(ActorSno._leah_event47);
-			Leah.PlayActionAnimation(AnimationSno.leah_bss_event_lvlup);
+			var leah = world.GetActorBySNO(ActorSno._leah_event47);
+			leah.PlayActionAnimation(AnimationSno.leah_bss_event_lvlup);
 		}
 
 		private bool StartConversation(MapSystem.World world, Int32 conversationId)

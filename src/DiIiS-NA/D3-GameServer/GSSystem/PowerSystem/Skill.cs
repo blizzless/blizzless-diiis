@@ -53,13 +53,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			try
 			{
 				int tag = EvalTag(PowerKeys.AnimationTag);
-				if (User.AnimationSet == null)
+				if (User.AnimationSet != null)
                 {
 					if (User.AnimationSet.Animations.ContainsKey(tag))
 						return User.AnimationSet.Animations[tag];
-					else return (AnimationSno)User.AnimationSet.GetAnimationTag(AnimationTags.Attack2);
-
-				}
+					return (AnimationSno)User.AnimationSet.GetAnimationTag(AnimationTags.Attack2);
+                }
 			}
 			catch (Exception e)
 			{
@@ -103,17 +102,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			var animationSNO = GetActionAnimationSNO();
 			#region Патч анимаций
 			if(animationSNO == AnimationSno._NONE)
-			switch (this.User.SNO)
-			{
-					case ActorSno._x1_skeletonarcher_westmarch_a: //x1_SkeletonArcher_Westmarch_A
-						if (this.PowerSNO == 30334)
+				switch (this.User.SNO)
+				{
+						case ActorSno._x1_skeletonarcher_westmarch_a: //x1_SkeletonArcher_Westmarch_A
+							if (this.PowerSNO == 30334)
+								animationSNO = AnimationSno.x1_skeletonarcher_westmarch_attack_01;
+							break;
+						case ActorSno._p6_necro_skeletonmage_f_archer: //p6_necro_skeletonMage_F_archer
 							animationSNO = AnimationSno.x1_skeletonarcher_westmarch_attack_01;
-						break;
-					case ActorSno._p6_necro_skeletonmage_f_archer: //p6_necro_skeletonMage_F_archer
-						animationSNO = AnimationSno.x1_skeletonarcher_westmarch_attack_01;
-						speed = 2f;
-						break;
-			}
+							speed = 2f;
+							break;
+				}
 			#endregion
 			
 			if (animationSNO != AnimationSno._NONE && speed > 0f)

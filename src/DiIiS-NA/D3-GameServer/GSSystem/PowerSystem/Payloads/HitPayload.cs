@@ -51,27 +51,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 		{
 			IsCriticalHit = criticalHit;
 			IsDodged = false;
-			IsWeaponDamage = (attackPayload.DamageEntries.Count > 0 ? attackPayload.DamageEntries.First().IsWeaponBasedDamage : false);
+			IsWeaponDamage = (attackPayload.DamageEntries.Count > 0 && attackPayload.DamageEntries.First().IsWeaponBasedDamage);
 
-			if (Context.User == null)
-				Context.User = target;
+			Context.User ??= target;
+			Target ??= target;
 
-			
-
-			if (Target == null)
-				Target = target;
-
-			if (Target == null) return;
-
-			if (Target.World == null) return;
-
-			if (!Target.World.Game.Working) return;
-
-			if (Target.World.Game.Paused) return;
-
-			if (!Target.Visible) return;
-
-			if (Target.Dead) return;
+			if (Target?.World == null ||
+			    !Target.World.Game.Working ||
+			    Target.World.Game.Paused ||
+			    !Target.Visible ||
+			    Target.Dead)
+				return;
 
 			if (Context.User is Monster && Context.Target is Player)
 				if (!Context.User.IsRevealedToPlayer(Context.Target as Player))
@@ -448,123 +438,117 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}
 
 
-			if (Target is Player) //check for passives here (incoming damage)
+			if (Target is Player playerTarget) //check for passives here (incoming damage)
 			{
-				var plr = Target as Player;
-
-				if (!plr.Attributes[GameAttribute.Cannot_Dodge] && FastRandom.Instance.NextDouble() < plr.DodgeChance)
+				if (!playerTarget.Attributes[GameAttribute.Cannot_Dodge] && FastRandom.Instance.NextDouble() < playerTarget.DodgeChance)
 					IsDodged = true;
 
-				if (plr.Toon.Class == ToonClass.Monk)       //Monk defensive passives
+				if (playerTarget.Toon.Class == ToonClass.Monk)       //Monk defensive passives
 				{
 					TotalDamage *= 0.7f;       //Class damage reduction bonus
 
-					if (plr.World.BuffManager.HasBuff<TempestRush.TempestEffect>(plr))      //Tempest rush -> Slipstream
-						if (plr.World.BuffManager.GetFirstBuff<TempestRush.TempestEffect>(plr)._slipStream)
+					if (playerTarget.World.BuffManager.HasBuff<TempestRush.TempestEffect>(playerTarget))      //Tempest rush -> Slipstream
+						if (playerTarget.World.BuffManager.GetFirstBuff<TempestRush.TempestEffect>(playerTarget)._slipStream)
 							TotalDamage *= 0.8f;
 
-					if (plr.World.BuffManager.HasBuff<Epiphany.EpiphanyBuff>(plr))      //Epiphany -> Desert Shroud
-						if (plr.World.BuffManager.GetFirstBuff<Epiphany.EpiphanyBuff>(plr).DesertShroud)
+					if (playerTarget.World.BuffManager.HasBuff<Epiphany.EpiphanyBuff>(playerTarget))      //Epiphany -> Desert Shroud
+						if (playerTarget.World.BuffManager.GetFirstBuff<Epiphany.EpiphanyBuff>(playerTarget).DesertShroud)
 							TotalDamage *= 0.5f;
 
 					if (IsDodged)      //Mantra of Evasion -> Backlash
-						if (plr.World.BuffManager.HasBuff<MantraOfEvasionPassive.MantraOfEvasionBuff>(plr))
-							if (plr.World.BuffManager.GetFirstBuff<MantraOfEvasionPassive.MantraOfEvasionBuff>(plr).Backlash)
-								plr.World.BuffManager.GetFirstBuff<MantraOfEvasionPassive.MantraOfEvasionBuff>(plr).BacklashTrigger = true;
+						if (playerTarget.World.BuffManager.HasBuff<MantraOfEvasionPassive.MantraOfEvasionBuff>(playerTarget))
+							if (playerTarget.World.BuffManager.GetFirstBuff<MantraOfEvasionPassive.MantraOfEvasionBuff>(playerTarget).Backlash)
+								playerTarget.World.BuffManager.GetFirstBuff<MantraOfEvasionPassive.MantraOfEvasionBuff>(playerTarget).BacklashTrigger = true;
 				}
 
-				if (plr.Toon.Class == ToonClass.Barbarian)      //Barb defensive passives
+				if (playerTarget.Toon.Class == ToonClass.Barbarian)      //Barb defensive passives
 				{
 					TotalDamage *= 0.7f;       //Class damage reduction bonus
 
-					if (plr.SkillSet.HasPassive(205491) && PowerMath.Distance2D(Context.User.Position, plr.Position) > 6f) //Superstition (barbarian)
+					if (playerTarget.SkillSet.HasPassive(205491) && PowerMath.Distance2D(Context.User.Position, playerTarget.Position) > 6f) //Superstition (barbarian)
 						if (FastRandom.Instance.NextDouble() < Context.GetProcCoefficient())
-							plr.GeneratePrimaryResource(2f);
+							playerTarget.GeneratePrimaryResource(2f);
 
-					if (plr.SkillSet.HasPassive(205398) && (plr.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage) < (plr.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.2f)) //Relentless (barbarian)
+					if (playerTarget.SkillSet.HasPassive(205398) && (playerTarget.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage) < (playerTarget.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.2f)) //Relentless (barbarian)
 						TotalDamage *= 0.5f;
 				}
 
-				if (plr.Toon.Class == ToonClass.Wizard)     //Wizard defensive passives
+				if (playerTarget.Toon.Class == ToonClass.Wizard)     //Wizard defensive passives
 				{
-					if (plr.SkillSet.HasPassive(208471)) //GlassCannon (Wizard)
+					if (playerTarget.SkillSet.HasPassive(208471)) //GlassCannon (Wizard)
 						TotalDamage *= 1.1f;
 
-					if (plr.SkillSet.HasPassive(208547) && TotalDamage > (plr.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.15f)) //Illusionist (Wizard)
+					if (playerTarget.SkillSet.HasPassive(208547) && TotalDamage > (playerTarget.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.15f)) //Illusionist (Wizard)
 					{
-						foreach (var cdBuff in plr.World.BuffManager.GetBuffs<CooldownBuff>(plr))
+						foreach (var cdBuff in playerTarget.World.BuffManager.GetBuffs<CooldownBuff>(playerTarget))
 							if (cdBuff.TargetPowerSNO == 1769 || cdBuff.TargetPowerSNO == 168344)
 								cdBuff.Remove();
 					}
 
-					if (plr.SkillSet.HasPassive(208474) && (plr.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage) <= 0) //UnstableAnomaly (wizard)
+					if (playerTarget.SkillSet.HasPassive(208474) && (playerTarget.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage) <= 0) //UnstableAnomaly (wizard)
 					{
-						if (plr.World.BuffManager.GetFirstBuff<UnstableAnomalyCooldownBuff>(plr) == null)
+						if (playerTarget.World.BuffManager.GetFirstBuff<UnstableAnomalyCooldownBuff>(playerTarget) == null)
 						{
-							plr.AddPercentageHP(45);
-							plr.World.BuffManager.AddBuff(plr, plr, new UnstableAnomalyCooldownBuff());
-							plr.World.PowerManager.RunPower(plr, 30796);
-							plr.GenerateSecondaryResource(25f);
-							foreach (var cdBuff in plr.World.BuffManager.GetBuffs<CooldownBuff>(plr))
+							playerTarget.AddPercentageHP(45);
+							playerTarget.World.BuffManager.AddBuff(playerTarget, playerTarget, new UnstableAnomalyCooldownBuff());
+							playerTarget.World.PowerManager.RunPower(playerTarget, 30796);
+							playerTarget.GenerateSecondaryResource(25f);
+							foreach (var cdBuff in playerTarget.World.BuffManager.GetBuffs<CooldownBuff>(playerTarget))
 								if (cdBuff.TargetPowerSNO == 30796)
 									cdBuff.Remove();
 						}
 					}
 				}
 
-				if (plr.Toon.Class == ToonClass.WitchDoctor)        //Witch Doctor defensive passives
+				if (playerTarget.Toon.Class == ToonClass.WitchDoctor)        //Witch Doctor defensive passives
 				{
-					if (plr.SkillSet.HasPassive(217968)) //JungleFortitude (WD)
+					if (playerTarget.SkillSet.HasPassive(217968)) //JungleFortitude (WD)
 						TotalDamage *= 0.85f;
 				}
 
-				if (plr.Toon.Class == ToonClass.DemonHunter)        //DH defensive passives				
+				if (playerTarget.Toon.Class == ToonClass.DemonHunter)        //DH defensive passives				
 				{
-					if (plr.SkillSet.HasPassive(210801) && plr.World.BuffManager.GetFirstBuff<BroodingCooldownBuff>(plr) == null) //Brooding (DH)
-						plr.World.BuffManager.AddBuff(plr, plr, new BroodingCooldownBuff());
+					if (playerTarget.SkillSet.HasPassive(210801) && playerTarget.World.BuffManager.GetFirstBuff<BroodingCooldownBuff>(playerTarget) == null) //Brooding (DH)
+						playerTarget.World.BuffManager.AddBuff(playerTarget, playerTarget, new BroodingCooldownBuff());
 				}
 
-				if (plr.Toon.Class == ToonClass.Crusader)       //Crusader defensive passives
+				if (playerTarget.Toon.Class == ToonClass.Crusader)       //Crusader defensive passives
 				{
 					TotalDamage *= 0.7f;       //Class damage reduction bonus
 
-					if (plr.SkillSet.HasPassive(310626))        //Vigilant
-						if (!(DominantDamageType == DamageType.Physical))
+					if (playerTarget.SkillSet.HasPassive(310626))        //Vigilant
+						if (DominantDamageType != DamageType.Physical)
 							TotalDamage *= 0.95f;
 
-					if (plr.World.BuffManager.HasBuff<CrusaderAkaratChampion.AkaratBuff>(plr))  //AkaratChampion resurrect once
-						if (plr.World.BuffManager.GetFirstBuff<CrusaderAkaratChampion.AkaratBuff>(plr).resurrectActive)
-							if ((plr.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage) <= 0)
+					if (playerTarget.World.BuffManager.HasBuff<CrusaderAkaratChampion.AkaratBuff>(playerTarget))  //AkaratChampion resurrect once
+						if (playerTarget.World.BuffManager.GetFirstBuff<CrusaderAkaratChampion.AkaratBuff>(playerTarget).resurrectActive)
+							if ((playerTarget.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage) <= 0)
 							{
-								plr.World.BuffManager.GetFirstBuff<CrusaderAkaratChampion.AkaratBuff>(plr).resurrectActive = false;
-								plr.AddPercentageHP(100);
+								playerTarget.World.BuffManager.GetFirstBuff<CrusaderAkaratChampion.AkaratBuff>(playerTarget).resurrectActive = false;
+								playerTarget.AddPercentageHP(100);
 							}
 
-					if (plr.World.BuffManager.HasBuff<CrusaderLawsOfJustice.LawsResBuff>(plr))      //Protect the Innocent
-						if (!plr.World.BuffManager.GetFirstBuff<CrusaderLawsOfJustice.LawsResBuff>(plr).Primary)
-							if (plr.World.BuffManager.GetFirstBuff<CrusaderLawsOfJustice.LawsResBuff>(plr).Redirect)
+					if (playerTarget.World.BuffManager.HasBuff<CrusaderLawsOfJustice.LawsResBuff>(playerTarget))      //Protect the Innocent
+						if (!playerTarget.World.BuffManager.GetFirstBuff<CrusaderLawsOfJustice.LawsResBuff>(playerTarget).Primary)
+							if (playerTarget.World.BuffManager.GetFirstBuff<CrusaderLawsOfJustice.LawsResBuff>(playerTarget).Redirect)
 								TotalDamage *= 0.8f;
 				}
 
 				TotalDamage *= 0.1f;
 			}
-			else if (Target is Minion) //check for passives here (incoming damage, minions)
+			else if (Target is Minion { Master: Player playerOwner }) //check for passives here (incoming damage, minions)
 			{
-				var minion = Target as Minion;
-				if (minion.Master != null && minion.Master is Player)
-				{
-					var plr = minion.Master as Player;
+				var plr = playerOwner;
 
-					var masterArmor = plr.Attributes[GameAttribute.Armor_Total];
-					var attackLevel = attackPayload.Context.User.Attributes[GameAttribute.Level];
+				var masterArmor = plr.Attributes[GameAttribute.Armor_Total];
+				var attackLevel = attackPayload.Context.User.Attributes[GameAttribute.Level];
 
-					TotalDamage *= ReductionFromArmor(masterArmor, attackLevel);
+				TotalDamage *= ReductionFromArmor(masterArmor, attackLevel);
 
-					if (plr.SkillSet.HasPassive(217968)) //JungleFortitude (WD)
-						TotalDamage *= 0.85f;
+				if (plr.SkillSet.HasPassive(217968)) //JungleFortitude (WD)
+					TotalDamage *= 0.85f;
 
-					TotalDamage *= 0.1f; //hack for unkillable minions
-				}
+				TotalDamage *= 0.1f; //hack for unkillable minions
 			}
 		}
 
@@ -580,11 +564,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		private void CheckItemProcs(Player user)
 		{
-			if (user.Attributes[GameAttribute.Item_Power_Passive, 247724] == 1 && FastRandom.Instance.NextDouble() < 0.2)
+			if (Math.Abs(user.Attributes[GameAttribute.Item_Power_Passive, 247724] - 1) < 0.001 && FastRandom.Instance.NextDouble() < 0.2)
 			{
 				user.PlayEffectGroup(247770);
 			}
-			if (user.Attributes[GameAttribute.Item_Power_Passive, 245741] == 1 && FastRandom.Instance.NextDouble() < 0.2)
+			if (Math.Abs(user.Attributes[GameAttribute.Item_Power_Passive, 245741] - 1) < 0.001 && FastRandom.Instance.NextDouble() < 0.2)
 			{
 				user.PlayEffectGroup(245747);
 			}
@@ -601,9 +585,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (!Target.Visible)
 				return;
 
-			if ((Target.Attributes[GameAttribute.Invulnerable] == true || Target.Attributes[GameAttribute.Immunity] == true) && Target.World != null)
+			if ((Target.Attributes[GameAttribute.Invulnerable] || Target.Attributes[GameAttribute.Immunity]) && Target.World != null)
 			{
-				if (!(Target is Minion))
+				if (Target is not Minion)
 					Target.World.BroadcastIfRevealed(plr => new FloatingNumberMessage()
 					{
 						ActorID = Target.DynamicID(plr),
@@ -618,74 +602,77 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				return;
 			}
 
-			if (Target is Player)
+			switch (Target)
 			{
-				var plr = (Target as Player);
-				if (plr.Dead) return;
-
-				if (IsDodged)
+				case Player playerActor:
 				{
-					Target.World.BroadcastIfRevealed(plr => new FloatingNumberMessage()
+					var plr = playerActor;
+					if (plr.Dead) return;
+
+					if (IsDodged)
 					{
-						ActorID = Target.DynamicID(plr),
-						Number = 0f,
-						Type = FloatingNumberMessage.FloatType.Dodge
-					}, Target);
-					plr.DodgesInARow++;
-					if (plr.Toon.Class == ToonClass.Monk && plr.DodgesInARow >= 15)
+						playerActor.World.BroadcastIfRevealed(plr2 => new FloatingNumberMessage()
+						{
+							ActorID = Target.DynamicID(plr2),
+							Number = 0f,
+							Type = FloatingNumberMessage.FloatType.Dodge
+						}, playerActor);
+						plr.DodgesInARow++;
+						if (plr.Toon.Class == ToonClass.Monk && plr.DodgesInARow >= 15)
+						{
+							plr.GrantAchievement(74987243307548);
+						}
+
+						else if (plr.Toon.Class == ToonClass.DemonHunter)    //Awareness
+						{
+							plr.AddTimedAction(1f, new Action<int>((q) => plr.World.BuffManager.RemoveBuffs(plr, 324770)));
+							plr.AddTimedAction(2f, new Action<int>((q) =>
+							{
+								if (plr.SkillSet.HasPassive(324770))
+									plr.World.BuffManager.AddBuff(plr, plr, new AwarenessBuff());
+							}));
+						}
+						return;
+					}
+					plr.DodgesInARow = 0;
+
+					if (FastRandom.Instance.NextDouble() < playerActor.Attributes[GameAttribute.Block_Chance_Capped_Total])
 					{
-						plr.GrantAchievement(74987243307548);
+						TotalDamage -= (float)FastRandom.Instance.NextDouble((double)playerActor.Attributes[GameAttribute.Block_Amount_Total_Min], (double)playerActor.Attributes[GameAttribute.Block_Amount_Total_Max]);
+						if (TotalDamage < 0f) TotalDamage = 0f;
+						playerActor.World.BroadcastIfRevealed(plr3 => new FloatingNumberMessage()
+						{
+							ActorID = Target.DynamicID(plr3),
+							Number = TotalDamage,
+							Type = FloatingNumberMessage.FloatType.Block
+						}, playerActor);
+
+						Blocked = true;
+						plr.BlocksInARow++;
+						if (plr.Toon.Class == ToonClass.Barbarian)
+						{
+							if (plr.BlocksInARow >= 5)
+								plr.GrantAchievement(74987243307048);
+							if (plr.SkillSet.HasPassive(340877)) //Sword and Board
+								if (FastRandom.Instance.NextDouble() < 0.3f)
+									plr.GeneratePrimaryResource(6f);
+						}
+					}
+					else
+					{
+						plr.BlocksInARow = 0;
 					}
 
-					else if (plr.Toon.Class == ToonClass.DemonHunter)    //Awareness
-					{
-						plr.AddTimedAction(1f, new Action<int>((q) => plr.World.BuffManager.RemoveBuffs(plr, 324770)));
-						plr.AddTimedAction(2f, new Action<int>((q) =>
-						{
-							if (plr.SkillSet.HasPassive(324770))
-								plr.World.BuffManager.AddBuff(plr, plr, new AwarenessBuff());
-						}));
-					}
+					break;
+				}
+				case DesctructibleLootContainer container:
+				{
+					container.ReceiveDamage(container, 100);
+					if (Context.User is Player plrAddAchievement
+					    && Context.PowerSNO == 96296)
+						plrAddAchievement.AddAchievementCounter(74987243307049, 1);
 					return;
 				}
-				else
-				{
-					plr.DodgesInARow = 0;
-				}
-
-				if (FastRandom.Instance.NextDouble() < Target.Attributes[GameAttribute.Block_Chance_Capped_Total])
-				{
-					TotalDamage -= (float)FastRandom.Instance.NextDouble((double)Target.Attributes[GameAttribute.Block_Amount_Total_Min], (double)Target.Attributes[GameAttribute.Block_Amount_Total_Max]);
-					if (TotalDamage < 0f) TotalDamage = 0f;
-					Target.World.BroadcastIfRevealed(plr => new FloatingNumberMessage()
-					{
-						ActorID = Target.DynamicID(plr),
-						Number = TotalDamage,
-						Type = FloatingNumberMessage.FloatType.Block
-					}, Target);
-
-					Blocked = true;
-					plr.BlocksInARow++;
-					if (plr.Toon.Class == ToonClass.Barbarian)
-					{
-						if (plr.BlocksInARow >= 5)
-							plr.GrantAchievement(74987243307048);
-						if (plr.SkillSet.HasPassive(340877)) //Sword and Board
-							if (FastRandom.Instance.NextDouble() < 0.3f)
-								plr.GeneratePrimaryResource(6f);
-					}
-				}
-				else
-				{
-					plr.BlocksInARow = 0;
-				}
-			}
-			if (Target is DesctructibleLootContainer)
-			{
-				(Target as DesctructibleLootContainer).ReceiveDamage(Target, 100);
-				if (Context.PowerSNO == 96296)
-					(Context.User as Player).AddAchievementCounter(74987243307049, 1);
-				return;
 			}
 
 			if (Target.World != null)
@@ -695,25 +682,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			if (Target == null || Target.World == null) return;   //in case Target was killed in OnPayload
 
-			if (Context.User is Player)
+			if (Context.User is Player player)
 			{
-				CheckItemProcs(Context.User as Player);
-				if (Context.User.Attributes[GameAttribute.Steal_Health_Percent] > 0)
-					(Context.User as Player).AddHP(TotalDamage * Context.User.Attributes[GameAttribute.Steal_Health_Percent]);
+				CheckItemProcs(player);
+				if (player.Attributes[GameAttribute.Steal_Health_Percent] > 0)
+					player.AddHP(TotalDamage * Context.User.Attributes[GameAttribute.Steal_Health_Percent]);
 				if (Context.User.Attributes[GameAttribute.Hitpoints_On_Hit] > 0)
-					(Context.User as Player).AddHP(Context.User.Attributes[GameAttribute.Hitpoints_On_Hit]);
+					player.AddHP(Context.User.Attributes[GameAttribute.Hitpoints_On_Hit]);
 				if (IsCriticalHit)
-					if ((Context.User as Player).Toon.Class == ToonClass.Wizard)
+					if (player.Toon.Class == ToonClass.Wizard)
 						if (FastRandom.Instance.NextDouble() < Context.GetProcCoefficient())
-							(Context.User as Player).GeneratePrimaryResource(Context.User.Attributes[GameAttribute.Resource_On_Hit, 1]);
+							player.GeneratePrimaryResource(Context.User.Attributes[GameAttribute.Resource_On_Hit, 1]);
 			}
 
-			if (Context.User is Hireling)
+			if (Context.User is Hireling hireling)
 			{
-				if (Context.User.Attributes[GameAttribute.Steal_Health_Percent] > 0)
-					(Context.User as Hireling).AddHP(TotalDamage * Context.User.Attributes[GameAttribute.Steal_Health_Percent]);
-				if (Context.User.Attributes[GameAttribute.Hitpoints_On_Hit] > 0)
-					(Context.User as Hireling).AddHP(Context.User.Attributes[GameAttribute.Hitpoints_On_Hit]);
+				if (hireling.Attributes[GameAttribute.Steal_Health_Percent] > 0)
+					hireling.AddHP(TotalDamage * hireling.Attributes[GameAttribute.Steal_Health_Percent]);
+				if (hireling.Attributes[GameAttribute.Hitpoints_On_Hit] > 0)
+					hireling.AddHP(hireling.Attributes[GameAttribute.Hitpoints_On_Hit]);
 			}
 
 			
@@ -796,7 +783,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					deathload.Apply();
 				}
 			}
-			else if (AutomaticHitEffects && Target.World != null && !(Target is Player))
+			else if (AutomaticHitEffects && Target.World != null && Target is not Player)
 			{
 				// target didn't die, so play hit animation if the actor has one
 				if (Target.World.BuffManager.GetFirstBuff<KnockbackBuff>(Target) == null &&

@@ -652,29 +652,34 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				//var Anim = (DiIiS_NA.Core.MPQ.FileFormats.Anim)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Anim][animationSNO].Data;
 
 				World.BroadcastIfRevealed(plr => new PlayAnimationMessage
-				{
-					ActorID = DynamicID(plr),
-					AnimReason = 9,
-					UnitAniimStartTime = 0,
-					tAnim = new PlayAnimationMessageSpec[]
 					{
-						new PlayAnimationMessageSpec
+						ActorID = DynamicID(plr),
+						AnimReason = 9,
+						UnitAniimStartTime = 0,
+						tAnim = new PlayAnimationMessageSpec[]
 						{
-							Duration = -2,
-							AnimationSNO = (int)animationSNO,
-							PermutationIndex = 0x0,
-							AnimationTag = 0,
-							Speed = 1.0f,
+							new PlayAnimationMessageSpec
+							{
+								Duration = -2,
+								AnimationSNO = (int)animationSNO,
+								PermutationIndex = 0x0,
+								AnimationTag = 0,
+								Speed = 1.0f,
+							}
 						}
-					}
 					},
 					this);
-				}
 			}
+		}
 
-			public void PlayAnimation(int animationType, AnimationSno animationSNO, float speed = 1.0f, int? ticksToPlay = null, int type2 = 0)
+		public void PlayAnimation(int animationType, AnimationSno animationSNO, float speed = 1.0f, int? ticksToPlay = null, int type2 = 0)
 		{
-			if (this.World == null || animationSNO == AnimationSno._NONE) return;
+			if (animationSNO == AnimationSno._NONE)
+			{
+				Logger.Warn($"PlayAnimation: {(int)animationSNO} is not a valid animation");
+				return;
+			}
+			if (this.World == null) return;
 
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{

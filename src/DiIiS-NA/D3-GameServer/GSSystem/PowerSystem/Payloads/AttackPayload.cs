@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 {
@@ -80,7 +81,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		public void Apply()
 		{
-			if (Targets == null) Targets = new TargetList();
+			Targets ??= new TargetList();
 			if (Target.World != null)
 			{
 				if (!Target.World.Game.Working) return;
@@ -92,20 +93,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			{
 				return;
 			}
-			if (Target is Player && DamageEntries.Count > 0)
-			{
-				Player player = (Player)Target;
-				foreach (Actor extra in Targets.ExtraActors)
-					if (extra is DesctructibleLootContainer)
-						extra.OnTargeted(player, null);
 
+			{
+				if (Target is Player player && DamageEntries.Count > 0)
+				{
+					foreach (Actor extra in Targets.ExtraActors)
+						if (extra is DesctructibleLootContainer)
+							extra.OnTargeted(player, null);
+
+				}
 			}
-            if (Context.User is Player && Context.Target is Monster && Context.Target.GBHandle.Type == 1)
-            {
-                (Context.User as Player).ExpBonusData.MonsterAttacked((Context.User as Player).InGameClient.Game.TickCounter);
-                ((Context.Target as Monster).Brain as AISystem.Brains.MonsterBrain).AttackedBy = Context.User;
-            }
-            
+			{
+				if (Context.User is Player player && Context.Target is Monster monster && monster.GBHandle.Type == 1)
+				{
+					player.ExpBonusData.MonsterAttacked(player.InGameClient.Game
+						.TickCounter);
+					((MonsterBrain)monster.Brain).AttackedBy = player;
+				}
+			}
+
 			foreach (Actor target in Targets.Actors)
 			{
 				if (target == null || target.World == null || target.World != null && target.World.PowerManager.IsDeletingActor(target))

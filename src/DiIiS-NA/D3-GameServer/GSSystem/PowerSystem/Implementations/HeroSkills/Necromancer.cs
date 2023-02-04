@@ -2650,7 +2650,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 {
                     if (Rune_C > 0)
                     {
-                        int[] Effects = new int[] { 47400, 474402, 474435, 474437, 474453, 474455, 474464, 474466 };
+                        int[] Effects = new[] { 47400, 474402, 474435, 474437, 474453, 474455, 474464, 474466 };
                         Tar.PlayEffectGroup(Effects[RandomHelper.Next(0, 7)]);
                         yield return WaitSeconds(0.5f);
                         WeaponDamage(Tar, damage, damageType);
@@ -2661,8 +2661,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Point.UpdateDelay = 0.2f;
                         Point.OnUpdate = () =>
                         {
-                            AttackPayload attack = new AttackPayload(this);
-                            attack.Targets = GetEnemiesInRadius(Point.Position, range);
+                            AttackPayload attack = new AttackPayload(this)
+                            {
+                                Targets = GetEnemiesInRadius(Point.Position, range)
+                            };
 
                             attack.AddWeaponDamage(damage, damageType);
                             attack.OnHit = hitPayload =>

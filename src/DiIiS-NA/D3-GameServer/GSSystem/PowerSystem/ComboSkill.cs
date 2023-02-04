@@ -10,13 +10,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 {
 	public abstract class ComboSkill : Skill
 	{
-		public int ComboIndex
-		{
-			get
-			{
-				return TargetMessage.ComboLevel;
-			}
-		}
+		public int ComboIndex => TargetMessage.ComboLevel;
 
 		public override AnimationSno GetActionAnimationSNO()
 		{

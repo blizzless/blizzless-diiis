@@ -150,8 +150,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public void WeaponDamage(TargetList targets, float damageMultiplier, DamageType damageType)
 		{
-			AttackPayload payload = new AttackPayload(this);
-			payload.Targets = targets;
+			AttackPayload payload = new AttackPayload(this)
+			{
+				Targets = targets
+			};
 			payload.AddWeaponDamage(damageMultiplier, damageType);
 			payload.Apply();
 		}
@@ -166,15 +168,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public void Damage(TargetList targets, float minDamage, float damageDelta, DamageType damageType)
 		{
-			AttackPayload payload = new AttackPayload(this);
-			payload.Targets = targets;
+			AttackPayload payload = new AttackPayload(this)
+			{
+				Targets = targets
+			};
 			payload.AddDamage(minDamage, damageDelta, damageType);
 			payload.Apply();
 		}
 
 		public EffectActor SpawnEffect(ActorSno actorSNO, Vector3D position, float angle = 0, TickTimer timeout = null)
 		{
-			if (angle == -1)
+			if (Math.Abs(angle - (-1)) < 0.0001)
 				angle = (float)(Rand.NextDouble() * (Math.PI * 2));
 			if (timeout == null)
 			{
