@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Spectre.Console;
@@ -134,7 +135,30 @@ public class AnsiTarget : LogTarget
         }
         catch (Exception ex)
         {
-            Debugger.Break();
+            var regex = new Regex(@"\$\[.*?\]\$");
+            var matches = regex.Matches(message);
+            foreach (Match match in matches)
+            {
+                message = message.Replace(match.Value, "");
+            }
+
+            if (IncludeTimeStamps)
+            {
+                _table.AddRow(
+                    new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
+                    new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
+                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(ex.Message, new Style(foreground: Color.Red3_1)).Centered());
+            }
+            else
+            {
+                _table.AddRow(
+                    new Markup(level.ToString()).RightJustified(),
+                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(ex.Message, new Style(foreground: Color.Red3_1)).Centered());
+            }
         }
     }
 
@@ -164,7 +188,30 @@ public class AnsiTarget : LogTarget
         }
         catch (Exception ex)
         {
-            Debugger.Break();
+            var regex = new Regex(@"\$\[.*?\]\$");
+            var matches = regex.Matches(message);
+            foreach (Match match in matches)
+            {
+                message = message.Replace(match.Value, "");
+            }
+
+            if (IncludeTimeStamps)
+            {
+                _table.AddRow(
+                    new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
+                    new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
+                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(ex.Message, new Style(foreground: Color.Red3_1)).Centered());
+            }
+            else
+            {
+                _table.AddRow(
+                    new Markup(level.ToString()).RightJustified(),
+                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
+                    new Markup(ex.Message, new Style(foreground: Color.Red3_1)).Centered());
+            }
         }
 }
 

@@ -11,7 +11,7 @@ namespace DiIiS_NA.GameServer.CommandManager;
     Account.UserLevels.Tester)]
 public class ActorsCommand : CommandGroup
 {
-    [Command("all", "Lists all actors.", Account.UserLevels.Tester)]
+    [Command("all", "Lists all actors in world sorted by distance to you.", Account.UserLevels.Tester)]
     public string All(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not {} player)
@@ -32,7 +32,7 @@ public class ActorsCommand : CommandGroup
             }));
     }
     
-    [Command("revealed", "Lists all revealed actors.", Account.UserLevels.Tester)]
+    [Command("revealed", "Lists all revealed actors sorted by distance to you.", Account.UserLevels.Tester)]
     public string Revealed(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not {} player)
@@ -54,8 +54,8 @@ public class ActorsCommand : CommandGroup
             }));
     }
     
-    [Command("setoperable", "Sets all actors operable (not the wisest invention).", Account.UserLevels.Tester)]
-    public string Operable(string[] @params, BattleClient invokerClient)
+    [Command("all-usable", "Sets all actors operable in world sorted by distance to you.e (not the wisest invention).", Account.UserLevels.Tester)]
+    public string Usable(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not {} player)
             return "You are not in game.";
