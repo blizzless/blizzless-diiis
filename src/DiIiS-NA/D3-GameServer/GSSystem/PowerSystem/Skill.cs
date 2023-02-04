@@ -55,9 +55,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				int tag = EvalTag(PowerKeys.AnimationTag);
 				if (User.AnimationSet != null)
                 {
-					if (User.AnimationSet.Animations.ContainsKey(tag))
-						return User.AnimationSet.Animations[tag];
-					return (AnimationSno)User.AnimationSet.GetAnimationTag(AnimationTags.Attack2);
+	                try
+	                {
+		                if (User.AnimationSet.Animations.TryGetValue(tag, out AnimationSno value))
+			                return value;
+		                return (AnimationSno)User.AnimationSet.GetAnimationTag(AnimationTags.Attack2);
+	                }
+	                catch (Exception ex)
+	                {
+		                #if DEBUG
+		                Logger.Error(ex.Message, "GetActionAnimationSNO: Please don't take this error seriously, it's just a workaround for a bug in the game.");
+		                #endif
+		                return AnimationSno._NONE;
+	                }
                 }
 			}
 			catch (Exception e)
