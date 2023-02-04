@@ -38,18 +38,29 @@ Each version of the client includes changes to structures, opcodes and attribute
 The currently supported version of the client: **2.7.4.84161**
 
 ## Server Deploying
-
+### Prepare Database
+#### Manual
 1. Install [PostgreSQL 9.5.25](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads).
 2. Create databases in PostgreSQL: `diiis` and `worlds`.
 3. Change you account and password in `database.Account.config` and `database.Worlds.conifg`.
 4. Restore `worlds.backup` to `worlds` database.
-5. Compile by [VS 2019/2022](https://visualstudio.microsoft.com/).
-6. [Skip this stage for local game] Copy the [config.ini](configs/config.ini) file to the server folder (It overwrites the default settings):
-	- Update the parameter entries with your IP record on the network: `BindIP` and `PublicIP`.
-7. Launch wait until server start, it creates a hierarchy.
-8. Create user account(s) using console: `!account add Login Password Tag`
 
-### Example:
+#### Or using docker
+1. [Install docker](https://docs.docker.com/get-docker/)
+2. Run `docker-compose up` inside [db](db) folder.
+
+### Compile and run
+1. Install [.NET 7 SDK and runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) (just runtime, not asp.net or desktop)
+2. Go to the repo directory and compile the project using this command:
+   ```shell
+   dotnet publish ./src/DiIiS-NA/Blizzless.csproj --configuration Release --output ./publish
+	```
+3. [Skip this stage for local game] Copy the [config.ini](configs/config.ini) file to the publish folder (It overwrites the default settings):
+	- Update the parameter entries with your IP record on the network: `BindIP` and `PublicIP`.
+4. Go to the publish folder, launch Blizzless executable, wait until server start - it creates a hierarchy.
+5. Create user account(s) using console: `!account add Login Password Tag`
+
+#### Example:
 
 > !account add username@ YourPassword YourBattleTag
 
@@ -71,7 +82,7 @@ Do this for each client connecting to the server.
 
 	**Method #1 - Hosts**
 
-	  Add redirects to the `hosts` file (`%WinDir%\System32\drivers\etc\hosts`):  
+	  Add redirects to the `hosts` file (Windows - `%WinDir%\System32\drivers\etc\hosts`, Linux - `/etc/hosts`):  
 	  `127.0.0.1 us.actual.battle.net`  
 	  `127.0.0.1 eu.actual.battle.net`
 
@@ -94,10 +105,6 @@ Do this for each client connecting to the server.
 6. [Skip this stage for local game] After that, when creating a game (in client), indicate the creation of a public game. Other players, when connecting, must also indicate a public game, and at the start they will connect to you.
 
 7. You're in the game world!
-
-## Using Docker
-
-Run `docker-compose up` inside [db](db) folder and continue from the 5th step in section [server](#server-deploying).
 
 # Server Configuration
 
