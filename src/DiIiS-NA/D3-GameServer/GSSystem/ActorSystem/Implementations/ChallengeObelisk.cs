@@ -27,22 +27,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
-            bool Activated = false;
+            bool activated = false;
 
-            this.PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
-            Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-            Attributes[GameAttribute.Untargetable] = !Activated;
-            Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-            Attributes[GameAttribute.Operatable] = Activated;
-            Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-            Attributes[GameAttribute.Disabled] = !Activated;
-            Attributes[GameAttribute.Immunity] = !Activated;
+            PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+            Attributes[GameAttribute.Team_Override] = (activated ? -1 : 2);
+            Attributes[GameAttribute.Untargetable] = !activated;
+            Attributes[GameAttribute.NPC_Is_Operatable] = activated;
+            Attributes[GameAttribute.Operatable] = activated;
+            Attributes[GameAttribute.Operatable_Story_Gizmo] = activated;
+            Attributes[GameAttribute.Disabled] = !activated;
+            Attributes[GameAttribute.Immunity] = !activated;
             Attributes.BroadcastChangedIfRevealed();
             CollFlags = 0;
 
-            TickTimer Timeout = new SecondsTickTimer(World.Game, 3.5f);
-            var Boom = Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
-            Boom.ContinueWith(delegate
+            TickTimer timeout = new SecondsTickTimer(World.Game, 3.5f);
+            var boom = Task<bool>.Factory.StartNew(() => WaitToSpawn(timeout));
+            boom.ContinueWith(delegate
             {
                 var actor = World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
                 actor.SetVisible(true);
@@ -59,7 +59,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
         public override bool Reveal(Player player)
         {
-             if (!base.Reveal(player))
+            if (!base.Reveal(player))
                 return false;
             if (!Attributes[GameAttribute.Operatable])
             {
@@ -69,8 +69,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             }
             else
             {
-                this.PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+                PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
             }
+
             return true;
         }
 
