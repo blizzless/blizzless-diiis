@@ -45,23 +45,20 @@ namespace DiIiS_NA.GameServer.CommandManager
 		public static void Parse(string line)
 		{
 			string output = string.Empty;
-			string command;
-			string parameters;
 			var found = false;
 
 			if (line == null) return;
 			if (line.Trim() == string.Empty) return;
 
-			if (!ExtractCommandAndParameters(line, out command, out parameters))
+			if (!ExtractCommandAndParameters(line, out var command, out var parameters))
 			{
 				output = "Unknown command: " + line;
 				Logger.Error(output);
 				return;
 			}
 
-			foreach (var pair in CommandGroups)
+			foreach (var pair in CommandGroups.Where(pair => pair.Key.Name == command))
 			{
-				if (pair.Key.Name != command) continue;
 				output = pair.Value.Handle(parameters);
 				found = true;
 				break;
@@ -73,10 +70,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				return;
 			}
 
-			if (output != string.Empty)
-				Logger.Success(output);
-			else
-				Logger.Success("Command executed successfully.");
+			Logger.Success(output != string.Empty ? output : "Command executed successfully.");
 		}
 
 
