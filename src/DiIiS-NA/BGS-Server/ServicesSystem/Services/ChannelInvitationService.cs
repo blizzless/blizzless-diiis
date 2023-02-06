@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using bgs.protocol;
+﻿using bgs.protocol;
 using bgs.protocol.channel.v1;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Logging;

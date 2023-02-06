@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using System;
+﻿using System;
 using System.Reflection;
 using Google.ProtocolBuffers;
 using bgs.protocol;

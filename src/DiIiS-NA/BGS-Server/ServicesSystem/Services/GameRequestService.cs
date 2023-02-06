@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using bgs.protocol;
+﻿using bgs.protocol;
 using bgs.protocol.matchmaking.v1;
 using D3.OnlineService;
 using DiIiS_NA.LoginServer.AccountsSystem;

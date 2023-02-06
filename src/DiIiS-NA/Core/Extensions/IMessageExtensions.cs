@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using System;
+﻿using System;
 using System.Text;
 using Google.ProtocolBuffers;
 using Google.ProtocolBuffers.Descriptors;

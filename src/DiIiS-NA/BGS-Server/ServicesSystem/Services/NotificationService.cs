@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using System;
+﻿using System;
 using bgs.protocol;
 using bgs.protocol.notification.v1;
 using DiIiS_NA.Core.Logging;

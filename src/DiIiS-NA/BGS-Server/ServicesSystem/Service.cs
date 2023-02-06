@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.Core.Helpers.Hash;
+﻿using DiIiS_NA.Core.Helpers.Hash;
 using Google.ProtocolBuffers;
 using System;
 using System.Collections.Generic;

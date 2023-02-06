@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using bgs.protocol;
+﻿using bgs.protocol;
 using DotNetty.Codecs;
 using DotNetty.Buffers;
 using DotNetty.Codecs.Http.WebSockets;

@@ -1,124 +1,64 @@
-﻿//Blizzless Project 2022
-
-using System;
-//Blizzless Project 2022
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-//Blizzless Project 2022
 using System.Linq;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 
-//Blizzless Project 2022
 using GameBalance = DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022
 using System.Threading;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Player;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Skill;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022
 using System.Drawing;
 using System.Reflection;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.SkillsSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields.BlizzLess.Net.GS.Message.Fields;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022
 using Google.ProtocolBuffers;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Waypoint;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Trade;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Inventory;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Connection;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Camera;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Combat;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.UI;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans;
@@ -3673,7 +3613,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         System.Threading.Tasks.Task.Delay(3).Wait();
         RevealActorsToPlayer();
-        if (!_motdSent && LoginServer.Config.Instance.MotdEnabled)
+        if (!_motdSent && LoginServer.LoginServerConfig.Instance.MotdEnabled)
             InGameClient.BnetClient.SendMotd();
         //
     }

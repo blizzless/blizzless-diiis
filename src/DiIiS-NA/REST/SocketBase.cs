@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using System;
 using System.Net;
 using System.Net.Sockets;

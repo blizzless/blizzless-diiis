@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.Core.Discord.Modules;
+﻿using DiIiS_NA.Core.Discord.Modules;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.Storage;
@@ -61,9 +60,9 @@ namespace DiIiS_NA
         public static Thread GameServerThread;
         public static Thread WatchdogThread;
 
-        public static string LoginServerIp = DiIiS_NA.LoginServer.Config.Instance.BindIP;
+        public static string LoginServerIp = DiIiS_NA.LoginServer.LoginServerConfig.Instance.BindIP;
         public static string GameServerIp = DiIiS_NA.GameServer.GameServerConfig.Instance.BindIP;
-        public static string RestServerIp = REST.Config.Instance.IP;
+        public static string RestServerIp = REST.RestConfig.Instance.IP;
         public static string PublicGameServerIp = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
 
         public static int Build => 30;
@@ -198,14 +197,14 @@ namespace DiIiS_NA
             }
            
             var restSocketServer = new SocketManager<RestSession>();
-            if (!restSocketServer.StartNetwork(RestServerIp, REST.Config.Instance.Port))
+            if (!restSocketServer.StartNetwork(RestServerIp, REST.RestConfig.Instance.Port))
             {
                 throw new Exception("Diablo III Core - Disabled");
             }
-            Logger.Success($"$[underline darkgreen]$REST$[/]$ server started - {REST.Config.Instance.IP}:{REST.Config.Instance.Port}");
+            Logger.Success($"$[underline darkgreen]$REST$[/]$ server started - {REST.RestConfig.Instance.IP}:{REST.RestConfig.Instance.Port}");
             
             //BGS
-            var loginConfig = DiIiS_NA.LoginServer.Config.Instance;
+            var loginConfig = DiIiS_NA.LoginServer.LoginServerConfig.Instance;
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             IEventLoopGroup boss = new MultithreadEventLoopGroup(1),
                             worker = new MultithreadEventLoopGroup();
@@ -393,7 +392,7 @@ namespace DiIiS_NA
                 Logger.Info("Discord bot Disabled..");
             }
             DiIiS_NA.GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.RegenerateDensity();
-            DiIiS_NA.GameServer.ClientSystem.GameServer.GSBackend = new GsBackend(DiIiS_NA.LoginServer.Config.Instance.BindIP, DiIiS_NA.LoginServer.Config.Instance.WebPort);
+            DiIiS_NA.GameServer.ClientSystem.GameServer.GSBackend = new GsBackend(DiIiS_NA.LoginServer.LoginServerConfig.Instance.BindIP, DiIiS_NA.LoginServer.LoginServerConfig.Instance.WebPort);
         }
 
         static bool SetTitle(string text)

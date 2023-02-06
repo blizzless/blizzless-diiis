@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;

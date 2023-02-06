@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022
-
-using bgs.protocol;
+﻿using bgs.protocol;
 using bgs.protocol.game_utilities.v1;
 using bgs.protocol.notification.v1;
 using D3.GameMessage;

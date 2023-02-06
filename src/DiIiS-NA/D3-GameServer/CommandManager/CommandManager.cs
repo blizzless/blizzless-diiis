@@ -11,8 +11,8 @@ namespace DiIiS_NA.GameServer.CommandManager
 {
 	public static class CommandManager
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger("CmdMan");
-		private static readonly Dictionary<CommandGroupAttribute, CommandGroup> CommandGroups = new Dictionary<CommandGroupAttribute, CommandGroup>();
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(CommandManager));
+		private static readonly Dictionary<CommandGroupAttribute, CommandGroup> CommandGroups = new();
 
 		static CommandManager()
 		{
@@ -66,7 +66,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 			if (found == false)
 			{
-				Logger.Error("Unknown command: " + command);
+				Logger.Error("Unknown command: " + command.SafeAnsi());
 				return;
 			}
 
@@ -83,19 +83,16 @@ namespace DiIiS_NA.GameServer.CommandManager
 		public static bool TryParse(string line, BattleClient invokerClient)
 		{
 			string output = string.Empty;
-			string command;
-			string parameters;
 			var found = false;
 
 			if (invokerClient == null)
-				throw new ArgumentException("invokerClient");
+				throw new ArgumentException(nameof(invokerClient));
 
-			if (!ExtractCommandAndParameters(line, out command, out parameters))
+			if (!ExtractCommandAndParameters(line, out var command, out var parameters))
 				return false;
 
-			foreach (var pair in CommandGroups)
+			foreach (var pair in CommandGroups.Where(pair => pair.Key.Name == command))
 			{
-				if (pair.Key.Name != command) continue;
 				output = pair.Value.Handle(parameters, invokerClient);
 				found = true;
 				break;
@@ -181,7 +178,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				}
 
 				if (!found)
-					output = $"Unknown command: {group} {command}";
+					output = $"Unknown command: {group.SafeAnsi()} {command.SafeAnsi()}";
 
 				return output;
 			}

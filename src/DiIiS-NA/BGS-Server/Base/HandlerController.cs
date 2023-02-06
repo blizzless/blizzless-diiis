@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using bgs.protocol;
+﻿using bgs.protocol;
 using DiIiS_NA.LoginServer.Battle;
 using Google.ProtocolBuffers;
 using System;

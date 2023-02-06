@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using bgs.protocol;
+﻿using bgs.protocol;
 using bgs.protocol.sns.v1;
 using Google.ProtocolBuffers;
 using System;

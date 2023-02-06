@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using CrystalMpq;
+﻿using CrystalMpq;
 using Gibbed.IO;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.Core.MPQ.FileFormats.Types;

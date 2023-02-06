@@ -234,3 +234,11 @@ public class AnsiTarget : LogTarget
         };
     }
 }
+
+public static class AnsiTargetExtensions
+{
+    public static string SafeAnsi(this string text)
+    {
+        return text.Replace("$[", "").Replace("]$", "").Replace("[", "[[").Replace("]", "]]");
+    }
+}

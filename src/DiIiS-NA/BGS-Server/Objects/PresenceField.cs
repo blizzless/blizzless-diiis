@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.LoginServer.Helpers;
+﻿using DiIiS_NA.LoginServer.Helpers;
 using Google.ProtocolBuffers;
 using System;
 using System.Collections.Generic;

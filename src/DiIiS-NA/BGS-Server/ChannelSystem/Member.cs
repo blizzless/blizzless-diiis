@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using System;
+﻿using System;
 using System.Collections.Generic;
 using bgs.protocol.channel.v1;
 using DiIiS_NA.LoginServer.AccountsSystem;

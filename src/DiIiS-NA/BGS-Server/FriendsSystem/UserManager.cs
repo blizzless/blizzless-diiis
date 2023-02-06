@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.Core.Storage;
+﻿using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.LoginServer.Base;

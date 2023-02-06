@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using System;
+﻿using System;
 using bgs.protocol;
 using bgs.protocol.authentication.v1;
 using bgs.protocol.challenge.v1;
@@ -117,12 +116,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         if (request.HasCachedWebCredentials)
                             VerifyWebCredentials(controller, VerifyWebCredentialsRequest.CreateBuilder().SetWebCredentials(request.CachedWebCredentials).Build(), callback => { });
                         builder.SetPayloadType("web_auth_url");
-                        if (REST.Config.Instance.Public)
+                        if (REST.RestConfig.Instance.Public)
                             builder.SetPayload(ByteString.CopyFromUtf8(
-                                $"http://{REST.Config.Instance.PublicIP}:{REST.Config.Instance.Port}/battlenet/login"));
+                                $"http://{REST.RestConfig.Instance.PublicIP}:{REST.RestConfig.Instance.Port}/battlenet/login"));
                         else
                             builder.SetPayload(ByteString.CopyFromUtf8(
-                                $"http://{Program.RestServerIp}:{REST.Config.Instance.Port}/battlenet/login"));
+                                $"http://{Program.RestServerIp}:{REST.RestConfig.Instance.Port}/battlenet/login"));
 
                         ((HandlerController)controller).Client.MakeRpc((lid) => ChallengeListener.CreateStub(((HandlerController)controller).Client).OnExternalChallenge(controller, builder.Build(), callback => { }));
                         #endregion

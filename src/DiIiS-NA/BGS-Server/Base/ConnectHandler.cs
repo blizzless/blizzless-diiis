@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.LoginServer.Battle;
 using DotNetty.Codecs;
 using DotNetty.Codecs.Http;

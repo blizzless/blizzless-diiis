@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-namespace DiIiS_NA.Core.Logging
+﻿namespace DiIiS_NA.Core.Logging
 {
 	public sealed class LogConfig : Config.Config
 	{

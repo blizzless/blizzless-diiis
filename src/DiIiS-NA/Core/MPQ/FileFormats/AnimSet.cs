@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using CrystalMpq;
+﻿using CrystalMpq;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using Gibbed.IO;
 using System.Collections.Generic;

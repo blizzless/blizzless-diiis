@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using bgs.protocol.presence.v1;
+﻿using bgs.protocol.presence.v1;
 using DiIiS_NA.LoginServer.Objects;
 using System.Collections.Generic;
 

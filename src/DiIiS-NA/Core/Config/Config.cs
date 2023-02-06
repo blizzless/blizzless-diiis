@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022
-
-using System;
+﻿using System;
 using DiIiS_NA.Core.Logging;
 using Nini.Config;
 

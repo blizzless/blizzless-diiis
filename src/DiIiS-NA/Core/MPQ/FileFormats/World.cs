@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CrystalMpq;
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
 using DiIiS_NA.Core.Storage;

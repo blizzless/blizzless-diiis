@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using bgs.protocol.matchmaking.v1;
+﻿using bgs.protocol.matchmaking.v1;
 using DiIiS_NA.Core.Storage;
 using DiIiS_NA.LoginServer.Base;
 using DiIiS_NA.LoginServer.Battle;

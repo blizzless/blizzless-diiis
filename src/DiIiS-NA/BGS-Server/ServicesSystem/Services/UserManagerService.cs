@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using bgs.protocol;
+﻿using bgs.protocol;
 using bgs.protocol.user_manager.v1;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.LoginServer.AccountsSystem;

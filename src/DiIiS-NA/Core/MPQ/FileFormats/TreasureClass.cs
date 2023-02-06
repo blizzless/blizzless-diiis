@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
 using DiIiS_NA.Core.Storage;
 using DiIiS_NA.GameServer.Core.Types.SNO;

@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using bgs.protocol;
+﻿using bgs.protocol;
 using bgs.protocol.channel.v2.membership;
 using Google.ProtocolBuffers;
 using System;
