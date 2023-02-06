@@ -64,7 +64,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 	                catch (Exception ex)
 	                {
 		                #if DEBUG
-		                Logger.Error(ex.Message, "GetActionAnimationSNO: Please don't take this error seriously, it's just a workaround for a bug in the game.");
+		                Logger.ErrorException(ex, "GetActionAnimationSNO throws error");
 		                #endif
 		                return AnimationSno._NONE;
 	                }
@@ -78,32 +78,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		}
 
-		public virtual float GetActionSpeed()
-		{
-			return EvalTag(PowerKeys.AttackSpeed);
-		}
+		public virtual float GetActionSpeed() => EvalTag(PowerKeys.AttackSpeed);
 
-		public virtual int GetCastEffectSNO()
-		{
-			return EvalTag(IsUserFemale ? PowerKeys.CastingEffectGroup_Female : PowerKeys.CastingEffectGroup_Male);
-		}
+		public virtual int GetCastEffectSNO() => EvalTag(IsUserFemale ? PowerKeys.CastingEffectGroup_Female : PowerKeys.CastingEffectGroup_Male);
 
-		public virtual int GetContactEffectSNO()
-		{
-			return EvalTag(IsUserFemale ? PowerKeys.ContactFrameEffectGroup_Female : PowerKeys.ContactFrameEffectGroup_Male);
-		}
+		public virtual int GetContactEffectSNO() => EvalTag(IsUserFemale ? PowerKeys.ContactFrameEffectGroup_Female : PowerKeys.ContactFrameEffectGroup_Male);
 
-		public virtual float GetContactDelay()
-		{
-			return 0f;
-		}
+		public virtual float GetContactDelay() => 0f;
 
 		public float GetCooldown()
 		{
-			if (EvalTag(PowerKeys.CooldownTime) > 0f)
-				return EvalTag(PowerKeys.CooldownTime);
-			else
-				return 1f;
+			var tag = EvalTag(PowerKeys.CooldownTime);
+			return tag > 0f ? tag : 1f;
 		}
 
 		private void PlayActionAnimation()
@@ -112,10 +98,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			var animationSNO = GetActionAnimationSNO();
 			#region Патч анимаций
 			if(animationSNO == AnimationSno._NONE)
-				switch (this.User.SNO)
+				switch (User.SNO)
 				{
 						case ActorSno._x1_skeletonarcher_westmarch_a: //x1_SkeletonArcher_Westmarch_A
-							if (this.PowerSNO == 30334)
+							if (PowerSNO == 30334)
 								animationSNO = AnimationSno.x1_skeletonarcher_westmarch_attack_01;
 							break;
 						case ActorSno._p6_necro_skeletonmage_f_archer: //p6_necro_skeletonMage_F_archer

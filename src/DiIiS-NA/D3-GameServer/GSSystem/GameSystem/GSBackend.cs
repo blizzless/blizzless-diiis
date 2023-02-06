@@ -71,8 +71,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			Logger.Info("GameServer connected to BattleNet.");
 			System.Threading.Thread.Sleep(3000);
-			string backEndIp = Config.Instance.BindIP;
-			int backEndPort = Config.Instance.Port;
+			string backEndIp = GameServerConfig.Instance.BindIP;
+			int backEndPort = GameServerConfig.Instance.Port;
 			bool pvp = false;
 			if (!pvp)
 				RegisterGameServer(backEndIp, backEndPort);

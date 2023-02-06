@@ -5,11 +5,11 @@ namespace DiIiS_NA.Core.Logging
 	{
 		public string LoggingRoot
 		{
-			get { return this.GetString("Root", @"logs"); }
-			set { this.Set("Root", value); }
+			get => GetString("Root", @"logs");
+			set => Set("Root", value);
 		}
 
-		public LogTargetConfig[] Targets = new[]
+		public LogTargetConfig[] Targets { get; } = new[]
 		{
 			new LogTargetConfig("ConsoleLog"),
 			new LogTargetConfig("AnsiLog"),
@@ -20,57 +20,55 @@ namespace DiIiS_NA.Core.Logging
 		};
 
 		private LogConfig() :
-			base("Logging") 
+			base(nameof(Logging)) 
 		{ }
 
-		public static LogConfig Instance { get { return _instance; } }
-		private static readonly LogConfig _instance = new LogConfig();
+		public static LogConfig Instance = new();
 	}
 	public class LogTargetConfig : Config.Config
 	{
 		public bool Enabled
 		{
-			get { return this.GetBoolean("Enabled", true); }
-			set { this.Set("Enabled", value); }
+			get => GetBoolean(nameof(Enabled), true);
+			set => Set(nameof(Enabled), value);
 		}
 
 		public string Target
 		{
-			get { return this.GetString("Target", "Console"); }
-			set { this.GetString("Target", value); }
+			get => GetString(nameof(Target), "Console");
+			set => GetString(nameof(Target), value);
 		}
 
 		public bool IncludeTimeStamps
 		{
-			get { return this.GetBoolean("IncludeTimeStamps", false); }
-			set { this.Set("IncludeTimeStamps", value); }
+			get => GetBoolean(nameof(IncludeTimeStamps), false);
+			set => Set(nameof(IncludeTimeStamps), value);
 		}
 
 		public string FileName
 		{
-			get { return this.GetString("FileName", ""); }
-			set { this.GetString("FileName", value); }
+			get => GetString(nameof(FileName), "");
+			set => GetString(nameof(FileName), value);
 		}
 
 		public Logger.Level MinimumLevel
 		{
-			get { return (Logger.Level)(this.GetInt("MinimumLevel", (int)Logger.Level.Info, true)); }
-			set { this.Set("MinimumLevel", (int)value); }
+			get => (Logger.Level)(GetInt(nameof(MinimumLevel), (int)Logger.Level.Info, true));
+			set => Set(nameof(MinimumLevel), (int)value);
 		}
 
 		public Logger.Level MaximumLevel
 		{
-			get { return (Logger.Level)(this.GetInt("MaximumLevel", (int)Logger.Level.Fatal, true)); }
-			set { this.Set("MaximumLevel", (int)value); }
+			get => (Logger.Level)(GetInt(nameof(MaximumLevel), (int)Logger.Level.Fatal, true));
+			set => Set(nameof(MaximumLevel), (int)value);
 		}
 
 		public bool ResetOnStartup
 		{
-			get { return this.GetBoolean("ResetOnStartup", false); }
-			set { this.Set("ResetOnStartup", value); }
+			get => GetBoolean(nameof(ResetOnStartup), false);
+			set => Set(nameof(ResetOnStartup), value);
 		}
 
-		public LogTargetConfig(string loggerName)
-			: base(loggerName) { }
+		public LogTargetConfig(string loggerName) : base(loggerName) { }
 	}
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer
 {
-	public sealed class Config : DiIiS_NA.Core.Config.Config
+	public sealed class GameServerConfig : DiIiS_NA.Core.Config.Config
 	{
 		public bool Enabled
 		{
@@ -170,9 +170,26 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(NephalemRiftProgressMultiplier), value);
 		}
 		
-		public static Config Instance { get; } = new();
+		/// <summary>
+		///	How much a health potion heals in percentage
+		/// </summary>
+		public float HealthPotionRestorePercentage
+		{
+			get => GetFloat(nameof(HealthPotionRestorePercentage), 60f);
+			set => Set(nameof(HealthPotionRestorePercentage), value);
+		}
+		
+		/// <summary>
+		/// Cooldown (in seconds) to use a health potion again.
+		/// </summary>
+		public float HealthPotionCooldown
+		{
+			get => GetFloat(nameof(HealthPotionCooldown), 30f);
+			set => Set(nameof(HealthPotionCooldown), value);
+		}
+		public static GameServerConfig Instance { get; } = new();
 
-		private Config() : base("Game-Server")
+		private GameServerConfig() : base("Game-Server")
 		{
 		}
 	}

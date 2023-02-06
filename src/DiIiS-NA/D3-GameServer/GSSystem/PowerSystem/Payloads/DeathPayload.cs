@@ -403,7 +403,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				{
 					grantedExp = (int)(grantedExp * plr.World.Game.XpModifier);
 
-					float tempExp = grantedExp * Config.Instance.RateExp;
+					float tempExp = grantedExp * GameServerConfig.Instance.RateExp;
 
 					plr.UpdateExp(Math.Max((int)tempExp, 1));
 					var a = (int)plr.Attributes[GameAttribute.Experience_Bonus];
@@ -597,7 +597,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			//Nephalem Rift
 			if ((Target.CurrentScene.Specification.SNOLevelAreas[0] is 332339 or 288482) && Target.World.Game.ActiveNephalemTimer && Target.World.Game.ActiveNephalemKilledMobs == false)
 			{
-				Target.World.Game.ActiveNephalemProgress += Config.Instance.NephalemRiftProgressMultiplier * (Target.Quality + 1);
+				Target.World.Game.ActiveNephalemProgress += GameServerConfig.Instance.NephalemRiftProgressMultiplier * (Target.Quality + 1);
 				Player master = null;
 				foreach (var plr in Target.World.Game.Players.Values)
 				{
@@ -878,7 +878,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 								// if seed is less than the drop rate, drop the item
 								if (seed < rate * (1f 
 								                   + plr.Attributes[GameAttribute.Magic_Find]) 
-								                * Config.Instance.RateDrop)
+								                * GameServerConfig.Instance.RateDrop)
 								{
 									//Logger.Debug("rate: {0}", rate);
 									var lootQuality = Target.World.Game.IsHardcore

@@ -104,11 +104,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			//445736 - p4_forest_snow_icecave_01
 			if (world.worldData.DynamicWorld && !worldSNO.IsNotDynamicWorld()) //Gardens of Hope - 2 lvl is NOT random
 			{
-				if (!Config.Instance.DRLGemu)
+				if (!GameServerConfig.Instance.DRLGemu)
 					Logger.Warn("DRLG-Emu is Disabled.");
 				string DRLGVersion = "1.8";
 				var WorldContainer = DBSessions.WorldSession.Query<DRLG_Container>().Where(dbt => dbt.WorldSNO == (int)worldSNO).ToList();
-				if (WorldContainer.Count > 0 && worldSNO != WorldSno.a1trdun_level05_templar && Config.Instance.DRLGemu)
+				if (WorldContainer.Count > 0 && worldSNO != WorldSno.a1trdun_level05_templar && GameServerConfig.Instance.DRLGemu)
 				{
 					DRLGEmuActive = true;
 					Logger.Warn("World - {0} [{1}] is dynamic! Found container, DRLG-Emu v{2} Activated!", worldAsset.Name, worldAsset.SNOId, DRLGVersion);

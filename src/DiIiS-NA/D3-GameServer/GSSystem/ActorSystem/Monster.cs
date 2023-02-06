@@ -97,26 +97,26 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			Attributes[GameAttribute.Hitpoints_Max] = (int)((int)monsterLevels.MonsterLevel[monsterLevel].HPMin + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, (int)monsterLevels.MonsterLevel[monsterLevel].HPDelta) * HpMultiplier * World.Game.HpModifier);
 			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = ((int)World.Game.ConnectedPlayers.Length + 1) * 1.5f;
-			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] *= Config.Instance.RateMonsterHP;
+			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] *= GameServerConfig.Instance.RateMonsterHP;
 			if (World.Game.ConnectedPlayers.Length > 1)
 				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative];// / 2f;
 			var hpMax = Attributes[GameAttribute.Hitpoints_Max];
 			var hpTotal = Attributes[GameAttribute.Hitpoints_Max_Total];
 			float damageMin = monsterLevels.MonsterLevel[World.Game.MonsterLevel].Dmg * DmgMultiplier;// * 0.5f;
 			float damageDelta = damageMin;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * Config.Instance.RateMonsterDMG;
+			Attributes[GameAttribute.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * GameServerConfig.Instance.RateMonsterDMG;
 			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = damageDelta;
 
 			if (monsterLevel > 30)
 			{
 				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative];// * 0.5f;
-				Attributes[GameAttribute.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * Config.Instance.RateMonsterDMG;// * 0.2f;
+				Attributes[GameAttribute.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * GameServerConfig.Instance.RateMonsterDMG;// * 0.2f;
 				Attributes[GameAttribute.Damage_Weapon_Delta, 0] = damageDelta;
 			}
 			if (monsterLevel > 60)
 			{
 				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative];// * 0.7f;
-				Attributes[GameAttribute.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * Config.Instance.RateMonsterDMG;// * 0.15f;
+				Attributes[GameAttribute.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * GameServerConfig.Instance.RateMonsterDMG;// * 0.15f;
 				//this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta * 0.5f;
 			}
 

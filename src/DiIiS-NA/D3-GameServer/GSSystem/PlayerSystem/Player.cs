@@ -2740,7 +2740,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     }
             }
             // Reset resurrection charges on zone change - TODO: do not reset charges on reentering the same zone
-            Attributes[GameAttribute.Corpse_Resurrection_Charges] = Config.Instance.ResurrectionCharges; 
+            Attributes[GameAttribute.Corpse_Resurrection_Charges] = GameServerConfig.Instance.ResurrectionCharges; 
 
 #if DEBUG
             Logger.Warn($"Player Location {Toon.Name}, Scene: {CurrentScene.SceneSNO.Name} SNO: {CurrentScene.SceneSNO.Id} LevelArea: {CurrentScene.Specification.SNOLevelAreas[0]}");

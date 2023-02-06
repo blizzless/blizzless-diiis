@@ -1353,15 +1353,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		
 		/// <summary>
 		/// Randomly sets unidentified flag on item.
-		/// If the item is unique, legendary, special or set, it will have <see cref="Config.ChanceHighQualityUnidentified"/>% chance to be unidentified.
-		/// Otherwise, it will have <see cref="Config.ChanceNormalUnidentified"/>% chance to be unidentified.
+		/// If the item is unique, legendary, special or set, it will have <see cref="GameServerConfig.ChanceHighQualityUnidentified"/>% chance to be unidentified.
+		/// Otherwise, it will have <see cref="GameServerConfig.ChanceNormalUnidentified"/>% chance to be unidentified.
 		/// </summary>
 		/// <param name="item">The item to set the flag</param>
 		private static void RandomSetUnidentified(Item item) => item.Unidentified = 
 			FastRandom.Instance.Chance(item.Name.Contains("unique", StringComparison.InvariantCultureIgnoreCase) 
 			|| item.ItemDefinition.Quality is ItemTable.ItemQuality.Legendary or ItemTable.ItemQuality.Special or ItemTable.ItemQuality.Set 
-			? Config.Instance.ChanceHighQualityUnidentified 
-			: Config.Instance.ChanceNormalUnidentified);
+			? GameServerConfig.Instance.ChanceHighQualityUnidentified 
+			: GameServerConfig.Instance.ChanceNormalUnidentified);
 
 		// Allows cooking a custom item.
 		public static Item Cook(Player player, string name)

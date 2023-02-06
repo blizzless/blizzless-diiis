@@ -194,13 +194,16 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				if (!Game.Empty)
 				{
 					SaveQuestProgress(true);
-					Logger.Trace($"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, completed $[underline white]${Quests[Game.CurrentQuest].Completed}$[/]$");
-					Game.BroadcastPlayers((client, player) => 
+					Logger.Trace(
+						$"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, completed $[underline white]${Quests[Game.CurrentQuest].Completed}$[/]$");
+					Game.BroadcastPlayers((client, player) =>
 					{
 						if (Game.CurrentQuest == 312429) return; // open world quest
-						
-						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp * Game.XpModifier);
-						int goldReward = (int)(Quests[Game.CurrentQuest].RewardGold * Game.GoldModifier);
+
+						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp *
+						                     Game.XpModifier);
+						int goldReward = (int)(Quests[Game.CurrentQuest].RewardGold *
+						                       Game.GoldModifier);
 						player.InGameClient.SendMessage(new QuestStepCompleteMessage()
 						{
 							QuestStepComplete = QuestStepComplete.CreateBuilder()
@@ -213,28 +216,34 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 								.SetIsQuestComplete(true)
 								.Build()
 						});
-						player.InGameClient.SendMessage(new GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
-						{
-							Place = new WorldPlace()
-							{
-								Position = player.Position,
-								WorldID = player.World.DynamicID(player),
-							},
+						player.InGameClient.SendMessage(
+							new GameServer.MessageSystem.Message.Definitions.Base.
+								FloatingAmountMessage()
+								{
+									Place = new WorldPlace()
+									{
+										Position = player.Position,
+										WorldID = player.World.DynamicID(player),
+									},
 
-							Amount = xpReward,
-							Type = GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Experience,
-						});
-						player.InGameClient.SendMessage(new GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
-						{
-							Place = new WorldPlace()
-							{
-								Position = player.Position,
-								WorldID = player.World.DynamicID(player),
-							},
+									Amount = xpReward,
+									Type = GameServer.MessageSystem.Message.Definitions.Base
+										.FloatingAmountMessage.FloatType.Experience,
+								});
+						player.InGameClient.SendMessage(
+							new GameServer.MessageSystem.Message.Definitions.Base.
+								FloatingAmountMessage()
+								{
+									Place = new WorldPlace()
+									{
+										Position = player.Position,
+										WorldID = player.World.DynamicID(player),
+									},
 
-							Amount = goldReward,
-							Type = GameServer.MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Gold,
-						});
+									Amount = goldReward,
+									Type = GameServer.MessageSystem.Message.Definitions.Base
+										.FloatingAmountMessage.FloatType.Gold,
+								});
 						player.UpdateExp(xpReward);
 						player.Inventory.AddGoldAmount(goldReward);
 						player.AddAchievementCounter(74987243307173, (uint)goldReward);
@@ -253,21 +262,25 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				{
 					Logger.WarnException(e, "Advance() exception caught:");
 				}
+
 				//Пока только для одного квеста
-			//	if (this.Game.CurrentQuest != 72221)
-			//		if (this.Game.CurrentStep != -1)
-						Advance();
+				//	if (this.Game.CurrentQuest != 72221)
+				//		if (this.Game.CurrentStep != -1)
+				Advance();
 			}
 
 			if (!Game.Empty)
 			{
 				RevealQuestProgress();
-				if ((Game.CurrentActEnum != ActEnum.OpenWorld && Config.Instance.AutoSaveQuests) || Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Saveable)
+				if ((Game.CurrentActEnum != ActEnum.OpenWorld && GameServerConfig.Instance.AutoSaveQuests) ||
+				    Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Saveable)
 					SaveQuestProgress(false);
 			}
+
 			OnQuestProgress();
 			AutoSetQuestMarker();
-			Logger.Trace($"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, step $[underline white]${Game.CurrentStep}$[/]$");
+			Logger.Trace(
+				$"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, step $[underline white]${Game.CurrentStep}$[/]$");
 		}
 
 		public void SideAdvance()

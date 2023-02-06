@@ -133,7 +133,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 			if (line == string.Empty)
 				return false;
 
-			if (line[0] != Config.Instance.CommandPrefix) // if line does not start with command-prefix
+			if (line[0] != CommandsConfig.Instance.CommandPrefix) // if line does not start with command-prefix
 				return false;
 
 			line = line.Substring(1); // advance to actual command.
@@ -153,9 +153,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 				output = 
 					invokerClient != null 
 						? CommandGroups.Where(pair => pair.Key.MinUserLevel > invokerClient?.Account.UserLevel)
-							.Aggregate(output, (current, pair) => current + ($"{Config.Instance.CommandPrefix}{pair.Key.Name}: {pair.Key.Help}\n\n")) 
+							.Aggregate(output, (current, pair) => current + ($"{CommandsConfig.Instance.CommandPrefix}{pair.Key.Name}: {pair.Key.Help}\n\n")) 
 						: CommandGroups
-							.Aggregate(output, (current, pair) => current + (($"$[underline green]${Config.Instance.CommandPrefix}{pair.Key.Name}$[/]$: {pair.Key.Help}\n\n")));
+							.Aggregate(output, (current, pair) => current + (($"$[underline green]${CommandsConfig.Instance.CommandPrefix}{pair.Key.Name}$[/]$: {pair.Key.Help}\n\n")));
 
 				return output + "Type 'help <command>' to get help about a specific command.";
 			}

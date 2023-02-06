@@ -17,7 +17,7 @@ namespace DiIiS_NA.Core.Config
 		{
 			try
 			{
-				ConfigFile = string.Format("{0}/{1}", FileHelpers.AssemblyRoot, "config.ini"); // the config file's location.
+				ConfigFile = $"{FileHelpers.AssemblyRoot}/{"config.ini"}"; // the config file's location.
 				Parser = new IniConfigSource(ConfigFile); // see if the file exists by trying to parse it.
 				_fileExists = true;
 			}
@@ -30,28 +30,28 @@ namespace DiIiS_NA.Core.Config
 			finally
 			{
 				// adds aliases so we can use On and Off directives in ini files.
-				Parser.Alias.AddAlias("On", true);
-				Parser.Alias.AddAlias("Off", false);
+				Parser!.Alias.AddAlias("On", true);
+				Parser!.Alias.AddAlias("Off", false);
 
 				// logger level aliases.
-				Parser.Alias.AddAlias("MinimumLevel", Logger.Level.Trace);
-				Parser.Alias.AddAlias("MaximumLevel", Logger.Level.Trace);
+				Parser!.Alias.AddAlias("MinimumLevel", Logger.Level.Trace);
+				Parser!.Alias.AddAlias("MaximumLevel", Logger.Level.Trace);
 			}
 
 			Parser.ExpandKeyValues();
 		}
 
-		static internal IConfig Section(string section) // Returns the asked config section.
+		internal static IConfig Section(string section) // Returns the asked config section.
 		{
 			return Parser.Configs[section];
 		}
 
-		static internal IConfig AddSection(string section) // Adds a config section.
+		internal static IConfig AddSection(string section) // Adds a config section.
 		{
 			return Parser.AddConfig(section);
 		}
 
-		static internal void Save() //  Saves the settings.
+		internal static void Save() //  Saves the settings.
 		{
 			if (_fileExists) Parser.Save();
 			else

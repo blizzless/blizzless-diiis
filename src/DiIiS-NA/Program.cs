@@ -62,14 +62,14 @@ namespace DiIiS_NA
         public static Thread WatchdogThread;
 
         public static string LoginServerIp = DiIiS_NA.LoginServer.Config.Instance.BindIP;
-        public static string GameServerIp = DiIiS_NA.GameServer.Config.Instance.BindIP;
+        public static string GameServerIp = DiIiS_NA.GameServer.GameServerConfig.Instance.BindIP;
         public static string RestServerIp = REST.Config.Instance.IP;
         public static string PublicGameServerIp = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
 
         public static int Build => 30;
         public static int Stage => 2;
         public static TypeBuildEnum TypeBuild => TypeBuildEnum.Beta;
-        private static bool DiabloCoreEnabled = DiIiS_NA.GameServer.Config.Instance.CoreActive;
+        private static bool DiabloCoreEnabled = DiIiS_NA.GameServer.GameServerConfig.Instance.CoreActive;
         
     static async Task LoginServer()
         {

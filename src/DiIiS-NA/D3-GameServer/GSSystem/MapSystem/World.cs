@@ -934,7 +934,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="position">The position for drop.</param>
 		public void SpawnGold(Actor source, Player player, int Min = -1)
 		{
-			int amount = (int)(LootManager.GetGoldAmount(player.Attributes[GameAttribute.Level]) * Game.GoldModifier * Config.Instance.RateMoney);
+			int amount = (int)(LootManager.GetGoldAmount(player.Attributes[GameAttribute.Level]) * Game.GoldModifier * GameServerConfig.Instance.RateMoney);
 			if (Min != -1)
 				amount += Min;
 			var item = ItemGenerator.CreateGold(player, amount); // somehow the actual ammount is not shown on ground /raist.
