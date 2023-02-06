@@ -46,12 +46,20 @@ namespace DiIiS_NA.REST.IO.Zlib
         struct ct_data
         {
             ushort freq;
-            public ushort Freq { get { return freq; } set { freq = value; } } // frequency count
-            public ushort Code { get { return freq; } set { freq = value; } }   // bit string
+            public ushort Freq { get => freq;
+                set => freq = value;
+            } // frequency count
+            public ushort Code { get => freq;
+                set => freq = value;
+            }   // bit string
 
             ushort dad;
-            public ushort Dad { get { return dad; } set { dad = value; } }      // father node in Huffman tree
-            public ushort Len { get { return dad; } set { dad = value; } }      // length of bit string
+            public ushort Dad { get => dad;
+                set => dad = value;
+            }      // father node in Huffman tree
+            public ushort Len { get => dad;
+                set => dad = value;
+            }      // length of bit string
 
             public ct_data(ushort freq, ushort dad)
             {

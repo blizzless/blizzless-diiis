@@ -64,12 +64,7 @@ namespace DiIiS_NA.LoginServer.Battle
 		private Channel _currentChannel;
 		public Channel CurrentChannel
 		{
-			get
-			{
-				if (_currentChannel == null)
-					_currentChannel = Channels.Values.FirstOrDefault(c => !c.IsChatChannel);
-				return _currentChannel;
-			}
+			get => _currentChannel ??= Channels.Values.FirstOrDefault(c => !c.IsChatChannel);
 			set
 			{
 				if (value == null)
@@ -506,10 +501,10 @@ namespace DiIiS_NA.LoginServer.Battle
 		}
 		public void SendMotd()
 		{
-			if (string.IsNullOrWhiteSpace(Config.Instance.Motd) || !Config.Instance.MotdEnabled)
+			if (string.IsNullOrWhiteSpace(LoginServerConfig.Instance.Motd) || !LoginServerConfig.Instance.MotdEnabled)
 				return;
 			Logger.Debug($"Motd sent to {Account.BattleTag}.");
-			SendServerWhisper(Config.Instance.Motd);
+			SendServerWhisper(LoginServerConfig.Instance.Motd);
 		}
 
         public override void ChannelInactive(IChannelHandlerContext context)

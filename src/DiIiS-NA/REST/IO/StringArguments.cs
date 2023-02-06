@@ -199,10 +199,7 @@ namespace DiIiS_NA.REST.IO
                 activeposition++;
         }
 
-        public char this[int index]
-        {
-            get { return activestring[index]; }
-        }
+        public char this[int index] => activestring[index];
 
         public string GetString()
         {

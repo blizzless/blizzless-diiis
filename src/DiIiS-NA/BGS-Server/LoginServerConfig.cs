@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.LoginServer
 {
-	public sealed class Config : Core.Config.Config
+	public sealed class LoginServerConfig : Core.Config.Config
 	{
 		public bool Enabled
 		{
@@ -59,9 +58,9 @@ namespace DiIiS_NA.LoginServer
 			set => Set(nameof(Motd), value);
 		}
 
-		public static readonly Config Instance = new();
+		public static readonly LoginServerConfig Instance = new();
 
-		private Config() : base("Battle-Server")
+		private LoginServerConfig() : base("Battle-Server")
 		{
 		}
 	}

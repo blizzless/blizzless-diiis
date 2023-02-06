@@ -16,6 +16,7 @@ using System.Net.Security;
 using System.Web;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.REST.Data.Forms;
+using DiIiS_NA.REST.Manager;
 
 namespace DiIiS_NA.REST
 {
@@ -74,7 +75,7 @@ namespace DiIiS_NA.REST
 
         public void HandleConnectRequest(HttpHeader request)
         {
-            SendResponse(HttpCode.OK, Global.Global.SessionMgr.GetFormInput());
+            SendResponse(HttpCode.OK, SessionManager.Instance.GetFormInput());
         }
 
         public void HandleInfoRequest(HttpHeader request)

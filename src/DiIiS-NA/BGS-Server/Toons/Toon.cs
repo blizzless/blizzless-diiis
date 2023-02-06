@@ -381,7 +381,7 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				if (_levelChanged || !Config.Instance.Enabled)
+				if (_levelChanged || !LoginServerConfig.Instance.Enabled)
 				{
 					_cachedLevel = DBToon.Level;
 					_levelChanged = false;
@@ -410,7 +410,7 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				if (_paragonLevelChanged || !Config.Instance.Enabled)
+				if (_paragonLevelChanged || !LoginServerConfig.Instance.Enabled)
 				{
 					_cachedParagonLevel = GameAccount.DBGameAccount.ParagonLevel;
 					_paragonLevelChanged = false;
