@@ -4093,12 +4093,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             },
             SkillSlotEverAssigned = 0x0F, //0xB4,
             PlaytimeTotal = Toon.TimePlayed,
-#if DEBUG
-            WaypointFlags = 0x0000ffff,
-#else
-					WaypointFlags = this.World.Game.WaypointFlags,
-#endif
-
+            WaypointFlags = GameServerConfig.Instance.UnlockAllWaypoints ? 0x0000ffff : this.World.Game.WaypointFlags,
             HirelingData = new HirelingSavedData()
             {
                 HirelingInfos = HirelingInfo,

@@ -187,7 +187,18 @@ namespace DiIiS_NA.GameServer
 			get => GetFloat(nameof(HealthPotionCooldown), 30f);
 			set => Set(nameof(HealthPotionCooldown), value);
 		}
+		
+		/// <summary>
+		/// Unlocks all waypoints in the campaign.
+		/// </summary>
+		public bool UnlockAllWaypoints
+		{
+			get => GetBoolean(nameof(UnlockAllWaypoints), false);
+			set => Set(nameof(UnlockAllWaypoints), value);
+		}
+		
 		public static GameServerConfig Instance { get; } = new();
+		
 
 		private GameServerConfig() : base("Game-Server")
 		{
