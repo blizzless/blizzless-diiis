@@ -1,10 +1,10 @@
 # Global settings for game
 
-Using the configuration file you can easily change the parameters of the world.
+The parameters of the world can be easily altered using the configuration file located within `config.ini`.
 
 ## Configuration
 
-Apply parameters in `config.ini` file to the server folder (It overwrites the default settings)
+The parameters specified in the `config.ini` file will be applied to the server folder, overwriting the default settings. For example, all values below use their default settings.
 
 ```ini
 [Game-Server]
