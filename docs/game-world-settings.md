@@ -20,6 +20,7 @@ ResurrectionCharges = 3
 BossHealthMultiplier = 6
 BossDamageMultiplier = 3
 AutoSaveQuests = false
+UnlockAllWaypoints = false
 ```
 
 ## Description
@@ -38,4 +39,5 @@ AutoSaveQuests = false
 | `BossHealthMultiplier` | Boss Health Multiplier |
 | `BossDamageMultiplier` | Boss Damage Multiplier |
 | `AutoSaveQuests` *in tests* | Force Save Quests/Step, even if Act's quest setup marked as Saveable = FALSE. Doesn't apply to OpenWorld games. |
+| `UnlockAllWaypoints` | Unlocks all waypoints in campaign |
 
