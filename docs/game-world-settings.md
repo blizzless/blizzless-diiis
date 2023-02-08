@@ -20,6 +20,9 @@ ResurrectionCharges = 3
 BossHealthMultiplier = 6
 BossDamageMultiplier = 3
 AutoSaveQuests = false
+NephalemRiftProgressMultiplier = 1
+HealthPotionRestorePercentage = 60
+HealthPotionCooldown = 30
 UnlockAllWaypoints = false
 ```
 
@@ -39,5 +42,8 @@ UnlockAllWaypoints = false
 | `BossHealthMultiplier` | Boss Health Multiplier |
 | `BossDamageMultiplier` | Boss Damage Multiplier |
 | `AutoSaveQuests` *in tests* | Force Save Quests/Step, even if Act's quest setup marked as Saveable = FALSE. Doesn't apply to OpenWorld games. |
+| `NephalemRiftProgressMultiplier` | Nephalem Rift Progress Modifier |
+| `HealthPotionRestorePercentage` | How much (from 1-100) a health potion will heal. |
+| `HealthPotionCooldown` | How much (in seconds) to use a health potion again. |
 | `UnlockAllWaypoints` | Unlocks all waypoints in campaign |
 
