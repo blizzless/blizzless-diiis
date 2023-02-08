@@ -1,10 +1,10 @@
-# Global settings for game
+# Game World Settings
 
 The parameters of the world can be easily altered using the configuration file located within `config.ini`.
 
 ## Configuration
 
-The parameters specified in the `config.ini` file will be applied to the server folder, overwriting the default settings. For example, all values below use their default settings.
+The parameters specified in the `config.ini` file will be saved to the server folder, overwriting the default settings. For example, all values below use their default settings.
 
 ```ini
 [Game-Server]
@@ -14,15 +14,22 @@ RateDrop = 1
 RateChangeDrop = 1
 RateMonsterHP = 1
 RateMonsterDMG = 1
+
 ChanceHighQualityUnidentified = 30
 ChanceNormalUnidentified = 5
+
 ResurrectionCharges = 3
+
 BossHealthMultiplier = 6
 BossDamageMultiplier = 3
+
 AutoSaveQuests = false
+
 NephalemRiftProgressMultiplier = 1
+
 HealthPotionRestorePercentage = 60
 HealthPotionCooldown = 30
+
 UnlockAllWaypoints = false
 ```
 
