@@ -67,7 +67,7 @@ namespace DiIiS_NA.REST
                 else
                 {
                     #if DEBUG
-                    Logger.Info($"$[red]$[404] REST Request: $[/]$ {httpRequest.Method.SafeAnsi()} {httpRequest.Path.SafeAnsi()}");
+                    Logger.Info($"$[red]$404 - REST Request: $[/]$ {httpRequest.Method.SafeAnsi()} {httpRequest.Path.SafeAnsi()}");
                     SendResponseHtml(HttpCode.NotFound, "404 Not Found");
                     #else
                     // sends 502 Bad Gateway to the client to prevent the client from trying to connect to the server again - in case it's a crawler or bad bot.
