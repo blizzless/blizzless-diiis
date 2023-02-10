@@ -15,9 +15,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
             Attributes = typeof(GameAttribute).GetFields()
                 .Where(a =>
                        a.IsStatic &&
-                       (a.FieldType.Name == "GameAttributeI" ||
-                        a.FieldType.Name == "GameAttributeF" ||
-                        a.FieldType.Name == "GameAttributeB"))
+                       a.FieldType.Name is nameof(GameAttributeI) or nameof(GameAttributeF) or nameof(GameAttributeB))
                 .Select(a => a.GetValue(null) as GameAttribute)
                 .OrderBy(a => a.Id)
                 .ToArray();
