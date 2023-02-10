@@ -38,6 +38,7 @@ IntelligenceMultiplier = 1
 IntelligenceParagonMultiplier = 1
 VitalityMultiplier = 1
 VitalityParagonMultiplier = 1
+; quests
 AutoSaveQuests = false
 ```
 
