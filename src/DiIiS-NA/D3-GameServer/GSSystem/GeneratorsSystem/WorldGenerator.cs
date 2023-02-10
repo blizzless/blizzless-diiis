@@ -1651,103 +1651,103 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 			Logger.Debug("Generating random world: {0}", worldSNO);
 			//Each DRLGParam is a level
-			if ((worldData.DRLGParams != null) && (worldData.DRLGParams.Count > 0))
-				for (int paramIndex = 0; paramIndex < worldData.DRLGParams.Count; paramIndex++)
+			if ((worldData.DRLGParams == null) || (worldData.DRLGParams.Count <= 0)) return true;
+			foreach (var drlgParam in worldData.DRLGParams)
+			{
+				//Logger.Debug("DRLGParams: LevelArea: {0}", drlgparam.LevelArea);
+				foreach (var tile in drlgParam.Tiles)
 				{
-					var drlgparam = worldData.DRLGParams[paramIndex];
-					//Logger.Debug("DRLGParams: LevelArea: {0}", drlgparam.LevelArea);
-					foreach (var tile in drlgparam.Tiles)
-					{
-						Logger.Trace("RandomGeneration: TileType: {0}", (TileTypes)tile.TileType);
-						tiles.Add(tile.SNOScene, tile);
-					}
-
-					TileInfo entrance = new TileInfo();
-					//HACK for Defiled Crypt as there is no tile yet with type 200. Maybe changing in DB would make more sense than putting this hack in
-					//	[11]: {[161961, Mooege.Common.MPQ.MPQAsset]}Worlds\\a1trDun_Cave_Old_Ruins_Random01.wrl
-					if (worldSNO == WorldSno.a1trdun_cave_old_ruins_random01)
-					{
-						entrance = tiles[131902];
-						tiles.Remove(131902);
-					}
-					else
-						entrance = GetTileInfo(tiles, TileTypes.Entrance);
-
-					Dictionary<Vector3D, TileInfo> worldTiles = new Dictionary<Vector3D, TileInfo>();
-
-					if (DRLGTemplate.Templates.ContainsKey(worldSNO))
-					{
-						DRLGTemplate.DRLGLayout world_layout = DRLGTemplate.Templates[worldSNO].PickRandom();
-						int coordY = 0;
-
-						foreach (List<int> row in world_layout.map)
-						{
-							int coordX = 0;
-							foreach (int cell in row)
-							{
-								if (cell != -1)
-								{
-									Vector3D TilePosition = new Vector3D(drlgparam.ChunkSize * (coordY + 1), drlgparam.ChunkSize * (coordX + 1), 0);
-
-									if (coordX == world_layout.enterPositionX && coordY == world_layout.enterPositionY)
-									{
-										if (cell <= 115)
-											worldTiles.Add(TilePosition, GetTileInfo(tiles, TileTypes.Entrance, cell));
-										else
-											worldTiles.Add(TilePosition, GetTile(tiles, cell));
-									}
-									else
-										if (coordX == world_layout.exitPositionX && coordY == world_layout.exitPositionY)
-									{
-										if (cell <= 115)
-											worldTiles.Add(TilePosition, GetTileInfo(tiles, TileTypes.Exit, cell));
-										else
-											worldTiles.Add(TilePosition, GetTile(tiles, cell));
-									}
-									else
-									{
-										if (cell <= 115)
-											worldTiles.Add(TilePosition, GetTileInfo(tiles, TileTypes.Normal, cell));
-										else
-											worldTiles.Add(TilePosition, GetTile(tiles, cell));
-									}
-								}
-
-								coordX++;
-							}
-							coordY++;
-						}
-					}
-					else
-					{
-						Vector3D initialStartTilePosition = new Vector3D(480, 480, 0);
-						worldTiles.Add(initialStartTilePosition, entrance);
-						AddAdjacentTiles(worldTiles, entrance, drlgparam.ChunkSize, tiles, 0, initialStartTilePosition);
-						AddFillers(worldTiles, tiles, drlgparam.ChunkSize);
-					}
-
-					foreach (var tile in worldTiles)
-					{
-						AddTile(worldData, tile.Value, tile.Key);
-					}
-
-					//AddFiller
-					Logger.Debug("RandomGeneration: LevelArea: {0}", drlgparam.LevelArea);
-					foreach (var chunk in worldData.SceneParams.SceneChunks)
-					{
-						if (drlgparam.LevelArea != -1)
-						{
-							chunk.SceneSpecification.SNOLevelAreas[0] = drlgparam.LevelArea;
-							chunk.SceneSpecification.SNOWeather = drlgparam.Weather;
-						}
-						if (worldSNO == WorldSno.x1_bog_01) //A5 marsh
-						{
-							if (chunk.PRTransform.Vector3D.Y < 960 || chunk.PRTransform.Vector3D.X < 720)
-								chunk.SceneSpecification.SNOLevelAreas[0] = 258142;
-						}
-					}
-					//ProcessCommands(drlgparam, worldData, paramIndex);
+					Logger.Trace("RandomGeneration: TileType: {0}", (TileTypes)tile.TileType);
+					tiles.Add(tile.SNOScene, tile);
 				}
+
+				TileInfo entrance = new TileInfo();
+				//HACK for Defiled Crypt as there is no tile yet with type 200. Maybe changing in DB would make more sense than putting this hack in
+				//	[11]: {[161961, Mooege.Common.MPQ.MPQAsset]}Worlds\\a1trDun_Cave_Old_Ruins_Random01.wrl
+				if (worldSNO == WorldSno.a1trdun_cave_old_ruins_random01)
+				{
+					entrance = tiles[131902];
+					tiles.Remove(131902);
+				}
+				else
+					entrance = GetTileInfo(tiles, TileTypes.Entrance);
+
+				Dictionary<Vector3D, TileInfo> worldTiles = new Dictionary<Vector3D, TileInfo>();
+
+				if (DRLGTemplate.Templates.ContainsKey(worldSNO))
+				{
+					DRLGTemplate.DRLGLayout world_layout = DRLGTemplate.Templates[worldSNO].PickRandom();
+					int coordY = 0;
+
+					foreach (List<int> row in world_layout.map)
+					{
+						int coordX = 0;
+						foreach (int cell in row)
+						{
+							if (cell != -1)
+							{
+								Vector3D tilePosition = new Vector3D(drlgParam.ChunkSize * (coordY + 1),
+									drlgParam.ChunkSize * (coordX + 1), 0);
+
+								if (coordX == world_layout.enterPositionX && coordY == world_layout.enterPositionY)
+								{
+									worldTiles.Add(tilePosition,
+										cell <= 115
+											? GetTileInfo(tiles, TileTypes.Entrance, cell)
+											: GetTile(tiles, cell));
+								}
+								else if (coordX == world_layout.exitPositionX &&
+								         coordY == world_layout.exitPositionY)
+								{
+									worldTiles.Add(tilePosition,
+										cell <= 115
+											? GetTileInfo(tiles, TileTypes.Exit, cell)
+											: GetTile(tiles, cell));
+								}
+								else
+								{
+									worldTiles.Add(tilePosition,
+										cell <= 115
+											? GetTileInfo(tiles, TileTypes.Normal, cell)
+											: GetTile(tiles, cell));
+								}
+							}
+
+							coordX++;
+						}
+
+						coordY++;
+					}
+				}
+				else
+				{
+					Vector3D initialStartTilePosition = new Vector3D(480, 480, 0);
+					worldTiles.Add(initialStartTilePosition, entrance);
+					AddAdjacentTiles(worldTiles, entrance, drlgParam.ChunkSize, tiles, 0, initialStartTilePosition);
+					AddFillers(worldTiles, tiles, drlgParam.ChunkSize);
+				}
+
+				foreach (var tile in worldTiles)
+				{
+					AddTile(worldData, tile.Value, tile.Key);
+				}
+
+				//AddFiller
+				Logger.Debug("RandomGeneration: LevelArea: {0}", drlgParam.LevelArea);
+				foreach (var chunk in worldData.SceneParams.SceneChunks)
+				{
+					if (drlgParam.LevelArea != -1)
+					{
+						chunk.SceneSpecification.SNOLevelAreas[0] = drlgParam.LevelArea;
+						chunk.SceneSpecification.SNOWeather = drlgParam.Weather;
+					}
+					if (worldSNO == WorldSno.x1_bog_01) //A5 marsh
+					{
+						if (chunk.PRTransform.Vector3D.Y < 960 || chunk.PRTransform.Vector3D.X < 720)
+							chunk.SceneSpecification.SNOLevelAreas[0] = 258142;
+					}
+				}
+			}
 			//Coordinates are added after selection of tiles and map
 			//Leave it for Defiler Crypt debugging
 			//AddTile(world, tiles[132218], new Vector3D(720, 480, 0));
