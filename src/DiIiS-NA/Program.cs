@@ -351,15 +351,21 @@ namespace DiIiS_NA
                 switch (targetConfig.Target.ToLower())
                 {
                     case "ansi":
-                        target = new AnsiTarget(targetConfig.MinimumLevel, targetConfig.MaximumLevel, targetConfig.IncludeTimeStamps);
+                        target = new AnsiTarget(
+                            targetConfig.MinimumLevel,
+                            targetConfig.MaximumLevel,
+                            targetConfig.IncludeTimeStamps,
+                            targetConfig.TimeStampFormat);
                         break;
                     case "console":
                         target = new ConsoleTarget(targetConfig.MinimumLevel, targetConfig.MaximumLevel,
-                                                   targetConfig.IncludeTimeStamps);
+                                                   targetConfig.IncludeTimeStamps,
+                                                   targetConfig.TimeStampFormat);
                         break;
                     case "file":
                         target = new FileTarget(targetConfig.FileName, targetConfig.MinimumLevel,
                                                 targetConfig.MaximumLevel, targetConfig.IncludeTimeStamps,
+                                                targetConfig.TimeStampFormat,
                                                 targetConfig.ResetOnStartup);
                         break;
                 }

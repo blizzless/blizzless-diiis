@@ -15,6 +15,7 @@ using System.IO;
 using System.Net;
 using System.Net.Security;
 using System.Web;
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.REST.Data.Forms;
 using DiIiS_NA.REST.Manager;
@@ -42,7 +43,7 @@ namespace DiIiS_NA.REST
             }
             else
             {
-                Logger.Debug($"$[yellow]$REST Request: $[/]$ {httpRequest.Method} {httpRequest.Path}");
+                Logger.Debug($"$[yellow]$REST Request: $[/]$ {httpRequest.Method.SafeAnsi()} {httpRequest.Path.SafeAnsi()}");
                 if (httpRequest.Path == "200")
                 {
 
@@ -66,11 +67,11 @@ namespace DiIiS_NA.REST
                 else
                 {
                     #if DEBUG
-                    Logger.Info($"$[red]$[404] REST Request: $[/]$ {httpRequest.Method} {httpRequest.Path}");
+                    Logger.Info($"$[red]$[404] REST Request: $[/]$ {httpRequest.Method.SafeAnsi()} {httpRequest.Path.SafeAnsi()}");
                     SendResponseHtml(HttpCode.NotFound, "404 Not Found");
                     #else
                     // sends 502 Bad Gateway to the client to prevent the client from trying to connect to the server again - in case it's a crawler or bad bot.
-                    Logger.Info($"$[red]$[404/502] REST Request: $[/]$ {httpRequest.Method} {httpRequest.Path}");
+                    Logger.Info($"$[red]$[404/502] REST Request: $[/]$ {httpRequest.Method.SafeAnsi()} {httpRequest.Path.SafeAnsi()}");
                     SendResponseHtml(HttpCode.BadGateway, "502 Bad Gateway");
                     return;
                     #endif

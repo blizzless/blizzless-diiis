@@ -22,11 +22,12 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="maxLevel">Maximum level of messages to emit</param>
 		/// <param name="includeTimeStamps">Include timestamps in log?</param>
 		/// <param name="reset">Reset log file on application startup?</param>
-		public FileTarget(string fileName, Logger.Level minLevel, Logger.Level maxLevel, bool includeTimeStamps, bool reset = false)
+		public FileTarget(string fileName, Logger.Level minLevel, Logger.Level maxLevel, bool includeTimeStamps, string timeStampFormat, bool reset = false)
 		{
 			MinimumLevel = minLevel;
 			MaximumLevel = maxLevel;
 			IncludeTimeStamps = includeTimeStamps;
+			TimeStampFormat = timeStampFormat;
 			_fileName = fileName;
 			_fileTimestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
 			_filePath = $"{LogConfig.Instance.LoggingRoot}/{_fileTimestamp}/{_fileName}";
@@ -61,7 +62,7 @@ namespace DiIiS_NA.Core.Logging
 		/// </summary>
 		/// <param name="message"></param>
 		/// <returns></returns>
-		private string NoColors(string message) => Regex.Replace(message, @"\$\[\[?[\w\W\d\s_\-\/]+\]\]?\$", "");
+		private string NoColors(string message) => Regex.Replace(message, @"\$\[\[?([\w\W\d\s_\-\/]+)\]\]?\$", "$1");
 
 		/// <param name="level">Log level.</param>
 		/// <param name="logger">Source of the log message.</param>

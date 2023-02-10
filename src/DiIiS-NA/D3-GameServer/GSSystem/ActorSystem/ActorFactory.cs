@@ -8,8 +8,10 @@ using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -35,11 +37,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				OnCreate.Invoke(actor, spawn);
 		}
 
-		public static Actor Create(World world, ActorSno sno, TagMap tags)
+		public static Actor Create(World world, ActorSno sno, TagMap tags, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
 			if (!MPQStorage.Data.Assets[SNOGroup.Actor].ContainsKey((int)sno))
 			{
-				Logger.Error("$[underline on white]$Actor asset not found$[/]$, Id: $[underline white]${0}$[/]$ - $[underline white]${1}$[/]$", (int)sno, sno.ToString());
+				var path = Path.GetFileName(filePath);
+				Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
 				return null;
 			}
 

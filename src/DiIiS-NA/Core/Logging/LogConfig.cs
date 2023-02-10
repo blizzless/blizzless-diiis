@@ -22,7 +22,7 @@
 			base(nameof(Logging)) 
 		{ }
 
-		public static LogConfig Instance = new();
+		public static readonly LogConfig Instance = new();
 	}
 	public class LogTargetConfig : Config.Config
 	{
@@ -66,6 +66,12 @@
 		{
 			get => GetBoolean(nameof(ResetOnStartup), false);
 			set => Set(nameof(ResetOnStartup), value);
+		}
+		
+		public string TimeStampFormat
+		{
+			get => GetString(nameof(TimeStampFormat), "dd/MM/yyyy HH:mm:ss");
+			set => Set(nameof(TimeStampFormat), value);
 		}
 
 		public LogTargetConfig(string loggerName) : base(loggerName) { }

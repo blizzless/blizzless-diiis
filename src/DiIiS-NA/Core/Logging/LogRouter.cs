@@ -16,7 +16,7 @@ namespace DiIiS_NA.Core.Logging
 			if (LogManager.Targets.Count == 0) // if we don't have any active log-targets,
 			{
 				var t = new FileTarget(@"log.txt", Logger.Level.PacketDump,
-													Logger.Level.PacketDump, false, true);
+													Logger.Level.PacketDump, false, "dd/MM/yyyy HH:mm:ss", true);
 				LogManager.Targets.Add(t);
 			}//	return; // just skip
 

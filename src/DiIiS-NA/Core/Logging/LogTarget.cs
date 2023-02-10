@@ -7,6 +7,7 @@ namespace DiIiS_NA.Core.Logging
 		public Logger.Level MinimumLevel { get; protected set; }
 		public Logger.Level MaximumLevel { get; protected set; }
 		public bool IncludeTimeStamps { get; protected set; }
+		public string TimeStampFormat { get; protected set; }
 
 		public virtual void LogMessage(Logger.Level level, string logger, string message)
 		{

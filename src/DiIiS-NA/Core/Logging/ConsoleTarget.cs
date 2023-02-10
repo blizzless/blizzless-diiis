@@ -11,11 +11,12 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="minLevel">Minimum level of messages to emit</param>
 		/// <param name="maxLevel">Maximum level of messages to emit</param>
 		/// <param name="includeTimeStamps">Include timestamps in log?</param>
-		public ConsoleTarget(Logger.Level minLevel, Logger.Level maxLevel, bool includeTimeStamps)
+		public ConsoleTarget(Logger.Level minLevel, Logger.Level maxLevel, bool includeTimeStamps, string timeStampFormat)
 		{
 			MinimumLevel = minLevel;
 			MaximumLevel = maxLevel;
 			IncludeTimeStamps = includeTimeStamps;
+			TimeStampFormat = timeStampFormat;
 		}
 		
 		
@@ -24,7 +25,7 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="message">Log message.</param>
 		public override void LogMessage(Logger.Level level, string logger, string message)
 		{
-			var timeStamp = IncludeTimeStamps ? "[[" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff") + "]] " : "";
+			var timeStamp = IncludeTimeStamps ? "[[" + DateTime.Now.ToString(TimeStampFormat) + "]] " : "";
 			AnsiConsole.MarkupLine($"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{Cleanup(logger),20}]]: {Cleanup(message)}[/]");
 		}
 
@@ -34,10 +35,11 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="exception">Exception to be included with log message.</param>
 		public override void LogException(Logger.Level level, string logger, string message, Exception exception)
 		{
-			var timeStamp = IncludeTimeStamps ? "[[" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff") + "]] " : "";
+			var timeStamp = IncludeTimeStamps ? "[[" + DateTime.Now.ToString(TimeStampFormat) + "]] " : "";
 			
 			AnsiConsole.MarkupLine(
 				$"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{Cleanup(logger),20}]]: {Cleanup(message)}[/] - [underline red on white][[{exception.GetType().Name}]][/][red] {Cleanup(exception.Message)}[/]");
+			AnsiConsole.WriteException(exception);
 		}
 		
 		
@@ -53,6 +55,7 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="x"></param>
 		/// <returns></returns>
 		string Cleanup(string x) => AnsiTarget.Beautify(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
+		
 
 		/// <param name="level"></param>
 		private static string SetColor(Logger.Level level, bool withBackground = false)

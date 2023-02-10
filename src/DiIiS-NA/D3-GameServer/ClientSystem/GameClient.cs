@@ -98,7 +98,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 
 									else if (message is ISelfHandler) (message as ISelfHandler).Handle(this); // if message is able to handle itself, let it do so.
 									else if (message.Id != 217)
-										Logger.Warn("{0} - ID:{1} has no consumer or self-handler.", message.GetType(), message.Id);
+										Logger.Warn("{0} - ID:{1} has no consumer or self-handler.", message.GetType().Name, message.Id);
 
 								}
 								catch (NotImplementedException)

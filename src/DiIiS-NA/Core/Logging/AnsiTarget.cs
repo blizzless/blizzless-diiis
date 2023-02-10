@@ -13,12 +13,13 @@ public class AnsiTarget : LogTarget
     private static CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
     private static bool _shutdown = true;
     
-    public AnsiTarget(Logger.Level minLevel, Logger.Level maxLevel, bool includeTimeStamps)
+    public AnsiTarget(Logger.Level minLevel, Logger.Level maxLevel, bool includeTimeStamps, string timeStampFormat)
     {
         _shutdown = false;
         MinimumLevel = minLevel;
         MaximumLevel = maxLevel;
         IncludeTimeStamps = includeTimeStamps;
+        TimeStampFormat = timeStampFormat;
 
         _table = new Table().Expand().ShowFooters().ShowHeaders().Border(TableBorder.Rounded);
 
@@ -78,7 +79,6 @@ public class AnsiTarget : LogTarget
         const string less = "deepskyblue2";
         const string diablo = "red3_1";
         const string d3 = "red";
-        const string mpq = "underline deepskyblue2";
         const string sql = "underline dodgerblue1";
         const string discord = "underline blue";
         const string notNull = "green";
@@ -89,14 +89,12 @@ public class AnsiTarget : LogTarget
             .Replace("Diablo III", $"[{diablo}]Diablo[/] [{d3}]III[/]", StringComparison.CurrentCultureIgnoreCase)
             .Replace(@"D3\.", $"[{diablo}]D[/][{d3}]3[/]", StringComparison.CurrentCultureIgnoreCase) //D3.*
             
-            .Replace("MPQ", $"[{mpq}]MPQ[/]")
             .Replace("SQL", $"[{sql}]SQL[/]")
             .Replace("Discord", $"[{discord}]Discord[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("not null", $"[{notNull}]is not null[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("!= null", $"[{notNull}]!= null[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("is null", $"[{@null}]is null[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("= null", $"[{@null}]= null[/]", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("null", $"[{unkNull}]null[/]", StringComparison.CurrentCultureIgnoreCase);
+            
+            .Replace("null", $"[{unkNull}]null[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace($"not [{unkNull}]null[/]", $"[{notNull}]is not null[/]", StringComparison.CurrentCultureIgnoreCase)
+            .Replace($"is [{unkNull}]null[/]", $"[{@null}]is null[/]", StringComparison.CurrentCultureIgnoreCase);
     }
 
     
@@ -121,7 +119,7 @@ public class AnsiTarget : LogTarget
         {
             if (IncludeTimeStamps)
                 _table.AddRow(
-                    new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
+                    new Markup(DateTime.Now.ToString(TimeStampFormat), GetStyleByLevel(level)),
                     new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
                     new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
                     new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
@@ -145,7 +143,7 @@ public class AnsiTarget : LogTarget
             if (IncludeTimeStamps)
             {
                 _table.AddRow(
-                    new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
+                    new Markup(DateTime.Now.ToString(TimeStampFormat), GetStyleByLevel(level)),
                     new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
                     new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
                     new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
@@ -170,7 +168,7 @@ public class AnsiTarget : LogTarget
         {
             if (IncludeTimeStamps)
                 _table.AddRow(
-                    new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
+                    new Markup(DateTime.Now.ToString(TimeStampFormat), GetStyleByLevel(level)),
                     new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
                     new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
                     new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
@@ -198,7 +196,7 @@ public class AnsiTarget : LogTarget
             if (IncludeTimeStamps)
             {
                 _table.AddRow(
-                    new Markup(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"), GetStyleByLevel(level)),
+                    new Markup(DateTime.Now.ToString(TimeStampFormat), GetStyleByLevel(level)),
                     new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
                     new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
                     new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),

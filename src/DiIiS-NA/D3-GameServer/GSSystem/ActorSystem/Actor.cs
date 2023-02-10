@@ -917,7 +917,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				});
 
 				// Reveal actor (creates actor and makes it visible to the player)
-				if (this is Player || this is NPC || this is Goblin)
+				if (this is Player or NPC or Goblin)
 					player.InGameClient.SendMessage(new ACDCreateActorMessage(objId));
 
 				TrickleMessage trickle = new TrickleMessage()
