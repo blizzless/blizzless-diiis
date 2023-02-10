@@ -4,11 +4,6 @@ using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -40,7 +35,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (Attributes[GameAttribute.Disabled] == true) return;
+			if (Attributes[GameAttributes.Disabled] == true) return;
 			try
 			{
 				Door waterfall = World.FindActorAt(ActorSno._caout_oasis_door_aqueduct_a_top, Position, 80.0f) as Door;
@@ -56,9 +51,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 				{
 					waterfall.Open();
 				}
-				Attributes[GameAttribute.Disabled] = true;
-				Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
-				Attributes[GameAttribute.Gizmo_State] = 1;
+				Attributes[GameAttributes.Disabled] = true;
+				Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
+				Attributes[GameAttributes.Gizmo_State] = 1;
 				Attributes.BroadcastChangedIfRevealed();
 			}
 			catch { }

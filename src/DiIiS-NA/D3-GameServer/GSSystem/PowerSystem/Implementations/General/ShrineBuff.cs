@@ -1,10 +1,5 @@
 ﻿using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -33,7 +28,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Experience_Bonus_Percent] += 0.25f;
+			Target.Attributes[GameAttributes.Experience_Bonus_Percent] += 0.25f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -41,7 +36,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Experience_Bonus_Percent] -= 0.25f;
+			Target.Attributes[GameAttributes.Experience_Bonus_Percent] -= 0.25f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}

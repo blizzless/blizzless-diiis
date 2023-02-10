@@ -4,11 +4,6 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 {
@@ -24,20 +19,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			proxySNO = ActorSno._hireling_scoundrel_proxy;
 			skillKit = 0x8AFE;
 			hirelingGBID = StringHashHelper.HashItemName("Scoundrel");
-			Attributes[GameAttribute.Hireling_Class] = 4;
-			var MS = Attributes[GameAttribute.Movement_Scalar];
-			var RS = Attributes[GameAttribute.Run_Speed_Granted];
-			var MSRP = Attributes[GameAttribute.Movement_Scalar_Reduction_Percent];
-			Attributes[GameAttribute.Movement_Scalar] = 3f;
-			Attributes[GameAttribute.Run_Speed_Granted] = 3f;
+			Attributes[GameAttributes.Hireling_Class] = 4;
+			var MS = Attributes[GameAttributes.Movement_Scalar];
+			var RS = Attributes[GameAttributes.Run_Speed_Granted];
+			var MSRP = Attributes[GameAttributes.Movement_Scalar_Reduction_Percent];
+			Attributes[GameAttributes.Movement_Scalar] = 3f;
+			Attributes[GameAttributes.Run_Speed_Granted] = 3f;
 			//this.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
-			WalkSpeed = 0.3f; Attributes[GameAttribute.Hitpoints_Max] = 9999f;
-			var HPM = Attributes[GameAttribute.Hitpoints_Max];
-			var HPMT = Attributes[GameAttribute.Hitpoints_Max_Total];
+			WalkSpeed = 0.3f; Attributes[GameAttributes.Hitpoints_Max] = 9999f;
+			var HPM = Attributes[GameAttributes.Hitpoints_Max];
+			var HPMT = Attributes[GameAttributes.Hitpoints_Max_Total];
 
-			Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
+			Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
             
-            Attributes[GameAttribute.Hitpoints_Max] = Attributes[GameAttribute.Hitpoints_Max_Total];
+            Attributes[GameAttributes.Hitpoints_Max] = Attributes[GameAttributes.Hitpoints_Max_Total];
 
 		}
 
@@ -117,7 +112,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
                     }
                 }
             });
-            Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+            Attributes[GameAttributes.Conversation_Icon, 0] = 1;
             Attributes.BroadcastChangedIfRevealed();
 
             return true;

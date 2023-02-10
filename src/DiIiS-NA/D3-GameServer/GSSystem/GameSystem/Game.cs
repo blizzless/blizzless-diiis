@@ -39,7 +39,6 @@ using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
 using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
 using Scene = DiIiS_NA.GameServer.GSSystem.MapSystem.Scene;
 using World = DiIiS_NA.GameServer.GSSystem.MapSystem.World;
-using DiIiS_NA.Core.MPQ.FileFormats;
 
 namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 {
@@ -1229,8 +1228,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			if (Players.Count == 1)
 			{
 				Logger.Trace("Game state is paused: {0}", message.Field0);
-				Players.First().Value.Attributes[GameAttribute.Disabled] = message.Field0;
-				Players.First().Value.Attributes[GameAttribute.Immobolize] = message.Field0;
+				Players.First().Value.Attributes[GameAttributes.Disabled] = message.Field0;
+				Players.First().Value.Attributes[GameAttributes.Immobolize] = message.Field0;
 				//this.Players.First().Value.Attributes[GameAttribute.Stunned] = message.Field0;
 				Players.First().Value.Attributes.BroadcastChangedIfRevealed();
 				//this.Players.First().Key.TickingEnabled = !message.Field0;
@@ -1295,7 +1294,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			if (winner != null && CurrentPvPRound > 1)
 			{
 				BroadcastMessage("Round is over! Winner: " + winner.Toon.Name);
-				if (winner.Attributes[GameAttribute.TeamID] == 2)
+				if (winner.Attributes[GameAttributes.TeamID] == 2)
 					RedTeamWins++;
 				else
 					BlueTeamWins++;
@@ -1306,7 +1305,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				BroadcastMessage("Battle is over!");
 				try
 				{
-					var totalWinner = Players.Values.Where(p => p.Attributes[GameAttribute.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
+					var totalWinner = Players.Values.Where(p => p.Attributes[GameAttributes.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
 					BroadcastMessage("Winner: " + totalWinner.Toon.Name);
 				}
 				catch { Logger.Warn("Exception on FindWinner()"); }
@@ -1330,7 +1329,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					}
 					else
 					{
-						var totalWinner = Players.Values.Where(p => p.Attributes[GameAttribute.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
+						var totalWinner = Players.Values.Where(p => p.Attributes[GameAttributes.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
 						BroadcastMessage("Winner: " + totalWinner.Toon.Name);
 					}
 
@@ -1347,7 +1346,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				foreach (var player in Players.Values)
 				{
 					player.Revive(player.CheckPointPosition);
-					player.GeneratePrimaryResource(player.Attributes[GameAttribute.Resource_Max_Total, player.Attributes[GameAttribute.Resource_Type_Primary]]);
+					player.GeneratePrimaryResource(player.Attributes[GameAttributes.Resource_Max_Total, player.Attributes[GameAttributes.Resource_Type_Primary]]);
 					player.World.BuffManager.AddBuff(player, player, new PowerSystem.Implementations.PVPSkirmishBuff(TickTimer.WaitSeconds(this, 15.0f)));
 				}
 				BroadcastMessage("Round " + CurrentPvPRound + ". Battle will commence in 15 seconds!");

@@ -14,7 +14,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
 		public Nephalem(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.In_Tiered_Loot_Run_Level] = 0;
+			Attributes[GameAttributes.In_Tiered_Loot_Run_Level] = 0;
 			//this.Attributes[GameAttribute.Conversation_Icon] = 2;
 			//this.ForceConversationSNO = 
 		}

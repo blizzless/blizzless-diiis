@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-using System.Text;
-using System.Threading.Tasks;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
 using DiIiS_NA.GameServer.MessageSystem;
@@ -479,7 +477,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.MonsterSkills
 	{
 		public override IEnumerable<TickTimer> Main()
 		{
-			if (User.Attributes[GameAttribute.Hitpoints_Cur] < User.Attributes[GameAttribute.Hitpoints_Max_Total])
+			if (User.Attributes[GameAttributes.Hitpoints_Cur] < User.Attributes[GameAttributes.Hitpoints_Max_Total])
 			{
 				for (int i = 0; i < 4; i++)
 				{

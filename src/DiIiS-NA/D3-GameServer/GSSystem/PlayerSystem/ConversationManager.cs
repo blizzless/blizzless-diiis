@@ -1,24 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DiIiS_NA.Core.Logging;
-using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Inventory;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-using DiIiS_NA.GameServer.Core;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
 using DiIiS_NA.GameServer.ClientSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
@@ -364,9 +355,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				{
 					if (player.InGameClient.Game.NephalemGreater)
 					{
-						plr.Attributes[GameAttribute.Jewel_Upgrades_Max] = 0;
-						plr.Attributes[GameAttribute.Jewel_Upgrades_Bonus] = 0;
-						plr.Attributes[GameAttribute.Jewel_Upgrades_Used] = 0;
+						plr.Attributes[GameAttributes.Jewel_Upgrades_Max] = 0;
+						plr.Attributes[GameAttributes.Jewel_Upgrades_Bonus] = 0;
+						plr.Attributes[GameAttributes.Jewel_Upgrades_Used] = 0;
 
 						plr.InGameClient.SendMessage(new QuestCounterMessage()
 						{
@@ -496,19 +487,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				player.InGameClient.Game.ActiveNephalemTimer = false;
 				player.InGameClient.Game.ActiveNephalemProgress = 0;
 				//Enabled banner /advocaite
-				player.Attributes[GameAttribute.Banner_Usable] = true;
+				player.Attributes[GameAttributes.Banner_Usable] = true;
 				var HubWorld = player.InGameClient.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
 				var NStone = HubWorld.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 				bool Activated = true;
 				NStone.SetIdleAnimation((AnimationSno)NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
 				NStone.PlayActionAnimation((AnimationSno)NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Closing]);
-				NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-				NStone.Attributes[GameAttribute.Untargetable] = !Activated;
-				NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-				NStone.Attributes[GameAttribute.Operatable] = Activated;
-				NStone.Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-				NStone.Attributes[GameAttribute.Disabled] = !Activated;
-				NStone.Attributes[GameAttribute.Immunity] = !Activated;
+				NStone.Attributes[GameAttributes.Team_Override] = (Activated ? -1 : 2);
+				NStone.Attributes[GameAttributes.Untargetable] = !Activated;
+				NStone.Attributes[GameAttributes.NPC_Is_Operatable] = Activated;
+				NStone.Attributes[GameAttributes.Operatable] = Activated;
+				NStone.Attributes[GameAttributes.Operatable_Story_Gizmo] = Activated;
+				NStone.Attributes[GameAttributes.Disabled] = !Activated;
+				NStone.Attributes[GameAttributes.Immunity] = !Activated;
 				NStone.Attributes.BroadcastChangedIfRevealed();
 
 				foreach (var p in HubWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal,
@@ -772,8 +763,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							if (wall.Position.Z > -23f)
 							{
 								wall.PlayAnimation(11, AnimationSno.trdun_cath_bonewall_a_death);
-								wall.Attributes[GameAttribute.Deleted_On_Server] = true;
-								wall.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
+								wall.Attributes[GameAttributes.Deleted_On_Server] = true;
+								wall.Attributes[GameAttributes.Could_Have_Ragdolled] = true;
 								wall.Attributes.BroadcastChangedIfRevealed();
 								wall.Destroy();
 							}
@@ -865,7 +856,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							player.World.GetActorBySNO(ActorSno._x1_npc_westmarch_introguy) as
 								ActorSystem.InteractiveNPC;
 						npc.Conversations.Clear();
-						npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+						npc.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 						npc.Attributes.BroadcastChangedIfRevealed();
 						break;
 

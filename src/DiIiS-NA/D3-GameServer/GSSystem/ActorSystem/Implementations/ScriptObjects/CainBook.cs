@@ -7,10 +7,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -25,8 +22,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public CainBook(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.TeamID] = 1;
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.TeamID] = 1;
+			Attributes[GameAttributes.MinimapActive] = true;
 		}
 
 		public override bool Reveal(Player player)

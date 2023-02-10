@@ -6,10 +6,6 @@ using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -20,8 +16,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public ChallengeObelisk(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.MinimapActive] = true;
             Attributes.BroadcastChangedIfRevealed();
         }
 
@@ -30,13 +26,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             bool activated = false;
 
             PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
-            Attributes[GameAttribute.Team_Override] = (activated ? -1 : 2);
-            Attributes[GameAttribute.Untargetable] = !activated;
-            Attributes[GameAttribute.NPC_Is_Operatable] = activated;
-            Attributes[GameAttribute.Operatable] = activated;
-            Attributes[GameAttribute.Operatable_Story_Gizmo] = activated;
-            Attributes[GameAttribute.Disabled] = !activated;
-            Attributes[GameAttribute.Immunity] = !activated;
+            Attributes[GameAttributes.Team_Override] = (activated ? -1 : 2);
+            Attributes[GameAttributes.Untargetable] = !activated;
+            Attributes[GameAttributes.NPC_Is_Operatable] = activated;
+            Attributes[GameAttributes.Operatable] = activated;
+            Attributes[GameAttributes.Operatable_Story_Gizmo] = activated;
+            Attributes[GameAttributes.Disabled] = !activated;
+            Attributes[GameAttributes.Immunity] = !activated;
             Attributes.BroadcastChangedIfRevealed();
             CollFlags = 0;
 
@@ -61,7 +57,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         {
             if (!base.Reveal(player))
                 return false;
-            if (!Attributes[GameAttribute.Operatable])
+            if (!Attributes[GameAttributes.Operatable])
             {
                 var actor = World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
                 actor.SetVisible(false);

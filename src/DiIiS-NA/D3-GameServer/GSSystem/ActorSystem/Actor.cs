@@ -249,7 +249,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			if (ActorData.TagMap.ContainsKey(ActorKeys.TeamID))
 			{
-				Attributes[GameAttribute.TeamID] = ActorData.TagMap[ActorKeys.TeamID];
+				Attributes[GameAttributes.TeamID] = ActorData.TagMap[ActorKeys.TeamID];
 				//Logger.Debug("Actor {0} has TeamID {1}", this.ActorSNO.Name, this.Attributes[GameAttribute.TeamID]);
 			}
 			Spawned = false;
@@ -362,12 +362,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (world.IsPvP)
 			{
 				//this.GlobalIDOverride = World.NewActorPvPID;
-				Attributes[GameAttribute.Team_Override] = 10;
+				Attributes[GameAttributes.Team_Override] = 10;
 			}
 			else
 			{
 				//this.GlobalIDOverride = 0;
-				Attributes[GameAttribute.Team_Override] = -1;
+				Attributes[GameAttributes.Team_Override] = -1;
 			}
 
 			World?.Enter(this); // let him enter first.
@@ -476,8 +476,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				plr.RevealActorsToPlayer();
 				plr.ReRevealPlayersToPlayer();
-				Attributes[GameAttribute.Looping_Animation_Start_Time] = -1;
-				Attributes[GameAttribute.Looping_Animation_End_Time] = -1;
+				Attributes[GameAttributes.Looping_Animation_Start_Time] = -1;
+				Attributes[GameAttributes.Looping_Animation_End_Time] = -1;
 				Attributes.BroadcastChangedIfRevealed();
 				//Refresh Inventory
 				plr.Inventory.RefreshInventoryToClient();
@@ -711,7 +711,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public void NotifyConversation(int status)
 		{
 			//0 - turn off, 1 - yellow "!", 2 - yellow "?", 3 - "*", 4 - bubble, 5 - silver "!", 6 - none (spams errors)
-			Attributes[GameAttribute.Conversation_Icon, 0] = status + 1;
+			Attributes[GameAttributes.Conversation_Icon, 0] = status + 1;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = (status > 0) ? 120356 : -1;
 
 			Attributes.BroadcastChangedIfRevealed();
@@ -719,7 +719,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void AddPercentHP(int percentage, bool GuidingLight = false)
 		{
-			float quantity = percentage * Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+			float quantity = percentage * Attributes[GameAttributes.Hitpoints_Max_Total] / 100;
 			AddHP(quantity, GuidingLight);
 		}
 
@@ -727,19 +727,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			if (quantity > 0)
 			{
-				if (Attributes[GameAttribute.Hitpoints_Cur] < Attributes[GameAttribute.Hitpoints_Max_Total])
+				if (Attributes[GameAttributes.Hitpoints_Cur] < Attributes[GameAttributes.Hitpoints_Max_Total])
 				{
-					Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
-						Attributes[GameAttribute.Hitpoints_Cur] + quantity,
-						Attributes[GameAttribute.Hitpoints_Max_Total]);
+					Attributes[GameAttributes.Hitpoints_Cur] = Math.Min(
+						Attributes[GameAttributes.Hitpoints_Cur] + quantity,
+						Attributes[GameAttributes.Hitpoints_Max_Total]);
 
 					Attributes.BroadcastChangedIfRevealed();
 				}
 			}
 			else
 			{
-				Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(
-					Attributes[GameAttribute.Hitpoints_Cur] + quantity,
+				Attributes[GameAttributes.Hitpoints_Cur] = Math.Max(
+					Attributes[GameAttributes.Hitpoints_Cur] + quantity,
 					0);
 
 				Attributes.BroadcastChangedIfRevealed();
@@ -772,13 +772,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void SetUsable(bool activated)
 		{
-			Attributes[GameAttribute.Team_Override] = activated ? -1 : 2;
-			Attributes[GameAttribute.Untargetable] = !activated;
-			Attributes[GameAttribute.NPC_Is_Operatable] = activated;
-			Attributes[GameAttribute.Operatable] = activated;
-			Attributes[GameAttribute.Operatable_Story_Gizmo] = activated;
-			Attributes[GameAttribute.Disabled] = !activated;
-			Attributes[GameAttribute.Immunity] = !activated;
+			Attributes[GameAttributes.Team_Override] = activated ? -1 : 2;
+			Attributes[GameAttributes.Untargetable] = !activated;
+			Attributes[GameAttributes.NPC_Is_Operatable] = activated;
+			Attributes[GameAttributes.Operatable] = activated;
+			Attributes[GameAttributes.Operatable_Story_Gizmo] = activated;
+			Attributes[GameAttributes.Disabled] = !activated;
+			Attributes[GameAttributes.Immunity] = !activated;
 			Attributes.BroadcastChangedIfRevealed();
 		}
 
@@ -906,7 +906,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				if (this is Monster)
 				{
-					Attributes[GameAttribute.Hitpoints_Cur] += 0.001f;
+					Attributes[GameAttributes.Hitpoints_Cur] += 0.001f;
 					Attributes.BroadcastChangedIfRevealed();
 				}
 

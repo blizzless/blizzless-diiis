@@ -3,21 +3,16 @@ using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using System;
 using System.Collections.Generic;
-using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations;
 using System.Linq;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
-using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
@@ -1478,7 +1473,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			{ 
 				NPC.Conversations.Clear();
 				NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-				NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+				NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 				NPC.Attributes.BroadcastChangedIfRevealed(); 
 
 			}
@@ -1490,7 +1485,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						NPC = N as InteractiveNPC;
 						NPC.Conversations.Clear();
 						NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-						NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+						NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 						NPC.Attributes.BroadcastChangedIfRevealed();
 					} 
 			}
@@ -1503,7 +1498,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (actor is InteractiveNPC npc)
 			{
 				npc.Conversations.Clear();
-				npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				npc.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 				npc.Attributes.BroadcastChangedIfRevealed();
 			}
 		}

@@ -7,12 +7,8 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.NPC;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-using DiIiS_NA.LoginServer.Toons;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -84,8 +80,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Vendor(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.TeamID] = 0;
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.TeamID] = 0;
+			Attributes[GameAttributes.MinimapActive] = true;
 			level = World.Game.InitialMonsterLevel;
 			_vendorGrid = new InventoryGrid(this, 1, 20, (int)EquipmentSlotId.Vendor);
 			PopulateItems();
@@ -189,7 +185,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				return;
 			}
 
-			int cost = (int)((item.GetPrice() * (1f + item.Attributes[GameAttribute.Item_Cost_Percent_Bonus])) * Math.Max(1, item.Attributes[GameAttribute.ItemStackQuantityLo]));
+			int cost = (int)((item.GetPrice() * (1f + item.Attributes[GameAttributes.Item_Cost_Percent_Bonus])) * Math.Max(1, item.Attributes[GameAttributes.ItemStackQuantityLo]));
 			//Check gold here
 			if (currentGold < cost)
 				return;

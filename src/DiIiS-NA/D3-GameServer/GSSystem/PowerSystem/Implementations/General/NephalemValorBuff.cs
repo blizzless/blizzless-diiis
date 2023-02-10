@@ -1,9 +1,4 @@
 ﻿using DiIiS_NA.GameServer.MessageSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -25,9 +20,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			base.Apply();
 			_currentBonus = 0.033f * StackCount;
-			Target.Attributes[GameAttribute.Magic_Find] += _currentBonus;
-			Target.Attributes[GameAttribute.Gold_Find] += _currentBonus;
-			Target.Attributes[GameAttribute.Experience_Bonus_Percent] += _currentBonus;
+			Target.Attributes[GameAttributes.Magic_Find] += _currentBonus;
+			Target.Attributes[GameAttributes.Gold_Find] += _currentBonus;
+			Target.Attributes[GameAttributes.Experience_Bonus_Percent] += _currentBonus;
 			User.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -40,14 +35,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (!stacked) return true;
 
-			Target.Attributes[GameAttribute.Magic_Find] -= _currentBonus;
-			Target.Attributes[GameAttribute.Gold_Find] -= _currentBonus;
-			Target.Attributes[GameAttribute.Experience_Bonus_Percent] -= _currentBonus;
+			Target.Attributes[GameAttributes.Magic_Find] -= _currentBonus;
+			Target.Attributes[GameAttributes.Gold_Find] -= _currentBonus;
+			Target.Attributes[GameAttributes.Experience_Bonus_Percent] -= _currentBonus;
 
 			_currentBonus = 0.033f * StackCount;
-			Target.Attributes[GameAttribute.Magic_Find] += _currentBonus;
-			Target.Attributes[GameAttribute.Gold_Find] += _currentBonus;
-			Target.Attributes[GameAttribute.Experience_Bonus_Percent] += _currentBonus;
+			Target.Attributes[GameAttributes.Magic_Find] += _currentBonus;
+			Target.Attributes[GameAttributes.Gold_Find] += _currentBonus;
+			Target.Attributes[GameAttributes.Experience_Bonus_Percent] += _currentBonus;
 			User.Attributes.BroadcastChangedIfRevealed();
 
 			return true;
@@ -56,9 +51,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Magic_Find] -= _currentBonus;
-			Target.Attributes[GameAttribute.Gold_Find] -= _currentBonus;
-			Target.Attributes[GameAttribute.Experience_Bonus_Percent] -= _currentBonus;
+			Target.Attributes[GameAttributes.Magic_Find] -= _currentBonus;
+			Target.Attributes[GameAttributes.Gold_Find] -= _currentBonus;
+			Target.Attributes[GameAttributes.Experience_Bonus_Percent] -= _currentBonus;
 			User.Attributes.BroadcastChangedIfRevealed();
 		}
 	}

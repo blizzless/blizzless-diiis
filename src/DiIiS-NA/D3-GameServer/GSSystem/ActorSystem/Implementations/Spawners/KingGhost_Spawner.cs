@@ -2,11 +2,7 @@
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
 {
@@ -28,7 +24,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Spawners
                     _collapsed = true;
 
                     var KingGhost = World.SpawnMonster(ActorSno._skeletonking_ghost, Position);
-                    KingGhost.Attributes[MessageSystem.GameAttribute.Untargetable] = true;
+                    KingGhost.Attributes[GameAttributes.Untargetable] = true;
                     KingGhost.Attributes.BroadcastChangedIfRevealed();
                     StartConversation(World, 17921);
                 }

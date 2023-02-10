@@ -5,16 +5,11 @@ using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.Core.Types.SNO;
-using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
@@ -72,7 +67,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						WorldID = Body.World.GlobalID,
 					},
 
-					Amount = item.Attributes[GameAttribute.ItemStackQuantityLo],
+					Amount = item.Attributes[GameAttributes.ItemStackQuantityLo],
 					Type = FloatingAmountMessage.FloatType.Gold,
 				});
 
@@ -101,7 +96,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						WorldID = Body.World.GlobalID,
 					},
 
-					Amount = item.Attributes[GameAttribute.ItemStackQuantityLo],
+					Amount = item.Attributes[GameAttributes.ItemStackQuantityLo],
 					Type = FloatingAmountMessage.FloatType.BloodStone,
 				});
 

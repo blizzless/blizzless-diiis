@@ -1,5 +1,4 @@
-﻿using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
@@ -794,9 +793,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA1");
-						cache.Attributes[GameAttribute.Act] = 0;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
-						cache.Attributes[GameAttribute.IsCrafted] = true;
+						cache.Attributes[GameAttributes.Act] = 0;
+						cache.Attributes[GameAttributes.Item_Quality_Level] = Game.Difficulty;
+						cache.Attributes[GameAttributes.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 						if(plr.Toon.IsSeasoned) plr.GrantCriteria(74987258781748);
 					}
@@ -835,9 +834,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA2");
-						cache.Attributes[GameAttribute.Act] = 100;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
-						cache.Attributes[GameAttribute.IsCrafted] = true;
+						cache.Attributes[GameAttributes.Act] = 100;
+						cache.Attributes[GameAttributes.Item_Quality_Level] = Game.Difficulty;
+						cache.Attributes[GameAttributes.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 						if (plr.Toon.IsSeasoned) plr.GrantCriteria(74987247833299);
 					}
@@ -876,9 +875,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA3");
-						cache.Attributes[GameAttribute.Act] = 200;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
-						cache.Attributes[GameAttribute.IsCrafted] = true;
+						cache.Attributes[GameAttributes.Act] = 200;
+						cache.Attributes[GameAttributes.Item_Quality_Level] = Game.Difficulty;
+						cache.Attributes[GameAttributes.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 
 						if (plr.Toon.IsSeasoned) plr.GrantCriteria(74987248811185);
@@ -918,9 +917,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA4");
-						cache.Attributes[GameAttribute.Act] = 300;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
-						cache.Attributes[GameAttribute.IsCrafted] = true;
+						cache.Attributes[GameAttributes.Act] = 300;
+						cache.Attributes[GameAttributes.Item_Quality_Level] = Game.Difficulty;
+						cache.Attributes[GameAttributes.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 						if (plr.Toon.IsSeasoned) plr.GrantCriteria(74987256262166);
 					}
@@ -959,9 +958,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					foreach (var plr in Game.Players.Values)
 					{
 						var cache = ItemGenerator.Cook(plr, "HoradricCacheA5");
-						cache.Attributes[GameAttribute.Act] = 400;
-						cache.Attributes[GameAttribute.Item_Quality_Level] = Game.Difficulty;
-						cache.Attributes[GameAttribute.IsCrafted] = true;
+						cache.Attributes[GameAttributes.Act] = 400;
+						cache.Attributes[GameAttributes.Item_Quality_Level] = Game.Difficulty;
+						cache.Attributes[GameAttributes.IsCrafted] = true;
 						plr.Inventory.PickUp(cache);
 						if (plr.Toon.IsSeasoned) plr.GrantCriteria(74987249495955);
 					}

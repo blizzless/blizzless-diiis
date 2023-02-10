@@ -61,10 +61,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (Target is Player plr)
 			{
 				if(plr.World.Game.NephalemGreater)
-					plr.Attributes[GameAttribute.Tiered_Loot_Run_Death_Count]++;
+					plr.Attributes[GameAttributes.Tiered_Loot_Run_Death_Count]++;
 				if (plr.SkillSet.HasPassive(218501) && plr.World.BuffManager.GetFirstBuff<SpiritVesselCooldownBuff>(plr) == null) //SpiritWessel (wd)
 				{
-					plr.Attributes[GameAttribute.Hitpoints_Cur] = plr.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.15f;
+					plr.Attributes[GameAttributes.Hitpoints_Cur] = plr.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.15f;
 					plr.Attributes.BroadcastChangedIfRevealed();
 					plr.World.BuffManager.AddBuff(plr, plr, new ActorGhostedBuff());
 					plr.World.BuffManager.AddBuff(plr, plr, new SpiritVesselCooldownBuff());
@@ -72,8 +72,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				}
 				if (plr.SkillSet.HasPassive(156484) && plr.World.BuffManager.GetFirstBuff<NearDeathExperienceCooldownBuff>(plr) == null) //NearDeathExperience (monk)
 				{
-					plr.Attributes[GameAttribute.Hitpoints_Cur] = plr.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.35f;
-					plr.Attributes[GameAttribute.Resource_Cur, 3] = plr.Attributes[GameAttribute.Resource_Max_Total, 3] * 0.35f;
+					plr.Attributes[GameAttributes.Hitpoints_Cur] = plr.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.35f;
+					plr.Attributes[GameAttributes.Resource_Cur, 3] = plr.Attributes[GameAttributes.Resource_Max_Total, 3] * 0.35f;
 					plr.Attributes.BroadcastChangedIfRevealed();
 					plr.World.BuffManager.AddBuff(plr, plr, new NearDeathExperienceCooldownBuff());
 					return;
@@ -85,7 +85,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 				if (hireling.Dead)
 				{
-					hireling.Attributes[GameAttribute.Hitpoints_Cur] = hireling.Attributes[GameAttribute.Hitpoints_Max_Total];
+					hireling.Attributes[GameAttributes.Hitpoints_Cur] = hireling.Attributes[GameAttributes.Hitpoints_Max_Total];
 					hireling.Attributes.BroadcastChangedIfRevealed();
 					hireling.Dead = false;
 				}
@@ -100,9 +100,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			var positionOfDeath = Target.Position;
 			if (!Target.World.Game.Working) return;
 
-			if (Target.Attributes.Contains(GameAttribute.Quest_Monster))
+			if (Target.Attributes.Contains(GameAttributes.Quest_Monster))
 			{
-				Target.Attributes[GameAttribute.Quest_Monster] = false;
+				Target.Attributes[GameAttributes.Quest_Monster] = false;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 
@@ -147,8 +147,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			if (Context != null)
 				if (Context.User is Player player) //Hitpoints_On_Kill
-					if (player.Attributes[GameAttribute.Hitpoints_On_Kill] > 0)
-						player.AddHP(player.Attributes[GameAttribute.Hitpoints_On_Kill]);
+					if (player.Attributes[GameAttributes.Hitpoints_On_Kill] > 0)
+						player.AddHP(player.Attributes[GameAttributes.Hitpoints_On_Kill]);
 
 			// HACK: add to hackish list thats used to defer deleting actor and filter it from powers targetting
 			if (!(Target is Boss))
@@ -190,7 +190,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (Target is Champion)
 			{
 				bool championsAlive = Target.GetActorsInRange<Champion>(1000).Where(c =>
-					c.GroupId == Target.GroupId && c.Attributes[GameAttribute.Hitpoints_Cur] > 0).ToList().Count > 0;
+					c.GroupId == Target.GroupId && c.Attributes[GameAttributes.Hitpoints_Cur] > 0).ToList().Count > 0;
 				if (championsAlive)
 					LootAndExp = false;
 			}
@@ -259,8 +259,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			Target.World.BuffManager.RemoveAllBuffs(Target);
 			Target.World.PowerManager.CancelAllPowers(Target);
 
-			Target.Attributes[GameAttribute.Deleted_On_Server] = true;
-			Target.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
+			Target.Attributes[GameAttributes.Deleted_On_Server] = true;
+			Target.Attributes[GameAttributes.Could_Have_Ragdolled] = true;
 			Target.Attributes.BroadcastChangedIfRevealed();
 
 			Target.World.BroadcastIfRevealed(plr => new DeathFadeTimeMessage()
@@ -272,11 +272,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}, Target);
 
 			if (Context?.User != null)
-				if (Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 247640] - 1) <
+				if (Math.Abs(Context.User.Attributes[GameAttributes.Item_Power_Passive, 247640] - 1) <
 				    Globals.FLOAT_TOLERANCE ||
-				    Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] - 1) <
+				    Math.Abs(Context.User.Attributes[GameAttributes.Item_Power_Passive, 249963] - 1) <
 				    Globals.FLOAT_TOLERANCE ||
-				    Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249954] - 1) <
+				    Math.Abs(Context.User.Attributes[GameAttributes.Item_Power_Passive, 249954] - 1) <
 				    Globals.FLOAT_TOLERANCE ||
 				    (float)FastRandom.Instance.NextDouble() < 0.1f ||
 				    Target.World.SNO == WorldSno.a1dun_random_level01)
@@ -321,7 +321,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			if (Context != null)
 				if (Context.User is Player player &&
-				    Math.Abs(player.Attributes[GameAttribute.Level] - Target.Attributes[GameAttribute.Level]) < 5)
+				    Math.Abs(player.Attributes[GameAttributes.Level] - Target.Attributes[GameAttributes.Level]) < 5)
 					player.KilledSeasonalTempCount++;
 
 			if (Context?.User is Player plr2)
@@ -408,18 +408,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			foreach (Player plr in players)
 			{
 				int grantedExp = 0;
-				if (plr.Attributes[GameAttribute.Level] <= Target.Attributes[GameAttribute.Level])
-					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttribute.Level]] /
-					                   (40 * Target.Attributes[GameAttribute.Level] * 0.85f) *
+				if (plr.Attributes[GameAttributes.Level] <= Target.Attributes[GameAttributes.Level])
+					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttributes.Level]] /
+					                   (40 * Target.Attributes[GameAttributes.Level] * 0.85f) *
 					                   (Target is Monster monster1 ? Math.Min(monster1.HpMultiplier, 3f) : 1f));
 				else
-					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttribute.Level]] /
-						(40 * Target.Attributes[GameAttribute.Level] * 0.85f) * (1 -
-							Math.Abs(plr.Attributes[GameAttribute.Level] - Target.Attributes[GameAttribute.Level]) /
+					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttributes.Level]] /
+						(40 * Target.Attributes[GameAttributes.Level] * 0.85f) * (1 -
+							Math.Abs(plr.Attributes[GameAttributes.Level] - Target.Attributes[GameAttributes.Level]) /
 							20));
 
-				grantedExp = (int)(grantedExp * (plr.Attributes[GameAttribute.Experience_Bonus_Percent] + 1));
-				grantedExp += (int)plr.Attributes[GameAttribute.Experience_Bonus];
+				grantedExp = (int)(grantedExp * (plr.Attributes[GameAttributes.Experience_Bonus_Percent] + 1));
+				grantedExp += (int)plr.Attributes[GameAttributes.Experience_Bonus];
 
 
 
@@ -430,8 +430,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					float tempExp = grantedExp * GameServerConfig.Instance.RateExp;
 
 					plr.UpdateExp(Math.Max((int)tempExp, 1));
-					var a = (int)plr.Attributes[GameAttribute.Experience_Bonus];
-					var a1 = (int)plr.Attributes[GameAttribute.Experience_Bonus_Percent];
+					var a = (int)plr.Attributes[GameAttributes.Experience_Bonus];
+					var a1 = (int)plr.Attributes[GameAttributes.Experience_Bonus_Percent];
 
 					plr.KilledMonstersTempCount++;
 				}
@@ -452,7 +452,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						if (PowerMath.Distance2D(plr.Position, monster.Position) >= 45f)
 							plr.AddAchievementCounter(74987243307061, 1);
 
-						if (monster.Attributes[GameAttribute.Feared])
+						if (monster.Attributes[GameAttributes.Feared])
 							plr.AddAchievementCounter(74987243307064, 1);
 
 						if (Context.PowerSNO == 75301)
@@ -467,20 +467,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 					if (plr.Toon.Class == ToonClass.Monk)
 					{
-						if (plr.Attributes[GameAttribute.Resource_Cur, 3] <
-						    plr.Attributes[GameAttribute.Resource_Max_Total, 3])
+						if (plr.Attributes[GameAttributes.Resource_Cur, 3] <
+						    plr.Attributes[GameAttributes.Resource_Max_Total, 3])
 							plr.AddAchievementCounter(74987243307550, 1);
 					}
 
 					if (plr.Toon.Class == ToonClass.Wizard)
 					{
-						if (monster.Attributes[GameAttribute.Frozen])
+						if (monster.Attributes[GameAttributes.Frozen])
 							plr.AddAchievementCounter(74987243307585, 1);
 					}
 
 					if (plr.Toon.Class == ToonClass.WitchDoctor)
 					{
-						if (Context.User.Attributes[GameAttribute.Team_Override] == 1)
+						if (Context.User.Attributes[GameAttributes.Team_Override] == 1)
 							plr.AddAchievementCounter(74987243307564, 1);
 					}
 
@@ -511,10 +511,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				}
 
 				if (plr.SkillSet.HasPassive(218191) && PowerMath.Distance2D(plr.Position, Target.Position) <=
-				    20f + plr.Attributes[GameAttribute.Gold_PickUp_Radius]) //GraveInjustice (WD)
+				    20f + plr.Attributes[GameAttributes.Gold_PickUp_Radius]) //GraveInjustice (WD)
 				{
-					plr.AddHP(plr.Attributes[GameAttribute.Hitpoints_Max_Total] / 100f);
-					plr.GeneratePrimaryResource(plr.Attributes[GameAttribute.Resource_Max_Total, 0] / 100f);
+					plr.AddHP(plr.Attributes[GameAttributes.Hitpoints_Max_Total] / 100f);
+					plr.GeneratePrimaryResource(plr.Attributes[GameAttributes.Resource_Max_Total, 0] / 100f);
 					foreach (var cdBuff in plr.World.BuffManager.GetBuffs<CooldownBuff>(plr))
 						cdBuff.Reduce(60);
 				}
@@ -532,7 +532,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 				if (Target.World.BuffManager.HasBuff<Leech.Rune_C_Buff>(Target))
 				{
-					Context.User.AddHP(Context.User.Attributes[GameAttribute.Hitpoints_On_Kill_Total] * 2f);
+					Context.User.AddHP(Context.User.Attributes[GameAttributes.Hitpoints_On_Kill_Total] * 2f);
 				}
 
 
@@ -544,27 +544,27 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							var avatar = new AvatarMelee(plr.World, Context, 0, 1f, Context.WaitSeconds(7f));
 							avatar.Brain.DeActivate();
 							avatar.Position = PowerContext.RandomDirection(plr.Position, 3f, 8f);
-							avatar.Attributes[GameAttribute.Untargetable] = true;
+							avatar.Attributes[GameAttributes.Untargetable] = true;
 
 							avatar.EnterWorld(avatar.Position);
 
 							Task.Delay(1000).ContinueWith(d =>
 							{
 								(avatar as Minion).Brain.Activate();
-								avatar.Attributes[GameAttribute.Untargetable] = false;
+								avatar.Attributes[GameAttributes.Untargetable] = false;
 								avatar.Attributes.BroadcastChangedIfRevealed();
 							});
 						}
 
 				if (plr.SkillSet.HasPassive(208571) &&
 				    PowerMath.Distance2D(plr.Position, Target.Position) <=
-				    12f + plr.Attributes[GameAttribute.Gold_PickUp_Radius] &&
+				    12f + plr.Attributes[GameAttributes.Gold_PickUp_Radius] &&
 				    FastRandom.Instance.Next(100) < 5) //CircleOfLife (WD)
 				{
 					var dog = new ZombieDog(plr.World, plr, 0);
 					dog.Brain.DeActivate();
 					dog.Position = PowerContext.RandomDirection(plr.Position, 3f, 8f);
-					dog.Attributes[GameAttribute.Untargetable] = true;
+					dog.Attributes[GameAttributes.Untargetable] = true;
 					dog.EnterWorld(dog.Position);
 					dog.PlayActionAnimation(AnimationSno.zombiedog_summon_01);
 					Context.DogsSummoned++;
@@ -572,7 +572,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					Task.Delay(1000).ContinueWith(d =>
 					{
 						dog.Brain.Activate();
-						dog.Attributes[GameAttribute.Untargetable] = false;
+						dog.Attributes[GameAttributes.Untargetable] = false;
 						dog.Attributes.BroadcastChangedIfRevealed();
 						dog.PlayActionAnimation(AnimationSno.zombiedog_idle_01);
 					});
@@ -595,7 +595,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			Logger.Trace(
 				$"$[green3_1]${Context?.User?.GetType().Name}$[/]$ killed monster, id: $[red]${{0}}$[/]$, level $[red]${{1}}$[/]$",
-				Target.SNO, Target.Attributes[GameAttribute.Level]);
+				Target.SNO, Target.Attributes[GameAttributes.Level]);
 
 
 			//handling quest triggers
@@ -730,13 +730,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}
 
 			//Nephalem Rift Boss Killed
-			if (Target.Attributes[GameAttribute.Is_Loot_Run_Boss])
+			if (Target.Attributes[GameAttributes.Is_Loot_Run_Boss])
 			{
 				Target.World.Game.ActiveNephalemKilledBoss = true;
 				foreach (var plr in Target.World.Game.Players.Values)
 				{
 					//Enable banner /advocaite
-					plr.Attributes[GameAttribute.Banner_Usable] = true;
+					plr.Attributes[GameAttributes.Banner_Usable] = true;
 					if (Target.World.Game.NephalemGreater)
 					{
 						plr.InGameClient.SendMessage(new QuestCounterMessage()
@@ -757,13 +757,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							Failed = false
 						});
 
-						plr.Attributes[GameAttribute.Jewel_Upgrades_Max] = 3;
-						plr.Attributes[GameAttribute.Jewel_Upgrades_Used] = 0;
-						plr.Attributes[GameAttribute.Jewel_Upgrades_Bonus] = 0;
-						if (plr.Attributes[GameAttribute.Tiered_Loot_Run_Death_Count] == 0)
-							plr.Attributes[GameAttribute.Jewel_Upgrades_Bonus]++;
+						plr.Attributes[GameAttributes.Jewel_Upgrades_Max] = 3;
+						plr.Attributes[GameAttributes.Jewel_Upgrades_Used] = 0;
+						plr.Attributes[GameAttributes.Jewel_Upgrades_Bonus] = 0;
+						if (plr.Attributes[GameAttributes.Tiered_Loot_Run_Death_Count] == 0)
+							plr.Attributes[GameAttributes.Jewel_Upgrades_Bonus]++;
 						if (plr.InGameClient.Game.NephalemBuff)
-							plr.Attributes[GameAttribute.Jewel_Upgrades_Bonus]++;
+							plr.Attributes[GameAttributes.Jewel_Upgrades_Bonus]++;
 
 						plr.InGameClient.Game.LastTieredRiftTimeout =
 							(int)((plr.InGameClient.Game.TiredRiftTimer.TimeoutTick -
@@ -833,10 +833,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					var orek = hubWorld.GetActorBySNO(ActorSno._x1_lr_nephalem) as InteractiveNPC;
 					orek.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(340878));
 					orek.ForceConversationSNO = 340878;
-					orek.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
-					orek.Attributes[GameAttribute.Conversation_Icon, 1] = 2;
-					orek.Attributes[GameAttribute.Conversation_Icon, 2] = 2;
-					orek.Attributes[GameAttribute.Conversation_Icon, 3] = 2;
+					orek.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
+					orek.Attributes[GameAttributes.Conversation_Icon, 1] = 2;
+					orek.Attributes[GameAttributes.Conversation_Icon, 2] = 2;
+					orek.Attributes[GameAttributes.Conversation_Icon, 3] = 2;
 					orek.Attributes.BroadcastChangedIfRevealed();
 					// Unique spawn
 					Target.World.SpawnBloodShards(Target, plr, RandomHelper.Next(10, 30));
@@ -853,7 +853,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (Context != null)
 			{
 				if (Context.User is Player && Target.World.Game.MonsterLevel >= 70 &&
-				    Context.User.Attributes[GameAttribute.Level] == 70) //keys
+				    Context.User.Attributes[GameAttributes.Level] == 70) //keys
 				{
 					switch (Target)
 					{
@@ -931,15 +931,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							//Logger.Debug("seed: {0}", seed);
 							var dropRates = Target.World.Game.IsSeasoned
 								? LootManager.GetSeasonalDropRates((int)Target.Quality,
-									Target.Attributes[GameAttribute.Level])
-								: LootManager.GetDropRates((int)Target.Quality, Target.Attributes[GameAttribute.Level]);
+									Target.Attributes[GameAttributes.Level])
+								: LootManager.GetDropRates((int)Target.Quality, Target.Attributes[GameAttributes.Level]);
 
 							float seed = (float)FastRandom.Instance.NextDouble();
 							foreach (float rate in dropRates)
 							{
 								// if seed is less than the drop rate, drop the item
 								if (seed < rate * (1f
-								                   + plr.Attributes[GameAttribute.Magic_Find])
+								                   + plr.Attributes[GameAttributes.Magic_Find])
 								                * GameServerConfig.Instance.RateDrop)
 								{
 									//Logger.Debug("rate: {0}", rate);
@@ -1053,7 +1053,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					if (RandomHelper.Next(0, 100) > 40 && ((Player)Context.User).Toon.Class == ToonClass.Necromancer)
 					{
 						var flesh = Context.User.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, positionOfDeath);
-						flesh.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO] = (int)Target.SNO;
+						flesh.Attributes[GameAttributes.Necromancer_Corpse_Source_Monster_SNO] = (int)Target.SNO;
 						flesh.Attributes.BroadcastChangedIfRevealed();
 					}
 			}
@@ -1187,7 +1187,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 		{
 			//death implementation
 			Player player = (Player)Target;
-			if (Math.Abs(player.Attributes[GameAttribute.Item_Power_Passive, 248629] - 1) < Globals.FLOAT_TOLERANCE)
+			if (Math.Abs(player.Attributes[GameAttributes.Item_Power_Passive, 248629] - 1) < Globals.FLOAT_TOLERANCE)
 				player.PlayEffectGroup(248680);
 			player.StopCasting();
 			Target.World.BuffManager.RemoveAllBuffs(Target, false);
@@ -1219,7 +1219,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					player.InGameClient.SendMessage(new DeathPlayerMesage(Opcodes.DeathPlayerMesage) { PlayerIndex = player.PlayerIndex, });
 			}
 			else
-				if (!player.World.Game.Players.Values.Any(p => p.Attributes[GameAttribute.TeamID] == player.Attributes[GameAttribute.TeamID] && !p.Dead))
+				if (!player.World.Game.Players.Values.Any(p => p.Attributes[GameAttributes.TeamID] == player.Attributes[GameAttributes.TeamID] && !p.Dead))
 				player.World.Game.StartPvPRound();
 
 			/*if (player.World.Game.IsHardcore)

@@ -7,11 +7,6 @@ using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -84,7 +79,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	public class DebuffBlind : SimpleBooleanStatusDebuff
 	{
 		public DebuffBlind(TickTimer timeout)
-			: base(GameAttribute.Blind, GameAttribute.Immune_To_Blind, FloatingNumberMessage.FloatType.Blinded)
+			: base(GameAttributes.Blind, GameAttributes.Immune_To_Blind, FloatingNumberMessage.FloatType.Blinded)
 		{
 			Timeout = timeout;
 		}
@@ -133,9 +128,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (payload.Target == Target && payload is HitPayload)
 			{
-				if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 15)
+				if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 15)
 				{
-					Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+					Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
 					Target.Attributes.BroadcastChangedIfRevealed();
 					Remove();
 				}
@@ -193,19 +188,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public float Percentage;
 
 		public DebuffChilled(float percentage, TickTimer timeout)
-			: base(GameAttribute.Chilled, null, null)
+			: base(GameAttributes.Chilled, null, null)
 		{
 			Percentage = percentage;
 			Timeout = timeout;
 		}
 		public override bool Apply()
 		{
-			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity] == true)
+			if (!base.Apply() || Target.Attributes[GameAttributes.Immunity] == true)
 				return false;
 
 			Target.WalkSpeed *= (1f - Percentage);
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= Percentage;
-			Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += Percentage;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 
 			if (Target is Player)
@@ -221,8 +216,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			base.Remove();
 			Target.WalkSpeed /= (1f - Percentage);
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] += Percentage;
-			Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= Percentage;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] += Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -233,14 +228,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	{
 		public float Speed = 0;
 		public DebuffStunned(TickTimer timeout)
-			: base(GameAttribute.Stunned, GameAttribute.Stun_Immune, FloatingNumberMessage.FloatType.Stunned)
+			: base(GameAttributes.Stunned, GameAttributes.Stun_Immune, FloatingNumberMessage.FloatType.Stunned)
 		{
 			Timeout = timeout;
 		}
 
 		public override bool Apply()
 		{
-			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity] == true)
+			if (!base.Apply() || Target.Attributes[GameAttributes.Immunity] == true)
 				return false;
 
 
@@ -281,7 +276,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	public class AntiStun : SimpleBooleanStatusDebuff
 	{
 		public AntiStun(TickTimer timeout)
-			: base(GameAttribute.Stun_Immune, null, FloatingNumberMessage.FloatType.BrokeStun)
+			: base(GameAttributes.Stun_Immune, null, FloatingNumberMessage.FloatType.BrokeStun)
 		{
 			Timeout = timeout;
 		}
@@ -303,14 +298,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	public class DebuffFeared : SimpleBooleanStatusDebuff
 	{
 		public DebuffFeared(TickTimer timeout)
-			: base(GameAttribute.Feared, GameAttribute.Fear_Immune, FloatingNumberMessage.FloatType.Feared)
+			: base(GameAttributes.Feared, GameAttributes.Fear_Immune, FloatingNumberMessage.FloatType.Feared)
 		{
 			Timeout = timeout;
 		}
 
 		public override bool Apply()
 		{
-			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity] == true)
+			if (!base.Apply() || Target.Attributes[GameAttributes.Immunity] == true)
 				return false;
 
 			if (Target is Player)
@@ -330,16 +325,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	public class DebuffRooted : SimpleBooleanStatusDebuff
 	{
 		public DebuffRooted(TickTimer timeout)
-			: base(GameAttribute.IsRooted, GameAttribute.Root_Immune, FloatingNumberMessage.FloatType.Rooted)
+			: base(GameAttributes.IsRooted, GameAttributes.Root_Immune, FloatingNumberMessage.FloatType.Rooted)
 		{
 			Timeout = timeout;
 		}
 		//Seems there is no Rooted attribute.. so Stunned does the same thing.
 		public override bool Apply()
 		{
-			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity] == true)
+			if (!base.Apply() || Target.Attributes[GameAttributes.Immunity] == true)
 				return false;
-			Target.Attributes[GameAttribute.Stunned] = true;
+			Target.Attributes[GameAttributes.Stunned] = true;
 			Target.Attributes.BroadcastChangedIfRevealed();
 
 			if (Target is Player)
@@ -356,7 +351,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Stunned] = false;
+			Target.Attributes[GameAttributes.Stunned] = false;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -369,18 +364,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public float Percentage;
 
 		public DebuffSlowed(float percentage, TickTimer timeout)
-			: base(GameAttribute.Slow, GameAttribute.Slowdown_Immune, FloatingNumberMessage.FloatType.Snared)
+			: base(GameAttributes.Slow, GameAttributes.Slowdown_Immune, FloatingNumberMessage.FloatType.Snared)
 		{
 			Percentage = percentage;
 			Timeout = timeout;
 		}
 		public override bool Apply()
 		{
-			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity] == true)
+			if (!base.Apply() || Target.Attributes[GameAttributes.Immunity] == true)
 				return false;
 			Target.WalkSpeed *= (1f - Percentage);
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= Percentage;
-			Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += Percentage;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 
 			if (Target is Player)
@@ -396,8 +391,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			base.Remove();
 			Target.WalkSpeed /= (1f - Percentage);
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] += Percentage;
-			Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= Percentage;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] += Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -412,7 +407,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		}
 		public override bool Apply()
 		{
-			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity] == true)
+			if (!base.Apply() || Target.Attributes[GameAttributes.Immunity] == true)
 				return false;
 
 			try
@@ -444,14 +439,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 	public class DebuffFrozen : SimpleBooleanStatusDebuff
 	{
 		public DebuffFrozen(TickTimer timeout)
-			: base(GameAttribute.Frozen, GameAttribute.Freeze_Immune, FloatingNumberMessage.FloatType.Frozen)
+			: base(GameAttributes.Frozen, GameAttributes.Freeze_Immune, FloatingNumberMessage.FloatType.Frozen)
 		{
 			Timeout = timeout;
 		}
 
 		public override bool Apply()
 		{
-			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity])
+			if (!base.Apply() || Target.Attributes[GameAttributes.Immunity])
 				return false;
 
 			if (Target is Player player)
@@ -474,20 +469,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public float Percentage;
 
 		public SlowTimeDebuff(float percentage, TickTimer timeout)
-			: base(GameAttribute.Slow, GameAttribute.Slowdown_Immune, FloatingNumberMessage.FloatType.Snared)
+			: base(GameAttributes.Slow, GameAttributes.Slowdown_Immune, FloatingNumberMessage.FloatType.Snared)
 		{
 			Percentage = percentage;
 			Timeout = timeout;
 		}
 		public override bool Apply()
 		{
-			if (!base.Apply() || Target.Attributes[GameAttribute.Immunity] == true)
+			if (!base.Apply() || Target.Attributes[GameAttributes.Immunity] == true)
 				return false;
 			//is my projectile speed correct?
 			Target.WalkSpeed *= (1f - Percentage);
-			Target.Attributes[GameAttribute.Projectile_Speed] += Target.Attributes[GameAttribute.Projectile_Speed] * 0.1f;
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= Percentage;
-			Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += Percentage;
+			Target.Attributes[GameAttributes.Projectile_Speed] += Target.Attributes[GameAttributes.Projectile_Speed] * 0.1f;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -496,9 +491,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			base.Remove();
 			Target.WalkSpeed /= (1f - Percentage);
-			Target.Attributes[GameAttribute.Projectile_Speed] += Target.Attributes[GameAttribute.Projectile_Speed] / 0.1f;
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] += Percentage;
-			Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= Percentage;
+			Target.Attributes[GameAttributes.Projectile_Speed] += Target.Attributes[GameAttributes.Projectile_Speed] / 0.1f;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] += Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -519,7 +514,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] += Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] += Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -527,7 +522,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] -= Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] -= Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -547,8 +542,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Casting_Speed_Percent] += Percentage;
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] += Percentage;
+			Target.Attributes[GameAttributes.Casting_Speed_Percent] += Percentage;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] += Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -556,8 +551,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Casting_Speed_Percent] -= Percentage;
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= Percentage;
+			Target.Attributes[GameAttributes.Casting_Speed_Percent] -= Percentage;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -634,7 +629,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += Regen;
+			Target.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += Regen;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -642,7 +637,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] -= Regen;
+			Target.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] -= Regen;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -662,8 +657,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Casting_Speed_Bonus] += Percentage;
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Bonus] += Percentage;
+			Target.Attributes[GameAttributes.Casting_Speed_Bonus] += Percentage;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Bonus] += Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -671,8 +666,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Casting_Speed_Bonus] -= Percentage;
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Bonus] -= Percentage;
+			Target.Attributes[GameAttributes.Casting_Speed_Bonus] -= Percentage;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Bonus] -= Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -692,7 +687,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] += Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] += Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -700,7 +695,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] -= Percentage;
+			Target.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] -= Percentage;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}

@@ -101,17 +101,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							float result;
 							if (FormulaScript.Evaluate(effect.Formula.ToArray(), new ItemRandomHelper(FastRandom.Instance.Next()), out result))
 							{
-								if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeF)
+								if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 									if (effect.SNOParam != -1)
 										monster.Attributes[attr, effect.SNOParam] += result;
 									else
 										monster.Attributes[attr] += result;
 								}
-								else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+								else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 									if (effect.SNOParam != -1)
 										monster.Attributes[attr, effect.SNOParam] += (int)result;
 									else
@@ -187,17 +187,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								//var tmpAttr = GameAttribute.Attributes[effect.AttributeId];
 								//var attrName = tmpAttr.Name;
 
-								if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeF)
+								if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 									if (effect.SNOParam != -1)
 										monster.Attributes[attr, effect.SNOParam] += result;
 									else
 										monster.Attributes[attr] += result;
 								}
-								else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+								else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 									if (effect.SNOParam != -1)
 										monster.Attributes[attr, effect.SNOParam] += (int)result;
 									else

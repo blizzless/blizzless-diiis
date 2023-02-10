@@ -70,7 +70,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply())
 					return false;
-				User.Attributes[GameAttribute.Running_Rate] = User.Attributes[GameAttribute.Running_Rate] * EvalTag(PowerKeys.WalkingSpeedMultiplier);
+				User.Attributes[GameAttributes.Running_Rate] = User.Attributes[GameAttributes.Running_Rate] * EvalTag(PowerKeys.WalkingSpeedMultiplier);
 				User.Attributes.BroadcastChangedIfRevealed();
 				/*
 				[009863] [Anim] SkeletonKing_Whirlwind_end
@@ -86,7 +86,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 				User.PlayActionAnimation(AnimationSno.skeletonking_whirlwind_end);
-				User.Attributes[GameAttribute.Running_Rate] = User.Attributes[GameAttribute.Running_Rate] / EvalTag(PowerKeys.WalkingSpeedMultiplier);
+				User.Attributes[GameAttributes.Running_Rate] = User.Attributes[GameAttributes.Running_Rate] / EvalTag(PowerKeys.WalkingSpeedMultiplier);
 				User.Attributes.BroadcastChangedIfRevealed();
 			}
 
@@ -374,10 +374,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				if (Target.Attributes[GameAttribute.Root_Immune] == false)
+				if (Target.Attributes[GameAttributes.Root_Immune] == false)
 				{
 					eff.PlayActionAnimation(AnimationSno.a4dun_diablo_bone_prison_closing);
-					Target.Attributes[GameAttribute.IsRooted] = true;
+					Target.Attributes[GameAttributes.IsRooted] = true;
 					Target.Attributes.BroadcastChangedIfRevealed();
 				}
 
@@ -387,7 +387,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				eff.PlayActionAnimation(AnimationSno.a4dun_diablo_bone_prison_opening);
 				base.Remove();
-				Target.Attributes[GameAttribute.IsRooted] = false;
+				Target.Attributes[GameAttributes.IsRooted] = false;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}

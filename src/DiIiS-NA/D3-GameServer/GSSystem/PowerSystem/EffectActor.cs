@@ -6,9 +6,6 @@ using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 {
@@ -41,11 +38,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			if (context != null)
 				if (context.PowerSNO != 0)
 				{
-					Attributes[GameAttribute.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_A, context.PowerSNO];
-					Attributes[GameAttribute.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_B, context.PowerSNO];
-					Attributes[GameAttribute.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_C, context.PowerSNO];
-					Attributes[GameAttribute.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_D, context.PowerSNO];
-					Attributes[GameAttribute.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_E, context.PowerSNO];
+					Attributes[GameAttributes.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_A, context.PowerSNO];
+					Attributes[GameAttributes.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_B, context.PowerSNO];
+					Attributes[GameAttributes.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_C, context.PowerSNO];
+					Attributes[GameAttributes.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_D, context.PowerSNO];
+					Attributes[GameAttributes.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_E, context.PowerSNO];
 				}
 		}
 

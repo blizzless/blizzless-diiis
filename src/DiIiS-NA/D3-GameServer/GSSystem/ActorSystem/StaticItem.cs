@@ -1,8 +1,5 @@
-﻿using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-using DiIiS_NA.GameServer.Core.Types.Math;
-using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
@@ -21,7 +18,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			GBHandle.Type = (int)ActorType.Item;
 			GBHandle.GBID = -1;//944034263;
-			Attributes[GameAttribute.Operatable] = true;
+			Attributes[GameAttributes.Operatable] = true;
 		}
 
 		public override bool Reveal(Player player)

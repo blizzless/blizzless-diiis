@@ -5,11 +5,6 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -25,8 +20,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public ActIIICatapult(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.MinimapActive] = true;
-			Attributes[GameAttribute.MinimapDisableArrow] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapDisableArrow] = true;
 		}
 
 

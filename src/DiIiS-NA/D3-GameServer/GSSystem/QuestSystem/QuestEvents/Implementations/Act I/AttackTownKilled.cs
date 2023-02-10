@@ -2,10 +2,6 @@
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.MessageSystem;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -26,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			if (Maghda == null)
 				Maghda = AttackedTown.SpawnMonster(ActorSno._maghda_a_tempprojection, new Core.Types.Math.Vector3D(580f,563f,70f));
 			Maghda.EnterWorld(Maghda.Position);
-			Maghda.Attributes[GameAttribute.Untargetable] = true;
+			Maghda.Attributes[GameAttributes.Untargetable] = true;
 			Maghda.Attributes.BroadcastChangedIfRevealed();
 			Maghda.PlayAnimation(5, AnimationSno.maghdaprojection_transition_in_01);
 

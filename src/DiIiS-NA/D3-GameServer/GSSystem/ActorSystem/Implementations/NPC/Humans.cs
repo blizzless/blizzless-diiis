@@ -20,8 +20,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             : base(world, sno, tags)
         {
             Field7 = 1;
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = false;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.NPC_Has_Interact_Options, 0] = false;
         }
         
 		public override bool Reveal(PlayerSystem.Player player)

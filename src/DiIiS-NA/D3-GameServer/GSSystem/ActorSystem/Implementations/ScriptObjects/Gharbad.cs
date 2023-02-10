@@ -15,7 +15,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			CollFlags = 0;
 			WalkSpeed = 0;
-			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttributes.Invulnerable] = true;
 		}
 
 		public override bool Reveal(Player player)

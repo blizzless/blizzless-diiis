@@ -1,10 +1,7 @@
 ﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System.Linq;
 using System;
 using System.Collections.Generic;
 using DiIiS_NA.LoginServer.AccountsSystem;
@@ -40,7 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			{
 				NPC.Conversations.Clear();
 				NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-				NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+				NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 				NPC.Attributes.BroadcastChangedIfRevealed();
 				NPC.ForceConversationSNO = conversation;
 			}
@@ -52,7 +49,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						NPC = N as InteractiveNPC;
 						NPC.Conversations.Clear();
 						NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-						NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+						NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 						NPC.Attributes.BroadcastChangedIfRevealed();
 						NPC.ForceConversationSNO = conversation;
 					}
@@ -65,7 +62,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (actor is InteractiveNPC npc)
 			{
 				npc.Conversations.Clear();
-				npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				npc.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 				npc.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -120,7 +117,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					{
 						var introGuy = npc as InteractiveNPC;
 						introGuy.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(308393));
-						introGuy.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+						introGuy.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 						introGuy.Attributes.BroadcastChangedIfRevealed();
 					}
                     ListenConversation(308393, new EnterToWest());
@@ -142,7 +139,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					{
 						var introGuy = npc as InteractiveNPC;
 						introGuy.Conversations.Clear();
-						introGuy.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+						introGuy.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 						introGuy.Attributes.BroadcastChangedIfRevealed();
 
 					}
@@ -216,7 +213,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					var world = Game.GetWorld(WorldSno.x1_westm_intro);
 					var Tyrael = world.ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as InteractiveNPC;
 					Tyrael.Conversations.Clear();
-					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+					Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
 
 					Game.AddOnLoadWorldAction(WorldSno.x1_westm_intro, () =>
@@ -267,7 +264,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					if (Tyrael != null)
 					{
 						Tyrael.Conversations.Clear();
-						Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+						Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 						Tyrael.Attributes.BroadcastChangedIfRevealed();
 					}
 					ListenTeleport(270011, new Advance());
@@ -456,7 +453,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 								AddQuestConversation(Myst, 305750);
 								(Myst as InteractiveNPC).Conversations.Clear();
 								(Myst as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(305750));
-								(Myst as InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+								(Myst as InteractiveNPC).Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 								(Myst as InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
 								(Myst as InteractiveNPC).ForceConversationSNO = 305750;
 							}
@@ -495,13 +492,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						{
 							bool Activated = false;
 
-							Malt.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-							Malt.Attributes[GameAttribute.Untargetable] = !Activated;
-							Malt.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-							Malt.Attributes[GameAttribute.Operatable] = Activated;
-							Malt.Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-							Malt.Attributes[GameAttribute.Disabled] = !Activated;
-							Malt.Attributes[GameAttribute.Immunity] = !Activated;
+							Malt.Attributes[GameAttributes.Team_Override] = (Activated ? -1 : 2);
+							Malt.Attributes[GameAttributes.Untargetable] = !Activated;
+							Malt.Attributes[GameAttributes.NPC_Is_Operatable] = Activated;
+							Malt.Attributes[GameAttributes.Operatable] = Activated;
+							Malt.Attributes[GameAttributes.Operatable_Story_Gizmo] = Activated;
+							Malt.Attributes[GameAttributes.Disabled] = !Activated;
+							Malt.Attributes[GameAttributes.Immunity] = !Activated;
 						}
 						Open(world, ActorSno._x1_westm_door_gate);
 						AddFollower(world, ActorSno._pt_mystic_novendor_nonglobalfollower);
@@ -980,7 +977,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						AddQuestConversation(Myst, 260191);
 						(Myst as InteractiveNPC).Conversations.Clear();
 						(Myst as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(260191));
-						(Myst as InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+						(Myst as InteractiveNPC).Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 						(Myst as InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
 						(Myst as InteractiveNPC).ForceConversationSNO = 260191;
 					}
@@ -1006,7 +1003,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					foreach (var Myst in Game.GetWorld(WorldSno.x1_adria_boss_arena_02).GetActorsBySNO(ActorSno._x1_npc_lorathnahr)) //284530
 					{
 						(Myst as InteractiveNPC).Conversations.Clear();
-						(Myst as InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+						(Myst as InteractiveNPC).Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 						(Myst as InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
 					}
 					ListenInteract(ActorSno._x1_tyrael_hurt, 1, new LaunchConversation(274440));

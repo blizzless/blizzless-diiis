@@ -17,13 +17,13 @@ public class InvulnerableCommand : CommandGroup
         if (player.Attributes.FixedMap.Contains(FixedAttribute.Invulnerable))
         {
             player.Attributes.FixedMap.Remove(FixedAttribute.Invulnerable);
-            player.Attributes[GameAttribute.Invulnerable] = false;
+            player.Attributes[GameAttributes.Invulnerable] = false;
             player.Attributes.BroadcastChangedIfRevealed();
             return "You are no longer invulnerable.";
         }
 
         player.Attributes.FixedMap.Add(FixedAttribute.Invulnerable,
-            attributes => { attributes[GameAttribute.Invulnerable] = true; });
+            attributes => { attributes[GameAttributes.Invulnerable] = true; });
         player.Attributes.BroadcastChangedIfRevealed();
         return "You are now invulnerable.";
     }

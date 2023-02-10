@@ -24,10 +24,10 @@ public class PowerfulCommand : CommandGroup
 
         player.Attributes.FixedMap.Add(FixedAttribute.Powerful, (attributes) =>
         {
-            attributes[GameAttribute.Damage_Delta, 0] = float.MaxValue;
-            attributes[GameAttribute.Damage_Min, 0] = float.MaxValue;
-            attributes[GameAttribute.Damage_Weapon_Delta, 0] = float.MaxValue;
-            attributes[GameAttribute.Damage_Weapon_Min, 0] = float.MaxValue;
+            attributes[GameAttributes.Damage_Delta, 0] = float.MaxValue;
+            attributes[GameAttributes.Damage_Min, 0] = float.MaxValue;
+            attributes[GameAttributes.Damage_Weapon_Delta, 0] = float.MaxValue;
+            attributes[GameAttributes.Damage_Weapon_Min, 0] = float.MaxValue;
         });
         
         player.Attributes.BroadcastChangedIfRevealed();

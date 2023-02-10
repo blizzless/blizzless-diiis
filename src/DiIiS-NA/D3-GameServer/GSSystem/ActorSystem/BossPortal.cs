@@ -1,22 +1,16 @@
-﻿using DiIiS_NA.Core.Helpers.Hash;
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
 //using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -46,8 +40,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			Field2 = 0x9;//16;
 
-			Attributes[GameAttribute.MinimapActive] = true;
-			Attributes[GameAttribute.Untargetable] = false;
+			Attributes[GameAttributes.MinimapActive] = true;
+			Attributes[GameAttributes.Untargetable] = false;
             var bossEncounter = ((ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.ActorData).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter);
 			DestWorld = bossEncounter.Worlds[0];
 			switch (DestWorld)
@@ -189,13 +183,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (actor == null)
 				return false;
 
-			actor.Attributes[GameAttribute.Team_Override] = (status ? -1 : 2);
-			actor.Attributes[GameAttribute.Untargetable] = !status;
-			actor.Attributes[GameAttribute.NPC_Is_Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable_Story_Gizmo] = status;
-			actor.Attributes[GameAttribute.Disabled] = !status;
-			actor.Attributes[GameAttribute.Immunity] = !status;
+			actor.Attributes[GameAttributes.Team_Override] = (status ? -1 : 2);
+			actor.Attributes[GameAttributes.Untargetable] = !status;
+			actor.Attributes[GameAttributes.NPC_Is_Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable_Story_Gizmo] = status;
+			actor.Attributes[GameAttributes.Disabled] = !status;
+			actor.Attributes[GameAttributes.Immunity] = !status;
 			actor.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}

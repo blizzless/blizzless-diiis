@@ -24,20 +24,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			var monsterLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][19760].Data;
 			var monsterData = (Monster.Target as MonsterFF);
 
-			Attributes[GameAttribute.Level] = 1;
-			Attributes[GameAttribute.Hitpoints_Max] = 100000;
-			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
-			Attributes[GameAttribute.Invulnerable] = true;
-			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+			Attributes[GameAttributes.Level] = 1;
+			Attributes[GameAttributes.Hitpoints_Max] = 100000;
+			Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+			Attributes[GameAttributes.Invulnerable] = true;
+			Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
 			if (world.SNO == WorldSno.x1_westmarch_overlook_d)
 			{
-				Attributes[GameAttribute.Damage_Weapon_Min, 0] = 0f;
-				Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 0f;
+				Attributes[GameAttributes.Damage_Weapon_Min, 0] = 0f;
+				Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 0f;
 			}
 			else
 			{
-				Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
-				Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
+				Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f;
+				Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 5f;
 			}
 			WalkSpeed = 0.3f * monsterData.AttributeModifiers[129];  // TODO: this is probably multiplied by something erekose the 0.3 is because he is way too fast otherwise
 		}

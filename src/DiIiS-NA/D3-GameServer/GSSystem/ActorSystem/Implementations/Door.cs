@@ -7,10 +7,6 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -107,9 +103,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				AnimationSNO = AnimationSetKeys.Open.ID
 			}, this);
 
-			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			Attributes[GameAttribute.Gizmo_State] = 1;
+			Attributes[GameAttributes.Gizmo_State] = 1;
 			CollFlags = 0;
 			isOpened = true;
 
@@ -130,11 +126,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (Attributes[GameAttribute.Disabled]) return;
+			if (Attributes[GameAttributes.Disabled]) return;
 			Open();
             
 			base.OnTargeted(player, message);
-			Attributes[GameAttribute.Disabled] = true;
+			Attributes[GameAttributes.Disabled] = true;
 		}
 
 		private bool WaitToSpawn(TickerSystem.TickTimer timer)

@@ -13,8 +13,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public CR_Glass(MapSystem.World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.MinimapActive] = true;
             Attributes.BroadcastChangedIfRevealed();
         }
 

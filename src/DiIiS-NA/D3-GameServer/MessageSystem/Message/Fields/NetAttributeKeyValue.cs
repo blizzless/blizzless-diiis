@@ -21,9 +21,9 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Fields
             {
                 KeyParam = buffer.ReadInt(20);
             }
-            int index = buffer.ReadInt(11);// & 0xFFF;
+            int id = buffer.ReadInt(11);// & 0xFFF;
 
-            Attribute = GameAttribute.Attributes[index];
+            Attribute = GameAttributes.Attributes[id];
         }
 
         public void ParseValue(GameBitBuffer buffer)
@@ -34,7 +34,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Fields
                     Int = buffer.ReadInt(Attribute.BitCount);
                     break;
                 case GameAttributeEncoding.IntMinMax:
-                    Int = buffer.ReadInt(Attribute.BitCount) + Attribute.Min.Value;
+                    Int = buffer.ReadInt(Attribute.BitCount) + Attribute.MinAttributeValue.Value;
                     break;
                 case GameAttributeEncoding.Float16:
                     Float = buffer.ReadFloat16();
@@ -68,7 +68,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Fields
                     buffer.WriteInt(Attribute.BitCount, Int);
                     break;
                 case GameAttributeEncoding.IntMinMax:
-                    buffer.WriteInt(Attribute.BitCount, Int - Attribute.Min.Value);
+                    buffer.WriteInt(Attribute.BitCount, Int - Attribute.MinAttributeValue.Value);
                     break;
                 case GameAttributeEncoding.Float16:
                     buffer.WriteFloat16(Float);

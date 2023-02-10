@@ -1,18 +1,7 @@
-﻿using DiIiS_NA.Core.Logging;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-using DiIiS_NA.GameServer.GSSystem.GameSystem;
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+﻿using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System.Linq;
 using System;
 using System.Collections.Generic;
-using DiIiS_NA.LoginServer.AccountsSystem;
-using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
-using DiIiS_NA.GameServer.Core.Types.Math;
-using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.GameServer.Core.Types.TagMap;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
@@ -61,7 +50,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 
 			foreach (var actor in actorstotarget)
 			{
-				actor.Attributes[GameAttribute.Quest_Monster] = true;
+				actor.Attributes[GameAttributes.Quest_Monster] = true;
 				actor.Attributes.BroadcastChangedIfRevealed();
 			}
 			StartConversation(world, 131339);

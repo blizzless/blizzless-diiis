@@ -88,7 +88,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			if (Body.Hidden)
 				return;
 
-			if (CurrentAction != null && PriorityTarget != null && PriorityTarget.Attributes[GameAttribute.Is_Helper] == true)
+			if (CurrentAction != null && PriorityTarget != null && PriorityTarget.Attributes[GameAttributes.Is_Helper] == true)
 			{
 				PriorityTarget = null;
 				CurrentAction.Cancel(tickCounter);
@@ -103,12 +103,12 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			if (!Body.Visible || Body.Dead) return;
 
 			if (Body.World.Game.Paused) return;
-			if (Body.Attributes[GameAttribute.Disabled]) return;
+			if (Body.Attributes[GameAttributes.Disabled]) return;
 
-			if (Body.Attributes[GameAttribute.Frozen] ||
-			Body.Attributes[GameAttribute.Stunned] ||
-			Body.Attributes[GameAttribute.Blind] ||
-			Body.Attributes[GameAttribute.Webbed] ||
+			if (Body.Attributes[GameAttributes.Frozen] ||
+			Body.Attributes[GameAttributes.Stunned] ||
+			Body.Attributes[GameAttributes.Blind] ||
+			Body.Attributes[GameAttributes.Webbed] ||
 			Body.Disable ||
 			Body.World.BuffManager.GetFirstBuff<KnockbackBuff>(Body) != null ||
 			Body.World.BuffManager.GetFirstBuff<SummonedBuff>(Body) != null)
@@ -123,7 +123,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				return;
 			}
 
-			if (Body.Attributes[GameAttribute.Feared])
+			if (Body.Attributes[GameAttributes.Feared])
 			{
 				if (!Feared || CurrentAction == null)
 				{
@@ -161,15 +161,15 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						{
 							Actor[] targets;
 
-							if (Body.Attributes[GameAttribute.Team_Override] == 1)
+							if (Body.Attributes[GameAttributes.Team_Override] == 1)
 								targets = Body.GetObjectsInRange<Monster>(60f)
 									.Where(p => !p.Dead)
 									.OrderBy((monster) => PowerMath.Distance2D(monster.Position, Body.Position))
 									.ToArray();
 							else
 								targets = Body.GetActorsInRange(50f)
-									.Where(p => ((p is Player) && !p.Dead && p.Attributes[GameAttribute.Loading] == false && p.Attributes[GameAttribute.Is_Helper] == false && p.World.BuffManager.GetFirstBuff<ActorGhostedBuff>(p) == null)
-										|| ((p is Minion) && !p.Dead && p.Attributes[GameAttribute.Is_Helper] == false)
+									.Where(p => ((p is Player) && !p.Dead && p.Attributes[GameAttributes.Loading] == false && p.Attributes[GameAttributes.Is_Helper] == false && p.World.BuffManager.GetFirstBuff<ActorGhostedBuff>(p) == null)
+										|| ((p is Minion) && !p.Dead && p.Attributes[GameAttributes.Is_Helper] == false)
 										|| (p is DesctructibleLootContainer && p.SNO.IsDoorOrBarricade())
 										|| ((p is Hireling) && !p.Dead)
 										)

@@ -1,19 +1,12 @@
 ﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-using System;
 using System.Collections.Generic;
-using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations;
 using System.Linq;
-using System.Threading.Tasks;
 using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
-using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations.Act_I;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -373,12 +366,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     {
                         var world = Game.GetWorld(WorldSno.trout_adriascellar);
                         CapitanDaltyn = world.SpawnMonster(ActorSno._unique_captaindaltyn, new Vector3D { X = 52.587f, Y = 103.368f, Z = 0.1f });
-                        CapitanDaltyn.Attributes[GameAttribute.Quest_Monster] = true;
+                        CapitanDaltyn.Attributes[GameAttributes.Quest_Monster] = true;
                         CapitanDaltyn.PlayAnimation(5, AnimationSno.zombie_male_skinny_spawn);
                         foreach (Vector3D point in Zombies)
                         {
                             var Zombie = world.SpawnMonster(ActorSno._zombieskinny_a, point);
-                            Zombie.Attributes[GameAttribute.Quest_Monster] = true;
+                            Zombie.Attributes[GameAttributes.Quest_Monster] = true;
                             Zombie.PlayAnimation(5, AnimationSno.zombie_male_skinny_spawn);
                         }
                     });
@@ -584,7 +577,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     ActiveArrow(world, ActorSno._pt_blacksmith_nonvendor);
                     var Cain = world.GetActorBySNO(ActorSno._cain, true) as ActorSystem.InteractiveNPC;
                     Cain.Conversations.Clear();
-                    Cain.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+                    Cain.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
                     Cain.Attributes.BroadcastChangedIfRevealed();
 
                     ListenConversation(198292, new Advance());
@@ -620,8 +613,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             var monsterLevels = (DiIiS_NA.Core.MPQ.FileFormats.GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.GameBalance][19760].Data;
                             float DamageMin = monsterLevels.MonsterLevel[Game.MonsterLevel].Dmg * 0.5f;
                             float DamageDelta = DamageMin * 0.3f;
-                            Smith.Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * Game.DmgModifier;
-                            Smith.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta;
+                            Smith.Attributes[GameAttributes.Damage_Weapon_Min, 0] = DamageMin * Game.DmgModifier;
+                            Smith.Attributes[GameAttributes.Damage_Weapon_Delta, 0] = DamageDelta;
                         }
                         
                     });
@@ -936,8 +929,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         foreach (var Wall in world.GetActorsBySNO(ActorSno._trdun_cath_bonewall_a_door))
                         {
                             Wall.PlayAnimation(11, AnimationSno.trdun_cath_bonewall_a_death);
-                            Wall.Attributes[GameAttribute.Deleted_On_Server] = true;
-                            Wall.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
+                            Wall.Attributes[GameAttributes.Deleted_On_Server] = true;
+                            Wall.Attributes[GameAttributes.Could_Have_Ragdolled] = true;
                             Wall.Attributes.BroadcastChangedIfRevealed();
                             Wall.Destroy();
                         }
@@ -1641,7 +1634,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     foreach (var cultist in Game.GetWorld(WorldSno.trout_townattack).GetActorsBySNO(ActorSno._townattackcultistmelee))
                         if (cultist.CurrentScene.SceneSNO.Id == 76000)
                         {
-                            cultist.Attributes[GameAttribute.Quest_Monster] = true;
+                            cultist.Attributes[GameAttributes.Quest_Monster] = true;
                             cultist.Attributes.BroadcastChangedIfRevealed();
                             Count++;
                         }
@@ -1814,7 +1807,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //ListenProximity(4580, new LaunchConversation(93337)); //cork
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Conversations.Clear();
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(93337));
-                    (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+                    (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes[GameAttributes.Conversation_Icon, 0] = 2;
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
                     ListenConversation(93337, new Advance());
                     Game.CurrentEncounter.Activated = false;
@@ -1829,7 +1822,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //go to Aranea Cave
                     var LeahAfterEvent = Game.GetWorld(WorldSno.trout_town).GetActorBySNO(ActorSno._leah_afterevent31_exit);
-                    (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+                    (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes[GameAttributes.Conversation_Icon, 0] = 1;
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
                     ListenTeleport(78572, new Advance());
                 }

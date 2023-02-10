@@ -4,12 +4,6 @@ using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
 	[HandledSNO(ActorSno._tentaclelord)]
@@ -22,7 +16,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		{
 			CollFlags = 0;
 			WalkSpeed = 0;
-			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttributes.Invulnerable] = true;
 		}
 
 		public override bool Reveal(Player player)

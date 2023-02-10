@@ -10,16 +10,12 @@ using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
-using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 
@@ -44,8 +40,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         public override void OnChannelOpen()
         {
             WaitForSpawn = true;
-            WaitSeconds = 0.75f / User.Attributes[GameAttribute.Attacks_Per_Second_Total];
-            EffectsPerSecond = 0.75f / User.Attributes[GameAttribute.Attacks_Per_Second_Total];
+            WaitSeconds = 0.75f / User.Attributes[GameAttributes.Attacks_Per_Second_Total];
+            EffectsPerSecond = 0.75f / User.Attributes[GameAttributes.Attacks_Per_Second_Total];
         }
 
         public override void OnChannelClose()
@@ -262,7 +258,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 GeneratePrimaryResource(12f);
                 if (Rune_B > 0)//Execution
                 {
-                    if (hit.Target.Attributes[GameAttribute.Hitpoints_Cur] < (hit.Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 5))
+                    if (hit.Target.Attributes[GameAttributes.Hitpoints_Cur] < (hit.Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 5))
                         if (FastRandom.Instance.Chance(95))
                             WeaponDamage(hit.Target, 99999f, DamageType.Physical);
                 }
@@ -314,7 +310,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -326,14 +322,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -353,7 +349,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -365,14 +361,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -392,7 +388,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -404,14 +400,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -431,7 +427,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -443,14 +439,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -545,7 +541,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 else if (Rune_B > 0)//Pure Essence
                 {
                     //If HP is 100% - we restore more essence.
-                    if (User.Attributes[GameAttribute.Hitpoints_Cur] == User.Attributes[GameAttribute.Hitpoints_Max_Total])
+                    if (User.Attributes[GameAttributes.Hitpoints_Cur] == User.Attributes[GameAttributes.Hitpoints_Max_Total])
                         GeneratePrimaryResource(5f);
                 }
                 else if (Rune_C > 0)//Theft of life
@@ -569,7 +565,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += 0.1f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += 0.1f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -581,14 +577,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += 0.1f;
+                    User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += 0.1f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= StackCount * 0.1f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= StackCount * 0.1f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -790,7 +786,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -802,14 +798,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -830,7 +826,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                 if (!base.Apply())
                     return false;
-                Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= 0.2f;
+                Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= 0.2f;
                 Target.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -847,7 +843,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.2f;
+                Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.2f;
                 Target.Attributes.BroadcastChangedIfRevealed();
 
                 base.Remove();
@@ -910,7 +906,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             
             if (Rune_B > 0)
             {
-                Count = User.Attributes[GameAttribute.Resource_Cur, (int)((Player) User).Toon.HeroTable.PrimaryResource];
+                Count = User.Attributes[GameAttributes.Resource_Cur, (int)((Player) User).Toon.HeroTable.PrimaryResource];
                 UsePrimaryResource(Count);
             }
             else if (Rune_C > 0)
@@ -940,7 +936,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             
             mage.Scale = 1.2f;
             mage.Position = RandomDirection(TargetPosition, 3f, 8f);
-            mage.Attributes[GameAttribute.Untargetable] = true;
+            mage.Attributes[GameAttributes.Untargetable] = true;
             mage.EnterWorld(mage.Position);
             yield return WaitSeconds(0.05f);
 
@@ -954,7 +950,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             else
                 ((MinionBrain)mage.Brain).AddPresetPower(466879);
 
-            mage.Attributes[GameAttribute.Untargetable] = false;
+            mage.Attributes[GameAttributes.Untargetable] = false;
             mage.Attributes.BroadcastChangedIfRevealed();
             yield break;
         }
@@ -1288,7 +1284,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             var Point = SpawnEffect(ActorSno._p6_necro_bonespikes, TargetPosition, 0, WaitSeconds(0.2f));
             Point.PlayEffect(Effect.PlayEffectGroup, RuneSelect(459954, 473926, 459954, 473907, 459954//D
                 , 473864));
-            var actors = User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting]
+            var actors = User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting]
                 ? new List<uint> { User.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, TargetPosition).GlobalID }
                 : User.GetActorsInRange(TargetPosition, 11).Where(x => x.SNO == ActorSno._p6_necro_corpse_flesh).Select(x => x.GlobalID).Take(5).ToList();
             if (Rune_D > 0)
@@ -1387,7 +1383,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         {
             User.TranslateFacing(TargetPosition);
             Actor Flesh = null;
-            if (User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] == true)
+            if (User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting] == true)
             {
                 Flesh = User;
             }
@@ -1398,7 +1394,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             var Explosion = SpawnEffect(ActorSno._p6_necro_corpseexplosion_projectile, Flesh.Position, 0, WaitSeconds(0.2f));
             Explosion.PlayEffect(Effect.PlayEffectGroup, 457183);
             var Proxy = SpawnProxy(Flesh.Position, new TickTimer(User.World.Game, 300));
-            if (User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] == false)
+            if (User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting] == false)
                 Flesh.Destroy();
             //1, 2, 3, 4
             if (Rune_E > 0 || Rune_A > 0)
@@ -1529,14 +1525,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Bonus_Chance_To_Be_Crit_Hit] += 0.05f;
+                User.Attributes[GameAttributes.Bonus_Chance_To_Be_Crit_Hit] += 0.05f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Bonus_Chance_To_Be_Crit_Hit] -= 0.05f;
+                User.Attributes[GameAttributes.Bonus_Chance_To_Be_Crit_Hit] -= 0.05f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -1556,8 +1552,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.10f;
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= 0.06f;
+                User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.10f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= 0.06f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -1569,16 +1565,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.10f;
-                    User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= 0.06f;
+                    User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.10f;
+                    User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= 0.06f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += StackCount * 0.10f;
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += StackCount * 0.06f;
+                User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += StackCount * 0.10f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += StackCount * 0.06f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -1656,7 +1652,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 }
                 act.PlayEffectGroup(RuneSelect(467200, 462756, 467230, 470482, 470549, 470574));
                 act.Destroy();
-                User.Attributes[GameAttribute.Resource_Cur, (int)((Player) User).Toon.HeroTable.PrimaryResource] += 10f;
+                User.Attributes[GameAttributes.Resource_Cur, (int)((Player) User).Toon.HeroTable.PrimaryResource] += 10f;
 
                 if (Rune_A > 0)
                     ((Player) User).AddPercentageHP(3);
@@ -1672,7 +1668,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         else
                         {
                             minion.Destroy();
-                            User.Attributes[GameAttribute.Resource_Cur, (int)((Player) User).Toon.HeroTable.PrimaryResource] += 10f;
+                            User.Attributes[GameAttributes.Resource_Cur, (int)((Player) User).Toon.HeroTable.PrimaryResource] += 10f;
                         }
                     }
                 User.Attributes.BroadcastChangedIfRevealed();
@@ -1694,7 +1690,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.3f;
+                User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.3f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -1706,14 +1702,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.3f;
+                    User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.3f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] -= StackCount * 0.3f;
+                User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] -= StackCount * 0.3f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -1733,7 +1729,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.03f;
+                User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -1745,7 +1741,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.03f;
+                    User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 
@@ -1753,7 +1749,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -1825,7 +1821,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (((Player) User).Revived.Count < 10)
                 {
-                    var Temp = User.World.SpawnMonster((ActorSno)act.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO], act.Position);
+                    var Temp = User.World.SpawnMonster((ActorSno)act.Attributes[GameAttributes.Necromancer_Corpse_Source_Monster_SNO], act.Position);
                     var RevivedTemp = new Minion(User.World, Temp.SNO, User, Temp.Tags, false, true);
                     Temp.Destroy();
 
@@ -1835,12 +1831,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     if (Rune_D > 0)
                     {
                         RevivedTemp.LifeTime = TickTimer.WaitSeconds(User.World.Game, 10f);
-                        RevivedTemp.Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 1.25f;
+                        RevivedTemp.Attributes[GameAttributes.Damage_Weapon_Min, 0] *= 1.25f;
                         RevivedTemp.Attributes.BroadcastChangedIfRevealed();
                     }
                     if (Rune_B > 0)
                     {
-                        RevivedTemp.Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 1.2f;
+                        RevivedTemp.Attributes[GameAttributes.Damage_Weapon_Min, 0] *= 1.2f;
                         RevivedTemp.Attributes.BroadcastChangedIfRevealed();
                     }
                     RevivedTemp.SetBrain(new AISystem.Brains.MinionBrain(RevivedTemp));
@@ -1848,7 +1844,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     RevivedTemp.PlayEffectGroup(RuneSelect(464739, 464900, 464872, 464954, 464859, 464746));
                     ((Player) User).Revived.Add(RevivedTemp);
                     Resurrected = true;
-                    RevivedTemp.Attributes[GameAttribute.Team_Override] = 1;
+                    RevivedTemp.Attributes[GameAttributes.Team_Override] = 1;
                     RevivedTemp.Attributes.BroadcastChangedIfRevealed();
                 }
                 else
@@ -2031,10 +2027,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     {
                         if (!skeleton.Attributes.FixedMap.Contains(FixedAttribute.AttackSpeed))
                         {
-                            var originalAttackSpeed = skeleton.Attributes[GameAttribute.Attacks_Per_Second];
+                            var originalAttackSpeed = skeleton.Attributes[GameAttributes.Attacks_Per_Second];
                             skeleton.Attributes.FixedMap.Add(FixedAttribute.AttackSpeed, 
-                                attr => attr[GameAttribute.Attacks_Per_Second] = originalAttackSpeed * 1.25f,
-                                () => skeleton.Attributes[GameAttribute.Attacks_Per_Second] = originalAttackSpeed);
+                                attr => attr[GameAttributes.Attacks_Per_Second] = originalAttackSpeed * 1.25f,
+                                () => skeleton.Attributes[GameAttributes.Attacks_Per_Second] = originalAttackSpeed);
                             skeleton.Attributes.BroadcastChangedIfRevealed();
                         }
                     }
@@ -2277,7 +2273,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Skill_Toggled_State, SkillsSystem.Skills.Necromancer.ExtraSkills.CommandGolem] = true;
+                User.Attributes[GameAttributes.Skill_Toggled_State, SkillsSystem.Skills.Necromancer.ExtraSkills.CommandGolem] = true;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2379,7 +2375,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += 0.3f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += 0.3f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2392,7 +2388,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 {
                     base.Stack(buff);
                     User.Attributes.BroadcastChangedIfRevealed();
-                    User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += 0.3f;
+                    User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += 0.3f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
@@ -2400,7 +2396,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             public override void Remove()
             {
                 User.Attributes.BroadcastChangedIfRevealed();
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= StackCount * 0.3f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= StackCount * 0.3f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -2724,7 +2720,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] = true;
+                User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting] = true;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2740,7 +2736,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] = false;
+                User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting] = false;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -2806,7 +2802,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Free_Cast_All] = true;
+                User.Attributes[GameAttributes.Free_Cast_All] = true;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2822,7 +2818,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Free_Cast_All] = false;
+                User.Attributes[GameAttributes.Free_Cast_All] = false;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -2842,7 +2838,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Hitpoints_On_Kill_Reduction_Percent] -= 0.2f;
+                User.Attributes[GameAttributes.Hitpoints_On_Kill_Reduction_Percent] -= 0.2f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2858,7 +2854,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_On_Kill_Reduction_Percent] += 0.2f;
+                User.Attributes[GameAttributes.Hitpoints_On_Kill_Reduction_Percent] += 0.2f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3004,8 +3000,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
                 Target.WalkSpeed *= (1f - PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += PercentageSlow;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= PercentageDamage;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += PercentageSlow;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 return true;
             }
@@ -3029,8 +3025,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             public override void Remove()
             {
                 Target.WalkSpeed /= (1f - PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += PercentageDamage;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3096,8 +3092,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
                 Target.WalkSpeed *= (1f - PercentageMax);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += PercentageMax;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= PercentageDamage;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += PercentageMax;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 return true;
             }
@@ -3113,7 +3109,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Target.WalkSpeed /= (1f - (PercentageMax - (0.05f * Count)));
                         Count++;
                         Target.WalkSpeed *= (1f - (PercentageMax - (0.05f * Count)));
-                        Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.05f;
+                        Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.05f;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Ticker = new SecondsTickTimer(User.World.Game, 1.0f);
                     }
@@ -3123,8 +3119,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             public override void Remove()
             {
                 Target.WalkSpeed /= (1f - PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += PercentageDamage;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3145,7 +3141,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= PercentageDamage;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 return true;
             }
@@ -3168,7 +3164,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             public override void Remove()
             {
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += PercentageDamage;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3200,7 +3196,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
                 Target.WalkSpeed /= (1f + PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 return true;
             }
@@ -3224,7 +3220,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             public override void Remove()
             {
                 Target.WalkSpeed /= (1f + PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += PercentageSlow;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += PercentageSlow;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3244,13 +3240,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             if (Rune_D > 0) //Проклятая земля
             {
                 foreach (var alr in World.GetActorsBySNO(ActorSno._p6_necro_leech_e_proxyactor))
-                    if (alr.Attributes[GameAttribute.Summoner_ID] == ((Player) User).PlayerIndex)
+                    if (alr.Attributes[GameAttributes.Summoner_ID] == ((Player) User).PlayerIndex)
                         alr.Destroy();
 
                 var proxy = SpawnEffect(ActorSno._p6_necro_leech_e_proxyactor, TargetPosition,
                 ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, TargetPosition),
                 WaitSeconds(30f));
-                proxy.Attributes[GameAttribute.Summoner_ID] = ((Player) User).PlayerIndex;
+                proxy.Attributes[GameAttributes.Summoner_ID] = ((Player) User).PlayerIndex;
                 AddBuff(User, new Rune_DBuff(proxy));
             }
             else
@@ -3359,7 +3355,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
                 {
                     payload.Context.User.AddPercentHP(2);
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100)
                     {
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3402,7 +3398,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += 751f;
+                User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += 751f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -3415,7 +3411,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += 751f;
+                    User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += 751f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
@@ -3423,7 +3419,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] -= StackCount * 751f;
+                User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] -= StackCount * 751f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3651,9 +3647,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (payload.Target == Target && payload is HitPayload)
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 15)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 15)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3694,9 +3690,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 15)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 15)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Remove();
                         GeneratePrimaryResource(2);
@@ -3737,9 +3733,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 18)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 18)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Remove();
                     }
@@ -3778,9 +3774,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (payload.Target == Target && payload is HitPayload)
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 15)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 15)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Target.PlayEffectGroup(471144);
                         foreach (var monster in Target.GetMonstersInRange(10f))
@@ -3822,9 +3818,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (payload.Target == Target && payload is HitPayload)
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 15)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 15)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Remove();
                     }
@@ -3866,9 +3862,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3909,9 +3905,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3952,9 +3948,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3995,9 +3991,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -4038,9 +4034,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -4081,9 +4077,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -4178,8 +4174,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += 0.03f;
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] += 0.03f;
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] += 0.03f;
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Ranged] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4192,16 +4188,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += 0.03f;
-                    User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] += 0.03f;
+                    User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] += 0.03f;
+                    User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Ranged] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] -= StackCount * 0.03f;
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Ranged] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -4222,7 +4218,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.God] = true;
+                User.Attributes[GameAttributes.God] = true;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4230,7 +4226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             public override void Remove()
             {
-                User.Attributes[GameAttribute.God] = false;
+                User.Attributes[GameAttributes.God] = false;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -4251,7 +4247,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += 0.1f;
+                User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += 0.1f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4264,14 +4260,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += 0.1f;
+                    User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += 0.1f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] -= StackCount * 0.1f;
+                User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] -= StackCount * 0.1f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -4292,7 +4288,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.01f;
+                User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.01f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4305,14 +4301,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.01f;
+                    User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.01f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += StackCount * 0.01f;
+                User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += StackCount * 0.01f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -4334,7 +4330,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += ScriptFormula(10);
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] += ScriptFormula(10);
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4378,7 +4374,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += ScriptFormula(10);
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] += ScriptFormula(10);
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4497,7 +4493,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             //[473022] [Actor] p6_necro_boneSpirit_D_projectile
             //[473023] [Actor] p6_necro_boneSpirit_E_projectile
             //[473024] [Actor] p6_necro_boneSpirit_F_projectile
-            User.Attributes[GameAttribute.Skill_Charges, PowerSNO] -= 1;
+            User.Attributes[GameAttributes.Skill_Charges, PowerSNO] -= 1;
             User.Attributes.BroadcastChangedIfRevealed();
             var projectile = new Projectile(
                 this,
@@ -4581,11 +4577,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 else
                 {
                     Max = 3;
-                    if (User.Attributes[GameAttribute.Skill_Charges, PowerSNO] == 4)
-                        User.Attributes[GameAttribute.Skill_Charges, PowerSNO] = 3;
+                    if (User.Attributes[GameAttributes.Skill_Charges, PowerSNO] == 4)
+                        User.Attributes[GameAttributes.Skill_Charges, PowerSNO] = 3;
                 }
 
-                if (User.Attributes[GameAttribute.Skill_Charges, PowerSNO] < Max)
+                if (User.Attributes[GameAttributes.Skill_Charges, PowerSNO] < Max)
                 {
                     if (!CoolDownStarted)
                     {
@@ -4594,7 +4590,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Task.Delay(15100).ContinueWith(delegate
                         {
                             CoolDownStarted = false;
-                            User.Attributes[GameAttribute.Skill_Charges, PowerSNO] = (int)Math.Min(User.Attributes[GameAttribute.Skill_Charges, PowerSNO] + 1, Max);
+                            User.Attributes[GameAttributes.Skill_Charges, PowerSNO] = (int)Math.Min(User.Attributes[GameAttributes.Skill_Charges, PowerSNO] + 1, Max);
                             User.Attributes.BroadcastChangedIfRevealed();
                         });
                     }

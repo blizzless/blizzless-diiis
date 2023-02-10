@@ -6,11 +6,6 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -21,13 +16,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			: base(world, sno, tags)
 		{
 			bool Activated = false;
-			Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-			Attributes[GameAttribute.Untargetable] = !Activated;
-			Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-			Attributes[GameAttribute.Operatable] = Activated;
-			Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-			Attributes[GameAttribute.Disabled] = !Activated;
-			Attributes[GameAttribute.Immunity] = !Activated;
+			Attributes[GameAttributes.Team_Override] = (Activated ? -1 : 2);
+			Attributes[GameAttributes.Untargetable] = !Activated;
+			Attributes[GameAttributes.NPC_Is_Operatable] = Activated;
+			Attributes[GameAttributes.Operatable] = Activated;
+			Attributes[GameAttributes.Operatable_Story_Gizmo] = Activated;
+			Attributes[GameAttributes.Disabled] = !Activated;
+			Attributes[GameAttributes.Immunity] = !Activated;
 		}
 
 

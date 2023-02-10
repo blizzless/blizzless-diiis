@@ -165,7 +165,7 @@ namespace DiIiS_NA.GameServer.Core
 			List<Item> baseItems = Items.Values.Where(i => i.GBHandle.GBID == GBid).ToList();
 			int have = 0;
 			foreach (var itm in baseItems)
-				have += itm.Attributes[GameAttribute.ItemStackQuantityLo];
+				have += itm.Attributes[GameAttributes.ItemStackQuantityLo];
 
 			Logger.MethodTrace($"gbid {GBid}, count {have}");
 
@@ -177,7 +177,7 @@ namespace DiIiS_NA.GameServer.Core
 			List<Item> baseItems = Items.Values.Where(i => i.GBHandle.GBID == GBid).ToList();
 			int have = 0;
 			foreach (var itm in baseItems)
-				have += itm.Attributes[GameAttribute.ItemStackQuantityLo];
+				have += itm.Attributes[GameAttributes.ItemStackQuantityLo];
 
 			return have;
 		}
@@ -189,14 +189,14 @@ namespace DiIiS_NA.GameServer.Core
 			List<Item> consumed = new List<Item>();
 			foreach (var itm in baseItems)
 			{
-				if (itm.Attributes[GameAttribute.ItemStackQuantityLo] > estimate)
+				if (itm.Attributes[GameAttributes.ItemStackQuantityLo] > estimate)
 				{
-					itm.UpdateStackCount(itm.Attributes[GameAttribute.ItemStackQuantityLo] - estimate);
+					itm.UpdateStackCount(itm.Attributes[GameAttributes.ItemStackQuantityLo] - estimate);
 					break;
 				}
 				else
 				{
-					estimate -= itm.Attributes[GameAttribute.ItemStackQuantityLo];
+					estimate -= itm.Attributes[GameAttributes.ItemStackQuantityLo];
 					consumed.Add(itm);
 				}
 			}
@@ -261,9 +261,9 @@ namespace DiIiS_NA.GameServer.Core
 				List<Item> baseItems = Items.Values.Where(i => i.GBHandle.GBID == item.GBHandle.GBID).ToList();
 				foreach (Item baseItem in baseItems)
 				{
-					if (baseItem.Attributes[GameAttribute.ItemStackQuantityLo] + item.Attributes[GameAttribute.ItemStackQuantityLo] <= baseItem.ItemDefinition.MaxStackSize)
+					if (baseItem.Attributes[GameAttributes.ItemStackQuantityLo] + item.Attributes[GameAttributes.ItemStackQuantityLo] <= baseItem.ItemDefinition.MaxStackSize)
 					{
-						baseItem.UpdateStackCount(baseItem.Attributes[GameAttribute.ItemStackQuantityLo] + item.Attributes[GameAttribute.ItemStackQuantityLo]);
+						baseItem.UpdateStackCount(baseItem.Attributes[GameAttributes.ItemStackQuantityLo] + item.Attributes[GameAttributes.ItemStackQuantityLo]);
 						baseItem.Attributes.SendChangedMessage((_owner as Player).InGameClient);
 
 						return;

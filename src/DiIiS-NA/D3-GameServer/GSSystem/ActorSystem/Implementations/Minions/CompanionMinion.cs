@@ -2,8 +2,6 @@
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using System.Collections.Generic;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
@@ -30,14 +28,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			: base(world, CompanionSNO, context.User, null)
 		{
 			Scale = 1.2f;
-			if (context.User.Attributes[GameAttribute.Rune_B, 0x000592ff] > 0) Scale = 2f;  //Boar
-			if (context.User.Attributes[GameAttribute.Rune_C, 0x000592ff] > 0) Scale = 2f;  //Wolf
+			if (context.User.Attributes[GameAttributes.Rune_B, 0x000592ff] > 0) Scale = 2f;  //Boar
+			if (context.User.Attributes[GameAttributes.Rune_C, 0x000592ff] > 0) Scale = 2f;  //Wolf
 																							//TODO: get a proper value for this.
 			WalkSpeed *= 5;
 			DamageCoefficient = context.ScriptFormula(0);
-			Attributes[GameAttribute.Invulnerable] = true;
-			Attributes[GameAttribute.Is_Helper] = true;
-			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			Attributes[GameAttributes.Invulnerable] = true;
+			Attributes[GameAttributes.Is_Helper] = true;
+			Attributes[GameAttributes.Summoned_By_SNO] = context.PowerSNO;
 			if (CompanionSNO == ActorSno._dh_companion_ferret)
 				SetBrain(new LooterBrain(this, false));
 			else
@@ -45,23 +43,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 				SetBrain(new MinionBrain(this));
 				(Brain as MinionBrain).AddPresetPower(169081); //melee_instant
 
-				if (context.User.Attributes[GameAttribute.Rune_A, 0x000592ff] > 0)  //Spider
+				if (context.User.Attributes[GameAttributes.Rune_A, 0x000592ff] > 0)  //Spider
 					(Brain as MinionBrain).AddPresetPower(133887); //cleave				
 
-				if (context.User.Attributes[GameAttribute.Rune_B, 0x000592ff] > 0)  //Boar
+				if (context.User.Attributes[GameAttributes.Rune_B, 0x000592ff] > 0)  //Boar
 					(Brain as MinionBrain).AddPresetPower(133887); //cleave
 
-				if (context.User.Attributes[GameAttribute.Rune_C, 0x000592ff] > 0)  //Wolf
+				if (context.User.Attributes[GameAttributes.Rune_C, 0x000592ff] > 0)  //Wolf
 					(Brain as MinionBrain).AddPresetPower(133887); //cleave					
 																   //(Brain as MinionBrain).AddPresetPower(133887); //ChargeAttack
 			}
 
-			Attributes[GameAttribute.Attacks_Per_Second] = context.User.Attributes[GameAttribute.Attacks_Per_Second_Total];
+			Attributes[GameAttributes.Attacks_Per_Second] = context.User.Attributes[GameAttributes.Attacks_Per_Second_Total];
 
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = context.ScriptFormula(0) * context.User.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = context.ScriptFormula(0) * context.User.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0];
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] = context.ScriptFormula(0) * context.User.Attributes[GameAttributes.Damage_Weapon_Min_Total, 0];
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] = context.ScriptFormula(0) * context.User.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0];
 
-			Attributes[GameAttribute.Pet_Type] = 0x8;
+			Attributes[GameAttributes.Pet_Type] = 0x8;
 			//Pet_Owner and Pet_Creator seems to be 0
 		}
 	}

@@ -3,11 +3,6 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -16,8 +11,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Healthwell(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.MinimapActive] = true;
-			Attributes[GameAttribute.Gizmo_State] = 0;
+			Attributes[GameAttributes.MinimapActive] = true;
+			Attributes[GameAttributes.Gizmo_State] = 0;
 		}
 
 
@@ -25,9 +20,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			//Logger.Warn("Healthwell has no function, Powers not implemented");
 
-			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			Attributes[GameAttribute.Gizmo_State] = 1;
+			Attributes[GameAttributes.Gizmo_State] = 1;
 			Attributes.BroadcastChangedIfRevealed();
 			player.AddPercentageHP(50);
 			player.AddAchievementCounter(74987243307169, 1);

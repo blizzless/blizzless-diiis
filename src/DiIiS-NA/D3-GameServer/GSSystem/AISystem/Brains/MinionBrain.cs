@@ -11,7 +11,6 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
@@ -65,10 +64,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			if (Body.World.Game.Paused) return;
 
 			// check if in disabled state, if so cancel any action then do nothing
-			if (Body.Attributes[GameAttribute.Frozen] ||
-				Body.Attributes[GameAttribute.Stunned] ||
-				Body.Attributes[GameAttribute.Blind] ||
-				Body.Attributes[GameAttribute.Webbed] ||
+			if (Body.Attributes[GameAttributes.Frozen] ||
+				Body.Attributes[GameAttributes.Stunned] ||
+				Body.Attributes[GameAttributes.Blind] ||
+				Body.Attributes[GameAttributes.Webbed] ||
 				Body.Disable ||
 				Body.World.BuffManager.GetFirstBuff<KnockbackBuff>(Body) != null)
 			{
@@ -82,7 +81,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				return;
 			}
 
-			if (Body.Attributes[GameAttribute.Feared])
+			if (Body.Attributes[GameAttributes.Feared])
 			{
 				if (!Feared || CurrentAction == null)
 				{
@@ -119,7 +118,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						.Cast<Actor>()
 						.ToList();
 					if (Body.World.Game.PvP)
-						targets = (Body as Minion).Master.GetObjectsInRange<Player>(30f).Where(p => p.GlobalID != (Body as Minion).Master.GlobalID && p.Attributes[GameAttribute.TeamID] != (Body as Minion).Master.Attributes[GameAttribute.TeamID]).Cast<Actor>().ToList();
+						targets = (Body as Minion).Master.GetObjectsInRange<Player>(30f).Where(p => p.GlobalID != (Body as Minion).Master.GlobalID && p.Attributes[GameAttributes.TeamID] != (Body as Minion).Master.Attributes[GameAttributes.TeamID]).Cast<Actor>().ToList();
 					if (Body.World.IsPvP)
 						targets = (Body as Minion).Master.GetObjectsInRange<Player>(30f).Where(p => p.GlobalID != (Body as Minion).Master.GlobalID).Cast<Actor>().ToList();
 

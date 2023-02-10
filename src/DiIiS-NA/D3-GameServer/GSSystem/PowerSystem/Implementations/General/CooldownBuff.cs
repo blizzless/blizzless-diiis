@@ -2,11 +2,6 @@
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -41,8 +36,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 
-			Target.Attributes[GameAttribute.Power_Cooldown_Start, TargetPowerSNO] = World.Game.TickCounter;
-			Target.Attributes[GameAttribute.Power_Cooldown, TargetPowerSNO] = Timeout.TimeoutTick;
+			Target.Attributes[GameAttributes.Power_Cooldown_Start, TargetPowerSNO] = World.Game.TickCounter;
+			Target.Attributes[GameAttributes.Power_Cooldown, TargetPowerSNO] = Timeout.TimeoutTick;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -50,8 +45,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Power_Cooldown_Start, TargetPowerSNO] = 0;
-			Target.Attributes[GameAttribute.Power_Cooldown, TargetPowerSNO] = 0;
+			Target.Attributes[GameAttributes.Power_Cooldown_Start, TargetPowerSNO] = 0;
+			Target.Attributes[GameAttributes.Power_Cooldown, TargetPowerSNO] = 0;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 
@@ -92,8 +87,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 			
-			Target.Attributes[GameAttribute.Recharge_Start_Time, TargetPowerSNO] = World.Game.TickCounter;
-			Target.Attributes[GameAttribute.Next_Charge_Gained_time, TargetPowerSNO] = Timeout.TimeoutTick;
+			Target.Attributes[GameAttributes.Recharge_Start_Time, TargetPowerSNO] = World.Game.TickCounter;
+			Target.Attributes[GameAttributes.Next_Charge_Gained_time, TargetPowerSNO] = Timeout.TimeoutTick;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -101,8 +96,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Recharge_Start_Time, TargetPowerSNO] = 0;
-			Target.Attributes[GameAttribute.Next_Charge_Gained_time, TargetPowerSNO] = 0;
+			Target.Attributes[GameAttributes.Recharge_Start_Time, TargetPowerSNO] = 0;
+			Target.Attributes[GameAttributes.Next_Charge_Gained_time, TargetPowerSNO] = 0;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 
@@ -129,10 +124,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Disabled] = true;
-			Target.Attributes[GameAttribute.Immobolize] = true;
-			Target.Attributes[GameAttribute.Untargetable] = true;
-			Target.Attributes[GameAttribute.CantStartDisplayedPowers] = true;
+			Target.Attributes[GameAttributes.Disabled] = true;
+			Target.Attributes[GameAttributes.Immobolize] = true;
+			Target.Attributes[GameAttributes.Untargetable] = true;
+			Target.Attributes[GameAttributes.CantStartDisplayedPowers] = true;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -140,10 +135,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Disabled] = false;
-			Target.Attributes[GameAttribute.Immobolize] = false;
-			Target.Attributes[GameAttribute.Untargetable] = false;
-			Target.Attributes[GameAttribute.CantStartDisplayedPowers] = false;
+			Target.Attributes[GameAttributes.Disabled] = false;
+			Target.Attributes[GameAttributes.Immobolize] = false;
+			Target.Attributes[GameAttributes.Untargetable] = false;
+			Target.Attributes[GameAttributes.CantStartDisplayedPowers] = false;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -225,8 +220,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Invulnerable] = true;
-			Target.Attributes[GameAttribute.Disabled] = true;
+			Target.Attributes[GameAttributes.Invulnerable] = true;
+			Target.Attributes[GameAttributes.Disabled] = true;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -234,8 +229,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Invulnerable] = false;
-			Target.Attributes[GameAttribute.Disabled] = false;
+			Target.Attributes[GameAttributes.Invulnerable] = false;
+			Target.Attributes[GameAttributes.Disabled] = false;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}

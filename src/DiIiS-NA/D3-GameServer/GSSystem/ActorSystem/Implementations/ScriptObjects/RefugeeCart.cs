@@ -4,11 +4,6 @@ using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -44,8 +39,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			{
 				base.OnTargeted(player, message);
 				player.AddFollower(World.GetActorBySNO(ActorSno._caldeumpoor_male_f_ambient));
-				Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
-				Attributes[GameAttribute.Disabled] = true;
+				Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
+				Attributes[GameAttributes.Disabled] = true;
 				Attributes.BroadcastChangedIfRevealed();
 			}
 		}

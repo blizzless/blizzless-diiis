@@ -2,11 +2,6 @@
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.MessageSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ.FileFormats;
 
@@ -74,15 +69,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			: base(world, sno, tags)
 		{
 			if (sno == ActorSno._zoltunkulle && world.SNO == WorldSno.a2dun_zolt_lobby) SetVisible(false);
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
-			Attributes[GameAttribute.using_Bossbar] = true;
-			Attributes[GameAttribute.InBossEncounter] = true;
-			Attributes[GameAttribute.Hitpoints_Max] *= GameServerConfig.Instance.BossHealthMultiplier;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
-			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
-			Attributes[GameAttribute.TeamID] = 10;
+			Attributes[GameAttributes.using_Bossbar] = true;
+			Attributes[GameAttributes.InBossEncounter] = true;
+			Attributes[GameAttributes.Hitpoints_Max] *= GameServerConfig.Instance.BossHealthMultiplier;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
+			Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+			Attributes[GameAttributes.TeamID] = 10;
 
 			WalkSpeed *= 0.5f;
 			if (Brain is MonsterBrain monsterBrain)

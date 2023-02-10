@@ -14,11 +14,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public NephalemStone(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.MinimapActive] = true;
-            Attributes[GameAttribute.Untargetable] = false;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.MinimapActive] = true;
+            Attributes[GameAttributes.Untargetable] = false;
             Attributes.BroadcastChangedIfRevealed();
-            Attributes[GameAttribute.MinimapIconOverride] = 221224;//327066;
+            Attributes[GameAttributes.MinimapIconOverride] = 221224;//327066;
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
@@ -31,7 +31,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             if (!base.Reveal(player))
                 return false;
 
-            var animationTag = Attributes[GameAttribute.Untargetable] ? AnimationSetKeys.Open : AnimationSetKeys.IdleDefault;
+            var animationTag = Attributes[GameAttributes.Untargetable] ? AnimationSetKeys.Open : AnimationSetKeys.IdleDefault;
             var animation = (AnimationSno)AnimationSet.TagMapAnimDefault[animationTag];
             PlayAnimation(5, animation);
             SetIdleAnimation(animation);

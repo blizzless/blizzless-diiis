@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.Core.Helpers.Math;
@@ -824,7 +823,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			Logger.MethodTrace($"quality {forceQuality}");
 			if (player != null)
 			{
-				int level = (forceLevel > 0 ? forceLevel : source.Attributes[GameAttribute.Level]);
+				int level = (forceLevel > 0 ? forceLevel : source.Attributes[GameAttributes.Level]);
 				if (toonClass == ToonClass.Unknown && type == null)
 				{
 					var item = ItemGenerator.GenerateRandomEquip(player, level, forceQuality, forceQuality, canBeUnidentified: canBeUnidentified);
@@ -863,12 +862,12 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			if (player != null)
 			{
-				var item = ItemGenerator.GenerateRandomCraftItem(player, source.Attributes[GameAttribute.Level], true);
+				var item = ItemGenerator.GenerateRandomCraftItem(player, source.Attributes[GameAttributes.Level], true);
 				if (item == null) return;
 				player.GroundItems[item.GlobalID] = item;
 				DropItem(source, null, item);
 
-				if (source.Attributes[GameAttribute.Level] >= Program.MaxLevel)
+				if (source.Attributes[GameAttributes.Level] >= Program.MaxLevel)
 				{
 					item = ItemGenerator.GenerateRandomCraftItem(player, 35);
 					if (item == null) return;
@@ -895,9 +894,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public void SpawnRandomGem(Actor source, Player player)
 		{
 			if (player != null && //player.JewelerUnlocked && 
-				player.Attributes[GameAttribute.Level] >= 15)
+				player.Attributes[GameAttributes.Level] >= 15)
 			{
-				var item = ItemGenerator.GenerateRandomGem(player, source.Attributes[GameAttribute.Level], source is Goblin);
+				var item = ItemGenerator.GenerateRandomGem(player, source.Attributes[GameAttributes.Level], source is Goblin);
 				if (item == null) return;
 				player.GroundItems[item.GlobalID] = item;
 				DropItem(source, null, item);
@@ -915,7 +914,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		}
 		public void SpawnEssence(Actor source, Player player)
 		{
-			int essence = (source.Attributes[GameAttribute.Level] > 60 ? 2087837753 : -152489231);
+			int essence = (source.Attributes[GameAttributes.Level] > 60 ? 2087837753 : -152489231);
 			if (player != null)
 			{
 				var item = ItemGenerator.CookFromDefinition(player.World, ItemGenerator.GetItemDefinition(essence)); //Crafting_Demonic_Reagent
@@ -931,7 +930,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="position">The position for drop.</param>
 		public void SpawnGold(Actor source, Player player, int Min = -1)
 		{
-			int amount = (int)(LootManager.GetGoldAmount(player.Attributes[GameAttribute.Level]) * Game.GoldModifier * GameServerConfig.Instance.RateMoney);
+			int amount = (int)(LootManager.GetGoldAmount(player.Attributes[GameAttributes.Level]) * Game.GoldModifier * GameServerConfig.Instance.RateMoney);
 			if (Min != -1)
 				amount += Min;
 			var item = ItemGenerator.CreateGold(player, amount); // somehow the actual ammount is not shown on ground /raist.
@@ -1373,7 +1372,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			var proximityCircle = new Circle(position.X, position.Y, radius);
 			var actors = QuadTree.Query<Actor>(proximityCircle);
 			foreach (var actor in actors)
-				if (actor.Attributes[GameAttribute.Disabled] == false && actor.Attributes[GameAttribute.Gizmo_Has_Been_Operated] == false && actor.SNO == actorSno) return actor;
+				if (actor.Attributes[GameAttributes.Disabled] == false && actor.Attributes[GameAttributes.Gizmo_Has_Been_Operated] == false && actor.SNO == actorSno) return actor;
 			return null;
 		}
 

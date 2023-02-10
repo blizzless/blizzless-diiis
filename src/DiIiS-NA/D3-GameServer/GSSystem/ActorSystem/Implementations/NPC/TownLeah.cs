@@ -23,12 +23,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			var monsterLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][19760].Data;
 			var monsterData = (Monster.Target as MonsterFF);
 
-			Attributes[GameAttribute.Level] = 1;
-			Attributes[GameAttribute.Hitpoints_Max] = 100000;
-			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
-			Attributes[GameAttribute.Attacks_Per_Second] = 1.2f;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
+			Attributes[GameAttributes.Level] = 1;
+			Attributes[GameAttributes.Hitpoints_Max] = 100000;
+			Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+			Attributes[GameAttributes.Attacks_Per_Second] = 1.2f;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 5f;
 			WalkSpeed = 0.3f * monsterData.AttributeModifiers[129];
 		}
 

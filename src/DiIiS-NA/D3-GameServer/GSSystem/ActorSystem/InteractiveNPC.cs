@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.Core.Extensions;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.Core.Logging;
-using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Interactions;
@@ -43,16 +39,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public InteractiveNPC(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = true; //second param - playerIndex
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 1] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 2] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 3] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 4] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 5] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 6] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 7] = true;
-			Attributes[GameAttribute.NPC_Is_Operatable] = true;
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 0] = true; //second param - playerIndex
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 1] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 2] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 3] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 4] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 5] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 6] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 7] = true;
+			Attributes[GameAttributes.NPC_Is_Operatable] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 			Interactions = new List<IInteraction>();
 			Conversations = new List<ConversationInteraction>();
 
@@ -152,12 +148,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				if (this is Healer) return;
 				
-				Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
+				Attributes[GameAttributes.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
 				
 				if (ForceConversationSNO != -1)
 				{
 					questConversation = true;
-					Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
+					Attributes[GameAttributes.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
 					Conversations.Add(new ConversationInteraction(ForceConversationSNO));
 				}
 
@@ -171,7 +167,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					World.Game.CurrentSideQuest == 356996 ||
 					World.Game.CurrentSideQuest == 356999 ||
 					World.Game.CurrentSideQuest == 357001;
-				Attributes[GameAttribute.Conversation_Icon, 0] = active ? 1 : 3;
+				Attributes[GameAttributes.Conversation_Icon, 0] = active ? 1 : 3;
 				Attributes.BroadcastChangedIfRevealed();
 			}
 
@@ -179,9 +175,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			foreach (var conv in Conversations)
 				if (conv.Read == false)
 					HasReaded = true;
-			if (!HasReaded && Attributes[GameAttribute.Conversation_Icon, 0] != 2)
+			if (!HasReaded && Attributes[GameAttributes.Conversation_Icon, 0] != 2)
 			{
-				Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 
 				//if (entry.Type == ConversationTypes.GlobalFloat)
 				
@@ -201,7 +197,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			
 			try
 			{
-				if (player.Position.DistanceSquared(ref _position) < 121f && !_ambientPlayed && Attributes[GameAttribute.Conversation_Icon, 0] != 2)
+				if (player.Position.DistanceSquared(ref _position) < 121f && !_ambientPlayed && Attributes[GameAttributes.Conversation_Icon, 0] != 2)
 				{
 					_ambientPlayed = true;
 					if (FastRandom.Instance.Next(100) < 50)

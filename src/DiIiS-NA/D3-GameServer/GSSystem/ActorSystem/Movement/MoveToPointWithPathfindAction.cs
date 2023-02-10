@@ -95,7 +95,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 					}
 
 					if (Owner == null ||
-						Owner.Attributes[GameAttribute.Hitpoints_Cur] == 0 ||
+						Owner.Attributes[GameAttributes.Hitpoints_Cur] == 0 ||
 						Owner.GetObjectsInRange<Player>(50f).Count == 0 ||
 						MovementHelpers.GetDistance(Owner.Position, Heading) < AttackRadius ||
 						(Owner is Monster && (Owner as Monster).Brain.CurrentAction == null)

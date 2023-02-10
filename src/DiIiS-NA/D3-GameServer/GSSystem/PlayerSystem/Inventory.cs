@@ -56,8 +56,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			_owner = owner;
 			_equipment = new Equipment(owner);
-			_inventoryGrid = new InventoryGrid(owner, owner.Attributes[GameAttribute.Backpack_Slots] / 10, 10);
-			_stashGrid = new InventoryGrid(owner, owner.Attributes[GameAttribute.Shared_Stash_Slots] / 7, 7, (int)EquipmentSlotId.Stash);
+			_inventoryGrid = new InventoryGrid(owner, owner.Attributes[GameAttributes.Backpack_Slots] / 10, 10);
+			_stashGrid = new InventoryGrid(owner, owner.Attributes[GameAttributes.Shared_Stash_Slots] / 7, 7, (int)EquipmentSlotId.Stash);
 			_buybackGrid = new InventoryGrid(owner, 1, 20, (int)EquipmentSlotId.VendorBuyback);
 			_skillSocketRunes = new uint[6];
 			StashRevealed = false;
@@ -118,7 +118,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public int GetGearScore()
 		{
-			return GetEquippedItems().Where(item => item.Attributes[GameAttribute.Item_Binding_Level_Override] == 0).Select(i => i.Rating).Sum();
+			return GetEquippedItems().Where(item => item.Attributes[GameAttributes.Item_Binding_Level_Override] == 0).Select(i => i.Rating).Sum();
 		}
 
 		public int GetAvgLevel()
@@ -173,9 +173,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				List<Item> baseItems = FindSameItems(item.GBHandle.GBID);
 				foreach (Item baseItem in baseItems)
 				{
-					if (baseItem.Attributes[GameAttribute.ItemStackQuantityLo] + item.Attributes[GameAttribute.ItemStackQuantityLo] <= baseItem.ItemDefinition.MaxStackSize)
+					if (baseItem.Attributes[GameAttributes.ItemStackQuantityLo] + item.Attributes[GameAttributes.ItemStackQuantityLo] <= baseItem.ItemDefinition.MaxStackSize)
 					{
-						baseItem.UpdateStackCount(baseItem.Attributes[GameAttribute.ItemStackQuantityLo] + item.Attributes[GameAttribute.ItemStackQuantityLo]);
+						baseItem.UpdateStackCount(baseItem.Attributes[GameAttributes.ItemStackQuantityLo] + item.Attributes[GameAttributes.ItemStackQuantityLo]);
 						baseItem.Attributes.SendChangedMessage(_owner.InGameClient);
 
 						// Item amount successful added. Don't place item in inventory instead destroy it.
@@ -316,7 +316,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			Item item = _inventoryGrid.GetItemByDynId(_owner, (uint)itemId);
 			if (item == null) return;
-			int cost = (int)Math.Floor(item.GetPrice() / 25f) * Math.Max(1, item.Attributes[GameAttribute.Gold]);
+			int cost = (int)Math.Floor(item.GetPrice() / 25f) * Math.Max(1, item.Attributes[GameAttributes.Gold]);
 			_inventoryGrid.RemoveItem(item);
 			item.Unreveal(_owner);
 			AddGoldAmount(cost);
@@ -330,7 +330,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			if (Item.IsGem(target_item.ItemType)) return false; //can't equip gem
 
-			if (target_item.Attributes[GameAttribute.Requirement, 67] > (_owner.Level + 5)) return false; //can't equip too high level
+			if (target_item.Attributes[GameAttributes.Requirement, 67] > (_owner.Level + 5)) return false; //can't equip too high level
 			if (destination_slot == 14 || destination_slot == 16 || destination_slot == 17)
 				return false; //can't equip in utility slots
 
@@ -506,17 +506,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 					Item oldItem = destGrid.GetItem(request.Location.Row, request.Location.Column);
 
-					if (item.IsStackable() && item.GBHandle.GBID == oldItem.GBHandle.GBID && oldItem.Attributes[GameAttribute.ItemStackQuantityLo] < oldItem.ItemDefinition.MaxStackSize) //if it's stackable and same item (merge stacks)
+					if (item.IsStackable() && item.GBHandle.GBID == oldItem.GBHandle.GBID && oldItem.Attributes[GameAttributes.ItemStackQuantityLo] < oldItem.ItemDefinition.MaxStackSize) //if it's stackable and same item (merge stacks)
 					{
-						if (item.Attributes[GameAttribute.ItemStackQuantityLo] + oldItem.Attributes[GameAttribute.ItemStackQuantityLo] <= oldItem.ItemDefinition.MaxStackSize)
+						if (item.Attributes[GameAttributes.ItemStackQuantityLo] + oldItem.Attributes[GameAttributes.ItemStackQuantityLo] <= oldItem.ItemDefinition.MaxStackSize)
 						{
-							oldItem.UpdateStackCount(oldItem.Attributes[GameAttribute.ItemStackQuantityLo] + item.Attributes[GameAttribute.ItemStackQuantityLo]);
+							oldItem.UpdateStackCount(oldItem.Attributes[GameAttributes.ItemStackQuantityLo] + item.Attributes[GameAttributes.ItemStackQuantityLo]);
 							DestroyInventoryItem(item);
 							oldItem.Attributes.SendChangedMessage((_owner as Player).InGameClient);
 						}
 						else
 						{
-							item.UpdateStackCount(item.Attributes[GameAttribute.ItemStackQuantityLo] - (oldItem.ItemDefinition.MaxStackSize - oldItem.Attributes[GameAttribute.ItemStackQuantityLo]));
+							item.UpdateStackCount(item.Attributes[GameAttributes.ItemStackQuantityLo] - (oldItem.ItemDefinition.MaxStackSize - oldItem.Attributes[GameAttributes.ItemStackQuantityLo]));
 							item.Attributes.SendChangedMessage((_owner as Player).InGameClient);
 							oldItem.UpdateStackCount(oldItem.ItemDefinition.MaxStackSize);
 							oldItem.Attributes.SendChangedMessage((_owner as Player).InGameClient);
@@ -792,7 +792,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				if (Item.Is2H(itemMainHand.ItemType))
 				{
-					if (Item.IsShield(itemOffHand.ItemType) && !_owner.Attributes[GameAttribute.Allow_2H_And_Shield])
+					if (Item.IsShield(itemOffHand.ItemType) && !_owner.Attributes[GameAttributes.Allow_2H_And_Shield])
 						bugged = true;      //Crusader - Heavenly Strength
 
 					if (Item.IsBow(itemMainHand.ItemType) && !Item.IsQuiver(itemOffHand.ItemType))
@@ -832,8 +832,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (itemMainHand != null)
 				if (itemOffHand != null && !Item.IsOffhand(itemOffHand.ItemType))
 				{
-					mainDmgMin = itemMainHand.Attributes[GameAttribute.Damage_Weapon_Min_Total, damageType.AttributeKey];
-					offDmgMin = itemOffHand.Attributes[GameAttribute.Damage_Weapon_Min_Total, damageType.AttributeKey];
+					mainDmgMin = itemMainHand.Attributes[GameAttributes.Damage_Weapon_Min_Total, damageType.AttributeKey];
+					offDmgMin = itemOffHand.Attributes[GameAttributes.Damage_Weapon_Min_Total, damageType.AttributeKey];
 				}
 
 			return (mainDmgMin + offDmgMin) * 0.5f;
@@ -849,8 +849,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (itemMainHand != null)
 				if (itemOffHand != null && !Item.IsOffhand(itemOffHand.ItemType))
 				{
-					mainDmgDelta = itemMainHand.Attributes[GameAttribute.Damage_Weapon_Delta_Total, damageType.AttributeKey];
-					offDmgDelta = itemOffHand.Attributes[GameAttribute.Damage_Weapon_Delta_Total, damageType.AttributeKey];
+					mainDmgDelta = itemMainHand.Attributes[GameAttributes.Damage_Weapon_Delta_Total, damageType.AttributeKey];
+					offDmgDelta = itemOffHand.Attributes[GameAttributes.Damage_Weapon_Delta_Total, damageType.AttributeKey];
 				}
 
 			return (mainDmgDelta + offDmgDelta) * 0.5f;
@@ -864,18 +864,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			Item itemOffHand = _equipment.GetEquipment(EquipmentSlotId.Off_Hand);
 			if (itemMainHand != null)
 			{
-				float main_aps = itemMainHand.Attributes[GameAttribute.Attacks_Per_Second_Item];
+				float main_aps = itemMainHand.Attributes[GameAttributes.Attacks_Per_Second_Item];
 				aps = main_aps;
 				if (itemOffHand != null && !Item.IsOffhand(itemOffHand.ItemType))
 				{
-					float off_aps = itemOffHand.Attributes[GameAttribute.Attacks_Per_Second_Item];
+					float off_aps = itemOffHand.Attributes[GameAttributes.Attacks_Per_Second_Item];
 					if (main_aps > 0f && off_aps > 0f)
 						aps = 2f / ((1f / (main_aps * 1.15f)) + (1f / (off_aps * 1.15f)));
 				}
 			}
 			else if (itemOffHand != null)
 			{
-				aps = itemOffHand.Attributes[GameAttribute.Attacks_Per_Second_Item];
+				aps = itemOffHand.Attributes[GameAttributes.Attacks_Per_Second_Item];
 			}
 
 			if (aps < 0.5f)
@@ -887,7 +887,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		public float GetMagicFind()
 		{
 			if (_owner.World == null)
-				return GetItemBonus(GameAttribute.Magic_Find);
+				return GetItemBonus(GameAttributes.Magic_Find);
 
 			var difficulty = _owner.World.Game.Difficulty;
 			var mult = 1f;
@@ -907,13 +907,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				default: mult = 1f; break;
 			}
 
-			return GetItemBonus(GameAttribute.Magic_Find) * mult;
+			return GetItemBonus(GameAttributes.Magic_Find) * mult;
 		}
 
 		public float GetGoldFind()
 		{
 			if (_owner.World == null)
-				return GetItemBonus(GameAttribute.Gold_Find);
+				return GetItemBonus(GameAttributes.Gold_Find);
 
 			var difficulty = _owner.World.Game.Difficulty;
 			var mult = 1f;
@@ -933,7 +933,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				default: mult = 1f; break;
 			}
 
-			return GetItemBonus(GameAttribute.Gold_Find) * mult;
+			return GetItemBonus(GameAttributes.Gold_Find) * mult;
 		}
 
 
@@ -958,11 +958,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					Item itemOffHand = _equipment.GetEquipment(EquipmentSlotId.Off_Hand);
 					if (itemOffHand != null)
 					{
-						if (Item.IsQuiver(itemOffHand.ItemType) && (item.Attributes[GameAttribute.Bow] > 0 || _owner.Attributes[GameAttribute.Crossbow] > 0))
+						if (Item.IsQuiver(itemOffHand.ItemType) && (item.Attributes[GameAttributes.Bow] > 0 || _owner.Attributes[GameAttributes.Crossbow] > 0))
 							return true;
 
-						if (Item.IsShield(itemOffHand.ItemType) && _owner.Attributes[GameAttribute.Allow_2H_And_Shield])
-							if (!Item.IsBow(type) && (_owner.Attributes[GameAttribute.Crossbow] <= 0))
+						if (Item.IsShield(itemOffHand.ItemType) && _owner.Attributes[GameAttributes.Allow_2H_And_Shield])
+							if (!Item.IsBow(type) && (_owner.Attributes[GameAttributes.Crossbow] <= 0))
 								return true;
 
 						_equipment.UnequipItem(itemOffHand);
@@ -1002,9 +1002,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 				else if (Item.IsQuiver(type))
 				{
-					return (_owner.Attributes[GameAttribute.Bow] > 0 || _owner.Attributes[GameAttribute.Crossbow] > 0);
+					return (_owner.Attributes[GameAttributes.Bow] > 0 || _owner.Attributes[GameAttributes.Crossbow] > 0);
 				}
-				else if (Item.IsShield(type) && _owner.Attributes[GameAttribute.Allow_2H_And_Shield])
+				else if (Item.IsShield(type) && _owner.Attributes[GameAttributes.Allow_2H_And_Shield])
 				{
 					return true;
 				}
@@ -1035,8 +1035,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			Logger.Trace("OnInventorySplitStackMessage()");
 			Item itemFrom = GetItemByDynId(_owner, (uint)msg.FromID);
-			int amount = Math.Min((int)msg.Amount, itemFrom.Attributes[GameAttribute.ItemStackQuantityLo] - 1);
-			itemFrom.UpdateStackCount(itemFrom.Attributes[GameAttribute.ItemStackQuantityLo] - amount);
+			int amount = Math.Min((int)msg.Amount, itemFrom.Attributes[GameAttributes.ItemStackQuantityLo] - 1);
+			itemFrom.UpdateStackCount(itemFrom.Attributes[GameAttributes.ItemStackQuantityLo] - amount);
 			itemFrom.Attributes.SendChangedMessage(_owner.InGameClient);
 
 			Item item = ItemGenerator.CreateItem(_owner, itemFrom.ItemDefinition);
@@ -1056,10 +1056,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			Item itemFrom = GetItemByDynId(_owner, msg.FromID);
 			Item itemTo = GetItemByDynId(_owner, msg.ToID);
-			int amount = Math.Min((int)msg.Amount, itemFrom.Attributes[GameAttribute.ItemStackQuantityLo] - 1);
+			int amount = Math.Min((int)msg.Amount, itemFrom.Attributes[GameAttributes.ItemStackQuantityLo] - 1);
 
-			itemFrom.UpdateStackCount(itemFrom.Attributes[GameAttribute.ItemStackQuantityLo] - amount);
-			itemTo.UpdateStackCount(itemTo.Attributes[GameAttribute.ItemStackQuantityLo] + amount);
+			itemFrom.UpdateStackCount(itemFrom.Attributes[GameAttributes.ItemStackQuantityLo] - amount);
+			itemTo.UpdateStackCount(itemTo.Attributes[GameAttributes.ItemStackQuantityLo] + amount);
 
 			itemFrom.Attributes.SendChangedMessage(_owner.InGameClient);
 			itemTo.Attributes.SendChangedMessage(_owner.InGameClient);
@@ -1143,7 +1143,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			_equipment.EquipmentChanged = true;
 			var Item = GetItemByDynId(_owner, msg.ItemID);
 			;
-			Item.Attributes[GameAttribute.DyeType] = msg.DyeID;
+			Item.Attributes[GameAttributes.DyeType] = msg.DyeID;
 			Item.Attributes.BroadcastChangedIfRevealed();
 			RefreshInventoryToClient();
 		}
@@ -1247,7 +1247,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					float maxValue;
 
 					if (Item.RandomGenerator == null)
-						Item.RandomGenerator = new ItemRandomHelper(Item.Attributes[GameAttribute.Seed]);
+						Item.RandomGenerator = new ItemRandomHelper(Item.Attributes[GameAttributes.Seed]);
 
 					if (FormulaScript.Evaluate(effect.Formula.ToArray(), Item.RandomGenerator, out result, out minValue, out maxValue))
 					{
@@ -1261,17 +1261,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								result = (float)FastRandom.Instance.Next(1, 3);
 						}
 						
-						if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeF)
+						if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
 						{
-							var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+							var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 							if (effect.SNOParam != -1)
 								Item.Attributes[attr, effect.SNOParam] -= result;
 							else
 								Item.Attributes[attr] -= result;
 						}
-						else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+						else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 						{
-							var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+							var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 							if (effect.SNOParam != -1)
 								Item.Attributes[attr, effect.SNOParam] -= (int)result;
 							else
@@ -1299,7 +1299,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							float maxValue;
 
 							if (Item.RandomGenerator == null)
-								Item.RandomGenerator = new ItemRandomHelper(Item.Attributes[GameAttribute.Seed]);
+								Item.RandomGenerator = new ItemRandomHelper(Item.Attributes[GameAttributes.Seed]);
 							
 							if (FormulaScript.Evaluate(effect.Formula.ToArray(), Item.RandomGenerator, out result, out minValue, out maxValue))
 							{
@@ -1320,17 +1320,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 								//
 
 
-								if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeF)
+								if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 									if (effect.SNOParam != -1)
 										Item.Attributes[attr, effect.SNOParam] += result;
 									else
 										Item.Attributes[attr] += result;
 								}
-								else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+								else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 									if (effect.SNOParam != -1)
 										Item.Attributes[attr, effect.SNOParam] += (int)result;
 									else
@@ -1392,32 +1392,32 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							!item.ItemDefinition.Name.ToLower().Contains("key") &&
 							!item.ItemDefinition.Name.ToLower().Contains("horadric") &&
 							!item.ItemDefinition.Name.ToLower().Contains("dye"))
-							if (item.Attributes[GameAttribute.Item_Quality_Level] < 3)
+							if (item.Attributes[GameAttributes.Item_Quality_Level] < 3)
 							{
 								last_item_gbid = item.GBHandle.GBID;
-								last_item_quality = item.Attributes[GameAttribute.Item_Quality_Level];
+								last_item_quality = item.Attributes[GameAttributes.Item_Quality_Level];
 								count_reward += SalvageItem(item);
 							}
 					break;
 				// Magical items
 				case 1:
 					foreach (var item in GetBackPackItems())
-						if (item.Attributes[GameAttribute.Item_Quality_Level] > 2 &
-							item.Attributes[GameAttribute.Item_Quality_Level] < 6)
+						if (item.Attributes[GameAttributes.Item_Quality_Level] > 2 &
+							item.Attributes[GameAttributes.Item_Quality_Level] < 6)
 						{
 							last_item_gbid = item.GBHandle.GBID;
-							last_item_quality = item.Attributes[GameAttribute.Item_Quality_Level];
+							last_item_quality = item.Attributes[GameAttributes.Item_Quality_Level];
 							count_reward += SalvageItem(item);
 						}
 					break;
 				// Rare Items
 				case 2:
 					foreach (var item in GetBackPackItems())
-						if (item.Attributes[GameAttribute.Item_Quality_Level] > 5 &
-							item.Attributes[GameAttribute.Item_Quality_Level] < 9)
+						if (item.Attributes[GameAttributes.Item_Quality_Level] > 5 &
+							item.Attributes[GameAttributes.Item_Quality_Level] < 9)
 						{
 							last_item_gbid = item.GBHandle.GBID;
-							last_item_quality = item.Attributes[GameAttribute.Item_Quality_Level];
+							last_item_quality = item.Attributes[GameAttributes.Item_Quality_Level];
 							count_reward += SalvageItem(item);
 						}
 					break;
@@ -1440,35 +1440,35 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (item == null)
 				return 0;
 
-			if (item.Attributes[GameAttribute.IsCrafted] == true && item.DBInventory.Version > 1)
+			if (item.Attributes[GameAttributes.IsCrafted] == true && item.DBInventory.Version > 1)
 				return 0;
 
-			if (item.Attributes[GameAttribute.Item_Equipped] == true)
+			if (item.Attributes[GameAttributes.Item_Equipped] == true)
 				return 0;
 
 			string rewardName = "Crafting_";
 
 			if (item.ItemLevel >= 60)
 			{
-				if (item.Attributes[GameAttribute.Item_Quality_Level] > 5)
+				if (item.Attributes[GameAttributes.Item_Quality_Level] > 5)
 					rewardName += "Rare_01";                            //Veiled Crystal
 				else
-					if (item.Attributes[GameAttribute.Item_Quality_Level] > 2)
+					if (item.Attributes[GameAttributes.Item_Quality_Level] > 2)
 					rewardName += "Magic_01";                       //Arcane Dust
 				else
 					rewardName += "AssortedParts_01";               //Reusable Parts
 			}
 			else
-				if (item.Attributes[GameAttribute.Item_Quality_Level] > 5)
+				if (item.Attributes[GameAttributes.Item_Quality_Level] > 5)
 				rewardName += "Rare_01";                               //Iridescent Tear
 			else
-					if (item.Attributes[GameAttribute.Item_Quality_Level] > 2)
+					if (item.Attributes[GameAttributes.Item_Quality_Level] > 2)
 				rewardName += "Magic_01";                           //Exquisite Essence
 			else
 				rewardName += "AssortedParts_01";                           //Common Debris
 
 			Item reward = ItemGenerator.Cook(_owner, rewardName);
-			int count_reward = RandomHelper.Next(1, 5) * (10 - item.Attributes[GameAttribute.Item_Quality_Level]);
+			int count_reward = RandomHelper.Next(1, 5) * (10 - item.Attributes[GameAttributes.Item_Quality_Level]);
 			var playerAcc = _owner.Toon.GameAccount;
 			if (reward == null) return 0;
 			for (int i = 0; i < count_reward; i++)
@@ -1499,7 +1499,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					gem.Unreveal(_owner);
 
 				item.Gems.Clear();
-				item.Attributes[GameAttribute.Sockets_Filled] = 0;
+				item.Attributes[GameAttributes.Sockets_Filled] = 0;
 				item.Attributes.BroadcastChangedIfRevealed();
 			}
 
@@ -1508,7 +1508,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			bool haveBrimstone = false;
 			Item brimstone = null;
-			if (item.Attributes[GameAttribute.Item_Quality_Level] > 8 || FastRandom.Instance.Next(1, 1000) == 1)
+			if (item.Attributes[GameAttributes.Item_Quality_Level] > 8 || FastRandom.Instance.Next(1, 1000) == 1)
 			{
 				if (item.ItemLevel >= 60)
 					rewardName = "Crafting_Legendary_01";       //Forgotten Soul
@@ -1572,33 +1572,33 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			//if (item.Attributes[GameAttribute.IsCrafted] == true)// && item.DBInventory.Version > 1)
 			//	return;
 
-			if (item.Attributes[GameAttribute.Item_Equipped] == true)
+			if (item.Attributes[GameAttributes.Item_Equipped] == true)
 				return;
 
 			string rewardName = "Crafting_";
 
 			if (item.ItemLevel >= 60)
 			{
-				if (item.Attributes[GameAttribute.Item_Quality_Level] > 5)
+				if (item.Attributes[GameAttributes.Item_Quality_Level] > 5)
 					rewardName += "Rare_01";                            //Veiled Crystal
 				else
-					if (item.Attributes[GameAttribute.Item_Quality_Level] > 2)
+					if (item.Attributes[GameAttributes.Item_Quality_Level] > 2)
 					rewardName += "Magic_01";                       //Arcane Dust
 				else
 					rewardName += "AssortedParts_01";               //Reusable Parts
 			}
 			else
-				if (item.Attributes[GameAttribute.Item_Quality_Level] > 5)
+				if (item.Attributes[GameAttributes.Item_Quality_Level] > 5)
 				rewardName += "Rare_01";                               //Iridescent Tear
 			else
-					if (item.Attributes[GameAttribute.Item_Quality_Level] > 2)
+					if (item.Attributes[GameAttributes.Item_Quality_Level] > 2)
 				rewardName += "Magic_01";                           //Exquisite Essence
 			else
 				rewardName += "AssortedParts_01";                           //Common Debris
 
 			Item reward = ItemGenerator.Cook(_owner, rewardName);
-			int count_reward = RandomHelper.Next(1, 5) * (10 - item.Attributes[GameAttribute.Item_Quality_Level]);
-			if (item.Attributes[GameAttribute.IsCrafted] == true)
+			int count_reward = RandomHelper.Next(1, 5) * (10 - item.Attributes[GameAttributes.Item_Quality_Level]);
+			if (item.Attributes[GameAttributes.IsCrafted] == true)
 				count_reward /= 4;
 			if (reward == null) return;
 			for (int i = 0; i < count_reward; i++)
@@ -1627,7 +1627,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					gem.Unreveal(_owner);
 
 				item.Gems.Clear();
-				item.Attributes[GameAttribute.Sockets_Filled] = 0;
+				item.Attributes[GameAttributes.Sockets_Filled] = 0;
 				item.Attributes.BroadcastChangedIfRevealed();
 			}
 
@@ -1637,7 +1637,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			
 			bool haveBrimstone = false;
 			Item brimstone = null;
-			if (item.Attributes[GameAttribute.Item_Quality_Level] > 8 || FastRandom.Instance.Next(1, 1000) == 1)
+			if (item.Attributes[GameAttributes.Item_Quality_Level] > 8 || FastRandom.Instance.Next(1, 1000) == 1)
 			{
 				if (item.ItemLevel >= 60)
 					rewardName = "Crafting_Legendary_01";       //Forgotten Soul
@@ -1654,7 +1654,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			_owner.InGameClient.SendMessage(new SalvageResultsMessage()
 			{
 				gbidOriginalItem = item.GBHandle.GBID,
-				IQLOriginalItem = Math.Min(item.Attributes[GameAttribute.Item_Quality_Level], 9),
+				IQLOriginalItem = Math.Min(item.Attributes[GameAttributes.Item_Quality_Level], 9),
 				MaterialsResults = haveBrimstone ? 2 : 1,
 				gbidNewItems = new int[] { reward.GBHandle.GBID, haveBrimstone ? brimstone.GBHandle.GBID : -1, -1, -1 }, 
 				MaterialsCounts = new int[] { count_reward, haveBrimstone ? 1 : 0, 0, 0 }
@@ -1692,7 +1692,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			var extraAffixCount = recipe.ItemSpecifierData.AdditionalRandomAffixes + FastRandom.Instance.Next(0, recipe.ItemSpecifierData.AdditionalRandomAffixesDelta);
 
 			Item reward = ItemGenerator.CookFromDefinition(_owner.World, ItemGenerator.GetItemDefinition(recipe.ItemSpecifierData.ItemGBId), Math.Min(extraAffixCount, 9), false, true);
-			reward.Attributes[GameAttribute.ItemStackQuantityLo] = 0;
+			reward.Attributes[GameAttributes.ItemStackQuantityLo] = 0;
 			if (!Item.IsAmulet(reward.ItemType) && !Item.IsRing(reward.ItemType))
 			{
 				if (reward.ItemLevel >= 70)
@@ -1732,14 +1732,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						if (item.ItemDefinition.Hash == ingr.ItemsGBID)
 						{
 							FoundedItem = item;
-							if (FoundedItem.Attributes[GameAttribute.ItemStackQuantityLo] == ingr.Count)
+							if (FoundedItem.Attributes[GameAttributes.ItemStackQuantityLo] == ingr.Count)
 							{
 								_inventoryGrid.RemoveItem(FoundedItem);
 								FoundedItem.Unreveal(FoundedItem.Owner as Player);
 							}
-							else if (FoundedItem.Attributes[GameAttribute.ItemStackQuantityLo] > ingr.Count)
+							else if (FoundedItem.Attributes[GameAttributes.ItemStackQuantityLo] > ingr.Count)
 							{
-								FoundedItem.Attributes[GameAttribute.ItemStackQuantityLo] -= ingr.Count;
+								FoundedItem.Attributes[GameAttributes.ItemStackQuantityLo] -= ingr.Count;
 								FoundedItem.Attributes.BroadcastChangedIfRevealed();
 							}
 							else
@@ -1749,14 +1749,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						foreach (var item in GetStashItems())
 							if (item.ItemDefinition.Hash == ingr.ItemsGBID)
 							{
-								if (item.Attributes[GameAttribute.ItemStackQuantityLo] == ingr.Count)
+								if (item.Attributes[GameAttributes.ItemStackQuantityLo] == ingr.Count)
 								{
 									_stashGrid.RemoveItem(item);
 									item.Unreveal(item.Owner as Player);
 								}
-								else if(item.Attributes[GameAttribute.ItemStackQuantityLo] > ingr.Count)
+								else if(item.Attributes[GameAttributes.ItemStackQuantityLo] > ingr.Count)
 								{
-									item.Attributes[GameAttribute.ItemStackQuantityLo] -= ingr.Count;
+									item.Attributes[GameAttributes.ItemStackQuantityLo] -= ingr.Count;
 									item.Attributes.BroadcastChangedIfRevealed();
 								}
 								else
@@ -1786,7 +1786,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			RemoveGoldAmount(recipeDefinition.Gold);
 
 			if (Item.IsGem(reward.ItemType))
-				reward.Attributes[GameAttribute.Item_Quality_Level] = 1;
+				reward.Attributes[GameAttributes.Item_Quality_Level] = 1;
 			else
 			{
 				foreach (int affixId in recipe.ItemSpecifierData.GBIdAffixes)
@@ -1796,21 +1796,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				if (reward.ItemDefinition.Name.StartsWith("Unique_"))
 				{
 					AffixGenerator.Generate(reward, recipe.ItemSpecifierData.AdditionalRandomAffixes, true);
-					reward.Attributes[GameAttribute.Item_Quality_Level] = 9;
+					reward.Attributes[GameAttributes.Item_Quality_Level] = 9;
 				}
 				//else
 				if (!(recipeDefinition.Name.StartsWith("T12_") || recipeDefinition.Name.StartsWith("T11_")))
-					reward.Attributes[GameAttribute.Item_Quality_Level] = Math.Min(recipe.ItemSpecifierData.AdditionalRandomAffixes + 2 , 9);
-				if (reward.Attributes[GameAttribute.Item_Quality_Level] < 9)
+					reward.Attributes[GameAttributes.Item_Quality_Level] = Math.Min(recipe.ItemSpecifierData.AdditionalRandomAffixes + 2 , 9);
+				if (reward.Attributes[GameAttributes.Item_Quality_Level] < 9)
 				{
 					AffixGenerator.Generate(reward, recipe.ItemSpecifierData.AdditionalRandomAffixes, true);
 				}
 
 				//reward.Attributes[GameAttribute.IsCrafted] = true;
 			}
-			reward.Attributes[GameAttribute.IsCrafted] = true;
-			reward.Attributes[GameAttribute.Attachment_Handled_By_Client] = true;
-			reward.Attributes[GameAttribute.ItemStackQuantityLo]++;
+			reward.Attributes[GameAttributes.IsCrafted] = true;
+			reward.Attributes[GameAttributes.Attachment_Handled_By_Client] = true;
+			reward.Attributes[GameAttributes.ItemStackQuantityLo]++;
 
 			if (Item.IsGem(reward.ItemType))
 			{
@@ -1857,64 +1857,64 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 			else
 			{
-				if (reward.Attributes[GameAttribute.Strength_Item] > 0)
+				if (reward.Attributes[GameAttributes.Strength_Item] > 0)
 					_owner.GrantCriteria(74987243308238);
-				if (reward.Attributes[GameAttribute.Dexterity_Item] > 0)
+				if (reward.Attributes[GameAttributes.Dexterity_Item] > 0)
 					_owner.GrantCriteria(74987243308941);
-				if (reward.Attributes[GameAttribute.Intelligence_Item] > 0)
+				if (reward.Attributes[GameAttributes.Intelligence_Item] > 0)
 					_owner.GrantCriteria(74987243308942);
-				if (reward.Attributes[GameAttribute.Vitality_Item] > 0)
+				if (reward.Attributes[GameAttributes.Vitality_Item] > 0)
 					_owner.GrantCriteria(74987243308943);
 
-				if (reward.Attributes[GameAttribute.Block_Chance_Item_Total] > 0)
+				if (reward.Attributes[GameAttributes.Block_Chance_Item_Total] > 0)
 					_owner.GrantCriteria(74987243308239);
-				if (reward.Attributes[GameAttribute.Thorns_Percent_Total] > 0 || reward.Attributes[GameAttribute.Thorns_Fixed, 0] > 0)
+				if (reward.Attributes[GameAttributes.Thorns_Percent_Total] > 0 || reward.Attributes[GameAttributes.Thorns_Fixed, 0] > 0)
 					_owner.GrantCriteria(74987243308945);
-				if (reward.Attributes[GameAttribute.Sockets] > 0)
+				if (reward.Attributes[GameAttributes.Sockets] > 0)
 					_owner.GrantCriteria(74987243308946);
-				if (reward.Attributes[GameAttribute.Experience_Bonus] > 0 || reward.Attributes[GameAttribute.Experience_Bonus_Percent] > 0)
+				if (reward.Attributes[GameAttributes.Experience_Bonus] > 0 || reward.Attributes[GameAttributes.Experience_Bonus_Percent] > 0)
 					_owner.GrantCriteria(74987243308947);
-				if (reward.Attributes[GameAttribute.Gold_Find_Total] > 0)
+				if (reward.Attributes[GameAttributes.Gold_Find_Total] > 0)
 					_owner.GrantCriteria(74987243308948);
-				if (reward.Attributes[GameAttribute.Attacks_Per_Second_Item_Bonus] > 0 || reward.Attributes[GameAttribute.Attacks_Per_Second_Item_Percent] > 0)
+				if (reward.Attributes[GameAttributes.Attacks_Per_Second_Item_Bonus] > 0 || reward.Attributes[GameAttributes.Attacks_Per_Second_Item_Percent] > 0)
 					_owner.GrantCriteria(74987243308949);
-				if (reward.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] > 0)
+				if (reward.Attributes[GameAttributes.Hitpoints_Regen_Per_Second] > 0)
 					_owner.GrantCriteria(74987243308950);
-				if (reward.Attributes[GameAttribute.Magic_Find_Total] > 0)
+				if (reward.Attributes[GameAttributes.Magic_Find_Total] > 0)
 					_owner.GrantCriteria(74987243308951);
-				if (reward.Attributes[GameAttribute.Crit_Percent_Bonus_Capped] > 0 || reward.Attributes[GameAttribute.Crit_Damage_Percent] > 0)
+				if (reward.Attributes[GameAttributes.Crit_Percent_Bonus_Capped] > 0 || reward.Attributes[GameAttributes.Crit_Damage_Percent] > 0)
 					_owner.GrantCriteria(74987243308952);
-				if (reward.Attributes[GameAttribute.Movement_Scalar] > 0)
+				if (reward.Attributes[GameAttributes.Movement_Scalar] > 0)
 					_owner.GrantCriteria(74987243312486);
 
 
-				if (reward.Attributes[GameAttribute.Resistance, 3] > 0) //cold
+				if (reward.Attributes[GameAttributes.Resistance, 3] > 0) //cold
 					_owner.GrantCriteria(74987243308240);
-				if (reward.Attributes[GameAttribute.Resource_Regen_Per_Second, 3] > 0) //spirit
+				if (reward.Attributes[GameAttributes.Resource_Regen_Per_Second, 3] > 0) //spirit
 					_owner.GrantCriteria(74987243308954);
-				if (reward.Attributes[GameAttribute.Resource_Max_Bonus, 6] > 0) //discipline
+				if (reward.Attributes[GameAttributes.Resource_Max_Bonus, 6] > 0) //discipline
 					_owner.GrantCriteria(74987243308955);
-				if (reward.Attributes[GameAttribute.Resistance, 5] > 0) //arcane
+				if (reward.Attributes[GameAttributes.Resistance, 5] > 0) //arcane
 					_owner.GrantCriteria(74987243308956);
-				if (reward.Attributes[GameAttribute.Resistance, 1] > 0) //fire
+				if (reward.Attributes[GameAttributes.Resistance, 1] > 0) //fire
 					_owner.GrantCriteria(74987243308957);
-				if (reward.Attributes[GameAttribute.Resistance, 2] > 0) //lightning
+				if (reward.Attributes[GameAttributes.Resistance, 2] > 0) //lightning
 					_owner.GrantCriteria(74987243308958);
-				if (reward.Attributes[GameAttribute.Resistance, 4] > 0) //poison
+				if (reward.Attributes[GameAttributes.Resistance, 4] > 0) //poison
 					_owner.GrantCriteria(74987243308959);
-				if (reward.Attributes[GameAttribute.Resource_Max_Bonus, 2] > 0) //fury
+				if (reward.Attributes[GameAttributes.Resource_Max_Bonus, 2] > 0) //fury
 					_owner.GrantCriteria(74987243308960);
-				if (reward.Attributes[GameAttribute.Resource_Max_Bonus, 1] > 0) //arcane
+				if (reward.Attributes[GameAttributes.Resource_Max_Bonus, 1] > 0) //arcane
 					_owner.GrantCriteria(74987243308961);
-				if (reward.Attributes[GameAttribute.Resource_Max_Bonus, 0] > 0) //mana
+				if (reward.Attributes[GameAttributes.Resource_Max_Bonus, 0] > 0) //mana
 					_owner.GrantCriteria(74987243308962);
-				if (reward.Attributes[GameAttribute.Resistance_All] > 0)
+				if (reward.Attributes[GameAttributes.Resistance_All] > 0)
 					_owner.GrantCriteria(74987243308963);
-				if (reward.Attributes[GameAttribute.Hitpoints_On_Hit] > 0 || reward.Attributes[GameAttribute.Steal_Health_Percent] > 0)
+				if (reward.Attributes[GameAttributes.Hitpoints_On_Hit] > 0 || reward.Attributes[GameAttributes.Steal_Health_Percent] > 0)
 					_owner.GrantCriteria(74987243308966);
-				if (reward.Attributes[GameAttribute.Health_Globe_Bonus_Health] > 0)
+				if (reward.Attributes[GameAttributes.Health_Globe_Bonus_Health] > 0)
 					_owner.GrantCriteria(74987243308967);
-				if (reward.Attributes[GameAttribute.Armor_Bonus_Item] > 0 || reward.Attributes[GameAttribute.Armor_Item_Percent] > 0)
+				if (reward.Attributes[GameAttributes.Armor_Bonus_Item] > 0 || reward.Attributes[GameAttributes.Armor_Item_Percent] > 0)
 					_owner.GrantCriteria(74987243308968);
 			}
 
@@ -1922,9 +1922,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			_owner.UpdateQuantity(74987243307371, 1);
 			_owner.UpdateQuantity(74987243307374, 1);
 
-			if (reward.Attributes[GameAttribute.ItemStackQuantityLo] > 0)
+			if (reward.Attributes[GameAttributes.ItemStackQuantityLo] > 0)
 				_inventoryGrid.AddItem(reward);
-			client.SendMessage(new CraftingResultsMessage { annItem = reward.GlobalID, GBIDItem = recipe.ItemSpecifierData.ItemGBId, IQL = reward.Attributes[GameAttribute.Item_Quality_Level] });
+			client.SendMessage(new CraftingResultsMessage { annItem = reward.GlobalID, GBIDItem = recipe.ItemSpecifierData.ItemGBId, IQL = reward.Attributes[GameAttributes.Item_Quality_Level] });
 			
 
 			UpdateCurrencies();
@@ -1968,15 +1968,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (GetGoldAmount() >= amount)
 			{
 				RemoveGoldAmount(amount);
-				_owner.Attributes[GameAttribute.Shared_Stash_Slots] += 70;
+				_owner.Attributes[GameAttributes.Shared_Stash_Slots] += 70;
 				_owner.Attributes.BroadcastChangedIfRevealed();
-				_stashGrid.ResizeGrid(_owner.Attributes[GameAttribute.Shared_Stash_Slots] / 7, 7);
+				_stashGrid.ResizeGrid(_owner.Attributes[GameAttributes.Shared_Stash_Slots] / 7, 7);
 				var dbGAcc = _owner.Toon.GameAccount.DBGameAccount;
-				dbGAcc.StashSize = _owner.Attributes[GameAttribute.Shared_Stash_Slots];
+				dbGAcc.StashSize = _owner.Attributes[GameAttributes.Shared_Stash_Slots];
 				_owner.World.Game.GameDbSession.SessionUpdate(dbGAcc);
 			}
 
-			if (_owner.Attributes[GameAttribute.Shared_Stash_Slots] >= 280)
+			if (_owner.Attributes[GameAttributes.Shared_Stash_Slots] >= 280)
 				_owner.GrantAchievement(74987243307163);
 		}
 
@@ -1990,9 +1990,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				item = _equipment.GetItemByDynId(_owner, requestSocketMessage.annItemToReceiveGem);
 				if (item == null) return;
 			}
-			if (item.Attributes[GameAttribute.Sockets_Filled] >= item.Attributes[GameAttribute.Sockets]) return;
+			if (item.Attributes[GameAttributes.Sockets_Filled] >= item.Attributes[GameAttributes.Sockets]) return;
 			gem.Owner = item;
-			gem.SetInventoryLocation(20, 0, item.Attributes[GameAttribute.Sockets_Filled]);
+			gem.SetInventoryLocation(20, 0, item.Attributes[GameAttributes.Sockets_Filled]);
 			(item.Owner as Player).InGameClient.SendMessage(gem.ACDInventoryPositionMessage(item.Owner as Player));
 			item.Gems.Add(gem);
 
@@ -2012,11 +2012,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					break;
 			}
 
-			if (gem.Attributes[GameAttribute.ItemStackQuantityLo] > 1)
+			if (gem.Attributes[GameAttributes.ItemStackQuantityLo] > 1)
 			{
 				var compensation = ItemGenerator.CookFromDefinition(_owner.World, ItemGenerator.GetItemDefinition(gem.GBHandle.GBID), 1);
-				compensation.Attributes[GameAttribute.ItemStackQuantityLo] = gem.Attributes[GameAttribute.ItemStackQuantityLo] - 1;
-				gem.Attributes[GameAttribute.ItemStackQuantityLo] = 1;
+				compensation.Attributes[GameAttributes.ItemStackQuantityLo] = gem.Attributes[GameAttributes.ItemStackQuantityLo] - 1;
+				gem.Attributes[GameAttributes.ItemStackQuantityLo] = 1;
 				_inventoryGrid.RemoveItem(gem);
 				_inventoryGrid.AddItem(compensation);
 			}
@@ -2030,7 +2030,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			_owner.SetAttributesByItemProcs();
 			_owner.SetAttributesByGems();
 
-			item.Attributes[GameAttribute.Sockets_Filled] = item.Gems.Count;
+			item.Attributes[GameAttributes.Sockets_Filled] = item.Gems.Count;
 			item.Attributes.BroadcastChangedIfRevealed();
 
 			_owner.GrantAchievement(74987243307166);
@@ -2079,7 +2079,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				gem.Unreveal(_owner);
 
 			item.Gems.Clear();
-			item.Attributes[GameAttribute.Sockets_Filled] = 0;
+			item.Attributes[GameAttributes.Sockets_Filled] = 0;
 			item.Attributes.BroadcastChangedIfRevealed();
 
 			_owner.GrantAchievement(74987243307789);
@@ -2090,10 +2090,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			RepairEquipment();
 			int cost = 0;
 			foreach (var item in GetBackPackItems())
-				if (item.Attributes[GameAttribute.Durability_Cur] < item.Attributes[GameAttribute.Durability_Max])
+				if (item.Attributes[GameAttributes.Durability_Cur] < item.Attributes[GameAttributes.Durability_Max])
 				{
-					cost += (int)((item.GetPrice() * (item.Attributes[GameAttribute.Durability_Max] - item.Attributes[GameAttribute.Durability_Cur])) / (item.Attributes[GameAttribute.Durability_Max] * 25));
-					item.UpdateDurability(item.Attributes[GameAttribute.Durability_Max]);
+					cost += (int)((item.GetPrice() * (item.Attributes[GameAttributes.Durability_Max] - item.Attributes[GameAttributes.Durability_Cur])) / (item.Attributes[GameAttributes.Durability_Max] * 25));
+					item.UpdateDurability(item.Attributes[GameAttributes.Durability_Max]);
 				}
 			RemoveGoldAmount(cost);
 		}
@@ -2102,10 +2102,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			int cost = 0;
 			foreach (var item in GetEquippedItems())
-				if (item.Attributes[GameAttribute.Durability_Cur] < item.Attributes[GameAttribute.Durability_Max])
+				if (item.Attributes[GameAttributes.Durability_Cur] < item.Attributes[GameAttributes.Durability_Max])
 				{
-					cost += (int)((item.GetPrice() * (item.Attributes[GameAttribute.Durability_Max] - item.Attributes[GameAttribute.Durability_Cur])) / (item.Attributes[GameAttribute.Durability_Max] * 25));
-					item.UpdateDurability(item.Attributes[GameAttribute.Durability_Max]);
+					cost += (int)((item.GetPrice() * (item.Attributes[GameAttributes.Durability_Max] - item.Attributes[GameAttributes.Durability_Cur])) / (item.Attributes[GameAttributes.Durability_Max] * 25));
+					item.UpdateDurability(item.Attributes[GameAttributes.Durability_Max]);
 				}
 			RemoveGoldAmount(cost);
 			_owner.GrantAchievement(74987243307773);
@@ -2113,19 +2113,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void PickUpGold(Item item)
 		{
-			int amount = item.Attributes[GameAttribute.Gold];//item.Attributes[GameAttribute.ItemStackQuantityLo];
+			int amount = item.Attributes[GameAttributes.Gold];//item.Attributes[GameAttribute.ItemStackQuantityLo];
 			AddGoldAmount(amount, false);
 		}
 
 		public void PickUpBloodShard(Item item)
 		{
-			int amount = item.Attributes[GameAttribute.ItemStackQuantityLo];
+			int amount = item.Attributes[GameAttributes.ItemStackQuantityLo];
 			AddBloodShardsAmount(amount, false);
 		}
 
 		public void PickUpPlatinum(Item item)
 		{
-			int amount = item.Attributes[GameAttribute.ItemStackQuantityLo];
+			int amount = item.Attributes[GameAttributes.ItemStackQuantityLo];
 			AddPlatinumAmount(amount);
 		}
 
@@ -2215,7 +2215,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public bool HasGold(int amount)
 		{
-			return _inventoryGold.Attributes[GameAttribute.Gold] >= amount;
+			return _inventoryGold.Attributes[GameAttributes.Gold] >= amount;
 		}
 
 		public Item GetEquippedWeapon()
@@ -2232,8 +2232,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void AddGoldAmount(int amount, bool immediately = true)
 		{
-			_inventoryGold.Attributes[GameAttribute.Gold] += amount;
-			_inventoryGold.Attributes[GameAttribute.ItemStackQuantityLo] = _inventoryGold.Attributes[GameAttribute.Gold];
+			_inventoryGold.Attributes[GameAttributes.Gold] += amount;
+			_inventoryGold.Attributes[GameAttributes.ItemStackQuantityLo] = _inventoryGold.Attributes[GameAttributes.Gold];
 			_inventoryGold.Attributes.SendChangedMessage(_owner.InGameClient);
 			if (immediately)
 			{
@@ -2246,8 +2246,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void RemoveGoldAmount(int amount)
 		{
-			_inventoryGold.Attributes[GameAttribute.Gold] -= amount;
-			_inventoryGold.Attributes[GameAttribute.ItemStackQuantityLo] = _inventoryGold.Attributes[GameAttribute.Gold];
+			_inventoryGold.Attributes[GameAttributes.Gold] -= amount;
+			_inventoryGold.Attributes[GameAttributes.ItemStackQuantityLo] = _inventoryGold.Attributes[GameAttributes.Gold];
 			_inventoryGold.Attributes.SendChangedMessage(_owner.InGameClient);
 			_owner.Toon.GameAccount.Gold -= (ulong)amount;
 			UpdateCurrencies();
@@ -2259,7 +2259,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (_inventoryGold != null)
 			{
 				//Logger.Warn($"InventoryGold is not null: $[yellow]${_inventoryGold.Attributes[GameAttribute.Gold]} / {_owner.Toon.GameAccount.Gold}$[/]$");
-				return _inventoryGold.Attributes[GameAttribute.Gold];
+				return _inventoryGold.Attributes[GameAttributes.Gold];
 			}
 			else
 			{
@@ -2271,9 +2271,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public void AddBloodShardsAmount(int amount, bool immediately = true)
 		{
-			int C1 = 0; foreach (var item in FindSameItems(-363607620)) C1 += item.Attributes[GameAttribute.ItemStackQuantityLo];
-			int C2 = 0; foreach (var item in FindSameItems(-1585802162)) C2 += item.Attributes[GameAttribute.ItemStackQuantityLo];
-			int C3 = 0; foreach (var item in FindSameItems(-605947593)) C3 += item.Attributes[GameAttribute.ItemStackQuantityLo];
+			int C1 = 0; foreach (var item in FindSameItems(-363607620)) C1 += item.Attributes[GameAttributes.ItemStackQuantityLo];
+			int C2 = 0; foreach (var item in FindSameItems(-1585802162)) C2 += item.Attributes[GameAttributes.ItemStackQuantityLo];
+			int C3 = 0; foreach (var item in FindSameItems(-605947593)) C3 += item.Attributes[GameAttributes.ItemStackQuantityLo];
 
 			var Moneys = D3.Items.CurrencySavedData.CreateBuilder();
 			D3.Items.CurrencyData GoldData = D3.Items.CurrencyData.CreateBuilder().SetId(0).SetCount((long)GetGoldAmount()).Build();
@@ -2361,10 +2361,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			var slots = _owner.World.Game.GameDbSession.SessionGet<DBGameAccount>(_owner.Toon.GameAccount.PersistentID).StashSize;
 			if (slots > 0)
 			{
-				_owner.Attributes[GameAttribute.Shared_Stash_Slots] = slots;
+				_owner.Attributes[GameAttributes.Shared_Stash_Slots] = slots;
 				_owner.Attributes.BroadcastChangedIfRevealed();
 				// To be applied before loading items, to have all the space needed
-				_stashGrid.ResizeGrid(_owner.Attributes[GameAttribute.Shared_Stash_Slots] / 7, 7);
+				_stashGrid.ResizeGrid(_owner.Attributes[GameAttributes.Shared_Stash_Slots] / 7, 7);
 			}
 
 
@@ -2414,10 +2414,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			//}).ContinueWith((a) =>{
 			_inventoryGold = ItemGenerator.CreateGold(_owner, goldAmount);
-			_inventoryGold.Attributes[GameAttribute.Gold] = goldAmount;
+			_inventoryGold.Attributes[GameAttributes.Gold] = goldAmount;
 			// Logger.Warn($"User {this._owner.Toon.PersistentID} - inventory gold has {_inventoryGold.Attributes[GameAttribute.Gold]} gold.");
 
-			_inventoryGold.Attributes[GameAttribute.ItemStackQuantityLo] = goldAmount; // This is the attribute that makes the gold visible in gamethe gold visible in game
+			_inventoryGold.Attributes[GameAttributes.ItemStackQuantityLo] = goldAmount; // This is the attribute that makes the gold visible in gamethe gold visible in game
 			_inventoryGold.Owner = _owner;
 			_inventoryGold.SetInventoryLocation((int)EquipmentSlotId.Gold, 0, 0);
 			_inventoryGold.Attributes.SendChangedMessage(_owner.InGameClient);
@@ -2605,14 +2605,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			if (!Loaded) return _owner.Attributes[attributeF];
 
-			var stats = GetEquippedItems().Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 || item.Attributes[GameAttribute.Durability_Max] == 0);
+			var stats = GetEquippedItems().Where(item => item.Attributes[GameAttributes.Durability_Cur] > 0 || item.Attributes[GameAttributes.Durability_Max] == 0);
 
 			return stats.Sum(item => item.Attributes[attributeF]);
 		}
 
 		public int GetItemBonus(GameAttributeI attributeI)
 		{
-			return Loaded ? GetEquippedItems().Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 || item.Attributes[GameAttribute.Durability_Max] == 0).Sum(item => item.Attributes[attributeI]) : _owner.Attributes[attributeI];
+			return Loaded ? GetEquippedItems().Where(item => item.Attributes[GameAttributes.Durability_Cur] > 0 || item.Attributes[GameAttributes.Durability_Max] == 0).Sum(item => item.Attributes[attributeI]) : _owner.Attributes[attributeI];
 		}
 
 		public bool GetItemBonus(GameAttributeB attributeB)
@@ -2622,12 +2622,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public float GetItemBonus(GameAttributeF attributeF, int attributeKey)
 		{
-			return Loaded ? GetEquippedItems().Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 || item.Attributes[GameAttribute.Durability_Max] == 0).Sum(item => item.Attributes[attributeF, attributeKey]) : _owner.Attributes[attributeF];
+			return Loaded ? GetEquippedItems().Where(item => item.Attributes[GameAttributes.Durability_Cur] > 0 || item.Attributes[GameAttributes.Durability_Max] == 0).Sum(item => item.Attributes[attributeF, attributeKey]) : _owner.Attributes[attributeF];
 		}
 
 		public int GetItemBonus(GameAttributeI attributeI, int attributeKey)
 		{
-			return Loaded ? GetEquippedItems().Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 || item.Attributes[GameAttribute.Durability_Max] == 0).Sum(item => item.Attributes[attributeI, attributeKey]) : _owner.Attributes[attributeI];
+			return Loaded ? GetEquippedItems().Where(item => item.Attributes[GameAttributes.Durability_Cur] > 0 || item.Attributes[GameAttributes.Durability_Max] == 0).Sum(item => item.Attributes[attributeI, attributeKey]) : _owner.Attributes[attributeI];
 		}
 
 		public void SetGemBonuses()
@@ -2646,7 +2646,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							if (FormulaScript.Evaluate(attr.Formula.ToArray(), new ItemRandomHelper(35674658), out result))
 							{
 								//Logger.Info("attr: {0},	{1}	{2}", attr.AttributeId, attr.SNOParam, result);
-								var attrib = GameAttribute.Attributes[attr.AttributeId] as GameAttributeF;
+								var attrib = GameAttributes.Attributes[attr.AttributeId] as GameAttributeF;
 								//if (attrib == GameAttribute.Dexterity_Item || attrib == GameAttribute.Vitality_Item || attrib == GameAttribute.Strength_Item || attrib == GameAttribute.Intelligence_Item) result /= 1065353216; //dat shit is crazy
 								if (attr.SNOParam != -1)
 									_owner.Attributes[attrib, attr.SNOParam] += result;
@@ -2678,8 +2678,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							if (FormulaScript.Evaluate(attr.Formula.ToArray(), new ItemRandomHelper(35674658), out result))
 							{
 								//Logger.Debug("attr: {0},	{1}	{2}", attr.AttributeId, attr.SNOParam, result);
-								var attrib = GameAttribute.Attributes[attr.AttributeId] as GameAttributeF;
-								if (attrib == GameAttribute.Dexterity_Item || attrib == GameAttribute.Vitality_Item || attrib == GameAttribute.Strength_Item || attrib == GameAttribute.Intelligence_Item) result /= 1065353216; //dat shit is crazy
+								var attrib = GameAttributes.Attributes[attr.AttributeId] as GameAttributeF;
+								if (attrib == GameAttributes.Dexterity_Item || attrib == GameAttributes.Vitality_Item || attrib == GameAttributes.Strength_Item || attrib == GameAttributes.Intelligence_Item) result /= 1065353216; //dat shit is crazy
 								if (attr.SNOParam != -1)
 									_owner.Attributes[attrib, attr.SNOParam] += result;
 								else
@@ -2687,7 +2687,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							}
 					}
 				}
-				_owner.Attributes[GameAttribute.Set_Item_Count, set.First().ItemDefinition.SNOSet] = set.Count();
+				_owner.Attributes[GameAttributes.Set_Item_Count, set.First().ItemDefinition.SNOSet] = set.Count();
 				if (set.Count() >= 6)
 					_owner.GrantAchievement(74987243307160);
 			}
@@ -2698,9 +2698,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		{
 			foreach (var equip in GetEquippedItems())
 			{
-				if (equip.Attributes[GameAttribute.Item_Indestructible] == false)
+				if (equip.Attributes[GameAttributes.Item_Indestructible] == false)
 				{
-					equip.UpdateDurability(Math.Max(0, (equip.Attributes[GameAttribute.Durability_Cur] - (int)((float)equip.Attributes[GameAttribute.Durability_Max] * percent))));
+					equip.UpdateDurability(Math.Max(0, (equip.Attributes[GameAttributes.Durability_Cur] - (int)((float)equip.Attributes[GameAttributes.Durability_Max] * percent))));
 					equip.Attributes.SendChangedMessage(_owner.InGameClient);
 				}
 			}

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.GameServer.Core.Types.Math;
-using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
@@ -54,10 +52,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			if (Body.World.Game.Paused) return;
 
 			// check if in disabled state, if so cancel any action then do nothing
-			if (Body.Attributes[GameAttribute.Frozen] ||
-				Body.Attributes[GameAttribute.Stunned] ||
-				Body.Attributes[GameAttribute.Blind] ||
-				Body.Attributes[GameAttribute.Webbed] ||
+			if (Body.Attributes[GameAttributes.Frozen] ||
+				Body.Attributes[GameAttributes.Stunned] ||
+				Body.Attributes[GameAttributes.Blind] ||
+				Body.Attributes[GameAttributes.Webbed] ||
 				Body.Disable ||
 				Body.World.BuffManager.GetFirstBuff<KnockbackBuff>(Body) != null)
 			{
@@ -71,7 +69,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				return;
 			}
 
-			if (Body.Attributes[GameAttribute.Feared])
+			if (Body.Attributes[GameAttributes.Feared])
 			{
 				if (!Feared || CurrentAction == null)
 				{

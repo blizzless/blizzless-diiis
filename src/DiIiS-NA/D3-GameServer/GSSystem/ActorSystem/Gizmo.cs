@@ -20,8 +20,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			Field2 = 0x9;//16;
 			Field7 = 0x00000001;
 			//this.CollFlags = 1; // this.CollFlags = 0; a hack for passing through blockers /fasbat
-			if (Attributes[GameAttribute.TeamID] == 10) Attributes[GameAttribute.TeamID] = 1; //fix for bugged gizmos
-			Attributes[GameAttribute.Hitpoints_Cur] = 1;
+			if (Attributes[GameAttributes.TeamID] == 10) Attributes[GameAttributes.TeamID] = 1; //fix for bugged gizmos
+			Attributes[GameAttributes.Hitpoints_Cur] = 1;
 			//this.Attributes[GameAttribute.MinimapActive] = true;
 		}
 
@@ -34,7 +34,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (Attributes[GameAttribute.Disabled] == true) return;
+			if (Attributes[GameAttributes.Disabled] == true) return;
 			Logger.Trace("(OnTargeted) Gizmo has been activated! Id: {0}, Type: {1}", SNO, ActorData.TagMap[ActorKeys.GizmoGroup]);
 			
 			//handling quest triggers

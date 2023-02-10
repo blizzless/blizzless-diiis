@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Reflection;
 using D3.Quests;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Hash;
@@ -22,7 +21,6 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
 using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
 
 namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
@@ -337,7 +335,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					int chance = Game.IsHardcore ? 6 : 2;
 					if (FastRandom.Instance.Next(100) < chance && Game.MonsterLevel >= 70)
 					{
-						player.World.SpawnRandomEquip(player, player, LootManager.Epic, player.Attributes[GameAttribute.Level]);
+						player.World.SpawnRandomEquip(player, player, LootManager.Epic, player.Attributes[GameAttributes.Level]);
 					}
 					var toon = player.Toon.DBToon;
 					toon.EventsCompleted++;
