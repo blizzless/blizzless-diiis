@@ -8,29 +8,36 @@ The parameters specified in the `config.ini` file will be saved to the server fo
 
 ```ini
 [Game-Server]
+; rates
 RateExp = 1
 RateMoney = 1
 RateDrop = 1
 RateChangeDrop = 1
 RateMonsterHP = 1
 RateMonsterDMG = 1
-
+; items
 ChanceHighQualityUnidentified = 30
 ChanceNormalUnidentified = 5
-
-ResurrectionCharges = 3
-
+; bosses
 BossHealthMultiplier = 6
 BossDamageMultiplier = 3
-
-AutoSaveQuests = false
-
+; nephalem
 NephalemRiftProgressMultiplier = 1
-
+; health
 HealthPotionRestorePercentage = 60
 HealthPotionCooldown = 30
-
+ResurrectionCharges = 3
+; waypoints
 UnlockAllWaypoints = false
+; player attribute modifier
+StrengthMultiplier = 1
+StrengthParagonMultiplier = 1
+DexterityMultiplier = 1
+DexterityParagonMultiplier = 1
+IntelligenceMultiplier = 1
+IntelligenceParagonMultiplier = 1
+VitalityMultiplier = 1
+VitalityParagonMultiplier = 1
 ```
 
 ## Description
@@ -53,4 +60,13 @@ UnlockAllWaypoints = false
 | `HealthPotionRestorePercentage` | How much (from 1-100) a health potion will heal. |
 | `HealthPotionCooldown` | How much (in seconds) to use a health potion again. |
 | `UnlockAllWaypoints` | Unlocks all waypoints in campaign |
+| `UnlockAllWaypoints` | Unlocks all waypoints in campaign |
+| `StrengthMultiplier` | Player's strength multiplier |
+| `StrengthMultiplier` | Player's strength multiplier **for paragons** |
+| `DexterityMultiplier` | Player's dexterity multiplier |
+| `DexterityParagonMultiplier` | Player's dexterity multiplier **for paragons** |
+| `IntelligenceMultiplier` | Player's intelligence multiplier |
+| `IntelligenceParagonMultiplier` | Player's intelligence multiplier **for paragons** |
+| `VitalityMultiplier` | Player's vitality multiplier |
+| `VitalityParagonMultiplier` | Player's vitality multiplier **for paragons** |
 
