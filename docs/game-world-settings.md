@@ -23,6 +23,9 @@ BossHealthMultiplier = 6
 BossDamageMultiplier = 3
 ; nephalem
 NephalemRiftProgressMultiplier = 1
+NephalemRiftAutoFinish = false
+NephalemRiftAutoFinishThreshold = 2
+NephalemRiftOrbsChance = 0
 ; health
 HealthPotionRestorePercentage = 60
 HealthPotionCooldown = 30
@@ -57,7 +60,6 @@ AutoSaveQuests = false
 | `ResurrectionCharges` | Amount of times user can resurrect at corpse |
 | `BossHealthMultiplier` | Boss Health Multiplier |
 | `BossDamageMultiplier` | Boss Damage Multiplier |
-| `NephalemRiftProgressMultiplier` | Nephalem Rift Progress Modifier |
 | `HealthPotionRestorePercentage` | How much (from 1-100) a health potion will heal. |
 | `HealthPotionCooldown` | How much (in seconds) to use a health potion again. |
 | `UnlockAllWaypoints` | Unlocks all waypoints in campaign |
@@ -70,4 +72,7 @@ AutoSaveQuests = false
 | `VitalityMultiplier` | Player's vitality multiplier |
 | `VitalityParagonMultiplier` | Player's vitality multiplier **for paragons** |
 | `AutoSaveQuests` *in tests* | Force Save Quests/Step, even if Act's quest setup marked as Saveable = FALSE. Doesn't apply to OpenWorld games. |
-
+| `NephalemRiftProgressMultiplier` | Nephalem Rift Progress Modifier |
+| `NephalemRiftAutoFinish` | Nephalem Auto-Finish when there's still `NephalemRiftAutoFinishThreshold` monsters or less are alive on the rift |
+| `NephalemRiftAutoFinishThreshold` | Nephalem Rift Progress Modifier |
+| `NephalemRiftOrbsChance` | Nephalem Rifts chance of spawning a orb. |
