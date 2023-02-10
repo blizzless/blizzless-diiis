@@ -38,6 +38,7 @@ IntelligenceMultiplier = 1
 IntelligenceParagonMultiplier = 1
 VitalityMultiplier = 1
 VitalityParagonMultiplier = 1
+AutoSaveQuests = false
 ```
 
 ## Description
@@ -55,11 +56,9 @@ VitalityParagonMultiplier = 1
 | `ResurrectionCharges` | Amount of times user can resurrect at corpse |
 | `BossHealthMultiplier` | Boss Health Multiplier |
 | `BossDamageMultiplier` | Boss Damage Multiplier |
-| `AutoSaveQuests` *in tests* | Force Save Quests/Step, even if Act's quest setup marked as Saveable = FALSE. Doesn't apply to OpenWorld games. |
 | `NephalemRiftProgressMultiplier` | Nephalem Rift Progress Modifier |
 | `HealthPotionRestorePercentage` | How much (from 1-100) a health potion will heal. |
 | `HealthPotionCooldown` | How much (in seconds) to use a health potion again. |
-| `UnlockAllWaypoints` | Unlocks all waypoints in campaign |
 | `UnlockAllWaypoints` | Unlocks all waypoints in campaign |
 | `StrengthMultiplier` | Player's strength multiplier |
 | `StrengthMultiplier` | Player's strength multiplier **for paragons** |
@@ -69,4 +68,5 @@ VitalityParagonMultiplier = 1
 | `IntelligenceParagonMultiplier` | Player's intelligence multiplier **for paragons** |
 | `VitalityMultiplier` | Player's vitality multiplier |
 | `VitalityParagonMultiplier` | Player's vitality multiplier **for paragons** |
+| `AutoSaveQuests` *in tests* | Force Save Quests/Step, even if Act's quest setup marked as Saveable = FALSE. Doesn't apply to OpenWorld games. |
 
