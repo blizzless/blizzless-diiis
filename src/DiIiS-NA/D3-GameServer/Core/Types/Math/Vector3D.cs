@@ -113,41 +113,24 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 			return ((x * x) + (y * y)) + (z * z);
 		}
 
-		public static bool operator ==(Vector3D a, Vector3D b)
-		{
-			if (ReferenceEquals(null, a))
-				return ReferenceEquals(null, b);
-			return a.Equals(b);
-		}
+		public static bool operator ==(Vector3D a, Vector3D b) => a?.Equals(b) ?? ReferenceEquals(null, b);
 
-		public static bool operator !=(Vector3D a, Vector3D b)
-		{
-			return !(a == b);
-		}
+		public static bool operator !=(Vector3D a, Vector3D b) => !(a == b);
 
 		public static bool operator >(Vector3D a, Vector3D b)
 		{
-			if (ReferenceEquals(null, a))
-				return !ReferenceEquals(null, b);
-			return a.X > b.X
-				&& a.Y > b.Y
-				&& a.Z > b.Z;
+			return ReferenceEquals(null, a)
+				? !ReferenceEquals(null, b)
+				: a.X > b.X
+				  && a.Y > b.Y
+				  && a.Z > b.Z;
 		}
 
-		public static Vector3D operator +(Vector3D a, Vector3D b)
-		{
-			return new Vector3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-		}
+		public static Vector3D operator +(Vector3D a, Vector3D b) => new Vector3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 
-		public static Vector3D operator -(Vector3D a, Vector3D b)
-		{
-			return new Vector3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-		}
+		public static Vector3D operator -(Vector3D a, Vector3D b) => new Vector3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 
-		public static bool operator <(Vector3D a, Vector3D b)
-		{
-			return !(a > b);
-		}
+		public static bool operator <(Vector3D a, Vector3D b) => !(a > b);
 
 		public static bool operator >=(Vector3D a, Vector3D b)
 		{
@@ -174,9 +157,9 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 			var v = o as Vector3D;
 			if (v != null)
 			{
-				return System.Math.Abs(X - v.X) < 0.0001
-					&& System.Math.Abs(Y - v.Y) < 0.0001
-					&& System.Math.Abs(Z - v.Z) < 0.0001;
+				return System.Math.Abs(X - v.X) < Globals.FLOAT_TOLERANCE
+				       && System.Math.Abs(Y - v.Y) < Globals.FLOAT_TOLERANCE
+				       && System.Math.Abs(Z - v.Z) < Globals.FLOAT_TOLERANCE;
 			}
 			return false;
 		}

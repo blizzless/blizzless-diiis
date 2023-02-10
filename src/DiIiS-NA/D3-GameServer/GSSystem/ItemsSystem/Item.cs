@@ -552,8 +552,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                     if (ratio > 1f) ratio = 1f;
                     Attributes[GameAttribute.Block_Amount_Item_Min] +=
                         Math.Abs(scaleCapMin * ratio - Attributes[GameAttribute.Block_Amount_Item_Min, 0]);
-                    Attributes[GameAttribute.Block_Amount_Item_Delta] += Math.Abs(scaleCapDelta * ratio -
-                        Attributes[GameAttribute.Block_Amount_Item_Delta, 0]);
+                    Attributes[GameAttribute.Block_Amount_Item_Delta] += Math.Abs(scaleCapDelta * ratio - Attributes[GameAttribute.Block_Amount_Item_Delta, 0]);
                 }
             }
         }

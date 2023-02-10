@@ -590,41 +590,36 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		
         public Actor SpawnMonster(ActorSno monsterSno, Vector3D position)
         {
-            if (monsterSno == ActorSno.__NONE)
-            {
-                return null;
-            }
+            if (monsterSno == ActorSno.__NONE)  return null;
+            Logger.MethodTrace($"Spawning monster {monsterSno} at {position}");
             var monster = ActorFactory.Create(this, monsterSno, new TagMap());
-            if (monster != null)
+            if (monster == null) return null;
+            
+            monster.EnterWorld(position);
+            if (monster.AnimationSet == null) return monster;
+            var animationTag = new[] { AnimationSetKeys.Spawn, AnimationSetKeys.Spawn2 }.FirstOrDefault(x => monster.AnimationSet.TagMapAnimDefault.ContainsKey(x));
+
+            if (animationTag != null)
             {
-                monster.EnterWorld(position);
-                if (monster.AnimationSet != null)
-                {
-					var animationTag = new[] { AnimationSetKeys.Spawn, AnimationSetKeys.Spawn2 }.FirstOrDefault(x => monster.AnimationSet.TagMapAnimDefault.ContainsKey(x));
+	            monster.World.BroadcastIfRevealed(plr => new PlayAnimationMessage
+	            {
+		            ActorID = monster.DynamicID(plr),
+		            AnimReason = 5,
+		            UnitAniimStartTime = 0,
+		            tAnim = new PlayAnimationMessageSpec[]
+		            {
+			            new()
+			            {
+				            Duration = 150,
+				            AnimationSNO = monster.AnimationSet.TagMapAnimDefault[animationTag],
+				            PermutationIndex = 0,
+				            Speed = 1
+			            }
+		            }
 
-					if (animationTag != null)
-                    {
-						monster.World.BroadcastIfRevealed(plr => new PlayAnimationMessage
-						{
-							ActorID = monster.DynamicID(plr),
-							AnimReason = 5,
-							UnitAniimStartTime = 0,
-							tAnim = new PlayAnimationMessageSpec[]
-							{
-								new()
-								{
-									Duration = 150,
-									AnimationSNO = monster.AnimationSet.TagMapAnimDefault[animationTag],
-									PermutationIndex = 0,
-									Speed = 1
-								}
-							}
-
-						}, monster);
-					}
-                }
+	            }, monster);
             }
-			return monster;
+            return monster;
         }
 
         private Queue<Queue<Action>> _flippyTimers = new();
@@ -640,19 +635,21 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			player.GroundItems[item.GlobalID] = item; // FIXME: Hacky. /komiga
 			DropItem(source, null, item);
 		}
-		public void PlayPieAnimation(Actor actor, Actor User, int PowerSNO, Vector3D TargetPosition)
+		
+		[Obsolete("Isn't used anymore. Is it useful?")]
+		public void PlayPieAnimation(Actor actor, Actor user, int powerSNO, Vector3D targetPosition)
 		{
 
 			BroadcastIfRevealed(plr => new ACDTranslateDetPathPieWedgeMessage
 			{
 				ann = (int)actor.DynamicID(plr),
-				StartPos = User.Position,
-				FirstTagetPos = User.Position,
+				StartPos = user.Position,
+				FirstTagetPos = user.Position,
 				MoveFlags = 9,
 				AnimTag = 1,
 				PieData = new DPathPieData
 				{
-					Field0 = TargetPosition,
+					Field0 = targetPosition,
 					Field1 = 1,
 					Field2 = 1,
 					Field3 = 1

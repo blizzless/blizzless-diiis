@@ -107,7 +107,7 @@ namespace DiIiS_NA.Core.Logging
 		{
 			#if DEBUG
 			var fileName = Path.GetFileName(filePath);
-			Log(Level.MethodTrace, $"$[underline white]${fileName}:{lineNumber}$[/]$ $[darkolivegreen3_2]${methodName}()$[/]$: $[black on white]$" + message + "$[/]$", null);
+			Log(Level.MethodTrace, $"$[underline white]${fileName}:{lineNumber}$[/]$ $[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
 			#else
 			Log(Level.MethodTrace, $"$[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
 			#endif

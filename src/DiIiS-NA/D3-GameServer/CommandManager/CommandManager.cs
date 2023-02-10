@@ -24,17 +24,28 @@ namespace DiIiS_NA.GameServer.CommandManager
 			foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
 			{
 				if (!type.IsSubclassOf(typeof(CommandGroup))) continue;
-
 				var attributes = (CommandGroupAttribute[])type.GetCustomAttributes(typeof(CommandGroupAttribute), true);
 				if (attributes.Length == 0) continue;
-
 				var groupAttribute = attributes[0];
+				if (groupAttribute.Name == null) continue;
+				if (CommandsConfig.Instance.DisabledGroupsData.Contains(groupAttribute.Name))
+				{
+					Logger.Trace($"Command group {groupAttribute.Name} is disabled.");
+					continue;
+				}
 				if (CommandGroups.ContainsKey(groupAttribute))
 					Logger.Warn("There exists an already registered command group named '{0}'.", groupAttribute.Name);
 
 				var commandGroup = (CommandGroup)Activator.CreateInstance(type);
-				commandGroup.Register(groupAttribute);
-				CommandGroups.Add(groupAttribute, commandGroup);
+				if (commandGroup != null)
+				{
+					commandGroup.Register(groupAttribute);
+					CommandGroups.Add(groupAttribute, commandGroup);
+				}
+				else
+				{
+					Logger.Warn("Failed to create an instance of command group '{0}'.", groupAttribute.Name);
+				}
 			}
 		}
 

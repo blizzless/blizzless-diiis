@@ -30,7 +30,8 @@ namespace DiIiS_NA.REST.Http
         Found = 302,
         BadRequest = 400,
         NotFound = 404,
-        InternalServerError = 500
+        InternalServerError = 500,
+        BadGateway = 502
     }
 
     public class HttpHelper

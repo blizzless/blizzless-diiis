@@ -50,11 +50,5 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
 			base.OnCraft(player);
 			player.CurrentArtisan = ArtisanType.Nephalem;
 		}
-
-		public override bool Reveal(Player player)
-		{
-
-			return base.Reveal(player);
-		}
 	}
 }

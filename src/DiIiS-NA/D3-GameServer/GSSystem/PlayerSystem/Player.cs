@@ -2395,7 +2395,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             var rem = new List<uint>();
             foreach (var fol in Followers.Where(f =>
                          Math.Abs(World.GetActorByGlobalId(f.Key).Attributes[GameAttribute.Summoned_By_SNO] -
-                                  oldSNOSkill) < 0.001))
+                                  oldSNOSkill) < Globals.FLOAT_TOLERANCE))
                 rem.Add(fol.Key);
             foreach (var rm in rem)
                 DestroyFollowerById(rm);
@@ -2914,13 +2914,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     //*
     private void TrainArtisan(GameClient client, RequestTrainArtisanMessage message)
     {
-        if (CurrentArtisan == null || !artisanTrainHelpers.ContainsKey(CurrentArtisan.Value))
+        if (CurrentArtisan == null || !_artisanTrainHelpers.ContainsKey(CurrentArtisan.Value))
         {
             Logger.Warn("Training for artisan {} is not supported", CurrentArtisan);
             return;
         }
 
-        var trainHelper = artisanTrainHelpers[CurrentArtisan.Value];
+        var trainHelper = _artisanTrainHelpers[CurrentArtisan.Value];
         if (trainHelper.HasMaxLevel)
             return;
 
@@ -2947,7 +2947,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         if (trainHelper.Criteria is not null)
             GrantCriteria(trainHelper.Criteria.Value);
 
-        if (artisanTrainHelpers.All(x => x.Value.HasMaxLevel))
+        if (_artisanTrainHelpers.All(x => x.Value.HasMaxLevel))
             GrantCriteria(74987249993545);
 
         client.SendMessage(new CrafterLevelUpMessage
@@ -2966,13 +2966,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void UnlockTransmog(int transmogGBID)
     {
-        if (learnedTransmogs.Contains(transmogGBID)) return;
+        if (_learnedTransmogs.Contains(transmogGBID)) return;
         InGameClient.SendMessage(new UnlockTransmogMessage() { TransmogGBID = transmogGBID });
 
         Logger.Trace("Learning transmog #{0}", transmogGBID);
-        learnedTransmogs.Add(transmogGBID);
-        mystic_data.LearnedRecipes = SerializeBytes(learnedTransmogs);
-        World.Game.GameDbSession.SessionUpdate(mystic_data);
+        _learnedTransmogs.Add(transmogGBID);
+        _mysticData.LearnedRecipes = SerializeBytes(_learnedTransmogs);
+        World.Game.GameDbSession.SessionUpdate(_mysticData);
 
         LoadCrafterData();
     }
@@ -3067,7 +3067,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         foreach (var timed_out in TimedActions.Where(t => t.TimedOut).ToList())
             TimedActions.Remove(timed_out);
 
-        // Check the Killstreaks
+        // Check the kill streaks
         ExpBonusData.Check(0);
         ExpBonusData.Check(1);
 
@@ -3165,27 +3165,29 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         #region Necromancer summons
 
-        var switchertobool = false;
-        var switchertoboolTwo = false;
-        ActiveSkillSavedData NowSkillGolem = null;
+        var switcherToBool = false;
+        var switcherToBool2 = false;
+        ActiveSkillSavedData nowSkillGolen = null;
         foreach (var skill in SkillSet.ActiveSkills)
             if (skill.snoSkill == 453801)
-                switchertobool = true;
+                switcherToBool = true;
         foreach (var skill in SkillSet.ActiveSkills)
             if (skill.snoSkill == 451537)
             {
-                switchertoboolTwo = true;
-                NowSkillGolem = skill;
+                switcherToBool2 = true;
+                nowSkillGolen = skill;
             }
 
-        ActiveSkeletons = switchertobool;
-        EnableGolem = switchertoboolTwo;
+        ActiveSkeletons = switcherToBool;
+        EnableGolem = switcherToBool2;
 
 
-        var Killer = new PowerContext();
-        Killer.User = this;
-        Killer.World = World;
-        Killer.PowerSNO = -1;
+        var killer = new PowerContext
+        {
+            User = this,
+            World = World,
+            PowerSNO = -1
+        };
 
         if (ActiveSkeletons)
         {
@@ -3255,8 +3257,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             {
                                 PetId = ActiveGolem.GlobalID
                             });
-                        Killer.Target = ActiveGolem;
-                        (ActiveGolem as Minion).Kill(Killer);
+                        killer.Target = ActiveGolem;
+                        (ActiveGolem as Minion).Kill(killer);
                     }
 
                     ActiveGolem = null;
@@ -3386,20 +3388,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     #endregion
 
-    public T RuneSelect<T>(int PowerSNO, T none, T runeA, T runeB, T runeC, T runeD, T runeE)
+    public T RuneSelect<T>(int powerSno, T none, T runeA, T runeB, T runeC, T runeD, T runeE)
     {
-        var Rune_A = Attributes[GameAttribute.Rune_A, PowerSNO];
-        var Rune_B = Attributes[GameAttribute.Rune_B, PowerSNO];
-        var Rune_C = Attributes[GameAttribute.Rune_C, PowerSNO];
-        var Rune_D = Attributes[GameAttribute.Rune_D, PowerSNO];
-        var Rune_E = Attributes[GameAttribute.Rune_E, PowerSNO];
-
-        if (Rune_A > 0) return runeA;
-        else if (Rune_B > 0) return runeB;
-        else if (Rune_C > 0) return runeC;
-        else if (Rune_D > 0) return runeD;
-        else if (Rune_E > 0) return runeE;
-        else return none;
+        if (Attributes[GameAttribute.Rune_A, powerSno] > 0) return runeA;
+        if (Attributes[GameAttribute.Rune_B, powerSno] > 0) return runeB;
+        if (Attributes[GameAttribute.Rune_C, powerSno] > 0) return runeC;
+        if (Attributes[GameAttribute.Rune_D, powerSno] > 0) return runeD;
+        if (Attributes[GameAttribute.Rune_E, powerSno] > 0) return runeE;
+        return none;
     }
 
     #region enter, leave, reveal handling
@@ -3410,11 +3406,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void RevealScenesToPlayer()
     {
         //List<Scene> scenes_around = this.GetScenesInRegion(DefaultQueryProximityLenght * 2);
-        var scenes_around = World.Scenes.Values.ToList();
+        var scenesAround = World.Scenes.Values.ToList();
         if (!World.worldData.DynamicWorld)
-            scenes_around = GetScenesInRegion(DefaultQueryProximityLenght * 3);
+            scenesAround = GetScenesInRegion(DefaultQueryProximityLenght * 3);
 
-        foreach (var scene in scenes_around) // reveal scenes in player's proximity.
+        foreach (var scene in scenesAround) // reveal scenes in player's proximity.
         {
             if (scene.IsRevealedToPlayer(this)) // if the actors is already revealed skip it.
                 continue; // if the scene is already revealed, skip it.
@@ -3428,7 +3424,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         foreach (var scene in World.Scenes.Values) // unreveal far scenes
         {
-            if (!scene.IsRevealedToPlayer(this) || scenes_around.Contains(scene))
+            if (!scene.IsRevealedToPlayer(this) || scenesAround.Contains(scene))
                 continue;
 
             if (scene.Parent !=
@@ -3444,9 +3440,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     /// </summary>
     public void RevealActorsToPlayer()
     {
-        var Range = 200f;
+        var range = 200f;
         if (InGameClient.Game.CurrentEncounter.Activated)
-            Range = 360f;
+            range = 360f;
 
         var specialWorlds = new WorldSno[]
         {
@@ -3457,9 +3453,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             WorldSno.a1trdun_level05_templar
         };
 
-        var actors_around = specialWorlds.Contains(World.SNO) ? World.Actors.Values.ToList() : GetActorsInRange(Range);
+        var actorsAround = specialWorlds.Contains(World.SNO) ? World.Actors.Values.ToList() : GetActorsInRange(range);
 
-        foreach (var actor in actors_around) // reveal actors in player's proximity.
+        foreach (var actor in actorsAround) // reveal actors in player's proximity.
         {
             if (actor is Player) // if the actors is already revealed, skip it.
                 continue;
@@ -3482,7 +3478,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         foreach (var actor in World.Actors.Values) // unreveal far actors
         {
             if ((actor is Player && (!World.IsPvP || actor == this)) ||
-                actors_around.Contains(actor)) // if the actors is already revealed, skip it.
+                actorsAround.Contains(actor)) // if the actors is already revealed, skip it.
                 continue;
 
             actor.Unreveal(this);
@@ -3549,7 +3545,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         world.Reveal(this);
         Unreveal(this);
 
-        if (_CurrentHPValue == -1f)
+        if (Math.Abs(_CurrentHPValue - (-1f)) < Globals.FLOAT_TOLERANCE)
             DefaultQueryProximityRadius = 60;
 
         InGameClient.SendMessage(new EnterWorldMessage()
@@ -3580,7 +3576,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 break;
         }
 
-        if (_CurrentHPValue == -1f)
+        if (Math.Abs(_CurrentHPValue - (-1f)) < Globals.FLOAT_TOLERANCE)
             AddPercentageHP(100);
 
         DefaultQueryProximityRadius = 100;
@@ -3750,7 +3746,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         AllBuffs.Clear();
         BetweenWorlds = false;
 
-        if (Math.Abs(_CurrentHPValue - (-1)) > 0.0001)
+        if (Math.Abs(_CurrentHPValue - (-1)) > Globals.FLOAT_TOLERANCE)
         {
             Attributes[GameAttribute.Hitpoints_Cur] = _CurrentHPValue;
             Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = _CurrentResourceValue;
@@ -3850,7 +3846,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     }
 
     /// <summary>
-    /// Allows hero state message to be sent when hero's some property get's updated.
+    /// Allows hero state message to be sent when hero's some property gets updated.
     /// </summary>
     public void UpdateHeroState()
     {
@@ -3940,7 +3936,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         //removing tomb
         try
         {
-            GetObjectsInRange<Headstone>(100.0f).Where(h => h.playerIndex == PlayerIndex).First().Destroy();
+            GetObjectsInRange<Headstone>(100.0f).First(h => h.playerIndex == PlayerIndex).Destroy();
         }
         catch
         {
@@ -3949,8 +3945,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         Teleport(spawnPosition);
         World.BuffManager.AddBuff(this, this, new ActorGhostedBuff());
 
-        var old_skills = SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
-        foreach (var skill in old_skills)
+        var oldSkills = SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
+        foreach (var skill in oldSkills)
         {
             var power = PowerLoader.CreateImplementationForPowerSNO(skill);
             if (power != null && power.EvalTag(PowerKeys.SynergyPower) != -1)
@@ -3998,13 +3994,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         get
         {
             var baseStrength = 0.0f;
+            var multiplier = ParagonLevel > 0 ? GameServerConfig.Instance.StrengthParagonMultiplier : GameServerConfig.Instance.StrengthMultiplier;
+            baseStrength = Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Strength
+                ? Toon.HeroTable.Strength + (Level - 1) * 3
+                : Toon.HeroTable.Strength + (Level - 1);
 
-            if (Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Strength)
-                baseStrength = Toon.HeroTable.Strength + (Level - 1) * 3;
-            else
-                baseStrength = Toon.HeroTable.Strength + (Level - 1);
-
-            return baseStrength;
+            return baseStrength * multiplier;
         }
     }
 
@@ -4015,17 +4010,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         get
         {
-            if (Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Dexterity)
-                return Toon.HeroTable.Dexterity + (Level - 1) * 3;
-            else
-                return Toon.HeroTable.Dexterity + (Level - 1);
+            var multiplier = ParagonLevel > 0 ? GameServerConfig.Instance.DexterityParagonMultiplier : GameServerConfig.Instance.DexterityMultiplier;
+
+            return Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Dexterity
+                ? Toon.HeroTable.Dexterity + (Level - 1) * 3 * multiplier
+                : Toon.HeroTable.Dexterity + (Level - 1) * multiplier;
         }
     }
 
     public float TotalDexterity =>
         Attributes[GameAttribute.Dexterity] + Inventory.GetItemBonus(GameAttribute.Dexterity_Item);
 
-    public float Vitality => Toon.HeroTable.Vitality + (Level - 1) * 2;
+    public float Vitality => Toon.HeroTable.Vitality + (Level - 1) * 2 * (ParagonLevel > 0 ? GameServerConfig.Instance.VitalityParagonMultiplier : GameServerConfig.Instance.VitalityMultiplier);
 
     public float TotalVitality =>
         Attributes[GameAttribute.Vitality] + Inventory.GetItemBonus(GameAttribute.Vitality_Item);
@@ -4034,10 +4030,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         get
         {
-            if (Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Intelligence)
-                return Toon.HeroTable.Intelligence + (Level - 1) * 3;
-            else
-                return Toon.HeroTable.Intelligence + (Level - 1);
+            var multiplier = ParagonLevel > 0 ? GameServerConfig.Instance.IntelligenceParagonMultiplier : GameServerConfig.Instance.IntelligenceMultiplier;
+            return Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Intelligence
+                ? Toon.HeroTable.Intelligence + (Level - 1) * 3 * multiplier
+                : Toon.HeroTable.Intelligence + (Level - 1) * multiplier;
         }
     }
 
@@ -4325,15 +4321,15 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         if (query.Count == 0)
         {
             //returns empty data
-            var hireling_empty = new HirelingInfo
+            var emptyHireling = new HirelingInfo
             {
                 HirelingIndex = type, GbidName = 0x0000, Dead = false, Skill1SNOId = -1, Skill2SNOId = -1,
                 Skill3SNOId = -1, Skill4SNOId = -1, annItems = -1
             };
-            return hireling_empty;
+            return emptyHireling;
         }
 
-        var hireling_full = new HirelingInfo
+        return new HirelingInfo
         {
             HirelingIndex = type,
             GbidName = 0x0000,
@@ -4344,14 +4340,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             Skill4SNOId = query.First().Skill4SNOId,
             annItems = -1
         };
-        return hireling_full;
     }
 
     private List<int> Unserialize(string data)
     {
-        var recparts = data.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        var parts = data.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
         var ret = new List<int>();
-        foreach (var recid in recparts) ret.Add(Convert.ToInt32(recid, 10));
+        foreach (var part in parts) ret.Add(Convert.ToInt32(part, 10));
         return ret;
     }
 
@@ -4380,34 +4375,35 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void LearnRecipe(ArtisanType? artisan, int recipe)
     {
         Logger.Trace("Learning recipe #{0}, Artisan type: {1}", recipe, artisan);
+        
         /*var query = this.World.Game.GameDBSession.SessionQuerySingle<DBCraft>(
-                dbi =>
-                dbi.DBGameAccount.Id == this.Toon.GameAccount.PersistentID &&
-                dbi.Artisan == artisan &&
-                dbi.isHardcore == this.World.Game.IsHardcore);*/
-        if (artisan == ArtisanType.Blacksmith)
+            dbi =>
+            dbi.DBGameAccount.Id == this.Toon.GameAccount.PersistentID &&
+            dbi.Artisan == artisan &&
+            dbi.isHardcore == this.World.Game.IsHardcore);*/
+        switch (artisan)
         {
-            learnedBlacksmithRecipes.Add(recipe);
-            blacksmith_data.LearnedRecipes = SerializeBytes(learnedBlacksmithRecipes);
-            World.Game.GameDbSession.SessionUpdate(blacksmith_data);
-            UpdateAchievementCounter(404, 1, 0);
-        }
-        else if (artisan == ArtisanType.Jeweler)
-        {
-            learnedJewelerRecipes.Add(recipe);
-            jeweler_data.LearnedRecipes = SerializeBytes(learnedJewelerRecipes);
-            World.Game.GameDbSession.SessionUpdate(jeweler_data);
-            UpdateAchievementCounter(404, 1, 1);
+            case ArtisanType.Blacksmith:
+                _learnedBlacksmithRecipes.Add(recipe);
+                _blacksmithData.LearnedRecipes = SerializeBytes(_learnedBlacksmithRecipes);
+                World.Game.GameDbSession.SessionUpdate(_blacksmithData);
+                UpdateAchievementCounter(404, 1, 0);
+                break;
+            case ArtisanType.Jeweler:
+                _learnedJewelerRecipes.Add(recipe);
+                _jewelerData.LearnedRecipes = SerializeBytes(_learnedJewelerRecipes);
+                World.Game.GameDbSession.SessionUpdate(_jewelerData);
+                UpdateAchievementCounter(404, 1, 1);
+                break;
         }
 
         LoadCrafterData();
     }
 
-    public bool RecipeAvailable(GameBalance.RecipeTable recipe_definition)
+    public bool RecipeAvailable(GameBalance.RecipeTable recipeDefinition)
     {
-        if (recipe_definition.Flags == 0) return true;
-        return learnedBlacksmithRecipes.Contains(recipe_definition.Hash) ||
-               learnedJewelerRecipes.Contains(recipe_definition.Hash);
+        if (recipeDefinition.Flags == 0) return true;
+        return _learnedBlacksmithRecipes.Contains(recipeDefinition.Hash) || _learnedJewelerRecipes.Contains(recipeDefinition.Hash);
     }
 
     public PlayerBannerMessage GetPlayerBanner()
@@ -4420,69 +4416,69 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         return new PlayerBannerMessage() { PlayerBanner = playerBanner };
     }
 
-    private List<int> learnedBlacksmithRecipes = new();
-    private List<int> learnedJewelerRecipes = new();
-    private List<int> learnedTransmogs = new();
+    private List<int> _learnedBlacksmithRecipes = new();
+    private List<int> _learnedJewelerRecipes = new();
+    private List<int> _learnedTransmogs = new();
 
-    private DBCraft blacksmith_data = null;
-    private DBCraft jeweler_data = null;
-    private DBCraft mystic_data = null;
-    private Dictionary<ArtisanType, ArtisanTrainHelper> artisanTrainHelpers = new();
+    private DBCraft _blacksmithData = null;
+    private DBCraft _jewelerData = null;
+    private DBCraft _mysticData = null;
+    private readonly Dictionary<ArtisanType, ArtisanTrainHelper> _artisanTrainHelpers = new();
 
     public void LoadCrafterData()
     {
-        if (blacksmith_data == null)
+        if (_blacksmithData == null)
         {
             var craft_data =
                 World.Game.GameDbSession.SessionQueryWhere<DBCraft>(dbc =>
                     dbc.DBGameAccount.Id == Toon.GameAccount.PersistentID);
 
-            blacksmith_data = craft_data.Single(dbc =>
+            _blacksmithData = craft_data.Single(dbc =>
                 dbc.Artisan == "Blacksmith" && dbc.isHardcore == World.Game.IsHardcore &&
                 dbc.isSeasoned == World.Game.IsSeasoned);
-            jeweler_data = craft_data.Single(dbc =>
+            _jewelerData = craft_data.Single(dbc =>
                 dbc.Artisan == "Jeweler" && dbc.isHardcore == World.Game.IsHardcore &&
                 dbc.isSeasoned == World.Game.IsSeasoned);
-            mystic_data = craft_data.Single(dbc =>
+            _mysticData = craft_data.Single(dbc =>
                 dbc.Artisan == "Mystic" && dbc.isHardcore == World.Game.IsHardcore &&
                 dbc.isSeasoned == World.Game.IsSeasoned);
 
-            artisanTrainHelpers[ArtisanType.Blacksmith] =
-                new ArtisanTrainHelper(blacksmith_data, ArtisanType.Blacksmith);
-            artisanTrainHelpers[ArtisanType.Jeweler] = new ArtisanTrainHelper(jeweler_data, ArtisanType.Jeweler);
-            artisanTrainHelpers[ArtisanType.Mystic] = new ArtisanTrainHelper(mystic_data, ArtisanType.Mystic);
+            _artisanTrainHelpers[ArtisanType.Blacksmith] =
+                new ArtisanTrainHelper(_blacksmithData, ArtisanType.Blacksmith);
+            _artisanTrainHelpers[ArtisanType.Jeweler] = new ArtisanTrainHelper(_jewelerData, ArtisanType.Jeweler);
+            _artisanTrainHelpers[ArtisanType.Mystic] = new ArtisanTrainHelper(_mysticData, ArtisanType.Mystic);
         }
 
 
         var blacksmith = D3.ItemCrafting.CrafterData.CreateBuilder()
             .SetLevel(InGameClient.Game.CurrentAct == 3000
-                ? BlacksmithUnlocked == false && blacksmith_data.Level < 1 ? 1 : blacksmith_data.Level
-                : blacksmith_data.Level)
+                ? BlacksmithUnlocked == false && _blacksmithData.Level < 1 ? 1 : _blacksmithData.Level
+                : _blacksmithData.Level)
             .SetCooldownEnd(0)
-            .AddRangeRecipes(UnserializeBytes(blacksmith_data.LearnedRecipes))
+            .AddRangeRecipes(UnserializeBytes(_blacksmithData.LearnedRecipes))
             .Build();
-        learnedBlacksmithRecipes = UnserializeBytes(blacksmith_data.LearnedRecipes);
+        _learnedBlacksmithRecipes = UnserializeBytes(_blacksmithData.LearnedRecipes);
         var jeweler = D3.ItemCrafting.CrafterData.CreateBuilder()
             .SetLevel(InGameClient.Game.CurrentAct == 3000
-                ? JewelerUnlocked == false && jeweler_data.Level < 1 ? 1 : jeweler_data.Level
-                : jeweler_data.Level)
+                ? JewelerUnlocked == false && _jewelerData.Level < 1 ? 1 : _jewelerData.Level
+                : _jewelerData.Level)
             .SetCooldownEnd(0)
-            .AddRangeRecipes(UnserializeBytes(jeweler_data.LearnedRecipes))
+            .AddRangeRecipes(UnserializeBytes(_jewelerData.LearnedRecipes))
             .Build();
-        learnedJewelerRecipes = UnserializeBytes(jeweler_data.LearnedRecipes);
+        _learnedJewelerRecipes = UnserializeBytes(_jewelerData.LearnedRecipes);
         var mystic = D3.ItemCrafting.CrafterData.CreateBuilder()
             .SetLevel(InGameClient.Game.CurrentAct == 3000
-                ? MysticUnlocked == false && mystic_data.Level < 1 ? 1 : mystic_data.Level
-                : mystic_data.Level)
+                ? MysticUnlocked == false && _mysticData.Level < 1 ? 1 : _mysticData.Level
+                : _mysticData.Level)
             .SetCooldownEnd(0)
             .Build();
 
         var transmog = D3.ItemCrafting.CrafterSavedData.CreateBuilder()
             .SetTransmogData(D3.GameBalance.BitPackedGbidArray.CreateBuilder()
-                .SetBitfield(ByteString.CopyFrom(mystic_data.LearnedRecipes)))
+                .SetBitfield(ByteString.CopyFrom(_mysticData.LearnedRecipes)))
             //.AddRangeUnlockedTransmogs(this.UnserializeBytes(mystic_data.LearnedRecipes))
             .Build();
-        learnedTransmogs = UnserializeBytes(mystic_data.LearnedRecipes);
+        _learnedTransmogs = UnserializeBytes(_mysticData.LearnedRecipes);
 
         if (BlacksmithUnlocked || InGameClient.Game.CurrentAct == 3000)
             InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataBlacksmithInitialMessage)
@@ -4503,27 +4499,26 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void LoadCurrencyData()
     {
-        var bloodShards = 0;
-        bloodShards = Toon.GameAccount.BloodShards;
+        var bloodShards = Toon.GameAccount.BloodShards; // TODO: is this needed? @iamdroppy
         Inventory.UpdateCurrencies();
     }
 
     public void LoadMailData()
     {
-        var mail_data =
+        var mailData =
             World.Game.GameDbSession.SessionQueryWhere<DBMail>(dbm =>
                 dbm.DBToon.Id == Toon.PersistentID && dbm.Claimed == false);
         var mails = D3.Items.Mails.CreateBuilder();
-        foreach (var mail in mail_data)
+        foreach (var mail in mailData)
         {
-            var mail_row = D3.Items.Mail.CreateBuilder()
+            var mailRow = D3.Items.Mail.CreateBuilder()
                 .SetAccountTo(Toon.D3EntityID)
                 .SetAccountFrom(Toon.D3EntityID)
                 .SetMailId(mail.Id)
                 .SetTitle(mail.Title)
                 .SetBody(mail.Body);
             if (mail.ItemGBID != -1)
-                mail_row.SetAttachments(D3.Items.MailAttachments.CreateBuilder()
+                mailRow.SetAttachments(D3.Items.MailAttachments.CreateBuilder()
                     .SetItems(D3.Items.ItemList.CreateBuilder()
                         .AddItems(D3.Items.SavedItem.CreateBuilder()
                             .SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0).SetIdHigh(0x3C000002517A294))
@@ -4542,15 +4537,16 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         )
                     )
                 );
-            mails.AddMailsProp(mail_row);
+            mails.AddMailsProp(mailRow);
         }
 
-        var mail_contents = D3.GameMessage.MailContents.CreateBuilder()
-            .SetAppendMessages(false)
-            .SetMails(mails)
-            .Build();
-
-        InGameClient.SendMessage(new MailDigestMessage() { MailContents = mail_contents });
+        InGameClient.SendMessage(new MailDigestMessage()
+        {
+            MailContents = D3.GameMessage.MailContents.CreateBuilder()
+                .SetAppendMessages(false)
+                .SetMails(mails)
+                .Build()
+        });
     }
 
     //*/
@@ -4578,10 +4574,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void LoadShownTutorials()
     {
-        var tutorials = new List<byte>();
-        tutorials.Add(64);
-        for (var i = 0; i < 15; i++)
-            tutorials.Add(0);
+        // var tutorials = new List<byte>();
+        // tutorials.Add(64);
+        // for (var i = 0; i < 15; i++)
+        //     tutorials.Add(0);
         var seenTutorials = Toon.GameAccount.DBGameAccount.SeenTutorials;
 
         var state = D3.GameMessage.TutorialState.CreateBuilder()
@@ -4590,13 +4586,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         InGameClient.SendMessage(new GenericBlobMessage(Opcodes.TutorialStateMessage) { Data = state.ToByteArray() });
     }
 
-    private List<ulong> _unlockedAchievements = new();
-    private List<ulong> _unlockedCriterias = new();
+    private readonly List<ulong> _unlockedAchievements = new();
+    private readonly List<ulong> _unlockCriteria = new();
 
-    private Dictionary<ulong, uint> AchievementCounters = new();
+    private readonly Dictionary<ulong, uint> _achievementCounters = new();
 
-    public int DodgesInARow = 0;
-    public int BlocksInARow = 0;
+    public int DodgesInARow { get; set; } = 0;
+    public int BlocksInARow { get; set; }= 0;
 
     public void GrantAchievement(ulong id)
     {
@@ -4606,20 +4602,20 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         _unlockedAchievements.Add(id);
         try
         {
-            var Achievement = AchievementSystem.AchievementManager.GetAchievementById(id);
-            long Platinum = -1;
-            foreach (var attr in Achievement.AttributesList)
+            var achievement = AchievementSystem.AchievementManager.GetAchievementById(id);
+            long platinum = -1;
+            foreach (var attr in achievement.AttributesList)
                 if (attr.Key == "Reward Currency Quantity")
-                    Platinum = long.Parse(attr.Value);
+                    platinum = long.Parse(attr.Value);
             InGameClient.SendMessage(new MessageSystem.Message.Definitions.Platinum.PlatinumAchievementAwardedMessage
             {
                 CurrentPlatinum = InGameClient.BnetClient.Account.GameAccount.Platinum,
                 idAchievement = id,
-                PlatinumIncrement = Platinum
+                PlatinumIncrement = platinum
             });
-            if (Platinum > 0)
+            if (platinum > 0)
             {
-                InGameClient.BnetClient.Account.GameAccount.Platinum += (int)Platinum;
+                InGameClient.BnetClient.Account.GameAccount.Platinum += (int)platinum;
                 Inventory.UpdateCurrencies();
             }
 
@@ -4633,33 +4629,33 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void AddAchievementCounter(ulong id, uint count)
     {
-        lock (AchievementCounters)
+        lock (_achievementCounters)
         {
-            if (!AchievementCounters.ContainsKey(id))
-                AchievementCounters.Add(id, count);
+            if (!_achievementCounters.ContainsKey(id))
+                _achievementCounters.Add(id, count);
             else
-                AchievementCounters[id] += count;
+                _achievementCounters[id] += count;
         }
     }
 
     public void CheckAchievementCounters()
     {
-        lock (AchievementCounters)
+        lock (_achievementCounters)
         {
-            foreach (var counter in AchievementCounters)
+            foreach (var counter in _achievementCounters)
             {
                 if (counter.Value == 0) continue;
                 UpdateSingleAchievementCounter(counter.Key, counter.Value);
             }
 
-            AchievementCounters.Clear();
+            _achievementCounters.Clear();
         }
     }
 
     public void GrantCriteria(ulong id)
     {
-        if (_unlockedCriterias.Contains(id)) return;
-        _unlockedCriterias.Add(id);
+        if (_unlockCriteria.Contains(id)) return;
+        _unlockCriteria.Add(id);
         try
         {
             GameServer.ClientSystem.GameServer.GSBackend.GrantCriteria(Toon.GameAccount.PersistentID, id);
@@ -4824,13 +4820,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public int CastingSnoPower = -1;
 
-    public void StartCasting(int durationTicks, Action result, int skillsno = -1)
+    public void StartCasting(int durationTicks, Action result, int skillSno = -1)
     {
         IsCasting = true;
         CastResult = result;
         Attributes[GameAttribute.Looping_Animation_Start_Time] = World.Game.TickCounter;
         Attributes[GameAttribute.Looping_Animation_End_Time] = World.Game.TickCounter + durationTicks;
-        CastingSnoPower = skillsno;
+        CastingSnoPower = skillSno;
         if (CastingSnoPower != -1)
         {
             Attributes[GameAttribute.Buff_Icon_Start_Tick0, CastingSnoPower] = World.Game.TickCounter;
@@ -4882,7 +4878,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     #region generic properties
 
-    public int ClassSNO => Toon.Gender == 0 ? Toon.HeroTable.SNOMaleActor : Toon.HeroTable.SNOFemaleActor;
+    public int ClassSno => Toon.Gender == 0 ? Toon.HeroTable.SNOMaleActor : Toon.HeroTable.SNOFemaleActor;
 
     public int AdditionalLootItems
     {
@@ -4910,7 +4906,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public int SecondaryResourceID => (int)Toon.HeroTable.SecondaryResource;
 
-    [Obsolete]
+    [Obsolete("Not used anymore. Should it be removed?")]
     public bool IsInTown
     {
         get
@@ -4945,7 +4941,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             (Attributes[GameAttribute.Resource_Max_Percent_Bonus, resourceId] + 1), 0);
     }
 
-    public static List<long> LevelBorders = new()
+    public static readonly List<long> LevelBorders = new()
     {
         0, 280, 2700, 4500, 6600, 9000, 11700, 14000, 16500, 19200, 22100, /* Level 0-10 */
         25200, 28500, 32000, 35700, 39600, 43700, 48000, 52500, 57200, 62100, /* Level 11-20 */
@@ -4958,7 +4954,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         100000000 /* Level 61-70 */
     };
 
-    public static List<long> ParagonLevelBorders = new()
+    public static readonly List<long> ParagonLevelBorders = new()
     {
         //7200000,8640000,10800000,11520000,12960000,14400000,15840000,17280000,18720000,20160000,21600000,23040000,24480000,25920000,27360000,
         //28800000,30240000,31680000,33120000,34560000,36000000,37440000,38880000,40320,41760000,43200000,41760000,43200000,44640000,46080000,
@@ -5141,9 +5137,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     });
                     Conversations.StartConversation(0x0002A777); //LevelUp Conversation
 
-                    Attributes[GameAttribute.Alt_Experience_Next_Lo] =
-                        Attributes[GameAttribute.Alt_Experience_Next_Lo] +
-                        (int)ParagonLevelBorders[Attributes[GameAttribute.Alt_Level]];
+                    Attributes[GameAttribute.Alt_Experience_Next_Lo] += (int)ParagonLevelBorders[Attributes[GameAttribute.Alt_Level]];
                     // On level up, health is set to max
                     Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
                     // set resources to max as well
@@ -5165,8 +5159,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 Level++;
                 Attributes[GameAttribute.Level]++;
                 Toon.LevelUp();
-                if (World.Game.MonsterLevel + 1 ==
-                    Attributes[GameAttribute.Level]) //if this is suitable level to update
+                if (World.Game.MonsterLevel + 1 == Attributes[GameAttribute.Level]) //if this is suitable level to update
                     World.Game.UpdateLevel(Attributes[GameAttribute.Level]);
 
                 InGameClient.SendMessage(new PlayerLevel()
@@ -5326,7 +5319,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void VacuumPickupHealthOrb(float radius = -1)
     {
-        if (Math.Abs(radius - -1) < 0.001)
+        if (Math.Abs(radius - -1) < Globals.FLOAT_TOLERANCE)
             radius = Attributes[GameAttribute.Gold_PickUp_Radius];
         var itemList = GetItemsInRange(radius);
         foreach (var item in itemList)
@@ -5501,12 +5494,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 item.Destroy();
             }
 
-            else if (item.ItemDefinition.Name == "p1_normal_rifts_Orb" ||
-                     item.ItemDefinition.Name == "p1_tiered_rifts_Orb")
+            else if (item.ItemDefinition.Name is "p1_normal_rifts_Orb" or "p1_tiered_rifts_Orb")
             {
                 if (InGameClient.Game.ActiveNephalemTimer && InGameClient.Game.ActiveNephalemKilledMobs == false)
                 {
-                    InGameClient.Game.ActiveNephalemProgress += 15f;
+                    InGameClient.Game.ActiveNephalemProgress += 15f * GameServerConfig.Instance.NephalemRiftProgressMultiplier;
                     foreach (var plr in InGameClient.Game.Players.Values)
                     {
                         plr.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DunggeonFinderProgressGlyphPickUp)
@@ -5630,7 +5622,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public Actor SpawnNephalemBoss(World world)
     {
-        var boss = world.SpawnMonster(ActorSnoExtensions.nephalemPortalBosses.PickRandom(), Position);
+        var boss = world.SpawnMonster(ActorSnoExtensions.NephalemPortalBosses.PickRandom(), Position);
         boss.Attributes[GameAttribute.Bounty_Objective] = true;
         boss.Attributes[GameAttribute.Is_Loot_Run_Boss] = true;
         boss.Attributes.BroadcastChangedIfRevealed();
@@ -5658,62 +5650,67 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         return true;
     }
 
-    public void AddPercentageHP(int percentage, bool GuidingLight = false)
+    public void AddPercentageHP(int percentage, bool guidingLight = false)
     {
         var quantity = percentage * Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
-        AddHP(quantity, GuidingLight);
+        AddHP(quantity, guidingLight);
     }
 
-    public void AddPercentageHP(float percentage, bool GuidingLight = false)
+    public void AddPercentageHP(float percentage, bool guidingLight = false)
     {
         var quantity = percentage * Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
-        AddHP(quantity, GuidingLight);
+        AddHP(quantity, guidingLight);
     }
 
     public override void AddHP(float quantity, bool guidingLight = false)
     {
         if (Dead) return;
-        if (quantity == 0) return;
-        if (quantity > 0)
+        switch (quantity)
         {
-            if (Attributes[GameAttribute.Hitpoints_Cur] < Attributes[GameAttribute.Hitpoints_Max_Total])
+            case 0:
+                return;
+            case > 0:
             {
-                if (Toon.Class == ToonClass.Barbarian)
-                    if (SkillSet.HasPassive(205217))
-                        quantity += 0.01f * Attributes[GameAttribute.Health_Globe_Bonus_Health];
-
-                if (guidingLight) //Monk -> Guiding Light
+                if (Attributes[GameAttribute.Hitpoints_Cur] < Attributes[GameAttribute.Hitpoints_Max_Total])
                 {
-                    var missingHP =
-                        (Attributes[GameAttribute.Hitpoints_Max_Total] - Attributes[GameAttribute.Hitpoints_Cur]) /
-                        Attributes[GameAttribute.Hitpoints_Max_Total];
-                    if (missingHP > 0.05f)
-                        if (!World.BuffManager.HasBuff<GuidingLightBuff>(this))
-                            World.BuffManager.AddBuff(this, this,
-                                new GuidingLightBuff(Math.Min(missingHP, 0.3f),
-                                    TickTimer.WaitSeconds(World.Game, 10.0f)));
+                    if (Toon.Class == ToonClass.Barbarian)
+                        if (SkillSet.HasPassive(205217))
+                            quantity += 0.01f * Attributes[GameAttribute.Health_Globe_Bonus_Health];
+
+                    if (guidingLight) //Monk -> Guiding Light
+                    {
+                        var missingHP =
+                            (Attributes[GameAttribute.Hitpoints_Max_Total] - Attributes[GameAttribute.Hitpoints_Cur]) /
+                            Attributes[GameAttribute.Hitpoints_Max_Total];
+                        if (missingHP > 0.05f)
+                            if (!World.BuffManager.HasBuff<GuidingLightBuff>(this))
+                                World.BuffManager.AddBuff(this, this,
+                                    new GuidingLightBuff(Math.Min(missingHP, 0.3f),
+                                        TickTimer.WaitSeconds(World.Game, 10.0f)));
+                    }
+
+                    Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
+                        Attributes[GameAttribute.Hitpoints_Cur] + quantity,
+                        Attributes[GameAttribute.Hitpoints_Max_Total]);
+
+                    Attributes.BroadcastChangedIfRevealed();
+                    InGameClient.SendMessage(new FloatingNumberMessage
+                    {
+                        ActorID = DynamicID(this),
+                        Number = quantity,
+                        Type = FloatingNumberMessage.FloatType.Green
+                    });
                 }
 
-                Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
+                break;
+            }
+            default:
+                Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(
                     Attributes[GameAttribute.Hitpoints_Cur] + quantity,
-                    Attributes[GameAttribute.Hitpoints_Max_Total]);
+                    0);
 
                 Attributes.BroadcastChangedIfRevealed();
-                InGameClient.SendMessage(new FloatingNumberMessage
-                {
-                    ActorID = DynamicID(this),
-                    Number = quantity,
-                    Type = FloatingNumberMessage.FloatType.Green
-                });
-            }
-        }
-        else
-        {
-            Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(
-                Attributes[GameAttribute.Hitpoints_Cur] + quantity,
-                0);
-
-            Attributes.BroadcastChangedIfRevealed();
+                break;
         }
     }
 
@@ -5731,9 +5728,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     #region Resource Generate/Use
 
-    private int _DisciplineSpent = 0;
-    private int _HatredSpent = 0;
-    private int _WrathSpent = 0;
+    private int _disciplineSpent = 0;
+    private int _hatredSpent = 0;
+    private int _wrathSpent = 0;
 
     public void GeneratePrimaryResource(float amount)
     {
@@ -5745,7 +5742,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             if (World.BuffManager.HasBuff<GuardiansPathBuff>(this)) //Monk -> The Guardian's Path 2H
                 amount *= 1.35f;
 
-        _ModifyResourceAttribute(PrimaryResourceID, amount);
+        ModifyResourceAttribute(PrimaryResourceID, amount);
     }
 
     public void UsePrimaryResource(float amount, bool tick = false)
@@ -5757,28 +5754,28 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         amount = amount * (1f - DecreaseUseResourcePercent);
         if (Toon.Class == ToonClass.Crusader)
         {
-            _WrathSpent += (int)amount;
+            _wrathSpent += (int)amount;
             if (!tick && SkillSet.HasPassive(310775)) //Wrathful passive
-                AddHP(_WrathSpent * 15f * Attributes[GameAttribute.Level]);
+                AddHP(_wrathSpent * 15f * Attributes[GameAttribute.Level]);
 
             //Laws of Hope -> Faith's reward
             if (!tick && World.BuffManager.HasBuff<CrusaderLawsOfHope.LawsShieldBuff>(this))
                 if (World.BuffManager.GetFirstBuff<CrusaderLawsOfHope.LawsShieldBuff>(this).HealPerWrath)
-                    AddHP(_WrathSpent * 15f * Attributes[GameAttribute.Level]);
+                    AddHP(_wrathSpent * 15f * Attributes[GameAttribute.Level]);
 
-            if (_WrathSpent >= 20) //Akarat Champion -> Fire Starter
+            if (_wrathSpent >= 20) //Akarat Champion -> Fire Starter
                 if (!tick && World.BuffManager.HasBuff<CrusaderAkaratChampion.AkaratBuff>(this))
                     World.BuffManager.GetFirstBuff<CrusaderAkaratChampion.AkaratBuff>(this).wrathBlast = true;
         }
 
         if (Toon.Class == ToonClass.DemonHunter)
         {
-            _HatredSpent += (int)amount;
+            _hatredSpent += (int)amount;
 
-            if (_HatredSpent >= 150 && _DisciplineSpent >= 50)
+            if (_hatredSpent >= 150 && _disciplineSpent >= 50)
                 GrantAchievement(74987243307068);
 
-            AddTimedAction(6f, new Action<int>((q) => _HatredSpent -= (int)amount));
+            AddTimedAction(6f, new Action<int>((q) => _hatredSpent -= (int)amount));
         }
 
         if (Toon.Class == ToonClass.Barbarian)
@@ -5813,12 +5810,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         if (SkillSet.HasPassive(205398) && Attributes[GameAttribute.Hitpoints_Cur] <
             Attributes[GameAttribute.Hitpoints_Max_Total] * 0.35f) //Relentless (Barbarian)
             amount *= 0.25f;
-        _ModifyResourceAttribute(PrimaryResourceID, -amount);
+        ModifyResourceAttribute(PrimaryResourceID, -amount);
     }
 
     public void GenerateSecondaryResource(float amount)
     {
-        _ModifyResourceAttribute(SecondaryResourceID, amount);
+        ModifyResourceAttribute(SecondaryResourceID, amount);
     }
 
     public void UseSecondaryResource(float amount)
@@ -5833,18 +5830,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         if (Toon.Class == ToonClass.DemonHunter)
         {
-            _DisciplineSpent += (int)amount;
+            _disciplineSpent += (int)amount;
 
-            if (_HatredSpent >= 150 && _DisciplineSpent >= 50)
+            if (_hatredSpent >= 150 && _disciplineSpent >= 50)
                 GrantAchievement(74987243307068);
 
-            AddTimedAction(6f, new Action<int>((q) => _DisciplineSpent -= (int)amount));
+            AddTimedAction(6f, new Action<int>((q) => _disciplineSpent -= (int)amount));
         }
 
-        _ModifyResourceAttribute(SecondaryResourceID, -amount);
+        ModifyResourceAttribute(SecondaryResourceID, -amount);
     }
 
-    private void _ModifyResourceAttribute(int resourceID, float amount)
+    private void ModifyResourceAttribute(int resourceID, float amount)
     {
         if (resourceID == -1 || amount == 0) return;
         var current = Attributes[GameAttribute.Resource_Cur, resourceID];
@@ -5857,7 +5854,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 Attributes[GameAttribute.Resource_Cur, resourceID] + amount,
                 0f);
 
-        if (current == Attributes[GameAttribute.Resource_Cur, resourceID]) return;
+        if (Math.Abs(current - Attributes[GameAttribute.Resource_Cur, resourceID]) < Globals.FLOAT_TOLERANCE) return;
 
         Attributes.BroadcastChangedIfRevealed();
     }

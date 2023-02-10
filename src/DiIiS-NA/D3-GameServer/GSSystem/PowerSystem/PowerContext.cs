@@ -178,20 +178,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public EffectActor SpawnEffect(ActorSno actorSNO, Vector3D position, float angle = 0, TickTimer timeout = null)
 		{
-			if (Math.Abs(angle - (-1)) < 0.0001)
+			if (Math.Abs(angle - -1) < Globals.FLOAT_TOLERANCE)
 				angle = (float)(Rand.NextDouble() * (Math.PI * 2));
 			if (timeout == null)
 			{
-				if (_defaultEffectTimeout == null)
-					_defaultEffectTimeout = new SecondsTickTimer(World.Game, 2f); // default timeout of 2 seconds for now
-
+				_defaultEffectTimeout ??= new SecondsTickTimer(World.Game, 2f);
 				timeout = _defaultEffectTimeout;
 			}
 
 			var actor = new EffectActor(this, actorSNO, position);
 			actor.Timeout = timeout;
 			actor.Spawn(angle);
-			//187359
 			return actor;
 		}
 

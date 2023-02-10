@@ -266,9 +266,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}, Target);
 
 			if (Context?.User != null)
-				if (Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 247640] - 1) < 0.001 ||
-					Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] - 1) < 0.001 ||
-					Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249954] - 1) < 0.001 ||
+				if (Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 247640] - 1) < Globals.FLOAT_TOLERANCE ||
+					Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] - 1) < Globals.FLOAT_TOLERANCE ||
+					Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249954] - 1) < Globals.FLOAT_TOLERANCE ||
 					(float)FastRandom.Instance.NextDouble() < 0.1f ||
 					Target.World.SNO == WorldSno.a1dun_random_level01)
 					switch ((int)DeathDamageType.HitEffect)
@@ -1066,7 +1066,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 		{
 			//death implementation
 			Player player = (Player)Target;
-			if (Math.Abs(player.Attributes[GameAttribute.Item_Power_Passive, 248629] - 1) < 0.001)
+			if (Math.Abs(player.Attributes[GameAttribute.Item_Power_Passive, 248629] - 1) < Globals.FLOAT_TOLERANCE)
 				player.PlayEffectGroup(248680);
 			player.StopCasting();
 			Target.World.BuffManager.RemoveAllBuffs(Target, false);

@@ -4,7 +4,8 @@ using System.Configuration;
 
 namespace DiIiS_NA
 {
-    public static class Extensions
+    internal static class Globals
     {
+        public const float FLOAT_TOLERANCE = 0.0001f;
     }
 }

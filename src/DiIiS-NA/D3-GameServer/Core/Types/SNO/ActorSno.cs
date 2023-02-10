@@ -20690,7 +20690,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 			ActorSno._p73_fallenlunatic_a_nonspawner,
 		};
 		// all '_vo' and 'voiceo' actors except 'voodoomask` and and cosmetic pets
-		private static readonly ActorSno[] soundActors = new ActorSno[]
+		private static readonly ActorSno[] _soundActors = new ActorSno[]
 		{
 			ActorSno._lustmissle_volume,
 			ActorSno._a1dun_caves_nephalem_altar_volume,
@@ -20713,7 +20713,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 			ActorSno._p43_ad_valor_bloodstone_volume,
 		};
 		// all 'door' actors
-		private static readonly ActorSno[] doors = new ActorSno[]
+		private static readonly ActorSno[] _doors = new ActorSno[]
         {
 			ActorSno._trdun_cath_wooddoor_a,
 			ActorSno._door_intactc_caout_towns,
@@ -21156,7 +21156,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 			ActorSno._kanai_cube_uber_fx,
 		};
 		// all 'adventuremode' actors
-		private static readonly ActorSno[] adventureModeActors = new ActorSno[]
+		private static readonly ActorSno[] AdventureModeActors = new ActorSno[]
 		{
 			ActorSno._x1_lore_adventuremode_zknephalem,
 			ActorSno._x1_lore_adventuremode_zkplans,
@@ -21168,7 +21168,7 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 			ActorSno._x1_adventuremode_hubbantertrigger,
 		};
         #endregion
-        public static readonly ActorSno[] nephalemPortalBosses = new ActorSno[]
+        public static readonly ActorSno[] NephalemPortalBosses = new ActorSno[]
 		{
 			ActorSno._x1_lr_boss_mistressofpain,
 			ActorSno._x1_lr_boss_angel_corrupt_a,
@@ -21227,17 +21227,17 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 
 		public static bool IsAdventureModeActor(this ActorSno actorSno)
 		{
-			return adventureModeActors.Contains(actorSno);
+			return AdventureModeActors.Contains(actorSno);
 		}
 
 		public static bool IsTargetable(this ActorSno actorSno)
 		{
-			return !spawners.Contains(actorSno) && !soundActors.Contains(actorSno);
+			return !spawners.Contains(actorSno) && !_soundActors.Contains(actorSno);
 		}
 
 		public static bool IsDoorOrBarricade(this ActorSno actorSno)
 		{
-			return doors.Contains(actorSno) || barricades.Contains(actorSno);
+			return _doors.Contains(actorSno) || barricades.Contains(actorSno);
 		}
 
 		public static bool IsWoodwraithOrWasp(this ActorSno actorSno)

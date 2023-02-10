@@ -13,8 +13,20 @@ namespace DiIiS_NA.GameServer.CommandManager
 			get => GetString(nameof(CommandPrefix), "!")[0];
 			set => Set(nameof(CommandPrefix), value);
 		}
+		
+		public string DisabledGroups 
+		{
+			get => GetString(nameof(DisabledGroups), "");
+			set => Set(nameof(DisabledGroups), value);
+		}
 
-		public static CommandsConfig Instance = new();
+		public string[] DisabledGroupsData 
+			=> DisabledGroups
+				.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+				.Select(s=>s.Replace(CommandPrefix.ToString(), ""))
+				.ToArray();
+
+		public static readonly CommandsConfig Instance = new();
 		private CommandsConfig() : base("Commands") { }
 	}
 }

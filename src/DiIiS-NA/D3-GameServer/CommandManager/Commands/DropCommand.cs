@@ -4,8 +4,7 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("drop", "Drops an epic item for your class.\nOptionally specify the number of items: !drop [1-20]",
-    Account.UserLevels.Owner)]
+[CommandGroup("drop", "Drops an epic item for your class.\nOptionally specify the number of items: !drop [1-20]", Account.UserLevels.Owner)]
 public class DropCommand : CommandGroup
 {
     [DefaultCommand]
@@ -29,16 +28,16 @@ public class DropCommand : CommandGroup
         try
         {
             for (var i = 0; i < amount; i++)
-                player.World.SpawnRandomEquip(player, player, 11, player.Level, toonClass: player.Toon.Class,
+                player.World.SpawnRandomEquip(player, player, 11, /*player.Level,*/ toonClass: player.Toon.Class,
                     canBeUnidentified: false);
         }
         catch
         {
             for (var i = 0; i < amount; i++)
-                player.World.SpawnRandomEquip(player, player, 8, player.Level, toonClass: player.Toon.Class,
+                player.World.SpawnRandomEquip(player, player, 8, /*player.Level,*/ toonClass: player.Toon.Class,
                     canBeUnidentified: false);
         }
 
-        return $"Dropped {amount} random equipment.";
+        return $"Dropped {amount} random epic equipment.";
     }
 }

@@ -386,8 +386,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					RandomSpawnInWorldWithLevelArea(world, ActorSno._x1_deathmaiden_unique_fire_a);
 					break;
 				case WorldSno.trdun_leoric_level03: //Setting portal to the third floor of the Agony's Halls near the entrance to the Butcher.
-					Vector3D Scene0Pos = world.GetSceneBySnoId(78824).Position;
-					world.SpawnMonster(ActorSno._waypoint, new Vector3D(Scene0Pos.X + 149.0907f, Scene0Pos.Y + 106.7075f, Scene0Pos.Z));
+					Vector3D sceneOfPos = world.GetSceneBySnoId(78824).Position;
+					world.SpawnMonster(ActorSno._waypoint, new Vector3D(sceneOfPos.X + 149.0907f, sceneOfPos.Y + 106.7075f, sceneOfPos.Z));
 					break;
 				case WorldSno.x1_westm_graveyard_deathorb:
 					FilterWaypoints(world);
@@ -402,9 +402,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					break;
 				case WorldSno.trout_town: //mercenary
 					var templar = world.GetActorBySNO(ActorSno._templar);
-					var hasmalth = world.GetActorBySNO(ActorSno._x1_malthael_npc);
+					var hasMalthaelNpc = world.GetActorBySNO(ActorSno._x1_malthael_npc);
 
-					if (hasmalth == null)
+					if (hasMalthaelNpc == null)
 					{
 						ActorSystem.Implementations.Hirelings.MalthaelHireling malthaelHire = new ActorSystem.Implementations.Hirelings.MalthaelHireling(world, ActorSno._x1_malthael_npc_nocollision, templar.Tags)
 							{
@@ -419,17 +419,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					foreach (var door in world.GetActorsBySNO(ActorSno._house_door_trout_newtristram))
 						door.Destroy();
-					if (Game.CurrentAct == 3000)
+					if (Game.CurrentActEnum == ActEnum.OpenWorld)
 					{
-						var TownDoor = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
-						TownDoor.Attributes[GameAttribute.Team_Override] = 2;
-						TownDoor.Attributes[GameAttribute.Untargetable] = true;
-						TownDoor.Attributes[GameAttribute.NPC_Is_Operatable] = false;
-						TownDoor.Attributes[GameAttribute.Operatable] = false;
-						TownDoor.Attributes[GameAttribute.Operatable_Story_Gizmo] = false;
-						TownDoor.Attributes[GameAttribute.Disabled] = true;
-						TownDoor.Attributes[GameAttribute.Immunity] = true;
-						TownDoor.Attributes.BroadcastChangedIfRevealed();
+						var townDoor = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
+						townDoor.Attributes[GameAttribute.Team_Override] = 2;
+						townDoor.Attributes[GameAttribute.Untargetable] = true;
+						townDoor.Attributes[GameAttribute.NPC_Is_Operatable] = false;
+						townDoor.Attributes[GameAttribute.Operatable] = false;
+						townDoor.Attributes[GameAttribute.Operatable_Story_Gizmo] = false;
+						townDoor.Attributes[GameAttribute.Disabled] = true;
+						townDoor.Attributes[GameAttribute.Immunity] = true;
+						townDoor.Attributes.BroadcastChangedIfRevealed();
 					}
 					break;
 				case WorldSno.a1trdun_level04: //Cathedral Level 2
@@ -504,10 +504,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					zoltunGhost.Attributes.BroadcastChangedIfRevealed();
 					break;
 				case WorldSno.a3dun_ruins_frost_city_a_02:
-					foreach (var waypoint in world.GetActorsBySNO(ActorSno._waypoint)) waypoint.Destroy();
+					foreach (var waypoint in world.GetActorsBySNO(ActorSno._waypoint)) 
+						waypoint.Destroy();
 					break;
 				case WorldSno.p43_ad_oldtristram:
-					foreach (var waypoint in world.GetActorsBySNO(ActorSno._trout_oldtristram_exit_gate)) waypoint.Destroy();
+					foreach (var waypoint in world.GetActorsBySNO(ActorSno._trout_oldtristram_exit_gate)) 
+						waypoint.Destroy();
 					break;
 				case WorldSno.x1_tristram_adventure_mode_hub:
 					
@@ -561,14 +563,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		public void RandomSpawnInWorldWithLevelArea(World world, ActorSno monsterSno, int levelArea = -1)
 		{
 			List<Scene> scenes = world.Scenes.Values.ToList();
-			if (levelArea != -1) scenes = scenes.Where(sc => sc.Specification.SNOLevelAreas[0] == levelArea && !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
-			else scenes = scenes.Where(sc => !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
-			Vector3D SSV = scenes.PickRandom().Position;
+			scenes = levelArea != -1 
+				? scenes.Where(sc => sc.Specification.SNOLevelAreas[0] == levelArea && !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList() 
+				: scenes.Where(sc => !sc.SceneSNO.Name.ToLower().Contains("filler")).ToList();
+			Vector3D randomScene = scenes.PickRandom().Position;
 			Vector3D startingPoint = null;
 
 			while (true)
 			{
-				startingPoint = new Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
+				startingPoint = new Vector3D(randomScene.X + RandomHelper.Next(0, 240), randomScene.Y + RandomHelper.Next(0, 240), randomScene.Z);
 				if (world.CheckLocationForFlag(startingPoint, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
 					break;
 			}
@@ -1591,7 +1594,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					{
 						bool busy = false;
 						foreach (var chunk in world.worldData.SceneParams.SceneChunks)
-							if (Math.Abs(chunk.PRTransform.Vector3D.X - x) < 0.001 & Math.Abs(chunk.PRTransform.Vector3D.Y - y) < 0.001)
+							if (Math.Abs(chunk.PRTransform.Vector3D.X - x) < Globals.FLOAT_TOLERANCE & Math.Abs(chunk.PRTransform.Vector3D.Y - y) < Globals.FLOAT_TOLERANCE)
 							{
 								busy = true; 
 								break;

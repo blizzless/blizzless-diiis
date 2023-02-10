@@ -88,7 +88,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public void UpdateStats()
 		{
 			var monsterLevels = (GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.GameBalance][19760].Data;
-			bool fullHp = (Math.Abs(Attributes[GameAttribute.Hitpoints_Cur] - Attributes[GameAttribute.Hitpoints_Max_Total]) < 0.001);
+			bool fullHp = (Math.Abs(Attributes[GameAttribute.Hitpoints_Cur] - Attributes[GameAttribute.Hitpoints_Max_Total]) < Globals.FLOAT_TOLERANCE);
 			Attributes[GameAttribute.Level] = World.Game.MonsterLevel;
 			//this.Attributes[GameAttribute.Hitpoints_Max] = (int)monsterLevels.MonsterLevel[this.World.Game.MonsterLevel - 1].HPMin * (int)this.HPMultiplier * (int)this.World.Game.HPModifier;
 			int monsterLevel = 1;

@@ -13,23 +13,17 @@ namespace DiIiS_NA.Core.Storage
 		private static Object _globalSessionLock = new object();
 		private Object _sessionLock = new object();
 		private IStatelessSession _gameSession = null;
-		private readonly Logger Logger = LogManager.CreateLogger("DB");
+		private readonly Logger Logger = LogManager.CreateLogger(nameof(GameDBSession));
 
 		public GameDBSession()
 		{
 			lock (_globalSessionLock)
 			{
-				this._gameSession = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+				_gameSession = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
 			}
 		}
 
-		private IStatelessSession GameSession
-		{
-			get
-			{
-				return this._gameSession;
-			}
-		}
+		private IStatelessSession GameSession => _gameSession;
 
 		public void SessionSave(Object obj)
 		{
@@ -39,8 +33,8 @@ namespace DiIiS_NA.Core.Storage
 				{
 					try
 					{
-						using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-							session.Insert(obj);
+						using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+						session.Insert(obj);
 					}
 					catch (Exception e)
 					{
@@ -74,8 +68,8 @@ namespace DiIiS_NA.Core.Storage
 				{
 					try
 					{
-						using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-							session.Update(obj);
+						using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+						session.Update(obj);
 					}
 					catch (Exception e)
 					{
@@ -109,8 +103,8 @@ namespace DiIiS_NA.Core.Storage
 				{
 					try
 					{
-						using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-							session.Delete(obj);
+						using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+						session.Delete(obj);
 					}
 					catch (Exception e)
 					{
@@ -157,8 +151,8 @@ namespace DiIiS_NA.Core.Storage
 			{
 				try
 				{
-					using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-						return session.Query<T>().ToList();
+					using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+					return session.Query<T>().ToList();
 				}
 				catch (Exception e)
 				{
@@ -189,8 +183,8 @@ namespace DiIiS_NA.Core.Storage
 			{
 				try
 				{
-					using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-						return session.QueryOver<T>().Where(predicate).List().ToList();
+					using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+					return session.QueryOver<T>().Where(predicate).List().ToList();
 				}
 				catch (Exception e)
 				{
@@ -221,8 +215,8 @@ namespace DiIiS_NA.Core.Storage
 			{
 				try
 				{
-					using (IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession())
-						return (T)session.QueryOver<T>().Where(predicate).List().FirstOrDefault();
+					using IStatelessSession session = AccountDataBase.SessionProvider.SessionFactory.OpenStatelessSession();
+					return (T)session.QueryOver<T>().Where(predicate).List().FirstOrDefault();
 				}
 				catch (Exception e)
 				{

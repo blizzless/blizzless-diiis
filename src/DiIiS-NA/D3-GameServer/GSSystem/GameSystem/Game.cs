@@ -1256,7 +1256,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				GameAccountId = new GameAccountHandle() { ID = (uint)joinedPlayer.Toon.GameAccount.BnetEntityId.Low, Program = 0x00004433, Region = 1 },
 				ToonName = joinedPlayer.Toon.Name,
 				Team = 0x00000002,
-				Class = joinedPlayer.ClassSNO,
+				Class = joinedPlayer.ClassSno,
 				snoActorPortrait = joinedPlayer.Toon.DBToon.Cosmetic4,
 				Level = joinedPlayer.Toon.Level,
 				AltLevel = (ushort)joinedPlayer.Toon.ParagonLevel,

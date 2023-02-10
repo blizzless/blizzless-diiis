@@ -49,6 +49,14 @@ namespace DiIiS_NA.GameServer
 			get => GetBoolean(nameof(CoreActive), true);
 			set => Set(nameof(CoreActive), value);
 		}
+		
+		public bool IWServer
+		{
+			get => GetBoolean(nameof(IWServer), true);
+			set => Set(nameof(IWServer), value);
+		}
+		
+		#region Game Mods
 
 		/// <summary>
 		/// Rate of experience gain.
@@ -99,12 +107,6 @@ namespace DiIiS_NA.GameServer
 		{
 			get => GetFloat(nameof(RateMonsterDMG), 1);
 			set => Set(nameof(RateMonsterDMG), value);
-		}
-		
-		public bool IWServer
-		{
-			get => GetBoolean(nameof(IWServer), true);
-			set => Set(nameof(IWServer), value);
 		}
 
 		/// <summary>
@@ -196,7 +198,80 @@ namespace DiIiS_NA.GameServer
 			get => GetBoolean(nameof(UnlockAllWaypoints), false);
 			set => Set(nameof(UnlockAllWaypoints), value);
 		}
+
+		/// <summary>
+		/// Strength multiplier when you're not a paragon.
+		/// </summary>
+		public float StrengthMultiplier
+		{
+			get => GetFloat(nameof(StrengthMultiplier), 1f);
+			set => Set(nameof(StrengthMultiplier), value);
+		}
 		
+		/// <summary>
+		/// Strength multiplier when you're a paragon.
+		/// </summary>
+		public float StrengthParagonMultiplier
+		{
+			get => GetFloat(nameof(StrengthParagonMultiplier), 1f);
+			set => Set(nameof(StrengthParagonMultiplier), value);
+		}
+		
+		/// <summary>
+		/// Dexterity multiplier when you're not a paragon.
+		/// </summary>
+		public float DexterityMultiplier
+		{
+			get => GetFloat(nameof(DexterityMultiplier), 1f);
+			set => Set(nameof(DexterityMultiplier), value);
+		}
+		
+		/// <summary>
+		/// Dexterity multiplier when you're a paragon.
+		/// </summary>
+		public float DexterityParagonMultiplier
+		{
+			get => GetFloat(nameof(DexterityParagonMultiplier), 1f);
+			set => Set(nameof(DexterityParagonMultiplier), value);
+		}
+		
+		/// <summary>
+		/// Intelligence multiplier when you're not a paragon.
+		/// </summary>
+		public float IntelligenceMultiplier
+		{
+			get => GetFloat(nameof(IntelligenceMultiplier), 1f);
+			set => Set(nameof(IntelligenceMultiplier), value);
+		}
+		
+		/// <summary>
+		/// Intelligence multiplier when you're a paragon.
+		/// </summary>
+		public float IntelligenceParagonMultiplier
+		{
+			get => GetFloat(nameof(IntelligenceParagonMultiplier), 1f);
+			set => Set(nameof(IntelligenceParagonMultiplier), value);
+		}
+		
+		/// <summary>
+		/// Vitality multiplier when you're not a paragon.
+		/// </summary>
+		public float VitalityMultiplier
+		{
+			get => GetFloat(nameof(VitalityMultiplier), 1f);
+			set => Set(nameof(VitalityMultiplier), value);
+		}
+		
+		/// <summary>
+		/// Vitality multiplier when you're a paragon.
+		/// </summary>
+		public float VitalityParagonMultiplier
+		{
+			get => GetFloat(nameof(VitalityParagonMultiplier), 1f);
+			set => Set(nameof(VitalityParagonMultiplier), value);
+		}
+		
+		#endregion
 		public static GameServerConfig Instance { get; } = new();
 		
 

@@ -12,6 +12,7 @@ using DiIiS_NA.REST.Data.Authentication;
 using DiIiS_NA.REST.JSON;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using System.IO;
+using System.Net;
 using System.Net.Security;
 using System.Web;
 using DiIiS_NA.GameServer.MessageSystem;
@@ -41,26 +42,19 @@ namespace DiIiS_NA.REST
             }
             else
             {
-                Logger.Info($"$[yellow]$REST Request: $[/]$ {httpRequest.Method} {httpRequest.Path}");
+                Logger.Debug($"$[yellow]$REST Request: $[/]$ {httpRequest.Method} {httpRequest.Path}");
                 if (httpRequest.Path == "200")
                 {
 
                 }
                 else if (httpRequest.Path.Contains("/client/alert"))
                 {
-                    switch (httpRequest.Method)
-                    {
-                        case "GET":
-                        default:
-                            HandleInfoRequest(httpRequest);
-                            break;
-                    }
+                    HandleInfoRequest(httpRequest);
                 }
-                else
+                else if (httpRequest.Path.Contains("/battlenet/login"))
                 {
                     switch (httpRequest.Method)
                     {
-                        case "GET":
                         default:
                             HandleConnectRequest(httpRequest);
                             break;
@@ -69,28 +63,32 @@ namespace DiIiS_NA.REST
                             return;
                     }
                 }
+                else
+                {
+                    #if DEBUG
+                    Logger.Info($"$[red]$[404] REST Request: $[/]$ {httpRequest.Method} {httpRequest.Path}");
+                    SendResponseHtml(HttpCode.NotFound, "404 Not Found");
+                    #else
+                    // sends 502 Bad Gateway to the client to prevent the client from trying to connect to the server again - in case it's a crawler or bad bot.
+                    Logger.Info($"$[red]$[404/502] REST Request: $[/]$ {httpRequest.Method} {httpRequest.Path}");
+                    SendResponseHtml(HttpCode.BadGateway, "502 Bad Gateway");
+                    return;
+                    #endif
+                }
             }
             AsyncRead();
         }
 
-        public void HandleConnectRequest(HttpHeader request)
+        void HandleConnectRequest(HttpHeader request)
         {
             SendResponse(HttpCode.OK, SessionManager.Instance.GetFormInput());
         }
 
-        public void HandleInfoRequest(HttpHeader request)
+        void HandleInfoRequest(HttpHeader request)
         {
             SendResponseHtml(HttpCode.OK, "Welcome to BlizzLess.Net" + 
                                           "\nBuild " + Program.Build +
                                           "\nSupport: 2.7.4");
-        }
-
-        public static byte[] StringToByteArray(string hex)
-        {
-            return Enumerable.Range(0, hex.Length)
-                             .Where(x => x % 2 == 0)
-                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
-                             .ToArray();
         }
 
         void SendResponse<T>(HttpCode code, T response)
@@ -107,7 +105,8 @@ namespace DiIiS_NA.REST
         {
             AsyncRead();
         }
-        public void HandleLoginRequest(HttpHeader request)
+
+        void HandleLoginRequest(HttpHeader request)
         {
             LogonData loginForm = Json.CreateObject<LogonData>(request.Content);
             LogonResult loginResult = new LogonResult();
