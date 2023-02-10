@@ -1,12 +1,9 @@
 ﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-using System;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -23,13 +20,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			// Override minimap icon in markerset tags
 			WalkSpeed = 0;
 			Brain = new MonsterBrain(this);
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 123152;
-			Attributes[GameAttribute.Hitpoints_Max] *= 3f;
-			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttributes.Hitpoints_Max] *= 3f;
+			Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 0f;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 0f;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] = 0f;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 0f;
 			//(this.Brain as MonsterBrain).AddPresetPower(54055); //TreasureGoblinPause
 			(Brain as MonsterBrain).AddPresetPower(105371); //TreasureGoblin_Escape
 		}

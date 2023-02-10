@@ -1,11 +1,7 @@
-﻿using System.Linq;
-using DiIiS_NA.GameServer.MessageSystem;
+﻿using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-using System.Collections.Generic;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
@@ -21,12 +17,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			WalkSpeed *= 5;
 			CollFlags = 0;
 			DamageCoefficient = 0;
-			Attributes[GameAttribute.Invulnerable] = true;
-			Attributes[GameAttribute.Is_Helper] = true;
+			Attributes[GameAttributes.Invulnerable] = true;
+			Attributes[GameAttributes.Is_Helper] = true;
 			SetBrain(new LooterBrain(this, true));
 
-			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-			Attributes[GameAttribute.Pet_Type] = 0x8;
+			Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
+			Attributes[GameAttributes.Pet_Type] = 0x8;
 			//Pet_Owner and Pet_Creator seems to be 0
 		}
 

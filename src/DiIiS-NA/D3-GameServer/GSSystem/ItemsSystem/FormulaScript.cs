@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DiIiS_NA.Core.Helpers.Math;
-using System.Threading.Tasks;
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
@@ -249,7 +248,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				case 0:
 					b.Append("GetAttribute ");
-					b.Append(GameAttribute.Attributes[numb2].Name);
+					b.Append(GameAttributes.Attributes[numb2].Name);
 					b.Append(" ("); b.Append(numb2); b.Append("); ");
 					break;
 				case 22:

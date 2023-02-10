@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
@@ -25,7 +24,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 
 			//this.Field2 = 0x9;//16;
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 218394;
 			if (World.SNO.IsDungeon())
 			{

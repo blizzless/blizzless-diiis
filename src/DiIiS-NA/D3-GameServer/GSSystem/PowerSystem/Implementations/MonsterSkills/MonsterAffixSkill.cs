@@ -3,11 +3,7 @@ using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -154,9 +150,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply())
 					return false;
-				Target.Attributes[GameAttribute.Hitpoints_Max] *= 2f;
-				if (Target.Attributes[GameAttribute.Hitpoints_Max] / 2f == Target.Attributes[GameAttribute.Hitpoints_Cur])
-					Target.Attributes[GameAttribute.Hitpoints_Cur] = Target.Attributes[GameAttribute.Hitpoints_Max];
+				Target.Attributes[GameAttributes.Hitpoints_Max] *= 2f;
+				if (Target.Attributes[GameAttributes.Hitpoints_Max] / 2f == Target.Attributes[GameAttributes.Hitpoints_Cur])
+					Target.Attributes[GameAttributes.Hitpoints_Cur] = Target.Attributes[GameAttributes.Hitpoints_Max];
 				Target.Attributes.BroadcastChangedIfRevealed();
 
 				return true;
@@ -164,9 +160,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Remove()
 			{
 				base.Remove();
-				Target.Attributes[GameAttribute.Hitpoints_Max] /= 2f;
-				if (Target.Attributes[GameAttribute.Hitpoints_Max] < Target.Attributes[GameAttribute.Hitpoints_Cur])
-					Target.Attributes[GameAttribute.Hitpoints_Cur] = Target.Attributes[GameAttribute.Hitpoints_Max];
+				Target.Attributes[GameAttributes.Hitpoints_Max] /= 2f;
+				if (Target.Attributes[GameAttributes.Hitpoints_Max] < Target.Attributes[GameAttributes.Hitpoints_Cur])
+					Target.Attributes[GameAttributes.Hitpoints_Cur] = Target.Attributes[GameAttributes.Hitpoints_Max];
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -259,9 +255,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				if (Target.Attributes[GameAttribute.Root_Immune] == false)
+				if (Target.Attributes[GameAttributes.Root_Immune] == false)
 				{
-					Target.Attributes[GameAttribute.IsRooted] = true;
+					Target.Attributes[GameAttributes.IsRooted] = true;
 					Target.Attributes.BroadcastChangedIfRevealed();
 				}
 				Target.World.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDTranslateSyncMessage() { ActorId = Target.DynamicID(plr), Position = Target.Position, Snap = false }, Target);
@@ -271,7 +267,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Remove()
 			{
 				base.Remove();
-				Target.Attributes[GameAttribute.IsRooted] = false;
+				Target.Attributes[GameAttributes.IsRooted] = false;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -288,7 +284,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply())
 					return false;
-				Target.Attributes[GameAttribute.Root_Immune] = true;
+				Target.Attributes[GameAttributes.Root_Immune] = true;
 				Target.Attributes.BroadcastChangedIfRevealed();
 
 				return true;
@@ -296,7 +292,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Remove()
 			{
 				base.Remove();
-				Target.Attributes[GameAttribute.Root_Immune] = false;
+				Target.Attributes[GameAttributes.Root_Immune] = false;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}

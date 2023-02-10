@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -20,7 +19,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public CursedShrine(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 		}
 
 		private bool _collapsed = false;
@@ -93,9 +92,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					}
 					break;
 			}
-			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			Attributes[GameAttribute.Gizmo_State] = 1;
+			Attributes[GameAttributes.Gizmo_State] = 1;
 			Attributes.BroadcastChangedIfRevealed();
 
 			var rewardChests = GetActorsInRange<LootContainer>(20f).Where(c => c.rewardChestAvailable == false).ToList();

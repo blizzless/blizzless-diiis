@@ -1,18 +1,8 @@
-﻿using DiIiS_NA.Core.Logging;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-using DiIiS_NA.GameServer.GSSystem.GameSystem;
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+﻿using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System.Linq;
 using System;
 using System.Collections.Generic;
-using DiIiS_NA.LoginServer.AccountsSystem;
-using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
-using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.GameServer.Core.Types.TagMap;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
@@ -35,7 +25,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			foreach (var actor in wave2Actors)
 			{
 				var monster = world.SpawnMonster(ActorSno._zombiecrawler_a, new Vector3D(actor.Position.X, actor.Position.Y, actor.Position.Z));
-				monster.Attributes[GameAttribute.God] = true;
+				monster.Attributes[GameAttributes.God] = true;
 				monster.Attributes.BroadcastChangedIfRevealed();
 				(monster as Monster).Brain.DeActivate();
 				monsters.Add(monster);
@@ -44,8 +34,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			{
 				foreach (var monster in monsters)
 				{
-					monster.Attributes[GameAttribute.Quest_Monster] = true;
-					monster.Attributes[GameAttribute.God] = false;
+					monster.Attributes[GameAttributes.Quest_Monster] = true;
+					monster.Attributes[GameAttributes.God] = false;
 					(monster as Monster).Brain.Activate();
 					monster.Attributes.BroadcastChangedIfRevealed();
 				}

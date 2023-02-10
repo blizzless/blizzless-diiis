@@ -49,8 +49,8 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
         public ArtisanShortcut(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            Attributes[GameAttribute.MinimapActive] = false;
-            Attributes[GameAttribute.Conversation_Icon, 0] = 0;
+            Attributes[GameAttributes.MinimapActive] = false;
+            Attributes[GameAttributes.Conversation_Icon, 0] = 0;
         }
 
         public override void OnTargeted(Player player, TargetMessage message)

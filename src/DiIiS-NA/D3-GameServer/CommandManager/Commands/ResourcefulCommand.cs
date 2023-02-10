@@ -24,7 +24,7 @@ public class ResourcefulCommand : CommandGroup
 
         player.Attributes.FixedMap.Add(FixedAttribute.Resourceful, (attributes) =>
         {
-            attributes[GameAttribute.Resource_Cur, 1] = 100;
+            attributes[GameAttributes.Resource_Cur, 1] = 100;
         });
 
         player.Attributes.BroadcastChangedIfRevealed();

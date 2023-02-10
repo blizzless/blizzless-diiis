@@ -1,6 +1,5 @@
 ﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
@@ -17,15 +16,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Champion(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.Hitpoints_Max] *= 4.0f;
-			Attributes[GameAttribute.Immune_To_Charm] = true;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 2.5f;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 2.5f;
-			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+			Attributes[GameAttributes.Hitpoints_Max] *= 4.0f;
+			Attributes[GameAttributes.Immune_To_Charm] = true;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] *= 2.5f;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= 2.5f;
+			Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
 			//MonsterAffixGenerator.Generate(this, this.World.Game.Difficulty + 1);
-			Attributes[GameAttribute.Movement_Scalar] = Attributes[GameAttribute.Movement_Scalar] * 0.5f;
-			Attributes[GameAttribute.Run_Speed_Granted] = Attributes[GameAttribute.Run_Speed_Granted] * 0.5f;
-			Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 20f;
+			Attributes[GameAttributes.Movement_Scalar] = Attributes[GameAttributes.Movement_Scalar] * 0.5f;
+			Attributes[GameAttributes.Run_Speed_Granted] = Attributes[GameAttributes.Run_Speed_Granted] * 0.5f;
+			Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 20f;
 			WalkSpeed = 0.3f;
 			NamePrefix = MonsterAffixGenerator.GeneratePrefixName();
 			NameSuffix = MonsterAffixGenerator.GenerateSuffixName();

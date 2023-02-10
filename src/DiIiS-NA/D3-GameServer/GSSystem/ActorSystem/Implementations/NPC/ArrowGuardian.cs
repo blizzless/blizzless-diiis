@@ -23,11 +23,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
             var monsterLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][19760].Data;
             var monsterData = (Monster.Target as MonsterFF);
 
-            Attributes[GameAttribute.Hitpoints_Max] = 99999;
-            Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
-            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-            Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
-            Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
+            Attributes[GameAttributes.Hitpoints_Max] = 99999;
+            Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+            Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
+            Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f;
+            Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 5f;
             WalkSpeed = 0f;  // TODO: this is probably multiplied by something erekose the 0.3 is because he is way too fast otherwise
 
         }
@@ -46,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
             if (!base.Reveal(player))
                 return false;
 
-            Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttributes.TeamID] = 2;
             return true;
         }
 

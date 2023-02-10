@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DiIiS_NA.Core.Extensions;
-using NHibernate.Linq;
 using DiIiS_NA.Core.Logging;
-using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.MPQ.FileFormats;
@@ -1000,14 +998,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public static Item GenerateRandom(ActorSystem.Actor owner)
 		{
 			var itemDefinition = GetRandom(Items.Values
-				.Where(def => def.ItemLevel == owner.Attributes[GameAttribute.Level]).ToList());
+				.Where(def => def.ItemLevel == owner.Attributes[GameAttributes.Level]).ToList());
 			return CreateItem(owner, itemDefinition);
 		}
 
 		public static Item GenerateLegOrSetRandom(ActorSystem.Actor owner)
 		{
 			var itemDefinition = GetLegOrSetRandom(AllowedUniqueItems.Values
-				.Where(def => def.ItemLevel == owner.Attributes[GameAttribute.Level]).ToList());
+				.Where(def => def.ItemLevel == owner.Attributes[GameAttributes.Level]).ToList());
 			return CreateItem(owner, itemDefinition);
 		}
 
@@ -1018,7 +1016,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			int maxQuality = -1, ItemTypeTable type = null, ToonClass ownerClass = ToonClass.Unknown,
 			bool crafted = false, bool canBeUnidentified = true)
 		{
-			if (level < 0) level = owner.Attributes[GameAttribute.Level];
+			if (level < 0) level = owner.Attributes[GameAttributes.Level];
 			int quality = minQuality;
 			//if (quality > 7)
 			//	quality -= 5;
@@ -1107,7 +1105,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public static Item GenerateRandomCraftItem(ActorSystem.Actor player, int level, bool dropRecipe = false)
 		{
-			if (level < 0) level = player.Attributes[GameAttribute.Level];
+			if (level < 0) level = player.Attributes[GameAttributes.Level];
 			ItemTable itemDefinition = null;
 			if (dropRecipe && FastRandom.Instance.Next(100) < 2)
 				itemDefinition = GetRandom(Items.Values
@@ -1146,7 +1144,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			string gemName = GemNames.PickRandom();
 
-			int lvl = Math.Max(player.Attributes[GameAttribute.Level], 20);
+			int lvl = Math.Max(player.Attributes[GameAttributes.Level], 20);
 			int gem_grade = ((lvl - 10) / 8) + 1;
 			if (is_goblin) gem_grade += 2;
 			gemName += string.Format("_{0:00}", gem_grade);
@@ -1305,14 +1303,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public static Item CloneItem(Item originalItem)
 		{
 			Item clonedItem = CreateItem(originalItem.Owner, originalItem.ItemDefinition,
-				originalItem.Attributes[GameAttribute.Item_Quality_Level],
-				originalItem.Attributes[GameAttribute.IsCrafted], originalItem.Attributes[GameAttribute.Seed]);
+				originalItem.Attributes[GameAttributes.Item_Quality_Level],
+				originalItem.Attributes[GameAttributes.IsCrafted], originalItem.Attributes[GameAttributes.Seed]);
 			//clonedItem.AffixList = originalItem.AffixList;
 			//clonedItem.Attributes = originalItem.Attributes;
 
 			AffixGenerator.CloneIntoItem(originalItem, clonedItem);
-			clonedItem.Attributes[GameAttribute.ItemStackQuantityLo] =
-				originalItem.Attributes[GameAttribute.ItemStackQuantityLo];
+			clonedItem.Attributes[GameAttributes.ItemStackQuantityLo] =
+				originalItem.Attributes[GameAttributes.ItemStackQuantityLo];
 			clonedItem.RareItemName = originalItem.RareItemName;
 			clonedItem.Unidentified = originalItem.Unidentified;
 			return clonedItem;
@@ -1345,7 +1343,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				return null;
 			}
 			if (forceQuality == 9)
-				item.Attributes[GameAttribute.Item_Quality_Level] = 9;
+				item.Attributes[GameAttributes.Item_Quality_Level] = 9;
 			if (canBeUnidentified)
 				RandomSetUnidentified(item);
 			return item;
@@ -1373,11 +1371,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			if (definition.Name.ToLower().Contains("unique") ||
 			    definition.Quality is ItemTable.ItemQuality.Legendary or ItemTable.ItemQuality.Special or ItemTable.ItemQuality.Set)
 			{
-				definition.ItemLevel = player.Attributes[GameAttribute.Level];
-				definition.RequiredLevel = player.Attributes[GameAttribute.Level];
-				definition.CrafterRequiredLevel = player.Attributes[GameAttribute.Level];
+				definition.ItemLevel = player.Attributes[GameAttributes.Level];
+				definition.RequiredLevel = player.Attributes[GameAttributes.Level];
+				definition.CrafterRequiredLevel = player.Attributes[GameAttributes.Level];
 				for (int i = 0; i < 6; i++)
-					definition.MaxAffixLevel[i] = player.Attributes[GameAttribute.Level];
+					definition.MaxAffixLevel[i] = player.Attributes[GameAttributes.Level];
 			}
 
 			return CookFromDefinition(player.World, definition);
@@ -1392,11 +1390,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			var item = (Item)Activator.CreateInstance(type,
 				new object[] { world, definition, forceQuality, crafted, seed });
 
-			item.Attributes[GameAttribute.Item_Quality_Level] =
-				Math.Min(item.Attributes[GameAttribute.Item_Quality_Level], 9);
+			item.Attributes[GameAttributes.Item_Quality_Level] =
+				Math.Min(item.Attributes[GameAttributes.Item_Quality_Level], 9);
 
 			if (binded)
-				item.Attributes[GameAttribute.Item_Binding_Level_Override] = 1;
+				item.Attributes[GameAttributes.Item_Binding_Level_Override] = 1;
 
 			return item;
 		}
@@ -1450,7 +1448,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			if (amount > 500) item_name = "Gold4";
 			if (amount > 1000) item_name = "Gold5";
 			var item = Cook(player, item_name);
-			item.Attributes[GameAttribute.Gold] = amount;
+			item.Attributes[GameAttributes.Gold] = amount;
 
 			return item;
 		}
@@ -1458,7 +1456,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public static Item CreateBloodShards(Player player, int amount)
 		{
 			var item = Cook(player, "HoradricRelic");
-			item.Attributes[GameAttribute.ItemStackQuantityLo] = amount;
+			item.Attributes[GameAttributes.ItemStackQuantityLo] = amount;
 
 			return item;
 		}
@@ -1469,7 +1467,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				amount = 10 + ((amount - 10) * 5);
 
 			var item = Cook(player, "HealthGlobe" + amount);
-			item.Attributes[GameAttribute.Health_Globe_Bonus_Health] = amount;
+			item.Attributes[GameAttributes.Health_Globe_Bonus_Health] = amount;
 
 			return item;
 		}
@@ -1513,17 +1511,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			var attributesSer = item.Attributes.Serialize();
 
 			item.DBInventory.Affixes = affixSer;
-			item.DBInventory.DyeType = item.Attributes[GameAttribute.DyeType];
-			item.DBInventory.Count = item.Attributes[GameAttribute.ItemStackQuantityLo];
-			item.DBInventory.Durability = item.Attributes[GameAttribute.Durability_Cur];
-			item.DBInventory.Binding = item.Attributes[GameAttribute.Item_Binding_Level_Override];
+			item.DBInventory.DyeType = item.Attributes[GameAttributes.DyeType];
+			item.DBInventory.Count = item.Attributes[GameAttributes.ItemStackQuantityLo];
+			item.DBInventory.Durability = item.Attributes[GameAttributes.Durability_Cur];
+			item.DBInventory.Binding = item.Attributes[GameAttributes.Item_Binding_Level_Override];
 			item.DBInventory.Rating = item.Rating;
 			item.DBInventory.RareItemName = (item.RareItemName == null ? null : item.RareItemName.ToByteArray());
-			item.DBInventory.Quality = item.Attributes[GameAttribute.Item_Quality_Level];
+			item.DBInventory.Quality = item.Attributes[GameAttributes.Item_Quality_Level];
 			item.DBInventory.Attributes = attributesSer;
 			item.DBInventory.GbId = item.GBHandle.GBID;
 			item.DBInventory.Version = 2;
-			item.DBInventory.TransmogGBID = item.Attributes[GameAttribute.TransmogGBID];
+			item.DBInventory.TransmogGBID = item.Attributes[GameAttributes.TransmogGBID];
 
 			//Logger.Info("ItemFlags: {0}", (int)item.ItemType.Flags);
 
@@ -1539,15 +1537,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			var table = Items[instance.GbId];
 			var itm = new Item(owner.World, table, DeSerializeAffixList(instance.Affixes), instance.Attributes,
 				instance.Count);
-			if (itm.Attributes[GameAttribute.Durability_Max] > 0)
-				itm.Attributes[GameAttribute.Durability_Cur] = instance.Durability;
-			itm.Attributes[GameAttribute.DyeType] = instance.DyeType;
-			itm.Attributes[GameAttribute.TransmogGBID] = instance.TransmogGBID;
+			if (itm.Attributes[GameAttributes.Durability_Max] > 0)
+				itm.Attributes[GameAttributes.Durability_Cur] = instance.Durability;
+			itm.Attributes[GameAttributes.DyeType] = instance.DyeType;
+			itm.Attributes[GameAttributes.TransmogGBID] = instance.TransmogGBID;
 			itm.DBInventory = instance;
 			itm.Unidentified = instance.Unidentified;
 
 			if (instance.Version == 1)
-				itm.Attributes[GameAttribute.IsCrafted] = true;
+				itm.Attributes[GameAttributes.IsCrafted] = true;
 
 			if (!owner.World.DbItems.ContainsKey(owner.World))
 				owner.World.DbItems.Add(owner.World, new List<Item>());
@@ -1569,7 +1567,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				itm.Gems[i].SetInventoryLocation(20, 0, i);
 			}
 
-			itm.Attributes[GameAttribute.Sockets_Filled] = itm.Gems.Count;
+			itm.Attributes[GameAttributes.Sockets_Filled] = itm.Gems.Count;
 
 			if (instance.RareItemName != null)
 				itm.RareItemName = D3.Items.RareItemName.ParseFrom(instance.RareItemName);

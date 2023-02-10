@@ -144,6 +144,6 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 
 		public bool HasSkillWithRune(int skillId, int runeId) => ActiveSkills.Any(s => s.snoSkill == skillId && s.snoRune == runeId);
 		
-		public bool HasItemPassiveProc(int passiveId) => (float)FastRandom.Instance.NextDouble() < Player.Attributes[GameAttribute.Item_Power_Passive, passiveId];
+		public bool HasItemPassiveProc(int passiveId) => (float)FastRandom.Instance.NextDouble() < Player.Attributes[GameAttributes.Item_Power_Passive, passiveId];
 	}
 }

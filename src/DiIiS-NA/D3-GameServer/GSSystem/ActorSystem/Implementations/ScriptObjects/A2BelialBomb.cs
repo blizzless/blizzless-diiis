@@ -2,10 +2,6 @@
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.MessageSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -30,15 +26,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				DamageMin = World.Game.MonsterLevel * 120f;
 
 			float DamageDelta = DamageMin * 0.3f * World.Game.DmgModifier;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = DamageMin * World.Game.DmgModifier;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] = DamageMin * World.Game.DmgModifier;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] = DamageDelta;
 
-			Attributes[GameAttribute.Team_Override] = 2;
-			Attributes[GameAttribute.Untargetable] = true;
-			Attributes[GameAttribute.NPC_Is_Operatable] = false;
-			Attributes[GameAttribute.Operatable] = false;
-			Attributes[GameAttribute.Operatable_Story_Gizmo] = false;
-			Attributes[GameAttribute.Immunity] = true;
+			Attributes[GameAttributes.Team_Override] = 2;
+			Attributes[GameAttributes.Untargetable] = true;
+			Attributes[GameAttributes.NPC_Is_Operatable] = false;
+			Attributes[GameAttributes.Operatable] = false;
+			Attributes[GameAttributes.Operatable_Story_Gizmo] = false;
+			Attributes[GameAttributes.Immunity] = true;
 			Attributes.BroadcastChangedIfRevealed();
 		}
 

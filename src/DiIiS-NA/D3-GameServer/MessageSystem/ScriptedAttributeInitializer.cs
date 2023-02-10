@@ -30,7 +30,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
 
 		#endregion
 
-		public static void ProcessAttributes(GameAttribute[] attributes)
+		public static void ProcessAttributes(ICollection<GameAttribute> attributes)
 		{
 			// build string -> GameAttribute lookup
 			var attributeLookup = attributes.ToDictionary(attr => attr.Name);
@@ -38,25 +38,15 @@ namespace DiIiS_NA.GameServer.MessageSystem
 			var csharpScripts = new Dictionary<GameAttribute, string>();
 
 			// generate C#-compatible source lines from scripts and create attribute dependency lists
-			foreach (GameAttribute attr in attributes)
+			foreach (var attr in attributes.Where(a => !string.IsNullOrEmpty(a.Script)))
 			{
-				// check for valid script in the attribute and select it
-				string script;
-
-				if (attr.ScriptA.Length > 0 && attr.ScriptA != "0")
-					script = attr.ScriptA;
-				else if (attr.ScriptB.Length > 0 && attr.ScriptB != "0")
-					script = attr.ScriptB;
-				else
-					continue;  // no valid script, done processing this attribute
-
 				// by default all scripts are not settable
 				// can be set to true if self-referring identifier is found
 				attr.ScriptedAndSettable = false;
 
 				// replace attribute references with GameAttributeMap lookups
 				// also record all attributes used by script into each attribute's dependency list
-				script = Regex.Replace(script, @"([A-Za-z_]\w*)(\.Agg)?(\#[A-Za-z_]\w*)?(?=[^\(\w]|\z)( \?)?",
+				var script = Regex.Replace(attr.Script, @"([A-Za-z_]\w*)(\.Agg)?(\#[A-Za-z_]\w*)?(?=[^\(\w]|\z)( \?)?",
 					(match) =>
 					{
 						// lookup attribute object
@@ -64,7 +54,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
 						if (!attributeLookup.ContainsKey(identifierName))
 							throw new ScriptedAttributeInitializerError("invalid identifer parsed: " + identifierName);
 
-						GameAttribute identifier = attributeLookup[identifierName];
+						var identifier = attributeLookup[identifierName];
 
 						// key selection
 						int? key = null;
@@ -73,24 +63,19 @@ namespace DiIiS_NA.GameServer.MessageSystem
 
 						if (match.Groups[3].Success)
 						{
-							switch (match.Groups[3].Value.ToUpper())
-							{
-								case "#NONE": key = null; break;
-								case "#PHYSICAL": key = 0; break;
-								case "#FIRE": key = 1; break;
-								case "#LIGHTNING": key = 2; break;
-								case "#COLD": key = 3; break;
-								case "#POISON": key = 4; break;
-								case "#ARCANE": key = 5; break;
-								case "#HOLY": key = 6; break;
-								default:
-									throw new ScriptedAttributeInitializerError("error processing attribute script, invalid key in identifier: " + match.Groups[3].Value);
-							}
-
-							if (key == null)
-								keyString = "null";
-							else
-								keyString = key.ToString();
+                            key = match.Groups[3].Value.ToUpper() switch
+                            {
+                                "#NONE" => null,
+                                "#PHYSICAL" => 0,
+                                "#FIRE" => 1,
+                                "#LIGHTNING" => 2,
+                                "#COLD" => 3,
+                                "#POISON" => 4,
+                                "#ARCANE" => 5,
+                                "#HOLY" => 6,
+                                _ => throw new ScriptedAttributeInitializerError("error processing attribute script, invalid key in identifier: " + match.Groups[3].Value),
+                            };
+                            keyString = (key == null) ? "null" : key.ToString();
 
 							usesExplicitKey = true;
 						}
@@ -104,18 +89,17 @@ namespace DiIiS_NA.GameServer.MessageSystem
 						if (match.Groups[2].Success)
 						{
 							attr.ScriptedAndSettable = true;
-							return "_map._RawGetAttribute(GameAttribute." + identifierName
+							return "_map._RawGetAttribute(GameAttributes." + identifierName
 								+ ", " + keyString + ")" + compare;
 						}
 
 						// record dependency
-						if (identifier.Dependents == null)
-							identifier.Dependents = new List<GameAttributeDependency>();
+						identifier.Dependents ??= new List<GameAttributeDependency>();
 
 						identifier.Dependents.Add(new GameAttributeDependency(attr, key, usesExplicitKey, false));
 
 						// generate normal lookup
-						return "_map[GameAttribute." + identifierName + ", " + keyString + "]" + compare;
+						return "_map[GameAttributes." + identifierName + ", " + keyString + "]" + compare;
 					});
 
 				// transform function calls into C# equivalents
@@ -132,10 +116,19 @@ namespace DiIiS_NA.GameServer.MessageSystem
 
 			// generate and write final C# code to file
 			string sourcePathBase = Path.Combine(Path.GetTempPath(), "DiIiSScriptedAttributeFuncs");
+			var formattedScripts = csharpScripts.Select(
+                // write out full Func static class field
+                s => string.Format(
+					"		public static Func<GameAttributeMap, int?, GameAttributeValue> {0} = (_map, _key) => new GameAttributeValue(({1})({2}));",
+					s.Key.Name,
+                    // select output type cast to ensure it matches attribute type
+                    s.Key is GameAttributeF ? "float" : "int",
+					s.Value
+				)
+            
+			);
 
-			string codeToCompile = "";
-			codeToCompile +=
-
+			var codeToCompile = 
 @"using System;
 using System.Runtime;
 using DiIiS_NA.GameServer.MessageSystem;
@@ -146,20 +139,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.GeneratedCode
 	public class ScriptedAttributeFuncs
 	{
 ";
-			foreach (var scriptEntry in csharpScripts)
-			{
-				// select output type cast to ensure it matches attribute type
-				string castType = scriptEntry.Key is GameAttributeF ? "float" : "int";
-
-				// write out full Func static class field
-				codeToCompile +=
-					string.Format("		public static Func<GameAttributeMap, int?, GameAttributeValue> {0} = (_map, _key) => new GameAttributeValue(({1})({2}));",
-						scriptEntry.Key.Name,
-						castType,
-						scriptEntry.Value
-					);
-			}
-
+			codeToCompile += string.Join("\r\n", formattedScripts);
 			codeToCompile +=
 @"	}
 }

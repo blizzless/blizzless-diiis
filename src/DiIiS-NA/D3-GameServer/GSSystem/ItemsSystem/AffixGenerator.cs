@@ -271,19 +271,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 								//
 
 
-								if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeF)
+								if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
 								{
 									
 									//
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 									if (effect.SNOParam != -1)
 										item.Attributes[attr, effect.SNOParam] += result;
 									else
 										item.Attributes[attr] += result;
 								}
-								else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+								else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 									if (effect.SNOParam != -1)
 										item.Attributes[attr, effect.SNOParam] += (int)result;
 									else
@@ -409,7 +409,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				float maxValue;
 				if (FormulaScript.Evaluate(effect.Formula.ToArray(), item.RandomGenerator, out result, out minValue, out maxValue))
 				{
-					var attribute = GameAttribute.Attributes[effect.AttributeId];
+					var attribute = GameAttributes.Attributes[effect.AttributeId];
 
 					if (effect.AttributeId == 369) continue; //Durability_Max
 					if (effect.AttributeId == 380) //Sockets
@@ -422,23 +422,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					Scores.Add(score);
 					if (attribute is GameAttributeF)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 						if (effect.SNOParam != -1)
 							item.Attributes[attr, effect.SNOParam] += result;
 						else
 							item.Attributes[attr] += result;
 					}
-					else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+					else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 						if (effect.SNOParam != -1)
 							item.Attributes[attr, effect.SNOParam] += (int)result;
 						else
 							item.Attributes[attr] += (int)result;
 					}
-					else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeB)
+					else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeB)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeB;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeB;
 						if (result == 1)
 							item.Attributes[attr] = true;
 						else
@@ -469,22 +469,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					if (effect.AttributeId <= 0)
 						continue;
 
-					var attribute = GameAttribute.Attributes[effect.AttributeId];
+					var attribute = GameAttributes.Attributes[effect.AttributeId];
 
 					if (attribute.ScriptFunc != null && !attribute.ScriptedAndSettable)
 						continue;
 
 					if (attribute is GameAttributeF)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 						if (effect.SNOParam != -1)
 							target.Attributes[attr, effect.SNOParam] = source.Attributes[attr, effect.SNOParam];
 						else
 							target.Attributes[attr] = source.Attributes[attr];
 					}
-					else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+					else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 						if (effect.SNOParam != -1)
 							target.Attributes[attr, effect.SNOParam] = source.Attributes[attr, effect.SNOParam];
 						else

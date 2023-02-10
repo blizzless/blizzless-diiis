@@ -47,8 +47,8 @@ public class InfoCommand : CommandGroup
                     info.Add($"> Class: {playerInWorld.Value.Toon.Class.ToString()}");
                     info.Add($"> Level: {playerInWorld.Value.Toon.Level}");
                     info.Add(
-                        $"> Health: {playerInWorld.Value.Attributes[GameAttribute.Hitpoints_Cur]} / {playerInWorld.Value.Attributes[GameAttribute.Hitpoints_Max]}");
-                    info.Add($"> Damage: {playerInWorld.Value.Attributes[GameAttribute.Damage_Min, 0]}");
+                        $"> Health: {playerInWorld.Value.Attributes[GameAttributes.Hitpoints_Cur]} / {playerInWorld.Value.Attributes[GameAttributes.Hitpoints_Max]}");
+                    info.Add($"> Damage: {playerInWorld.Value.Attributes[GameAttributes.Damage_Min, 0]}");
                     info.Add("");
                 }
 

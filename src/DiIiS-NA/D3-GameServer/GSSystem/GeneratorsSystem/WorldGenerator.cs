@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ;
@@ -412,7 +410,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								RotationW = 0.9021817f,
 								Attributes =
 								{
-									[GameAttribute.Team_Override] = 2
+									[GameAttributes.Team_Override] = 2
 								}
 							};
 						malthaelHire.EnterWorld(new Vector3D(3017.266f, 2851.986f, 24.04533f));
@@ -422,13 +420,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					if (Game.CurrentActEnum == ActEnum.OpenWorld)
 					{
 						var townDoor = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
-						townDoor.Attributes[GameAttribute.Team_Override] = 2;
-						townDoor.Attributes[GameAttribute.Untargetable] = true;
-						townDoor.Attributes[GameAttribute.NPC_Is_Operatable] = false;
-						townDoor.Attributes[GameAttribute.Operatable] = false;
-						townDoor.Attributes[GameAttribute.Operatable_Story_Gizmo] = false;
-						townDoor.Attributes[GameAttribute.Disabled] = true;
-						townDoor.Attributes[GameAttribute.Immunity] = true;
+						townDoor.Attributes[GameAttributes.Team_Override] = 2;
+						townDoor.Attributes[GameAttributes.Untargetable] = true;
+						townDoor.Attributes[GameAttributes.NPC_Is_Operatable] = false;
+						townDoor.Attributes[GameAttributes.Operatable] = false;
+						townDoor.Attributes[GameAttributes.Operatable_Story_Gizmo] = false;
+						townDoor.Attributes[GameAttributes.Disabled] = true;
+						townDoor.Attributes[GameAttributes.Immunity] = true;
 						townDoor.Attributes.BroadcastChangedIfRevealed();
 					}
 					break;
@@ -492,7 +490,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					var leahGhost = world.SpawnMonster(ActorSno._a4dun_aspect_ghost_07, new Vector3D(570f, 570f, 0.1f)) as InteractiveNPC;
 					leahGhost.Conversations.Clear();
 					leahGhost.Conversations.Add(new ConversationInteraction(198600));
-					leahGhost.Attributes[GameAttribute.Conversation_Icon, 0] = 6;
+					leahGhost.Attributes[GameAttributes.Conversation_Icon, 0] = 6;
 					leahGhost.Attributes.BroadcastChangedIfRevealed();
 					break;
 					//428f, 836f, -20.3f
@@ -500,7 +498,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					var zoltunGhost = world.SpawnMonster(ActorSno._a4dun_aspect_ghost_02, new Vector3D(428f, 836f, -2f)) as InteractiveNPC;
 					zoltunGhost.Conversations.Clear();
 					zoltunGhost.Conversations.Add(new ConversationInteraction(198402));
-					zoltunGhost.Attributes[GameAttribute.Conversation_Icon, 0] = 6;
+					zoltunGhost.Attributes[GameAttributes.Conversation_Icon, 0] = 6;
 					zoltunGhost.Attributes.BroadcastChangedIfRevealed();
 					break;
 				case WorldSno.a3dun_ruins_frost_city_a_02:
@@ -518,13 +516,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					//Display only one mystic
 					world.ShowOnlyNumNPC(ActorSno._pt_mystic, 1);
 					var Door = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
-					Door.Attributes[GameAttribute.Team_Override] = 2;
-					Door.Attributes[GameAttribute.Untargetable] = true;
-					Door.Attributes[GameAttribute.NPC_Is_Operatable] = false;
-					Door.Attributes[GameAttribute.Operatable] = false;
-					Door.Attributes[GameAttribute.Operatable_Story_Gizmo] = false;
-					Door.Attributes[GameAttribute.Disabled] = true;
-					Door.Attributes[GameAttribute.Immunity] = true;
+					Door.Attributes[GameAttributes.Team_Override] = 2;
+					Door.Attributes[GameAttributes.Untargetable] = true;
+					Door.Attributes[GameAttributes.NPC_Is_Operatable] = false;
+					Door.Attributes[GameAttributes.Operatable] = false;
+					Door.Attributes[GameAttributes.Operatable_Story_Gizmo] = false;
+					Door.Attributes[GameAttributes.Disabled] = true;
+					Door.Attributes[GameAttributes.Immunity] = true;
 					Door.Attributes.BroadcastChangedIfRevealed();
 					break;
 				case WorldSno.p43_ad_cathedral_level_01: //1st floor of the cathedral (D1 mode)

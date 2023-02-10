@@ -16,7 +16,6 @@ using DiIiS_NA.LoginServer.Toons;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
@@ -84,9 +83,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						{
 							ElementDamages[entry.DamageType] += entry.WeaponDamageMultiplier
 								* (
-									Context.User.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0] + ((int)entry.DamageType.HitEffect > 0 ? Context.User.Attributes[GameAttribute.Damage_Weapon_Min_Total, (int)entry.DamageType.HitEffect] : 0)
+									Context.User.Attributes[GameAttributes.Damage_Weapon_Min_Total, 0] + ((int)entry.DamageType.HitEffect > 0 ? Context.User.Attributes[GameAttributes.Damage_Weapon_Min_Total, (int)entry.DamageType.HitEffect] : 0)
 									+
-									((float)PowerContext.Rand.NextDouble() * (Context.User.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0] + ((int)entry.DamageType.HitEffect > 0 ? Context.User.Attributes[GameAttribute.Damage_Weapon_Delta_Total, (int)entry.DamageType.HitEffect] : 0)))
+									((float)PowerContext.Rand.NextDouble() * (Context.User.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0] + ((int)entry.DamageType.HitEffect > 0 ? Context.User.Attributes[GameAttributes.Damage_Weapon_Delta_Total, (int)entry.DamageType.HitEffect] : 0)))
 								);
 						}
 						else
@@ -97,24 +96,24 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						var dmg_mul = (Context.User as Minion).DamageCoefficient;
 
 						ElementDamages[entry.DamageType] += entry.WeaponDamageMultiplier * dmg_mul * (
-							master.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0] + ((int)entry.DamageType.HitEffect > 0 ? master.Attributes[GameAttribute.Damage_Weapon_Min_Total, (int)entry.DamageType.HitEffect] : 0) +
-							((float)PowerContext.Rand.NextDouble() * (master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0] + ((int)entry.DamageType.HitEffect > 0 ? master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, (int)entry.DamageType.HitEffect] : 0)))
+							master.Attributes[GameAttributes.Damage_Weapon_Min_Total, 0] + ((int)entry.DamageType.HitEffect > 0 ? master.Attributes[GameAttributes.Damage_Weapon_Min_Total, (int)entry.DamageType.HitEffect] : 0) +
+							((float)PowerContext.Rand.NextDouble() * (master.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0] + ((int)entry.DamageType.HitEffect > 0 ? master.Attributes[GameAttributes.Damage_Weapon_Delta_Total, (int)entry.DamageType.HitEffect] : 0)))
 						);
 						break;
 					default:
-						ElementDamages[entry.DamageType] += entry.WeaponDamageMultiplier * (Context.User.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0] + ((float)PowerContext.Rand.NextDouble() * Context.User.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0]));
+						ElementDamages[entry.DamageType] += entry.WeaponDamageMultiplier * (Context.User.Attributes[GameAttributes.Damage_Weapon_Min_Total, 0] + ((float)PowerContext.Rand.NextDouble() * Context.User.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0]));
 						break;
 				}
 				
-				ElementDamages[entry.DamageType] *= 1f + Context.User.Attributes[GameAttribute.Damage_Type_Percent_Bonus, (int)entry.DamageType.HitEffect] + Context.User.Attributes[GameAttribute.Damage_Dealt_Percent_Bonus, (int)entry.DamageType.HitEffect];
+				ElementDamages[entry.DamageType] *= 1f + Context.User.Attributes[GameAttributes.Damage_Type_Percent_Bonus, (int)entry.DamageType.HitEffect] + Context.User.Attributes[GameAttributes.Damage_Dealt_Percent_Bonus, (int)entry.DamageType.HitEffect];
 
-				if (Target.Attributes[GameAttribute.Immunity, (int)entry.DamageType.HitEffect] == true) ElementDamages[entry.DamageType] = 0f; //Immunity
+				if (Target.Attributes[GameAttributes.Immunity, (int)entry.DamageType.HitEffect] == true) ElementDamages[entry.DamageType] = 0f; //Immunity
 
 				switch (Target)
 				{
 					case Player:
-						ElementDamages[entry.DamageType] *= ReductionFromResistance(Target.Attributes[GameAttribute.Resistance_Total, (int)entry.DamageType.HitEffect], Context.User.Attributes[GameAttribute.Level]);
-						ElementDamages[entry.DamageType] *= 1f - Target.Attributes[GameAttribute.Damage_Percent_Reduction_From_Type, (int)entry.DamageType.HitEffect] + Target.Attributes[GameAttribute.Amplify_Damage_Type_Percent, (int)entry.DamageType.HitEffect];
+						ElementDamages[entry.DamageType] *= ReductionFromResistance(Target.Attributes[GameAttributes.Resistance_Total, (int)entry.DamageType.HitEffect], Context.User.Attributes[GameAttributes.Level]);
+						ElementDamages[entry.DamageType] *= 1f - Target.Attributes[GameAttributes.Damage_Percent_Reduction_From_Type, (int)entry.DamageType.HitEffect] + Target.Attributes[GameAttributes.Amplify_Damage_Type_Percent, (int)entry.DamageType.HitEffect];
 						if ((Target as Player).SkillSet.HasPassive(205491) && (int)entry.DamageType.HitEffect != 0)
 							ElementDamages[entry.DamageType] *= 0.8f;
 						if((Target as Player).SkillSet.HasSkill(462239))
@@ -123,44 +122,44 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 										TotalDamage *= 1f - (Target as Player).Revived.Count * 0.03f;
 						break;
 					case Hireling:
-						ElementDamages[entry.DamageType] *= ReductionFromResistance(Target.Attributes[GameAttribute.Resistance_Total, (int)entry.DamageType.HitEffect], Context.User.Attributes[GameAttribute.Level]);
-						ElementDamages[entry.DamageType] *= 1f - Target.Attributes[GameAttribute.Damage_Percent_Reduction_From_Type, (int)entry.DamageType.HitEffect] + Target.Attributes[GameAttribute.Amplify_Damage_Type_Percent, (int)entry.DamageType.HitEffect];
+						ElementDamages[entry.DamageType] *= ReductionFromResistance(Target.Attributes[GameAttributes.Resistance_Total, (int)entry.DamageType.HitEffect], Context.User.Attributes[GameAttributes.Level]);
+						ElementDamages[entry.DamageType] *= 1f - Target.Attributes[GameAttributes.Damage_Percent_Reduction_From_Type, (int)entry.DamageType.HitEffect] + Target.Attributes[GameAttributes.Amplify_Damage_Type_Percent, (int)entry.DamageType.HitEffect];
 						break;
 					case Minion:
-						ElementDamages[entry.DamageType] *= ReductionFromResistance((Target as Minion).Master.Attributes[GameAttribute.Resistance_Total, (int)entry.DamageType.HitEffect], Context.User.Attributes[GameAttribute.Level]);
+						ElementDamages[entry.DamageType] *= ReductionFromResistance((Target as Minion).Master.Attributes[GameAttributes.Resistance_Total, (int)entry.DamageType.HitEffect], Context.User.Attributes[GameAttributes.Level]);
 						break;
 				}
 			}
 
 			TotalDamage = ElementDamages.Sum(kv => kv.Value);
 
-			if (Context.User.Attributes[GameAttribute.God] == true)
+			if (Context.User.Attributes[GameAttributes.God] == true)
 				TotalDamage = 0f;
 
 			// apply critical damage boost
 			if (criticalHit)
 			{
-				TotalDamage *= (1f + Context.User.Attributes[GameAttribute.Crit_Damage_Percent]);
-				if (Context.User is Player player && player.Toon.Class == ToonClass.Wizard && player.Attributes[GameAttribute.Resource_On_Crit, 1] > 0)
+				TotalDamage *= (1f + Context.User.Attributes[GameAttributes.Crit_Damage_Percent]);
+				if (Context.User is Player player && player.Toon.Class == ToonClass.Wizard && player.Attributes[GameAttributes.Resource_On_Crit, 1] > 0)
 					if (FastRandom.Instance.NextDouble() < Context.GetProcCoefficient())
-						(Context.User as Player).GeneratePrimaryResource(Context.User.Attributes[GameAttribute.Resource_On_Crit, 1]);
+						(Context.User as Player).GeneratePrimaryResource(Context.User.Attributes[GameAttributes.Resource_On_Crit, 1]);
 			}
 
-			var targetArmor = target.Attributes[GameAttribute.Armor_Total];
-			var attackerLevel = attackPayload.Context.User.Attributes[GameAttribute.Level];
+			var targetArmor = target.Attributes[GameAttributes.Armor_Total];
+			var attackerLevel = attackPayload.Context.User.Attributes[GameAttributes.Level];
 
 			TotalDamage *= ReductionFromArmor(targetArmor, attackerLevel);
 
 			//this.TotalDamage *= 1f - target.Attributes[GameAttribute.Armor_Bonus_Percent];
 			//this.TotalDamage *= 1f + target.Attributes[GameAttribute.Amplify_Damage_Percent];
 			//this.TotalDamage *= 1f + attackPayload.Context.User.Attributes[GameAttribute.Multiplicative_Damage_Percent_Bonus_No_Pets];
-			TotalDamage *= 1f - attackPayload.Context.User.Attributes[GameAttribute.Damage_Done_Reduction_Percent];
-			TotalDamage *= 1f + Context.User.Attributes[GameAttribute.Power_Damage_Percent_Bonus, attackPayload.Context.PowerSNO];
+			TotalDamage *= 1f - attackPayload.Context.User.Attributes[GameAttributes.Damage_Done_Reduction_Percent];
+			TotalDamage *= 1f + Context.User.Attributes[GameAttributes.Power_Damage_Percent_Bonus, attackPayload.Context.PowerSNO];
 
 			if (PowerMath.Distance2D(Context.User.Position, Target.Position) < 6f)
-				TotalDamage *= 1f - Target.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee];
+				TotalDamage *= 1f - Target.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee];
 			else
-				TotalDamage *= 1f - Target.Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged];
+				TotalDamage *= 1f - Target.Attributes[GameAttributes.Damage_Percent_Reduction_From_Ranged];
 
 			DominantDamageType = ElementDamages.OrderByDescending(kv => kv.Value).FirstOrDefault().Key;
 			if (DominantDamageType == null) DominantDamageType = DamageType.Physical;
@@ -172,7 +171,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					{
 						TotalDamage = TotalDamage * (1 + (plr.PrimaryAttribute / 100f));
 						if (FastRandom.Instance.NextDouble() < Context.GetProcCoefficient())
-							plr.GeneratePrimaryResource(plr.Attributes[GameAttribute.Resource_On_Hit]);
+							plr.GeneratePrimaryResource(plr.Attributes[GameAttributes.Resource_On_Hit]);
 
 						switch (plr.Toon.Class)
 						{
@@ -192,11 +191,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 									plr.World.BuffManager.AddBuff(plr, plr, new VisionQuestBuff());
 
 								if (FastRandom.Instance.NextDouble() < Context.GetProcCoefficient())
-									plr.GeneratePrimaryResource(plr.Attributes[GameAttribute.Resource_On_Hit, 0]);
+									plr.GeneratePrimaryResource(plr.Attributes[GameAttributes.Resource_On_Hit, 0]);
 								break;
 							case ToonClass.Barbarian:
 								if (plr.SkillSet.HasPassive(205187))
-									if (plr.Attributes[GameAttribute.Resource_Max_Total, 2] == plr.Attributes[GameAttribute.Resource_Cur, 2])
+									if (plr.Attributes[GameAttributes.Resource_Max_Total, 2] == plr.Attributes[GameAttributes.Resource_Cur, 2])
 										TotalDamage *= 1.25f;
 
 								if (plr.SkillSet.HasPassive(205133))
@@ -204,7 +203,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 										TotalDamage *= 1.2f;
 
 								if (plr.SkillSet.HasPassive(205175))
-									if (Target.Attributes[GameAttribute.Hitpoints_Cur] < (Target.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.3f))
+									if (Target.Attributes[GameAttributes.Hitpoints_Cur] < (Target.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.3f))
 										TotalDamage *= 1.4f;
 								break;
 							case ToonClass.DemonHunter:
@@ -213,14 +212,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 										TotalDamage *= 1.2f;
 
 								if (plr.SkillSet.HasPassive(352920)) 
-									if (Target.Attributes[GameAttribute.Hitpoints_Cur] > (Target.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.75f))
+									if (Target.Attributes[GameAttributes.Hitpoints_Cur] > (Target.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.75f))
 										TotalDamage *= 1.4f;
 
 								if (plr.SkillSet.HasPassive(218350) && criticalHit) 
 									if (FastRandom.Instance.NextDouble() < Context.GetProcCoefficient())
 										plr.GenerateSecondaryResource(1f);
 
-								if (plr.SkillSet.HasPassive(155721) && Target.Attributes[GameAttribute.Slow])
+								if (plr.SkillSet.HasPassive(155721) && Target.Attributes[GameAttributes.Slow])
 									TotalDamage *= 1.20f;
 
 								if (plr.SkillSet.HasPassive(155725))
@@ -257,7 +256,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 									plr.World.BuffManager.AddBuff(Context.User, Target, new ArmorReduceDebuff(0.1f, TickTimer.WaitSeconds(plr.World.Game, 3f)));
 
 								if (plr.SkillSet.HasPassive(226301)) //ColdBlooded (Wizard)
-									if (Target.Attributes[GameAttribute.Frozen] || Target.Attributes[GameAttribute.Chilled])
+									if (Target.Attributes[GameAttributes.Frozen] || Target.Attributes[GameAttributes.Chilled])
 										TotalDamage *= 1.1f;
 
 								if (plr.SkillSet.HasPassive(208471)) //GlassCannon (Wizard)
@@ -377,34 +376,34 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						
 						if (Target is Monster monster) 
 						{
-							TotalDamage *= 1 + plr.Attributes[GameAttribute.Damage_Percent_Bonus_Vs_Monster_Type, monster.MonsterType];
+							TotalDamage *= 1 + plr.Attributes[GameAttributes.Damage_Percent_Bonus_Vs_Monster_Type, monster.MonsterType];
 
 							if (monster.Quality > 0) 
-								TotalDamage *= 1 + plr.Attributes[GameAttribute.Damage_Percent_Bonus_Vs_Elites];
+								TotalDamage *= 1 + plr.Attributes[GameAttributes.Damage_Percent_Bonus_Vs_Elites];
 
 							if (attackPayload.Targets.Actors.Count == 1 && !(attackPayload.Context is Buff) && attackPayload.AutomaticHitEffects)
 							{
 								float procCoeff = Context.GetProcCoefficient();
 
-								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttribute.On_Hit_Fear_Proc_Chance] * procCoeff)
+								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttributes.On_Hit_Fear_Proc_Chance] * procCoeff)
 									plr.World.BuffManager.AddBuff(plr, monster, new DebuffFeared(TickTimer.WaitSeconds(plr.World.Game, 1.5f)));
 
-								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttribute.On_Hit_Stun_Proc_Chance] * procCoeff)
+								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttributes.On_Hit_Stun_Proc_Chance] * procCoeff)
 									plr.World.BuffManager.AddBuff(plr, monster, new DebuffStunned(TickTimer.WaitSeconds(plr.World.Game, 1.5f)));
 
-								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttribute.On_Hit_Blind_Proc_Chance] * procCoeff)
+								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttributes.On_Hit_Blind_Proc_Chance] * procCoeff)
 									plr.World.BuffManager.AddBuff(plr, monster, new DebuffBlind(TickTimer.WaitSeconds(plr.World.Game, 1.5f)));
 
-								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttribute.On_Hit_Freeze_Proc_Chance] * procCoeff)
+								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttributes.On_Hit_Freeze_Proc_Chance] * procCoeff)
 									plr.World.BuffManager.AddBuff(plr, monster, new DebuffFrozen(TickTimer.WaitSeconds(plr.World.Game, 1.5f)));
 
-								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttribute.On_Hit_Chill_Proc_Chance] * procCoeff)
+								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttributes.On_Hit_Chill_Proc_Chance] * procCoeff)
 									plr.World.BuffManager.AddBuff(plr, monster, new DebuffChilled(0.3f, TickTimer.WaitSeconds(plr.World.Game, 2f)));
 
-								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttribute.On_Hit_Slow_Proc_Chance] * procCoeff)
+								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttributes.On_Hit_Slow_Proc_Chance] * procCoeff)
 									plr.World.BuffManager.AddBuff(plr, monster, new DebuffSlowed(0.3f, TickTimer.WaitSeconds(plr.World.Game, 2f)));
 
-								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttribute.On_Hit_Knockback_Proc_Chance] * procCoeff)
+								if (FastRandom.Instance.NextDouble() < plr.Attributes[GameAttributes.On_Hit_Knockback_Proc_Chance] * procCoeff)
 									plr.World.BuffManager.AddBuff(plr, monster, new KnockbackBuff(3f));
 							}
 
@@ -413,7 +412,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					break;
 				case Minion mn:
 					TotalDamage *= (1 + (mn.PrimaryAttribute / 100f));
-					TotalDamage *= mn.Master.Attributes[GameAttribute.Attacks_Per_Second_Total];
+					TotalDamage *= mn.Master.Attributes[GameAttributes.Attacks_Per_Second_Total];
 
 					if (mn.Master is Player mstr)
 					{
@@ -436,7 +435,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				//check for passives here (incoming damage)
 				case Player playerTarget:
 				{
-					if (!playerTarget.Attributes[GameAttribute.Cannot_Dodge] && FastRandom.Instance.NextDouble() < playerTarget.DodgeChance)
+					if (!playerTarget.Attributes[GameAttributes.Cannot_Dodge] && FastRandom.Instance.NextDouble() < playerTarget.DodgeChance)
 						IsDodged = true;
 
 					switch (playerTarget.Toon.Class)
@@ -469,7 +468,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 								if (FastRandom.Instance.NextDouble() < Context.GetProcCoefficient())
 									playerTarget.GeneratePrimaryResource(2f);
 
-							if (playerTarget.SkillSet.HasPassive(205398) && (playerTarget.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage) < (playerTarget.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.2f)) //Relentless (barbarian)
+							if (playerTarget.SkillSet.HasPassive(205398) && (playerTarget.Attributes[GameAttributes.Hitpoints_Cur] - TotalDamage) < (playerTarget.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.2f)) //Relentless (barbarian)
 								TotalDamage *= 0.5f;
 							break;
 						}
@@ -479,14 +478,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							if (playerTarget.SkillSet.HasPassive(208471)) //GlassCannon (Wizard)
 								TotalDamage *= 1.1f;
 
-							if (playerTarget.SkillSet.HasPassive(208547) && TotalDamage > (playerTarget.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.15f)) //Illusionist (Wizard)
+							if (playerTarget.SkillSet.HasPassive(208547) && TotalDamage > (playerTarget.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.15f)) //Illusionist (Wizard)
 							{
 								foreach (var cdBuff in playerTarget.World.BuffManager.GetBuffs<CooldownBuff>(playerTarget))
 									if (cdBuff.TargetPowerSNO == 1769 || cdBuff.TargetPowerSNO == 168344)
 										cdBuff.Remove();
 							}
 
-							if (playerTarget.SkillSet.HasPassive(208474) && (playerTarget.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage) <= 0) //UnstableAnomaly (wizard)
+							if (playerTarget.SkillSet.HasPassive(208474) && (playerTarget.Attributes[GameAttributes.Hitpoints_Cur] - TotalDamage) <= 0) //UnstableAnomaly (wizard)
 							{
 								if (playerTarget.World.BuffManager.GetFirstBuff<UnstableAnomalyCooldownBuff>(playerTarget) == null)
 								{
@@ -527,7 +526,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 							if (playerTarget.World.BuffManager.HasBuff<CrusaderAkaratChampion.AkaratBuff>(playerTarget))  //AkaratChampion resurrect once
 								if (playerTarget.World.BuffManager.GetFirstBuff<CrusaderAkaratChampion.AkaratBuff>(playerTarget).resurrectActive)
-									if ((playerTarget.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage) <= 0)
+									if ((playerTarget.Attributes[GameAttributes.Hitpoints_Cur] - TotalDamage) <= 0)
 									{
 										playerTarget.World.BuffManager.GetFirstBuff<CrusaderAkaratChampion.AkaratBuff>(playerTarget).resurrectActive = false;
 										playerTarget.AddPercentageHP(100);
@@ -549,8 +548,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				{
 					var plr = playerOwner;
 
-					var masterArmor = plr.Attributes[GameAttribute.Armor_Total];
-					var attackLevel = attackPayload.Context.User.Attributes[GameAttribute.Level];
+					var masterArmor = plr.Attributes[GameAttributes.Armor_Total];
+					var attackLevel = attackPayload.Context.User.Attributes[GameAttributes.Level];
 
 					TotalDamage *= ReductionFromArmor(masterArmor, attackLevel);
 
@@ -569,11 +568,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		private void CheckItemProcs(Player user)
 		{
-			if (Math.Abs(user.Attributes[GameAttribute.Item_Power_Passive, 247724] - 1) < Globals.FLOAT_TOLERANCE && FastRandom.Instance.NextDouble() < 0.2)
+			if (Math.Abs(user.Attributes[GameAttributes.Item_Power_Passive, 247724] - 1) < Globals.FLOAT_TOLERANCE && FastRandom.Instance.NextDouble() < 0.2)
 			{
 				user.PlayEffectGroup(247770);
 			}
-			if (Math.Abs(user.Attributes[GameAttribute.Item_Power_Passive, 245741] - 1) < Globals.FLOAT_TOLERANCE && FastRandom.Instance.NextDouble() < 0.2)
+			if (Math.Abs(user.Attributes[GameAttributes.Item_Power_Passive, 245741] - 1) < Globals.FLOAT_TOLERANCE && FastRandom.Instance.NextDouble() < 0.2)
 			{
 				user.PlayEffectGroup(245747);
 			}
@@ -590,7 +589,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (!Target.Visible)
 				return;
 
-			if ((Target.Attributes[GameAttribute.Invulnerable] || Target.Attributes[GameAttribute.Immunity]) && Target.World != null)
+			if ((Target.Attributes[GameAttributes.Invulnerable] || Target.Attributes[GameAttributes.Immunity]) && Target.World != null)
 			{
 				if (Target is not Minion)
 					Target.World.BroadcastIfRevealed(plr => new FloatingNumberMessage()
@@ -641,9 +640,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					}
 					plr.DodgesInARow = 0;
 
-					if (FastRandom.Instance.NextDouble() < playerActor.Attributes[GameAttribute.Block_Chance_Capped_Total])
+					if (FastRandom.Instance.NextDouble() < playerActor.Attributes[GameAttributes.Block_Chance_Capped_Total])
 					{
-						TotalDamage -= (float)FastRandom.Instance.NextDouble((double)playerActor.Attributes[GameAttribute.Block_Amount_Total_Min], (double)playerActor.Attributes[GameAttribute.Block_Amount_Total_Max]);
+						TotalDamage -= (float)FastRandom.Instance.NextDouble((double)playerActor.Attributes[GameAttributes.Block_Amount_Total_Min], (double)playerActor.Attributes[GameAttributes.Block_Amount_Total_Max]);
 						if (TotalDamage < 0f) TotalDamage = 0f;
 						playerActor.World.BroadcastIfRevealed(plr3 => new FloatingNumberMessage()
 						{
@@ -689,22 +688,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (Context.User is Player player)
 			{
 				CheckItemProcs(player);
-				if (player.Attributes[GameAttribute.Steal_Health_Percent] > 0)
-					player.AddHP(TotalDamage * Context.User.Attributes[GameAttribute.Steal_Health_Percent]);
-				if (Context.User.Attributes[GameAttribute.Hitpoints_On_Hit] > 0)
-					player.AddHP(Context.User.Attributes[GameAttribute.Hitpoints_On_Hit]);
+				if (player.Attributes[GameAttributes.Steal_Health_Percent] > 0)
+					player.AddHP(TotalDamage * Context.User.Attributes[GameAttributes.Steal_Health_Percent]);
+				if (Context.User.Attributes[GameAttributes.Hitpoints_On_Hit] > 0)
+					player.AddHP(Context.User.Attributes[GameAttributes.Hitpoints_On_Hit]);
 				if (IsCriticalHit)
 					if (player.Toon.Class == ToonClass.Wizard)
 						if (FastRandom.Instance.NextDouble() < Context.GetProcCoefficient())
-							player.GeneratePrimaryResource(Context.User.Attributes[GameAttribute.Resource_On_Hit, 1]);
+							player.GeneratePrimaryResource(Context.User.Attributes[GameAttributes.Resource_On_Hit, 1]);
 			}
 
 			if (Context.User is Hireling hireling)
 			{
-				if (hireling.Attributes[GameAttribute.Steal_Health_Percent] > 0)
-					hireling.AddHP(TotalDamage * hireling.Attributes[GameAttribute.Steal_Health_Percent]);
-				if (hireling.Attributes[GameAttribute.Hitpoints_On_Hit] > 0)
-					hireling.AddHP(hireling.Attributes[GameAttribute.Hitpoints_On_Hit]);
+				if (hireling.Attributes[GameAttributes.Steal_Health_Percent] > 0)
+					hireling.AddHP(TotalDamage * hireling.Attributes[GameAttributes.Steal_Health_Percent]);
+				if (hireling.Attributes[GameAttributes.Hitpoints_On_Hit] > 0)
+					hireling.AddHP(hireling.Attributes[GameAttributes.Hitpoints_On_Hit]);
 			}
 			
 			// make player damage red, all other damage white
@@ -746,8 +745,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}
 
 			// update hp
-			float newHp = Math.Max(Target.Attributes[GameAttribute.Hitpoints_Cur] - TotalDamage, 0f);
-			Target.Attributes[GameAttribute.Hitpoints_Cur] = newHp;
+			float newHp = Math.Max(Target.Attributes[GameAttributes.Hitpoints_Cur] - TotalDamage, 0f);
+			Target.Attributes[GameAttributes.Hitpoints_Cur] = newHp;
 			Target.Attributes.BroadcastChangedIfRevealed();
 
 			//thorns

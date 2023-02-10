@@ -3,11 +3,6 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 {
@@ -22,14 +17,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 			CollFlags = 0;
 			WalkSpeed = 0;
 
-			Attributes[GameAttribute.Movement_Scalar] = 0f;
-			Attributes[GameAttribute.Run_Speed_Granted] = 0f;
+			Attributes[GameAttributes.Movement_Scalar] = 0f;
+			Attributes[GameAttributes.Run_Speed_Granted] = 0f;
 			Spawner = true;
-			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttributes.Invulnerable] = true;
 
 			CollFlags = 0;
 			WalkSpeed = 0;
-			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttributes.Invulnerable] = true;
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			//(Brain as MonsterBrain).AddPresetPower(96925);
 			(Brain as MonsterBrain).AddPresetPower(223284);

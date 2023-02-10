@@ -17,7 +17,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 			foreach (var Tyr in world.GetActorsBySNO(ActorSno._x1_tyrael_hurt))
 			{
 				(Tyr as ActorSystem.InteractiveNPC).Conversations.Clear();
-				Tyr.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+				Tyr.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 				Tyr.Attributes.BroadcastChangedIfRevealed();
 				AddQuestConversation(Tyr, 252100);
 			}

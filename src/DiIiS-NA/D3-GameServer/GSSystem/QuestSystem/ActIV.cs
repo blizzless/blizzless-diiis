@@ -1,8 +1,6 @@
 ﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using System.Linq;
 using System;
@@ -38,7 +36,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					var Tyrael = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).GetActorBySNO(ActorSno._tyrael) as InteractiveNPC;
 					Tyrael.Conversations.Clear();
 					Tyrael.OverridedConv = true;
-					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+					Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
 					Tyrael.SetUsable(false);
 					ListenProximity(ActorSno._tyrael, new LaunchConversation(195607));
@@ -62,7 +60,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 							Tyrael.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(112449));
 							Tyrael.OverridedConv = true;
 							Tyrael.SetUsable(true);
-							Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+							Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 							Tyrael.Attributes.BroadcastChangedIfRevealed();
 							//StartConversation(this.Game.GetWorld(182944), 112449);
 						}
@@ -158,7 +156,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					Ityrael.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(112763));
 					Ityrael.OverridedConv = true;
 					Ityrael.SetUsable(true);
-					Ityrael.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+					Ityrael.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 					Ityrael.Attributes.BroadcastChangedIfRevealed();
 
 					ListenConversation(112763, new Advance());
@@ -175,7 +173,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					if (Game.Empty) UnlockTeleport(3);
 					var Ityrael = Game.GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight).GetActorBySNO(ActorSno._fate) as InteractiveNPC;
 					Ityrael.Conversations.Clear();
-					Ityrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+					Ityrael.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 					Ityrael.Attributes.BroadcastChangedIfRevealed();
 
 					ListenTeleport(109514, new Advance());
@@ -212,9 +210,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						ExitPortal.Hidden = true;
 						ExitPortal.SetVisible(false);
 
-						Hope_Bound.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
-						Hope_Bound.Attributes[GameAttribute.Gizmo_State] = 1;
-						Hope_Bound.Attributes[GameAttribute.Untargetable] = true;
+						Hope_Bound.Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
+						Hope_Bound.Attributes[GameAttributes.Gizmo_State] = 1;
+						Hope_Bound.Attributes[GameAttributes.Untargetable] = true;
 						Hope_Bound.Attributes.BroadcastChangedIfRevealed();
 
 						foreach (var plr in Library.Players.Values)
@@ -236,9 +234,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					StartConversation(Library, 217223); // Голос дъябло после битвы
 
 					var Hope_Bound = Library.GetActorBySNO(ActorSno._a4dunspire_interactives_hope_bound);
-					Hope_Bound.Attributes[GameAttribute.Gizmo_Has_Been_Operated] = false;
-					Hope_Bound.Attributes[GameAttribute.Gizmo_State] = 0;
-					Hope_Bound.Attributes[GameAttribute.Untargetable] = false;
+					Hope_Bound.Attributes[GameAttributes.Gizmo_Has_Been_Operated] = false;
+					Hope_Bound.Attributes[GameAttributes.Gizmo_State] = 0;
+					Hope_Bound.Attributes[GameAttributes.Untargetable] = false;
 					Hope_Bound.Attributes.BroadcastChangedIfRevealed();
 
 					ListenInteract(ActorSno._a4dunspire_interactives_hope_bound, 1, new Advance());
@@ -260,10 +258,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     Hope.PlayAnimation(11, AnimationSno.omninpc_female_hope_spawn_01, 1);
                     Fate.PlayAnimation(11, AnimationSno.omninpc_male_fate_spawn_01, 1);
 
-					Hope.Attributes[GameAttribute.MinimapActive] = true;
+					Hope.Attributes[GameAttributes.MinimapActive] = true;
                     (Hope as InteractiveNPC).Conversations.Clear();
                     (Hope as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(114124));
-                    Hope.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+                    Hope.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 					(Hope as InteractiveNPC).OverridedConv = true;
 					Hope.Attributes.BroadcastChangedIfRevealed();
 
@@ -282,7 +280,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					var Library = Game.GetWorld(WorldSno.a4dun_libraryoffate);
 					var Hope = Library.GetActorBySNO(ActorSno._hope, true);
 					(Hope as InteractiveNPC).Conversations.Clear();
-					Hope.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+					Hope.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 					(Hope as InteractiveNPC).OverridedConv = true;
 					Hope.Attributes.BroadcastChangedIfRevealed();
 					var ExitPortal = Library.GetActorBySNO(ActorSno._g_portal_heaventeal);
@@ -393,10 +391,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					
 					var Garden = Game.GetWorld(WorldSno.a4dun_garden_of_hope_random);
 					var Tyrael = Garden.GetActorBySNO(ActorSno._tyrael_heaven_spire);
-					Tyrael.Attributes[GameAttribute.MinimapActive] = true;
+					Tyrael.Attributes[GameAttributes.MinimapActive] = true;
 					(Tyrael as InteractiveNPC).Conversations.Clear();
 					(Tyrael as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(114131));
-					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+					Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 					(Tyrael as InteractiveNPC).OverridedConv = true;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
 					ListenConversation(114131, new Advance());
@@ -450,7 +448,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						foreach (var mob in CrystalWorld.GetActorsBySNO(ActorSno._bigred_a))
 						{
 							(mob as Monster).Brain.DeActivate();
-							mob.Attributes[GameAttribute.Untargetable] = true;
+							mob.Attributes[GameAttributes.Untargetable] = true;
 						}
 						script = new ImperiumScene();
 						script.Execute(CrystalWorld);

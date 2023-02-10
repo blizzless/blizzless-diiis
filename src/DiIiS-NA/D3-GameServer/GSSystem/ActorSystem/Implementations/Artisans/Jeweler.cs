@@ -19,7 +19,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
 		public void OnAddSocket(Player player, Item item)
 		{
 			// TODO: Animate Jeweler? Who knows. /fasbat
-			item.Attributes[GameAttribute.Sockets] += 1;
+			item.Attributes[GameAttributes.Sockets] += 1;
 			// Why this not work? :/
 			item.Attributes.SendChangedMessage(player.InGameClient);
 		}

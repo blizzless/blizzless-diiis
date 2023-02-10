@@ -71,15 +71,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			Timeout = new SecondsTickTimer(context.World.Game, 3f);
 
 			// copy in important effect params from user
-			Attributes[GameAttribute.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_A, context.PowerSNO];
-			Attributes[GameAttribute.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_B, context.PowerSNO];
-			Attributes[GameAttribute.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_C, context.PowerSNO];
-			Attributes[GameAttribute.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_D, context.PowerSNO];
-			Attributes[GameAttribute.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_E, context.PowerSNO];
+			Attributes[GameAttributes.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_A, context.PowerSNO];
+			Attributes[GameAttributes.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_B, context.PowerSNO];
+			Attributes[GameAttributes.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_C, context.PowerSNO];
+			Attributes[GameAttributes.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_D, context.PowerSNO];
+			Attributes[GameAttributes.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_E, context.PowerSNO];
 
 
-			if (Context.User.Attributes[GameAttribute.Displays_Team_Effect] == true)
-				Attributes[GameAttribute.Displays_Team_Effect] = true;
+			if (Context.User.Attributes[GameAttributes.Displays_Team_Effect] == true)
+				Attributes[GameAttributes.Displays_Team_Effect] = true;
 
 			_prevUpdatePosition = null;
 			_launchPosition = null;
@@ -95,20 +95,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			_prevUpdatePosition = Position;
 			_launchPosition = Position;
 
-			Attributes[GameAttribute.Projectile_Speed] = speed * 0.75f;
+			Attributes[GameAttributes.Projectile_Speed] = speed * 0.75f;
 
 			TranslateFacing(targetPosition, true);
 			targetPosition = new Vector3D(targetPosition);
 			//targetPosition.Z = this.Context.User.Position.Z + 5f + this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
 			targetPosition.Z += ActorData.Cylinder.Ax1 - ActorData.Cylinder.Position.Z;
 
-			if (Attributes[GameAttribute.Projectile_Speed] <= 0)
+			if (Attributes[GameAttributes.Projectile_Speed] <= 0)
 			{
 				Destroy();
 				return;
 			}
 
-			Attributes[GameAttribute.DestroyWhenPathBlocked] = true;
+			Attributes[GameAttributes.DestroyWhenPathBlocked] = true;
 
 			if (!_spawned)
 			{
@@ -116,9 +116,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				_spawned = true;
 			}
 
-			_lastSpeed = Attributes[GameAttribute.Projectile_Speed];
+			_lastSpeed = Attributes[GameAttributes.Projectile_Speed];
 
-			_mover.MoveFixed(targetPosition, Attributes[GameAttribute.Projectile_Speed], new MessageSystem.Message.Definitions.ACD.ACDTranslateFixedMessage
+			_mover.MoveFixed(targetPosition, Attributes[GameAttributes.Projectile_Speed], new MessageSystem.Message.Definitions.ACD.ACDTranslateFixedMessage
 			{
 				MoveFlags = 0x7fffffff,
 				AnimationTag = AnimationSetKeys.IdleDefault.ID,
@@ -134,7 +134,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			_prevUpdatePosition = Position;
 			_launchPosition = Position;
 
-			Attributes[GameAttribute.Projectile_Speed] = speed * 0.75f;
+			Attributes[GameAttributes.Projectile_Speed] = speed * 0.75f;
 
 			TranslateFacing(targetPosition, true);
 			targetPosition = new Vector3D(targetPosition);
@@ -142,13 +142,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			
 			targetPosition.Z += ActorData.Cylinder.Ax1 - ActorData.Cylinder.Position.Z;
 
-			if (Attributes[GameAttribute.Projectile_Speed] <= 0)
+			if (Attributes[GameAttributes.Projectile_Speed] <= 0)
 			{
 				Destroy();
 				return;
 			}
 
-			Attributes[GameAttribute.DestroyWhenPathBlocked] = true;
+			Attributes[GameAttributes.DestroyWhenPathBlocked] = true;
 
 			if (!_spawned)
 			{
@@ -156,9 +156,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				_spawned = true;
 			}
 
-			_lastSpeed = Attributes[GameAttribute.Projectile_Speed];
+			_lastSpeed = Attributes[GameAttributes.Projectile_Speed];
 
-			_mover.MoveFixed(targetPosition, Attributes[GameAttribute.Projectile_Speed], new MessageSystem.Message.Definitions.ACD.ACDTranslateFixedMessage
+			_mover.MoveFixed(targetPosition, Attributes[GameAttributes.Projectile_Speed], new MessageSystem.Message.Definitions.ACD.ACDTranslateFixedMessage
 			{
 				MoveFlags = 0x7fffffff,
 				AnimationTag = AnimationSetKeys.IdleDefault.ID,
@@ -175,19 +175,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			_prevUpdatePosition = Position;
 			_launchPosition = Position;
 
-			Attributes[GameAttribute.Projectile_Speed] = speed;
+			Attributes[GameAttributes.Projectile_Speed] = speed;
 
 			//targetPosition = new Vector3D(targetPosition);
 			//targetPosition.Z = this.Context.User.Position.Z + 5f + this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
 			//targetPosition.Z += this.ActorData.Cylinder.Ax1 - this.ActorData.Cylinder.Position.Z;
 
-			if (Attributes[GameAttribute.Projectile_Speed] <= 0)
+			if (Attributes[GameAttributes.Projectile_Speed] <= 0)
 			{
 				Destroy();
 				return;
 			}
 
-			Attributes[GameAttribute.DestroyWhenPathBlocked] = false;
+			Attributes[GameAttributes.DestroyWhenPathBlocked] = false;
 
 			if (!_spawned)
 			{
@@ -195,9 +195,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				_spawned = true;
 			}
 
-			_lastSpeed = Attributes[GameAttribute.Projectile_Speed];
+			_lastSpeed = Attributes[GameAttributes.Projectile_Speed];
 
-			_mover.MoveCircle(centerPosition, radius, Attributes[GameAttribute.Projectile_Speed], duration, new MessageSystem.Message.Definitions.ACD.ACDTranslateDetPathSpiralMessage
+			_mover.MoveCircle(centerPosition, radius, Attributes[GameAttributes.Projectile_Speed], duration, new MessageSystem.Message.Definitions.ACD.ACDTranslateDetPathSpiralMessage
 			{
 				AnimTag = AnimationSetKeys.IdleDefault.ID
 			});
@@ -340,11 +340,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 			// gotta make sure the actor hasn't been deleted after processing each handler
 
-			if (_lastSpeed != Attributes[GameAttribute.Projectile_Speed])
+			if (_lastSpeed != Attributes[GameAttributes.Projectile_Speed])
 			{
 				if (_mover.IsFixedMove())
 				{
-					Launch(_mover.GetDestination(), Attributes[GameAttribute.Projectile_Speed]);
+					Launch(_mover.GetDestination(), Attributes[GameAttributes.Projectile_Speed]);
 					return;
 				}
 			}

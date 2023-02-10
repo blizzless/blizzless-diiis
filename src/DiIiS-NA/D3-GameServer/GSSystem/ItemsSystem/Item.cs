@@ -1,12 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
@@ -45,10 +42,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public bool Unidentified
         {
-            get => Attributes[GameAttribute.Unidentified];
+            get => Attributes[GameAttributes.Unidentified];
             set 
             { 
-                Attributes[GameAttribute.Unidentified] = value;
+                Attributes[GameAttributes.Unidentified] = value;
                 if (DBInventory is {} dbInventory) dbInventory.Unidentified = value;
             }
         }
@@ -88,8 +85,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public override int Quality
         {
-            get => Attributes[GameAttribute.Item_Quality_Level];
-            set => Attributes[GameAttribute.Item_Quality_Level] = value;
+            get => Attributes[GameAttributes.Item_Quality_Level];
+            set => Attributes[GameAttributes.Item_Quality_Level] = value;
         }
 
         public SNOHandle SnoFlippyActory =>
@@ -137,19 +134,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             GBHandle.GBID = definition.Hash;
             SetInitialValues(definition);
             Attributes.FillBySerialized(serializedGameAttributeMap);
-            if (Attributes[GameAttribute.Seed] == 0)
+            if (Attributes[GameAttributes.Seed] == 0)
             {
-                Attributes[GameAttribute.Seed] = FastRandom.Instance.Next();
+                Attributes[GameAttributes.Seed] = FastRandom.Instance.Next();
                 //this.Attributes[GameAttribute.Seed] = 0;
-                Attributes[GameAttribute.Item_Quality_Level] = 1;
-                Attributes[GameAttribute.TeamID] = 0;
+                Attributes[GameAttributes.Item_Quality_Level] = 1;
+                Attributes[GameAttributes.TeamID] = 0;
             }
             //for (int i = 50; i < 60; i++)
             //Attributes[GameAttribute.Requirement, 57] = 10;
 
 
-            Attributes[GameAttribute.ItemStackQuantityLo] = count;
-            Attributes[GameAttribute.Loot_2_0_Drop] = true;
+            Attributes[GameAttributes.ItemStackQuantityLo] = count;
+            Attributes[GameAttributes.Loot_2_0_Drop] = true;
             AffixList.Clear();
             AffixList.AddRange(affixList);
             //this.Attributes[GameAttribute.EnchantAffix] = -758203990;
@@ -165,18 +162,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                     ? definition.RequiredLevel - 1
                     : definition.RequiredLevel;
                 var level = Math.Max(AffixList.Any() ? AffixList.Select(a => a.ItemLevel).Max() : 0, reqLevel);
-                Attributes[GameAttribute.Requirement, 57] =
-                    Math.Max(level - Attributes[GameAttribute.Item_Level_Requirement_Reduction], 0);
+                Attributes[GameAttributes.Requirement, 57] =
+                    Math.Max(level - Attributes[GameAttributes.Item_Level_Requirement_Reduction], 0);
             }
 
             if (AffixList.Count > 0)
             {
-                if (Math.Abs(Attributes[GameAttribute.Requirement, 57] - AffixList[0].Definition.OverrideLevelReq) > 0.001 &&
+                if (Math.Abs(Attributes[GameAttributes.Requirement, 57] - AffixList[0].Definition.OverrideLevelReq) > 0.001 &&
                     AffixList[0].Definition.OverrideLevelReq != 0)
-                    Attributes[GameAttribute.Requirement, 57] = AffixList[0].Definition.OverrideLevelReq;
+                    Attributes[GameAttributes.Requirement, 57] = AffixList[0].Definition.OverrideLevelReq;
                 foreach (var affix in AffixList)
-                    if (affix.Definition.OverrideLevelReq > Attributes[GameAttribute.Requirement, 57])
-                        Attributes[GameAttribute.Requirement, 57] = affix.Definition.OverrideLevelReq;
+                    if (affix.Definition.OverrideLevelReq > Attributes[GameAttributes.Requirement, 57])
+                        Attributes[GameAttributes.Requirement, 57] = affix.Definition.OverrideLevelReq;
             }
             //*/
             /*
@@ -208,7 +205,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             NameSNO = ActorSno.__NONE;
             Field10 = 0x00;
 
-            Attributes[GameAttribute.TeamID] = 0;
+            Attributes[GameAttributes.TeamID] = 0;
         }
 
         public Item(World world, ItemTable definition, int forceQualityLevel = -1, bool crafted = false, int seed = -1)
@@ -217,63 +214,63 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             GBHandle.GBID = definition.Hash;
             SetInitialValues(definition);
             ItemHasChanges = true;
-            Attributes[GameAttribute.IsCrafted] = crafted;
-            Attributes[GameAttribute.Item_Quality_Level] = 1;
+            Attributes[GameAttributes.IsCrafted] = crafted;
+            Attributes[GameAttributes.Item_Quality_Level] = 1;
 
-            Attributes[GameAttribute.Loot_2_0_Drop] = true;
+            Attributes[GameAttributes.Loot_2_0_Drop] = true;
 
             if (IsArmor(ItemType) || IsWeapon(ItemType) || IsOffhand(ItemType) || IsAccessory(ItemType) ||
                 IsShard(ItemType))
-                Attributes[GameAttribute.Item_Quality_Level] = RandomHelper.Next(8);
-            if (ItemType.Usable.HasFlag(ItemFlags.AtLeastMagical) && Attributes[GameAttribute.Item_Quality_Level] < 3)
-                Attributes[GameAttribute.Item_Quality_Level] = 3;
+                Attributes[GameAttributes.Item_Quality_Level] = RandomHelper.Next(8);
+            if (ItemType.Usable.HasFlag(ItemFlags.AtLeastMagical) && Attributes[GameAttributes.Item_Quality_Level] < 3)
+                Attributes[GameAttributes.Item_Quality_Level] = 3;
             if (definition.Name.ToLower().Contains("unique") || definition.Quality == ItemTable.ItemQuality.Legendary)
-                Attributes[GameAttribute.Item_Quality_Level] = 9;
+                Attributes[GameAttributes.Item_Quality_Level] = 9;
             if (forceQualityLevel > -1)
-                Attributes[GameAttribute.Item_Quality_Level] = forceQualityLevel;
-            if (definition.SNOSet != -1) Attributes[GameAttribute.Item_Quality_Level] = 9;
+                Attributes[GameAttributes.Item_Quality_Level] = forceQualityLevel;
+            if (definition.SNOSet != -1) Attributes[GameAttributes.Item_Quality_Level] = 9;
 
             if (ItemDefinition.Name.ToLower().Contains("unique_gem"))
             {
-                Attributes[GameAttribute.Item_Quality_Level] = 9;
-                if (!Attributes.Contains(GameAttribute.Jewel_Rank))
-                    Attributes[GameAttribute.Jewel_Rank] = 1;
+                Attributes[GameAttributes.Item_Quality_Level] = 9;
+                if (!Attributes.Contains(GameAttributes.Jewel_Rank))
+                    Attributes[GameAttributes.Jewel_Rank] = 1;
                 //Attributes[GameAttribute.Jewel_Rank] = 1;
             }
 
-            if (ItemDefinition.Name.ToLower().Contains("norm_season")) Attributes[GameAttribute.Item_Quality_Level] = 9;
+            if (ItemDefinition.Name.ToLower().Contains("norm_season")) Attributes[GameAttributes.Item_Quality_Level] = 9;
 
             if (ItemDefinition.Name.ToLower().StartsWith("p71_ethereal"))
             {
-                Attributes[GameAttribute.Item_Quality_Level] = 9;
-                Attributes[GameAttribute.Attacks_Per_Second_Item] += 1.1f;
+                Attributes[GameAttributes.Item_Quality_Level] = 9;
+                Attributes[GameAttributes.Attacks_Per_Second_Item] += 1.1f;
 
-                Attributes[GameAttribute.Damage_Weapon_Min, 0] = 15 + World.Game.InitialMonsterLevel * 1.7f;
+                Attributes[GameAttributes.Damage_Weapon_Min, 0] = 15 + World.Game.InitialMonsterLevel * 1.7f;
                 if (World.Game.InitialMonsterLevel > 70)
-                    Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 20f;
+                    Attributes[GameAttributes.Damage_Weapon_Min, 0] *= 20f;
                 else if (World.Game.InitialMonsterLevel > 60)
-                    Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 14f;
-                Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 15;
+                    Attributes[GameAttributes.Damage_Weapon_Min, 0] *= 14f;
+                Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 15;
             }
 
 
-            Attributes[GameAttribute.ItemStackQuantityLo] = 1;
+            Attributes[GameAttributes.ItemStackQuantityLo] = 1;
             if (seed == -1)
-                Attributes[GameAttribute.Seed] = FastRandom.Instance.Next(); //unchecked((int)2286800181);
+                Attributes[GameAttributes.Seed] = FastRandom.Instance.Next(); //unchecked((int)2286800181);
             else
-                Attributes[GameAttribute.Seed] = seed;
+                Attributes[GameAttributes.Seed] = seed;
 
             //Attributes[GameAttribute.Seed] = 0;
             //Attributes[GameAttribute.Item_Quality_Level] = 1;
 
-            RandomGenerator = new ItemRandomHelper(Attributes[GameAttribute.Seed]);
+            RandomGenerator = new ItemRandomHelper(Attributes[GameAttributes.Seed]);
             RandomGenerator.Next();
             if (IsArmor(ItemType))
             {
                 if (!crafted)
                     RandomGenerator.Next();
-                if (Attributes[GameAttribute.Item_Quality_Level] >= 5 &&
-                    Attributes[GameAttribute.Item_Quality_Level] <= 7)
+                if (Attributes[GameAttributes.Item_Quality_Level] >= 5 &&
+                    Attributes[GameAttributes.Item_Quality_Level] <= 7)
                     RandomGenerator.Next();
             }
 
@@ -292,8 +289,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             ApplyAttributeSpecifier(definition);
 
             var affixNumber = 1;
-            if (Attributes[GameAttribute.Item_Quality_Level] >= 3)
-                affixNumber = Attributes[GameAttribute.Item_Quality_Level] - 2;
+            if (Attributes[GameAttributes.Item_Quality_Level] >= 3)
+                affixNumber = Attributes[GameAttributes.Item_Quality_Level] - 2;
 
             if (ItemDefinition.Name.Contains("Shard"))
                 affixNumber = 1;
@@ -301,15 +298,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 affixNumber = 3;
 
             if (!crafted)
-                if (Attributes[GameAttribute.Item_Quality_Level] > 1)
+                if (Attributes[GameAttributes.Item_Quality_Level] > 1)
                     AffixGenerator.Generate(this, affixNumber);
 
             if (IsShard(ItemType))
-                Attributes[GameAttribute.Item_Quality_Level] = 1;
+                Attributes[GameAttributes.Item_Quality_Level] = 1;
 
 
-            Attributes[GameAttribute.Item_Quality_Level] = Math.Min(Attributes[GameAttribute.Item_Quality_Level], 9);
-            Attributes[GameAttribute.Durability_Cur] = Attributes[GameAttribute.Durability_Max];
+            Attributes[GameAttributes.Item_Quality_Level] = Math.Min(Attributes[GameAttributes.Item_Quality_Level], 9);
+            Attributes[GameAttributes.Durability_Cur] = Attributes[GameAttributes.Durability_Max];
             /*
             if (Attributes[GameAttribute.Item_Quality_Level] > 8)
             {
@@ -325,28 +322,28 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//if (Attributes[GameAttribute.Item_Quality_Level] > 6)
 			//	this.Unidentified = true;
 #endif
-            if (Attributes[GameAttribute.Item_Quality_Level] == 9) Attributes[GameAttribute.MinimapActive] = true;
+            if (Attributes[GameAttributes.Item_Quality_Level] == 9) Attributes[GameAttributes.MinimapActive] = true;
 
             if (IsArmor(ItemType) || IsWeapon(ItemType) || IsOffhand(ItemType) ||
                 (IsPotion(ItemType) && ItemDefinition.Name.Contains("Legendary")) || IsAccessory(ItemType))
             {
-                var a = Attributes[GameAttribute.Requirement, 57];
+                var a = Attributes[GameAttributes.Requirement, 57];
                 var reqLevel = definition.RequiredLevel % 10 != 0
                     ? definition.RequiredLevel - 1
                     : definition.RequiredLevel;
                 var level = Math.Max(AffixList.Any() ? AffixList.Select(a => a.ItemLevel).Max() : 0, reqLevel);
-                Attributes[GameAttribute.Requirement, 57] =
-                    Math.Max(level - Attributes[GameAttribute.Item_Level_Requirement_Reduction], 0);
-                a = Attributes[GameAttribute.Requirement, 57];
+                Attributes[GameAttributes.Requirement, 57] =
+                    Math.Max(level - Attributes[GameAttributes.Item_Level_Requirement_Reduction], 0);
+                a = Attributes[GameAttributes.Requirement, 57];
             }
 
             // Hard rewrite of the required level for legendary weapons, in case of its bug on 70 lvls.
-            if (Attributes[GameAttribute.Item_Quality_Level] > 8)
-                if (Attributes[GameAttribute.Requirement, 57] == 0)
-                    Attributes[GameAttribute.Item_Level_Requirement_Override] = 1;
+            if (Attributes[GameAttributes.Item_Quality_Level] > 8)
+                if (Attributes[GameAttributes.Requirement, 57] == 0)
+                    Attributes[GameAttributes.Item_Level_Requirement_Override] = 1;
                 else
-                    Attributes[GameAttribute.Item_Level_Requirement_Override] =
-                        (int)Attributes[GameAttribute.Requirement, 57];
+                    Attributes[GameAttributes.Item_Level_Requirement_Override] =
+                        (int)Attributes[GameAttributes.Requirement, 57];
 
             if (ItemDefinition.Name.ToLower().StartsWith("p71_ethereal"))
                 AffixGenerator.AddAffix(this, 1661455571, true); //1661455571
@@ -357,7 +354,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         {
             Unidentified = false;
             // DBInventory.Unidentified = false;
-            Attributes[GameAttribute.Unidentified] = false;
+            Attributes[GameAttributes.Unidentified] = false;
 
             Owner.World.Game.GameDbSession.SessionUpdate(DBInventory);
             if (Owner is Player player)
@@ -378,11 +375,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         {
             if (definition.WeaponDamageMin > 0)
             {
-                Attributes[GameAttribute.Attacks_Per_Second_Item] += definition.AttacksPerSecond;
-                Attributes[GameAttribute.Attacks_Per_Second_Item_Percent] = 0;
-                Attributes[GameAttribute.Attacks_Per_Second_Item_Bonus] = 0;
-                Attributes[GameAttribute.Damage_Weapon_Min, 0] += definition.WeaponDamageMin;
-                Attributes[GameAttribute.Damage_Weapon_Delta, 0] += definition.WeaponDamageDelta;
+                Attributes[GameAttributes.Attacks_Per_Second_Item] += definition.AttacksPerSecond;
+                Attributes[GameAttributes.Attacks_Per_Second_Item_Percent] = 0;
+                Attributes[GameAttributes.Attacks_Per_Second_Item_Bonus] = 0;
+                Attributes[GameAttributes.Damage_Weapon_Min, 0] += definition.WeaponDamageMin;
+                Attributes[GameAttributes.Damage_Weapon_Delta, 0] += definition.WeaponDamageDelta;
             }
 
             var hash = definition.Hash;
@@ -391,16 +388,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
             if (UniqueItems.UniqueItemStats.ContainsKey(hash))
             {
-                Attributes[GameAttribute.Attacks_Per_Second_Item] += UniqueItems.GetDPS(hash);
-                Attributes[GameAttribute.Damage_Weapon_Min, 0] += UniqueItems.GetWeaponDamageMin(hash);
-                Attributes[GameAttribute.Damage_Weapon_Delta, 0] += UniqueItems.GetWeaponDamageDelta(hash);
+                Attributes[GameAttributes.Attacks_Per_Second_Item] += UniqueItems.GetDPS(hash);
+                Attributes[GameAttributes.Damage_Weapon_Min, 0] += UniqueItems.GetWeaponDamageMin(hash);
+                Attributes[GameAttributes.Damage_Weapon_Delta, 0] += UniqueItems.GetWeaponDamageDelta(hash);
 
                 if (IsWeapon(ItemType))
                 {
-                    if (Attributes[GameAttribute.Damage_Weapon_Min, 0] == 0)
-                        Attributes[GameAttribute.Damage_Weapon_Min, 0] = 34;
-                    if (Attributes[GameAttribute.Damage_Weapon_Delta, 0] == 0)
-                        Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 34;
+                    if (Attributes[GameAttributes.Damage_Weapon_Min, 0] == 0)
+                        Attributes[GameAttributes.Damage_Weapon_Min, 0] = 34;
+                    if (Attributes[GameAttributes.Damage_Weapon_Delta, 0] == 0)
+                        Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 34;
                 }
 
                 var scaleCapMin = 0f;
@@ -498,10 +495,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                     var ratio = (float)Math.Pow(definition.ItemLevel, 2f) / 4900f;
                     if (ratio < 0.01f) ratio = 0.01f;
                     if (ratio > 1f) ratio = 1f;
-                    Attributes[GameAttribute.Damage_Weapon_Min, 0] +=
-                        Math.Abs(scaleCapMin * ratio - Attributes[GameAttribute.Damage_Weapon_Min, 0]);
-                    Attributes[GameAttribute.Damage_Weapon_Delta, 0] +=
-                        Math.Abs(scaleCapDelta * ratio - Attributes[GameAttribute.Damage_Weapon_Delta, 0]);
+                    Attributes[GameAttributes.Damage_Weapon_Min, 0] +=
+                        Math.Abs(scaleCapMin * ratio - Attributes[GameAttributes.Damage_Weapon_Min, 0]);
+                    Attributes[GameAttributes.Damage_Weapon_Delta, 0] +=
+                        Math.Abs(scaleCapDelta * ratio - Attributes[GameAttributes.Damage_Weapon_Delta, 0]);
                 }
             }
         }
@@ -510,11 +507,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         {
             if (definition.Armor > 0)
             {
-                Attributes[GameAttribute.Armor_Item] += definition.Armor;
+                Attributes[GameAttributes.Armor_Item] += definition.Armor;
                 //Attributes[GameAttribute.Armor_Bonus_Item] = 0;
                 //Attributes[GameAttribute.Armor_Item_Percent] = 0;
-                Attributes[GameAttribute.Armor] += definition.Armor;
-                var armorItemTotal = Attributes[GameAttribute.Armor_Item_Total];
+                Attributes[GameAttributes.Armor] += definition.Armor;
+                var armorItemTotal = Attributes[GameAttributes.Armor_Item_Total];
             }
 
             var hash = definition.Hash;
@@ -523,24 +520,24 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
             if (UniqueItems.UniqueItemStats.ContainsKey(hash))
             {
-                Attributes[GameAttribute.Armor_Item] += UniqueItems.GetArmor(hash);
+                Attributes[GameAttributes.Armor_Item] += UniqueItems.GetArmor(hash);
                 //Unique items level scaling
                 if (IsArmor(ItemType))
-                    if (Attributes[GameAttribute.Armor_Item] == 0)
-                        Attributes[GameAttribute.Armor_Item] = 30;
+                    if (Attributes[GameAttributes.Armor_Item] == 0)
+                        Attributes[GameAttributes.Armor_Item] = 30;
 
-                if (Attributes[GameAttribute.Armor_Item] < 100)
-                    Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 6;
-                else if (Attributes[GameAttribute.Armor_Item] < 200)
-                    Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 5;
-                else if (Attributes[GameAttribute.Armor_Item] < 300)
-                    Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 4;
-                else if (Attributes[GameAttribute.Armor_Item] < 400)
-                    Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 3;
-                else if (Attributes[GameAttribute.Armor_Item] < 500)
-                    Attributes[GameAttribute.Armor_Item] += definition.ItemLevel * 2;
-                else if (Attributes[GameAttribute.Armor_Item] < 600)
-                    Attributes[GameAttribute.Armor_Item] += definition.ItemLevel;
+                if (Attributes[GameAttributes.Armor_Item] < 100)
+                    Attributes[GameAttributes.Armor_Item] += definition.ItemLevel * 6;
+                else if (Attributes[GameAttributes.Armor_Item] < 200)
+                    Attributes[GameAttributes.Armor_Item] += definition.ItemLevel * 5;
+                else if (Attributes[GameAttributes.Armor_Item] < 300)
+                    Attributes[GameAttributes.Armor_Item] += definition.ItemLevel * 4;
+                else if (Attributes[GameAttributes.Armor_Item] < 400)
+                    Attributes[GameAttributes.Armor_Item] += definition.ItemLevel * 3;
+                else if (Attributes[GameAttributes.Armor_Item] < 500)
+                    Attributes[GameAttributes.Armor_Item] += definition.ItemLevel * 2;
+                else if (Attributes[GameAttributes.Armor_Item] < 600)
+                    Attributes[GameAttributes.Armor_Item] += definition.ItemLevel;
 
                 if (definition.ItemTypesGBID == 332825721 ||
                     definition.ItemTypesGBID == 602099538) //Shield and CruShield
@@ -550,9 +547,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                     var ratio = (float)Math.Pow(definition.ItemLevel, 2f) / 4900f;
                     if (ratio < 0.01f) ratio = 0.01f;
                     if (ratio > 1f) ratio = 1f;
-                    Attributes[GameAttribute.Block_Amount_Item_Min] +=
-                        Math.Abs(scaleCapMin * ratio - Attributes[GameAttribute.Block_Amount_Item_Min, 0]);
-                    Attributes[GameAttribute.Block_Amount_Item_Delta] += Math.Abs(scaleCapDelta * ratio - Attributes[GameAttribute.Block_Amount_Item_Delta, 0]);
+                    Attributes[GameAttributes.Block_Amount_Item_Min] +=
+                        Math.Abs(scaleCapMin * ratio - Attributes[GameAttributes.Block_Amount_Item_Min, 0]);
+                    Attributes[GameAttributes.Block_Amount_Item_Delta] += Math.Abs(scaleCapDelta * ratio - Attributes[GameAttributes.Block_Amount_Item_Delta, 0]);
                 }
             }
         }
@@ -562,21 +559,21 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             if (definition.BaseDurability > 0)
             {
                 var durability = definition.BaseDurability * 2 + RandomHelper.Next(definition.DurabilityVariance);
-                Attributes[GameAttribute.Durability_Max] = durability;
-                Attributes[GameAttribute.Durability_Cur] = durability;
+                Attributes[GameAttributes.Durability_Max] = durability;
+                Attributes[GameAttributes.Durability_Cur] = durability;
             }
         }
 
         public void UpdateDurability(int newDurability)
         {
-            Attributes[GameAttribute.Durability_Cur] = newDurability;
+            Attributes[GameAttributes.Durability_Cur] = newDurability;
             DBInventory.Durability = newDurability;
             Owner.World.Game.GameDbSession.SessionUpdate(DBInventory);
         }
 
         public void UpdateTransmog(int newTransmogGBID)
         {
-            Attributes[GameAttribute.TransmogGBID] = newTransmogGBID;
+            Attributes[GameAttributes.TransmogGBID] = newTransmogGBID;
             DBInventory.TransmogGBID = newTransmogGBID;
             Owner.World.Game.GameDbSession.SessionUpdate(DBInventory);
         }
@@ -592,7 +589,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             if (newCount > 0)
             {
                 if (DBInventory == null) return;
-                Attributes[GameAttribute.ItemStackQuantityLo] = newCount;
+                Attributes[GameAttributes.ItemStackQuantityLo] = newCount;
                 Attributes.SendChangedMessage((Owner as Player).InGameClient);
 
                 DBInventory.Count = newCount;
@@ -602,13 +599,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         private void ApplySkills(ItemTable definition)
         {
-            if (definition.SNOSkill0 != -1) Attributes[GameAttribute.Skill, definition.SNOSkill0] = 1;
+            if (definition.SNOSkill0 != -1) Attributes[GameAttributes.Skill, definition.SNOSkill0] = 1;
 
-            if (definition.SNOSkill1 != -1) Attributes[GameAttribute.Skill, definition.SNOSkill1] = 1;
+            if (definition.SNOSkill1 != -1) Attributes[GameAttributes.Skill, definition.SNOSkill1] = 1;
 
-            if (definition.SNOSkill2 != -1) Attributes[GameAttribute.Skill, definition.SNOSkill2] = 1;
+            if (definition.SNOSkill2 != -1) Attributes[GameAttributes.Skill, definition.SNOSkill2] = 1;
 
-            if (definition.SNOSkill3 != -1) Attributes[GameAttribute.Skill, definition.SNOSkill3] = 1;
+            if (definition.SNOSkill3 != -1) Attributes[GameAttributes.Skill, definition.SNOSkill3] = 1;
         }
 
         private void ApplyAttributeSpecifier(ItemTable definition)
@@ -620,17 +617,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 {
                     //Logger.Debug("Randomized value for attribute " + GameAttribute.Attributes[effect.AttributeId].Name + " is " + result);
 
-                    if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeF)
+                    if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
                     {
-                        var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+                        var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
                         if (effect.SNOParam != -1)
                             Attributes[attr, effect.SNOParam] += result;
                         else
                             Attributes[attr] += result;
                     }
-                    else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+                    else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
                     {
-                        var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+                        var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
                         if (effect.SNOParam != -1)
                             Attributes[attr, effect.SNOParam] += (int)result;
                         else
@@ -645,10 +642,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         {
             return new VisualItem()
             {
-                GbId = Attributes[GameAttribute.TransmogGBID] == -1
+                GbId = Attributes[GameAttributes.TransmogGBID] == -1
                     ? GBHandle.GBID
-                    : Attributes[GameAttribute.TransmogGBID],
-                DyeType = Attributes[GameAttribute.DyeType],
+                    : Attributes[GameAttributes.TransmogGBID],
+                DyeType = Attributes[GameAttributes.DyeType],
                 ItemEffectType = 0, //Mooege.Common.Helpers.Math.FastRandom.Instance.Next(1, 14),
                 EffectLevel = -1 //Mooege.Common.Helpers.Math.FastRandom.Instance.Next(1, 30)
             };
@@ -658,10 +655,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         public D3.Hero.VisualItem GetVisualItem()
         {
             var visualItem = D3.Hero.VisualItem.CreateBuilder()
-                .SetGbid(Attributes[GameAttribute.TransmogGBID] == -1
+                .SetGbid(Attributes[GameAttributes.TransmogGBID] == -1
                     ? GBHandle.GBID
-                    : Attributes[GameAttribute.TransmogGBID])
-                .SetDyeType(Attributes[GameAttribute.DyeType])
+                    : Attributes[GameAttributes.TransmogGBID])
+                .SetDyeType(Attributes[GameAttributes.DyeType])
                 .SetEffectLevel(0)
                 .SetItemEffectType(-1)
                 .Build();
@@ -912,7 +909,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         {
             if (IsPotion(ItemType)) //if item is health potion
             {
-                if (player.Attributes[GameAttribute.Hitpoints_Cur] == player.Attributes[GameAttribute.Hitpoints_Max])
+                if (player.Attributes[GameAttributes.Hitpoints_Cur] == player.Attributes[GameAttributes.Hitpoints_Max])
                     return;
 
                 player.World.PowerManager.RunPower(player, 30211);
@@ -951,13 +948,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                     return;
                 }
 
-                if (Attributes[GameAttribute.ItemStackQuantityLo] <= 1)
+                if (Attributes[GameAttributes.ItemStackQuantityLo] <= 1)
                 {
                     player.Inventory.DestroyInventoryItem(this); // No more recipes!
                 }
                 else
                 {
-                    UpdateStackCount(--Attributes[GameAttribute.ItemStackQuantityLo]); // Just remove one
+                    UpdateStackCount(--Attributes[GameAttributes.ItemStackQuantityLo]); // Just remove one
                     Attributes.SendChangedMessage(player.InGameClient);
                 }
 
@@ -1237,9 +1234,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             if (IsDye(ItemType)) //if item is dye
             {
                 if (target == null) return;
-                target.Attributes[GameAttribute.DyeType] = Attributes[GameAttribute.DyeType];
+                target.Attributes[GameAttributes.DyeType] = Attributes[GameAttributes.DyeType];
                 target.Attributes.BroadcastChangedIfRevealed();
-                target.DBInventory.DyeType = Attributes[GameAttribute.DyeType];
+                target.DBInventory.DyeType = Attributes[GameAttributes.DyeType];
 
                 player.World.Game.GameDbSession.SessionUpdate(target.DBInventory);
 
@@ -1248,8 +1245,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
                 player.GrantAchievement(74987243307154);
 
                 var colors = new List<int>(player.Inventory.GetEquippedItems()
-                    .Where(i => i.Attributes[GameAttribute.DyeType] > 0)
-                    .Select(i => i.Attributes[GameAttribute.DyeType]));
+                    .Where(i => i.Attributes[GameAttributes.DyeType] > 0)
+                    .Select(i => i.Attributes[GameAttributes.DyeType]));
                 if (colors.Count >= 6)
                 {
                     if (new HashSet<int>(colors).Count == 1)
@@ -1317,13 +1314,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
                 if (GBHandle.GBID == 1866876233 || GBHandle.GBID == 1866876234) return; //CE dyes
 
-                if (Attributes[GameAttribute.ItemStackQuantityLo] <= 1)
+                if (Attributes[GameAttributes.ItemStackQuantityLo] <= 1)
                 {
                     player.Inventory.DestroyInventoryItem(this); // No more dyes!
                 }
                 else
                 {
-                    UpdateStackCount(--Attributes[GameAttribute.ItemStackQuantityLo]); // Just remove one
+                    UpdateStackCount(--Attributes[GameAttributes.ItemStackQuantityLo]); // Just remove one
                     Attributes.SendChangedMessage(player.InGameClient);
                 }
 
@@ -1337,23 +1334,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         {
             if (player.CurrentWingsPowerId != -1 && player.CurrentWingsPowerId != powerId) //turning off another wings
             {
-                player.Attributes[GameAttribute.Buff_Exclusive_Type_Active, player.CurrentWingsPowerId] = false;
-                player.Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, player.CurrentWingsPowerId] = false;
-                player.Attributes[GameAttribute.Buff_Icon_Start_Tick0, player.CurrentWingsPowerId] = 0;
-                player.Attributes[GameAttribute.Buff_Icon_End_Tick0, player.CurrentWingsPowerId] = 0;
-                player.Attributes[GameAttribute.Buff_Icon_Count0, player.CurrentWingsPowerId] = 0;
+                player.Attributes[GameAttributes.Buff_Exclusive_Type_Active, player.CurrentWingsPowerId] = false;
+                player.Attributes[GameAttributes.Power_Buff_0_Visual_Effect_None, player.CurrentWingsPowerId] = false;
+                player.Attributes[GameAttributes.Buff_Icon_Start_Tick0, player.CurrentWingsPowerId] = 0;
+                player.Attributes[GameAttributes.Buff_Icon_End_Tick0, player.CurrentWingsPowerId] = 0;
+                player.Attributes[GameAttributes.Buff_Icon_Count0, player.CurrentWingsPowerId] = 0;
                 player.CurrentWingsPowerId = -1;
             }
 
-            var activated = player.Attributes[GameAttribute.Buff_Exclusive_Type_Active, powerId] == true;
+            var activated = player.Attributes[GameAttributes.Buff_Exclusive_Type_Active, powerId] == true;
 
             player.CurrentWingsPowerId = activated ? -1 : powerId;
 
-            player.Attributes[GameAttribute.Buff_Exclusive_Type_Active, powerId] = !activated;
-            player.Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, powerId] = !activated;
-            player.Attributes[GameAttribute.Buff_Icon_Start_Tick0, powerId] = 0;
-            player.Attributes[GameAttribute.Buff_Icon_End_Tick0, powerId] = activated ? 0 : 100;
-            player.Attributes[GameAttribute.Buff_Icon_Count0, powerId] = activated ? 0 : 1;
+            player.Attributes[GameAttributes.Buff_Exclusive_Type_Active, powerId] = !activated;
+            player.Attributes[GameAttributes.Power_Buff_0_Visual_Effect_None, powerId] = !activated;
+            player.Attributes[GameAttributes.Buff_Icon_Start_Tick0, powerId] = 0;
+            player.Attributes[GameAttributes.Buff_Icon_End_Tick0, powerId] = activated ? 0 : 100;
+            player.Attributes[GameAttributes.Buff_Icon_Count0, powerId] = activated ? 0 : 1;
             player.Attributes.BroadcastChangedIfRevealed();
             player.Inventory.SendVisualInventory(player);
             var dbToon = player.Toon.DBToon;

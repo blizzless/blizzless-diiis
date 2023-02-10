@@ -8,12 +8,7 @@ using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -37,7 +32,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (Attributes[GameAttribute.Disabled]) return;
+			if (Attributes[GameAttributes.Disabled]) return;
 
 			int chance = World.Game.IsHardcore ? 99 : 25; //S4 special
 			/*

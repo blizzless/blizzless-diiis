@@ -6,8 +6,6 @@ using DiIiS_NA.GameServer.MessageSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
@@ -139,7 +137,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		private bool _DoCriticalHit(Actor user, Actor target, float chcBonus = 0f)
 		{
-			if (target.Attributes[GameAttribute.Ignores_Critical_Hits]) return false;
+			if (target.Attributes[GameAttributes.Ignores_Critical_Hits]) return false;
 
 			//Monk -> Exploding Palm
 			if (Context.PowerSNO == 97328 && Context.Rune_E <= 0) return false;
@@ -165,7 +163,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				target.World.BuffManager.RemoveBuffs(target, SkillsSystem.Skills.Crusader.FaithGenerators.Punish);
 			}
 
-			var totalCritChance = user.Attributes[GameAttribute.Weapon_Crit_Chance] + user.Attributes[GameAttribute.Crit_Percent_Bonus_Capped] + user.Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped] + user.Attributes[GameAttribute.Power_Crit_Percent_Bonus, Context.PowerSNO] + target.Attributes[GameAttribute.Bonus_Chance_To_Be_Crit_Hit] + additionalCritChance;
+			var totalCritChance = user.Attributes[GameAttributes.Weapon_Crit_Chance] + user.Attributes[GameAttributes.Crit_Percent_Bonus_Capped] + user.Attributes[GameAttributes.Crit_Percent_Bonus_Uncapped] + user.Attributes[GameAttributes.Power_Crit_Percent_Bonus, Context.PowerSNO] + target.Attributes[GameAttributes.Bonus_Chance_To_Be_Crit_Hit] + additionalCritChance;
 			if (totalCritChance > 0.85f) totalCritChance = 0.85f;
 			return PowerContext.Rand.NextDouble() < totalCritChance;
 		}

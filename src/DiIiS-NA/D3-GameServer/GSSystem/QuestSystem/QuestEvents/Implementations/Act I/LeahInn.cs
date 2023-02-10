@@ -48,7 +48,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			foreach (var actor in actorstotarget)
 			{
 				actor.PlayAnimation(9, AnimationSno.omninpc_male_hth_zombie_transition_intro_01, 1f);
-				actor.Attributes[GameAttribute.Quest_Monster] = true;
+				actor.Attributes[GameAttributes.Quest_Monster] = true;
 				actor.Attributes.BroadcastChangedIfRevealed();
 			}
 		}

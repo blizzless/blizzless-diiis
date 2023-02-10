@@ -34,7 +34,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			: base(world, sno, tags)
 		{
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 129569;
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 		}
 
 		public override void OnEnter(World world)

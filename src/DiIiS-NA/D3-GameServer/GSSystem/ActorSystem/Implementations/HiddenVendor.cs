@@ -5,11 +5,7 @@ using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -52,7 +48,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			for (int i = 0; i < 9; i++)
 			{
 				var itm = ItemGenerator.GenerateRandomEquip(this, level, 6, 7);
-				itm.Attributes[GameAttribute.Item_Cost_Percent_Bonus] = 3f;
+				itm.Attributes[GameAttributes.Item_Cost_Percent_Bonus] = 3f;
 				list.Add(itm);
 			}
 

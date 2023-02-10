@@ -20,7 +20,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 		{
 			foreach (var actor in world.Actors.Values.Where(a => a is Monster || a is Player || a is Minion || a is Hireling))
 			{
-				actor.Attributes[GameAttribute.Stunned] = false;
+				actor.Attributes[GameAttributes.Stunned] = false;
 				actor.Attributes.BroadcastChangedIfRevealed();
 			}
 			foreach (var plr in world.Players.Values)
@@ -32,7 +32,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			world.GetActorBySNO(ActorSno._belial_trueform).Destroy();
 			var Belial = world.SpawnMonster(ActorSno._belial_trueform, world.GetActorBySNO(ActorSno._belialboyemperor).Position);
 			
-			Belial.Attributes[GameAttribute.Invulnerable] = true;
+			Belial.Attributes[GameAttributes.Invulnerable] = true;
 			Belial.Attributes.BroadcastChangedIfRevealed();
 			(Belial as Monster).Brain.DeActivate();
 			foreach (var Adr in world.GetActorsBySNO(ActorSno._adria))

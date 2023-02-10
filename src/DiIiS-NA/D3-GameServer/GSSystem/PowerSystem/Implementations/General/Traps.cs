@@ -1,15 +1,10 @@
 ﻿using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -170,7 +165,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 foreach (var target in Targets)
                     if (target is PlayerSystem.Player || target is ActorSystem.Monster)
                     {
-                        User.Attributes[GameAttribute.Damage_Min] = target.Attributes[GameAttribute.Hitpoints_Max] / 20f;
+                        User.Attributes[GameAttributes.Damage_Min] = target.Attributes[GameAttributes.Hitpoints_Max] / 20f;
                         WeaponDamage(target, 1.5f, DamageType.Fire); 
                     }
                 //*/

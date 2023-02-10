@@ -14,7 +14,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 		public Leoric(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 		}
 
 
@@ -41,13 +41,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 			bool status = false;
 
-			Attributes[GameAttribute.Team_Override] = (status ? -1 : 2);
-			Attributes[GameAttribute.Untargetable] = !status;
-			Attributes[GameAttribute.NPC_Is_Operatable] = status;
-			Attributes[GameAttribute.Operatable] = status;
-			Attributes[GameAttribute.Operatable_Story_Gizmo] = status;
-			Attributes[GameAttribute.Disabled] = !status;
-			Attributes[GameAttribute.Immunity] = !status;
+			Attributes[GameAttributes.Team_Override] = (status ? -1 : 2);
+			Attributes[GameAttributes.Untargetable] = !status;
+			Attributes[GameAttributes.NPC_Is_Operatable] = status;
+			Attributes[GameAttributes.Operatable] = status;
+			Attributes[GameAttributes.Operatable_Story_Gizmo] = status;
+			Attributes[GameAttributes.Disabled] = !status;
+			Attributes[GameAttributes.Immunity] = !status;
 			Attributes.BroadcastChangedIfRevealed();
 
 			Attributes.BroadcastChangedIfRevealed();

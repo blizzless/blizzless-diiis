@@ -2,7 +2,6 @@
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.MessageSystem;
@@ -11,8 +10,6 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -159,7 +156,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		{
             foreach (var actr in world.Actors.Values.Where(x => x.SNO == sno))
 			{
-				actr.Attributes[GameAttribute.Quest_Monster] = true;
+				actr.Attributes[GameAttributes.Quest_Monster] = true;
 				actr.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -167,7 +164,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		{
 			foreach (var actr in world.Actors.Values.Where(x => x.SNO == sno))
             {
-				actr.Attributes[GameAttribute.Quest_Monster] = false;
+				actr.Attributes[GameAttributes.Quest_Monster] = false;
 				actr.Attributes.BroadcastChangedIfRevealed();
             }
         }
@@ -308,13 +305,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (actor == null)
 				return false;
 
-			actor.Attributes[GameAttribute.Team_Override] = (status ? -1 : 2);
-			actor.Attributes[GameAttribute.Untargetable] = !status;
-			actor.Attributes[GameAttribute.NPC_Is_Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable_Story_Gizmo] = status;
-			actor.Attributes[GameAttribute.Disabled] = !status;
-			actor.Attributes[GameAttribute.Immunity] = !status;
+			actor.Attributes[GameAttributes.Team_Override] = (status ? -1 : 2);
+			actor.Attributes[GameAttributes.Untargetable] = !status;
+			actor.Attributes[GameAttributes.NPC_Is_Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable_Story_Gizmo] = status;
+			actor.Attributes[GameAttributes.Disabled] = !status;
+			actor.Attributes[GameAttributes.Immunity] = !status;
 			actor.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -326,13 +323,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (actor == null)
 				return false;
 
-			actor.Attributes[GameAttribute.NPC_Is_Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable_Story_Gizmo] = status;
-			actor.Attributes[GameAttribute.Untargetable] = !status;
-			actor.Attributes[GameAttribute.Disabled] = !status;
-			actor.Attributes[GameAttribute.Immunity] = !status;
-			actor.Attributes[GameAttribute.Hidden] = !status;
+			actor.Attributes[GameAttributes.NPC_Is_Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable_Story_Gizmo] = status;
+			actor.Attributes[GameAttributes.Untargetable] = !status;
+			actor.Attributes[GameAttributes.Disabled] = !status;
+			actor.Attributes[GameAttributes.Immunity] = !status;
+			actor.Attributes[GameAttributes.Hidden] = !status;
 			actor.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -365,7 +362,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			{
 				NPC.Conversations.Clear();
 				NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-				NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+				NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 				NPC.Attributes.BroadcastChangedIfRevealed();
 				NPC.ForceConversationSNO = conversation;
 			}
@@ -377,7 +374,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						NPC = N as InteractiveNPC;
 						NPC.Conversations.Clear();
 						NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-						NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+						NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 						NPC.Attributes.BroadcastChangedIfRevealed();
 						NPC.ForceConversationSNO = conversation;
 					}
@@ -392,7 +389,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (NPC != null)
 			{
 				NPC.Conversations.Clear();
-				NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 				NPC.Attributes.BroadcastChangedIfRevealed();
 			}
 		}

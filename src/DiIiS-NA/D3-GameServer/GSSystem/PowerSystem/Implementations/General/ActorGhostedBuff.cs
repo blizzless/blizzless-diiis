@@ -10,9 +10,6 @@ using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
@@ -30,15 +27,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			Target.Attributes[GameAttribute.Invulnerable] = true;
-			Target.Attributes[GameAttribute.Has_Look_Override] = true;//0x0782CAC5;
+			Target.Attributes[GameAttributes.Invulnerable] = true;
+			Target.Attributes[GameAttributes.Has_Look_Override] = true;//0x0782CAC5;
 			return true;
 		}
 
 		public override void Remove()
 		{
-			Target.Attributes[GameAttribute.Invulnerable] = false;
-			Target.Attributes[GameAttribute.Has_Look_Override] = false;
+			Target.Attributes[GameAttributes.Invulnerable] = false;
+			Target.Attributes[GameAttributes.Has_Look_Override] = false;
 			base.Remove();
 		}
 	}
@@ -57,7 +54,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttributes.Invulnerable] = true;
 			return true;
 		}
 
@@ -89,7 +86,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override void Remove()
 		{
-			Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttributes.Invulnerable] = false;
 			base.Remove();
 		}
 	}
@@ -117,7 +114,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttributes.Invulnerable] = true;
 			return true;
 		}
 
@@ -167,7 +164,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					}
 				}
 			}
-			Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttributes.Invulnerable] = false;
 			base.Remove();
 			Target.Destroy();
 		}
@@ -198,7 +195,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttributes.Invulnerable] = true;
 			return true;
 		}
 
@@ -248,7 +245,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					}
 				}
 			}
-			Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttributes.Invulnerable] = false;
 			base.Remove();
 			Target.Destroy();
 		}

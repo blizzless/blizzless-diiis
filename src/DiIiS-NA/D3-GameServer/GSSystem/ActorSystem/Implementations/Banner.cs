@@ -12,7 +12,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	class Banner : Gizmo
 	{
-		private static readonly Dictionary<int, ActorSno[]> bannerActors = new Dictionary<int, ActorSno[]>()
+		private static readonly Dictionary<int, ActorSno[]> bannerActors = new()
 		{
 			[0] = new ActorSno[] {
 				ActorSno._banner_player_1,
@@ -72,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			}
 
 			//if banner has been disabled for events like active greater active swarm  /advocaite
-			if(!player.Attributes[GameAttribute.Banner_Usable])
+			if(!player.Attributes[GameAttributes.Banner_Usable])
 			{
 				return;
 			}

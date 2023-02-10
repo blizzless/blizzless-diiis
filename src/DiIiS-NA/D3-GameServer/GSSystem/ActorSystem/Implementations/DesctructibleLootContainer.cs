@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
@@ -47,12 +46,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				Type = FloatingNumberMessage.FloatType.White
 			}, this);
 
-			Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(Attributes[GameAttribute.Hitpoints_Cur] - damage, 0);
+			Attributes[GameAttributes.Hitpoints_Cur] = Math.Max(Attributes[GameAttributes.Hitpoints_Cur] - damage, 0);
 			//Attributes[GameAttribute.Last_Damage_ACD] = unchecked((int)source.DynamicID);
 
 			Attributes.BroadcastChangedIfRevealed();
 
-			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !SNO.IsUndestroyable())
+			if (Attributes[GameAttributes.Hitpoints_Cur] == 0 && !SNO.IsUndestroyable())
 			{
 				Die(source);
 			}
@@ -76,7 +75,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 							World.SpawnRandomGem(this, plr);
 						if (seed < 0.10f)
 							World.SpawnRandomPotion(this, plr);
-						if (seed < (rate * (1f + plr.Attributes[GameAttribute.Magic_Find])))
+						if (seed < (rate * (1f + plr.Attributes[GameAttributes.Magic_Find])))
 						{
 							var lootQuality = World.Game.IsHardcore ? LootManager.GetSeasonalLootQuality((int)Quality, World.Game.Difficulty) : LootManager.GetLootQuality((int)Quality, World.Game.Difficulty);
 							World.SpawnRandomEquip(plr, plr, lootQuality);
@@ -113,8 +112,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				}, this);
 
-			Attributes[GameAttribute.Deleted_On_Server] = true;
-			Attributes[GameAttribute.Could_Have_Ragdolled] = true;
+			Attributes[GameAttributes.Deleted_On_Server] = true;
+			Attributes[GameAttributes.Could_Have_Ragdolled] = true;
 			Attributes.BroadcastChangedIfRevealed();
 
 			//handling quest triggers

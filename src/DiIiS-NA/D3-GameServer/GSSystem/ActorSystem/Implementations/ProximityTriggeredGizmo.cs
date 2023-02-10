@@ -5,10 +5,6 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -76,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						CollFlags = 0
 					}, this);
 
-					Attributes[GameAttribute.Deleted_On_Server] = true;
+					Attributes[GameAttributes.Deleted_On_Server] = true;
 					Attributes.BroadcastChangedIfRevealed();
 
 					RelativeTickTimer destroy = new RelativeTickTimer(World.Game, duration, x => Destroy());

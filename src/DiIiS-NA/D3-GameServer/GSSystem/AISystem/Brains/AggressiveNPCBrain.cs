@@ -1,5 +1,4 @@
-﻿using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.Core.MPQ;
+﻿using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
@@ -7,11 +6,8 @@ using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
@@ -42,10 +38,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		public override void Think(int tickCounter)
 		{
-			if (Body.Attributes[GameAttribute.Frozen] ||
-				Body.Attributes[GameAttribute.Stunned] ||
-				Body.Attributes[GameAttribute.Blind] ||
-				Body.Attributes[GameAttribute.Webbed] ||
+			if (Body.Attributes[GameAttributes.Frozen] ||
+				Body.Attributes[GameAttributes.Stunned] ||
+				Body.Attributes[GameAttributes.Blind] ||
+				Body.Attributes[GameAttributes.Webbed] ||
 				Body.Disable ||
 				Body.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.KnockbackBuff>(Body) != null)
 			{

@@ -19,7 +19,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             : base(world, sno, tags)
         {
             Field7 = 1;
-            Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttributes.TeamID] = 2;
             Attributes.BroadcastChangedIfRevealed();
         }
 

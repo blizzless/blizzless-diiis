@@ -28,13 +28,13 @@ public class LevelUpCommand : CommandGroup
         for (var i = 0; i < amount; i++)
             if (player.Level >= 70)
             {
-                player.UpdateExp((int)player.Attributes[GameAttribute.Alt_Experience_Next_Lo]);
+                player.UpdateExp((int)player.Attributes[GameAttributes.Alt_Experience_Next_Lo]);
                 player.PlayEffect(Effect.ParagonLevelUp, null, false);
                 player.World.PowerManager.RunPower(player, 252038);
             }
             else
             {
-                player.UpdateExp((int)player.Attributes[GameAttribute.Experience_Next_Lo]);
+                player.UpdateExp((int)player.Attributes[GameAttributes.Experience_Next_Lo]);
                 player.PlayEffect(Effect.LevelUp, null, false);
                 player.World.PowerManager.RunPower(player, 85954);
             }

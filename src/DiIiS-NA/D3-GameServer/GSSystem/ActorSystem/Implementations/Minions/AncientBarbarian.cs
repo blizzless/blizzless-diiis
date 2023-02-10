@@ -27,13 +27,13 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Minions
                 brain.AddPresetPower(power);
             }
             SetBrain(brain);
-            Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
-            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+            Attributes[GameAttributes.Summoned_By_SNO] = context.PowerSNO;
+            Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
 
-            Attributes[GameAttribute.Damage_Weapon_Min, 0] = context.ScriptFormula(11) * context.User.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];
-            Attributes[GameAttribute.Damage_Weapon_Delta, 0] = context.ScriptFormula(11) * context.User.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0];
+            Attributes[GameAttributes.Damage_Weapon_Min, 0] = context.ScriptFormula(11) * context.User.Attributes[GameAttributes.Damage_Weapon_Min_Total, 0];
+            Attributes[GameAttributes.Damage_Weapon_Delta, 0] = context.ScriptFormula(11) * context.User.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0];
 
-            Attributes[GameAttribute.Pet_Type] = 0x8;
+            Attributes[GameAttributes.Pet_Type] = 0x8;
             //Pet_Owner and Pet_Creator seems to be 0
 
             if (this.Master != null)

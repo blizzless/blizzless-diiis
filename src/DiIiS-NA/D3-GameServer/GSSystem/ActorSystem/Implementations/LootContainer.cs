@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -9,7 +7,6 @@ using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
@@ -24,7 +21,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public LootContainer(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			if (SNO == ActorSno._a3dunrmpt_interactives_signal_fire_a_prop) Attributes[GameAttribute.MinimapActive] = true;
+			if (SNO == ActorSno._a3dunrmpt_interactives_signal_fire_a_prop) Attributes[GameAttributes.MinimapActive] = true;
 
 			if (SNO.IsChest() || SNO.IsCorpse()) haveDrop = true;
 
@@ -52,7 +49,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			if (!base.Reveal(player))
 				return false;
-			if (Attributes[GameAttribute.Disabled])
+			if (Attributes[GameAttributes.Disabled])
 			{
 				player.InGameClient.SendMessage(new SetIdleAnimationMessage
 				{
@@ -70,7 +67,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (SNO == ActorSno._p4_setdung_totem_cru_thorns)
 				return;
 			
-			if (Attributes[GameAttribute.Disabled]) return;
+			if (Attributes[GameAttributes.Disabled]) return;
 
 			base.OnTargeted(player, message);
 
@@ -116,7 +113,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 							World.SpawnRandomGem(this, plr);
 						if (seed < 0.10f)
 							World.SpawnRandomPotion(this, plr);
-						if (seed < (rate * (1f + plr.Attributes[GameAttribute.Magic_Find])))
+						if (seed < (rate * (1f + plr.Attributes[GameAttributes.Magic_Find])))
 						{
 							var lootQuality = World.Game.IsHardcore ? LootManager.GetSeasonalLootQuality((int)Quality, World.Game.Difficulty) : LootManager.GetLootQuality((int)Quality, World.Game.Difficulty);
 							World.SpawnRandomEquip(plr, plr, lootQuality);
@@ -160,12 +157,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				AnimationSNO = AnimationSetKeys.Open.ID
 			}, this);
 
-			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			Attributes[GameAttribute.Chest_Open, 0xFFFFFF] = true;
+			Attributes[GameAttributes.Chest_Open, 0xFFFFFF] = true;
 			Attributes.BroadcastChangedIfRevealed();
 
-			Attributes[GameAttribute.Disabled] = true;
+			Attributes[GameAttributes.Disabled] = true;
 
 			if (SNO == ActorSno._trdun_cath_chandelier_trap_switch2)
 			{

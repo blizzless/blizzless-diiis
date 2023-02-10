@@ -21,8 +21,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem.Implementations
 			//Debug.Assert(target != null);
 			if (target == null) return;
 
-			target.Attributes[GameAttribute.DyeType] = Attributes[GameAttribute.DyeType];
-			target.DBInventory.DyeType = Attributes[GameAttribute.DyeType];
+			target.Attributes[GameAttributes.DyeType] = Attributes[GameAttributes.DyeType];
+			target.DBInventory.DyeType = Attributes[GameAttributes.DyeType];
 
 			player.World.Game.GameDbSession.SessionUpdate(target.DBInventory);
 
@@ -30,11 +30,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem.Implementations
 
 			if (GBHandle.GBID == 1866876233 || GBHandle.GBID == 1866876234) return;
 
-			if (Attributes[GameAttribute.ItemStackQuantityLo] <= 1)
+			if (Attributes[GameAttributes.ItemStackQuantityLo] <= 1)
 				player.Inventory.DestroyInventoryItem(this); // No more dyes!
 			else
 			{
-				UpdateStackCount(--Attributes[GameAttribute.ItemStackQuantityLo]); // Just remove one
+				UpdateStackCount(--Attributes[GameAttributes.ItemStackQuantityLo]); // Just remove one
 				Attributes.SendChangedMessage(player.InGameClient);
 			}
 		}

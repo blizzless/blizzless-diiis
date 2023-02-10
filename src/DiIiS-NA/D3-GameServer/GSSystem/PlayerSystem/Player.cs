@@ -30,7 +30,6 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using System.Drawing;
-using System.Reflection;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.GSSystem.SkillsSystem;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -55,11 +54,9 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Camera;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Combat;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.UI;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans;
 using DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem;
@@ -233,11 +230,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             }
             else if (value != _activeHireling)
             {
-                HirelingId = value.Attributes[GameAttribute.Hireling_Class];
+                HirelingId = value.Attributes[GameAttributes.Hireling_Class];
                 lock (Toon.DBToon)
                 {
                     var dbToon = Toon.DBToon;
-                    dbToon.ActiveHireling = value.Attributes[GameAttribute.Hireling_Class];
+                    dbToon.ActiveHireling = value.Attributes[GameAttributes.Hireling_Class];
                     DBSessions.SessionUpdate(dbToon);
                 }
             }
@@ -345,12 +342,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         // Attributes
         if (World.Game.PvP)
-            Attributes[GameAttribute.TeamID] = PlayerIndex + 2;
+            Attributes[GameAttributes.TeamID] = PlayerIndex + 2;
         else
-            Attributes[GameAttribute.TeamID] = 2;
+            Attributes[GameAttributes.TeamID] = 2;
 
         //make sure if greater is not active enable banner.
-        if (!World.Game.NephalemGreater) Attributes[GameAttribute.Banner_Usable] = true;
+        if (!World.Game.NephalemGreater) Attributes[GameAttributes.Banner_Usable] = true;
         SetAllStatsInCorrectOrder();
         // Enabled stone of recall
         if (!World.Game.PvP & Toon.StoneOfPortal)
@@ -368,7 +365,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         LearnedLore.Count = lores.Count();
 
-        Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+        Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
         Attributes.BroadcastChangedIfRevealed();
     }
 
@@ -399,19 +396,19 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void SetAttributesSkills()
     {
         //Skills
-        Attributes[GameAttribute.SkillKit] = Toon.HeroTable.SNOSKillKit0;
+        Attributes[GameAttributes.SkillKit] = Toon.HeroTable.SNOSKillKit0;
 
-        Attributes[GameAttribute.Buff_Icon_Start_Tick0, 0x00033C40] = 153;
-        Attributes[GameAttribute.Buff_Icon_End_Tick0, 0x00033C40] = 3753;
-        Attributes[GameAttribute.Buff_Icon_Count0, 0x0006B48E] = 1;
-        Attributes[GameAttribute.Buff_Icon_Count0, 0x0004601B] = 1;
-        Attributes[GameAttribute.Buff_Icon_Count0, 0x00033C40] = 1;
+        Attributes[GameAttributes.Buff_Icon_Start_Tick0, 0x00033C40] = 153;
+        Attributes[GameAttributes.Buff_Icon_End_Tick0, 0x00033C40] = 3753;
+        Attributes[GameAttributes.Buff_Icon_Count0, 0x0006B48E] = 1;
+        Attributes[GameAttributes.Buff_Icon_Count0, 0x0004601B] = 1;
+        Attributes[GameAttributes.Buff_Icon_Count0, 0x00033C40] = 1;
 
-        Attributes[GameAttribute.Currencies_Discovered] = 0x0011FFF8;
+        Attributes[GameAttributes.Currencies_Discovered] = 0x0011FFF8;
 
-        Attributes[GameAttribute.Skill, 30592] = 1;
-        Attributes[GameAttribute.Resource_Degeneration_Prevented] = false;
-        Attributes[GameAttribute.Resource_Degeneration_Stop_Point] = 0;
+        Attributes[GameAttributes.Skill, 30592] = 1;
+        Attributes[GameAttributes.Resource_Degeneration_Prevented] = false;
+        Attributes[GameAttributes.Resource_Degeneration_Stop_Point] = 0;
         //scripted //this.Attributes[GameAttribute.Skill_Total, 0x7545] = 1; //Axe Operate Gizmo
         //scripted //this.Attributes[GameAttribute.Skill_Total, 0x76B7] = 1; //Punch!
         //scripted //this.Attributes[GameAttribute.Skill_Total, 0x6DF] = 1; //Use Item
@@ -423,77 +420,77 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void SetAttributesBuffs()
     {
         //Buffs
-        Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0x33C40] = true;
-        Attributes[GameAttribute.Buff_Icon_End_Tick0, 0x00033C40] = 0x000003FB;
-        Attributes[GameAttribute.Buff_Icon_Start_Tick0, 0x00033C40] = 0x00000077;
-        Attributes[GameAttribute.Buff_Icon_Count0, 0x00033C40] = 1;
-        Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0xCE11] = true;
-        Attributes[GameAttribute.Buff_Icon_Count0, 0x0000CE11] = 1;
-        Attributes[GameAttribute.Buff_Visual_Effect, 0xFFFFF] = true;
+        Attributes[GameAttributes.Buff_Exclusive_Type_Active, 0x33C40] = true;
+        Attributes[GameAttributes.Buff_Icon_End_Tick0, 0x00033C40] = 0x000003FB;
+        Attributes[GameAttributes.Buff_Icon_Start_Tick0, 0x00033C40] = 0x00000077;
+        Attributes[GameAttributes.Buff_Icon_Count0, 0x00033C40] = 1;
+        Attributes[GameAttributes.Buff_Exclusive_Type_Active, 0xCE11] = true;
+        Attributes[GameAttributes.Buff_Icon_Count0, 0x0000CE11] = 1;
+        Attributes[GameAttributes.Buff_Visual_Effect, 0xFFFFF] = true;
         //Wings
         if (CurrentWingsPowerId != -1)
         {
-            Attributes[GameAttribute.Buff_Exclusive_Type_Active, CurrentWingsPowerId] = true;
-            Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, CurrentWingsPowerId] = true;
-            Attributes[GameAttribute.Buff_Icon_Start_Tick0, CurrentWingsPowerId] = 0;
-            Attributes[GameAttribute.Buff_Icon_End_Tick0, CurrentWingsPowerId] = 100;
-            Attributes[GameAttribute.Buff_Icon_Count0, CurrentWingsPowerId] = 1;
+            Attributes[GameAttributes.Buff_Exclusive_Type_Active, CurrentWingsPowerId] = true;
+            Attributes[GameAttributes.Power_Buff_0_Visual_Effect_None, CurrentWingsPowerId] = true;
+            Attributes[GameAttributes.Buff_Icon_Start_Tick0, CurrentWingsPowerId] = 0;
+            Attributes[GameAttributes.Buff_Icon_End_Tick0, CurrentWingsPowerId] = 100;
+            Attributes[GameAttributes.Buff_Icon_Count0, CurrentWingsPowerId] = 1;
         }
     }
 
     public void SetAttributesDamage()
     {
-        Attributes[GameAttribute.Primary_Damage_Attribute] = (int)Toon.HeroTable.CoreAttribute + 1;
-        Attributes[GameAttribute.Attacks_Per_Second_Percent_Cap] = 4f;
+        Attributes[GameAttributes.Primary_Damage_Attribute] = (int)Toon.HeroTable.CoreAttribute + 1;
+        Attributes[GameAttributes.Attacks_Per_Second_Percent_Cap] = 4f;
     }
 
     public void SetAttributesRessources()
     {
-        Attributes[GameAttribute.Resource_Type_Primary] = (int)Toon.HeroTable.PrimaryResource + 1;
-        Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Primary] - 1] =
+        Attributes[GameAttributes.Resource_Type_Primary] = (int)Toon.HeroTable.PrimaryResource + 1;
+        Attributes[GameAttributes.Resource_Max, Attributes[GameAttributes.Resource_Type_Primary] - 1] =
             Toon.HeroTable.PrimaryResourceBase;
-        Attributes[GameAttribute.Resource_Max_Bonus, Attributes[GameAttribute.Resource_Type_Primary] - 1] = 0;
-        Attributes[GameAttribute.Resource_Factor_Level, Attributes[GameAttribute.Resource_Type_Primary] - 1] =
+        Attributes[GameAttributes.Resource_Max_Bonus, Attributes[GameAttributes.Resource_Type_Primary] - 1] = 0;
+        Attributes[GameAttributes.Resource_Factor_Level, Attributes[GameAttributes.Resource_Type_Primary] - 1] =
             Toon.HeroTable.PrimaryResourceFactorLevel;
-        Attributes[GameAttribute.Resource_Percent, Attributes[GameAttribute.Resource_Type_Primary] - 1] = 0;
-        Attributes[GameAttribute.Resource_Cur, (int)Attributes[GameAttribute.Resource_Type_Primary]] =
-            GetMaxResource((int)Attributes[GameAttribute.Resource_Type_Primary] - 1);
+        Attributes[GameAttributes.Resource_Percent, Attributes[GameAttributes.Resource_Type_Primary] - 1] = 0;
+        Attributes[GameAttributes.Resource_Cur, (int)Attributes[GameAttributes.Resource_Type_Primary]] =
+            GetMaxResource((int)Attributes[GameAttributes.Resource_Type_Primary] - 1);
 
 
-        var max = Attributes[GameAttribute.Resource_Max, (int)Attributes[GameAttribute.Resource_Type_Primary] - 1];
-        var cur = Attributes[GameAttribute.Resource_Cur, (int)Attributes[GameAttribute.Resource_Type_Primary] - 1];
+        var max = Attributes[GameAttributes.Resource_Max, (int)Attributes[GameAttributes.Resource_Type_Primary] - 1];
+        var cur = Attributes[GameAttributes.Resource_Cur, (int)Attributes[GameAttributes.Resource_Type_Primary] - 1];
 
 
-        Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Attributes[GameAttribute.Resource_Type_Primary] - 1] =
+        Attributes[GameAttributes.Resource_Regen_Per_Second, (int)Attributes[GameAttributes.Resource_Type_Primary] - 1] =
             Toon.HeroTable.PrimaryResourceRegen;
-        Attributes[GameAttribute.Resource_Regen_Stop_Regen] = false;
+        Attributes[GameAttributes.Resource_Regen_Stop_Regen] = false;
         if (Toon.Class == ToonClass.Barbarian)
-            Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = 0;
+            Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = 0;
         else
-            Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] =
+            Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] =
                 (int)GetMaxResource((int)Toon.HeroTable.PrimaryResource + 1) * 100;
 
         if (Toon.HeroTable.SecondaryResource != GameBalance.HeroTable.Resource.None)
         {
-            Attributes[GameAttribute.Resource_Type_Secondary] = (int)Toon.HeroTable.SecondaryResource + 1;
-            Attributes[GameAttribute.Resource_Max, (int)Attributes[GameAttribute.Resource_Type_Secondary] - 1] =
+            Attributes[GameAttributes.Resource_Type_Secondary] = (int)Toon.HeroTable.SecondaryResource + 1;
+            Attributes[GameAttributes.Resource_Max, (int)Attributes[GameAttributes.Resource_Type_Secondary] - 1] =
                 Toon.HeroTable.SecondaryResourceBase;
-            Attributes[GameAttribute.Resource_Max_Bonus, Attributes[GameAttribute.Resource_Type_Secondary] - 1] = 0;
-            Attributes[GameAttribute.Resource_Percent, Attributes[GameAttribute.Resource_Type_Secondary] - 1] = 0;
-            Attributes[GameAttribute.Resource_Factor_Level,
-                    (int)Attributes[GameAttribute.Resource_Type_Secondary] - 1] =
+            Attributes[GameAttributes.Resource_Max_Bonus, Attributes[GameAttributes.Resource_Type_Secondary] - 1] = 0;
+            Attributes[GameAttributes.Resource_Percent, Attributes[GameAttributes.Resource_Type_Secondary] - 1] = 0;
+            Attributes[GameAttributes.Resource_Factor_Level,
+                    (int)Attributes[GameAttributes.Resource_Type_Secondary] - 1] =
                 Toon.HeroTable.SecondaryResourceFactorLevel;
-            Attributes[GameAttribute.Resource_Cur, (int)Attributes[GameAttribute.Resource_Type_Secondary] - 1] =
+            Attributes[GameAttributes.Resource_Cur, (int)Attributes[GameAttributes.Resource_Type_Secondary] - 1] =
                 GetMaxResource((int)Toon.HeroTable.SecondaryResource + 1);
-            Attributes[GameAttribute.Resource_Regen_Per_Second,
-                (int)Attributes[GameAttribute.Resource_Type_Secondary] - 1] = Toon.HeroTable.SecondaryResourceRegen;
+            Attributes[GameAttributes.Resource_Regen_Per_Second,
+                (int)Attributes[GameAttributes.Resource_Type_Secondary] - 1] = Toon.HeroTable.SecondaryResourceRegen;
         }
 
-        Attributes[GameAttribute.Get_Hit_Recovery_Per_Level] = (int)Toon.HeroTable.GetHitRecoveryPerLevel;
-        Attributes[GameAttribute.Get_Hit_Recovery_Base] = (int)Toon.HeroTable.GetHitRecoveryBase;
+        Attributes[GameAttributes.Get_Hit_Recovery_Per_Level] = (int)Toon.HeroTable.GetHitRecoveryPerLevel;
+        Attributes[GameAttributes.Get_Hit_Recovery_Base] = (int)Toon.HeroTable.GetHitRecoveryBase;
 
-        Attributes[GameAttribute.Get_Hit_Max_Per_Level] = (int)Toon.HeroTable.GetHitMaxPerLevel;
-        Attributes[GameAttribute.Get_Hit_Max_Base] = (int)Toon.HeroTable.GetHitMaxBase;
+        Attributes[GameAttributes.Get_Hit_Max_Per_Level] = (int)Toon.HeroTable.GetHitMaxPerLevel;
+        Attributes[GameAttributes.Get_Hit_Max_Base] = (int)Toon.HeroTable.GetHitMaxBase;
     }
 
     public void SetAttributesClassSpecific()
@@ -503,25 +500,25 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         {
             case ToonClass.Barbarian:
                 //scripted //this.Attributes[GameAttribute.Skill_Total, 30078] = 1;  //Fury Trait
-                Attributes[GameAttribute.Skill, 30078] = 1;
-                Attributes[GameAttribute.Trait, 30078] = 1;
-                Attributes[GameAttribute.Buff_Exclusive_Type_Active, 30078] = true;
-                Attributes[GameAttribute.Buff_Icon_Count0, 30078] = 1;
+                Attributes[GameAttributes.Skill, 30078] = 1;
+                Attributes[GameAttributes.Trait, 30078] = 1;
+                Attributes[GameAttributes.Buff_Exclusive_Type_Active, 30078] = true;
+                Attributes[GameAttributes.Buff_Icon_Count0, 30078] = 1;
                 break;
             case ToonClass.DemonHunter:
                 break;
             case ToonClass.Crusader:
-                Attributes[GameAttribute.Skill, 0x000418F2] = 1;
-                Attributes[GameAttribute.Skill, 0x00045CCF] = 1;
-                Attributes[GameAttribute.Skill, 0x000564D4] = 1;
+                Attributes[GameAttributes.Skill, 0x000418F2] = 1;
+                Attributes[GameAttributes.Skill, 0x00045CCF] = 1;
+                Attributes[GameAttributes.Skill, 0x000564D4] = 1;
 
                 break;
             case ToonClass.Monk:
                 //scripted //this.Attributes[GameAttribute.Skill_Total, 0x0000CE11] = 1;  //Spirit Trait
-                Attributes[GameAttribute.Skill, 0x0000CE11] = 1;
-                Attributes[GameAttribute.Trait, 0x0000CE11] = 1;
-                Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0xCE11] = true;
-                Attributes[GameAttribute.Buff_Icon_Count0, 0x0000CE11] = 1;
+                Attributes[GameAttributes.Skill, 0x0000CE11] = 1;
+                Attributes[GameAttributes.Trait, 0x0000CE11] = 1;
+                Attributes[GameAttributes.Buff_Exclusive_Type_Active, 0xCE11] = true;
+                Attributes[GameAttributes.Buff_Icon_Count0, 0x0000CE11] = 1;
                 break;
             case ToonClass.WitchDoctor:
                 break;
@@ -532,13 +529,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void SetAttributesMovement()
     {
-        Attributes[GameAttribute.Movement_Scalar_Cap] = 3f;
-        Attributes[GameAttribute.Movement_Scalar] = 1f;
-        Attributes[GameAttribute.Walking_Rate] = Toon.HeroTable.WalkingRate;
-        Attributes[GameAttribute.Running_Rate] = Toon.HeroTable.RunningRate;
-        Attributes[GameAttribute.Experience_Bonus] = 0f;
-        Attributes[GameAttribute.Sprinting_Rate] = Toon.HeroTable.SprintRate * 2;
-        Attributes[GameAttribute.Strafing_Rate] = Toon.HeroTable.SprintRate * 2;
+        Attributes[GameAttributes.Movement_Scalar_Cap] = 3f;
+        Attributes[GameAttributes.Movement_Scalar] = 1f;
+        Attributes[GameAttributes.Walking_Rate] = Toon.HeroTable.WalkingRate;
+        Attributes[GameAttributes.Running_Rate] = Toon.HeroTable.RunningRate;
+        Attributes[GameAttributes.Experience_Bonus] = 0f;
+        Attributes[GameAttributes.Sprinting_Rate] = Toon.HeroTable.SprintRate * 2;
+        Attributes[GameAttributes.Strafing_Rate] = Toon.HeroTable.SprintRate * 2;
     }
 
     public void SetAttributesMisc()
@@ -559,22 +556,22 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         this.Attributes[GameAttribute.Backpack_Slots] = 60;
         this.Attributes[GameAttribute.General_Cooldown] = 0;
         //*/
-        Attributes[GameAttribute.Disabled] = true; // we should be making use of these ones too /raist.
-        Attributes[GameAttribute.Loading] = true;
-        Attributes[GameAttribute.Loading_Player_ACD] = PlayerIndex;
-        Attributes[GameAttribute.Invulnerable] = true;
-        Attributes[GameAttribute.Hidden] = false;
-        Attributes[GameAttribute.Immobolize] = true;
-        Attributes[GameAttribute.Untargetable] = true;
-        Attributes[GameAttribute.CantStartDisplayedPowers] = true;
-        Attributes[GameAttribute.IsContentRestrictedActor] = true;
-        Attributes[GameAttribute.Cannot_Dodge] = false;
-        Attributes[GameAttribute.Trait, 0x0000CE11] = 1;
-        Attributes[GameAttribute.TeamID] = 2;
-        Attributes[GameAttribute.Stash_Tabs_Purchased_With_Gold] = 5; // what do these do?
-        Attributes[GameAttribute.Stash_Tabs_Rewarded_By_Achievements] = 5;
-        Attributes[GameAttribute.Backpack_Slots] = 60;
-        Attributes[GameAttribute.General_Cooldown] = 0;
+        Attributes[GameAttributes.Disabled] = true; // we should be making use of these ones too /raist.
+        Attributes[GameAttributes.Loading] = true;
+        Attributes[GameAttributes.Loading_Player_ACD] = PlayerIndex;
+        Attributes[GameAttributes.Invulnerable] = true;
+        Attributes[GameAttributes.Hidden] = false;
+        Attributes[GameAttributes.Immobolize] = true;
+        Attributes[GameAttributes.Untargetable] = true;
+        Attributes[GameAttributes.CantStartDisplayedPowers] = true;
+        Attributes[GameAttributes.IsContentRestrictedActor] = true;
+        Attributes[GameAttributes.Cannot_Dodge] = false;
+        Attributes[GameAttributes.Trait, 0x0000CE11] = 1;
+        Attributes[GameAttributes.TeamID] = 2;
+        Attributes[GameAttributes.Stash_Tabs_Purchased_With_Gold] = 5; // what do these do?
+        Attributes[GameAttributes.Stash_Tabs_Rewarded_By_Achievements] = 5;
+        Attributes[GameAttributes.Backpack_Slots] = 60;
+        Attributes[GameAttributes.General_Cooldown] = 0;
     }
 
     public void SetAttributesByParagon()
@@ -585,13 +582,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         var extraParagonPoints = Math.Max(0, Toon.ParagonLevel - 800);
         for (var i = 0; i < 4; i++)
         {
-            Attributes[GameAttribute.Paragon_Bonus_Points_Available, i] = baseParagonPoints / 4;
+            Attributes[GameAttributes.Paragon_Bonus_Points_Available, i] = baseParagonPoints / 4;
             // Process remainder only for base points.
-            if (i < baseParagonPoints % 4) Attributes[GameAttribute.Paragon_Bonus_Points_Available, i]++;
+            if (i < baseParagonPoints % 4) Attributes[GameAttributes.Paragon_Bonus_Points_Available, i]++;
         }
 
         // First tab of Paragon (Core) - pos 0.
-        Attributes[GameAttribute.Paragon_Bonus_Points_Available, 0] += extraParagonPoints;
+        Attributes[GameAttributes.Paragon_Bonus_Points_Available, 0] += extraParagonPoints;
 
         var assigned_bonuses = ParagonBonuses;
 
@@ -601,9 +598,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         {
             var slot_index = bonus.Category * 4 + bonus.Index - 1;
 
-            Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category] -= assigned_bonuses[slot_index];
+            Attributes[GameAttributes.Paragon_Bonus_Points_Available, bonus.Category] -= assigned_bonuses[slot_index];
 
-            Attributes[GameAttribute.Paragon_Bonus, bonus.Hash] = assigned_bonuses[slot_index];
+            Attributes[GameAttributes.Paragon_Bonus, bonus.Hash] = assigned_bonuses[slot_index];
 
             float result;
             if (FormulaScript.Evaluate(bonus.AttributeSpecifiers[0].Formula.ToArray(), new ItemRandomHelper(0),
@@ -612,7 +609,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 if (bonus.AttributeSpecifiers[0].AttributeId == 104) //Resistance_All
                 {
                     foreach (var damageType in DamageType.AllTypes)
-                        Attributes[GameAttribute.Resistance, damageType.AttributeKey] +=
+                        Attributes[GameAttributes.Resistance, damageType.AttributeKey] +=
                             result * assigned_bonuses[slot_index];
                 }
                 else
@@ -621,18 +618,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
                     if (bonus.AttributeSpecifiers[0].AttributeId == 342) result = 16.5f; //Hitpoints_On_Hit
 
-                    if (GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] is GameAttributeF)
+                    if (GameAttributes.Attributes[bonus.AttributeSpecifiers[0].AttributeId] is GameAttributeF)
                     {
-                        var attr = GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeF;
+                        var attr = GameAttributes.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeF;
                         if (bonus.AttributeSpecifiers[0].SNOParam != -1)
                             Attributes[attr, bonus.AttributeSpecifiers[0].SNOParam] +=
                                 result * assigned_bonuses[slot_index];
                         else
                             Attributes[attr] += result * assigned_bonuses[slot_index];
                     }
-                    else if (GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] is GameAttributeI)
+                    else if (GameAttributes.Attributes[bonus.AttributeSpecifiers[0].AttributeId] is GameAttributeI)
                     {
-                        var attr = GameAttribute.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeI;
+                        var attr = GameAttributes.Attributes[bonus.AttributeSpecifiers[0].AttributeId] as GameAttributeI;
                         if (bonus.AttributeSpecifiers[0].SNOParam != -1)
                             Attributes[attr, bonus.AttributeSpecifiers[0].SNOParam] +=
                                 (int)(result * assigned_bonuses[slot_index]);
@@ -650,10 +647,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void SetAttributesByItems()
     {
         const float nonPhysDefault = 0f; //was 3.051758E-05f
-        var MaxHPOld = Attributes[GameAttribute.Hitpoints_Max_Total];
-        var PercentOfOld = Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
-        PercHPbeforeChange = Attributes[GameAttribute.Hitpoints_Cur] /
-                             (Attributes[GameAttribute.Hitpoints_Max_Total] / 100);
+        var MaxHPOld = Attributes[GameAttributes.Hitpoints_Max_Total];
+        var PercentOfOld = Attributes[GameAttributes.Hitpoints_Max_Total] / 100;
+        PercHPbeforeChange = Attributes[GameAttributes.Hitpoints_Cur] /
+                             (Attributes[GameAttributes.Hitpoints_Max_Total] / 100);
         ;
 
         var damageAttributeMinValues = new Dictionary<DamageType, float[]>
@@ -673,54 +670,54 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             //var weaponDamageMin = damageType.AttributeKey == 0 ? this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min, 0) : (this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min, 0) + Math.Max(this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min, damageType.AttributeKey), damageAttributeMinValues[damageType][0]));
             //var weaponDamageDelta = damageType.AttributeKey == 0 ? this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min, 0) : (this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta, 0) + Math.Max(this.Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta, damageType.AttributeKey), damageAttributeMinValues[damageType][1]));
 
-            Attributes[GameAttribute.Damage_Weapon_Min, damageType.AttributeKey] =
-                Math.Max(Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min_Total, damageType.AttributeKey),
+            Attributes[GameAttributes.Damage_Weapon_Min, damageType.AttributeKey] =
+                Math.Max(Inventory.GetItemBonus(GameAttributes.Damage_Weapon_Min_Total, damageType.AttributeKey),
                     damageAttributeMinValues[damageType][0]) +
-                Inventory.GetItemBonus(GameAttribute.Damage_Min, damageType.AttributeKey);
-            Attributes[GameAttribute.Damage_Weapon_Min, damageType.AttributeKey] -=
+                Inventory.GetItemBonus(GameAttributes.Damage_Min, damageType.AttributeKey);
+            Attributes[GameAttributes.Damage_Weapon_Min, damageType.AttributeKey] -=
                 Inventory.AdjustDualWieldMin(damageType); //Damage on weapons should not add when dual-wielding
-            Attributes[GameAttribute.Damage_Weapon_Delta, damageType.AttributeKey] =
-                Math.Max(Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta_Total, damageType.AttributeKey),
+            Attributes[GameAttributes.Damage_Weapon_Delta, damageType.AttributeKey] =
+                Math.Max(Inventory.GetItemBonus(GameAttributes.Damage_Weapon_Delta_Total, damageType.AttributeKey),
                     damageAttributeMinValues[damageType][1]) +
-                Inventory.GetItemBonus(GameAttribute.Damage_Delta, damageType.AttributeKey);
-            Attributes[GameAttribute.Damage_Weapon_Delta, damageType.AttributeKey] -=
+                Inventory.GetItemBonus(GameAttributes.Damage_Delta, damageType.AttributeKey);
+            Attributes[GameAttributes.Damage_Weapon_Delta, damageType.AttributeKey] -=
                 Inventory.AdjustDualWieldDelta(damageType); //Damage on weapons should not add when dual-wielding
 
-            Attributes[GameAttribute.Damage_Weapon_Bonus_Min, damageType.AttributeKey] = 0f;
-            Attributes[GameAttribute.Damage_Weapon_Bonus_Min_X1, damageType.AttributeKey] = 0f;
-            Attributes[GameAttribute.Damage_Weapon_Bonus_Delta, damageType.AttributeKey] = 0f;
-            Attributes[GameAttribute.Damage_Weapon_Bonus_Delta_X1, damageType.AttributeKey] = 0f;
-            Attributes[GameAttribute.Damage_Weapon_Bonus_Flat, damageType.AttributeKey] = 0f;
+            Attributes[GameAttributes.Damage_Weapon_Bonus_Min, damageType.AttributeKey] = 0f;
+            Attributes[GameAttributes.Damage_Weapon_Bonus_Min_X1, damageType.AttributeKey] = 0f;
+            Attributes[GameAttributes.Damage_Weapon_Bonus_Delta, damageType.AttributeKey] = 0f;
+            Attributes[GameAttributes.Damage_Weapon_Bonus_Delta_X1, damageType.AttributeKey] = 0f;
+            Attributes[GameAttributes.Damage_Weapon_Bonus_Flat, damageType.AttributeKey] = 0f;
 
-            Attributes[GameAttribute.Damage_Type_Percent_Bonus, damageType.AttributeKey] =
-                Inventory.GetItemBonus(GameAttribute.Damage_Type_Percent_Bonus, damageType.AttributeKey);
-            Attributes[GameAttribute.Damage_Dealt_Percent_Bonus, damageType.AttributeKey] =
-                Inventory.GetItemBonus(GameAttribute.Damage_Dealt_Percent_Bonus, damageType.AttributeKey);
+            Attributes[GameAttributes.Damage_Type_Percent_Bonus, damageType.AttributeKey] =
+                Inventory.GetItemBonus(GameAttributes.Damage_Type_Percent_Bonus, damageType.AttributeKey);
+            Attributes[GameAttributes.Damage_Dealt_Percent_Bonus, damageType.AttributeKey] =
+                Inventory.GetItemBonus(GameAttributes.Damage_Dealt_Percent_Bonus, damageType.AttributeKey);
 
-            Attributes[GameAttribute.Resistance, damageType.AttributeKey] =
-                Inventory.GetItemBonus(GameAttribute.Resistance, damageType.AttributeKey);
-            Attributes[GameAttribute.Damage_Percent_Reduction_From_Type, damageType.AttributeKey] =
-                Inventory.GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Type, damageType.AttributeKey);
-            Attributes[GameAttribute.Amplify_Damage_Type_Percent, damageType.AttributeKey] =
-                Inventory.GetItemBonus(GameAttribute.Amplify_Damage_Type_Percent, damageType.AttributeKey);
+            Attributes[GameAttributes.Resistance, damageType.AttributeKey] =
+                Inventory.GetItemBonus(GameAttributes.Resistance, damageType.AttributeKey);
+            Attributes[GameAttributes.Damage_Percent_Reduction_From_Type, damageType.AttributeKey] =
+                Inventory.GetItemBonus(GameAttributes.Damage_Percent_Reduction_From_Type, damageType.AttributeKey);
+            Attributes[GameAttributes.Amplify_Damage_Type_Percent, damageType.AttributeKey] =
+                Inventory.GetItemBonus(GameAttributes.Amplify_Damage_Type_Percent, damageType.AttributeKey);
         }
 
         for (var i = 0; i < 4; i++)
-            Attributes[GameAttribute.Damage_Percent_Bonus_Vs_Monster_Type, i] =
-                Inventory.GetItemBonus(GameAttribute.Damage_Percent_Bonus_Vs_Monster_Type, i);
+            Attributes[GameAttributes.Damage_Percent_Bonus_Vs_Monster_Type, i] =
+                Inventory.GetItemBonus(GameAttributes.Damage_Percent_Bonus_Vs_Monster_Type, i);
 
 
-        Attributes[GameAttribute.Resistance_All] = Inventory.GetItemBonus(GameAttribute.Resistance_All);
-        Attributes[GameAttribute.Resistance_Percent_All] = Inventory.GetItemBonus(GameAttribute.Resistance_Percent_All);
-        Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] =
-            Inventory.GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Melee);
-        Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] =
-            Inventory.GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Ranged);
+        Attributes[GameAttributes.Resistance_All] = Inventory.GetItemBonus(GameAttributes.Resistance_All);
+        Attributes[GameAttributes.Resistance_Percent_All] = Inventory.GetItemBonus(GameAttributes.Resistance_Percent_All);
+        Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] =
+            Inventory.GetItemBonus(GameAttributes.Damage_Percent_Reduction_From_Melee);
+        Attributes[GameAttributes.Damage_Percent_Reduction_From_Ranged] =
+            Inventory.GetItemBonus(GameAttributes.Damage_Percent_Reduction_From_Ranged);
 
-        Attributes[GameAttribute.Thorns_Fixed, 0] = Inventory.GetItemBonus(GameAttribute.Thorns_Fixed, 0);
+        Attributes[GameAttributes.Thorns_Fixed, 0] = Inventory.GetItemBonus(GameAttributes.Thorns_Fixed, 0);
 
         //this.Attributes[GameAttribute.Armor_Item_Percent] = this.Inventory.GetItemBonus(GameAttribute.Armor_Item_Percent);
-        var allStatsBonus = Inventory.GetItemBonus(GameAttribute.Stats_All_Bonus); // / 1065353216;
+        var allStatsBonus = Inventory.GetItemBonus(GameAttributes.Stats_All_Bonus); // / 1065353216;
         /*
         this.Attributes[GameAttribute.Armor_Item] = this.Inventory.GetItemBonus(GameAttribute.Armor_Item_Total);
         this.Attributes[GameAttribute.Strength_Item] = this.Inventory.GetItemBonus(GameAttribute.Dexterity_Item);// / 1065353216;
@@ -733,327 +730,326 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         this.Attributes[GameAttribute.Vitality_Item] += allStatsBonus;
         //*/
         //*
-        Attributes[GameAttribute.Strength_Item] = Inventory.GetItemBonus(GameAttribute.Strength_Item); // / 1065353216;
-        Attributes[GameAttribute.Strength_Item] += allStatsBonus;
-        Attributes[GameAttribute.Vitality_Item] = Inventory.GetItemBonus(GameAttribute.Vitality_Item); // / 1065353216;
-        Attributes[GameAttribute.Vitality_Item] += allStatsBonus;
-        Attributes[GameAttribute.Dexterity_Item] =
-            Inventory.GetItemBonus(GameAttribute.Dexterity_Item); // / 1065353216;
-        Attributes[GameAttribute.Dexterity_Item] += allStatsBonus;
-        Attributes[GameAttribute.Intelligence_Item] =
-            Inventory.GetItemBonus(GameAttribute
-                .Intelligence_Item); // / 1065353216; //I know that's wild, but client can't display it properly...
-        Attributes[GameAttribute.Intelligence_Item] += allStatsBonus;
+        Attributes[GameAttributes.Strength_Item] = Inventory.GetItemBonus(GameAttributes.Strength_Item); // / 1065353216;
+        Attributes[GameAttributes.Strength_Item] += allStatsBonus;
+        Attributes[GameAttributes.Vitality_Item] = Inventory.GetItemBonus(GameAttributes.Vitality_Item); // / 1065353216;
+        Attributes[GameAttributes.Vitality_Item] += allStatsBonus;
+        Attributes[GameAttributes.Dexterity_Item] =
+            Inventory.GetItemBonus(GameAttributes.Dexterity_Item); // / 1065353216;
+        Attributes[GameAttributes.Dexterity_Item] += allStatsBonus;
+        Attributes[GameAttributes.Intelligence_Item] =
+            Inventory.GetItemBonus(GameAttributes.Intelligence_Item); // / 1065353216; //I know that's wild, but client can't display it properly...
+        Attributes[GameAttributes.Intelligence_Item] += allStatsBonus;
         //*/
 
         //this.Attributes[GameAttribute.Cube_Enchanted_Strength_Item] = 0;
-        Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
+        Attributes[GameAttributes.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
 
 
-        Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus] =
-            Inventory.GetItemBonus(GameAttribute.Hitpoints_Max_Percent_Bonus);
-        Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Item] =
-            Inventory.GetItemBonus(GameAttribute.Hitpoints_Max_Percent_Bonus_Item);
-        Attributes[GameAttribute.Hitpoints_Max_Bonus] = Inventory.GetItemBonus(GameAttribute.Hitpoints_Max_Bonus);
+        Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus] =
+            Inventory.GetItemBonus(GameAttributes.Hitpoints_Max_Percent_Bonus);
+        Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Item] =
+            Inventory.GetItemBonus(GameAttributes.Hitpoints_Max_Percent_Bonus_Item);
+        Attributes[GameAttributes.Hitpoints_Max_Bonus] = Inventory.GetItemBonus(GameAttributes.Hitpoints_Max_Bonus);
 
 
-        Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] =
-            Inventory.GetItemBonus(GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource);
+        Attributes[GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] =
+            Inventory.GetItemBonus(GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource);
 
-        Attributes[GameAttribute.Attacks_Per_Second] = Inventory.GetAPS();
+        Attributes[GameAttributes.Attacks_Per_Second] = Inventory.GetAPS();
 
-        Attributes[GameAttribute.Attacks_Per_Second_Percent] =
-            Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Item_Percent) +
-            Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Percent);
-        Attributes[GameAttribute.Attacks_Per_Second_Bonus] =
-            Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Item_Bonus);
-        Attributes[GameAttribute.Attacks_Per_Second_Item] =
-            Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Item);
-        var a = Attributes[GameAttribute.Attacks_Per_Second];
-        var b = Attributes[GameAttribute.Attacks_Per_Second_Percent];
-        var c = Attributes[GameAttribute.Attacks_Per_Second_Bonus];
-        var d = Attributes[GameAttribute.Attacks_Per_Second_Item];
-        var e = Attributes[GameAttribute.Attacks_Per_Second_Item_CurrentHand];
-        var f = Attributes[GameAttribute.Attacks_Per_Second_Item_Bonus];
-        var g = Attributes[GameAttribute.Attacks_Per_Second_Percent_Subtotal];
-        var h = Attributes[GameAttribute.Attacks_Per_Second_Percent_Cap];
-        var j = Attributes[GameAttribute.Attacks_Per_Second_Percent_Uncapped];
-        var k = Attributes[GameAttribute.Attacks_Per_Second_Percent_Reduction];
-        var o = Attributes[GameAttribute.Attacks_Per_Second_Total];
+        Attributes[GameAttributes.Attacks_Per_Second_Percent] =
+            Inventory.GetItemBonus(GameAttributes.Attacks_Per_Second_Item_Percent) +
+            Inventory.GetItemBonus(GameAttributes.Attacks_Per_Second_Percent);
+        Attributes[GameAttributes.Attacks_Per_Second_Bonus] =
+            Inventory.GetItemBonus(GameAttributes.Attacks_Per_Second_Item_Bonus);
+        Attributes[GameAttributes.Attacks_Per_Second_Item] =
+            Inventory.GetItemBonus(GameAttributes.Attacks_Per_Second_Item);
+        var a = Attributes[GameAttributes.Attacks_Per_Second];
+        var b = Attributes[GameAttributes.Attacks_Per_Second_Percent];
+        var c = Attributes[GameAttributes.Attacks_Per_Second_Bonus];
+        var d = Attributes[GameAttributes.Attacks_Per_Second_Item];
+        var e = Attributes[GameAttributes.Attacks_Per_Second_Item_CurrentHand];
+        var f = Attributes[GameAttributes.Attacks_Per_Second_Item_Bonus];
+        var g = Attributes[GameAttributes.Attacks_Per_Second_Percent_Subtotal];
+        var h = Attributes[GameAttributes.Attacks_Per_Second_Percent_Cap];
+        var j = Attributes[GameAttributes.Attacks_Per_Second_Percent_Uncapped];
+        var k = Attributes[GameAttributes.Attacks_Per_Second_Percent_Reduction];
+        var o = Attributes[GameAttributes.Attacks_Per_Second_Total];
 
-        if (Attributes[GameAttribute.Attacks_Per_Second_Total] < 1)
-            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-        Attributes[GameAttribute.Crit_Percent_Bonus_Capped] =
-            Inventory.GetItemBonus(GameAttribute.Crit_Percent_Bonus_Capped);
-        Attributes[GameAttribute.Weapon_Crit_Chance] = 0.05f + Inventory.GetItemBonus(GameAttribute.Weapon_Crit_Chance);
-        Attributes[GameAttribute.Crit_Damage_Percent] =
-            0.5f + Inventory.GetItemBonus(GameAttribute.Crit_Damage_Percent);
+        if (Attributes[GameAttributes.Attacks_Per_Second_Total] < 1)
+            Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
+        Attributes[GameAttributes.Crit_Percent_Bonus_Capped] =
+            Inventory.GetItemBonus(GameAttributes.Crit_Percent_Bonus_Capped);
+        Attributes[GameAttributes.Weapon_Crit_Chance] = 0.05f + Inventory.GetItemBonus(GameAttributes.Weapon_Crit_Chance);
+        Attributes[GameAttributes.Crit_Damage_Percent] =
+            0.5f + Inventory.GetItemBonus(GameAttributes.Crit_Damage_Percent);
 
-        Attributes[GameAttribute.Splash_Damage_Effect_Percent] =
-            Inventory.GetItemBonus(GameAttribute.Splash_Damage_Effect_Percent);
+        Attributes[GameAttributes.Splash_Damage_Effect_Percent] =
+            Inventory.GetItemBonus(GameAttributes.Splash_Damage_Effect_Percent);
 
-        Attributes[GameAttribute.On_Hit_Fear_Proc_Chance] =
-            Inventory.GetItemBonus(GameAttribute.On_Hit_Fear_Proc_Chance) +
-            Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Fear_Proc_Chance);
-        Attributes[GameAttribute.On_Hit_Stun_Proc_Chance] =
-            Inventory.GetItemBonus(GameAttribute.On_Hit_Stun_Proc_Chance) +
-            Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Stun_Proc_Chance);
-        Attributes[GameAttribute.On_Hit_Blind_Proc_Chance] =
-            Inventory.GetItemBonus(GameAttribute.On_Hit_Blind_Proc_Chance) +
-            Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Blind_Proc_Chance);
-        Attributes[GameAttribute.On_Hit_Freeze_Proc_Chance] =
-            Inventory.GetItemBonus(GameAttribute.On_Hit_Freeze_Proc_Chance) +
-            Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Freeze_Proc_Chance);
-        Attributes[GameAttribute.On_Hit_Chill_Proc_Chance] =
-            Inventory.GetItemBonus(GameAttribute.On_Hit_Chill_Proc_Chance) +
-            Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Chill_Proc_Chance);
-        Attributes[GameAttribute.On_Hit_Slow_Proc_Chance] =
-            Inventory.GetItemBonus(GameAttribute.On_Hit_Slow_Proc_Chance) +
-            Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Slow_Proc_Chance);
-        Attributes[GameAttribute.On_Hit_Immobilize_Proc_Chance] =
-            Inventory.GetItemBonus(GameAttribute.On_Hit_Immobilize_Proc_Chance) +
-            Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Immobilize_Proc_Chance);
-        Attributes[GameAttribute.On_Hit_Knockback_Proc_Chance] =
-            Inventory.GetItemBonus(GameAttribute.On_Hit_Knockback_Proc_Chance) +
-            Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Knockback_Proc_Chance);
-        Attributes[GameAttribute.On_Hit_Bleed_Proc_Chance] =
-            Inventory.GetItemBonus(GameAttribute.On_Hit_Bleed_Proc_Chance) +
-            Inventory.GetItemBonus(GameAttribute.Weapon_On_Hit_Bleed_Proc_Chance);
+        Attributes[GameAttributes.On_Hit_Fear_Proc_Chance] =
+            Inventory.GetItemBonus(GameAttributes.On_Hit_Fear_Proc_Chance) +
+            Inventory.GetItemBonus(GameAttributes.Weapon_On_Hit_Fear_Proc_Chance);
+        Attributes[GameAttributes.On_Hit_Stun_Proc_Chance] =
+            Inventory.GetItemBonus(GameAttributes.On_Hit_Stun_Proc_Chance) +
+            Inventory.GetItemBonus(GameAttributes.Weapon_On_Hit_Stun_Proc_Chance);
+        Attributes[GameAttributes.On_Hit_Blind_Proc_Chance] =
+            Inventory.GetItemBonus(GameAttributes.On_Hit_Blind_Proc_Chance) +
+            Inventory.GetItemBonus(GameAttributes.Weapon_On_Hit_Blind_Proc_Chance);
+        Attributes[GameAttributes.On_Hit_Freeze_Proc_Chance] =
+            Inventory.GetItemBonus(GameAttributes.On_Hit_Freeze_Proc_Chance) +
+            Inventory.GetItemBonus(GameAttributes.Weapon_On_Hit_Freeze_Proc_Chance);
+        Attributes[GameAttributes.On_Hit_Chill_Proc_Chance] =
+            Inventory.GetItemBonus(GameAttributes.On_Hit_Chill_Proc_Chance) +
+            Inventory.GetItemBonus(GameAttributes.Weapon_On_Hit_Chill_Proc_Chance);
+        Attributes[GameAttributes.On_Hit_Slow_Proc_Chance] =
+            Inventory.GetItemBonus(GameAttributes.On_Hit_Slow_Proc_Chance) +
+            Inventory.GetItemBonus(GameAttributes.Weapon_On_Hit_Slow_Proc_Chance);
+        Attributes[GameAttributes.On_Hit_Immobilize_Proc_Chance] =
+            Inventory.GetItemBonus(GameAttributes.On_Hit_Immobilize_Proc_Chance) +
+            Inventory.GetItemBonus(GameAttributes.Weapon_On_Hit_Immobilize_Proc_Chance);
+        Attributes[GameAttributes.On_Hit_Knockback_Proc_Chance] =
+            Inventory.GetItemBonus(GameAttributes.On_Hit_Knockback_Proc_Chance) +
+            Inventory.GetItemBonus(GameAttributes.Weapon_On_Hit_Knockback_Proc_Chance);
+        Attributes[GameAttributes.On_Hit_Bleed_Proc_Chance] =
+            Inventory.GetItemBonus(GameAttributes.On_Hit_Bleed_Proc_Chance) +
+            Inventory.GetItemBonus(GameAttributes.Weapon_On_Hit_Bleed_Proc_Chance);
 
-        Attributes[GameAttribute.Running_Rate] =
-            Toon.HeroTable.RunningRate + Inventory.GetItemBonus(GameAttribute.Running_Rate);
-        Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] =
-            Inventory.GetItemBonus(GameAttribute.Movement_Scalar_Uncapped_Bonus);
-        Attributes[GameAttribute.Movement_Scalar] = Inventory.GetItemBonus(GameAttribute.Movement_Scalar) + 1.0f;
+        Attributes[GameAttributes.Running_Rate] =
+            Toon.HeroTable.RunningRate + Inventory.GetItemBonus(GameAttributes.Running_Rate);
+        Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] =
+            Inventory.GetItemBonus(GameAttributes.Movement_Scalar_Uncapped_Bonus);
+        Attributes[GameAttributes.Movement_Scalar] = Inventory.GetItemBonus(GameAttributes.Movement_Scalar) + 1.0f;
 
         //this.Attributes[GameAttribute.Magic_Find] = this.Inventory.GetItemBonus(GameAttribute.Magic_Find);
-        Attributes[GameAttribute.Magic_Find] = Inventory.GetMagicFind();
+        Attributes[GameAttributes.Magic_Find] = Inventory.GetMagicFind();
         //this.Attributes[GameAttribute.Gold_Find] = this.Inventory.GetItemBonus(GameAttribute.Gold_Find);
-        Attributes[GameAttribute.Gold_Find] = Inventory.GetGoldFind();
+        Attributes[GameAttributes.Gold_Find] = Inventory.GetGoldFind();
 
-        Attributes[GameAttribute.Gold_PickUp_Radius] = 5f + Inventory.GetItemBonus(GameAttribute.Gold_PickUp_Radius);
+        Attributes[GameAttributes.Gold_PickUp_Radius] = 5f + Inventory.GetItemBonus(GameAttributes.Gold_PickUp_Radius);
 
-        Attributes[GameAttribute.Experience_Bonus] = Inventory.GetItemBonus(GameAttribute.Experience_Bonus);
-        Attributes[GameAttribute.Experience_Bonus_Percent] =
-            Inventory.GetItemBonus(GameAttribute.Experience_Bonus_Percent);
+        Attributes[GameAttributes.Experience_Bonus] = Inventory.GetItemBonus(GameAttributes.Experience_Bonus);
+        Attributes[GameAttributes.Experience_Bonus_Percent] =
+            Inventory.GetItemBonus(GameAttributes.Experience_Bonus_Percent);
 
-        Attributes[GameAttribute.Resistance_Freeze] = Inventory.GetItemBonus(GameAttribute.Resistance_Freeze);
-        Attributes[GameAttribute.Resistance_Penetration] = Inventory.GetItemBonus(GameAttribute.Resistance_Penetration);
-        Attributes[GameAttribute.Resistance_Percent] = Inventory.GetItemBonus(GameAttribute.Resistance_Percent);
-        Attributes[GameAttribute.Resistance_Root] = Inventory.GetItemBonus(GameAttribute.Resistance_Root);
-        Attributes[GameAttribute.Resistance_Stun] = Inventory.GetItemBonus(GameAttribute.Resistance_Stun);
-        Attributes[GameAttribute.Resistance_StunRootFreeze] =
-            Inventory.GetItemBonus(GameAttribute.Resistance_StunRootFreeze);
+        Attributes[GameAttributes.Resistance_Freeze] = Inventory.GetItemBonus(GameAttributes.Resistance_Freeze);
+        Attributes[GameAttributes.Resistance_Penetration] = Inventory.GetItemBonus(GameAttributes.Resistance_Penetration);
+        Attributes[GameAttributes.Resistance_Percent] = Inventory.GetItemBonus(GameAttributes.Resistance_Percent);
+        Attributes[GameAttributes.Resistance_Root] = Inventory.GetItemBonus(GameAttributes.Resistance_Root);
+        Attributes[GameAttributes.Resistance_Stun] = Inventory.GetItemBonus(GameAttributes.Resistance_Stun);
+        Attributes[GameAttributes.Resistance_StunRootFreeze] =
+            Inventory.GetItemBonus(GameAttributes.Resistance_StunRootFreeze);
 
-        Attributes[GameAttribute.Dodge_Chance_Bonus] = Inventory.GetItemBonus(GameAttribute.Dodge_Chance_Bonus);
+        Attributes[GameAttributes.Dodge_Chance_Bonus] = Inventory.GetItemBonus(GameAttributes.Dodge_Chance_Bonus);
 
-        Attributes[GameAttribute.Block_Amount_Item_Min] = Inventory.GetItemBonus(GameAttribute.Block_Amount_Item_Min);
-        Attributes[GameAttribute.Block_Amount_Item_Delta] =
-            Inventory.GetItemBonus(GameAttribute.Block_Amount_Item_Delta);
-        Attributes[GameAttribute.Block_Amount_Bonus_Percent] =
-            Inventory.GetItemBonus(GameAttribute.Block_Amount_Bonus_Percent);
-        Attributes[GameAttribute.Block_Chance] = Inventory.GetItemBonus(GameAttribute.Block_Chance_Item_Total);
+        Attributes[GameAttributes.Block_Amount_Item_Min] = Inventory.GetItemBonus(GameAttributes.Block_Amount_Item_Min);
+        Attributes[GameAttributes.Block_Amount_Item_Delta] =
+            Inventory.GetItemBonus(GameAttributes.Block_Amount_Item_Delta);
+        Attributes[GameAttributes.Block_Amount_Bonus_Percent] =
+            Inventory.GetItemBonus(GameAttributes.Block_Amount_Bonus_Percent);
+        Attributes[GameAttributes.Block_Chance] = Inventory.GetItemBonus(GameAttributes.Block_Chance_Item_Total);
 
-        Attributes[GameAttribute.Power_Cooldown_Reduction_Percent] = 0;
-        Attributes[GameAttribute.Health_Globe_Bonus_Health] =
-            Inventory.GetItemBonus(GameAttribute.Health_Globe_Bonus_Health);
+        Attributes[GameAttributes.Power_Cooldown_Reduction_Percent] = 0;
+        Attributes[GameAttributes.Health_Globe_Bonus_Health] =
+            Inventory.GetItemBonus(GameAttributes.Health_Globe_Bonus_Health);
 
-        Attributes[GameAttribute.Hitpoints_Regen_Per_Second] =
-            Inventory.GetItemBonus(GameAttribute.Hitpoints_Regen_Per_Second) + Toon.HeroTable.GetHitRecoveryBase +
+        Attributes[GameAttributes.Hitpoints_Regen_Per_Second] =
+            Inventory.GetItemBonus(GameAttributes.Hitpoints_Regen_Per_Second) + Toon.HeroTable.GetHitRecoveryBase +
             Toon.HeroTable.GetHitRecoveryPerLevel * Level;
 
-        Attributes[GameAttribute.Resource_Cost_Reduction_Percent_All] =
-            Inventory.GetItemBonus(GameAttribute.Resource_Cost_Reduction_Percent_All);
-        Attributes[GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.PrimaryResource] =
-            Inventory.GetItemBonus(GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.PrimaryResource);
-        Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] =
-            Toon.HeroTable.PrimaryResourceRegen + Inventory.GetItemBonus(GameAttribute.Resource_Regen_Per_Second,
+        Attributes[GameAttributes.Resource_Cost_Reduction_Percent_All] =
+            Inventory.GetItemBonus(GameAttributes.Resource_Cost_Reduction_Percent_All);
+        Attributes[GameAttributes.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.PrimaryResource] =
+            Inventory.GetItemBonus(GameAttributes.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.PrimaryResource);
+        Attributes[GameAttributes.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] =
+            Toon.HeroTable.PrimaryResourceRegen + Inventory.GetItemBonus(GameAttributes.Resource_Regen_Per_Second,
                 (int)Toon.HeroTable.PrimaryResource);
-        Attributes[GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.PrimaryResource] =
-            Inventory.GetItemBonus(GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.PrimaryResource);
+        Attributes[GameAttributes.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.PrimaryResource] =
+            Inventory.GetItemBonus(GameAttributes.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.PrimaryResource);
 
-        Attributes[GameAttribute.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.SecondaryResource] =
-            Inventory.GetItemBonus(GameAttribute.Resource_Cost_Reduction_Percent,
+        Attributes[GameAttributes.Resource_Cost_Reduction_Percent, (int)Toon.HeroTable.SecondaryResource] =
+            Inventory.GetItemBonus(GameAttributes.Resource_Cost_Reduction_Percent,
                 (int)Toon.HeroTable.SecondaryResource);
-        Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.SecondaryResource] =
-            Toon.HeroTable.SecondaryResourceRegen + Inventory.GetItemBonus(GameAttribute.Resource_Regen_Per_Second,
+        Attributes[GameAttributes.Resource_Regen_Per_Second, (int)Toon.HeroTable.SecondaryResource] =
+            Toon.HeroTable.SecondaryResourceRegen + Inventory.GetItemBonus(GameAttributes.Resource_Regen_Per_Second,
                 (int)Toon.HeroTable.SecondaryResource);
-        Attributes[GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.SecondaryResource] =
-            Inventory.GetItemBonus(GameAttribute.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.SecondaryResource);
+        Attributes[GameAttributes.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.SecondaryResource] =
+            Inventory.GetItemBonus(GameAttributes.Resource_Regen_Bonus_Percent, (int)Toon.HeroTable.SecondaryResource);
 
-        Attributes[GameAttribute.Resource_On_Hit] = 0;
-        Attributes[GameAttribute.Resource_On_Hit, 0] = Inventory.GetItemBonus(GameAttribute.Resource_On_Hit, 0);
-        Attributes[GameAttribute.Resource_On_Crit, 1] = Inventory.GetItemBonus(GameAttribute.Resource_On_Crit, 1);
+        Attributes[GameAttributes.Resource_On_Hit] = 0;
+        Attributes[GameAttributes.Resource_On_Hit, 0] = Inventory.GetItemBonus(GameAttributes.Resource_On_Hit, 0);
+        Attributes[GameAttributes.Resource_On_Crit, 1] = Inventory.GetItemBonus(GameAttributes.Resource_On_Crit, 1);
 
-        Attributes[GameAttribute.Steal_Health_Percent] =
-            Inventory.GetItemBonus(GameAttribute.Steal_Health_Percent) * 0.1f;
-        Attributes[GameAttribute.Hitpoints_On_Hit] = Inventory.GetItemBonus(GameAttribute.Hitpoints_On_Hit);
-        Attributes[GameAttribute.Hitpoints_On_Kill] = Inventory.GetItemBonus(GameAttribute.Hitpoints_On_Kill);
-        Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] =
-            Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Percent_Bonus);
-        Attributes[GameAttribute.Damage_Percent_Bonus_Vs_Elites] =
-            Inventory.GetItemBonus(GameAttribute.Damage_Percent_Bonus_Vs_Elites);
+        Attributes[GameAttributes.Steal_Health_Percent] =
+            Inventory.GetItemBonus(GameAttributes.Steal_Health_Percent) * 0.1f;
+        Attributes[GameAttributes.Hitpoints_On_Hit] = Inventory.GetItemBonus(GameAttributes.Hitpoints_On_Hit);
+        Attributes[GameAttributes.Hitpoints_On_Kill] = Inventory.GetItemBonus(GameAttributes.Hitpoints_On_Kill);
+        Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] =
+            Inventory.GetItemBonus(GameAttributes.Damage_Weapon_Percent_Bonus);
+        Attributes[GameAttributes.Damage_Percent_Bonus_Vs_Elites] =
+            Inventory.GetItemBonus(GameAttributes.Damage_Percent_Bonus_Vs_Elites);
         //this.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All_Capped] = 0.5f;
         //this.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_Cap] = 0.5f;
-        Attributes[GameAttribute.Power_Cooldown_Reduction_Percent] = 0.5f;
-        Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All] =
-            Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction_Percent_All);
-        Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped] =
-            Inventory.GetItemBonus(GameAttribute.Crit_Percent_Bonus_Uncapped);
+        Attributes[GameAttributes.Power_Cooldown_Reduction_Percent] = 0.5f;
+        Attributes[GameAttributes.Power_Cooldown_Reduction_Percent_All] =
+            Inventory.GetItemBonus(GameAttributes.Power_Cooldown_Reduction_Percent_All);
+        Attributes[GameAttributes.Crit_Percent_Bonus_Uncapped] =
+            Inventory.GetItemBonus(GameAttributes.Crit_Percent_Bonus_Uncapped);
 
         //this.Attributes[GameAttribute.Projectile_Speed] = 0.3f;
 
         switch (Toon.Class)
         {
             case ToonClass.Barbarian:
-                Attributes[GameAttribute.Power_Resource_Reduction, 80028] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 80028);
-                Attributes[GameAttribute.Power_Resource_Reduction, 70472] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 70472);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 79242] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 79242);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 80263] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 80263);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 78548] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 78548);
-                Attributes[GameAttribute.Power_Resource_Reduction, 93885] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 93885);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 86989] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 86989);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 96296] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 96296);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 109342] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 109342);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 159169] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 159169);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 93885] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 93885);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 69979] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 69979);
+                Attributes[GameAttributes.Power_Resource_Reduction, 80028] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 80028);
+                Attributes[GameAttributes.Power_Resource_Reduction, 70472] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 70472);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 79242] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 79242);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 80263] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 80263);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 78548] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 78548);
+                Attributes[GameAttributes.Power_Resource_Reduction, 93885] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 93885);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 86989] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 86989);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 96296] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 96296);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 109342] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 109342);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 159169] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 159169);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 93885] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 93885);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 69979] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 69979);
                 break;
             case ToonClass.DemonHunter:
-                Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.SecondaryResource] =
-                    Inventory.GetItemBonus(GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.SecondaryResource);
-                Attributes[GameAttribute.Bow] = Inventory.GetItemBonus(GameAttribute.Bow);
-                Attributes[GameAttribute.Crossbow] = Inventory.GetItemBonus(GameAttribute.Crossbow);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 129215] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 129215);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 134209] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 134209);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 77552] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 77552);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 75873] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 75873);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 86610] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 86610);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 131192] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 131192);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 131325] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 131325);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 77649] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 77649);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 134030] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 134030);
-                Attributes[GameAttribute.Power_Resource_Reduction, 129214] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 129214);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 75301] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 75301);
-                Attributes[GameAttribute.Power_Resource_Reduction, 131366] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 131366);
-                Attributes[GameAttribute.Power_Resource_Reduction, 129213] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 129213);
+                Attributes[GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.SecondaryResource] =
+                    Inventory.GetItemBonus(GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.SecondaryResource);
+                Attributes[GameAttributes.Bow] = Inventory.GetItemBonus(GameAttributes.Bow);
+                Attributes[GameAttributes.Crossbow] = Inventory.GetItemBonus(GameAttributes.Crossbow);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 129215] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 129215);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 134209] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 134209);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 77552] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 77552);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 75873] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 75873);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 86610] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 86610);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 131192] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 131192);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 131325] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 131325);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 77649] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 77649);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 134030] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 134030);
+                Attributes[GameAttributes.Power_Resource_Reduction, 129214] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 129214);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 75301] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 75301);
+                Attributes[GameAttributes.Power_Resource_Reduction, 131366] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 131366);
+                Attributes[GameAttributes.Power_Resource_Reduction, 129213] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 129213);
                 break;
             case ToonClass.Monk:
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 95940] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 95940);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 96019] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 96019);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 96311] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 96311);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 97328] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 97328);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 96090] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 96090);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 97110] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 97110);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 121442] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 121442);
-                Attributes[GameAttribute.Power_Resource_Reduction, 111676] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 111676);
-                Attributes[GameAttribute.Power_Resource_Reduction, 223473] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 223473);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 96033] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 96033);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 95940] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 95940);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 96019] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 96019);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 96311] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 96311);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 97328] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 97328);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 96090] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 96090);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 97110] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 97110);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 121442] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 121442);
+                Attributes[GameAttributes.Power_Resource_Reduction, 111676] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 111676);
+                Attributes[GameAttributes.Power_Resource_Reduction, 223473] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 223473);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 96033] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 96033);
                 break;
             case ToonClass.WitchDoctor:
-                Attributes[GameAttribute.Power_Resource_Reduction, 105963] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 105963);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 103181] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 103181);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 106465] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 106465);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 83602] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 83602);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 108506] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 108506);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 69866] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 69866);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 69867] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 69867);
-                Attributes[GameAttribute.Power_Resource_Reduction, 74003] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 74003);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 70455] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 103181);
-                Attributes[GameAttribute.Power_Resource_Reduction, 67567] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 67567);
-                Attributes[GameAttribute.Power_Cooldown_Reduction, 134837] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 134837);
-                Attributes[GameAttribute.Power_Cooldown_Reduction, 67600] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 67600);
-                Attributes[GameAttribute.Power_Cooldown_Reduction, 102573] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 102573);
-                Attributes[GameAttribute.Power_Cooldown_Reduction, 30624] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 30624);
+                Attributes[GameAttributes.Power_Resource_Reduction, 105963] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 105963);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 103181] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 103181);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 106465] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 106465);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 83602] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 83602);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 108506] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 108506);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 69866] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 69866);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 69867] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 69867);
+                Attributes[GameAttributes.Power_Resource_Reduction, 74003] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 74003);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 70455] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 103181);
+                Attributes[GameAttributes.Power_Resource_Reduction, 67567] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 67567);
+                Attributes[GameAttributes.Power_Cooldown_Reduction, 134837] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Cooldown_Reduction, 134837);
+                Attributes[GameAttributes.Power_Cooldown_Reduction, 67600] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Cooldown_Reduction, 67600);
+                Attributes[GameAttributes.Power_Cooldown_Reduction, 102573] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Cooldown_Reduction, 102573);
+                Attributes[GameAttributes.Power_Cooldown_Reduction, 30624] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Cooldown_Reduction, 30624);
                 break;
             case ToonClass.Wizard:
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 30744] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 30744);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 30783] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 30783);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 71548] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 71548);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 1765] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 1765);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 30668] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 30668);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 77113] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 77113);
-                Attributes[GameAttribute.Power_Resource_Reduction, 91549] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 91549);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 87525] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 87525);
-                Attributes[GameAttribute.Power_Crit_Percent_Bonus, 93395] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Crit_Percent_Bonus, 93395);
-                Attributes[GameAttribute.Power_Resource_Reduction, 134456] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 134456);
-                Attributes[GameAttribute.Power_Resource_Reduction, 30725] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 30725);
-                Attributes[GameAttribute.Power_Duration_Increase, 30680] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Duration_Increase, 30680);
-                Attributes[GameAttribute.Power_Resource_Reduction, 69190] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Resource_Reduction, 69190);
-                Attributes[GameAttribute.Power_Cooldown_Reduction, 168344] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Cooldown_Reduction, 168344);
-                Attributes[GameAttribute.Power_Damage_Percent_Bonus, 71548] =
-                    Inventory.GetItemBonus(GameAttribute.Power_Damage_Percent_Bonus, 71548);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 30744] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 30744);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 30783] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 30783);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 71548] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 71548);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 1765] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 1765);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 30668] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 30668);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 77113] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 77113);
+                Attributes[GameAttributes.Power_Resource_Reduction, 91549] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 91549);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 87525] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 87525);
+                Attributes[GameAttributes.Power_Crit_Percent_Bonus, 93395] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Crit_Percent_Bonus, 93395);
+                Attributes[GameAttributes.Power_Resource_Reduction, 134456] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 134456);
+                Attributes[GameAttributes.Power_Resource_Reduction, 30725] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 30725);
+                Attributes[GameAttributes.Power_Duration_Increase, 30680] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Duration_Increase, 30680);
+                Attributes[GameAttributes.Power_Resource_Reduction, 69190] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Resource_Reduction, 69190);
+                Attributes[GameAttributes.Power_Cooldown_Reduction, 168344] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Cooldown_Reduction, 168344);
+                Attributes[GameAttributes.Power_Damage_Percent_Bonus, 71548] =
+                    Inventory.GetItemBonus(GameAttributes.Power_Damage_Percent_Bonus, 71548);
                 break;
         }
     }
 
     public void UpdatePercentageHP(float percent)
     {
-        var m = Attributes[GameAttribute.Hitpoints_Max_Total];
-        Attributes[GameAttribute.Hitpoints_Cur] = percent * Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+        var m = Attributes[GameAttributes.Hitpoints_Max_Total];
+        Attributes[GameAttributes.Hitpoints_Cur] = percent * Attributes[GameAttributes.Hitpoints_Max_Total] / 100;
         Attributes.BroadcastChangedIfRevealed();
     }
 
@@ -1068,30 +1064,30 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void SetAttributesByItemProcs()
     {
-        Attributes[GameAttribute.Item_Power_Passive, 248776] =
-            Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 248776); //cluck
-        Attributes[GameAttribute.Item_Power_Passive, 248629] =
-            Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 248629); //death laugh
-        Attributes[GameAttribute.Item_Power_Passive, 247640] =
-            Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 247640); //gore1
-        Attributes[GameAttribute.Item_Power_Passive, 249963] =
-            Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 249963); //gore2
-        Attributes[GameAttribute.Item_Power_Passive, 249954] =
-            Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 249954); //gore3
-        Attributes[GameAttribute.Item_Power_Passive, 246116] =
-            Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 246116); //butcher
-        Attributes[GameAttribute.Item_Power_Passive, 247724] =
-            Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 247724); //plum!
-        Attributes[GameAttribute.Item_Power_Passive, 245741] =
-            Inventory.GetItemBonus(GameAttribute.Item_Power_Passive, 245741); //weee!
+        Attributes[GameAttributes.Item_Power_Passive, 248776] =
+            Inventory.GetItemBonus(GameAttributes.Item_Power_Passive, 248776); //cluck
+        Attributes[GameAttributes.Item_Power_Passive, 248629] =
+            Inventory.GetItemBonus(GameAttributes.Item_Power_Passive, 248629); //death laugh
+        Attributes[GameAttributes.Item_Power_Passive, 247640] =
+            Inventory.GetItemBonus(GameAttributes.Item_Power_Passive, 247640); //gore1
+        Attributes[GameAttributes.Item_Power_Passive, 249963] =
+            Inventory.GetItemBonus(GameAttributes.Item_Power_Passive, 249963); //gore2
+        Attributes[GameAttributes.Item_Power_Passive, 249954] =
+            Inventory.GetItemBonus(GameAttributes.Item_Power_Passive, 249954); //gore3
+        Attributes[GameAttributes.Item_Power_Passive, 246116] =
+            Inventory.GetItemBonus(GameAttributes.Item_Power_Passive, 246116); //butcher
+        Attributes[GameAttributes.Item_Power_Passive, 247724] =
+            Inventory.GetItemBonus(GameAttributes.Item_Power_Passive, 247724); //plum!
+        Attributes[GameAttributes.Item_Power_Passive, 245741] =
+            Inventory.GetItemBonus(GameAttributes.Item_Power_Passive, 245741); //weee!
     }
 
     public void SetAttributesByItemSets()
     {
-        Attributes[GameAttribute.Strength] = Strength;
-        Attributes[GameAttribute.Dexterity] = Dexterity;
-        Attributes[GameAttribute.Vitality] = Vitality;
-        Attributes[GameAttribute.Intelligence] = Intelligence;
+        Attributes[GameAttributes.Strength] = Strength;
+        Attributes[GameAttributes.Dexterity] = Dexterity;
+        Attributes[GameAttributes.Vitality] = Vitality;
+        Attributes[GameAttributes.Intelligence] = Intelligence;
         Attributes.BroadcastChangedIfRevealed();
 
         Inventory.SetItemSetBonuses();
@@ -1100,9 +1096,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void SetAttributesByPassives() //also reapplies synergy buffs
     {
         // Class specific
-        Attributes[GameAttribute.Damage_Percent_All_From_Skills] = 0;
-        Attributes[GameAttribute.Allow_2H_And_Shield] = false;
-        Attributes[GameAttribute.Cannot_Dodge] = false;
+        Attributes[GameAttributes.Damage_Percent_All_From_Skills] = 0;
+        Attributes[GameAttributes.Allow_2H_And_Shield] = false;
+        Attributes[GameAttributes.Cannot_Dodge] = false;
 
         foreach (var passiveId in SkillSet.PassiveSkills)
             switch (Toon.Class)
@@ -1111,22 +1107,22 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     switch (passiveId)
                     {
                         case 217819: //NervesOfSteel
-                            Attributes[GameAttribute.Armor_Item] += Attributes[GameAttribute.Vitality_Total] * 0.50f;
+                            Attributes[GameAttributes.Armor_Item] += Attributes[GameAttributes.Vitality_Total] * 0.50f;
                             break;
                         case 205228: //Animosity
-                            Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 20;
-                            Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] =
-                                Attributes[GameAttribute.Resource_Regen_Per_Second,
+                            Attributes[GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 20;
+                            Attributes[GameAttributes.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] =
+                                Attributes[GameAttributes.Resource_Regen_Per_Second,
                                     (int)Toon.HeroTable.PrimaryResource] * 1.1f;
-                            Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] =
-                                Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttribute.Resource_Max_Bonus,
+                            Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] =
+                                Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttributes.Resource_Max_Bonus,
                                     (int)Toon.HeroTable.PrimaryResource];
                             break;
                         case 205848: //ToughAsNails
-                            Attributes[GameAttribute.Armor_Item] *= 1.25f;
+                            Attributes[GameAttributes.Armor_Item] *= 1.25f;
                             break;
                         case 205707: //Juggernaut
-                            Attributes[GameAttribute.CrowdControl_Reduction] += 0.3f;
+                            Attributes[GameAttributes.CrowdControl_Reduction] += 0.3f;
                             break;
                         case 206147: //WeaponsMaster
                             var weapon = Inventory.GetEquippedWeapon();
@@ -1134,13 +1130,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             {
                                 var name = weapon.ItemDefinition.Name.ToLower();
                                 if (name.Contains("sword") || name.Contains("dagger"))
-                                    Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += 0.08f;
+                                    Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] += 0.08f;
                                 else if (name.Contains("axe") || name.Contains("mace"))
-                                    Attributes[GameAttribute.Weapon_Crit_Chance] += 0.05f;
+                                    Attributes[GameAttributes.Weapon_Crit_Chance] += 0.05f;
                                 else if (name.Contains("spear") || name.Contains("polearm"))
-                                    Attributes[GameAttribute.Attacks_Per_Second] *= 1.08f;
+                                    Attributes[GameAttributes.Attacks_Per_Second] *= 1.08f;
                                 else if (name.Contains("mighty"))
-                                    Attributes[GameAttribute.Resource_On_Hit] += 1f;
+                                    Attributes[GameAttributes.Resource_On_Hit] += 1f;
                             }
 
                             break;
@@ -1151,14 +1147,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     switch (passiveId)
                     {
                         case 155714: //Blood Vengeance
-                            Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 25;
-                            Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] =
-                                Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttribute.Resource_Max_Bonus,
+                            Attributes[GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 25;
+                            Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] =
+                                Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttributes.Resource_Max_Bonus,
                                     (int)Toon.HeroTable.PrimaryResource];
                             break;
                         case 210801: //Brooding
-                            Attributes[GameAttribute.Hitpoints_Regen_Per_Second] +=
-                                Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+                            Attributes[GameAttributes.Hitpoints_Regen_Per_Second] +=
+                                Attributes[GameAttributes.Hitpoints_Max_Total] / 100;
                             break;
                         case 155715: //Sharpshooter
                             World.BuffManager.RemoveBuffs(this, 155715);
@@ -1174,28 +1170,28 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             {
                                 var name = weapon.ItemDefinition.Name.ToLower();
                                 if (name.Contains("xbow"))
-                                    Attributes[GameAttribute.Crit_Damage_Percent] += 0.5f;
+                                    Attributes[GameAttributes.Crit_Damage_Percent] += 0.5f;
                                 if (name.Contains("handxbow"))
                                 {
-                                    Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped] += 0.05f;
+                                    Attributes[GameAttributes.Crit_Percent_Bonus_Uncapped] += 0.05f;
                                 }
                                 else if (name.Contains("xbow"))
                                 {
-                                    Attributes[GameAttribute.Resource_Regen_Per_Second,
+                                    Attributes[GameAttributes.Resource_Regen_Per_Second,
                                         (int)Toon.HeroTable.PrimaryResource] += 1f;
                                 }
                                 else if (name.Contains("bow"))
                                 {
-                                    Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += 0.08f;
-                                    Attributes[GameAttribute.Damage_Percent_All_From_Skills] = 0.08f;
+                                    Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] += 0.08f;
+                                    Attributes[GameAttributes.Damage_Percent_All_From_Skills] = 0.08f;
                                 }
                             }
 
                             break;
                         case 155722: //Perfectionist
-                            Attributes[GameAttribute.Armor_Item] *= 1.1f;
-                            Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus] += 0.1f;
-                            Attributes[GameAttribute.Resistance_Percent_All] += 0.1f;
+                            Attributes[GameAttributes.Armor_Item] *= 1.1f;
+                            Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus] += 0.1f;
+                            Attributes[GameAttributes.Resistance_Percent_All] += 0.1f;
                             break;
                     }
 
@@ -1204,39 +1200,39 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     switch (passiveId)
                     {
                         case 209029: //FleetFooted
-                            Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] += 0.1f;
+                            Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] += 0.1f;
                             break;
                         case 209027: //ExaltedSoul
-                            Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 100;
+                            Attributes[GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 100;
                             //this.Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] = Toon.HeroTable.PrimaryResourceMax + this.Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource];
-                            Attributes[GameAttribute.Resource_Regen_Per_Second, 3] += 2f;
+                            Attributes[GameAttributes.Resource_Regen_Per_Second, 3] += 2f;
                             break;
                         case 209628: //SeizeTheInitiative
-                            Attributes[GameAttribute.Armor_Item] += Attributes[GameAttribute.Dexterity_Total] * 0.3f;
+                            Attributes[GameAttributes.Armor_Item] += Attributes[GameAttributes.Dexterity_Total] * 0.3f;
                             break;
                         case 209622: //SixthSense
-                            Attributes[GameAttribute.Dodge_Chance_Bonus] += Math.Min(
-                                (Attributes[GameAttribute.Weapon_Crit_Chance] +
-                                 Attributes[GameAttribute.Crit_Percent_Bonus_Capped] +
-                                 Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped]) * 0.425f, 0.15f);
+                            Attributes[GameAttributes.Dodge_Chance_Bonus] += Math.Min(
+                                (Attributes[GameAttributes.Weapon_Crit_Chance] +
+                                 Attributes[GameAttributes.Crit_Percent_Bonus_Capped] +
+                                 Attributes[GameAttributes.Crit_Percent_Bonus_Uncapped]) * 0.425f, 0.15f);
                             break;
                         case 209104: //BeaconOfYtar
-                            Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All] += 0.20f;
+                            Attributes[GameAttributes.Power_Cooldown_Reduction_Percent_All] += 0.20f;
                             break;
                         case 209656: //OneWithEverything
                             var maxResist = Math.Max(
                                 Math.Max(
-                                    Math.Max(Attributes[GameAttribute.Resistance, DamageType.Physical.AttributeKey],
-                                        Attributes[GameAttribute.Resistance, DamageType.Cold.AttributeKey]),
-                                    Attributes[GameAttribute.Resistance, DamageType.Fire.AttributeKey]),
+                                    Math.Max(Attributes[GameAttributes.Resistance, DamageType.Physical.AttributeKey],
+                                        Attributes[GameAttributes.Resistance, DamageType.Cold.AttributeKey]),
+                                    Attributes[GameAttributes.Resistance, DamageType.Fire.AttributeKey]),
                                 Math.Max(
-                                    Math.Max(Attributes[GameAttribute.Resistance, DamageType.Arcane.AttributeKey],
-                                        Attributes[GameAttribute.Resistance, DamageType.Holy.AttributeKey]),
-                                    Math.Max(Attributes[GameAttribute.Resistance, DamageType.Lightning.AttributeKey],
-                                        Attributes[GameAttribute.Resistance, DamageType.Poison.AttributeKey]))
+                                    Math.Max(Attributes[GameAttributes.Resistance, DamageType.Arcane.AttributeKey],
+                                        Attributes[GameAttributes.Resistance, DamageType.Holy.AttributeKey]),
+                                    Math.Max(Attributes[GameAttributes.Resistance, DamageType.Lightning.AttributeKey],
+                                        Attributes[GameAttributes.Resistance, DamageType.Poison.AttributeKey]))
                             );
                             foreach (var damageType in DamageType.AllTypes)
-                                Attributes[GameAttribute.Resistance, damageType.AttributeKey] = maxResist;
+                                Attributes[GameAttributes.Resistance, damageType.AttributeKey] = maxResist;
                             break;
                         case 209812: //TheGuardiansPath
                             try
@@ -1244,7 +1240,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                                 var weapon = Inventory.GetEquippedWeapon();
                                 if (weapon != null && Inventory.GetEquippedOffHand() != null)
                                 {
-                                    Attributes[GameAttribute.Dodge_Chance_Bonus] += 0.15f;
+                                    Attributes[GameAttributes.Dodge_Chance_Bonus] += 0.15f;
                                 }
                                 else if (weapon.ItemDefinition.Name.ToLower().Contains("2h"))
                                 {
@@ -1262,7 +1258,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             World.BuffManager.AddBuff(this, this, new MomentumCheckBuff());
                             break;
                         case 209813: //Provocation
-                            Attributes[GameAttribute.CrowdControl_Reduction] += 0.25f;
+                            Attributes[GameAttributes.CrowdControl_Reduction] += 0.25f;
                             break;
                     }
 
@@ -1271,14 +1267,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     switch (passiveId)
                     {
                         case 208569: //SpiritualAttunement
-                            Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] +=
-                                Attributes[GameAttribute.Resource_Max, (int)Toon.HeroTable.PrimaryResource] * 0.2f;
-                            Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] =
+                            Attributes[GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] +=
+                                Attributes[GameAttributes.Resource_Max, (int)Toon.HeroTable.PrimaryResource] * 0.2f;
+                            Attributes[GameAttributes.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] =
                                 Toon.HeroTable.PrimaryResourceRegen + (Toon.HeroTable.PrimaryResourceBase +
-                                                                       Attributes[GameAttribute.Resource_Max_Bonus,
+                                                                       Attributes[GameAttributes.Resource_Max_Bonus,
                                                                            (int)Toon.HeroTable.PrimaryResource]) / 100;
-                            Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] =
-                                Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttribute.Resource_Max_Bonus,
+                            Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] =
+                                Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttributes.Resource_Max_Bonus,
                                     (int)Toon.HeroTable.PrimaryResource];
                             break;
                         case 340910: //PhysicalAttunement
@@ -1286,16 +1282,16 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             World.BuffManager.AddBuff(this, this, new PhysicalAttunementBuff());
                             break;
                         case 208568: //BloodRitual
-                            Attributes[GameAttribute.Hitpoints_Regen_Per_Second] +=
-                                Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+                            Attributes[GameAttributes.Hitpoints_Regen_Per_Second] +=
+                                Attributes[GameAttributes.Hitpoints_Max_Total] / 100;
                             break;
                         case 208639: //FierceLoyalty
                             foreach (var minionId in Followers.Keys)
                             {
                                 var minion = World.GetActorByGlobalId(minionId);
                                 if (minion != null)
-                                    minion.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] =
-                                        Inventory.GetItemBonus(GameAttribute.Hitpoints_Regen_Per_Second);
+                                    minion.Attributes[GameAttributes.Hitpoints_Regen_Per_Second] =
+                                        Inventory.GetItemBonus(GameAttributes.Hitpoints_Regen_Per_Second);
                             }
 
                             break;
@@ -1310,18 +1306,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             World.BuffManager.AddBuff(this, this, new GalvanizingBuff());
                             break;
                         case 208473: //Evocation
-                            Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All] += 0.20f;
+                            Attributes[GameAttributes.Power_Cooldown_Reduction_Percent_All] += 0.20f;
                             break;
                         case 208472: //AstralPresence
-                            Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 20;
-                            Attributes[GameAttribute.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] =
+                            Attributes[GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 20;
+                            Attributes[GameAttributes.Resource_Regen_Per_Second, (int)Toon.HeroTable.PrimaryResource] =
                                 Toon.HeroTable.PrimaryResourceRegen + 2;
-                            Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] =
-                                Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttribute.Resource_Max_Bonus,
+                            Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] =
+                                Toon.HeroTable.PrimaryResourceBase + Attributes[GameAttributes.Resource_Max_Bonus,
                                     (int)Toon.HeroTable.PrimaryResource];
                             break;
                         case 208468: //Blur (Wizard)
-                            Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += 0.17f;
+                            Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] += 0.17f;
                             break;
                     }
 
@@ -1330,29 +1326,29 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     switch (passiveId)
                     {
                         case 286177: //HeavenlyStrength
-                            Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] -= 0.15f;
-                            Attributes[GameAttribute.Allow_2H_And_Shield] = true;
+                            Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] -= 0.15f;
+                            Attributes[GameAttributes.Allow_2H_And_Shield] = true;
                             break;
                         case 310626: //Vigilant
-                            Attributes[GameAttribute.Hitpoints_Regen_Per_Second] +=
-                                10 + 0.008f * (float)Math.Pow(Attributes[GameAttribute.Level], 3);
+                            Attributes[GameAttributes.Hitpoints_Regen_Per_Second] +=
+                                10 + 0.008f * (float)Math.Pow(Attributes[GameAttributes.Level], 3);
                             break;
                         case 356147: //Righteousness
-                            Attributes[GameAttribute.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 30;
+                            Attributes[GameAttributes.Resource_Max_Bonus, (int)Toon.HeroTable.PrimaryResource] += 30;
                             break;
                         case 310804: //HolyCause
-                            Attributes[GameAttribute.Damage_Weapon_Min, 6] *= 1.1f;
+                            Attributes[GameAttributes.Damage_Weapon_Min, 6] *= 1.1f;
                             break;
                         case 356176: //DivineFortress
                             World.BuffManager.RemoveBuffs(this, 356176);
                             World.BuffManager.AddBuff(this, this, new DivineFortressBuff());
                             break;
                         case 302500: //HoldYourGround
-                            Attributes[GameAttribute.Cannot_Dodge] = true;
-                            Attributes[GameAttribute.Block_Chance] += 0.15f;
+                            Attributes[GameAttributes.Cannot_Dodge] = true;
+                            Attributes[GameAttributes.Block_Chance] += 0.15f;
                             break;
                         case 310783: //IronMaiden
-                            Attributes[GameAttribute.Thorns_Fixed, 0] += 87.17f * Attributes[GameAttribute.Level];
+                            Attributes[GameAttributes.Thorns_Fixed, 0] += 87.17f * Attributes[GameAttributes.Level];
                             break;
                         case 311629: //Finery
                             World.BuffManager.RemoveBuffs(this, 311629);
@@ -1381,8 +1377,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     switch (passiveId)
                     {
                         case 470764: //HugeEssense
-                            Attributes[GameAttribute.Resource_Max_Bonus,
-                                Attributes[GameAttribute.Resource_Type_Primary] - 1] += 40;
+                            Attributes[GameAttributes.Resource_Max_Bonus,
+                                Attributes[GameAttributes.Resource_Type_Primary] - 1] += 40;
                             break;
                         case 470725:
                             World.BuffManager.RemoveBuffs(this, 470725);
@@ -1402,18 +1398,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         for (var i = 0; i < SkillSet.ActiveSkills.Length; i++)
             if (SkillSet.ActiveSkills[i].snoSkill != -1)
             {
-                Attributes[GameAttribute.Skill, SkillSet.ActiveSkills[i].snoSkill] = 1;
+                Attributes[GameAttributes.Skill, SkillSet.ActiveSkills[i].snoSkill] = 1;
                 //scripted //this.Attributes[GameAttribute.Skill_Total, this.SkillSet.ActiveSkills[i].snoSkill] = 1;
                 // update rune attributes for new skill
-                Attributes[GameAttribute.Rune_A, SkillSet.ActiveSkills[i].snoSkill] =
+                Attributes[GameAttributes.Rune_A, SkillSet.ActiveSkills[i].snoSkill] =
                     SkillSet.ActiveSkills[i].snoRune == 0 ? 1 : 0;
-                Attributes[GameAttribute.Rune_B, SkillSet.ActiveSkills[i].snoSkill] =
+                Attributes[GameAttributes.Rune_B, SkillSet.ActiveSkills[i].snoSkill] =
                     SkillSet.ActiveSkills[i].snoRune == 1 ? 1 : 0;
-                Attributes[GameAttribute.Rune_C, SkillSet.ActiveSkills[i].snoSkill] =
+                Attributes[GameAttributes.Rune_C, SkillSet.ActiveSkills[i].snoSkill] =
                     SkillSet.ActiveSkills[i].snoRune == 2 ? 1 : 0;
-                Attributes[GameAttribute.Rune_D, SkillSet.ActiveSkills[i].snoSkill] =
+                Attributes[GameAttributes.Rune_D, SkillSet.ActiveSkills[i].snoSkill] =
                     SkillSet.ActiveSkills[i].snoRune == 3 ? 1 : 0;
-                Attributes[GameAttribute.Rune_E, SkillSet.ActiveSkills[i].snoSkill] =
+                Attributes[GameAttributes.Rune_E, SkillSet.ActiveSkills[i].snoSkill] =
                     SkillSet.ActiveSkills[i].snoRune == 4 ? 1 : 0;
 
                 var power = PowerLoader.CreateImplementationForPowerSNO(SkillSet.ActiveSkills[i].snoSkill);
@@ -1425,71 +1421,71 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             if (SkillSet.PassiveSkills[i] != -1)
             {
                 // switch on passive skill
-                Attributes[GameAttribute.Trait, SkillSet.PassiveSkills[i]] = 1;
-                Attributes[GameAttribute.Skill, SkillSet.PassiveSkills[i]] = 1;
+                Attributes[GameAttributes.Trait, SkillSet.PassiveSkills[i]] = 1;
+                Attributes[GameAttributes.Skill, SkillSet.PassiveSkills[i]] = 1;
                 //scripted //this.Attributes[GameAttribute.Skill_Total, this.SkillSet.PassiveSkills[i]] = 1;
             }
 
         if (Toon.Class == ToonClass.Monk) //Setting power range override
         {
-            Attributes[GameAttribute.PowerBonusAttackRadius, 0x000176C4] = 20f; //Fists of Thunder
-            if (Attributes[GameAttribute.Rune_A, 0x00017B56] > 0) //Way of the Hundred Fists -> Fists of Fury
-                Attributes[GameAttribute.PowerBonusAttackRadius, 0x00017B56] = 15f;
+            Attributes[GameAttributes.PowerBonusAttackRadius, 0x000176C4] = 20f; //Fists of Thunder
+            if (Attributes[GameAttributes.Rune_A, 0x00017B56] > 0) //Way of the Hundred Fists -> Fists of Fury
+                Attributes[GameAttributes.PowerBonusAttackRadius, 0x00017B56] = 15f;
         }
     }
 
     public void SetAttributesOther()
     {
         //Bonus stats
-        Attributes[GameAttribute.Hit_Chance] = 1f;
+        Attributes[GameAttributes.Hit_Chance] = 1f;
 
-        Attributes[GameAttribute.Attacks_Per_Second] = 1.2f;
+        Attributes[GameAttributes.Attacks_Per_Second] = 1.2f;
         //this.Attributes[GameAttribute.Attacks_Per_Second_Item] = 1.199219f;
-        Attributes[GameAttribute.Crit_Percent_Cap] = Toon.HeroTable.CritPercentCap;
+        Attributes[GameAttributes.Crit_Percent_Cap] = Toon.HeroTable.CritPercentCap;
         //scripted //this.Attributes[GameAttribute.Casting_Speed_Total] = 1f;
-        Attributes[GameAttribute.Casting_Speed] = 1f;
+        Attributes[GameAttributes.Casting_Speed] = 1f;
 
         //Basic stats
-        Attributes[GameAttribute.Level_Cap] = Program.MaxLevel;
-        Attributes[GameAttribute.Level] = Level;
-        Attributes[GameAttribute.Alt_Level] = ParagonLevel;
+        Attributes[GameAttributes.Level_Cap] = Program.MaxLevel;
+        Attributes[GameAttributes.Level] = Level;
+        Attributes[GameAttributes.Alt_Level] = ParagonLevel;
         if (Level == Program.MaxLevel)
         {
-            Attributes[GameAttribute.Alt_Experience_Next_Lo] = (int)(ExperienceNext % uint.MaxValue);
-            Attributes[GameAttribute.Alt_Experience_Next_Hi] = (int)(ExperienceNext / uint.MaxValue);
+            Attributes[GameAttributes.Alt_Experience_Next_Lo] = (int)(ExperienceNext % uint.MaxValue);
+            Attributes[GameAttributes.Alt_Experience_Next_Hi] = (int)(ExperienceNext / uint.MaxValue);
         }
         else
         {
-            Attributes[GameAttribute.Experience_Next_Lo] = (int)(ExperienceNext % uint.MaxValue);
-            Attributes[GameAttribute.Experience_Next_Hi] = (int)(ExperienceNext / uint.MaxValue);
+            Attributes[GameAttributes.Experience_Next_Lo] = (int)(ExperienceNext % uint.MaxValue);
+            Attributes[GameAttributes.Experience_Next_Hi] = (int)(ExperienceNext / uint.MaxValue);
             //this.Attributes[GameAttribute.Alt_Experience_Next] = 0;
         }
 
-        Attributes[GameAttribute.Experience_Granted_Low] = 1000;
-        Attributes[GameAttribute.Armor] = Toon.HeroTable.Armor;
-        Attributes[GameAttribute.Damage_Min, 0] = Toon.HeroTable.Dmg;
+        Attributes[GameAttributes.Experience_Granted_Low] = 1000;
+        Attributes[GameAttributes.Armor] = Toon.HeroTable.Armor;
+        Attributes[GameAttributes.Damage_Min, 0] = Toon.HeroTable.Dmg;
         //scripted //this.Attributes[GameAttribute.Armor_Total]
 
 
-        Attributes[GameAttribute.Strength] = (int)Strength;
-        Attributes[GameAttribute.Dexterity] = (int)Dexterity;
-        Attributes[GameAttribute.Vitality] = (int)Vitality;
-        Attributes[GameAttribute.Intelligence] = (int)Intelligence;
-        Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
+        Attributes[GameAttributes.Strength] = (int)Strength;
+        Attributes[GameAttributes.Dexterity] = (int)Dexterity;
+        Attributes[GameAttributes.Vitality] = (int)Vitality;
+        Attributes[GameAttributes.Intelligence] = (int)Intelligence;
+        Attributes[GameAttributes.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
 
         //Hitpoints have to be calculated after Vitality
-        Attributes[GameAttribute.Hitpoints_Factor_Level] = Toon.HeroTable.HitpointsFactorLevel;
-        Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f + Math.Max(Level - 35, 0);
+        Attributes[GameAttributes.Hitpoints_Factor_Level] = Toon.HeroTable.HitpointsFactorLevel;
+        Attributes[GameAttributes.Hitpoints_Factor_Vitality] = 10f + Math.Max(Level - 35, 0);
         //this.Attributes[GameAttribute.Hitpoints_Max] = 276f;
 
-        Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = (int)1;
-        Attributes[GameAttribute.Hitpoints_Factor_Level] = (int)Toon.HeroTable.HitpointsFactorLevel;
-        Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f; // + Math.Max(this.Level - 35, 0);
-        Attributes[GameAttribute.Hitpoints_Max] = (int)Toon.HeroTable.HitpointsMax;
+        Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] = (int)1;
+        Attributes[GameAttributes.Hitpoints_Factor_Level] = (int)Toon.HeroTable.HitpointsFactorLevel;
+        Attributes[GameAttributes.Hitpoints_Factor_Vitality] = 10f; // + Math.Max(this.Level - 35, 0);
+        Attributes[GameAttributes.Hitpoints_Max] = (int)Toon.HeroTable.HitpointsMax;
 
-        Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+        Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
 
-        Attributes[GameAttribute.Corpse_Resurrection_Charges] = 3;
+        Attributes[GameAttributes.Corpse_Resurrection_Charges] = 3;
         //TestOutPutItemAttributes(); //Activate this only for finding item stats.
         Attributes.BroadcastChangedIfRevealed();
     }
@@ -1598,16 +1594,16 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void JewelUpgrade(GameClient client, JewelUpgradeMessage message)
     {
         var Jewel = Inventory.GetItemByDynId(this, message.ActorID);
-        Jewel.Attributes[GameAttribute.Jewel_Rank]++;
+        Jewel.Attributes[GameAttributes.Jewel_Rank]++;
         Jewel.Attributes.BroadcastChangedIfRevealed();
-        Attributes[GameAttribute.Jewel_Upgrades_Used]++;
+        Attributes[GameAttributes.Jewel_Upgrades_Used]++;
         Attributes.BroadcastChangedIfRevealed();
-        if (Attributes[GameAttribute.Jewel_Upgrades_Used] == Attributes[GameAttribute.Jewel_Upgrades_Max] +
-            Attributes[GameAttribute.Jewel_Upgrades_Bonus])
+        if (Attributes[GameAttributes.Jewel_Upgrades_Used] == Attributes[GameAttributes.Jewel_Upgrades_Max] +
+            Attributes[GameAttributes.Jewel_Upgrades_Bonus])
         {
-            Attributes[GameAttribute.Jewel_Upgrades_Max] = 0;
-            Attributes[GameAttribute.Jewel_Upgrades_Bonus] = 0;
-            Attributes[GameAttribute.Jewel_Upgrades_Used] = 0;
+            Attributes[GameAttributes.Jewel_Upgrades_Max] = 0;
+            Attributes[GameAttributes.Jewel_Upgrades_Bonus] = 0;
+            Attributes[GameAttributes.Jewel_Upgrades_Used] = 0;
         }
 
         InGameClient.SendMessage(new JewelUpgradeResultsMessage()
@@ -1649,11 +1645,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         hireling.SetUpAttributes(this);
         hireling.GBHandle.Type = 4;
-        hireling.Attributes[GameAttribute.Pet_Creator] = PlayerIndex + 1;
-        hireling.Attributes[GameAttribute.Pet_Type] = 1;
-        hireling.Attributes[GameAttribute.Pet_Owner] = PlayerIndex + 1;
-        hireling.Attributes[GameAttribute.Untargetable] = false;
-        hireling.Attributes[GameAttribute.NPC_Is_Escorting] = true;
+        hireling.Attributes[GameAttributes.Pet_Creator] = PlayerIndex + 1;
+        hireling.Attributes[GameAttributes.Pet_Type] = 1;
+        hireling.Attributes[GameAttributes.Pet_Owner] = PlayerIndex + 1;
+        hireling.Attributes[GameAttributes.Untargetable] = false;
+        hireling.Attributes[GameAttributes.NPC_Is_Escorting] = true;
 
         hireling.EnterWorld(RandomDirection(Position, 3, 10)); //Random
         hireling.Brain = new HirelingBrain(hireling, this);
@@ -1883,13 +1879,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
                 lootRunObelisk = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
                 lootRunObelisk.PlayAnimation(5, (AnimationSno)lootRunObelisk.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
-                lootRunObelisk.Attributes[GameAttribute.Team_Override] = activated ? -1 : 2;
-                lootRunObelisk.Attributes[GameAttribute.Untargetable] = !activated;
-                lootRunObelisk.Attributes[GameAttribute.NPC_Is_Operatable] = activated;
-                lootRunObelisk.Attributes[GameAttribute.Operatable] = activated;
-                lootRunObelisk.Attributes[GameAttribute.Operatable_Story_Gizmo] = activated;
-                lootRunObelisk.Attributes[GameAttribute.Disabled] = !activated;
-                lootRunObelisk.Attributes[GameAttribute.Immunity] = !activated;
+                lootRunObelisk.Attributes[GameAttributes.Team_Override] = activated ? -1 : 2;
+                lootRunObelisk.Attributes[GameAttributes.Untargetable] = !activated;
+                lootRunObelisk.Attributes[GameAttributes.NPC_Is_Operatable] = activated;
+                lootRunObelisk.Attributes[GameAttributes.Operatable] = activated;
+                lootRunObelisk.Attributes[GameAttributes.Operatable_Story_Gizmo] = activated;
+                lootRunObelisk.Attributes[GameAttributes.Disabled] = !activated;
+                lootRunObelisk.Attributes[GameAttributes.Immunity] = !activated;
                 lootRunObelisk.Attributes.BroadcastChangedIfRevealed();
 
                 lootRunObelisk.CollFlags = 0;
@@ -2001,7 +1997,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 InGameClient.Game.ActiveNephalemPortal = true;
                 InGameClient.Game.NephalemGreater = true;
                 //disable banner while greater is active enable once boss is killed or portal is closed /advocaite
-                Attributes[GameAttribute.Banner_Usable] = false;
+                Attributes[GameAttributes.Banner_Usable] = false;
                 map = maps.PickRandom();
                 newTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, (int)map, 0)); //World
                 newTagMap.Add(new TagKeySNO(526853), new TagMapEntry(526853, 288482, 0)); //Zone
@@ -2032,13 +2028,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
                 lootRunObelisk = World.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
                 lootRunObelisk.PlayAnimation(5, (AnimationSno)lootRunObelisk.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
-                lootRunObelisk.Attributes[GameAttribute.Team_Override] = activated ? -1 : 2;
-                lootRunObelisk.Attributes[GameAttribute.Untargetable] = !activated;
-                lootRunObelisk.Attributes[GameAttribute.NPC_Is_Operatable] = activated;
-                lootRunObelisk.Attributes[GameAttribute.Operatable] = activated;
-                lootRunObelisk.Attributes[GameAttribute.Operatable_Story_Gizmo] = activated;
-                lootRunObelisk.Attributes[GameAttribute.Disabled] = !activated;
-                lootRunObelisk.Attributes[GameAttribute.Immunity] = !activated;
+                lootRunObelisk.Attributes[GameAttributes.Team_Override] = activated ? -1 : 2;
+                lootRunObelisk.Attributes[GameAttributes.Untargetable] = !activated;
+                lootRunObelisk.Attributes[GameAttributes.NPC_Is_Operatable] = activated;
+                lootRunObelisk.Attributes[GameAttributes.Operatable] = activated;
+                lootRunObelisk.Attributes[GameAttributes.Operatable_Story_Gizmo] = activated;
+                lootRunObelisk.Attributes[GameAttributes.Disabled] = !activated;
+                lootRunObelisk.Attributes[GameAttributes.Immunity] = !activated;
                 lootRunObelisk.Attributes.BroadcastChangedIfRevealed();
 
                 lootRunObelisk.CollFlags = 0;
@@ -2141,7 +2137,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         {
                             Field0 = -1
                         });
-                        plr.Attributes[GameAttribute.Tiered_Loot_Run_Death_Count] = 0;
+                        plr.Attributes[GameAttributes.Tiered_Loot_Run_Death_Count] = 0;
                     }
                 });
 
@@ -2192,7 +2188,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         var bonus = ItemGenerator.GetParagonBonusTable(Toon.Class).FirstOrDefault(b => b.Hash == message.BonusGBID);
 
         if (bonus == null) return;
-        if (message.Amount > Attributes[GameAttribute.Paragon_Bonus_Points_Available, bonus.Category]) return;
+        if (message.Amount > Attributes[GameAttributes.Paragon_Bonus_Points_Available, bonus.Category]) return;
         //if (this.ParagonBonuses[(bonus.Category * 4) + bonus.Index - 1] + (byte)message.Amount > bonus.Limit) return;
 
         // message.Amount have the value send to add on attr of Paragon tabs.
@@ -2294,19 +2290,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         var oldSNOSkill = SkillSet.ActiveSkills[message.SkillIndex].snoSkill; // find replaced skills SNO.
         if (oldSNOSkill != -1)
         {
-            Attributes[GameAttribute.Skill, oldSNOSkill] = 0;
+            Attributes[GameAttributes.Skill, oldSNOSkill] = 0;
             World.BuffManager.RemoveBuffs(this, oldSNOSkill);
 
-            var rem = new List<uint>();
-            foreach (var fol in Followers.Where(f =>
+            var rem = Followers.Where(f =>
                          World.GetActorByGlobalId(f.Key) == null ||
-                         World.GetActorByGlobalId(f.Key).Attributes[GameAttribute.Summoned_By_SNO] == oldSNOSkill))
-                rem.Add(fol.Key);
+                         World.GetActorByGlobalId(f.Key).Attributes[GameAttributes.Summoned_By_SNO] == oldSNOSkill)
+                .Select(f => f.Key);
             foreach (var rm in rem)
                 DestroyFollowerById(rm);
         }
 
-        Attributes[GameAttribute.Skill, message.SNOSkill] = 1;
+        Attributes[GameAttributes.Skill, message.SNOSkill] = 1;
         //scripted //this.Attributes[GameAttribute.Skill_Total, message.SNOSkill] = 1;
         SkillSet.ActiveSkills[message.SkillIndex].snoSkill = message.SNOSkill;
         SkillSet.ActiveSkills[message.SkillIndex].snoRune = message.RuneIndex;
@@ -2349,16 +2344,16 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 {
                     World.BuffManager.RemoveAllBuffs(this);
                     // switch off old passive skill
-                    Attributes[GameAttribute.Trait, oldSNOSkill] = 0;
-                    Attributes[GameAttribute.Skill, oldSNOSkill] = 0;
+                    Attributes[GameAttributes.Trait, oldSNOSkill] = 0;
+                    Attributes[GameAttributes.Skill, oldSNOSkill] = 0;
                     //scripted //this.Attributes[GameAttribute.Skill_Total, oldSNOSkill] = 0;
                 }
 
                 if (message.SNOPowers[i] != -1)
                 {
                     // switch on new passive skill
-                    Attributes[GameAttribute.Trait, message.SNOPowers[i]] = 1;
-                    Attributes[GameAttribute.Skill, message.SNOPowers[i]] = 1;
+                    Attributes[GameAttributes.Trait, message.SNOPowers[i]] = 1;
+                    Attributes[GameAttributes.Skill, message.SNOPowers[i]] = 1;
                     //scripted //this.Attributes[GameAttribute.Skill_Total, message.SNOPowers[i]] = 1;
                 }
 
@@ -2389,12 +2384,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         var oldSNOSkill = SkillSet.ActiveSkills[message.SkillIndex].snoSkill; // find replaced skills SNO.
         if (oldSNOSkill != -1)
         {
-            Attributes[GameAttribute.Skill, oldSNOSkill] = 0;
+            Attributes[GameAttributes.Skill, oldSNOSkill] = 0;
             World.BuffManager.RemoveBuffs(this, oldSNOSkill);
 
             var rem = new List<uint>();
             foreach (var fol in Followers.Where(f =>
-                         Math.Abs(World.GetActorByGlobalId(f.Key).Attributes[GameAttribute.Summoned_By_SNO] -
+                         Math.Abs(World.GetActorByGlobalId(f.Key).Attributes[GameAttributes.Summoned_By_SNO] -
                                   oldSNOSkill) < Globals.FLOAT_TOLERANCE))
                 rem.Add(fol.Key);
             foreach (var rm in rem)
@@ -2416,10 +2411,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         //this.Attributes[GameAttribute.Attacks_Per_Second_Bonus] = 1.0f;
         //this.Attributes[GameAttribute.Gold] = 1;
         //[GameAttribute.Damage_Weapon_Min_Total, 0]
-        Attributes[GameAttribute.Attacks_Per_Second_Percent] = 0;
-        Attributes[GameAttribute.Attacks_Per_Second_Percent_Uncapped] = 0;
-        Attributes[GameAttribute.Attacks_Per_Second_Percent_Reduction] = 0;
-        Attributes[GameAttribute.Attacks_Per_Second_Percent_Cap] = 0;
+        Attributes[GameAttributes.Attacks_Per_Second_Percent] = 0;
+        Attributes[GameAttributes.Attacks_Per_Second_Percent_Uncapped] = 0;
+        Attributes[GameAttributes.Attacks_Per_Second_Percent_Reduction] = 0;
+        Attributes[GameAttributes.Attacks_Per_Second_Percent_Cap] = 0;
         //this.Attributes[GameAttribute.Gold_PickUp_Radius] = 5f;
         /*
         this.Attributes[GameAttribute.Experience_Bonus_Percent_Anniversary_Buff] = 100;
@@ -2473,7 +2468,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 actor.NumberInWorld);
 #else
 #endif
-            if (actor.GBHandle.Type == 1 && actor.Attributes[GameAttribute.TeamID] == 10)
+            if (actor.GBHandle.Type == 1 && actor.Attributes[GameAttributes.TeamID] == 10)
                 ExpBonusData.MonsterAttacked(InGameClient.Game.TickCounter);
             actor.OnTargeted(this, message);
         }
@@ -2570,7 +2565,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         if (World.Game.Paused || BetweenWorlds) return;
 
-        if (message.MovementSpeed > Attributes[GameAttribute.Running_Rate_Total] * 1.5f && !SpeedCheckDisabled)
+        if (message.MovementSpeed > Attributes[GameAttributes.Running_Rate_Total] * 1.5f && !SpeedCheckDisabled)
         {
             _hackCounter++;
             if (_hackCounter > 5) _hackCounter = 0;
@@ -2680,7 +2675,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     }
             }
             // Reset resurrection charges on zone change - TODO: do not reset charges on reentering the same zone
-            Attributes[GameAttribute.Corpse_Resurrection_Charges] = GameServerConfig.Instance.ResurrectionCharges; 
+            Attributes[GameAttributes.Corpse_Resurrection_Charges] = GameServerConfig.Instance.ResurrectionCharges; 
 
 #if DEBUG
             Logger.Warn($"Player Location {Toon.Name}, Scene: {CurrentScene.SceneSNO.Name} SNO: {CurrentScene.SceneSNO.Id} LevelArea: {CurrentScene.Specification.SNOLevelAreas[0]}");
@@ -2807,7 +2802,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         if (ActiveHireling == null) return;
 
-        switch (ActiveHireling.Attributes[GameAttribute.Hireling_Class])
+        switch (ActiveHireling.Attributes[GameAttributes.Hireling_Class])
         {
             case 1:
                 if (ActiveHireling is Templar)
@@ -2843,7 +2838,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         Logger.MethodTrace($"{message.HirelingID} - {message.PowerSNOId}");
         var hireling = World.GetActorByGlobalId(World.GetGlobalId(this, message.HirelingID));
         if (hireling == null) return;
-        switch (hireling.Attributes[GameAttribute.Hireling_Class])
+        switch (hireling.Attributes[GameAttributes.Hireling_Class])
         {
             case 1:
                 if (hireling is not Templar templar) return;
@@ -2876,10 +2871,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 Revive(CheckPointPosition);
                 break;
             case 2:
-                if (Attributes[GameAttribute.Corpse_Resurrection_Charges] > 0)
+                if (Attributes[GameAttributes.Corpse_Resurrection_Charges] > 0)
                 {
                     Revive(Position);
-                    Attributes[GameAttribute.Corpse_Resurrection_Charges]--;
+                    Attributes[GameAttributes.Corpse_Resurrection_Charges]--;
                 }
 
                 break;
@@ -3035,27 +3030,27 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         if (World != null && SkillSet.HasSkill(312736) && InGameClient.Game.TickCounter - LastMovementTick > 90)
             World.BuffManager.AddBuff(this, this, new MonkDashingStrike.DashingStrikeCountBuff());
         else if (!SkillSet.HasSkill(312736))
-            Attributes[GameAttribute.Skill_Charges, 312736] = 0;
+            Attributes[GameAttributes.Skill_Charges, 312736] = 0;
 
         if (World != null && SkillSet.HasSkill(129217) && InGameClient.Game.TickCounter - LastMovementTick > 90)
             World.BuffManager.AddBuff(this, this, new Sentry.SentryCountBuff());
         else if (!SkillSet.HasSkill(129217))
-            Attributes[GameAttribute.Skill_Charges, 129217] = 0;
+            Attributes[GameAttributes.Skill_Charges, 129217] = 0;
 
         if (World != null && SkillSet.HasSkill(75301) && InGameClient.Game.TickCounter - LastMovementTick > 90)
             World.BuffManager.AddBuff(this, this, new SpikeTrap.SpikeCountBuff());
         else if (!SkillSet.HasSkill(75301))
-            Attributes[GameAttribute.Skill_Charges, 75301] = 0;
+            Attributes[GameAttributes.Skill_Charges, 75301] = 0;
 
         if (World != null && SkillSet.HasSkill(464896) && InGameClient.Game.TickCounter - LastMovementTick > 90)
             World.BuffManager.AddBuff(this, this, new BoneSpirit.SpiritCountBuff());
         else if (!SkillSet.HasSkill(464896))
-            Attributes[GameAttribute.Skill_Charges, 464896] = 0;
+            Attributes[GameAttributes.Skill_Charges, 464896] = 0;
 
         if (World != null && SkillSet.HasSkill(97435) && InGameClient.Game.TickCounter - LastMovementTick > 90)
             World.BuffManager.AddBuff(this, this, new FuriousCharge.FuriousChargeCountBuff());
         else if (!SkillSet.HasSkill(97435))
-            Attributes[GameAttribute.Skill_Charges, 97435] = 0;
+            Attributes[GameAttributes.Skill_Charges, 97435] = 0;
 
         Attributes.BroadcastChangedIfRevealed();
         lock (TimedActions)
@@ -3266,7 +3261,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             }
             else
             {
-                if (Attributes[GameAttribute.Power_Cooldown, 451537] > InGameClient.Game.TickCounter)
+                if (Attributes[GameAttributes.Power_Cooldown, 451537] > InGameClient.Game.TickCounter)
                 {
                 }
                 else
@@ -3279,12 +3274,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             NGolem.Position =
                                 RandomDirection(Position, 3f,
                                     8f); //Kind of hacky until we get proper collisiondetection
-                            NGolem.Attributes[GameAttribute.Untargetable] = true;
+                            NGolem.Attributes[GameAttributes.Untargetable] = true;
                             NGolem.EnterWorld(NGolem.Position);
 
 
                             //(NGolem as BaseGolem).Brain.Activate();
-                            NGolem.Attributes[GameAttribute.Untargetable] = false;
+                            NGolem.Attributes[GameAttributes.Untargetable] = false;
                             NGolem.Attributes.BroadcastChangedIfRevealed();
                             ActiveGolem = NGolem;
                             break;
@@ -3294,12 +3289,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             CFGolem.Position =
                                 RandomDirection(Position, 3f,
                                     8f); //Kind of hacky until we get proper collisiondetection
-                            CFGolem.Attributes[GameAttribute.Untargetable] = true;
+                            CFGolem.Attributes[GameAttributes.Untargetable] = true;
                             CFGolem.EnterWorld(CFGolem.Position);
 
 
                             //(CFGolem as ConsumeFleshGolem).Brain.Activate();
-                            CFGolem.Attributes[GameAttribute.Untargetable] = false;
+                            CFGolem.Attributes[GameAttributes.Untargetable] = false;
                             CFGolem.Attributes.BroadcastChangedIfRevealed();
                             ActiveGolem = CFGolem;
 
@@ -3310,12 +3305,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             IGolem.Position =
                                 RandomDirection(Position, 3f,
                                     8f); //Kind of hacky until we get proper collisiondetection
-                            IGolem.Attributes[GameAttribute.Untargetable] = true;
+                            IGolem.Attributes[GameAttributes.Untargetable] = true;
                             IGolem.EnterWorld(IGolem.Position);
 
 
                             //(IGolem as IceGolem).Brain.Activate();
-                            IGolem.Attributes[GameAttribute.Untargetable] = false;
+                            IGolem.Attributes[GameAttributes.Untargetable] = false;
                             IGolem.Attributes.BroadcastChangedIfRevealed();
                             ActiveGolem = IGolem;
                             break;
@@ -3325,12 +3320,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             BGolem.Position =
                                 RandomDirection(Position, 3f,
                                     8f); //Kind of hacky until we get proper collisiondetection
-                            BGolem.Attributes[GameAttribute.Untargetable] = true;
+                            BGolem.Attributes[GameAttributes.Untargetable] = true;
                             BGolem.EnterWorld(BGolem.Position);
 
 
                             //(BGolem as BoneGolem).Brain.Activate();
-                            BGolem.Attributes[GameAttribute.Untargetable] = false;
+                            BGolem.Attributes[GameAttributes.Untargetable] = false;
                             BGolem.Attributes.BroadcastChangedIfRevealed();
                             ActiveGolem = BGolem;
                             break;
@@ -3340,12 +3335,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             DGolem.Position =
                                 RandomDirection(Position, 3f,
                                     8f); //Kind of hacky until we get proper collisiondetection
-                            DGolem.Attributes[GameAttribute.Untargetable] = true;
+                            DGolem.Attributes[GameAttributes.Untargetable] = true;
                             DGolem.EnterWorld(DGolem.Position);
 
 
                             //(DGolem as DecayGolem).Brain.Activate();
-                            DGolem.Attributes[GameAttribute.Untargetable] = false;
+                            DGolem.Attributes[GameAttributes.Untargetable] = false;
                             DGolem.Attributes.BroadcastChangedIfRevealed();
                             ActiveGolem = DGolem;
                             break;
@@ -3355,19 +3350,19 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             BlGolem.Position =
                                 RandomDirection(Position, 3f,
                                     8f); //Kind of hacky until we get proper collisiondetection
-                            BlGolem.Attributes[GameAttribute.Untargetable] = true;
+                            BlGolem.Attributes[GameAttributes.Untargetable] = true;
                             BlGolem.EnterWorld(BlGolem.Position);
 
 
                             //(BlGolem as BloodGolem).Brain.Activate();
-                            BlGolem.Attributes[GameAttribute.Untargetable] = false;
+                            BlGolem.Attributes[GameAttributes.Untargetable] = false;
                             BlGolem.Attributes.BroadcastChangedIfRevealed();
                             ActiveGolem = BlGolem;
                             break;
                     }
 
                     (ActiveGolem as Minion).Brain.Activate();
-                    ActiveGolem.Attributes[GameAttribute.Untargetable] = false;
+                    ActiveGolem.Attributes[GameAttributes.Untargetable] = false;
                     ActiveGolem.Attributes.BroadcastChangedIfRevealed();
                     ActiveGolem.PlayActionAnimation(AnimationSno.p6_bloodgolem_spawn_01);
                 }
@@ -3390,11 +3385,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public T RuneSelect<T>(int powerSno, T none, T runeA, T runeB, T runeC, T runeD, T runeE)
     {
-        if (Attributes[GameAttribute.Rune_A, powerSno] > 0) return runeA;
-        if (Attributes[GameAttribute.Rune_B, powerSno] > 0) return runeB;
-        if (Attributes[GameAttribute.Rune_C, powerSno] > 0) return runeC;
-        if (Attributes[GameAttribute.Rune_D, powerSno] > 0) return runeD;
-        if (Attributes[GameAttribute.Rune_E, powerSno] > 0) return runeE;
+        if (Attributes[GameAttributes.Rune_A, powerSno] > 0) return runeA;
+        if (Attributes[GameAttributes.Rune_B, powerSno] > 0) return runeB;
+        if (Attributes[GameAttributes.Rune_C, powerSno] > 0) return runeC;
+        if (Attributes[GameAttributes.Rune_D, powerSno] > 0) return runeD;
+        if (Attributes[GameAttributes.Rune_E, powerSno] > 0) return runeE;
         return none;
     }
 
@@ -3726,8 +3721,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             Position = Position
         });
 
-        _CurrentHPValue = Attributes[GameAttribute.Hitpoints_Cur];
-        _CurrentResourceValue = Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1];
+        _CurrentHPValue = Attributes[GameAttributes.Hitpoints_Cur];
+        _CurrentResourceValue = Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1];
     }
 
     public override void AfterChangeWorld()
@@ -3748,8 +3743,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         if (Math.Abs(_CurrentHPValue - (-1)) > Globals.FLOAT_TOLERANCE)
         {
-            Attributes[GameAttribute.Hitpoints_Cur] = _CurrentHPValue;
-            Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = _CurrentResourceValue;
+            Attributes[GameAttributes.Hitpoints_Cur] = _CurrentHPValue;
+            Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = _CurrentResourceValue;
             Attributes.BroadcastChangedIfRevealed();
             _CurrentHPValue = -1;
         }
@@ -3764,7 +3759,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     #region hero-state
 
-    [Obsolete("Does this make sense?")]
+    /*[Obsolete("Does this make sense?")]
     private void WTF()
     {
         Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, 208468] = true;
@@ -3843,7 +3838,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         Attributes[GameAttribute.Buff_Icon_End_Tick0, 439438] = 0;
         Attributes[GameAttribute.Buff_Icon_Count0, 212032] = 0;
         Attributes.BroadcastChangedIfRevealed();
-    }
+    }*/
 
     /// <summary>
     /// Allows hero state message to be sent when hero's some property gets updated.
@@ -3882,22 +3877,22 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             ActorId = DynamicID(this),
             Position = Position
         });
-        Attributes[GameAttribute.QueueDeath] = state;
-        Attributes[GameAttribute.Disabled] = state;
-        Attributes[GameAttribute.Waiting_To_Accept_Resurrection] = false;
-        Attributes[GameAttribute.Invulnerable] = state;
+        Attributes[GameAttributes.QueueDeath] = state;
+        Attributes[GameAttributes.Disabled] = state;
+        Attributes[GameAttributes.Waiting_To_Accept_Resurrection] = false;
+        Attributes[GameAttributes.Invulnerable] = state;
         //this.Attributes[GameAttribute.Stunned] = state;
-        Attributes[GameAttribute.Immobolize] = state;
-        Attributes[GameAttribute.Hidden] = state;
-        Attributes[GameAttribute.Untargetable] = state;
-        Attributes[GameAttribute.CantStartDisplayedPowers] = state;
-        Attributes[GameAttribute.IsContentRestrictedActor] = state;
+        Attributes[GameAttributes.Immobolize] = state;
+        Attributes[GameAttributes.Hidden] = state;
+        Attributes[GameAttributes.Untargetable] = state;
+        Attributes[GameAttributes.CantStartDisplayedPowers] = state;
+        Attributes[GameAttributes.IsContentRestrictedActor] = state;
 
-        Attributes[GameAttribute.Rest_Experience_Lo] = 0;
-        Attributes[GameAttribute.Rest_Experience_Bonus_Percent] = 0;
+        Attributes[GameAttributes.Rest_Experience_Lo] = 0;
+        Attributes[GameAttributes.Rest_Experience_Bonus_Percent] = 0;
 
         Attributes.BroadcastChangedIfRevealed();
-        if (World.Game.PvP) Attributes[GameAttribute.Resurrect_As_Observer] = state;
+        if (World.Game.PvP) Attributes[GameAttributes.Resurrect_As_Observer] = state;
         //this.Attributes[GameAttribute.Observer] = !state;
         //this.Attributes[GameAttribute.Corpse_Resurrection_Charges] = 1;	// Enable this to allow unlimited resurrection at corpse
         //this.Attributes[GameAttribute.Corpse_Resurrection_Allowed_Game_Time] = this.World.Game.TickCounter + 300; // Timer for auto-revive (seems to be broken?)
@@ -3906,7 +3901,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void Resurrect()
     {
-        Attributes[GameAttribute.Waiting_To_Accept_Resurrection] = true;
+        Attributes[GameAttributes.Waiting_To_Accept_Resurrection] = true;
         Attributes.BroadcastChangedIfRevealed();
     }
 
@@ -3961,9 +3956,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         SetAttributesByParagon();
         SetAttributesSkillSets();
 
-        Attributes[GameAttribute.Resource_Cur, PrimaryResourceID] = 0f;
+        Attributes[GameAttributes.Resource_Cur, PrimaryResourceID] = 0f;
         if (Toon.Class == ToonClass.DemonHunter)
-            Attributes[GameAttribute.Resource_Cur, SecondaryResourceID] = 0f;
+            Attributes[GameAttributes.Resource_Cur, SecondaryResourceID] = 0f;
         Attributes.BroadcastChangedIfRevealed();
 
         var skills = SkillSet.ActiveSkills.Select(s => s.snoSkill).ToList();
@@ -4004,7 +3999,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     }
 
     public float TotalStrength =>
-        Attributes[GameAttribute.Strength] + Inventory.GetItemBonus(GameAttribute.Strength_Item);
+        Attributes[GameAttributes.Strength] + Inventory.GetItemBonus(GameAttributes.Strength_Item);
 
     public float Dexterity
     {
@@ -4019,12 +4014,12 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     }
 
     public float TotalDexterity =>
-        Attributes[GameAttribute.Dexterity] + Inventory.GetItemBonus(GameAttribute.Dexterity_Item);
+        Attributes[GameAttributes.Dexterity] + Inventory.GetItemBonus(GameAttributes.Dexterity_Item);
 
     public float Vitality => Toon.HeroTable.Vitality + (Level - 1) * 2 * (ParagonLevel > 0 ? GameServerConfig.Instance.VitalityParagonMultiplier : GameServerConfig.Instance.VitalityMultiplier);
 
     public float TotalVitality =>
-        Attributes[GameAttribute.Vitality] + Inventory.GetItemBonus(GameAttribute.Vitality_Item);
+        Attributes[GameAttributes.Vitality] + Inventory.GetItemBonus(GameAttributes.Vitality_Item);
 
     public float Intelligence
     {
@@ -4037,8 +4032,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         }
     }
 
-    public float TotalIntelligence => Attributes[GameAttribute.Intelligence] +
-                                      Inventory.GetItemBonus(GameAttribute.Intelligence_Item);
+    public float TotalIntelligence => Attributes[GameAttributes.Intelligence] +
+                                      Inventory.GetItemBonus(GameAttributes.Intelligence_Item);
 
     public float PrimaryAttribute
     {
@@ -4056,13 +4051,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         get
         {
             var dex = TotalDexterity;
-            var dodgeChance = dex / (250f * Attributes[GameAttribute.Level] + dex);
+            var dodgeChance = dex / (250f * Attributes[GameAttributes.Level] + dex);
 
             if (dex > 7500f) dodgeChance += 0.04f;
             else if (dex > 6500f) dodgeChance += 0.02f;
             else if (dex > 5500f) dodgeChance += 0.01f;
 
-            dodgeChance = 1f - (1f - dodgeChance) * (1f - Attributes[GameAttribute.Dodge_Chance_Bonus]);
+            dodgeChance = 1f - (1f - dodgeChance) * (1f - Attributes[GameAttributes.Dodge_Chance_Bonus]);
 
             return Math.Min(dodgeChance, 0.75f);
         }
@@ -4187,25 +4182,25 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         //Logger.MethodTrace("Strength {0}", this.Inventory.GetItemBonus(GameAttribute.Strength_Item).ToString("F0"));
         var damageFromWeapon =
-            (Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Min_Total, 0) +
-             Inventory.GetItemBonus(GameAttribute.Damage_Weapon_Delta_Total, 0)) * (1f + PrimaryAttribute / 100f);
+            (Inventory.GetItemBonus(GameAttributes.Damage_Weapon_Min_Total, 0) +
+             Inventory.GetItemBonus(GameAttributes.Damage_Weapon_Delta_Total, 0)) * (1f + PrimaryAttribute / 100f);
 
         var totalDamage =
             (damageFromWeapon
-             + damageFromWeapon * Inventory.GetItemBonus(GameAttribute.Weapon_Crit_Chance) *
-             (1.5f + Inventory.GetItemBonus(GameAttribute.Crit_Damage_Percent)))
-            * Inventory.GetItemBonus(GameAttribute.Attacks_Per_Second_Total);
+             + damageFromWeapon * Inventory.GetItemBonus(GameAttributes.Weapon_Crit_Chance) *
+             (1.5f + Inventory.GetItemBonus(GameAttributes.Crit_Damage_Percent)))
+            * Inventory.GetItemBonus(GameAttributes.Attacks_Per_Second_Total);
 
         var serialized = "";
-        serialized += Inventory.GetItemBonus(GameAttribute.Strength_Item).ToString("F0");
+        serialized += Inventory.GetItemBonus(GameAttributes.Strength_Item).ToString("F0");
         serialized += ";";
-        serialized += Inventory.GetItemBonus(GameAttribute.Dexterity_Item).ToString("F0");
+        serialized += Inventory.GetItemBonus(GameAttributes.Dexterity_Item).ToString("F0");
         serialized += ";";
-        serialized += Inventory.GetItemBonus(GameAttribute.Intelligence_Item).ToString("F0");
+        serialized += Inventory.GetItemBonus(GameAttributes.Intelligence_Item).ToString("F0");
         serialized += ";";
-        serialized += Inventory.GetItemBonus(GameAttribute.Vitality_Item).ToString("F0");
+        serialized += Inventory.GetItemBonus(GameAttributes.Vitality_Item).ToString("F0");
         serialized += ";";
-        serialized += Inventory.GetItemBonus(GameAttribute.Armor_Item).ToString("F0");
+        serialized += Inventory.GetItemBonus(GameAttributes.Armor_Item).ToString("F0");
         serialized += ";";
         serialized += totalDamage.ToString("F0");
         var dbStats = Toon.DBToon;
@@ -4824,15 +4819,15 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         IsCasting = true;
         CastResult = result;
-        Attributes[GameAttribute.Looping_Animation_Start_Time] = World.Game.TickCounter;
-        Attributes[GameAttribute.Looping_Animation_End_Time] = World.Game.TickCounter + durationTicks;
+        Attributes[GameAttributes.Looping_Animation_Start_Time] = World.Game.TickCounter;
+        Attributes[GameAttributes.Looping_Animation_End_Time] = World.Game.TickCounter + durationTicks;
         CastingSnoPower = skillSno;
         if (CastingSnoPower != -1)
         {
-            Attributes[GameAttribute.Buff_Icon_Start_Tick0, CastingSnoPower] = World.Game.TickCounter;
-            Attributes[GameAttribute.Buff_Icon_End_Tick0, CastingSnoPower] = World.Game.TickCounter + durationTicks;
-            Attributes[GameAttribute.Buff_Icon_Count0, CastingSnoPower] = 1;
-            Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, CastingSnoPower] = true;
+            Attributes[GameAttributes.Buff_Icon_Start_Tick0, CastingSnoPower] = World.Game.TickCounter;
+            Attributes[GameAttributes.Buff_Icon_End_Tick0, CastingSnoPower] = World.Game.TickCounter + durationTicks;
+            Attributes[GameAttributes.Buff_Icon_Count0, CastingSnoPower] = 1;
+            Attributes[GameAttributes.Power_Buff_0_Visual_Effect_None, CastingSnoPower] = true;
         }
 
         Attributes.BroadcastChangedIfRevealed();
@@ -4841,14 +4836,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void StopCasting()
     {
         IsCasting = false;
-        Attributes[GameAttribute.Looping_Animation_Start_Time] = -1;
-        Attributes[GameAttribute.Looping_Animation_End_Time] = -1;
+        Attributes[GameAttributes.Looping_Animation_Start_Time] = -1;
+        Attributes[GameAttributes.Looping_Animation_End_Time] = -1;
         if (CastingSnoPower != -1)
         {
-            Attributes[GameAttribute.Buff_Icon_Start_Tick0, CastingSnoPower] = -1;
-            Attributes[GameAttribute.Buff_Icon_End_Tick0, CastingSnoPower] = -1;
-            Attributes[GameAttribute.Buff_Icon_Count0, CastingSnoPower] = 0;
-            Attributes[GameAttribute.Power_Buff_0_Visual_Effect_None, CastingSnoPower] = false;
+            Attributes[GameAttributes.Buff_Icon_Start_Tick0, CastingSnoPower] = -1;
+            Attributes[GameAttributes.Buff_Icon_End_Tick0, CastingSnoPower] = -1;
+            Attributes[GameAttributes.Buff_Icon_Count0, CastingSnoPower] = 0;
+            Attributes[GameAttributes.Power_Buff_0_Visual_Effect_None, CastingSnoPower] = false;
         }
 
         Attributes.BroadcastChangedIfRevealed();
@@ -4856,7 +4851,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     private void UpdateCastState()
     {
-        if (Attributes[GameAttribute.Looping_Animation_End_Time] <= World.Game.TickCounter)
+        if (Attributes[GameAttributes.Looping_Animation_End_Time] <= World.Game.TickCounter)
         {
             StopCasting();
             CastResult.Invoke();
@@ -4935,10 +4930,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         if (resourceId == 2) return 0;
         return Math.Max(
-            (Attributes[GameAttribute.Resource_Max, resourceId] +
-             (Attributes[GameAttribute.Level] - 1) * Attributes[GameAttribute.Resource_Factor_Level, resourceId] +
-             Attributes[GameAttribute.Resource_Max_Bonus, resourceId]) *
-            (Attributes[GameAttribute.Resource_Max_Percent_Bonus, resourceId] + 1), 0);
+            (Attributes[GameAttributes.Resource_Max, resourceId] +
+             (Attributes[GameAttributes.Level] - 1) * Attributes[GameAttributes.Resource_Factor_Level, resourceId] +
+             Attributes[GameAttributes.Resource_Max_Bonus, resourceId]) *
+            (Attributes[GameAttributes.Resource_Max_Percent_Bonus, resourceId] + 1), 0);
     }
 
     public static readonly List<long> LevelBorders = new()
@@ -5076,14 +5071,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void AddRestExperience()
     {
         long exp_needed = 0;
-        if (Attributes[GameAttribute.Level] == Attributes[GameAttribute.Level_Cap])
-            exp_needed = ParagonLevelBorders[Attributes[GameAttribute.Alt_Level]];
+        if (Attributes[GameAttributes.Level] == Attributes[GameAttributes.Level_Cap])
+            exp_needed = ParagonLevelBorders[Attributes[GameAttributes.Alt_Level]];
         else
-            exp_needed = LevelBorders[Attributes[GameAttribute.Level]];
+            exp_needed = LevelBorders[Attributes[GameAttributes.Level]];
 
-        Attributes[GameAttribute.Rest_Experience_Lo] =
-            Math.Min(Attributes[GameAttribute.Rest_Experience_Lo] + (int)(exp_needed / 10), (int)exp_needed);
-        Attributes[GameAttribute.Rest_Experience_Bonus_Percent] = 0.25f;
+        Attributes[GameAttributes.Rest_Experience_Lo] =
+            Math.Min(Attributes[GameAttributes.Rest_Experience_Lo] + (int)(exp_needed / 10), (int)exp_needed);
+        Attributes[GameAttributes.Rest_Experience_Bonus_Percent] = 0.25f;
         Attributes.BroadcastChangedIfRevealed();
     }
 
@@ -5094,42 +5089,42 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         lock (_XPlock)
         {
             if (Dead) return;
-            if (World.Game.IsHardcore && Attributes[GameAttribute.Level] >= 70)
+            if (World.Game.IsHardcore && Attributes[GameAttributes.Level] >= 70)
                 addedExp *= 5;
 
-            if (Attributes[GameAttribute.Alt_Level] >= 515)
+            if (Attributes[GameAttributes.Alt_Level] >= 515)
             {
-                var XPcap = 91.262575239831f * Math.Pow(Attributes[GameAttribute.Alt_Level], 3) -
-                            44301.083380565047f * Math.Pow(Attributes[GameAttribute.Alt_Level], 2) +
-                            3829010.395566940308f * Attributes[GameAttribute.Alt_Level] + 322795582.543823242188f;
-                addedExp = (int)((float)(ParagonLevelBorders[Attributes[GameAttribute.Alt_Level]] / XPcap) * addedExp);
+                var XPcap = 91.262575239831f * Math.Pow(Attributes[GameAttributes.Alt_Level], 3) -
+                            44301.083380565047f * Math.Pow(Attributes[GameAttributes.Alt_Level], 2) +
+                            3829010.395566940308f * Attributes[GameAttributes.Alt_Level] + 322795582.543823242188f;
+                addedExp = (int)((float)(ParagonLevelBorders[Attributes[GameAttributes.Alt_Level]] / XPcap) * addedExp);
             }
 
-            if (Attributes[GameAttribute.Rest_Experience_Lo] > 0)
+            if (Attributes[GameAttributes.Rest_Experience_Lo] > 0)
             {
-                var multipliedExp = (int)Math.Min(addedExp * Attributes[GameAttribute.Rest_Experience_Bonus_Percent],
-                    Attributes[GameAttribute.Rest_Experience_Lo]);
+                var multipliedExp = (int)Math.Min(addedExp * Attributes[GameAttributes.Rest_Experience_Bonus_Percent],
+                    Attributes[GameAttributes.Rest_Experience_Lo]);
                 addedExp += multipliedExp;
-                Attributes[GameAttribute.Rest_Experience_Lo] -= multipliedExp;
+                Attributes[GameAttributes.Rest_Experience_Lo] -= multipliedExp;
             }
 
-            if (Attributes[GameAttribute.Level] == Attributes[GameAttribute.Level_Cap])
-                Attributes[GameAttribute.Alt_Experience_Next_Lo] -= addedExp;
+            if (Attributes[GameAttributes.Level] == Attributes[GameAttributes.Level_Cap])
+                Attributes[GameAttributes.Alt_Experience_Next_Lo] -= addedExp;
             else
-                Attributes[GameAttribute.Experience_Next_Lo] -= addedExp;
+                Attributes[GameAttributes.Experience_Next_Lo] -= addedExp;
 
             // Levelup
-            while (Attributes[GameAttribute.Level] >= Attributes[GameAttribute.Level_Cap]
-                       ? Attributes[GameAttribute.Alt_Experience_Next_Lo] <= 0
-                       : Attributes[GameAttribute.Experience_Next_Lo] <= 0)
+            while (Attributes[GameAttributes.Level] >= Attributes[GameAttributes.Level_Cap]
+                       ? Attributes[GameAttributes.Alt_Experience_Next_Lo] <= 0
+                       : Attributes[GameAttributes.Experience_Next_Lo] <= 0)
             {
                 // No more levelup at Level_Cap
-                if (Attributes[GameAttribute.Level] >= Attributes[GameAttribute.Level_Cap])
+                if (Attributes[GameAttributes.Level] >= Attributes[GameAttributes.Level_Cap])
                 {
                     ParagonLevel++;
                     Toon.ParagonLevelUp();
                     ParagonLevelUp();
-                    Attributes[GameAttribute.Alt_Level]++;
+                    Attributes[GameAttributes.Alt_Level]++;
                     InGameClient.SendMessage(new ParagonLevel()
                     {
                         PlayerIndex = PlayerIndex,
@@ -5137,18 +5132,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     });
                     Conversations.StartConversation(0x0002A777); //LevelUp Conversation
 
-                    Attributes[GameAttribute.Alt_Experience_Next_Lo] += (int)ParagonLevelBorders[Attributes[GameAttribute.Alt_Level]];
+                    Attributes[GameAttributes.Alt_Experience_Next_Lo] += (int)ParagonLevelBorders[Attributes[GameAttributes.Alt_Level]];
                     // On level up, health is set to max
-                    Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+                    Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
                     // set resources to max as well
-                    Attributes[GameAttribute.Resource_Cur, Attributes[GameAttribute.Resource_Type_Primary] - 1] =
-                        Attributes[GameAttribute.Resource_Max_Total,
-                            Attributes[GameAttribute.Resource_Type_Primary] - 1];
-                    Attributes[GameAttribute.Resource_Cur, Attributes[GameAttribute.Resource_Type_Secondary] - 1] =
-                        Attributes[GameAttribute.Resource_Max_Total,
-                            Attributes[GameAttribute.Resource_Type_Secondary] - 1];
+                    Attributes[GameAttributes.Resource_Cur, Attributes[GameAttributes.Resource_Type_Primary] - 1] =
+                        Attributes[GameAttributes.Resource_Max_Total,
+                            Attributes[GameAttributes.Resource_Type_Primary] - 1];
+                    Attributes[GameAttributes.Resource_Cur, Attributes[GameAttributes.Resource_Type_Secondary] - 1] =
+                        Attributes[GameAttributes.Resource_Max_Total,
+                            Attributes[GameAttributes.Resource_Type_Secondary] - 1];
 
-                    ExperienceNext = Attributes[GameAttribute.Alt_Experience_Next_Lo];
+                    ExperienceNext = Attributes[GameAttributes.Alt_Experience_Next_Lo];
                     Attributes.BroadcastChangedIfRevealed();
 
                     PlayEffect(Effect.ParagonLevelUp, null, false);
@@ -5157,10 +5152,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 }
 
                 Level++;
-                Attributes[GameAttribute.Level]++;
+                Attributes[GameAttributes.Level]++;
                 Toon.LevelUp();
-                if (World.Game.MonsterLevel + 1 == Attributes[GameAttribute.Level]) //if this is suitable level to update
-                    World.Game.UpdateLevel(Attributes[GameAttribute.Level]);
+                if (World.Game.MonsterLevel + 1 == Attributes[GameAttributes.Level]) //if this is suitable level to update
+                    World.Game.UpdateLevel(Attributes[GameAttributes.Level]);
 
                 InGameClient.SendMessage(new PlayerLevel()
                 {
@@ -5220,39 +5215,39 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
                 Conversations.StartConversation(0x0002A777); //LevelUp Conversation
 
-                if (Attributes[GameAttribute.Level] >= Attributes[GameAttribute.Level_Cap])
+                if (Attributes[GameAttributes.Level] >= Attributes[GameAttributes.Level_Cap])
                 {
-                    Attributes[GameAttribute.Alt_Experience_Next_Lo] = (int)ParagonLevelBorders[Toon.ParagonLevel];
+                    Attributes[GameAttributes.Alt_Experience_Next_Lo] = (int)ParagonLevelBorders[Toon.ParagonLevel];
                     Toon.ExperienceNext = (int)ParagonLevelBorders[Toon.ParagonLevel];
                 }
                 else
                 {
-                    Attributes[GameAttribute.Experience_Next_Lo] += (int)LevelBorders[Attributes[GameAttribute.Level]];
-                    Toon.ExperienceNext = Attributes[GameAttribute.Experience_Next_Lo];
+                    Attributes[GameAttributes.Experience_Next_Lo] += (int)LevelBorders[Attributes[GameAttributes.Level]];
+                    Toon.ExperienceNext = Attributes[GameAttributes.Experience_Next_Lo];
                 }
 
                 // 4 main attributes are incremented according to class
-                Attributes[GameAttribute.Strength] = Strength;
-                Attributes[GameAttribute.Intelligence] = Intelligence;
-                Attributes[GameAttribute.Vitality] = Vitality;
-                Attributes[GameAttribute.Dexterity] = Dexterity;
+                Attributes[GameAttributes.Strength] = Strength;
+                Attributes[GameAttributes.Intelligence] = Intelligence;
+                Attributes[GameAttributes.Vitality] = Vitality;
+                Attributes[GameAttributes.Dexterity] = Dexterity;
 
                 // On level up, health is set to max
-                Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+                Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
 
                 // force GameAttributeMap to re-calc resources for the active resource types
-                Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Primary] - 1] =
-                    Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Primary] - 1];
-                Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Secondary] - 1] =
-                    Attributes[GameAttribute.Resource_Max, Attributes[GameAttribute.Resource_Type_Secondary] - 1];
+                Attributes[GameAttributes.Resource_Max, Attributes[GameAttributes.Resource_Type_Primary] - 1] =
+                    Attributes[GameAttributes.Resource_Max, Attributes[GameAttributes.Resource_Type_Primary] - 1];
+                Attributes[GameAttributes.Resource_Max, Attributes[GameAttributes.Resource_Type_Secondary] - 1] =
+                    Attributes[GameAttributes.Resource_Max, Attributes[GameAttributes.Resource_Type_Secondary] - 1];
 
                 // set resources to max as well
-                Attributes[GameAttribute.Resource_Cur, Attributes[GameAttribute.Resource_Type_Primary] - 1] =
-                    Attributes[GameAttribute.Resource_Max_Total, Attributes[GameAttribute.Resource_Type_Primary] - 1];
-                Attributes[GameAttribute.Resource_Cur, Attributes[GameAttribute.Resource_Type_Secondary] - 1] =
-                    Attributes[GameAttribute.Resource_Max_Total, Attributes[GameAttribute.Resource_Type_Secondary] - 1];
+                Attributes[GameAttributes.Resource_Cur, Attributes[GameAttributes.Resource_Type_Primary] - 1] =
+                    Attributes[GameAttributes.Resource_Max_Total, Attributes[GameAttributes.Resource_Type_Primary] - 1];
+                Attributes[GameAttributes.Resource_Cur, Attributes[GameAttributes.Resource_Type_Secondary] - 1] =
+                    Attributes[GameAttributes.Resource_Max_Total, Attributes[GameAttributes.Resource_Type_Secondary] - 1];
 
-                Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f + Math.Max(Level - 35, 0);
+                Attributes[GameAttributes.Hitpoints_Factor_Vitality] = 10f + Math.Max(Level - 35, 0);
 
                 Attributes.BroadcastChangedIfRevealed();
 
@@ -5303,9 +5298,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 }
             }
 
-            ExperienceNext = Attributes[GameAttribute.Level] == 70
-                ? Attributes[GameAttribute.Alt_Experience_Next_Lo]
-                : Attributes[GameAttribute.Experience_Next_Lo];
+            ExperienceNext = Attributes[GameAttributes.Level] == 70
+                ? Attributes[GameAttributes.Alt_Experience_Next_Lo]
+                : Attributes[GameAttributes.Experience_Next_Lo];
             Attributes.BroadcastChangedIfRevealed();
             Toon.GameAccount.NotifyUpdate();
 
@@ -5320,7 +5315,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void VacuumPickupHealthOrb(float radius = -1)
     {
         if (Math.Abs(radius - -1) < Globals.FLOAT_TOLERANCE)
-            radius = Attributes[GameAttribute.Gold_PickUp_Radius];
+            radius = Attributes[GameAttributes.Gold_PickUp_Radius];
         var itemList = GetItemsInRange(radius);
         foreach (var item in itemList)
             if (Item.IsHealthGlobe(item.ItemType))
@@ -5336,19 +5331,19 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         });
 
                     //every summon and mercenary owned by you must broadcast their green text to you /H_DANILO
-                    player.AddPercentageHP((int)item.Attributes[GameAttribute.Health_Globe_Bonus_Health]);
+                    player.AddPercentageHP((int)item.Attributes[GameAttributes.Health_Globe_Bonus_Health]);
                     //passive abilities
                     if (player.SkillSet.HasPassive(208478)) //wizard PowerHungry
                         player.World.BuffManager.AddBuff(this, this, new HungryBuff());
                     if (player.SkillSet.HasPassive(208594)) //wd GruesomeFeast
                     {
-                        player.GeneratePrimaryResource(player.Attributes[GameAttribute.Resource_Max_Total,
+                        player.GeneratePrimaryResource(player.Attributes[GameAttributes.Resource_Max_Total,
                             (int)player.Toon.HeroTable.PrimaryResource + 1] * 0.1f);
                         player.World.BuffManager.AddBuff(player, player, new GruesomeFeastIntBuff());
                     }
 
                     if (player.SkillSet.HasPassive(205205)) //barbarian PoundOfFlesh
-                        player.AddPercentageHP((int)(item.Attributes[GameAttribute.Health_Globe_Bonus_Health] * 0.5f));
+                        player.AddPercentageHP((int)(item.Attributes[GameAttributes.Health_Globe_Bonus_Health] * 0.5f));
                     if (player.SkillSet.HasPassive(155714)) //dh Vengeance
                     {
                         player.GeneratePrimaryResource(20f);
@@ -5362,7 +5357,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void VacuumPickup()
     {
-        var itemList = GetItemsInRange(Attributes[GameAttribute.Gold_PickUp_Radius]);
+        var itemList = GetItemsInRange(Attributes[GameAttributes.Gold_PickUp_Radius]);
         foreach (var item in itemList)
             if (Item.IsGold(item.ItemType))
             {
@@ -5376,7 +5371,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         WorldID = World.DynamicID(this)
                     },
 
-                    Amount = item.Attributes[GameAttribute.Gold],
+                    Amount = item.Attributes[GameAttributes.Gold],
                     Type = FloatingAmountMessage.FloatType.Gold
                 });
                 InGameClient.SendMessage(new PlayEffectMessage()
@@ -5403,7 +5398,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         WorldID = World.DynamicID(this)
                     },
 
-                    Amount = item.Attributes[GameAttribute.ItemStackQuantityLo],
+                    Amount = item.Attributes[GameAttributes.ItemStackQuantityLo],
                     Type = FloatingAmountMessage.FloatType.BloodStone
                 });
 
@@ -5422,7 +5417,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         WorldID = World.DynamicID(this)
                     },
 
-                    Amount = item.Attributes[GameAttribute.ItemStackQuantityLo],
+                    Amount = item.Attributes[GameAttributes.ItemStackQuantityLo],
                     Type = FloatingAmountMessage.FloatType.Platinum
                 });
                 PlayEffect(Effect.Sound, 433266);
@@ -5465,19 +5460,19 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         });
 
                     //every summon and mercenary owned by you must broadcast their green text to you /H_DANILO
-                    player.AddPercentageHP((int)item.Attributes[GameAttribute.Health_Globe_Bonus_Health]);
+                    player.AddPercentageHP((int)item.Attributes[GameAttributes.Health_Globe_Bonus_Health]);
                     //passive abilities
                     if (player.SkillSet.HasPassive(208478)) //wizard PowerHungry
                         player.World.BuffManager.AddBuff(this, this, new HungryBuff());
                     if (player.SkillSet.HasPassive(208594)) //wd GruesomeFeast
                     {
-                        player.GeneratePrimaryResource(player.Attributes[GameAttribute.Resource_Max_Total,
+                        player.GeneratePrimaryResource(player.Attributes[GameAttributes.Resource_Max_Total,
                             (int)player.Toon.HeroTable.PrimaryResource + 1] * 0.1f);
                         player.World.BuffManager.AddBuff(player, player, new GruesomeFeastIntBuff());
                     }
 
                     if (player.SkillSet.HasPassive(205205)) //barbarian PoundOfFlesh
-                        player.AddPercentageHP((int)(item.Attributes[GameAttribute.Health_Globe_Bonus_Health] * 0.5f));
+                        player.AddPercentageHP((int)(item.Attributes[GameAttributes.Health_Globe_Bonus_Health] * 0.5f));
                     if (player.SkillSet.HasPassive(155714)) //dh Vengeance
                     {
                         player.GeneratePrimaryResource(20f);
@@ -5602,7 +5597,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 //Play Aura - 472217
                 //this.PlayEffectGroup(472217);
                 var Fleshes =
-                    GetActorsInRange<NecromancerFlesh>(15f + Attributes[GameAttribute.Gold_PickUp_Radius] *
+                    GetActorsInRange<NecromancerFlesh>(15f + Attributes[GameAttributes.Gold_PickUp_Radius] *
                         0.5f); //454066
                 foreach (var flesh in Fleshes)
                 {
@@ -5613,7 +5608,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         ActorID = flesh.DynamicID(this)
                     });
                     flesh.PlayEffectGroup(470482);
-                    Attributes[GameAttribute.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] += 11f;
+                    Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource] += 11f;
                     Attributes.BroadcastChangedIfRevealed();
                     flesh.Destroy();
                 }
@@ -5623,8 +5618,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public Actor SpawnNephalemBoss(World world)
     {
         var boss = world.SpawnMonster(ActorSnoExtensions.NephalemPortalBosses.PickRandom(), Position);
-        boss.Attributes[GameAttribute.Bounty_Objective] = true;
-        boss.Attributes[GameAttribute.Is_Loot_Run_Boss] = true;
+        boss.Attributes[GameAttributes.Bounty_Objective] = true;
+        boss.Attributes[GameAttributes.Is_Loot_Run_Boss] = true;
         boss.Attributes.BroadcastChangedIfRevealed();
 
         foreach (var plr in world.Players.Values)
@@ -5652,13 +5647,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void AddPercentageHP(int percentage, bool guidingLight = false)
     {
-        var quantity = percentage * Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+        var quantity = percentage * Attributes[GameAttributes.Hitpoints_Max_Total] / 100;
         AddHP(quantity, guidingLight);
     }
 
     public void AddPercentageHP(float percentage, bool guidingLight = false)
     {
-        var quantity = percentage * Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+        var quantity = percentage * Attributes[GameAttributes.Hitpoints_Max_Total] / 100;
         AddHP(quantity, guidingLight);
     }
 
@@ -5671,17 +5666,17 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 return;
             case > 0:
             {
-                if (Attributes[GameAttribute.Hitpoints_Cur] < Attributes[GameAttribute.Hitpoints_Max_Total])
+                if (Attributes[GameAttributes.Hitpoints_Cur] < Attributes[GameAttributes.Hitpoints_Max_Total])
                 {
                     if (Toon.Class == ToonClass.Barbarian)
                         if (SkillSet.HasPassive(205217))
-                            quantity += 0.01f * Attributes[GameAttribute.Health_Globe_Bonus_Health];
+                            quantity += 0.01f * Attributes[GameAttributes.Health_Globe_Bonus_Health];
 
                     if (guidingLight) //Monk -> Guiding Light
                     {
                         var missingHP =
-                            (Attributes[GameAttribute.Hitpoints_Max_Total] - Attributes[GameAttribute.Hitpoints_Cur]) /
-                            Attributes[GameAttribute.Hitpoints_Max_Total];
+                            (Attributes[GameAttributes.Hitpoints_Max_Total] - Attributes[GameAttributes.Hitpoints_Cur]) /
+                            Attributes[GameAttributes.Hitpoints_Max_Total];
                         if (missingHP > 0.05f)
                             if (!World.BuffManager.HasBuff<GuidingLightBuff>(this))
                                 World.BuffManager.AddBuff(this, this,
@@ -5689,9 +5684,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                                         TickTimer.WaitSeconds(World.Game, 10.0f)));
                     }
 
-                    Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
-                        Attributes[GameAttribute.Hitpoints_Cur] + quantity,
-                        Attributes[GameAttribute.Hitpoints_Max_Total]);
+                    Attributes[GameAttributes.Hitpoints_Cur] = Math.Min(
+                        Attributes[GameAttributes.Hitpoints_Cur] + quantity,
+                        Attributes[GameAttributes.Hitpoints_Max_Total]);
 
                     Attributes.BroadcastChangedIfRevealed();
                     InGameClient.SendMessage(new FloatingNumberMessage
@@ -5705,8 +5700,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 break;
             }
             default:
-                Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(
-                    Attributes[GameAttribute.Hitpoints_Cur] + quantity,
+                Attributes[GameAttributes.Hitpoints_Cur] = Math.Max(
+                    Attributes[GameAttributes.Hitpoints_Cur] + quantity,
                     0);
 
                 Attributes.BroadcastChangedIfRevealed();
@@ -5717,10 +5712,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     //only for WD passive
     public void RestoreMana(float quantity, int secs)
     {
-        Attributes[GameAttribute.Resource_Regen_Per_Second, 0] += quantity / secs;
+        Attributes[GameAttributes.Resource_Regen_Per_Second, 0] += quantity / secs;
         System.Threading.Tasks.Task.Delay(1000 * secs).ContinueWith(t =>
         {
-            Attributes[GameAttribute.Resource_Regen_Per_Second, 0] -= quantity / secs;
+            Attributes[GameAttributes.Resource_Regen_Per_Second, 0] -= quantity / secs;
         });
     }
 
@@ -5748,20 +5743,20 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void UsePrimaryResource(float amount, bool tick = false)
     {
         amount = Math.Max(
-            (amount - Attributes[GameAttribute.Resource_Cost_Reduction_Amount]) * (1f -
-                Attributes[GameAttribute.Resource_Cost_Reduction_Percent_Total,
+            (amount - Attributes[GameAttributes.Resource_Cost_Reduction_Amount]) * (1f -
+                Attributes[GameAttributes.Resource_Cost_Reduction_Percent_Total,
                     (int)Toon.HeroTable.PrimaryResource + 1]), 0);
         amount = amount * (1f - DecreaseUseResourcePercent);
         if (Toon.Class == ToonClass.Crusader)
         {
             _wrathSpent += (int)amount;
             if (!tick && SkillSet.HasPassive(310775)) //Wrathful passive
-                AddHP(_wrathSpent * 15f * Attributes[GameAttribute.Level]);
+                AddHP(_wrathSpent * 15f * Attributes[GameAttributes.Level]);
 
             //Laws of Hope -> Faith's reward
             if (!tick && World.BuffManager.HasBuff<CrusaderLawsOfHope.LawsShieldBuff>(this))
                 if (World.BuffManager.GetFirstBuff<CrusaderLawsOfHope.LawsShieldBuff>(this).HealPerWrath)
-                    AddHP(_wrathSpent * 15f * Attributes[GameAttribute.Level]);
+                    AddHP(_wrathSpent * 15f * Attributes[GameAttributes.Level]);
 
             if (_wrathSpent >= 20) //Akarat Champion -> Fire Starter
                 if (!tick && World.BuffManager.HasBuff<CrusaderAkaratChampion.AkaratBuff>(this))
@@ -5781,11 +5776,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         if (Toon.Class == ToonClass.Barbarian)
         {
             if (SkillSet.HasPassive(105217) && !tick) //Bloodthirst (Burb)
-                AddHP(amount * 1.93f * Attributes[GameAttribute.Level]);
+                AddHP(amount * 1.93f * Attributes[GameAttributes.Level]);
 
             if (!tick && World.BuffManager.HasBuff<IgnorePain.IgnorePainBuff>(this))
-                if (Attributes[GameAttribute.Rune_E, 79528] > 0) //IgnorePain
-                    AddHP(amount * 13.76f * Attributes[GameAttribute.Level]);
+                if (Attributes[GameAttributes.Rune_E, 79528] > 0) //IgnorePain
+                    AddHP(amount * 13.76f * Attributes[GameAttributes.Level]);
         }
 
         if (Toon.Class == ToonClass.Wizard)
@@ -5797,7 +5792,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         if (Toon.Class == ToonClass.Monk)
             if (SkillSet.HasPassive(209250)) //Transcendence (Monk)
-                AddHP(amount * (50f + Attributes[GameAttribute.Health_Globe_Bonus_Health] * 0.004f));
+                AddHP(amount * (50f + Attributes[GameAttributes.Health_Globe_Bonus_Health] * 0.004f));
 
         if (SkillSet.HasPassive(208628)) //PierceTheVeil (WD)
             amount *= 1.3f;
@@ -5807,8 +5802,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             AddHP(amount * -0.1f);
         }
 
-        if (SkillSet.HasPassive(205398) && Attributes[GameAttribute.Hitpoints_Cur] <
-            Attributes[GameAttribute.Hitpoints_Max_Total] * 0.35f) //Relentless (Barbarian)
+        if (SkillSet.HasPassive(205398) && Attributes[GameAttributes.Hitpoints_Cur] <
+            Attributes[GameAttributes.Hitpoints_Max_Total] * 0.35f) //Relentless (Barbarian)
             amount *= 0.25f;
         ModifyResourceAttribute(PrimaryResourceID, -amount);
     }
@@ -5821,8 +5816,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void UseSecondaryResource(float amount)
     {
         amount = Math.Max(
-            (amount - Attributes[GameAttribute.Resource_Cost_Reduction_Amount]) * (1f -
-                Attributes[GameAttribute.Resource_Cost_Reduction_Percent_Total, (int)Toon.HeroTable.SecondaryResource]),
+            (amount - Attributes[GameAttributes.Resource_Cost_Reduction_Amount]) * (1f -
+                Attributes[GameAttributes.Resource_Cost_Reduction_Percent_Total, (int)Toon.HeroTable.SecondaryResource]),
             0);
 
         if (SkillSet.HasPassive(155722)) //dh - Perfectionist
@@ -5844,17 +5839,17 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     private void ModifyResourceAttribute(int resourceID, float amount)
     {
         if (resourceID == -1 || amount == 0) return;
-        var current = Attributes[GameAttribute.Resource_Cur, resourceID];
+        var current = Attributes[GameAttributes.Resource_Cur, resourceID];
         if (amount > 0f)
-            Attributes[GameAttribute.Resource_Cur, resourceID] = Math.Min(
-                Attributes[GameAttribute.Resource_Cur, resourceID] + amount,
-                Attributes[GameAttribute.Resource_Max_Total, resourceID]);
+            Attributes[GameAttributes.Resource_Cur, resourceID] = Math.Min(
+                Attributes[GameAttributes.Resource_Cur, resourceID] + amount,
+                Attributes[GameAttributes.Resource_Max_Total, resourceID]);
         else
-            Attributes[GameAttribute.Resource_Cur, resourceID] = Math.Max(
-                Attributes[GameAttribute.Resource_Cur, resourceID] + amount,
+            Attributes[GameAttributes.Resource_Cur, resourceID] = Math.Max(
+                Attributes[GameAttributes.Resource_Cur, resourceID] + amount,
                 0f);
 
-        if (Math.Abs(current - Attributes[GameAttribute.Resource_Cur, resourceID]) < Globals.FLOAT_TOLERANCE) return;
+        if (Math.Abs(current - Attributes[GameAttributes.Resource_Cur, resourceID]) < Globals.FLOAT_TOLERANCE) return;
 
         Attributes.BroadcastChangedIfRevealed();
     }
@@ -5877,7 +5872,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         if (Toon.Class == ToonClass.Barbarian)
         {
-            if (Attributes[GameAttribute.Resource_Cur, 2] < Attributes[GameAttribute.Resource_Max_Total, 2])
+            if (Attributes[GameAttributes.Resource_Cur, 2] < Attributes[GameAttributes.Resource_Max_Total, 2])
                 _fullFuryFirstTick = InGameClient.Game.TickCounter;
 
             if (InGameClient.Game.TickCounter - _fullFuryFirstTick >= 18000)
@@ -5900,15 +5895,15 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         _lastResourceUpdateTick = InGameClient.Game.TickCounter;
 
         GeneratePrimaryResource(Math.Max(
-            tickSeconds * Attributes[GameAttribute.Resource_Regen_Total,
-                Attributes[GameAttribute.Resource_Type_Primary] - 1], 0));
+            tickSeconds * Attributes[GameAttributes.Resource_Regen_Total,
+                Attributes[GameAttributes.Resource_Type_Primary] - 1], 0));
         GenerateSecondaryResource(Math.Max(
-            tickSeconds * Attributes[GameAttribute.Resource_Regen_Total,
-                Attributes[GameAttribute.Resource_Type_Secondary] - 1], 0));
+            tickSeconds * Attributes[GameAttributes.Resource_Regen_Total,
+                Attributes[GameAttributes.Resource_Type_Secondary] - 1], 0));
 
         var totalHPregen = //(this.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] +
-            Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] //)
-            * (1 + Attributes[GameAttribute.Hitpoints_Regen_Bonus_Percent]);
+            Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] //)
+            * (1 + Attributes[GameAttributes.Hitpoints_Regen_Bonus_Percent]);
         if (!Dead && !World.Game.PvP) AddHP(Math.Max(tickSeconds * totalHPregen, 0));
 
         if (Toon.Class == ToonClass.Barbarian)
@@ -5978,13 +5973,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void EnableStoneOfRecall()
     {
-        Attributes[GameAttribute.Skill, 0x0002EC66] = 1;
+        Attributes[GameAttributes.Skill, 0x0002EC66] = 1;
         Attributes.SendChangedMessage(InGameClient);
     }
 
     public void DisableStoneOfRecall()
     {
-        Attributes[GameAttribute.Skill, 0x0002EC66] = 0;
+        Attributes[GameAttributes.Skill, 0x0002EC66] = 0;
         Attributes.SendChangedMessage(InGameClient);
     }
 
@@ -6002,18 +5997,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         minion.Brain.DeActivate();
         minion.WalkSpeed *= 4;
         minion.Position = Position;
-        minion.Attributes[GameAttribute.TeamID] = Attributes[GameAttribute.TeamID];
-        minion.Attributes[GameAttribute.Untargetable] = true;
-        minion.Attributes[GameAttribute.No_Damage] = true;
-        minion.Attributes[GameAttribute.Invulnerable] = true;
-        minion.Attributes[GameAttribute.TeamID] = 2;
-        minion.Attributes[GameAttribute.NPC_Is_Escorting] = true;
-        minion.Attributes[GameAttribute.Pet_Creator] = 1;
-        minion.Attributes[GameAttribute.Pet_Owner] = 1;
-        minion.Attributes[GameAttribute.Pet_Type] = 25;
+        minion.Attributes[GameAttributes.TeamID] = Attributes[GameAttributes.TeamID];
+        minion.Attributes[GameAttributes.Untargetable] = true;
+        minion.Attributes[GameAttributes.No_Damage] = true;
+        minion.Attributes[GameAttributes.Invulnerable] = true;
+        minion.Attributes[GameAttributes.TeamID] = 2;
+        minion.Attributes[GameAttributes.NPC_Is_Escorting] = true;
+        minion.Attributes[GameAttributes.Pet_Creator] = 1;
+        minion.Attributes[GameAttributes.Pet_Owner] = 1;
+        minion.Attributes[GameAttributes.Pet_Type] = 25;
 
         //*/
-        minion.Attributes[GameAttribute.Effect_Owner_ANN] = (int)DynamicID(this);
+        minion.Attributes[GameAttributes.Effect_Owner_ANN] = (int)DynamicID(this);
         minion.EnterWorld(minion.Position);
         (minion as Minion).Brain.Activate();
 
@@ -6111,8 +6106,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void Heal()
     {
-        Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
-        Attributes[GameAttribute.Hitpoints_Total_From_Level] = Attributes[GameAttribute.Hitpoints_Max_Total];
+        Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+        Attributes[GameAttributes.Hitpoints_Total_From_Level] = Attributes[GameAttributes.Hitpoints_Max_Total];
         Attributes.BroadcastChangedIfRevealed();
     }
 

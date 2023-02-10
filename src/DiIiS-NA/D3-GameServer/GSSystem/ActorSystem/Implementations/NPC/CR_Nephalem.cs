@@ -3,11 +3,6 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -22,7 +17,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             Conversations.Add(new Interactions.ConversationInteraction(471076));
 
             Field7 = 1;
-            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes[GameAttributes.MinimapActive] = true;
         }
 
         public override void OnTargeted(Player player, TargetMessage message)

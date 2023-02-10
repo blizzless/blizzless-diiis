@@ -1,13 +1,10 @@
 ﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using System.Linq;
 using System;
 using System.Collections.Generic;
-using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
@@ -244,7 +241,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => {
 					var Tyrael = Game.GetWorld(WorldSno.a3dun_hub_keep).GetActorBySNO(ActorSno._tyrael_act3);
 					(Tyrael as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(183792));
-					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+					Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
 					ListenConversation(183792, new Advance());
 				})
@@ -258,7 +255,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //go to Armory
 					var Tyrael = Game.GetWorld(WorldSno.a3dun_hub_keep).GetActorBySNO(ActorSno._tyrael_act3);
 					(Tyrael as InteractiveNPC).Conversations.Clear();     
-					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+					Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
 					ListenTeleport(185228, new Advance());
 				})
@@ -275,13 +272,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						var world = Game.GetWorld(WorldSno.a3dun_keep_hub_inn);
 						bool Activated = false;
 						var NStone = world.GetActorBySNO(ActorSno._a2dun_zolt_black_soulstone);//156328
-						NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-						NStone.Attributes[GameAttribute.Untargetable] = !Activated;
-						NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-						NStone.Attributes[GameAttribute.Operatable] = Activated;
-						NStone.Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-						NStone.Attributes[GameAttribute.Disabled] = !Activated;
-						NStone.Attributes[GameAttribute.Immunity] = !Activated;
+						NStone.Attributes[GameAttributes.Team_Override] = (Activated ? -1 : 2);
+						NStone.Attributes[GameAttributes.Untargetable] = !Activated;
+						NStone.Attributes[GameAttributes.NPC_Is_Operatable] = Activated;
+						NStone.Attributes[GameAttributes.Operatable] = Activated;
+						NStone.Attributes[GameAttributes.Operatable_Story_Gizmo] = Activated;
+						NStone.Attributes[GameAttributes.Disabled] = !Activated;
+						NStone.Attributes[GameAttributes.Immunity] = !Activated;
 						NStone.Attributes.BroadcastChangedIfRevealed();
 						NStone.PlayEffectGroup(205460);
 						foreach (var atr in world.GetActorsBySNO(ActorSno._leah))
@@ -373,7 +370,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				OnAdvance = new Action(() => { //talk with sergeant Pale
 					var Serge = Game.GetWorld(WorldSno.a3_battlefields_02).GetActorBySNO(ActorSno._a3_battlefield_guard_sargeant);
 					(Serge as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(170486));
-					Serge.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+					Serge.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 					//this.Game.GetWorld(95804).SpawnMonster(202730, new Vector3D(4394.2188f, 396.80215f, -2.293509f));
 					//ListenConversation(170486, new LaunchConversation(202735));
 					ListenConversation(170486, new Advance());
@@ -742,13 +739,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						//Черный камень душ, нельзя! ТРОГАТЬ! ФУ! БРЫСЬ!
 						bool Activated = false;
 						var NStone = World.GetActorBySNO(ActorSno._a2dun_zolt_black_soulstone);//156328
-						NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-						NStone.Attributes[GameAttribute.Untargetable] = !Activated;
-						NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-						NStone.Attributes[GameAttribute.Operatable] = Activated;
-						NStone.Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-						NStone.Attributes[GameAttribute.Disabled] = !Activated;
-						NStone.Attributes[GameAttribute.Immunity] = !Activated;
+						NStone.Attributes[GameAttributes.Team_Override] = (Activated ? -1 : 2);
+						NStone.Attributes[GameAttributes.Untargetable] = !Activated;
+						NStone.Attributes[GameAttributes.NPC_Is_Operatable] = Activated;
+						NStone.Attributes[GameAttributes.Operatable] = Activated;
+						NStone.Attributes[GameAttributes.Operatable_Story_Gizmo] = Activated;
+						NStone.Attributes[GameAttributes.Disabled] = !Activated;
+						NStone.Attributes[GameAttributes.Immunity] = !Activated;
 						NStone.Attributes.BroadcastChangedIfRevealed();
 						//Участники сцены
 						foreach (var plr in World.Players.Values)

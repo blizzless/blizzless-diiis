@@ -19,9 +19,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
             proxySNO = ActorSno._hireling_templar_proxy;
             skillKit = 484941;
             hirelingGBID = StringHashHelper.HashItemName("Templar");
-            Attributes[GameAttribute.Hireling_Class] = 0;
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.Team_Override] = 2;
+            Attributes[GameAttributes.Hireling_Class] = 0;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.Team_Override] = 2;
         }
 
 		public override Hireling CreateHireling(MapSystem.World world, ActorSno sno, TagMap tags)
@@ -37,8 +37,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 				case 102057:
 				case 101969:
 					player.HirelingInfo[3].Skill1SNOId = SkillSNOId;
-					Attributes[GameAttribute.Skill, SkillSNOId] = 1;
-					Attributes[GameAttribute.Skill, (SkillSNOId == 102057 ? 101969 : 102057)] = 0;
+					Attributes[GameAttributes.Skill, SkillSNOId] = 1;
+					Attributes[GameAttributes.Skill, (SkillSNOId == 102057 ? 101969 : 102057)] = 0;
 					Attributes.BroadcastChangedIfRevealed();
 
 					dbhireling.Skill1SNOId = SkillSNOId;
@@ -47,8 +47,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 				case 102133:
 				case 101461:
 					player.HirelingInfo[3].Skill2SNOId = SkillSNOId;
-					Attributes[GameAttribute.Skill, SkillSNOId] = 1;
-					Attributes[GameAttribute.Skill, (SkillSNOId == 102133 ? 101461 : 102133)] = 0;
+					Attributes[GameAttributes.Skill, SkillSNOId] = 1;
+					Attributes[GameAttributes.Skill, (SkillSNOId == 102133 ? 101461 : 102133)] = 0;
 					Attributes.BroadcastChangedIfRevealed();
 
 					dbhireling.Skill2SNOId = SkillSNOId;
@@ -57,8 +57,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 				case 101990:
 				case 220872:
 					player.HirelingInfo[3].Skill3SNOId = SkillSNOId;
-					Attributes[GameAttribute.Skill, SkillSNOId] = 1;
-					Attributes[GameAttribute.Skill, (SkillSNOId == 101990 ? 220872 : 101990)] = 0;
+					Attributes[GameAttributes.Skill, SkillSNOId] = 1;
+					Attributes[GameAttributes.Skill, (SkillSNOId == 101990 ? 220872 : 101990)] = 0;
 					Attributes.BroadcastChangedIfRevealed();
 
 					dbhireling.Skill3SNOId = SkillSNOId;
@@ -67,8 +67,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 				case 101425:
 				case 201524:
 					player.HirelingInfo[3].Skill4SNOId = SkillSNOId;
-					Attributes[GameAttribute.Skill, SkillSNOId] = 1;
-					Attributes[GameAttribute.Skill, (SkillSNOId == 101425 ? 201524 : 101425)] = 0;
+					Attributes[GameAttributes.Skill, SkillSNOId] = 1;
+					Attributes[GameAttributes.Skill, (SkillSNOId == 101425 ? 201524 : 101425)] = 0;
 					Attributes.BroadcastChangedIfRevealed();
 
 					dbhireling.Skill4SNOId = SkillSNOId;
@@ -93,14 +93,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			player.HirelingInfo[3].Skill3SNOId = -1;
 			player.HirelingInfo[3].Skill4SNOId = -1;
 
-			Attributes[GameAttribute.Skill, 102057] = 0;
-			Attributes[GameAttribute.Skill, 101969] = 0;
-			Attributes[GameAttribute.Skill, 102133] = 0;
-			Attributes[GameAttribute.Skill, 101461] = 0;
-			Attributes[GameAttribute.Skill, 101990] = 0;
-			Attributes[GameAttribute.Skill, 220872] = 0;
-			Attributes[GameAttribute.Skill, 101425] = 0;
-			Attributes[GameAttribute.Skill, 201524] = 0;
+			Attributes[GameAttributes.Skill, 102057] = 0;
+			Attributes[GameAttributes.Skill, 101969] = 0;
+			Attributes[GameAttributes.Skill, 102133] = 0;
+			Attributes[GameAttributes.Skill, 101461] = 0;
+			Attributes[GameAttributes.Skill, 101990] = 0;
+			Attributes[GameAttributes.Skill, 220872] = 0;
+			Attributes[GameAttributes.Skill, 101425] = 0;
+			Attributes[GameAttributes.Skill, 201524] = 0;
 			Attributes.SendChangedMessage(player.InGameClient);
 		}
 
