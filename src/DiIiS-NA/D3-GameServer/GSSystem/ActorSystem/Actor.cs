@@ -26,6 +26,7 @@ using System.Linq;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
+using DiIiS_NA.LoginServer.Battle;
 using Circle = DiIiS_NA.GameServer.Core.Types.Misc.Circle;
 using Player = DiIiS_NA.GameServer.GSSystem.PlayerSystem.Player;
 using Scene = DiIiS_NA.GameServer.GSSystem.MapSystem.Scene;
@@ -143,6 +144,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public bool HasLoot { get; set; }
 
 		public bool Dead = false;
+		public bool Alive => !Dead;
 
 		/// <summary>
 		/// Gets whether the actor is visible by questrange, privately set on quest progress
@@ -213,14 +215,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		
 		public int? MarkerSetIndex { get; private set; }
 
-		private int snoTriggeredConversation = -1;
+		private int _snoTriggeredConversation = -1;
 
 		/// <summary>
 		/// Creates a new actor.
 		/// </summary>
 		/// <param name="world">The world that initially belongs to.</param>
 		/// <param name="sno">SNOId of the actor.</param>
-		/// <param name="tags">TagMapEntry dictionary read for the actor from MPQ's..</param>		   
+		/// <param name="tags">TagMapEntry dictionary read for the actor from MPQ's..</param>
+		/// <param name="isMarker">Is Marker</param>		   
 		protected Actor(World world, ActorSno sno, TagMap tags, bool isMarker = false)
 			: base(world, world.IsPvP ? World.NewActorPvPID : world.Game.NewActorGameId)
 		{
@@ -313,7 +316,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public virtual void EnterWorld(Vector3D position)
 		{
-			var Quest = MPQStorage.Data.Assets[SNOGroup.Quest][74128];
+			// var quest = MPQStorage.Data.Assets[SNOGroup.Quest][74128];
 
 			if (World != null)
 			{
@@ -530,11 +533,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (Dicts.DictSNOEffectGroup.ContainsValue(effectGroupSNO))
 			{
 				var effectGroupKey = Dicts.DictSNOEffectGroup.FirstOrDefault(x => x.Value == effectGroupSNO).Key;
-				Logger.Warn($"PlayEffectGroup {effectGroupSNO} on {GetType().Name}. Type: {effectGroupKey}");
+				Logger.MethodTrace($"{effectGroupSNO} on {GetType().Name}. Type: $[green]${effectGroupKey}$[/]$");
 			}
 			else
 			{
-				Logger.Warn($"PlayEffectGroup {effectGroupSNO} on {GetType().Name}. Type: Unknown");
+				Logger.MethodTrace($"{effectGroupSNO} on {GetType().Name}. Type: $[red]$Unknown$[/]$");
 			}
 			#endif
 			PlayEffect(Effect.PlayEffectGroup, effectGroupSNO);
@@ -1305,7 +1308,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 
 			if (Tags.ContainsKey(MarkerKeys.TriggeredConversation))
-				snoTriggeredConversation = Tags[MarkerKeys.TriggeredConversation].Id;
+				_snoTriggeredConversation = Tags[MarkerKeys.TriggeredConversation].Id;
 		}
 
 		#endregion

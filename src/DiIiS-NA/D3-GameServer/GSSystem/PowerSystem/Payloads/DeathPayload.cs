@@ -121,14 +121,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				});
 				masterPlr.NecroSkeletons.Remove(skeletonA);
 			}
-			if (Target is Minion { Master: Player masterPlr2 } and (BaseGolem or IceGolem or BoneGolem or DecayGolem or ConsumeFleshGolem or BloodGolem))
-            {
+
+			if (Target is Minion { Master: Player masterPlr2 }
+			    and (BaseGolem or IceGolem or BoneGolem or DecayGolem or ConsumeFleshGolem or BloodGolem))
+			{
 				masterPlr2.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Pet.PetDetachMessage()
 				{
 					PetId = Target.DynamicID((Target as Minion).Master as Player)
 				});
 				masterPlr2.ActiveGolem = null;
 			}
+
 			if (Target is Player user)
 			{
 				if (user.SkillSet.HasPassive(208779)) //Grenadier (DH)
@@ -143,7 +146,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}
 
 			if (Context != null)
-				if (Context.User is Player player)  //Hitpoints_On_Kill
+				if (Context.User is Player player) //Hitpoints_On_Kill
 					if (player.Attributes[GameAttribute.Hitpoints_On_Kill] > 0)
 						player.AddHP(player.Attributes[GameAttribute.Hitpoints_On_Kill]);
 
@@ -172,11 +175,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			if (Target is Minion minionTarget)
 			{
-				if (minionTarget.Master != null && minionTarget.Master is Player)
+				if (minionTarget.Master != null && minionTarget.Master is Player player)
 				{
-					(minionTarget.Master as Player).Followers.Remove(minionTarget.GlobalID);
-					(minionTarget.Master as Player).FreeFollowerIndex(minionTarget.SNO);
+					player.Followers.Remove(minionTarget.GlobalID);
+					player.FreeFollowerIndex(minionTarget.SNO);
 				}
+
 				if (minionTarget.Brain != null)
 					minionTarget.Brain.Kill();
 
@@ -185,7 +189,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			if (Target is Champion)
 			{
-				bool championsAlive = Target.GetActorsInRange<Champion>(1000).Where(c => c.GroupId == Target.GroupId && c.Attributes[GameAttribute.Hitpoints_Cur] > 0).ToList().Count > 0;
+				bool championsAlive = Target.GetActorsInRange<Champion>(1000).Where(c =>
+					c.GroupId == Target.GroupId && c.Attributes[GameAttribute.Hitpoints_Cur] > 0).ToList().Count > 0;
 				if (championsAlive)
 					LootAndExp = false;
 			}
@@ -219,8 +224,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				case ActorSno._triunevessel_event31:
 				//Падшие
 				case ActorSno._fallengrunt_a:
-                    Target.PlayAnimation(11, AnimationSno.triunesummoner_death_02_persistentblood, 1f);
-                    break;
+					Target.PlayAnimation(11, AnimationSno.triunesummoner_death_02_persistentblood, 1f);
+					break;
 				//Разнощик чумы
 				case ActorSno._fleshpitflyer_b:
 				//Пчелы
@@ -230,8 +235,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					break;
 				//X1_LR_Boss_Angel_Corrupt_A
 				case ActorSno._x1_lr_boss_angel_corrupt_a:
-                    Target.PlayAnimation(11, AnimationSno.angel_corrupt_death_01, 1f);
-                    break;
+					Target.PlayAnimation(11, AnimationSno.angel_corrupt_death_01, 1f);
+					break;
 				default:
 					var animation = FindBestDeathAnimationSNO();
 					if (animation != AnimationSno._NONE)
@@ -240,6 +245,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					{
 						Logger.Warn("Death animation not found: ActorSNOId = {0}", Target.SNO);
 					}
+
 					break;
 			}
 
@@ -266,24 +272,56 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}, Target);
 
 			if (Context?.User != null)
-				if (Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 247640] - 1) < Globals.FLOAT_TOLERANCE ||
-					Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] - 1) < Globals.FLOAT_TOLERANCE ||
-					Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249954] - 1) < Globals.FLOAT_TOLERANCE ||
-					(float)FastRandom.Instance.NextDouble() < 0.1f ||
-					Target.World.SNO == WorldSno.a1dun_random_level01)
+				if (Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 247640] - 1) <
+				    Globals.FLOAT_TOLERANCE ||
+				    Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249963] - 1) <
+				    Globals.FLOAT_TOLERANCE ||
+				    Math.Abs(Context.User.Attributes[GameAttribute.Item_Power_Passive, 249954] - 1) <
+				    Globals.FLOAT_TOLERANCE ||
+				    (float)FastRandom.Instance.NextDouble() < 0.1f ||
+				    Target.World.SNO == WorldSno.a1dun_random_level01)
 					switch ((int)DeathDamageType.HitEffect)
 					{
-						case 0: Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage() { ActorId = Target.DynamicID(plr), Effect = Effect.Gore }, Target); break;
-						case 1: Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage() { ActorId = Target.DynamicID(plr), Effect = Effect.GoreFire }, Target); break;
-						case 2: Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage() { ActorId = Target.DynamicID(plr), Effect = Effect.GoreElectro }, Target); break;
-						case 3: Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage() { ActorId = Target.DynamicID(plr), Effect = Effect.IceBreak }, Target); break;
-						case 4: Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage() { ActorId = Target.DynamicID(plr), Effect = Effect.GorePoison }, Target); break;
-						case 5: Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage() { ActorId = Target.DynamicID(plr), Effect = Effect.GoreArcane }, Target); break;
-						case 6: Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage() { ActorId = Target.DynamicID(plr), Effect = Effect.GoreHoly }, Target); break;
+						case 0:
+							Target.World.BroadcastIfRevealed(
+								plr => new PlayEffectMessage()
+									{ ActorId = Target.DynamicID(plr), Effect = Effect.Gore }, Target);
+							break;
+						case 1:
+							Target.World.BroadcastIfRevealed(
+								plr => new PlayEffectMessage()
+									{ ActorId = Target.DynamicID(plr), Effect = Effect.GoreFire }, Target);
+							break;
+						case 2:
+							Target.World.BroadcastIfRevealed(
+								plr => new PlayEffectMessage()
+									{ ActorId = Target.DynamicID(plr), Effect = Effect.GoreElectro }, Target);
+							break;
+						case 3:
+							Target.World.BroadcastIfRevealed(
+								plr => new PlayEffectMessage()
+									{ ActorId = Target.DynamicID(plr), Effect = Effect.IceBreak }, Target);
+							break;
+						case 4:
+							Target.World.BroadcastIfRevealed(
+								plr => new PlayEffectMessage()
+									{ ActorId = Target.DynamicID(plr), Effect = Effect.GorePoison }, Target);
+							break;
+						case 5:
+							Target.World.BroadcastIfRevealed(
+								plr => new PlayEffectMessage()
+									{ ActorId = Target.DynamicID(plr), Effect = Effect.GoreArcane }, Target);
+							break;
+						case 6:
+							Target.World.BroadcastIfRevealed(
+								plr => new PlayEffectMessage()
+									{ ActorId = Target.DynamicID(plr), Effect = Effect.GoreHoly }, Target);
+							break;
 					}
 
 			if (Context != null)
-				if (Context.User is Player player && Math.Abs(player.Attributes[GameAttribute.Level] - Target.Attributes[GameAttribute.Level]) < 5)
+				if (Context.User is Player player &&
+				    Math.Abs(player.Attributes[GameAttribute.Level] - Target.Attributes[GameAttribute.Level]) < 5)
 					player.KilledSeasonalTempCount++;
 
 			if (Context?.User is Player plr2)
@@ -303,7 +341,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				if (Target.World.SNO == WorldSno.a4dun_garden_of_hope_01)
 				{
 					//Check if there are portals
-					var portalToHell = Target.World.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
+					var portalToHell =
+						Target.World.GetActorsBySNO(ActorSno
+							._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
 					if (portalToHell.Count == 0)
 					{
 						var corruptions = Target.World.GetActorsBySNO(ActorSno._a4dun_garden_corruption_monster);
@@ -311,7 +351,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						{
 							if (RandomHelper.Next(0, 30) > 26)
 							{
-								Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
+								Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal,
+									Target.World.StartingPoints[0].Tags);
 								hellPortal.EnterWorld(Target.Position);
 								Context.User.World.SpawnMonster(ActorSno._diablo_vo, Context.User.Position);
 								StartConversation(Target.World, 217226);
@@ -319,7 +360,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						}
 						else
 						{
-							Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
+							Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal,
+								Target.World.StartingPoints[0].Tags);
 							hellPortal.EnterWorld(Target.Position);
 							Context.User.World.SpawnMonster(ActorSno._diablo_vo, Context.User.Position);
 							StartConversation(Target.World, 217226);
@@ -328,8 +370,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				}
 				//Second floor of the gardens of hope
 				else if (Target.World.SNO == WorldSno.a4dun_garden_of_hope_random)
-				{ //Check if there are portals
-					var portalToHell = Target.World.GetActorsBySNO(ActorSno._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
+				{
+					//Check if there are portals
+					var portalToHell =
+						Target.World.GetActorsBySNO(ActorSno
+							._a4_heaven_gardens_hellportal); //{[Actor] [Type: Gizmo] SNOId:224890 DynamicId: 280 Position: x:696,681 y:695,4387 z:0,2636871 Name: a4_Heaven_Gardens_HellPortal}
 					if (portalToHell.Count == 0)
 					{
 						var corruptions = Target.World.GetActorsBySNO(ActorSno._a4dun_garden_corruption_monster);
@@ -337,7 +382,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						{
 							if (RandomHelper.Next(0, 30) > 26)
 							{
-								Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
+								Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal,
+									Target.World.StartingPoints[0].Tags);
 								hellPortal.EnterWorld(Target.Position);
 								if (Context.User.World.GetActorsBySNO(ActorSno._diablo_vo).Count == 0)
 									Context.User.World.SpawnMonster(ActorSno._diablo_vo, Context.User.Position);
@@ -346,7 +392,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						}
 						else
 						{
-							Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal, Target.World.StartingPoints[0].Tags);
+							Portal hellPortal = new Portal(Target.World, ActorSno._a4_heaven_gardens_hellportal,
+								Target.World.StartingPoints[0].Tags);
 							hellPortal.EnterWorld(Target.Position);
 							if (Context.User.World.GetActorsBySNO(ActorSno._diablo_vo).Count == 0)
 								Context.User.World.SpawnMonster(ActorSno._diablo_vo, Context.User.Position);
@@ -362,9 +409,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			{
 				int grantedExp = 0;
 				if (plr.Attributes[GameAttribute.Level] <= Target.Attributes[GameAttribute.Level])
-					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttribute.Level]] / (40 * Target.Attributes[GameAttribute.Level] * 0.85f) * (Target is Monster ? Math.Min((Target as Monster).HpMultiplier, 3f) : 1f));
+					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttribute.Level]] /
+					                   (40 * Target.Attributes[GameAttribute.Level] * 0.85f) *
+					                   (Target is Monster monster1 ? Math.Min(monster1.HpMultiplier, 3f) : 1f));
 				else
-					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttribute.Level]] / (40 * Target.Attributes[GameAttribute.Level] * 0.85f) * (1 - Math.Abs(plr.Attributes[GameAttribute.Level] - Target.Attributes[GameAttribute.Level]) / 20));
+					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttribute.Level]] /
+						(40 * Target.Attributes[GameAttribute.Level] * 0.85f) * (1 -
+							Math.Abs(plr.Attributes[GameAttribute.Level] - Target.Attributes[GameAttribute.Level]) /
+							20));
 
 				grantedExp = (int)(grantedExp * (plr.Attributes[GameAttribute.Experience_Bonus_Percent] + 1));
 				grantedExp += (int)plr.Attributes[GameAttribute.Experience_Bonus];
@@ -412,16 +464,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							plr.AddTimedAction(5f, new Action<int>((q) => plr.SpikeTrapsKilled--));
 						}
 					}
+
 					if (plr.Toon.Class == ToonClass.Monk)
 					{
-						if (plr.Attributes[GameAttribute.Resource_Cur, 3] < plr.Attributes[GameAttribute.Resource_Max_Total, 3])
+						if (plr.Attributes[GameAttribute.Resource_Cur, 3] <
+						    plr.Attributes[GameAttribute.Resource_Max_Total, 3])
 							plr.AddAchievementCounter(74987243307550, 1);
 					}
+
 					if (plr.Toon.Class == ToonClass.Wizard)
 					{
 						if (monster.Attributes[GameAttribute.Frozen])
 							plr.AddAchievementCounter(74987243307585, 1);
 					}
+
 					if (plr.Toon.Class == ToonClass.WitchDoctor)
 					{
 						if (Context.User.Attributes[GameAttribute.Team_Override] == 1)
@@ -444,7 +500,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 				if (Target is Unique)
 				{
-					if (LoreRegistry.Lore.ContainsKey(Target.World.SNO) && LoreRegistry.Lore[Target.World.SNO].chests_lore.ContainsKey(Target.SNO))
+					if (LoreRegistry.Lore.ContainsKey(Target.World.SNO) &&
+					    LoreRegistry.Lore[Target.World.SNO].chests_lore.ContainsKey(Target.SNO))
 						foreach (int loreId in LoreRegistry.Lore[Target.World.SNO].chests_lore[Target.SNO])
 							if (!plr.HasLore(loreId))
 							{
@@ -453,7 +510,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							}
 				}
 
-				if (plr.SkillSet.HasPassive(218191) && PowerMath.Distance2D(plr.Position, Target.Position) <= 20f + plr.Attributes[GameAttribute.Gold_PickUp_Radius]) //GraveInjustice (WD)
+				if (plr.SkillSet.HasPassive(218191) && PowerMath.Distance2D(plr.Position, Target.Position) <=
+				    20f + plr.Attributes[GameAttribute.Gold_PickUp_Radius]) //GraveInjustice (WD)
 				{
 					plr.AddHP(plr.Attributes[GameAttribute.Hitpoints_Max_Total] / 100f);
 					plr.GeneratePrimaryResource(plr.Attributes[GameAttribute.Resource_Max_Total, 0] / 100f);
@@ -461,7 +519,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						cdBuff.Reduce(60);
 				}
 
-				if (plr.SkillSet.HasPassive(357218) && PowerMath.Distance2D(plr.Position, Target.Position) <= 15f) //Fervor (Crusader)
+				if (plr.SkillSet.HasPassive(357218) &&
+				    PowerMath.Distance2D(plr.Position, Target.Position) <= 15f) //Fervor (Crusader)
 				{
 					plr.World.BuffManager.AddBuff(plr, plr, new FervorBuff());
 				}
@@ -477,7 +536,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				}
 
 
-				if (Target.World.BuffManager.HasBuff<CrusaderJudgment.JudgedDebuffRooted>(Target))    //Crusader -> Judgment -> Conversion
+				if (Target.World.BuffManager
+				    .HasBuff<CrusaderJudgment.JudgedDebuffRooted>(Target)) //Crusader -> Judgment -> Conversion
 					if (Target.World.BuffManager.GetFirstBuff<CrusaderJudgment.JudgedDebuffRooted>(Target).conversion)
 						if (FastRandom.Instance.Next() < 0.2f)
 						{
@@ -488,7 +548,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 							avatar.EnterWorld(avatar.Position);
 
-                            Task.Delay(1000).ContinueWith(d =>
+							Task.Delay(1000).ContinueWith(d =>
 							{
 								(avatar as Minion).Brain.Activate();
 								avatar.Attributes[GameAttribute.Untargetable] = false;
@@ -496,7 +556,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							});
 						}
 
-				if (plr.SkillSet.HasPassive(208571) && PowerMath.Distance2D(plr.Position, Target.Position) <= 12f + plr.Attributes[GameAttribute.Gold_PickUp_Radius] && FastRandom.Instance.Next(100) < 5) //CircleOfLife (WD)
+				if (plr.SkillSet.HasPassive(208571) &&
+				    PowerMath.Distance2D(plr.Position, Target.Position) <=
+				    12f + plr.Attributes[GameAttribute.Gold_PickUp_Radius] &&
+				    FastRandom.Instance.Next(100) < 5) //CircleOfLife (WD)
 				{
 					var dog = new ZombieDog(plr.World, plr, 0);
 					dog.Brain.DeActivate();
@@ -506,7 +569,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					dog.PlayActionAnimation(AnimationSno.zombiedog_summon_01);
 					Context.DogsSummoned++;
 
-                    Task.Delay(1000).ContinueWith(d =>
+					Task.Delay(1000).ContinueWith(d =>
 					{
 						dog.Brain.Activate();
 						dog.Attributes[GameAttribute.Untargetable] = false;
@@ -524,12 +587,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				{
 					plr.World.BuffManager.AddBuff(plr, plr, new RampageBuff());
 				}
+
 				if (Context != null)
 					if (Context.DogsSummoned >= 3)
 						plr.GrantAchievement(74987243307567);
 			}
+
 			Logger.Trace(
-				$"$[green3_1]${Context?.User?.GetType().Name}$[/]$ killed monster, id: $[red]${{0}}$[/]$, level $[red]${{1}}$[/]$", Target.SNO, Target.Attributes[GameAttribute.Level]);
+				$"$[green3_1]${Context?.User?.GetType().Name}$[/]$ killed monster, id: $[red]${{0}}$[/]$, level $[red]${{1}}$[/]$",
+				Target.SNO, Target.Attributes[GameAttribute.Level]);
 
 
 			//handling quest triggers
@@ -542,8 +608,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					if (trigger.count == Target.World.Game.QuestProgress.QuestTriggers[(int)Target.SNO].counter)
 						trigger.questEvent.Execute(Target.World); // launch a questEvent
 				}
-				else
-					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
+				else if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
 				{
 					Target.World.Game.QuestProgress.UpdateCounter((int)Target.SNO);
 				}
@@ -558,108 +623,112 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						trigger.questEvent.Execute(Target.World); // launch a questEvent
 				}
 			}
+
 			if (Target.World == null)
 				return;
 			foreach (var bounty in Target.World.Game.QuestManager.Bounties)
-			{	if (Target.OriginalLevelArea == -1)
+			{
+				if (Target.OriginalLevelArea == -1)
 					Target.OriginalLevelArea = Target.CurrentScene.Specification.SNOLevelAreas[0];
 				bounty.CheckKill((int)Target.SNO, Target.OriginalLevelArea, Target.World.SNO);
 			}
 
 			//Nephalem Rift
-			if ((Target.CurrentScene.Specification.SNOLevelAreas[0] is 332339 or 288482) && Target.World.Game.ActiveNephalemTimer && Target.World.Game.ActiveNephalemKilledMobs == false)
+			if ((Target.CurrentScene.Specification.SNOLevelAreas[0] is 332339 or 288482) &&
+			    Target.World.Game.ActiveNephalemTimer && Target.World.Game.ActiveNephalemKilledMobs == false)
 			{
-				Target.World.Game.ActiveNephalemProgress += GameServerConfig.Instance.NephalemRiftProgressMultiplier * (Target.Quality + 1);
+				Target.World.Game.ActiveNephalemProgress +=
+					GameServerConfig.Instance.NephalemRiftProgressMultiplier * (Target.Quality + 1);
 				Player master = null;
 				foreach (var plr in Target.World.Game.Players.Values)
 				{
 					if (plr.PlayerIndex == 0)
 						master = plr;
-					plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.KillCounterRefresh)
-					{
-
-					});
-
+					if (GameServerConfig.Instance.NephalemRiftAutoFinish && Target.World.Monsters.Count(s => !s.Dead) <= GameServerConfig.Instance.NephalemRiftAutoFinishThreshold) Target.World.Game.ActiveNephalemProgress = 651;
+					plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.KillCounterRefresh));
 					plr.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DungeonFinderProgressMessage)
 					{
 						Field0 = Target.World.Game.ActiveNephalemProgress
 					});
 
-					if (Target.World.Game.ActiveNephalemProgress > 650)
+					if (Target.World.Game.ActiveNephalemProgress <= 650) continue;
+					Target.World.Game.ActiveNephalemKilledMobs = true;
+					if (Target.World.Game.NephalemGreater)
 					{
-						Target.World.Game.ActiveNephalemKilledMobs = true;
-						if (Target.World.Game.NephalemGreater)
+						plr.InGameClient.SendMessage(new QuestCounterMessage()
 						{
-							plr.InGameClient.SendMessage(new QuestCounterMessage()
-							{
-								snoQuest = 0x00052654,
-								snoLevelArea = 0x000466E2,
-								StepID = 13,
-								TaskIndex = 0,
-								Checked = 1,
-								Counter = 1
-							});
-							plr.InGameClient.SendMessage(new QuestUpdateMessage()
-							{
-								snoQuest = 0x00052654,
-								snoLevelArea = 0x000466E2,
-								StepID = 16,
-								DisplayButton = true,
-								Failed = false
-							});
-						}
-						else
-						{
-							plr.InGameClient.SendMessage(new QuestCounterMessage()
-							{
-								snoQuest = 0x00052654,
-								snoLevelArea = 0x000466E2,
-								StepID = 1,
-								TaskIndex = 0,
-								Checked = 1,
-								Counter = 1
-							});
-							plr.InGameClient.SendMessage(new QuestUpdateMessage()
-							{
-								snoQuest = 0x00052654,
-								snoLevelArea = 0x000466E2,
-								StepID = 3,
-								DisplayButton = true,
-								Failed = false
-							});
-						}
-						plr.InGameClient.SendMessage(new PlayMusicMessage(Opcodes.PlayMusicMessage)
-						{
-							SNO = 0x0005BBD8
+							snoQuest = 0x00052654,
+							snoLevelArea = 0x000466E2,
+							StepID = 13,
+							TaskIndex = 0,
+							Checked = 1,
+							Counter = 1
 						});
-
-						plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameChatTextMessage) { Message = "Messages:LR_BossSpawned" });
-						plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameTextMessage) { Message = "Messages:LR_BossSpawned" });
-
-						StartConversation(Target.World, 366542);
-
-						if (plr.PlayerIndex == 0)
+						plr.InGameClient.SendMessage(new QuestUpdateMessage()
 						{
-							plr.SpawnNephalemBoss(Target.World);
-						}
+							snoQuest = 0x00052654,
+							snoLevelArea = 0x000466E2,
+							StepID = 16,
+							DisplayButton = true,
+							Failed = false
+						});
+					}
+					else
+					{
+						plr.InGameClient.SendMessage(new QuestCounterMessage()
+						{
+							snoQuest = 0x00052654,
+							snoLevelArea = 0x000466E2,
+							StepID = 1,
+							TaskIndex = 0,
+							Checked = 1,
+							Counter = 1
+						});
+						plr.InGameClient.SendMessage(new QuestUpdateMessage()
+						{
+							snoQuest = 0x00052654,
+							snoLevelArea = 0x000466E2,
+							StepID = 3,
+							DisplayButton = true,
+							Failed = false
+						});
+					}
+
+					plr.InGameClient.SendMessage(new PlayMusicMessage(Opcodes.PlayMusicMessage)
+					{
+						SNO = 0x0005BBD8
+					});
+
+					plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameChatTextMessage)
+						{ Message = "Messages:LR_BossSpawned" });
+					plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameTextMessage)
+						{ Message = "Messages:LR_BossSpawned" });
+
+					StartConversation(Target.World, 366542);
+
+					if (plr.PlayerIndex == 0)
+					{
+						plr.SpawnNephalemBoss(Target.World);
 					}
 
 				}
 
-				if (Target.Quality > 1)
+				if (Target.Quality > 1 || FastRandom.Instance.Chance(GameServerConfig.Instance.NephalemRiftOrbsChance))
 				{
 					//spawn spheres for mining indicator
 					for (int i = 0; i < Target.Quality + 1; i++)
 					{
-						var position = new Core.Types.Math.Vector3D(Target.Position.X + (float)RandomHelper.NextDouble() * 30f,
-																	Target.Position.Y + (float)RandomHelper.NextDouble() * 30f,
-																	Target.Position.Z);
-						Item item = ItemGenerator.Cook(master, Target.World.Game.NephalemGreater ? "p1_tiered_rifts_Orb" : "p1_normal_rifts_Orb");
-						if (item != null)
-							item.EnterWorld(position);
+						var position = new Core.Types.Math.Vector3D(
+							Target.Position.X + (float)RandomHelper.NextDouble() * 30f,
+							Target.Position.Y + (float)RandomHelper.NextDouble() * 30f,
+							Target.Position.Z);
+						Item item = ItemGenerator.Cook(master,
+							Target.World.Game.NephalemGreater ? "p1_tiered_rifts_Orb" : "p1_normal_rifts_Orb");
+						item?.EnterWorld(position);
 					}
 				}
 			}
+
 			//Nephalem Rift Boss Killed
 			if (Target.Attributes[GameAttribute.Is_Loot_Run_Boss])
 			{
@@ -696,7 +765,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						if (plr.InGameClient.Game.NephalemBuff)
 							plr.Attributes[GameAttribute.Jewel_Upgrades_Bonus]++;
 
-						plr.InGameClient.Game.LastTieredRiftTimeout = (int)((plr.InGameClient.Game.TiredRiftTimer.TimeoutTick - plr.InGameClient.Game.TickCounter) / plr.InGameClient.Game.TickRate / plr.InGameClient.Game.UpdateFrequency * 10f);
+						plr.InGameClient.Game.LastTieredRiftTimeout =
+							(int)((plr.InGameClient.Game.TiredRiftTimer.TimeoutTick -
+							       plr.InGameClient.Game.TickCounter) / plr.InGameClient.Game.TickRate /
+								plr.InGameClient.Game.UpdateFrequency * 10f);
 						plr.InGameClient.Game.TiredRiftTimer.Stop();
 						plr.InGameClient.Game.TiredRiftTimer = null;
 
@@ -722,10 +794,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 						var portal = new Portal(Target.World, ActorSno._x1_openworld_lootrunportal, newTagMap);
 
-						portal.EnterWorld(new Core.Types.Math.Vector3D(Target.Position.X + 10f, Target.Position.Y + 10f, Target.Position.Z));
+						portal.EnterWorld(new Core.Types.Math.Vector3D(Target.Position.X + 10f, Target.Position.Y + 10f,
+							Target.Position.Z));
 					}
 					else
-                    {
+					{
 						plr.InGameClient.SendMessage(new QuestCounterMessage()
 						{
 							snoQuest = 0x00052654,
@@ -772,43 +845,56 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					Target.World.SpawnGold(Target, plr);
 					plr.Toon.GameAccount.BigPortalKey++;
 					Target.World.Game.ActiveNephalemProgress = 0f;
+					plr.InGameClient.BnetClient.SendServerWhisper(
+						"You have completed the Nephalem Rift! You have been rewarded with a Big Portal Key and 10-30 Blood Shards!");
 				}
 			}
 
 			if (Context != null)
 			{
-				if (Context.User is Player && Target.World.Game.MonsterLevel >= 70 && Context.User.Attributes[GameAttribute.Level] == 70) //keys
+				if (Context.User is Player && Target.World.Game.MonsterLevel >= 70 &&
+				    Context.User.Attributes[GameAttribute.Level] == 70) //keys
 				{
-					if (Target is Unique)
+					switch (Target)
 					{
-						int chance = Target.World.Game.IsHardcore ? 30 : 10;
-						if (Target.SNO != ActorSno._terrordemon_a_unique_1000monster && (Target as Unique).CanDropKey && FastRandom.Instance.Next(100) < chance)
-							Target.World.DropItem(Target, null, ItemGenerator.CreateItem(Context.User, ItemGenerator.GetItemDefinition(-110888638)));
-					}
-
-					if (Target is Rare)
-					{
-						int chance = Target.World.Game.IsHardcore ? 15 : 5;
-						if (FastRandom.Instance.Next(1000) < chance)
-							Target.World.DropItem(Target, null, ItemGenerator.CreateItem(Context.User, ItemGenerator.GetItemDefinition(-110888638)));
+						case Unique unique:
+						{
+							int chance = unique.World.Game.IsHardcore ? 30 : 10;
+							if (unique.SNO != ActorSno._terrordemon_a_unique_1000monster && unique.CanDropKey &&
+							    FastRandom.Instance.Chance(chance))
+								unique.World.DropItem(unique, null,
+									ItemGenerator.CreateItem(Context.User,
+										ItemGenerator.GetItemDefinition(-110888638)));
+							break;
+						}
+						case Rare:
+						{
+							int chance = Target.World.Game.IsHardcore ? 15 : 5;
+							if (FastRandom.Instance.Chance(chance))
+								Target.World.DropItem(Target, null,
+									ItemGenerator.CreateItem(Context.User,
+										ItemGenerator.GetItemDefinition(-110888638)));
+							break;
+						}
 					}
 				}
 
 				if (LootAndExp)
 				{
-					if (Context.User is Player || Context.User is Minion || Context.User is Hireling || Context.User == Target)
+					if (Context.User is Player || Context.User is Minion || Context.User is Hireling ||
+					    Context.User == Target)
 					{
 						Player player = null;
-						if (Context.User is Minion)
+						switch (Context.User)
 						{
-							if ((Context.User as Minion).Master is Player)
-								player = (Player)(Context.User as Minion).Master;
-							else return;
-						}
-						else
-						{
-							if (Context.User is Player)
-								player = (Player)Context.User;
+							case Minion minion when minion.Master is Player master:
+								player = master;
+								break;
+							case Minion:
+								return;
+							case Player contextUser:
+								player = contextUser;
+								break;
 						}
 
 						if (player != null)
@@ -817,9 +903,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							if (FastRandom.Instance.Next(1, 100) < 10)
 								Target.World.SpawnHealthGlobe(Target, player, Target.Position);
 
-							int chance = 2;         //Crusader -> Laws of Valor -> Answered Prayer
+							int chance = 2; //Crusader -> Laws of Valor -> Answered Prayer
 							if (player.World.BuffManager.HasBuff<CrusaderLawsOfValor.LawsApsBuff>(player))
-								if (player.World.BuffManager.GetFirstBuff<CrusaderLawsOfValor.LawsApsBuff>(player).Glory)
+								if (player.World.BuffManager.GetFirstBuff<CrusaderLawsOfValor.LawsApsBuff>(player)
+								    .Glory)
 									chance += 20;
 							if (FastRandom.Instance.Next(1, 100) < chance)
 								Target.World.SpawnPowerGlobe(Target, player, Target.Position);
@@ -842,14 +929,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							if (FastRandom.Instance.NextDouble() < 0.04)
 								Target.World.SpawnRandomGem(Target, plr);
 							//Logger.Debug("seed: {0}", seed);
-							var dropRates = Target.World.Game.IsSeasoned ? LootManager.GetSeasonalDropRates((int)Target.Quality, Target.Attributes[GameAttribute.Level]) : LootManager.GetDropRates((int)Target.Quality, Target.Attributes[GameAttribute.Level]);
+							var dropRates = Target.World.Game.IsSeasoned
+								? LootManager.GetSeasonalDropRates((int)Target.Quality,
+									Target.Attributes[GameAttribute.Level])
+								: LootManager.GetDropRates((int)Target.Quality, Target.Attributes[GameAttribute.Level]);
 
 							float seed = (float)FastRandom.Instance.NextDouble();
 							foreach (float rate in dropRates)
 							{
 								// if seed is less than the drop rate, drop the item
-								if (seed < rate * (1f 
-								                   + plr.Attributes[GameAttribute.Magic_Find]) 
+								if (seed < rate * (1f
+								                   + plr.Attributes[GameAttribute.Magic_Find])
 								                * GameServerConfig.Instance.RateDrop)
 								{
 									//Logger.Debug("rate: {0}", rate);
@@ -868,7 +958,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							if ((int)Target.Quality >= 4 && plr.AdditionalLootItems > 0)
 								for (int d = 0; d < plr.AdditionalLootItems; d++)
 								{
-									var lootQuality = Target.World.Game.IsHardcore ? LootManager.GetSeasonalLootQuality((int)Target.Quality, Target.World.Game.Difficulty) : LootManager.GetLootQuality((int)Target.Quality, Target.World.Game.Difficulty);
+									var lootQuality = Target.World.Game.IsHardcore
+										? LootManager.GetSeasonalLootQuality((int)Target.Quality,
+											Target.World.Game.Difficulty)
+										: LootManager.GetLootQuality((int)Target.Quality, Target.World.Game.Difficulty);
 									Target.World.SpawnRandomEquip(Target, plr, lootQuality);
 								}
 
@@ -881,9 +974,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							}
 
 							if (Target.World.Game.IsSeasoned)
-                            {
-								switch(Target.SNO)
-                                {
+							{
+								switch (Target.SNO)
+								{
 									case ActorSno._despair: //Rakanot
 										plr.GrantCriteria(74987254022737);
 										break;
@@ -897,9 +990,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 										plr.GrantCriteria(74987252384014);
 										break;
 								}
-                            }
+							}
 
-                            if ((int)Target.Quality >= 4)
+							if ((int)Target.Quality >= 4)
 							{
 								if (Target.SNO == ActorSno._lacunifemale_c_unique) //Chiltara
 									if ((float)FastRandom.Instance.NextDouble() < 0.5f)
@@ -957,102 +1050,130 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				}
 
 				if (Context.User is Player & Target is Monster)
-					if (RandomHelper.Next(0, 100) > 40 & (Context.User as Player).Toon.Class == ToonClass.Necromancer)
+					if (RandomHelper.Next(0, 100) > 40 && ((Player)Context.User).Toon.Class == ToonClass.Necromancer)
 					{
 						var flesh = Context.User.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, positionOfDeath);
 						flesh.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO] = (int)Target.SNO;
 						flesh.Attributes.BroadcastChangedIfRevealed();
 					}
 			}
-			if (Target is Monster)
-				(Target as Monster).PlayLore();
+
+			if (Target is Monster target1)
+				target1.PlayLore();
 
 			bool isCoop = Target.World.Game.Players.Count > 1;
 			bool isHardcore = Target.World.Game.IsHardcore;
 			bool isSeasoned = Target.World.Game.IsSeasoned;
 			//114917
 
-			if (Target.Quality == 7 || Target.Quality == 2 || Target.Quality == 4)
-			{
+			// if (Target.Quality is 7 or 2 or 4)
+			// {
+			//
+			// }
 
-			}
+			if (Target is not Boss) return;
 
-			if (Target is Boss)
-				foreach (Player plr in players)
-					switch (Target.SNO)
-					{
-						case ActorSno._skeletonking: //Leoric
-							if (Context.PowerSNO == 93885) //weapon throw
-								plr.GrantAchievement(74987243307050);
-							if (isCoop) plr.GrantAchievement(74987252301189); if (isHardcore) plr.GrantAchievement(74987243307489); else plr.GrantAchievement(74987249381288);
-							break;
-						case ActorSno._butcher: //Butcher
-							if (Context.PowerSNO == 93885) //weapon throw
-								plr.GrantAchievement(74987243307050);
-							if (Context.PowerSNO == 71548) //spectral blade
-								plr.GrantCriteria(74987243307946);
-							if (isCoop) plr.GrantAchievement(74987252696819); if (isHardcore) plr.GrantAchievement(74987254551339); else plr.GrantAchievement(74987258164419);
-							plr.SetProgress(1, Target.World.Game.Difficulty);
-							break;
-						case ActorSno._maghda: //Maghda
-							if (Context.PowerSNO == 93885) //weapon throw
-								plr.GrantAchievement(74987243307050);
-							if (isCoop) plr.GrantAchievement(74987255855515); if (isHardcore) plr.GrantAchievement(74987243307507); else plr.GrantAchievement(74987246434969);
-							break;
-						case ActorSno._zoltunkulle: //Zoltun Kulle
-							if (isCoop) plr.GrantAchievement(74987246137208); if (isHardcore) plr.GrantAchievement(74987243307509); else plr.GrantAchievement(74987252195665);
-							break;
-						case ActorSno._belial: //Belial (big)
-							if (Context.PowerSNO == 93885) //weapon throw
-								plr.GrantAchievement(74987243307050);
-							if (Context.PowerSNO == 71548) //spectral blade
-								plr.GrantCriteria(74987243310916);
-							if (isCoop) plr.GrantAchievement(74987256826382); if (isHardcore) plr.GrantAchievement(74987244906887); else plr.GrantAchievement(74987244645044);
-							plr.SetProgress(2, Target.World.Game.Difficulty);
-							break;
-						case ActorSno._gluttony: //Gluttony
-							if (isCoop) plr.GrantAchievement(74987249112946); if (isHardcore) plr.GrantAchievement(74987243307519); else plr.GrantAchievement(74987259418615);
-							break;
-						case ActorSno._siegebreakerdemon: //Siegebreaker
-							if (Context.PowerSNO == 93885) //weapon throw
-								plr.GrantAchievement(74987243307050);
-							if (isCoop) plr.GrantAchievement(74987253664242); if (isHardcore) plr.GrantAchievement(74987243307521); else plr.GrantAchievement(74987248255991);
-							break;
-						case ActorSno._mistressofpain: //Cydaea
-							if (Context.PowerSNO == 93885) //weapon throw
-								plr.GrantAchievement(74987243307050);
-							if (isCoop) plr.GrantAchievement(74987257890442); if (isHardcore) plr.GrantAchievement(74987243307523); else plr.GrantAchievement(74987254675042);
-							break;
-						case ActorSno._azmodan: //Azmodan
-							if (Context.PowerSNO == 93885) //weapon throw
-								plr.GrantAchievement(74987243307050);
-							if (Context.PowerSNO == 71548) //spectral blade
-								plr.GrantCriteria(74987243310915);
-							if (isCoop) plr.GrantAchievement(74987247100576); if (isHardcore) plr.GrantAchievement(74987251893684); else plr.GrantAchievement(74987247855713);
-							plr.SetProgress(3, Target.World.Game.Difficulty);
-							break;
-						case ActorSno._terrordemon_a_unique_1000monster: //Iskatu
-							if (isCoop) plr.GrantAchievement(74987255392558); if (isHardcore) plr.GrantAchievement(74987248632930); else plr.GrantAchievement(74987246017001);
-							break;
-						case ActorSno._despair: //Rakanoth
-							if (Context.PowerSNO == 93885) //weapon throw
-								plr.GrantAchievement(74987243307050);
-							if (isCoop) plr.GrantAchievement(74987248781143); if (isHardcore) plr.GrantAchievement(74987243307533); else plr.GrantAchievement(74987256508058);
-							break;
-						case ActorSno._bigred_izual: //Izual
-							if (isCoop) plr.GrantAchievement(74987254969009); if (isHardcore) plr.GrantAchievement(74987247989681); else plr.GrantAchievement(74987244988685);
-							if (isSeasoned) plr.GrantCriteria(74987249642121);
-							break;
-						case ActorSno._diablo: //Diablo
-							if (Context.PowerSNO == 93885) //weapon throw
-								plr.GrantAchievement(74987243307050);
-							if (isCoop) plr.GrantAchievement(74987250386944); if (isHardcore) plr.GrantAchievement(74987250070969); else plr.GrantAchievement(74987248188984);
-							plr.SetProgress(4, Target.World.Game.Difficulty);
-							if (isSeasoned) plr.GrantCriteria(74987250915380);
-							break;
-						default:
-							break;
-					}
+			foreach (Player plr in players)
+				switch (Target.SNO)
+				{
+					case ActorSno._skeletonking: //Leoric
+						if (Context.PowerSNO == 93885) //weapon throw
+							plr.GrantAchievement(74987243307050);
+						if (isCoop) plr.GrantAchievement(74987252301189);
+						if (isHardcore) plr.GrantAchievement(74987243307489);
+						else plr.GrantAchievement(74987249381288);
+						break;
+					case ActorSno._butcher: //Butcher
+						if (Context.PowerSNO == 93885) //weapon throw
+							plr.GrantAchievement(74987243307050);
+						if (Context.PowerSNO == 71548) //spectral blade
+							plr.GrantCriteria(74987243307946);
+						if (isCoop) plr.GrantAchievement(74987252696819);
+						if (isHardcore) plr.GrantAchievement(74987254551339);
+						else plr.GrantAchievement(74987258164419);
+						plr.SetProgress(1, Target.World.Game.Difficulty);
+						break;
+					case ActorSno._maghda: //Maghda
+						if (Context.PowerSNO == 93885) //weapon throw
+							plr.GrantAchievement(74987243307050);
+						if (isCoop) plr.GrantAchievement(74987255855515);
+						if (isHardcore) plr.GrantAchievement(74987243307507);
+						else plr.GrantAchievement(74987246434969);
+						break;
+					case ActorSno._zoltunkulle: //Zoltun Kulle
+						if (isCoop) plr.GrantAchievement(74987246137208);
+						if (isHardcore) plr.GrantAchievement(74987243307509);
+						else plr.GrantAchievement(74987252195665);
+						break;
+					case ActorSno._belial: //Belial (big)
+						if (Context.PowerSNO == 93885) //weapon throw
+							plr.GrantAchievement(74987243307050);
+						if (Context.PowerSNO == 71548) //spectral blade
+							plr.GrantCriteria(74987243310916);
+						if (isCoop) plr.GrantAchievement(74987256826382);
+						if (isHardcore) plr.GrantAchievement(74987244906887);
+						else plr.GrantAchievement(74987244645044);
+						plr.SetProgress(2, Target.World.Game.Difficulty);
+						break;
+					case ActorSno._gluttony: //Gluttony
+						if (isCoop) plr.GrantAchievement(74987249112946);
+						if (isHardcore) plr.GrantAchievement(74987243307519);
+						else plr.GrantAchievement(74987259418615);
+						break;
+					case ActorSno._siegebreakerdemon: //Siegebreaker
+						if (Context.PowerSNO == 93885) //weapon throw
+							plr.GrantAchievement(74987243307050);
+						if (isCoop) plr.GrantAchievement(74987253664242);
+						if (isHardcore) plr.GrantAchievement(74987243307521);
+						else plr.GrantAchievement(74987248255991);
+						break;
+					case ActorSno._mistressofpain: //Cydaea
+						if (Context.PowerSNO == 93885) //weapon throw
+							plr.GrantAchievement(74987243307050);
+						if (isCoop) plr.GrantAchievement(74987257890442);
+						if (isHardcore) plr.GrantAchievement(74987243307523);
+						else plr.GrantAchievement(74987254675042);
+						break;
+					case ActorSno._azmodan: //Azmodan
+						if (Context.PowerSNO == 93885) //weapon throw
+							plr.GrantAchievement(74987243307050);
+						if (Context.PowerSNO == 71548) //spectral blade
+							plr.GrantCriteria(74987243310915);
+						if (isCoop) plr.GrantAchievement(74987247100576);
+						if (isHardcore) plr.GrantAchievement(74987251893684);
+						else plr.GrantAchievement(74987247855713);
+						plr.SetProgress(3, Target.World.Game.Difficulty);
+						break;
+					case ActorSno._terrordemon_a_unique_1000monster: //Iskatu
+						if (isCoop) plr.GrantAchievement(74987255392558);
+						if (isHardcore) plr.GrantAchievement(74987248632930);
+						else plr.GrantAchievement(74987246017001);
+						break;
+					case ActorSno._despair: //Rakanoth
+						if (Context.PowerSNO == 93885) //weapon throw
+							plr.GrantAchievement(74987243307050);
+						if (isCoop) plr.GrantAchievement(74987248781143);
+						if (isHardcore) plr.GrantAchievement(74987243307533);
+						else plr.GrantAchievement(74987256508058);
+						break;
+					case ActorSno._bigred_izual: //Izual
+						if (isCoop) plr.GrantAchievement(74987254969009);
+						if (isHardcore) plr.GrantAchievement(74987247989681);
+						else plr.GrantAchievement(74987244988685);
+						if (isSeasoned) plr.GrantCriteria(74987249642121);
+						break;
+					case ActorSno._diablo: //Diablo
+						if (Context.PowerSNO == 93885) //weapon throw
+							plr.GrantAchievement(74987243307050);
+						if (isCoop) plr.GrantAchievement(74987250386944);
+						if (isHardcore) plr.GrantAchievement(74987250070969);
+						else plr.GrantAchievement(74987248188984);
+						plr.SetProgress(4, Target.World.Game.Difficulty);
+						if (isSeasoned) plr.GrantCriteria(74987250915380);
+						break;
+					default:
+						break;
+				}
 		}
 
 		public bool StartConversation(MapSystem.World world, Int32 conversationId)

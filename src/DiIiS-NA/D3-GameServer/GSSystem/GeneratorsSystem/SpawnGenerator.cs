@@ -30,24 +30,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			return total;
 		}
 
-		public static bool IsMelee(int la, int monsterId)
-		{
-			return Spawns[la].melee.Contains(monsterId);
-		}
+		public static bool IsMelee(int la, int monsterId) => Spawns[la].melee.Contains(monsterId);
 
-		public static bool IsRange(int la, int monsterId)
-		{
-			return Spawns[la].range.Contains(monsterId);
-		}
+		public static bool IsRange(int la, int monsterId) => Spawns[la].range.Contains(monsterId);
 
-		public static bool IsDangerous(int la, int monsterId)
-		{
-			return Spawns[la].dangerous.Contains(monsterId);
-		}
+		public static bool IsDangerous(int la, int monsterId) => Spawns[la].dangerous.Contains(monsterId);
 
 		public static void RegenerateDensity()
 		{
-			//Logger.Info("Regenerating spawn density map...");
+			Logger.Info("Regenerating spawn density map...");
 			foreach (var spawn in Spawns)
 			{
 				Spawns[spawn.Key].additional_density = FastRandom.Instance.Next(0, 6);
@@ -55,7 +46,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		}
 
 		// key is WorldSno, LevelArea
-		public static Dictionary<int, MonsterLayout> Spawns = new Dictionary<int, MonsterLayout>
+		public static readonly Dictionary<int, MonsterLayout> Spawns = new()
 		{
 			#region Act I
 			{91324,     new MonsterLayout{ lazy_load = false, additional_density = 0, can_spawn_goblin = false, melee = new List<int>{ 6652,  203121, 6644 }, range = new List<int>{ 219725 }, dangerous = new List<int>{ 218339 }}}, //REMOVED 4982 QUILL FIEND (OP damage)							//road to Old Tristram ruins
@@ -241,6 +232,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			//x1_lr_tileset_zoltruins
 			{288823,     new MonsterLayout{ lazy_load = false, additional_density = 0, can_spawn_goblin = true, melee = new List<int>{ 5396, 5432, 208962, 208963, 204944, 5512 }, range = new List<int>{ 5428 }, dangerous = new List<int>{}}},
 			//x1_lr_tileset_hexmaze
+			{331389,        new MonsterLayout{ lazy_load = false, additional_density = 0, can_spawn_goblin = true, melee = new List<int>{ 241288, 305579, 340920, 299231 }, range = new List<int>{ }, dangerous = new List<int>{ 363374, 363378, 363228, 363232, 363367, 360243, 360244, 360241, 363230 }}},
 
 			//x1_lr_tileset_icecave
 			{275960, new MonsterLayout{ lazy_load = false, additional_density = 0, can_spawn_goblin = true, melee = new List<int>{ 191592, 3342, 5239, 3850 }, range = new List<int>{  }, dangerous = new List<int>{}}},																								

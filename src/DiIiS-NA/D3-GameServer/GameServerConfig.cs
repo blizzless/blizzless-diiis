@@ -271,9 +271,35 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(VitalityParagonMultiplier), value);
 		}
 		
+		/// <summary>
+		/// Auto finishes nephalem rift when there's <see cref="NephalemRiftAutoFinishThreshold"></see> or less monsters left.
+		/// </summary>
+		public bool NephalemRiftAutoFinish
+		{
+			get => GetBoolean(nameof(NephalemRiftAutoFinish), false);
+			set => Set(nameof(NephalemRiftAutoFinish), value);
+		}
+		
+		/// <summary>
+		/// If <see cref="NephalemRiftAutoFinish"></see> is enabled, this is the threshold.
+		/// </summary>
+		public int NephalemRiftAutoFinishThreshold
+		{
+			get => GetInt(nameof(NephalemRiftAutoFinishThreshold), 2);
+			set => Set(nameof(NephalemRiftAutoFinishThreshold), value);
+		}
+		
+		/// <summary>
+		/// Nephalem Rifts chance of spawning a orb.
+		/// </summary>
+		public float NephalemRiftOrbsChance
+		{
+			get => GetFloat(nameof(NephalemRiftOrbsChance), 0f);
+			set => Set(nameof(NephalemRiftOrbsChance), value);
+		}
+		
 		#endregion
 		public static GameServerConfig Instance { get; } = new();
-		
 
 		private GameServerConfig() : base("Game-Server")
 		{
