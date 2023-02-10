@@ -27,7 +27,6 @@ DiIiS is a fully-functional open-source local server for [Diablo III: Reaper of 
 ## Restrictions
 
 - Donate Store implementation is removed.
-- NAT support is hidden, but possible ;)
 
 # Installation
 
