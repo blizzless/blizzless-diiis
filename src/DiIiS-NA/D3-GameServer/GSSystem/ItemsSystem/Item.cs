@@ -642,9 +642,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         {
             return new VisualItem()
             {
-                GbId = Attributes[GameAttributes.TransmogGBID] == -1
+                GbId = (int)Attributes[GameAttributes.TransmogGBID] == -1
                     ? GBHandle.GBID
-                    : Attributes[GameAttributes.TransmogGBID],
+                    : (int)Attributes[GameAttributes.TransmogGBID],
                 DyeType = Attributes[GameAttributes.DyeType],
                 ItemEffectType = 0, //Mooege.Common.Helpers.Math.FastRandom.Instance.Next(1, 14),
                 EffectLevel = -1 //Mooege.Common.Helpers.Math.FastRandom.Instance.Next(1, 30)
@@ -655,9 +655,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         public D3.Hero.VisualItem GetVisualItem()
         {
             var visualItem = D3.Hero.VisualItem.CreateBuilder()
-                .SetGbid(Attributes[GameAttributes.TransmogGBID] == -1
+                .SetGbid((int)Attributes[GameAttributes.TransmogGBID] == -1
                     ? GBHandle.GBID
-                    : Attributes[GameAttributes.TransmogGBID])
+                    : (int)Attributes[GameAttributes.TransmogGBID])
                 .SetDyeType(Attributes[GameAttributes.DyeType])
                 .SetEffectLevel(0)
                 .SetItemEffectType(-1)

@@ -1521,7 +1521,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			item.DBInventory.Attributes = attributesSer;
 			item.DBInventory.GbId = item.GBHandle.GBID;
 			item.DBInventory.Version = 2;
-			item.DBInventory.TransmogGBID = item.Attributes[GameAttributes.TransmogGBID];
+			item.DBInventory.TransmogGBID = (int)item.Attributes[GameAttributes.TransmogGBID];
 
 			//Logger.Info("ItemFlags: {0}", (int)item.ItemType.Flags);
 
