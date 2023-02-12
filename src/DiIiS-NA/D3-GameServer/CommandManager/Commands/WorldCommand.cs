@@ -21,8 +21,8 @@ public class WorldCommand : CommandGroup
         var world = player.World;
         return $"[{world.SNO.ToString()}] - {world.SNO}\n{world.Players.Count} players\n" +
                $"{world.Monsters.Count(s=>!s.Dead)} of {world.Monsters.Count} monsters alive\n" +
-               $"~ {world.Monsters.Average(s=>s.Attributes[GameAttributes.Level]).ToString("F1")} avg. monsters level\n" +
-               $"~ {world.Monsters.Average(s=>s.Attributes[GameAttributes.Hitpoints_Max]).ToString("F1")} avg. monsters HP\n" +
+               $"~ {world.Monsters.Average(s=>s.Attributes[GameAttributes.Level]):F1} avg. monsters level\n" +
+               $"~ {world.Monsters.Average(s=>s.Attributes[GameAttributes.Hitpoints_Max]):F1} avg. monsters HP\n" +
                $"{world.Portals.Count} portal(s)\n" +
                $"{world.GetAllDoors().Length} door(s)\n" +
                $"{world.Actors.Count(s=>s.Value is Door)} door(s)\n" +
