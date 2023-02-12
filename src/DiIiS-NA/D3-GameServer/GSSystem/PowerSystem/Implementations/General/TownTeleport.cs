@@ -24,22 +24,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			var scenes = World.QuadTree.Query<Scene>(proximity);
 			var scene = scenes[0]; // Parent scene /fasbat
 			int levelArea = scene.Specification.SNOLevelAreas[0];
-			(World.Game.GetHearthPortal() as HearthPortal).ReturnWorld = World.SNO;
-			(World.Game.GetHearthPortal() as HearthPortal).ReturnPosition = User.Position;
+			((HearthPortal)World.Game.GetHearthPortal()).ReturnWorld = World.SNO;
+			((HearthPortal)World.Game.GetHearthPortal()).ReturnPosition = User.Position;
 
 			Vector3D exCheckpoint = User.CheckPointPosition;
 
-			(User as Player).InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.SimpleMessage(MessageSystem.Opcodes.LoadingWarping));
+			((Player)User).InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.SimpleMessage(MessageSystem.Opcodes.LoadingWarping));
 			if (world != User.World)
 				User.ChangeWorld(world, World.Game.GetHearthPortal().Position);
 			else
 				User.Teleport(World.Game.GetHearthPortal().Position);
 
 			User.CheckPointPosition = exCheckpoint;
-			(World.Game.GetHearthPortal() as HearthPortal).Owner = (User as Player);
+			((HearthPortal)World.Game.GetHearthPortal()).Owner = (User as Player);
 			World.Game.GetHearthPortal().SetVisible(true);
 
-			(User as Player).InGameClient.SendMessage(new HearthPortalInfoMessage
+			((Player)User).InGameClient.SendMessage(new HearthPortalInfoMessage
 			{
 				snoLevelArea = levelArea,
 				snoUnknown = -1,

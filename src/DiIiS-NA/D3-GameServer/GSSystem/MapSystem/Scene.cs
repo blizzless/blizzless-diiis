@@ -19,7 +19,9 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Scene;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
@@ -228,7 +230,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <summary>
 		/// Loads all markers for the scene.		
 		/// </summary>
-		public void LoadMarkers()
+		public void LoadMarkers([CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
 			GizmoSpawningLocations = new List<PRTransform>[26]; // LocationA to LocationZ
 
@@ -239,6 +241,12 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				switch (marker.Type)
 				{
 					case MarkerType.Actor:
+						if ((ActorSno)marker.SNOHandle.Id == ActorSno.__NONE)
+						{
+							var path = Path.GetFileName(filePath);
+							Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
+							continue;	
+						}
 						var actor = ActorFactory.Create(World, (ActorSno)marker.SNOHandle.Id, marker.TagMap); // try to create it.
 																										 //Logger.Debug("not-lazy spawned {0}", actor.GetType().Name);
 						if (actor == null) continue;
@@ -263,6 +271,13 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 							{
 								Logger.Trace("Encounter option {0} - {1} - {2} - {3}", option.SNOSpawn, option.Probability, option.I1, option.I2);
 							}*/ //only for debugging purposes
+							if ((ActorSno)actorsno.SNOSpawn == ActorSno.__NONE)
+							{
+								var path = Path.GetFileName(filePath);
+								Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
+								continue;	
+							}
+							
 							var actor2 = ActorFactory.Create(World, (ActorSno)actorsno.SNOSpawn, marker.TagMap); // try to create it.
 							if (actor2 == null) continue;
 
@@ -515,75 +530,12 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		public MapRevealSceneMessage MapRevealMessage(Player plr)
 		{
-			if (
-			#region Город первого акта
-					SceneSNO.Id == 1904 ||
-				   SceneSNO.Id == 33342 ||
-				   SceneSNO.Id == 33343 ||
-
-				   SceneSNO.Id == 33347 ||
-				   SceneSNO.Id == 33348 ||
-				   SceneSNO.Id == 33349 ||
-				   SceneSNO.Id == 414798
-			#endregion
-					||
-			#region Город второго акта
-					SceneSNO.Id == 161516 ||
-				   SceneSNO.Id == 161510 ||
-				   SceneSNO.Id == 185542 ||
-
-				   SceneSNO.Id == 161507 ||
-				   SceneSNO.Id == 161513 ||
-				   SceneSNO.Id == 185545
-			#endregion
-					||
-			#region Город третьего акта
-					SceneSNO.Id == 172892 ||
-				   SceneSNO.Id == 172880 ||
-				   SceneSNO.Id == 172868 ||
-
-				   SceneSNO.Id == 172888 ||
-				   SceneSNO.Id == 172876 ||
-				   SceneSNO.Id == 172863 ||
-
-				   SceneSNO.Id == 172884 ||
-				   SceneSNO.Id == 172872 ||
-				   SceneSNO.Id == 172908
-			#endregion
-					||
-			#region Город четвертого акта
-					SceneSNO.Id == 183555 ||
-				   SceneSNO.Id == 183556 ||
-				   SceneSNO.Id == 183557 ||
-
-				   SceneSNO.Id == 183502 ||
-				   SceneSNO.Id == 183505 ||
-				   SceneSNO.Id == 183557 ||
-
-				   SceneSNO.Id == 183519 ||
-				   SceneSNO.Id == 183545 ||
-				   SceneSNO.Id == 183553
-			#endregion
-					||
-			#region Город пятого акта
-					SceneSNO.Id == 315706 ||
-				   SceneSNO.Id == 311307 ||
-				   SceneSNO.Id == 311295 ||
-
-				   SceneSNO.Id == 313849 ||
-				   SceneSNO.Id == 311316 ||
-				   SceneSNO.Id == 313845 ||
-
-				   SceneSNO.Id == 315710 ||
-				   SceneSNO.Id == 311310 ||
-				   SceneSNO.Id == 311298 ||
-
-				   SceneSNO.Id == 313853 ||
-				   SceneSNO.Id == 311313 ||
-				   SceneSNO.Id == 311301 ||
-				   SceneSNO.Id == 313857
-			#endregion
-					)
+			if (SceneSNO.Id is 1904 or 33342 or 33343 or 33347 or 33348 or 33349 or 414798 or 161516 or 161510 or 185542
+			    or 161507 or 161513 or 185545 or 172892 or 172880 or 172868 or 172888 or 172876 or 172863 or 172884
+			    or 172872 or 172908 or 183555 or 183556 or 183557 or 183502 or 183505 or 183557 or 183519 or 183545
+			    or 183553 or 315706 or 311307 or 311295 or 313849 or 311316 or 313845 or 315710 or 311310 or 311298
+			    or 313853 or 311313 or 311301 or 313857
+			   )
 			{
 				return new MapRevealSceneMessage
 				{
