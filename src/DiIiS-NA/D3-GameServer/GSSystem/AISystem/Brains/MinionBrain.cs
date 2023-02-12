@@ -152,7 +152,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							}
 							else
 							{
-								Logger.Trace("MoveToTargetWithPathfindAction to target");
+								Logger.Trace("$[underline white]$MoveToTargetWithPathfindAction$[/]$ to target");
 								CurrentAction = new MoveToTargetWithPathfindAction(
 									Body,
 									//(

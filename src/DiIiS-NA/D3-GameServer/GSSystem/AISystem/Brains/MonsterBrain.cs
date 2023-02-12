@@ -213,7 +213,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							{
 								if (Body.SNO.IsWoodwraithOrWasp())
 								{
-									Logger.Trace($"{GetType().Name} {nameof(MoveToPointAction)} to target [{_target.Position}]");
+									Logger.Trace($"{GetType().Name} $[underline white]${nameof(MoveToPointAction)}$[/]$ to target $[white]${_target.ActorType}$[/]$ [{_target.Position}]");
 									CurrentAction = new MoveToPointAction(
 										Body, _target.Position
 									);
