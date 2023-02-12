@@ -43,6 +43,8 @@ VitalityMultiplier = 1
 VitalityParagonMultiplier = 1
 ; quests
 AutoSaveQuests = false
+; minimap
+ForceMinimapVisibility = false
 ```
 
 ## Description
@@ -76,3 +78,4 @@ AutoSaveQuests = false
 | `NephalemRiftAutoFinish` | Nephalem Auto-Finish when there's still `NephalemRiftAutoFinishThreshold` monsters or less are alive on the rift |
 | `NephalemRiftAutoFinishThreshold` | Nephalem Rift Progress Modifier |
 | `NephalemRiftOrbsChance` | Nephalem Rifts chance of spawning a orb. |
+| `ForceMinimapVisibility` | Forces the minimap visibility |
