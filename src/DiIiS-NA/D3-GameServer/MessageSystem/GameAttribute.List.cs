@@ -443,7 +443,7 @@ namespace DiIiS_NA.GameServer.MessageSystem
         public static readonly GameAttributeF EnchantedAffixNew = new(424, "EnchantedAffixNew", defaultValue: -1);
         public static readonly GameAttributeF EnchantedAffixSeed = new(425, "EnchantedAffixSeed");
         public static readonly GameAttributeF EnchantedAffixCount = new(426, "EnchantedAffixCount");
-        public static readonly GameAttributeF TransmogGBID = new(427, "TransmogGBID", defaultValue: -1, flags: ReplicationFlags.ItemReplicated);
+        public static readonly GameAttributeI TransmogGBID = new(427, "TransmogGBID", defaultValue: -1, flags: ReplicationFlags.ItemReplicated);
         public static readonly GameAttributeF TransmogGBIDTempOverride = new(428, "TransmogGBIDTempOverride", defaultValue: -1, flags: ReplicationFlags.ItemReplicated);
         public static readonly GameAttributeF HighlySalvageable = new(429, "HighlySalvageable");
         public static readonly GameAttributeF ItemUnlockTimeHi = new(430, "ItemUnlockTimeHi");
