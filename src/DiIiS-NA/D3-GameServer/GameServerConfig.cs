@@ -297,6 +297,12 @@ namespace DiIiS_NA.GameServer
 			get => GetFloat(nameof(NephalemRiftOrbsChance), 0f);
 			set => Set(nameof(NephalemRiftOrbsChance), value);
 		}
+
+		public bool ForceMinimapVisibility
+		{
+			get => GetBoolean(nameof(ForceMinimapVisibility), false);
+			set => Set(nameof(ForceMinimapVisibility), value);
+		}
 		
 		#endregion
 		public static GameServerConfig Instance { get; } = new();

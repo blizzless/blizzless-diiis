@@ -546,17 +546,15 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 					MiniMapVisibility = true
 				};
 			}
-			else
+
+			return new MapRevealSceneMessage
 			{
-				return new MapRevealSceneMessage
-				{
-					ChunkID = GlobalID,
-					SceneSNO = SceneSNO.Id,
-					Transform = Transform,
-					WorldID = World.GlobalID,
-					MiniMapVisibility = false
-				};
-			}
+				ChunkID = GlobalID,
+				SceneSNO = SceneSNO.Id,
+				Transform = Transform,
+				WorldID = World.GlobalID,
+				MiniMapVisibility = GameServerConfig.Instance.ForceMinimapVisibility
+			};
 		}
 
 		#endregion
