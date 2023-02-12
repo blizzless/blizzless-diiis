@@ -16,8 +16,8 @@ namespace DiIiS_NA.GameServer.Core
 		static readonly Logger Logger = LogManager.CreateLogger(nameof(InventoryGrid));
 
 		public int EquipmentSlot { get; private set; }
-		public int Rows { get { return _backpack.GetLength(0); } }
-		public int Columns { get { return _backpack.GetLength(1); } }
+		public int Rows => _backpack.GetLength(0);
+		public int Columns => _backpack.GetLength(1);
 		public Dictionary<uint, Item> Items { get; private set; }
 		private uint[,] _backpack;
 
@@ -133,9 +133,8 @@ namespace DiIiS_NA.GameServer.Core
 					}
 				}
 			}
-			if (_owner is Player)
+			if (_owner is Player ownerPlayer)
 			{
-				var ownerPlayer = _owner as Player;
 				ownerPlayer.Inventory.RemoveItemFromDB(item);
 			}
 		}
@@ -194,11 +193,9 @@ namespace DiIiS_NA.GameServer.Core
 					itm.UpdateStackCount(itm.Attributes[GameAttributes.ItemStackQuantityLo] - estimate);
 					break;
 				}
-				else
-				{
-					estimate -= itm.Attributes[GameAttributes.ItemStackQuantityLo];
-					consumed.Add(itm);
-				}
+
+				estimate -= itm.Attributes[GameAttributes.ItemStackQuantityLo];
+				consumed.Add(itm);
 			}
 			foreach (var itm in consumed)
 			{
@@ -259,15 +256,12 @@ namespace DiIiS_NA.GameServer.Core
 			{
 				// Find items of same type (GBID) and try to add it to one of them
 				List<Item> baseItems = Items.Values.Where(i => i.GBHandle.GBID == item.GBHandle.GBID).ToList();
-				foreach (Item baseItem in baseItems)
+				foreach (var baseItem in baseItems.Where(baseItem => baseItem.Attributes[GameAttributes.ItemStackQuantityLo] + item.Attributes[GameAttributes.ItemStackQuantityLo] <= baseItem.ItemDefinition.MaxStackSize))
 				{
-					if (baseItem.Attributes[GameAttributes.ItemStackQuantityLo] + item.Attributes[GameAttributes.ItemStackQuantityLo] <= baseItem.ItemDefinition.MaxStackSize)
-					{
-						baseItem.UpdateStackCount(baseItem.Attributes[GameAttributes.ItemStackQuantityLo] + item.Attributes[GameAttributes.ItemStackQuantityLo]);
-						baseItem.Attributes.SendChangedMessage((_owner as Player).InGameClient);
+					baseItem.UpdateStackCount(baseItem.Attributes[GameAttributes.ItemStackQuantityLo] + item.Attributes[GameAttributes.ItemStackQuantityLo]);
+					baseItem.Attributes.SendChangedMessage((_owner as Player).InGameClient);
 
-						return;
-					}
+					return;
 				}
 			}
 
@@ -372,15 +366,9 @@ namespace DiIiS_NA.GameServer.Core
 		/// <summary>
 		/// Checks whether the inventory contains an item
 		/// </summary>
-		public bool Contains(uint itemID)
-		{
-			return Items.ContainsKey(itemID);
-		}
+		public bool Contains(uint itemId) => Items.ContainsKey(itemId);
 
-		public bool Contains(Item item)
-		{
-			return Contains(item.GlobalID);
-		}
+		public bool Contains(Item item) => Contains(item.GlobalID);
 
 		/// <summary>
 		/// Find an inventory slot with enough space for an item
@@ -436,10 +424,7 @@ namespace DiIiS_NA.GameServer.Core
 
 		public Item GetItemByDynId(Player plr, uint dynId)
 		{
-			if (Items.Values.Any(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId))
-				return Items.Values.Single(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
-
-			return null;
+			return Items.Values.SingleOrDefault(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
 		}
 	}
 }

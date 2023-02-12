@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
+using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.LoginServer.Battle;
 
@@ -20,7 +21,10 @@ public class WorldCommand : CommandGroup
         var world = player.World;
         return $"[{world.SNO.ToString()}] - {world.SNO}\n{world.Players.Count} players\n" +
                $"{world.Monsters.Count(s=>!s.Dead)} of {world.Monsters.Count} monsters alive\n" +
-               $"{world.Portals} portal(s)\n" +
+               $"~ {world.Monsters.Average(s=>s.Attributes[GameAttributes.Level]).ToString("F1")} avg. monsters level\n" +
+               $"~ {world.Monsters.Average(s=>s.Attributes[GameAttributes.Hitpoints_Max]).ToString("F1")} avg. monsters HP\n" +
+               $"{world.Portals.Count} portal(s)\n" +
+               $"{world.GetAllDoors().Length} door(s)\n" +
                $"{world.Actors.Count(s=>s.Value is Door)} door(s)\n" +
                $"{(world.Game.ActiveNephalemPortal ? "Nephalem portal is active" : "Nephalem portal is inactive")}\n" +
                $"{world.Game.ActiveNephalemProgress} nephalem progress";
