@@ -56,6 +56,6 @@ public class SpawnCommand : CommandGroup
             var monster = player.World.SpawnMonster((ActorSno)actorSNO, position);
         }
 
-        return $"Spawned {amount} mobs with ActorSNO: {actorSNO}";
+        return $"Spawned {amount} mobs with ActorSNO: {(ActorSno)actorSNO}";
     }
 }
