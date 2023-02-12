@@ -17,7 +17,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
 	public static class ActorFactory
 	{
-		private static readonly Dictionary<ActorSno, Type> SNOHandlers = new Dictionary<ActorSno, Type>();
+		private static readonly Dictionary<ActorSno, Type> SNOHandlers;
 		private static Logger Logger = new Logger("ActorFactory");
 
 		static ActorFactory()
