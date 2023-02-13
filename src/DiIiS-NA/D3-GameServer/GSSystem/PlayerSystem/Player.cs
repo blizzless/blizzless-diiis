@@ -4494,7 +4494,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public void LoadCurrencyData()
     {
-        var bloodShards = Toon.GameAccount.BloodShards; // TODO: is this needed? @iamdroppy
+        // var bloodShards = Toon.GameAccount.BloodShards; // Removed by @iamdroppy @ 12/02/2023
         Inventory.UpdateCurrencies();
     }
 

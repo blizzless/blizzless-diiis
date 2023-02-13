@@ -4767,7 +4767,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
     }
     #endregion
 
-    //
+    // TODO: implementation of the power Simalacrum
     #region Simulacrum
     [ImplementsPowerSNO(SkillsSystem.Skills.Necromancer.ExtraSkills.Simulacrum)]
     public class Simulacrum : Skill

@@ -53,11 +53,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			Conversations = new List<ConversationInteraction>();
 
 			
-			World.Game.QuestManager.OnQuestProgress += new QuestManager.QuestProgressDelegate(quest_OnQuestProgress);
+			World.Game.QuestManager.OnQuestProgress += new QuestManager.QuestProgressDelegate(QuestProgress);
 			UpdateConversationList(); // show conversations with no quest dependency
 		}
 
-		protected override void quest_OnQuestProgress() // shadows Actors'Mooege.Core.GS.Actors.InteractiveNPC.quest_OnQuestProgress(Mooege.Core.GS.Games.Quest)'
+		protected override void QuestProgress() // shadows Actors'Mooege.Core.GS.Actors.InteractiveNPC.quest_OnQuestProgress(Mooege.Core.GS.Games.Quest)'
 		{
 			if (this is Hireling && (this as Hireling).IsHireling) return;
 			// call base classe update range stuff			

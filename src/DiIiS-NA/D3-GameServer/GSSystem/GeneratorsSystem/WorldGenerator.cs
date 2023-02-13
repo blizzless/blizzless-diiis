@@ -1808,9 +1808,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 				if (worldTiles.ContainsKey(exit.Value)) continue;
 				worldTiles.Add(exit.Value, null);
 				if (exit.Key == randomizedExitTypes.Last().Key) //continuing passage
-					counter = AddadjacentTileAtExit(worldTiles, tiles, chunkSize, counter, exit.Value, false);
+					counter = AdjacentTileAtExit(worldTiles, tiles, chunkSize, counter, exit.Value, false);
 				else
-					counter = AddadjacentTileAtExit(worldTiles, tiles, chunkSize, counter, exit.Value, true);
+					counter = AdjacentTileAtExit(worldTiles, tiles, chunkSize, counter, exit.Value, true);
 			}
 
 			return counter;
@@ -1837,7 +1837,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		/// <param name="tiles"></param>
 		/// <param name="counter"></param>
 		/// <returns></returns>
-		private int AddadjacentTileAtExit(Dictionary<Vector3D, TileInfo> worldTiles, Dictionary<int, TileInfo> tiles, int chunkSize, int counter, Vector3D position, bool lookingForCork)
+		private int AdjacentTileAtExit(Dictionary<Vector3D, TileInfo> worldTiles, Dictionary<int, TileInfo> tiles, int chunkSize, int counter, Vector3D position, bool lookingForCork)
 		{
 			TileTypes tileTypeToFind = TileTypes.Normal;
 			//Find if other exits are in the area of the new tile to add

@@ -27,7 +27,7 @@ namespace DiIiS_NA.Core.Versions
 			/// </summary>
 			public const int RequiredClientVersion = 22044;
 
-			public static Dictionary<string, int> ClientVersionMaps = new Dictionary<string, int>
+			public static Dictionary<string, int> ClientVersionMaps = new()
 			{
 				{"Aurora 2e79d6e023_public", 22044},
 				{"Aurora 1a3c949c86_public", 16603},
@@ -56,37 +56,37 @@ namespace DiIiS_NA.Core.Versions
 			/// Auth modules' hash maps for client platforms.
 			/// </summary>
 			//TODO: Get Hashes for Mac client.
-			public static Dictionary<BattleClient.ClientPlatform, byte[]> PasswordHashMap = new Dictionary<BattleClient.ClientPlatform, byte[]>()
+			public static Dictionary<BattleClient.ClientPlatform, byte[]> PasswordHashMap = new()
 			{
 				{ BattleClient.ClientPlatform.Win,"8f52906a2c85b416a595702251570f96d3522f39237603115f2f1ab24962043c".ToByteArray() },
 				{ BattleClient.ClientPlatform.Mac,"63BC118937E6EA2FAA7B7192676DAEB1B7CA87A9C24ED9F5ACD60E630B4DD7A4".ToByteArray() }
 			};
 
-			public static Dictionary<BattleClient.ClientPlatform, byte[]> SSOHashMap = new Dictionary<BattleClient.ClientPlatform, byte[]>()
+			public static Dictionary<BattleClient.ClientPlatform, byte[]> SSOHashMap = new()
 			{
 				{ BattleClient.ClientPlatform.Win,"8e86fbdd1ee515315e9e3e1b479b7889de1eceda0703d9876f9441ce4d934576".ToByteArray() },
 				{ BattleClient.ClientPlatform.Mac,"8e86fbdd1ee515315e9e3e1b479b7889de1eceda0703d9876f9441ce4d934576".ToByteArray() }
 			};
 
-			public static Dictionary<BattleClient.ClientPlatform, byte[]> ThumbprintHashMap = new Dictionary<BattleClient.ClientPlatform, byte[]>()
+			public static Dictionary<BattleClient.ClientPlatform, byte[]> ThumbprintHashMap = new()
 			{
 				{ BattleClient.ClientPlatform.Win,"36b27cd911b33c61730a8b82c8b2495fd16e8024fc3b2dde08861c77a852941c".ToByteArray() },
 				{ BattleClient.ClientPlatform.Mac,"36b27cd911b33c61730a8b82c8b2495fd16e8024fc3b2dde08861c77a852941c".ToByteArray() },
 			};
 
-			public static Dictionary<BattleClient.ClientPlatform, byte[]> TokenHashMap = new Dictionary<BattleClient.ClientPlatform, byte[]>()
+			public static Dictionary<BattleClient.ClientPlatform, byte[]> TokenHashMap = new()
 			{
 				{ BattleClient.ClientPlatform.Win,"bfa574bcff509b3c92f7c4b25b2dc2d1decb962209f8c9c8582ddf4f26aac176".ToByteArray() },
 				{ BattleClient.ClientPlatform.Mac,"bfa574bcff509b3c92f7c4b25b2dc2d1decb962209f8c9c8582ddf4f26aac176".ToByteArray() },
 			};
 
-			public static Dictionary<BattleClient.ClientPlatform, byte[]> RiskFingerprintHashMap = new Dictionary<BattleClient.ClientPlatform, byte[]>()
+			public static Dictionary<BattleClient.ClientPlatform, byte[]> RiskFingerprintHashMap = new()
 			{
 				{ BattleClient.ClientPlatform.Win,"5e298e530698af905e1247e51ef0b109b352ac310ce7802a1f63613db980ed17".ToByteArray() },
 				{ BattleClient.ClientPlatform.Mac,"bcfa324ab555fc66614976011d018d2be2b9dc23d0b54d94a3bd7d12472aa107".ToByteArray() },
 			};
 
-			public static Dictionary<BattleClient.ClientPlatform, byte[]> AgreementHashMap = new Dictionary<BattleClient.ClientPlatform, byte[]>()
+			public static Dictionary<BattleClient.ClientPlatform, byte[]> AgreementHashMap = new()
 			{
 				{ BattleClient.ClientPlatform.Win,"41686a009b345b9cbe622ded9c669373950a2969411012a12f7eaac7ea9826ed".ToByteArray() },
 				{ BattleClient.ClientPlatform.Mac,"41686a009b345b9cbe622ded9c669373950a2969411012a12f7eaac7ea9826ed".ToByteArray() },
@@ -96,7 +96,7 @@ namespace DiIiS_NA.Core.Versions
 			public static byte[] EULA = "00616C75656167726500005553DDD1D77970291A4E8A64BB4FE25B2EA2D69D8915D35D53679AE9FDE5EAE47ECC".ToByteArray();
 			public static byte[] RMAH = "0068616D72616772650000555398A3FC047004D6D4A0A1519A874AC9B1FC5FBD62C3EAA23188E095D6793537D7".ToByteArray();
 
-			public static Dictionary<string, uint> Regions = new Dictionary<string, uint>()
+			public static Dictionary<string, uint> Regions = new()
 			{
 				{ "US", 0x5553 },
 				{ "XX", 0x5858 }, //Beta Region

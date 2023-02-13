@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 	public class HiddenVendor : Vendor
 	{
 		// TODO: extract
-		private static readonly Dictionary<ActorSno, ulong> criteria = new Dictionary<ActorSno, ulong>
+		private static readonly Dictionary<ActorSno, ulong> criteria = new()
 		{
 			[ActorSno._a1_genericvendor_tinker] = 74987243309911,
 			[ActorSno._a1_uniquevendor_alchemist] = 74987243309912,

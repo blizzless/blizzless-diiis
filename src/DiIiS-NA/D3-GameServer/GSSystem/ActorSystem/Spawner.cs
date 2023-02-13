@@ -45,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// Rewrite the quest handling event
 		/// </summary>
 		/// <param name="quest"></param>
-		protected override void quest_OnQuestProgress()
+		protected override void QuestProgress()
 		{
 			if (SNO == ActorSno._spawner_zolt_centerpiece) return;
 			//Spawn if this is spawner
