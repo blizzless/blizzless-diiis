@@ -261,7 +261,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			// Listen for quest progress if the actor has a QuestRange attached to it
 			//foreach (var quest in World.Game.QuestManager.Quests)
 			if (_questRange != null)
-				World.Game.QuestManager.OnQuestProgress += quest_OnQuestProgress;
+				World.Game.QuestManager.OnQuestProgress += QuestProgress;
 			UpdateQuestRangeVisibility();
 		}
 
@@ -274,7 +274,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			: this(world, sno, null)
 		{ }
 
-		protected virtual void quest_OnQuestProgress() // erekose changed from protected to public
+		protected virtual void QuestProgress() // erekose changed from protected to public
 		{
 			//Logger.Debug(" (quest_onQuestProgress) has been called for actor {0} -> lauching UpdateQuestRangeVisibility", NameSNOId);
 			try
@@ -307,7 +307,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					Logger.Debug("Game is null? {0}", GetType());
 				else if (World.Game.QuestManager != null)
 					//foreach (var quest in World.Game.QuestManager)
-					World.Game.QuestManager.OnQuestProgress -= quest_OnQuestProgress;
+					World.Game.QuestManager.OnQuestProgress -= QuestProgress;
 
 			base.Destroy();
 		}
