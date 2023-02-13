@@ -298,10 +298,19 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(NephalemRiftOrbsChance), value);
 		}
 
+		/// <summary>
+		/// Forces the game to reveal all the map.
+		/// </summary>
 		public bool ForceMinimapVisibility
 		{
 			get => GetBoolean(nameof(ForceMinimapVisibility), false);
 			set => Set(nameof(ForceMinimapVisibility), value);
+		}
+		
+		public int NecroSkeletonCount
+		{
+			get => GetInt(nameof(NecroSkeletonCount), 7);
+			set => Set(nameof(NecroSkeletonCount), value);
 		}
 		
 		#endregion

@@ -31,12 +31,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 
             if (Contains(name))
             {
-                _attributeMap[name] += action;
-                _logger.Warn($"Fixed attribute {name} already exists. Action will be added.");
-                return;
+                _attributeMap[name] = action;
+                _logger.Warn($"Overwrite attribute {name}");
             }
-
-            _attributeMap.Add(name, action);
+            else
+                _attributeMap.Add(name, action);
         }
 
         public void Remove(FixedAttribute name)

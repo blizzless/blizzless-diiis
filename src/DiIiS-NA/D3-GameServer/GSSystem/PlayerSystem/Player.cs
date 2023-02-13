@@ -3203,14 +3203,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
                 NecroSkeletons.Clear();
             }
-            while (NecroSkeletons.Count < 7)
+            while (NecroSkeletons.Count < GameServerConfig.Instance.NecroSkeletonCount)
             {
-                var Skeleton = new NecromancerSkeleton_A(World, ActorSno._p6_necro_commandskeletons_a, this);
-                Skeleton.Brain.DeActivate();
-                Skeleton.Scale = 1.2f;
+                var necroSkeleton = new NecromancerSkeleton_A(World, ActorSno._p6_necro_commandskeletons_a, this);
+                necroSkeleton.Brain.DeActivate();
+                necroSkeleton.Scale = 1.2f;
 
-                Skeleton.EnterWorld(PowerContext.RandomDirection(Position, 3f, 8f));
-                NecroSkeletons.Add(Skeleton);
+                necroSkeleton.EnterWorld(PowerContext.RandomDirection(Position, 3f, 8f));
+                NecroSkeletons.Add(necroSkeleton);
                 /*this.InGameClient.SendMessage(new PetMessage()
                 {
                     Owner = this.PlayerIndex,
@@ -3219,7 +3219,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     Type = 70,
                 });
                 //*/
-                Skeleton.Brain.Activate();
+                necroSkeleton.Brain.Activate();
             }
         }
         else
@@ -3540,7 +3540,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         world.Reveal(this);
         Unreveal(this);
 
-        if (Math.Abs(_CurrentHPValue - (-1f)) < Globals.FLOAT_TOLERANCE)
+        if (Math.Abs(_CurrentHPValue - -1f) < Globals.FLOAT_TOLERANCE)
             DefaultQueryProximityRadius = 60;
 
         InGameClient.SendMessage(new EnterWorldMessage()
@@ -3571,7 +3571,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 break;
         }
 
-        if (Math.Abs(_CurrentHPValue - (-1f)) < Globals.FLOAT_TOLERANCE)
+        if (Math.Abs(_CurrentHPValue - -1f) < Globals.FLOAT_TOLERANCE)
             AddPercentageHP(100);
 
         DefaultQueryProximityRadius = 100;
@@ -3741,7 +3741,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         AllBuffs.Clear();
         BetweenWorlds = false;
 
-        if (Math.Abs(_CurrentHPValue - (-1)) > Globals.FLOAT_TOLERANCE)
+        if (Math.Abs(_CurrentHPValue - -1) > Globals.FLOAT_TOLERANCE)
         {
             Attributes[GameAttributes.Hitpoints_Cur] = _CurrentHPValue;
             Attributes[GameAttributes.Resource_Cur, (int)Toon.HeroTable.PrimaryResource + 1] = _CurrentResourceValue;

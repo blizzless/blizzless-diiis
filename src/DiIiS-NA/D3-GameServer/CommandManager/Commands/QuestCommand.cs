@@ -1,25 +1,17 @@
 ﻿using System;
+using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.LoginServer.Battle;
+using FluentNHibernate.Utils;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
 [CommandGroup("quest",
-    "Retrieves information about quest states and manipulates quest progress.\n Usage: quest [triggers | trigger eventType eventValue | advance snoQuest]")]
+    "Retrieves information about quest states and manipulates quest progress.\n" +
+    "Usage: quest [triggers | trigger eventType eventValue | advance snoQuest]",
+    Account.UserLevels.Tester, inGameOnly: true)]
 public class QuestCommand : CommandGroup
 {
-    [DefaultCommand]
-    public string Quest(string[] @params, BattleClient invokerClient)
-    {
-        if (invokerClient == null)
-            return "You cannot invoke this command from console.";
-
-        if (invokerClient.InGameClient == null)
-            return "You can only invoke this command while in-game.";
-
-        return Info(@params, invokerClient);
-    }
-
-    [Command("advance", "Advances a quest by a single step\n Usage: advance")]
+    [Command("advance", "Advances a quest by a single step\n Usage: advance", inGameOnly: true)]
     public string Advance(string[] @params, BattleClient invokerClient)
     {
         try
@@ -33,7 +25,7 @@ public class QuestCommand : CommandGroup
         }
     }
 
-    [Command("sideadvance", "Advances a side-quest by a single step\n Usage: sideadvance")]
+    [Command("sideadvance", "Advances a side-quest by a single step\n Usage: sideadvance", inGameOnly: true)]
     public string SideAdvance(string[] @params, BattleClient invokerClient)
     {
         try
@@ -69,7 +61,7 @@ public class QuestCommand : CommandGroup
         }
     }
 
-    [Command("timer", "Send broadcasted text message.\n Usage: public 'message'")]
+    [Command("timer", "Send broadcast text message.\n Usage: public 'message'")]
     public string Timer(string[] @params, BattleClient invokerClient)
     {
         if (@params == null)
@@ -78,20 +70,42 @@ public class QuestCommand : CommandGroup
         if (@params.Length != 2)
             return "Invalid arguments. Type 'help text public' to get help.";
 
-        var eventId = int.Parse(@params[0]);
-        var duration = int.Parse(@params[1]);
-
-        invokerClient.InGameClient.Game.QuestManager.LaunchQuestTimer(eventId, (float)duration,
-            new Action<int>((q) => { }));
+        if (!int.TryParse(@params[0], out var eventId) || !int.TryParse(@params[1], out var duration))
+            return "Invalid arguments. Type 'help text public' to get help.";
+        
+        invokerClient.InGameClient.Game.QuestManager.LaunchQuestTimer(eventId, (float)duration, (_) => { });
 
         return "Message sent.";
     }
+    
+    [Command("set", "Advance to a specific quest step.\n Usage: quest to [questId] [step]")]
+    public string Set(string[] @params, BattleClient invokerClient)
+    {
+        if (@params == null)
+            return Fallback();
 
-    [Command("info", "Retrieves information about quest states.\n Usage: info")]
+        if (@params.Length != 2)
+            return "Invalid arguments. Type 'help quest to' to get help.";
+
+        if (!int.TryParse(@params[0], out var questId) || !int.TryParse(@params[1], out var step))
+            return "Invalid arguments. Type 'help quest to' to get help.";
+
+        try
+        {
+            invokerClient.InGameClient.Game.QuestManager.AdvanceTo(questId, step);
+            return $"Advancing to quest {questId} step {step}";
+        }
+        catch (Exception e)
+        {
+            return e.Message;
+        }
+    }
+
+    [Command("info", "Retrieves information about quest states.\n Usage: info", inGameOnly: true)]
     public string Info(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient?.InGameClient?.Game?.QuestManager is not {} questManager)
-            return "You can only invoke this command while in-game.";
+        if (invokerClient.InGameClient.Game?.QuestManager is not {} questManager)
+            return "No quests found.";
             
         var act = questManager.CurrentAct;
         var quest = questManager.Game.CurrentQuest;

@@ -24,12 +24,18 @@ namespace DiIiS_NA.GameServer.CommandManager
 		/// Minimum user level required to invoke the command.
 		/// </summary>
 		public Account.UserLevels MinUserLevel { get; private set; }
+		
+		/// <summary>
+		/// For InGame commands only. If true, the command will be available only in the game.
+		/// </summary>
+		public bool InGameOnly { get; }
 
-		public CommandGroupAttribute(string name, string help, Account.UserLevels minUserLevel = Account.UserLevels.Admin)
+		public CommandGroupAttribute(string name, string help, Account.UserLevels minUserLevel = Account.UserLevels.Admin, bool inGameOnly = false)
 		{
 			Name = name.ToLower();
 			Help = help;
 			MinUserLevel = minUserLevel;
+			InGameOnly = inGameOnly;
 		}
 	}
 
@@ -49,21 +55,27 @@ namespace DiIiS_NA.GameServer.CommandManager
 		/// <summary>
 		/// Minimum user level required to invoke the command.
 		/// </summary>
-		public Account.UserLevels MinUserLevel { get; private set; }
+		public Account.UserLevels MinUserLevel { get; }
+		
+		/// <summary>
+		/// Whether the command is only for in-game command.
+		/// </summary>
+		public bool InGameOnly { get; }
 
-		public CommandAttribute(string command, string help, Account.UserLevels minUserLevel = Account.UserLevels.User)
+		public CommandAttribute(string command, string help, Account.UserLevels minUserLevel = Account.UserLevels.User, bool inGameOnly = false)
 		{
 			Name = command.ToLower();
 			Help = help;
 			MinUserLevel = minUserLevel;
+			InGameOnly = inGameOnly;
 		}
 	}
 
 	[AttributeUsage(AttributeTargets.Method)]
 	public class DefaultCommand : CommandAttribute
 	{
-		public DefaultCommand(Account.UserLevels minUserLevel = Account.UserLevels.User)
-			: base("", "", minUserLevel)
+		public DefaultCommand(Account.UserLevels minUserLevel = Account.UserLevels.User, bool inGameOnly = false)
+			: base("", "", minUserLevel, inGameOnly)
 		{
 		}
 	}

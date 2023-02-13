@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using FluentNHibernate.Utils;
 
 namespace DiIiS_NA.GameServer.CommandManager
 {
@@ -13,7 +14,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger("CmdGrp");
 
-		public CommandGroupAttribute Attributes { get; private set; }
+		private CommandGroupAttribute Attributes { get; set; }
 
 		private readonly Dictionary<CommandAttribute, MethodInfo> _commands = new();
 
@@ -37,7 +38,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				if (!_commands.ContainsKey(attribute))
 					_commands.Add(attribute, method);
 				else
-					Logger.Fatal("Command '$[underline white]${0}$[/]$' already exists.", attribute.Name);
+					Logger.Fatal($"$[red]$Command$[/]$ '$[underline white]${attribute.Name.SafeAnsi()}$[/]$' already exists.");
 			}
 		}
 
@@ -67,6 +68,8 @@ namespace DiIiS_NA.GameServer.CommandManager
 #else
 				return "You don't have enough privileges to invoke that command.";
 #endif
+			if (invokerClient?.InGameClient == null && Attributes.InGameOnly)
+				return "You can only use this command in-game.";
 			string[] @params = null;
 			CommandAttribute target = null;
 
@@ -77,7 +80,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				@params = parameters.Split(' ');
 				target = GetSubcommand(@params[0]) ?? GetDefaultSubcommand();
 
-				if (target != GetDefaultSubcommand())
+				if (!Equals(target, GetDefaultSubcommand()))
 					@params = @params.Skip(1).ToArray();
 			}
 
@@ -88,15 +91,28 @@ namespace DiIiS_NA.GameServer.CommandManager
 #else
 				return "You don't have enough privileges to invoke that command.";
 #endif
+			if (invokerClient?.InGameClient == null && target.InGameOnly)
+				return "This command can only be invoked in-game.";
 
-			return (string)_commands[target].Invoke(this, new object[] { @params, invokerClient });
+			try
+			{
+				return (string)_commands[target].Invoke(this, new object[] { @params, invokerClient });
+			}
+			catch (CommandException commandException)
+			{
+				return commandException.Message;
+			}
+			catch (Exception ex)
+			{
+				Logger.ErrorException(ex, "Command Handling Error");
+				return "An error occurred while executing the command.";
+			}
 		}
 
 		public string GetHelp(string command)
 		{
-			foreach (var pair in _commands)
+			foreach (var pair in _commands.Where(pair => command == pair.Key.Name))
 			{
-				if (command != pair.Key.Name) continue;
 				return pair.Key.Help;
 			}
 
@@ -114,14 +130,8 @@ namespace DiIiS_NA.GameServer.CommandManager
 			return output.Substring(0, output.Length - 2) + ".";
 		}
 
-		protected CommandAttribute GetDefaultSubcommand()
-		{
-			return _commands.Keys.First();
-		}
+		protected CommandAttribute GetDefaultSubcommand() => _commands.Keys.First();
 
-		protected CommandAttribute GetSubcommand(string name)
-		{
-			return _commands.Keys.FirstOrDefault(command => command.Name == name);
-		}
+		protected CommandAttribute GetSubcommand(string name) => _commands.Keys.FirstOrDefault(command => command.Name == name);
 	}
 }
