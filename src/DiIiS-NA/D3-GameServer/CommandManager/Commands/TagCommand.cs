@@ -3,10 +3,10 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("tag", "Switch private Tag for connect")]
+[CommandGroup("tag", "Switch private Tag for connect", inGameOnly: true)]
 class TagCommand : CommandGroup
 {
-    [DefaultCommand(Account.UserLevels.User)]
+    [DefaultCommand(Account.UserLevels.User, inGameOnly: true)]
     public string Tag(string[] @params, BattleClient invokerClient)
     {
         if(@params == null)

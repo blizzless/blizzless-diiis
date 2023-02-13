@@ -6,10 +6,10 @@ using DiIiS_NA.LoginServer.Battle;
 namespace DiIiS_NA.GameServer.CommandManager;
 
 [CommandGroup("resourceful", "Makes your character with full resource. Useful for testing.",
-    Account.UserLevels.Tester)]
+    Account.UserLevels.Tester, inGameOnly: true)]
 public class ResourcefulCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Resourceful(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not { } player)

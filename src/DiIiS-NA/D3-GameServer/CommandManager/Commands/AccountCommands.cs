@@ -38,27 +38,10 @@ public class AccountCommands : CommandGroup
 
         if (@params.Length == 4)
         {
-            var level = @params[3].ToLower();
-            switch (level)
-            {
-                case "owner":
-                    userLevel = Account.UserLevels.Owner;
-                    break;
-                case "admin":
-                    userLevel = Account.UserLevels.Admin;
-                    break;
-                case "gm":
-                    userLevel = Account.UserLevels.GM;
-                    break;
-                case "tester":
-                    userLevel = Account.UserLevels.Tester;
-                    break;
-                case "user":
-                    userLevel = Account.UserLevels.User;
-                    break;
-                default:
-                    return level + " is not a valid user level.";
-            }
+            var level = Account.UserLevelsExtensions.FromString(@params[3]);
+            if (level == null)
+                return "Invalid user level.";
+            userLevel = level.Value;
         }
 
         if (!email.Contains('@'))
@@ -131,34 +114,16 @@ public class AccountCommands : CommandGroup
             return "Invalid arguments. Type 'help account setuserlevel' to get help.";
 
         var email = @params[0];
-        var level = @params[1].ToLower();
-        Account.UserLevels userLevel;
 
         var account = AccountManager.GetAccountByEmail(email);
 
         if (account == null)
             return $"No account with email '{email}' exists.";
 
-        switch (level)
-        {
-            case "owner":
-                userLevel = Account.UserLevels.Owner;
-                break;
-            case "admin":
-                userLevel = Account.UserLevels.Admin;
-                break;
-            case "gm":
-                userLevel = Account.UserLevels.GM;
-                break;
-            case "tester":
-                userLevel = Account.UserLevels.Tester;
-                break;
-            case "user":
-                userLevel = Account.UserLevels.User;
-                break;
-            default:
-                return level + " is not a valid user level.";
-        }
+        var level = Account.UserLevelsExtensions.FromString(@params[1]);
+        if (level == null)
+            return "Invalid user level.";
+        Account.UserLevels userLevel = level.Value;
 
         account.UpdateUserLevel(userLevel);
         return $"Updated user level for account {email} [user-level: {userLevel}].";

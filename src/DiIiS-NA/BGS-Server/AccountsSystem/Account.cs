@@ -464,5 +464,29 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			Admin,
 			Owner
 		}
+
+		public static class UserLevelsExtensions
+		{
+			public static UserLevels? FromString(string str)
+			{
+				if (string.IsNullOrWhiteSpace(str))
+					return null;
+				switch (str.ToLower())
+				{
+					case "user":
+						return UserLevels.User;
+					case "tester":
+						return UserLevels.Tester;
+					case "gm":
+						return UserLevels.GM;
+					case "admin":
+						return UserLevels.Admin;
+					case "owner":
+						return UserLevels.Owner;
+					default:
+						return null;
+				}
+			}
+		}
 	}
 }

@@ -4,18 +4,12 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("unlockart", "Unlock all artisans: !unlockart", Account.UserLevels.Tester)]
+[CommandGroup("unlockart", "Unlock all artisans: !unlockart", Account.UserLevels.Tester, inGameOnly: true)]
 public class UnlockArtCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string UnlockArt(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient == null)
-            return "You cannot invoke this command from console.";
-
-        if (invokerClient.InGameClient == null)
-            return "You can only invoke this command while in-game.";
-
         var player = invokerClient.InGameClient.Player;
 
         player.BlacksmithUnlocked = true;

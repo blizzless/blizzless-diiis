@@ -124,6 +124,9 @@
 	  <Compile Update="D3-GameServer\MessageSystem\GameAttribute.List.cs">
 	    <DependentUpon>GameAttribute.cs</DependentUpon>
 	  </Compile>
+	  <Compile Update="D3-GameServer\CommandManager\InvalidParametersException.cs">
+	    <DependentUpon>CommandException.cs</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

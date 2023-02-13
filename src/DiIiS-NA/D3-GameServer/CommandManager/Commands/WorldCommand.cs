@@ -6,10 +6,10 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("world", "World commands", Account.UserLevels.Tester)]
+[CommandGroup("world", "World commands", Account.UserLevels.Tester, inGameOnly: true)]
 public class WorldCommand : CommandGroup
 {
-    [Command("info", "Current World Info")]
+    [Command("info", "Current World Info", inGameOnly: true)]
     public string Info(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not {} player)

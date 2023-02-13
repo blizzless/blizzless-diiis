@@ -9,7 +9,7 @@ namespace DiIiS_NA.GameServer.CommandManager;
 [CommandGroup("spawn", "Spawns a mob.\nUsage: spawn [actorSNO] [amount]", Account.UserLevels.GM)]
 public class SpawnCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Spawn(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient == null)

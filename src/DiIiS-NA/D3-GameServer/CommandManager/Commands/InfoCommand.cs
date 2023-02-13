@@ -8,10 +8,10 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("info", "Get current game information.")]
+[CommandGroup("info", "Get current game information.", inGameOnly: true)]
 public class InfoCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Info(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Game is not { } game || invokerClient.InGameClient.Player is not { } player ||

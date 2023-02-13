@@ -6,18 +6,12 @@ namespace DiIiS_NA.GameServer.CommandManager;
 
 [CommandGroup("platinum",
     "Platinum for your character.\nOptionally specify the number of levels: !platinum [count]",
-    Account.UserLevels.Tester)]
+    Account.UserLevels.Tester, inGameOnly: true)]
 public class PlatinumCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Platinum(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient == null)
-            return "You cannot invoke this command from console.";
-
-        if (invokerClient.InGameClient == null)
-            return "You can only invoke this command while in-game.";
-
         var player = invokerClient.InGameClient.Player;
         var amount = 1;
 

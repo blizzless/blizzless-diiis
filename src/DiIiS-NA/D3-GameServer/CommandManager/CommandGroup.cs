@@ -66,12 +66,12 @@ namespace DiIiS_NA.GameServer.CommandManager
 #if DEBUG
 				return $"You don't have enough privileges to invoke that command (Min. level: {Attributes.MinUserLevel}).";
 #else
-				return "You don't have enough privileges to invoke that command.";
+				return "Unknown command.";
 #endif
-			if (invokerClient?.InGameClient == null && Attributes.InGameOnly)
+			if (invokerClient?.InGameClient?.Player == null && Attributes.InGameOnly)
 				return "You can only use this command in-game.";
 			string[] @params = null;
-			CommandAttribute target = null;
+			CommandAttribute target;
 
 			if (parameters == string.Empty)
 				target = GetDefaultSubcommand();
@@ -89,9 +89,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 #if DEBUG
 				return $"You don't have enough privileges to invoke that command (Min. level: {Attributes.MinUserLevel}).";
 #else
-				return "You don't have enough privileges to invoke that command.";
+				return "Unknown command.";
 #endif
-			if (invokerClient?.InGameClient == null && target.InGameOnly)
+			if (invokerClient?.InGameClient?.Player == null && target.InGameOnly)
 				return "This command can only be invoked in-game.";
 
 			try
@@ -124,7 +124,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		{
 			var output = _commands
 				.Where(pair => pair.Key.Name.Trim() != string.Empty)
-				.Where(pair => invokerClient == null || pair.Key.MinUserLevel <= invokerClient.Account.UserLevel)
+				.Where(pair => (invokerClient == null && pair.Key.InGameOnly) || (invokerClient != null && pair.Key.MinUserLevel <= invokerClient.Account.UserLevel))
 				.Aggregate("Available subcommands: ", (current, pair) => current + (pair.Key.Name + ", "));
 
 			return output.Substring(0, output.Length - 2) + ".";

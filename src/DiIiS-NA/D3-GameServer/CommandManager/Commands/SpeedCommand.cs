@@ -5,15 +5,12 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("speed", "Modify speed walk of you character.\nUsage: !speed <value>\nReset: !speed")]
+[CommandGroup("speed", "Modify speed walk of you character.\nUsage: !speed <value>\nReset: !speed", inGameOnly: true)]
 public class SpeedCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string ModifySpeed(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient?.InGameClient == null)
-            return "This command can only be used in-game.";
-
         if (@params == null)
             return
                 "Change the movement speed. Min 0 (Base), Max 2.\n You can use decimal values like 1.3 for example.";

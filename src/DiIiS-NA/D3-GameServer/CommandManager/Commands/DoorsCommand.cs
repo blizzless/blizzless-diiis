@@ -5,10 +5,10 @@ using DiIiS_NA.LoginServer.AccountsSystem;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("doors", "Information about all doors in the vicinity. This is useful for testing purposes.", Account.UserLevels.Tester)]
+[CommandGroup("doors", "Information about all doors in the vicinity. This is useful for testing purposes.", Account.UserLevels.Tester, inGameOnly: true)]
 public class DoorsCommand : CommandGroup
 {
-    [Command("all", "Activate all doors. This is useful for testing purposes.\nUsage: !open all", Account.UserLevels.Tester)]
+    [Command("all", "Activate all doors. This is useful for testing purposes.\nUsage: !open all", Account.UserLevels.Tester, inGameOnly: true)]
     public string OpenAllDoors(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not { } player)
@@ -20,7 +20,7 @@ public class DoorsCommand : CommandGroup
         return $"Opened {openedDoors.Length} doors: {string.Join(", ", openedDoors.Select(d => (int)d.SNO + " - " + d.SNO))}";
     }
     
-    [Command("near", "Activate all nearby doors in the vicinity. This is useful for testing purposes.\nUsage: !open near [distance:50]", Account.UserLevels.Tester)]
+    [Command("near", "Activate all nearby doors in the vicinity. This is useful for testing purposes.\nUsage: !open near [distance:50]", Account.UserLevels.Tester, inGameOnly: true)]
     public string OpenAllDoorsNear(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not { } player)
@@ -41,7 +41,7 @@ public class DoorsCommand : CommandGroup
         return $"Opened {openedDoors.Count()} in a distance of {distance:0.0000} doors: {string.Join(", ", openedDoors)}";
     }
     
-    [Command("info", "Retrieve all world doors in proximity, sorted in descending order.\nUsage: !open info [distance:50]", Account.UserLevels.Tester)]
+    [Command("info", "Retrieve all world doors in proximity, sorted in descending order.\nUsage: !open info [distance:50]", Account.UserLevels.Tester, inGameOnly: true)]
     public string InfoDoorsNear(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not { } player)
@@ -65,7 +65,7 @@ public class DoorsCommand : CommandGroup
         }))}";
     }
     
-    [DefaultCommand()]
+    [DefaultCommand(inGameOnly: true)]
     public string DefaultCommand(string[] @params, BattleClient invokerClient)
     {
         return "!doors all - Activate all doors. This is useful for testing purposes.\n" +

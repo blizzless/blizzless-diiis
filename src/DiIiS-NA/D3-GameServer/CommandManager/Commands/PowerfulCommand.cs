@@ -6,15 +6,13 @@ using DiIiS_NA.LoginServer.Battle;
 namespace DiIiS_NA.GameServer.CommandManager;
 
 [CommandGroup("powerful", "Makes your character with absurd amount of damage. Useful for testing.",
-    Account.UserLevels.Tester)]
+    Account.UserLevels.Tester, inGameOnly: true)]
 public class PowerfulCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Powerful(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient?.InGameClient?.Player is not { } player)
-            return "You must be in game to use this command.";
-
+        var player = invokerClient.InGameClient.Player;
         if (player.Attributes.FixedMap.Contains(FixedAttribute.Powerful))
         {
             player.Attributes.FixedMap.Remove(FixedAttribute.Powerful);

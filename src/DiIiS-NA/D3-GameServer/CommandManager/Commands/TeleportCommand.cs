@@ -7,18 +7,12 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("tp", "Transfers your character to another world.")]
+[CommandGroup("tp", "Transfers your character to another world.", inGameOnly: true)]
 public class TeleportCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Portal(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient == null)
-            return "You cannot invoke this command from console.";
-
-        if (invokerClient.InGameClient == null)
-            return "You can only invoke this command while in-game.";
-
         if (@params != null && @params.Any())
         {
             int.TryParse(@params[0], out var worldId);

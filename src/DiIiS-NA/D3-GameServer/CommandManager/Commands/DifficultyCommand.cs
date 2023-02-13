@@ -3,10 +3,10 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("difficulty", "Changes difficulty of the game", Account.UserLevels.GM)]
+[CommandGroup("difficulty", "Changes difficulty of the game", Account.UserLevels.GM, inGameOnly: true)]
 public class DifficultyCommand : CommandGroup
 {
-    [Command("max", "Sets difficulty to max", Account.UserLevels.GM)]
+    [Command("max", "Sets difficulty to max", Account.UserLevels.GM, inGameOnly: true)]
     public string Max(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient is null)
@@ -17,7 +17,7 @@ public class DifficultyCommand : CommandGroup
         return $"Difficulty set to max - {invokerClient.InGameClient.Player.World.Game.Difficulty}";
     }
     
-    [Command("min", "Sets difficulty to min", Account.UserLevels.GM)]
+    [Command("min", "Sets difficulty to min", Account.UserLevels.GM, inGameOnly: true)]
     public string Min(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient is null)
@@ -28,7 +28,7 @@ public class DifficultyCommand : CommandGroup
         return $"Difficulty set to min - {invokerClient.InGameClient.Player.World.Game.Difficulty}";
     }
     
-    [Command("up", "Increases difficulty of the game", Account.UserLevels.GM)]
+    [Command("up", "Increases difficulty of the game", Account.UserLevels.GM, inGameOnly: true)]
     public string Up(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient is null)
@@ -39,7 +39,7 @@ public class DifficultyCommand : CommandGroup
         return $"Difficulty increased - set to {invokerClient.InGameClient.Player.World.Game.Difficulty}";
     }
 
-    [Command("down", "Decreases difficulty of the game", Account.UserLevels.GM)]
+    [Command("down", "Decreases difficulty of the game", Account.UserLevels.GM, inGameOnly: true)]
     public string Down(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient is null)
@@ -50,7 +50,7 @@ public class DifficultyCommand : CommandGroup
         return $"Difficulty decreased - set to {invokerClient.InGameClient.Player.World.Game.Difficulty}";
     }
 
-    [Command("set", "Sets difficulty of the game", Account.UserLevels.GM)]
+    [Command("set", "Sets difficulty of the game", Account.UserLevels.GM, inGameOnly: true)]
     public string Set(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient is null)
@@ -61,7 +61,7 @@ public class DifficultyCommand : CommandGroup
         return $"Difficulty set to {invokerClient.InGameClient.Player.World.Game.Difficulty}";
     }
 
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Default(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient is null)

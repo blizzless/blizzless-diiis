@@ -9,10 +9,10 @@ using DiIiS_NA.LoginServer.Battle;
 namespace DiIiS_NA.GameServer.CommandManager;
 
 [CommandGroup("item", "Spawns an item (with a name or type).\nUsage: item [type <type>|<name>] [amount]",
-    Account.UserLevels.GM)]
+    Account.UserLevels.GM, inGameOnly: true)]
 public class ItemCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Spawn(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient == null)

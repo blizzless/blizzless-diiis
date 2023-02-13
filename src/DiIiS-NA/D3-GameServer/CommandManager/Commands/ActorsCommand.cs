@@ -8,15 +8,13 @@ namespace DiIiS_NA.GameServer.CommandManager;
 
 [CommandGroup("actors",
     "Actors info (does not include Players, Minions and Monsters). This is useful for testing purposes.",
-    Account.UserLevels.Tester)]
+    Account.UserLevels.Tester, inGameOnly: true)]
 public class ActorsCommand : CommandGroup
 {
-    [Command("all", "Lists all actors in world sorted by distance to you.", Account.UserLevels.Tester)]
+    [Command("all", "Lists all actors in world sorted by distance to you.", Account.UserLevels.Tester, inGameOnly: true)]
     public string All(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient?.InGameClient?.Player is not {} player)
-            return "You are not in game.";
-
+        var player = invokerClient.InGameClient.Player;
         return $"World [{player.World.SNO}]\nAll actors:" + string.Join("\n", player.World.Actors
             .OrderBy(a =>
             {
@@ -32,12 +30,10 @@ public class ActorsCommand : CommandGroup
             }));
     }
     
-    [Command("revealed", "Lists all revealed actors sorted by distance to you.", Account.UserLevels.Tester)]
+    [Command("revealed", "Lists all revealed actors sorted by distance to you.", Account.UserLevels.Tester, inGameOnly: true)]
     public string Revealed(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient?.InGameClient?.Player is not {} player)
-            return "You are not in game.";
-
+        var player = invokerClient.InGameClient.Player;
         return $"World [{player.World.SNO}]\nVisible actors:" + string.Join("\n", player.World.Actors
             .Where(a => a.Value.IsRevealedToPlayer(player))
             .OrderBy(a =>
@@ -54,12 +50,10 @@ public class ActorsCommand : CommandGroup
             }));
     }
     
-    [Command("all-usable", "Sets all actors operable in world sorted by distance to you.e (not the wisest invention).", Account.UserLevels.Tester)]
+    [Command("all-usable", "Sets all actors operable in world sorted by distance to you.e (not the wisest invention).", Account.UserLevels.Tester, inGameOnly: true)]
     public string Usable(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient?.InGameClient?.Player is not {} player)
-            return "You are not in game.";
-        
+        var player = invokerClient.InGameClient.Player;
         if (@params is { Length: > 0 })
         {
             if (!Enum.TryParse<ActorSno>(@params[0].AsSpan(), out var actorSno))

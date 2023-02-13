@@ -5,14 +5,13 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("invulnerable", "Makes you invulnerable", Account.UserLevels.GM)]
+[CommandGroup("invulnerable", "Makes you invulnerable", Account.UserLevels.GM, inGameOnly: true)]
 public class InvulnerableCommand : CommandGroup
 {
     [DefaultCommand]
     public string Invulnerable(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient?.InGameClient?.Player is not { } player)
-            return "You cannot invoke this command from console.";
+        var player = invokerClient.InGameClient.Player;
 
         if (player.Attributes.FixedMap.Contains(FixedAttribute.Invulnerable))
         {

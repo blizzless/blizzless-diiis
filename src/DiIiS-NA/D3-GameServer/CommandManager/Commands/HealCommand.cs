@@ -3,16 +3,13 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("heal", "Heals yourself", Account.UserLevels.Tester)]
+[CommandGroup("heal", "Heals yourself", Account.UserLevels.Tester, inGameOnly: true)]
 public class HealCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Heal(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient?.InGameClient?.Player is not { } player)
-            return "You are not in game";
-
-        player.Heal();
+        invokerClient.InGameClient.Player.Heal();
         return "You have been healed";
     }
 }

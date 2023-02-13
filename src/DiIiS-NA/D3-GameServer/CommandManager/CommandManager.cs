@@ -28,13 +28,18 @@ namespace DiIiS_NA.GameServer.CommandManager
 				if (attributes.Length == 0) continue;
 				var groupAttribute = attributes[0];
 				if (groupAttribute.Name == null) continue;
+				if (groupAttribute.Name.Contains(" "))
+				{
+					Logger.Warn($"Command group name '{groupAttribute.Name}' contains spaces (which is $[red]$not$[/]$ allowed). Command group will be ignored.");
+				}
+
 				if (CommandsConfig.Instance.DisabledGroupsData.Contains(groupAttribute.Name))
 				{
-					Logger.Trace($"Command group {groupAttribute.Name} is disabled.");
+					Logger.Warn($"Command group name '{groupAttribute.Name}' is disabled.");
 					continue;
 				}
 				if (CommandGroups.ContainsKey(groupAttribute))
-					Logger.Warn("There exists an already registered command group named '{0}'.", groupAttribute.Name);
+					Logger.Warn($"There exists an already registered command group named '{groupAttribute.Name}'.");
 
 				var commandGroup = (CommandGroup)Activator.CreateInstance(type);
 				if (commandGroup != null)
@@ -44,7 +49,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				}
 				else
 				{
-					Logger.Warn("Failed to create an instance of command group '{0}'.", groupAttribute.Name);
+					Logger.Warn($"Failed to create an instance of command group '{groupAttribute.Name}'.");
 				}
 			}
 		}
@@ -63,8 +68,8 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 			if (!ExtractCommandAndParameters(line, out var command, out var parameters))
 			{
-				output = "Unknown command: " + line;
-				Logger.Error(output);
+				output = "Unknown command.";
+				Logger.Warn(output);
 				return;
 			}
 
@@ -77,11 +82,11 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 			if (found == false)
 			{
-				Logger.Error("Unknown command: " + command.SafeAnsi());
+				Logger.Warn("Unknown command.");
 				return;
 			}
 
-			Logger.Success(output != string.Empty ? output : "Command executed successfully.");
+			Logger.Success(output != string.Empty ? "\n-----------------------------------------------------\n" + output + "\n-----------------------------------------------------\n" : "Command executed successfully.");
 		}
 
 
@@ -110,8 +115,12 @@ namespace DiIiS_NA.GameServer.CommandManager
 			}
 
 			if (found == false)
+#if DEBUG
 				output = $"Unknown command: {command} {parameters}";
-
+#else
+				output = $"Unknown command.";
+#endif
+				
 			if (output == string.Empty)
 				return true;
 
@@ -151,23 +160,23 @@ namespace DiIiS_NA.GameServer.CommandManager
 		{
 			public override string Fallback(string[] parameters = null, BattleClient invokerClient = null)
 			{
-				var output = "Available commands: ";
+				var output = "Available commands:\n";
 				output = 
 					invokerClient != null 
 						? CommandGroups.Where(pair => pair.Key.MinUserLevel > invokerClient?.Account.UserLevel)
 							.Aggregate(output, (current, pair) => current + ($"{CommandsConfig.Instance.CommandPrefix}{pair.Key.Name}: {pair.Key.Help}\n\n")) 
 						: CommandGroups
 							.Where(s=>!s.Key.InGameOnly)
-							.Aggregate(output, (current, pair) => current + (($"$[underline green]${CommandsConfig.Instance.CommandPrefix}{pair.Key.Name}$[/]$: {pair.Key.Help}\n\n")));
+							.Aggregate(output, (current, pair) => current + (($"$[underline green]${CommandsConfig.Instance.CommandPrefix}{pair.Key.Name}$[/]$: $[white]${pair.Key.Help}$[/]$\n")));
 
-				return output + "Type 'help <command>' to get help about a specific command.";
+				return output + $"Type '{CommandsConfig.Instance.CommandPrefix}help <command>' to get help about a specific command.";
 			}
 		}
 
 		[CommandGroup("help", "usage: help <command>\nType 'commands' to get a list of available commands.")]
 		public class HelpCommandGroup : CommandGroup
 		{
-			public override string Fallback(string[] parameters = null, BattleClient invokerClient = null) => "usage: help <command>\nType 'commands' to get a list of available commands.";
+			public override string Fallback(string[] parameters = null, BattleClient invokerClient = null) => $"usage: {CommandsConfig.Instance.CommandPrefix}help <command>\nType 'commands' to get a list of available commands.";
 
 			public override string Handle(string parameters, BattleClient invokerClient = null)
 			{
@@ -180,7 +189,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				var group = @params[0];
 				var command = @params.Length > 1 ? @params[1] : string.Empty;
 
-				foreach (var pair in CommandGroups.Where(pair => group == pair.Key.Name))
+				foreach (var pair in CommandGroups.Where(pair => group == pair.Key.Name && ((invokerClient == null && !pair.Key.InGameOnly) || (invokerClient != null && pair.Key.MinUserLevel <= invokerClient.Account.UserLevel))))
 				{
 					if (command == string.Empty)
 						return pair.Key.Help;

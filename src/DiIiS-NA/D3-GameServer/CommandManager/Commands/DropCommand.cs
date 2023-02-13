@@ -4,10 +4,10 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("drop", "Drops an epic item for your class.\nOptionally specify the number of items: !drop [1-20]", Account.UserLevels.Owner)]
+[CommandGroup("drop", "Drops an epic item for your class.\nOptionally specify the number of items: !drop [1-20]", Account.UserLevels.Owner, inGameOnly: true)]
 public class DropCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Drop(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not { } player)

@@ -5,10 +5,10 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("followers", "Manage your followers.", Account.UserLevels.Tester)]
+[CommandGroup("followers", "Manage your followers.", Account.UserLevels.Tester, inGameOnly: true)]
 public class FollowersCommand : CommandGroup
 {
-    [Command("list", "List all followers.")]
+    [Command("list", "List all followers.", inGameOnly: true)]
     public string List(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not { } player)
@@ -21,7 +21,7 @@ public class FollowersCommand : CommandGroup
         return string.Join('\n', followers);
     }
 
-    [Command("dismiss", "Dismisses all followers.")]
+    [Command("dismiss", "Dismisses all followers.", inGameOnly: true)]
     public string DismissAllCommand(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not { } player)

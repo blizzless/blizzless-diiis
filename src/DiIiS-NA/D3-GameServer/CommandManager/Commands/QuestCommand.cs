@@ -39,7 +39,7 @@ public class QuestCommand : CommandGroup
         }
     }
 
-    [Command("event", "Launches chosen side-quest by snoID\n Usage: event snoId")]
+    [Command("event", "Launches chosen side-quest by snoID\n Usage: event snoId", inGameOnly: true)]
     public string Event(string[] @params, BattleClient invokerClient)
     {
         if (@params == null)
@@ -61,7 +61,7 @@ public class QuestCommand : CommandGroup
         }
     }
 
-    [Command("timer", "Send broadcast text message.\n Usage: public 'message'")]
+    [Command("timer", "Send broadcast text message.\n Usage: public 'message'", inGameOnly: true)]
     public string Timer(string[] @params, BattleClient invokerClient)
     {
         if (@params == null)
@@ -78,7 +78,7 @@ public class QuestCommand : CommandGroup
         return "Message sent.";
     }
     
-    [Command("set", "Advance to a specific quest step.\n Usage: quest to [questId] [step]")]
+    [Command("set", "Advance to a specific quest step.\n Usage: quest to [questId] [step]", inGameOnly: true)]
     public string Set(string[] @params, BattleClient invokerClient)
     {
         if (@params == null)

@@ -6,10 +6,10 @@ using DiIiS_NA.LoginServer.Battle;
 namespace DiIiS_NA.GameServer.CommandManager;
 
 [CommandGroup("levelup", "Levels your character.\nOptionally specify the number of levels: !levelup [count]",
-    Account.UserLevels.GM)]
+    Account.UserLevels.GM, inGameOnly: true)]
 public class LevelUpCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string LevelUp(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient == null)

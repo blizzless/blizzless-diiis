@@ -5,18 +5,12 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("conversation", "Starts a conversation. \n Usage: conversation snoConversation")]
+[CommandGroup("conversation", "Starts a conversation. \n Usage: conversation snoConversation", inGameOnly: true)]
 public class ConversationCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(inGameOnly: true)]
     public string Conversation(string[] @params, BattleClient invokerClient)
     {
-        if (invokerClient == null)
-            return "You cannot invoke this command from console.";
-
-        if (invokerClient.InGameClient == null)
-            return "You can only invoke this command while in-game.";
-
         if (@params.Length != 1)
             return "Invalid arguments. Type 'help conversation' to get help.";
 
