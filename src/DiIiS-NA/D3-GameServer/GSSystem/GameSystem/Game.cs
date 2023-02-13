@@ -51,6 +51,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		Act5 = 400,
 		OpenWorld = 3000
 	}
+
 	public class Game : IMessageConsumer
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger();
@@ -65,8 +66,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// </summary>
 		public ConcurrentDictionary<GameClient, Player> Players { get; private set; }
 
-		public ImmutableArray<Player> ConnectedPlayers => Players.Where(s => s.Value != null && s.Key.Connection.IsOpen() && !s.Key.IsLoggingOut)
-			.Select(s=>s.Value).ToImmutableArray();
+		public ImmutableArray<Player> ConnectedPlayers => Players
+			.Where(s => s.Value != null && s.Key.Connection.IsOpen() && !s.Key.IsLoggingOut)
+			.Select(s => s.Value).ToImmutableArray();
 
 		public bool QuestSetup = false;
 
@@ -96,6 +98,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public int RedTeamWins = 0;
 		public int BlueTeamWins = 0;
+
 		/// <summary>
 		/// DynamicId counter for objects.
 		/// </summary>
@@ -105,6 +108,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Returns a new dynamicId for objects.
 		/// </summary>
 		private readonly object _obj = new();
+
 		public uint NewActorGameId
 		{
 			get
@@ -126,12 +130,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public List<World> Worlds => _worlds.Values.ToList();
 
 		public Mode GameMode = Mode.Campaign;
+
 		public enum Mode
 		{
 			Campaign = 0,
 			Bounties = 1,
 			Portals = 6 //6?
 		}
+
 		public struct BossEncounter
 		{
 			public int SnoId;
@@ -153,6 +159,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Starting world's monster level
 		/// </summary>
 		public int InitialMonsterLevel { get; set; }
+
 		public int MonsterLevel { get; private set; }
 
 		/// <summary>
@@ -176,25 +183,28 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Player index counter.
 		/// </summary>
 		public int PlayerIndexCounter = -1;
+
 		public int PlayerGroupIndexCounter = 0;
 
 		/// <summary>
 		/// Current quest SNOid.
 		/// </summary>
 		public int CurrentQuest = -1;
+
 		public int CurrentSideQuest = -1;
 
 		/// <summary>
 		/// Current quest step SNOid.
 		/// </summary>
 		public int DestinationEnterQuest = -1;
+
 		public int DestinationEnterQuestStep = -1;
 
 		/// <summary>
 		/// Current act system id.
 		/// </summary>
 		public int CurrentAct = -1;
-		
+
 		public ActEnum CurrentActEnum => CurrentAct != -1 ? (ActEnum)CurrentAct : ActEnum.Act1;
 		private int _difficulty = 0;
 
@@ -202,28 +212,33 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Current difficulty system id.
 		/// Min: 0, Max: 19
 		/// </summary>
-		public int Difficulty { get => _difficulty; set => _difficulty = Math.Clamp(value, 0, 19); }
+		public int Difficulty
+		{
+			get => _difficulty;
+			set => _difficulty = Math.Clamp(value, 0, 19);
+		}
 
 		public float HpModifier { get; set; } = 1f;
 		public float DmgModifier { get; set; } = 1f;
 		public float XpModifier { get; set; } = 1f;
 		public float GoldModifier { get; set; } = 1f;
-		
+
 		/// <summary>
 		/// Hardcore mode flag.
 		/// </summary>
 		public bool IsHardcore = false;
+
 		public bool IsSeasoned = false;
 
 		public List<int> OpenedWaypoints = new();
 
 		public readonly Dictionary<BountyData.ActT, int> BountiesCompleted = new()
 		{
-			{BountyData.ActT.A1, 0},
-			{BountyData.ActT.A2, 0},
-			{BountyData.ActT.A3, 0},
-			{BountyData.ActT.A4, 0},
-			{BountyData.ActT.A5, 0}
+			{ BountyData.ActT.A1, 0 },
+			{ BountyData.ActT.A2, 0 },
+			{ BountyData.ActT.A3, 0 },
+			{ BountyData.ActT.A4, 0 },
+			{ BountyData.ActT.A5, 0 }
 		};
 
 		/// <summary>
@@ -250,6 +265,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Current quest step SNOid.
 		/// </summary>
 		public int CurrentStep = -1;
+
 		public int CurrentSideStep = -1;
 
 		/// <summary>
@@ -261,6 +277,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Current quest progress handler.
 		/// </summary>
 		public QuestRegistry QuestProgress;
+
 		public QuestRegistry SideQuestProgress;
 
 		/// <summary>
@@ -329,6 +346,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					flags = flags << 1;
 					if (OpenedWaypoints.Contains(i)) flags++;
 				}
+
 				return flags;
 			}
 		}
@@ -375,7 +393,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			Empty = true;
 			Players = new ConcurrentDictionary<GameClient, Player>();
 			_worlds = new ConcurrentDictionary<WorldSno, World>();
-			StartingWorldSno = WorldSno.pvp_caout_arena_01;// FIXME: track the player's save point and toss this stuff. 
+			StartingWorldSno =
+				WorldSno.pvp_caout_arena_01; // FIXME: track the player's save point and toss this stuff. 
 			InitialMonsterLevel = initalLevel;
 			MonsterLevel = initalLevel;
 			QuestManager = new QuestManager(this);
@@ -388,7 +407,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			QuestProgress = null;
 			SideQuestProgress = new Events(this);
 
-			var loopThread = new Thread(Update) { Name = "GameLoopThread", IsBackground = true }; ; // create the game update thread.
+			var loopThread = new Thread(Update) { Name = "GameLoopThread", IsBackground = true };
+			; // create the game update thread.
 			loopThread.Start();
 
 			WorldGenerator = new WorldGenerator(this);
@@ -416,16 +436,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				action(player.Key, player.Value);
 			}
 		}
-		
+
 		/// <summary>
 		/// Executes an action to all players in the game where the predicate is true.
 		/// </summary>
 		/// <param name="predicate">Predicate to check</param>
 		/// <param name="action">Action to execute</param>
-		public void BroadcastPlayers(Func<GameClient, Player, bool> predicate, Action<GameClient, Player> action, [CallerMemberName] string methodName = "")
+		public void BroadcastPlayers(Func<GameClient, Player, bool> predicate, Action<GameClient, Player> action,
+			[CallerMemberName] string methodName = "")
 		{
 			Logger.MethodTrace("Broadcasting to players", methodName);
-			foreach (var player in Players.Where(s=>predicate(s.Key, s.Value)))
+			foreach (var player in Players.Where(s => predicate(s.Key, s.Value)))
 			{
 				action(player.Key, player.Value);
 			}
@@ -449,7 +470,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// </summary>
 		/// <param name="predicate">Predicate to check</param>
 		/// <param name="action">Action to execute</param>
-		public void BroadcastWorlds(Func<World, bool> predicate, Action<World> action, [CallerMemberName] string methodName = "")
+		public void BroadcastWorlds(Func<World, bool> predicate, Action<World> action,
+			[CallerMemberName] string methodName = "")
 		{
 			Logger.MethodTrace("Broadcasting to players", methodName);
 			foreach (var world in Worlds.Where(predicate))
@@ -464,6 +486,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public int MissedTicks = 0;
 		public bool UpdateInProgress = false;
+
 		/// <summary>
 		/// The main game loop.
 		/// </summary>
@@ -475,14 +498,16 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				tickWatch.Restart();
 				if (Players.Count == 0 && !Empty)
 				{
-					Logger.Info("All players disconnected, game session closed");
+					Logger.Info("All players disconnected, game session $[underline red]$closed$[/]$");
 					Dispose();
 					GameManager.Games.Remove(GameId);
 					return;
 				}
 
 
-				Interlocked.Add(ref _tickCounter, (TickRate + MissedTicks)); // +6 ticks per 100ms. Verified by setting LogoutTickTimeMessage.Ticks to 600 which eventually renders a 10 sec logout timer on client. /raist
+				Interlocked.Add(ref _tickCounter,
+					(TickRate +
+					 MissedTicks)); // +6 ticks per 100ms. Verified by setting LogoutTickTimeMessage.Ticks to 600 which eventually renders a 10 sec logout timer on client. /raist
 				MissedTicks = 0;
 
 				if (_updateEnabled && !Paused)
@@ -509,17 +534,22 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						QuestTimer?.Update(_tickCounter);
 					}
 				}
+
 				tickWatch.Stop();
 
 				Stopwatch calcWatch = new();
 				calcWatch.Start();
-				var compensation = (int)(UpdateFrequency - tickWatch.ElapsedMilliseconds); // the compensation value we need to sleep in order to get consistent 100 ms Game.Update().
+				var compensation =
+					(int)(UpdateFrequency -
+					      tickWatch
+						      .ElapsedMilliseconds); // the compensation value we need to sleep in order to get consistent 100 ms Game.Update().
 
 				if (tickWatch.ElapsedMilliseconds > UpdateFrequency)
 				{
 					if (tickWatch.ElapsedMilliseconds >= UpdateFrequency * 2)
 					{
-						Logger.Error($"took [{tickWatch.ElapsedMilliseconds}ms] more than Game.UpdateFrequency [{UpdateFrequency}ms].");
+						Logger.Error(
+							$"took [{tickWatch.ElapsedMilliseconds}ms] more than Game.UpdateFrequency [{UpdateFrequency}ms].");
 					}
 					else if (tickWatch.ElapsedMilliseconds >= UpdateFrequency * 1.5)
 					{
@@ -535,13 +565,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					compensation = (int)(UpdateFrequency - (tickWatch.ElapsedMilliseconds % UpdateFrequency));
 					MissedTicks = TickRate * (int)(tickWatch.ElapsedMilliseconds / UpdateFrequency);
 				}
+
 				calcWatch.Stop();
-				Thread.Sleep(Math.Max(0, compensation - (int)calcWatch.ElapsedMilliseconds)); // sleep until next Update().
+				Thread.Sleep(Math.Max(0,
+					compensation - (int)calcWatch.ElapsedMilliseconds)); // sleep until next Update().
 			}
 		}
+
 		#endregion
 
 		#region game-message handling & routing
+
 		/// <summary>
 		/// Routers incoming GameMessage to it's proper consumer.
 		/// </summary>
@@ -588,9 +622,18 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			lock (_updateLock)
 			{
-				if (message is PauseGameMessage) OnPause(client, (PauseGameMessage)message);
-				else if (message is RaiseGameDifficulty) RaiseDifficulty(client, (RaiseGameDifficulty)message);
-				else if (message is LowGameDifficulty) LowDifficulty(client, (LowGameDifficulty)message);
+				switch (message)
+				{
+					case PauseGameMessage gameMessage:
+						OnPause(client, gameMessage);
+						break;
+					case RaiseGameDifficulty difficulty:
+						RaiseDifficulty(client, difficulty);
+						break;
+					case LowGameDifficulty gameDifficulty:
+						LowDifficulty(client, gameDifficulty);
+						break;
+				}
 			}
 		}
 
@@ -603,7 +646,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			Difficulty--;
 			SetDifficulty(Difficulty);
 			foreach (var plr in Players.Values)
-				plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage) { Difficulty = (uint)Difficulty });
+				plr.InGameClient.SendMessage(
+					new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage)
+						{ Difficulty = (uint)Difficulty });
 		}
 
 		public void RaiseDifficulty(GameClient client, RaiseGameDifficulty message)
@@ -611,7 +656,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			Difficulty++;
 			SetDifficulty(Difficulty);
 			foreach (var plr in Players.Values)
-				plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage) { Difficulty = (uint)Difficulty });
+				plr.InGameClient.SendMessage(
+					new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage)
+						{ Difficulty = (uint)Difficulty });
 		}
 
 		/// <summary>
@@ -637,11 +684,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						if (pair.Value.PlayerGroupIndex == joinedPlayer.PlayerGroupIndex)
 							SendNewPlayerMessage(joinedPlayer, pair.Value);
 					}
+
 					foreach (var pair in Players.Where(pair => pair.Value != joinedPlayer))
 					{
 						if (pair.Value.PlayerGroupIndex == joinedPlayer.PlayerGroupIndex)
 							SendNewPlayerMessage(pair.Value, joinedPlayer);
 					}
+
 					joinedPlayer.LoadShownTutorials();
 					joinedPlayer.LoadCrafterData();
 					joinedPlayer.LoadCurrencyData();
@@ -650,13 +699,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 					if (!PvP)
 					{
-						joinedPlayer.InGameClient.TickingEnabled = true; // it seems bnet-servers only start ticking after player is completely in-game. /raist
+						joinedPlayer.InGameClient.TickingEnabled =
+							true; // it seems bnet-servers only start ticking after player is completely in-game. /raist
 						joinedPlayer.InGameClient.SendMessage(new GameSyncedDataMessage
 						{
 							SyncedData = new GameSyncedData
 							{
 								GameSyncedFlags = 6,
-								Act = CurrentAct,       //act id
+								Act = CurrentAct, //act id
 								InitialMonsterLevel = InitialMonsterLevel, //InitialMonsterLevel
 								MonsterLevel = 0x6FEA8DF5, //MonsterLevel
 								RandomWeatherSeed = 0, //RandomWeatherSeed
@@ -684,11 +734,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								TeamWins = new[] { 0x0, 0x0 }, //TeamWins
 								TeamScore = new[] { 0x0, 0x0 }, //TeamScore
 								PVPGameResult = new[] { -1, -1 }, //PVPGameResult
-								PartyGuideHeroId = 0x0, //PartyGuideHeroId //new EntityId() { High = 0, Low = (long)this.Players.Values.First().Toon.PersistentID }
-								TiredRiftPaticipatingHeroID = new long[] { 0x0, 0x0, 0x0, 0x0 }, //TiredRiftPaticipatingHeroID
+								PartyGuideHeroId =
+									0x0, //PartyGuideHeroId //new EntityId() { High = 0, Low = (long)this.Players.Values.First().Toon.PersistentID }
+								TiredRiftPaticipatingHeroID =
+									new long[] { 0x0, 0x0, 0x0, 0x0 }, //TiredRiftPaticipatingHeroID
 							}
 						});
-						if ((CurrentStep == -1 || CurrentAct == 400) && (CurrentQuest == QuestsOrder[0]) && CurrentAct != 3000)
+						if ((CurrentStep == -1 || CurrentAct == 400) && (CurrentQuest == QuestsOrder[0]) &&
+						    CurrentAct != 3000)
 						{
 							switch (CurrentAct)
 							{
@@ -699,17 +752,24 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 									joinedPlayer.EnterWorld(StartingWorld.GetStartingPointById(130).Position);
 									break;
 								case 200:
-									joinedPlayer.ChangeWorld(GetWorld(WorldSno.a3dun_hub_adria_tower_intro), GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206).Position);
+									joinedPlayer.ChangeWorld(GetWorld(WorldSno.a3dun_hub_adria_tower_intro),
+										GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206)
+											.Position);
 									break;
 								case 300:
-									joinedPlayer.ChangeWorld(GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance), GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints.First().Position);
+									joinedPlayer.ChangeWorld(
+										GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance),
+										GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints
+											.First().Position);
 									break;
 								case 400:
-									joinedPlayer.ChangeWorld(GetWorld(WorldSno.x1_westmarch_overlook_d), GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
+									joinedPlayer.ChangeWorld(GetWorld(WorldSno.x1_westmarch_overlook_d),
+										GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
 									break;
 								default:
 									break;
 							}
+
 							joinedPlayer.PlayCutscene(0);
 						}
 						else
@@ -719,11 +779,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					}
 					else
 					{
-						joinedPlayer.EnterWorld(StartingWorld.GetStartingPointById(288 + joinedPlayer.PlayerIndex).Position);
+						joinedPlayer.EnterWorld(StartingWorld.GetStartingPointById(288 + joinedPlayer.PlayerIndex)
+							.Position);
 					}
+
 					Empty = false;
 
-					foreach (var portal in StartingWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal, ActorSno._x1_openworld_tiered_rifts_portal, ActorSno._x1_openworld_tiered_rifts_challenge_portal))
+					foreach (var portal in StartingWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal,
+						         ActorSno._x1_openworld_tiered_rifts_portal,
+						         ActorSno._x1_openworld_tiered_rifts_challenge_portal))
 					{
 						portal.Destroy();
 					}
@@ -789,7 +853,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							}
 					}
 					/**/
-					
+
 					if (!PvP && !((CurrentStep == -1) && (CurrentQuest == QuestsOrder[0])))
 					{
 						joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage()
@@ -802,14 +866,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						});
 					}
 
-					
-					if (joinedPlayer.PlayerIndex == 0)
-						joinedPlayer.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage)
-						{
-							Difficulty = (uint)Difficulty
-						});
 
-					
+					if (joinedPlayer.PlayerIndex == 0)
+						joinedPlayer.InGameClient.SendMessage(
+							new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage)
+							{
+								Difficulty = (uint)Difficulty
+							});
+
+
 
 					UpdateLevel();
 					joinedPlayer.NotifyMaintenance();
@@ -834,6 +899,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								Failed = false
 							});
 						}
+
 						CurrentQuest = 0x0004C46D;
 						QuestManager.Advance();
 
@@ -842,10 +908,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							Field0 = 0x3E0FC64C
 						});
 
-						joinedPlayer.InGameClient.SendMessage(new IntDataMessage(Opcodes.DungeonFinderParticipatingPlayerCount)
-						{
-							Field0 = 0
-						});
+						joinedPlayer.InGameClient.SendMessage(
+							new IntDataMessage(Opcodes.DungeonFinderParticipatingPlayerCount)
+							{
+								Field0 = 0
+							});
 
 						joinedPlayer.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DungeonFinderProgressMessage)
 						{
@@ -857,10 +924,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							Field0 = 0
 						});
 
-						joinedPlayer.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.SavePointInfoMessage()
-						{
-							snoLevelArea = joinedPlayer.CurrentScene.Specification.SNOLevelAreas[0],//102362,
-						});
+						joinedPlayer.InGameClient.SendMessage(
+							new MessageSystem.Message.Definitions.Misc.SavePointInfoMessage()
+							{
+								snoLevelArea = joinedPlayer.CurrentScene.Specification.SNOLevelAreas[0], //102362,
+							});
 
 						joinedPlayer.InGameClient.SendMessage(new QuestUpdateMessage
 						{
@@ -913,29 +981,31 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				return;
 			MonsterLevel = Players.Values.Select(p => p.Level).Max();
 			foreach (var wld in _worlds)
-				foreach (var monster in wld.Value.Monsters)
-					monster.UpdateStats();
+			foreach (var monster in wld.Value.Monsters)
+				monster.UpdateStats();
 		}
 
 
 		public void EnablePerfTest(int charId)
 		{
-			
+
 		}
 
-		private readonly int[] _questsOrderA1 = new[] { 87700, 72095, 72221, 72061, 117779, 72738, 73236, 72546, 72801, 136656 };
+		private readonly int[] _questsOrderA1 =
+			{ 87700, 72095, 72221, 72061, 117779, 72738, 73236, 72546, 72801, 136656 };
 
-		private readonly int[] _questsOrderA2 = new[] { 80322, 93396, 74128, 57331, 78264, 78266, 57335, 57337, 121792, 57339 };
+		private readonly int[] _questsOrderA2 =
+			{ 80322, 93396, 74128, 57331, 78264, 78266, 57335, 57337, 121792, 57339 };
 
-		private readonly int[] _questsOrderA3 = new[] { 93595, 93684, 93697, 203595, 101756, 101750, 101758 };
+		private readonly int[] _questsOrderA3 = { 93595, 93684, 93697, 203595, 101756, 101750, 101758 };
 
-		private readonly int[] _questsOrderA4 = new[] { 112498, 113910, 114795, 114901 };
+		private readonly int[] _questsOrderA4 = { 112498, 113910, 114795, 114901 };
 
-		private readonly int[] _questsOrderA5 = new[] { 251355, 284683, 285098, 257120, 263851, 273790, 269552, 273408 };
+		private readonly int[] _questsOrderA5 = { 251355, 284683, 285098, 257120, 263851, 273790, 269552, 273408 };
 
-		private readonly int[] _questsOrderOpenWorld = new[] { 312429 };
+		private readonly int[] _questsOrderOpenWorld = { 312429 };
 
-		
+
 		public void SetQuestProgress(int currQuest, int step)
 		{
 
@@ -974,6 +1044,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 
 		}
+
 		public void SetGameMode(Mode mode)
 		{
 			GameMode = mode;
@@ -981,12 +1052,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			switch (GameMode)
 			{
 				case Mode.Portals:
-					QuestsOrder = new int[] { -1 };
+					QuestsOrder = new[] { -1 };
 					StartingWorldSno = WorldSno.weekly_challenge_hub;
 					QuestProgress = new QuestRegistry(this);
 					break;
 			}
 		}
+
 		public void SetAct(int act)
 		{
 			if (PvP)
@@ -997,6 +1069,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				StartingWorldSno = WorldSno.pvp_caout_arena_01;
 				return;
 			}
+
 			if (CurrentAct != act)
 			{
 				CurrentAct = act;
@@ -1045,7 +1118,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void ChangeAct(int act)
 		{
-			foreach(var plr in Players.Values)
+			foreach (var plr in Players.Values)
 				plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
 			SetAct(act);
 			CurrentQuest = QuestsOrder[0];
@@ -1083,12 +1156,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						Field0 = 0
 					});
 				}
+
 				plr.Key.SendMessage(new GameSyncedDataMessage
 				{
 					SyncedData = new GameSyncedData
 					{
 						GameSyncedFlags = IsSeasoned ? IsHardcore ? 6 : 4 : IsHardcore == true ? 4 : 6,
-						Act = Math.Min(CurrentAct, 3000),       //act id
+						Act = Math.Min(CurrentAct, 3000), //act id
 						InitialMonsterLevel = InitialMonsterLevel, //InitialMonsterLevel
 						MonsterLevel = 0x7044248F, //MonsterLevel
 						RandomWeatherSeed = 0, //RandomWeatherSeed
@@ -1116,7 +1190,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						TeamWins = new[] { 0x0, 0x0 }, //TeamWins
 						TeamScore = new[] { 0x0, 0x0 }, //TeamScore
 						PVPGameResult = new[] { -1, -1 }, //PVPGameResult
-						PartyGuideHeroId = 0x0, //PartyGuideHeroId //new EntityId() { High = 0, Low = (long)this.Players.Values.First().Toon.PersistentID }
+						PartyGuideHeroId =
+							0x0, //PartyGuideHeroId //new EntityId() { High = 0, Low = (long)this.Players.Values.First().Toon.PersistentID }
 						TiredRiftPaticipatingHeroID = new long[] { 0x0, 0x0, 0x0, 0x0 }, //TiredRiftPaticipatingHeroID
 					}
 				});
@@ -1129,17 +1204,22 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						plr.Value.ChangeWorld(StartingWorld, StartingWorld.GetStartingPointById(130).Position);
 						break;
 					case 200:
-						plr.Value.ChangeWorld(GetWorld(WorldSno.a3dun_hub_adria_tower_intro), GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206).Position);
+						plr.Value.ChangeWorld(GetWorld(WorldSno.a3dun_hub_adria_tower_intro),
+							GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetStartingPointById(206).Position);
 						break;
 					case 300:
-						plr.Value.ChangeWorld(GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance), GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints.First().Position);
+						plr.Value.ChangeWorld(GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance),
+							GetWorld(WorldSno.a4dun_heaven_1000_monsters_fight_entrance).StartingPoints.First()
+								.Position);
 						break;
 					case 400:
-						plr.Value.ChangeWorld(GetWorld(WorldSno.x1_westmarch_overlook_d), GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
+						plr.Value.ChangeWorld(GetWorld(WorldSno.x1_westmarch_overlook_d),
+							GetWorld(WorldSno.x1_westmarch_overlook_d).StartingPoints.First().Position);
 						break;
 					default:
 						break;
 				}
+
 				for (int i = 0; i < 10; i++)
 				{
 					plr.Key.SendMessage(new PlayerLoadoutTabIconMessage(Opcodes.PlayerLoadoutTabIconMessage)
@@ -1148,6 +1228,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						TabIcon = i
 					});
 				}
+
 				plr.Key.SendMessage(new RevealTeamMessage() { Team = 0, TeamFlags = 0, TeamColoring = -1 });
 				plr.Key.SendMessage(new RevealTeamMessage() { Team = 1, TeamFlags = 0, TeamColoring = 2 });
 				plr.Key.SendMessage(new RevealTeamMessage() { Team = 2, TeamFlags = 0, TeamColoring = -1 });
@@ -1174,6 +1255,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 				plr.Value.PlayCutscene(0);
 			}
+
 			try
 			{
 				QuestManager.Quests[QuestsOrder[0]].Steps[-1].OnAdvance.Invoke();
@@ -1188,8 +1270,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			MonsterLevel = level;
 			foreach (var wld in _worlds)
-				foreach (var monster in wld.Value.Monsters)
-					monster.UpdateStats();
+			foreach (var monster in wld.Value.Monsters)
+				monster.UpdateStats();
 		}
 
 		public void SetDifficulty(int diff)
@@ -1206,11 +1288,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				XpModifier = (1f + handicapLevels.HandicapLevelTables[diff].XPMod);
 				GoldModifier = (1f + handicapLevels.HandicapLevelTables[diff].GoldMod);
 			}
+
 			foreach (var wld in _worlds)
-				foreach (var monster in wld.Value.Monsters)
-					monster.UpdateStats();
-			foreach(var plr in Players.Values)
-				plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage) { Difficulty = (uint)Difficulty });
+			foreach (var monster in wld.Value.Monsters)
+				monster.UpdateStats();
+			foreach (var plr in Players.Values)
+				plr.InGameClient.SendMessage(
+					new MessageSystem.Message.Definitions.Misc.HandicapMessage(Opcodes.HandicapMessage)
+						{ Difficulty = (uint)Difficulty });
 		}
 
 		public void UnlockTeleport(int waypointId)
@@ -1252,7 +1337,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			{
 				PlayerIndex = joinedPlayer.PlayerIndex,
 				NewToonId = (long)joinedPlayer.Toon.D3EntityID.IdLow,
-				GameAccountId = new GameAccountHandle() { ID = (uint)joinedPlayer.Toon.GameAccount.BnetEntityId.Low, Program = 0x00004433, Region = 1 },
+				GameAccountId = new GameAccountHandle()
+					{ ID = (uint)joinedPlayer.Toon.GameAccount.BnetEntityId.Low, Program = 0x00004433, Region = 1 },
 				ToonName = joinedPlayer.Toon.Name,
 				Team = 0x00000002,
 				Class = joinedPlayer.ClassSno,
@@ -1274,7 +1360,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					TeamColoring = 0
 				});
 
-			target.InGameClient.SendMessage(joinedPlayer.GetPlayerBanner()); // send player banner proto - D3.GameMessage.PlayerBanner
+			target.InGameClient.SendMessage(joinedPlayer
+				.GetPlayerBanner()); // send player banner proto - D3.GameMessage.PlayerBanner
 		}
 
 		public void BroadcastMessage(string message)
@@ -1290,7 +1377,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			CurrentPvPRound++;
 
-			var winner = Players.Values.Where(p => !p.Dead).FirstOrDefault();
+			var winner = Players.Values.FirstOrDefault(p => !p.Dead);
 			if (winner != null && CurrentPvPRound > 1)
 			{
 				BroadcastMessage("Round is over! Winner: " + winner.Toon.Name);
@@ -1305,15 +1392,20 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				BroadcastMessage("Battle is over!");
 				try
 				{
-					var totalWinner = Players.Values.Where(p => p.Attributes[GameAttributes.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
+					var totalWinner = Players.Values.FirstOrDefault(p =>
+						p.Attributes[GameAttributes.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3));
 					BroadcastMessage("Winner: " + totalWinner.Toon.Name);
 				}
-				catch { Logger.Warn("Exception on FindWinner()"); }
+				catch
+				{
+					Logger.Warn("Exception on FindWinner()");
+				}
 
 				//foreach (var player in this.Players.Values)
 				//player.World.BuffManager.AddBuff(player, player, new Mooege.Core.GS.Powers.Implementations.PVPRoundEndBuff(TickTimer.WaitSeconds(this, 1200.0f)));
 				foreach (var plr in Players.Keys)
-					plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin) { Field0 = (RedTeamWins == BlueTeamWins ? 0 : (RedTeamWins < BlueTeamWins ? 2 : 3)) });
+					plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin)
+						{ Field0 = (RedTeamWins == BlueTeamWins ? 0 : (RedTeamWins < BlueTeamWins ? 2 : 3)) });
 				return;
 			}
 
@@ -1329,14 +1421,18 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					}
 					else
 					{
-						var totalWinner = Players.Values.Where(p => p.Attributes[GameAttributes.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3)).FirstOrDefault();
+						var totalWinner = Players.Values.FirstOrDefault(p =>
+							p.Attributes[GameAttributes.TeamID] == (RedTeamWins > BlueTeamWins ? 2 : 3));
 						BroadcastMessage("Winner: " + totalWinner.Toon.Name);
 					}
 
 					//foreach (var player in this.Players.Values)
 					//player.World.BuffManager.AddBuff(player, player, new Mooege.Core.GS.Powers.Implementations.PVPRoundEndBuff(TickTimer.WaitSeconds(this, 1200.0f)));
 					foreach (var plr in Players.Keys)
-						plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin) { Field0 = (RedTeamWins == BlueTeamWins ? 0 : (RedTeamWins < BlueTeamWins ? 2 : 3)) });
+						plr.SendMessage(new DataIDDataMessage(Opcodes.PVPArenaWin)
+						{
+							Field0 = (RedTeamWins == BlueTeamWins ? 0 : (RedTeamWins < BlueTeamWins ? 2 : 3))
+						});
 				}));
 			}
 
@@ -1346,9 +1442,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				foreach (var player in Players.Values)
 				{
 					player.Revive(player.CheckPointPosition);
-					player.GeneratePrimaryResource(player.Attributes[GameAttributes.Resource_Max_Total, player.Attributes[GameAttributes.Resource_Type_Primary]]);
-					player.World.BuffManager.AddBuff(player, player, new PowerSystem.Implementations.PVPSkirmishBuff(TickTimer.WaitSeconds(this, 15.0f)));
+					player.GeneratePrimaryResource(player.Attributes[GameAttributes.Resource_Max_Total,
+						player.Attributes[GameAttributes.Resource_Type_Primary]]);
+					player.World.BuffManager.AddBuff(player, player,
+						new PowerSystem.Implementations.PVPSkirmishBuff(TickTimer.WaitSeconds(this, 15.0f)));
 				}
+
 				BroadcastMessage("Round " + CurrentPvPRound + ". Battle will commence in 15 seconds!");
 				BroadcastMessage("Score: " + RedTeamWins + ":" + BlueTeamWins);
 				PvPTimer = TickTimer.WaitSeconds(this, 15f, new Action<int>((y) =>
@@ -1363,7 +1462,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		}
 
 		/// <summary>
-		/// Disposes all memory defore destroying game. 
+		/// Disposes all memory before destroying game. 
 		/// </summary>
 		public void Dispose()
 		{
@@ -1383,6 +1482,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			{
 				player.ClearDoorAnimations();
 			}
+
 			Paused = true;
 
 			/*foreach (var player in this.Players.Values)
@@ -1398,7 +1498,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				});
 			}*/
 
-			var encAsset = (DiIiS_NA.Core.MPQ.FileFormats.BossEncounter)MPQStorage.Data.Assets[SNOGroup.BossEncounter][snoId].Data;
+			var encAsset =
+				(DiIiS_NA.Core.MPQ.FileFormats.BossEncounter)MPQStorage.Data.Assets[SNOGroup.BossEncounter][snoId].Data;
 			World encWorld = GetWorld((WorldSno)encAsset.Worlds[0]);
 			Logger.Debug("TeleportToBossEncounter, worldId: {0}", encAsset.Worlds[0]);
 			Vector3D startPoint = null;
@@ -1441,6 +1542,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					startPoint = encWorld.StartingPoints.First().Position;
 					break;
 			}
+
 			var proximity = new RectangleF(startPoint.X - 1f, startPoint.Y - 1f, 2f, 2f);
 			var scenes = encWorld.QuadTree.Query<Scene>(proximity);
 			if (scenes.Count == 0) return; // cork (is it real?)
@@ -1462,11 +1564,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				else
 					gPlayer.Value.ChangeWorld(encWorld, startPoint);
 			}
-			
-			
+
+
 			Paused = false;
-			
-			
+
+
 			//handling quest triggers
 			if (QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
 			{
@@ -1483,24 +1585,32 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					}
 				}
 			}
-			//Исполнение скриптов катсцены
+
+			//Execution of the script of the cutscene
 			if (GameMode == Mode.Campaign)
 				switch (snoId)
 				{
 					case 168925: //CainIntro
-								 //if (this.CurrentAct == 0)
+						//if (this.CurrentAct == 0)
 						Task.Delay(1000).ContinueWith(delegate
 						{
 							foreach (var plr in Players.Values)
-								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
+								plr.InGameClient.SendMessage(
+									new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage()
+										{ Activate = true });
 
 							Task.Delay(1000).ContinueWith(delegate
 							{
 								foreach (var plr in Players.Values)
-									plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage()
-									{
-										ActorID = (int)encWorld.GetActorBySNO(ActorSno._test_cainintro_greybox_bridge_trout_tempworking).DynamicID(plr), Duration = 1f, Snap = false
-									});
+									plr.InGameClient.SendMessage(
+										new MessageSystem.Message.Definitions.Camera.CameraFocusMessage()
+										{
+											ActorID = (int)encWorld
+												.GetActorBySNO(
+													ActorSno._test_cainintro_greybox_bridge_trout_tempworking)
+												.DynamicID(plr),
+											Duration = 1f, Snap = false
+										});
 
 								Actor cainRun = null;
 								Actor cainQuest = null;
@@ -1531,80 +1641,102 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 									fakeLeoricPosition = fake.Position;
 									fake.Destroy();
 								}
+
 								//Берем каина
 								var firstPoint = new Vector3D(120.92718f, 121.26151f, 0.099973306f);
 								var secondPoint = new Vector3D(120.73298f, 160.61829f, 0.31863004f);
 								var sceletonPoint = new Vector3D(120.11514f, 140.77332f, 0.31863004f);
 
-								var firstfacingAngle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(cainRun, firstPoint);
-								var secondfacingAngle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(firstPoint, secondPoint);
-								var thirdfacingAngle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(secondPoint, fakeLeoricPosition);
+								var firstfacingAngle =
+									ActorSystem.Movement.MovementHelpers.GetFacingAngle(cainRun, firstPoint);
+								var secondfacingAngle =
+									ActorSystem.Movement.MovementHelpers.GetFacingAngle(firstPoint, secondPoint);
+								var thirdfacingAngle =
+									ActorSystem.Movement.MovementHelpers.GetFacingAngle(secondPoint,
+										fakeLeoricPosition);
 								//Подготовления завершены - НАЧИНАЕМ ТЕАТР=)
 								Task.Delay(3000).ContinueWith(delegate
-									{
-										cainRun.Move(firstPoint, firstfacingAngle);
-										foreach (var plr in Players.Values)
-											plr.Conversations.StartConversation(80920);//Запуск диалога - 80920 //Фраза Каина, бежит первым до начала мостика, оглядывается. //"Cain_Run_CainIntro", 81080 - Анимация 
+								{
+									cainRun.Move(firstPoint, firstfacingAngle);
+									foreach (var plr in Players.Values)
+										plr.Conversations
+											.StartConversation(
+												80920); //Запуск диалога - 80920 //Фраза Каина, бежит первым до начала мостика, оглядывается. //"Cain_Run_CainIntro", 81080 - Анимация 
 									Task.Delay(5000).ContinueWith(delegate
+									{
+										foreach (var skeleton in skeletons)
+										{
+											skeleton.Move(sceletonPoint,
+												ActorSystem.Movement.MovementHelpers.GetFacingAngle(skeleton,
+													sceletonPoint));
+										}
+
+										cainRun.Move(secondPoint, secondfacingAngle);
+
+										Task.Delay(7000).ContinueWith(delegate
+										{
+											//foreach (var rock in Rocks)
+											//{
+											//{[1013103213, {[Actor] [Type: Gizmo] SNOId:78439 GlobalId: 1013103213 Position: x:119.54008 y:140.65799 z:-4.535186 Name: Test_CainIntro_greybox_bridge_trOut_TempWorking}]}
+											//Обрушиваем мостик //EffectGroup "CainIntro_shake", 81546
+											var bridge = encWorld.GetActorBySNO(ActorSno
+												._test_cainintro_greybox_bridge_trout_tempworking);
+											bridge.PlayAnimation(5,
+												(AnimationSno)bridge.AnimationSet.TagMapAnimDefault[
+													AnimationSetKeys.DeathDefault]);
+											//}
+											foreach (var skeleton in skeletons)
 											{
-												foreach (var skeleton in skeletons)
-												{
-													skeleton.Move(sceletonPoint, ActorSystem.Movement.MovementHelpers.GetFacingAngle(skeleton, sceletonPoint));
-												}
-												cainRun.Move(secondPoint, secondfacingAngle);
+												//Убиваем скелетов
+												skeleton.Destroy();
+											}
+										});
+										Task.Delay(5000).ContinueWith(delegate
+										{
+											cainRun.Move(secondPoint, thirdfacingAngle);
 
-												Task.Delay(7000).ContinueWith(delegate
+											//(Должен быть диалог Король скилет.)
+											var leoric = encWorld.SpawnMonster(ActorSno._skeletonking_ghost,
+												fakeLeoricPosition);
+											leoric.PlayActionAnimation(AnimationSno.skeletonking_ghost_spawn);
+											Task.Delay(1000).ContinueWith(delegate
+											{
+												foreach (var plr in Players.Values)
+													plr.Conversations.StartConversation(17692); //Фраза Леорика
+												Task.Delay(14000).ContinueWith(delegate
 												{
-													//foreach (var rock in Rocks)
-													//{
-													//{[1013103213, {[Actor] [Type: Gizmo] SNOId:78439 GlobalId: 1013103213 Position: x:119.54008 y:140.65799 z:-4.535186 Name: Test_CainIntro_greybox_bridge_trOut_TempWorking}]}
-													//Обрушиваем мостик //EffectGroup "CainIntro_shake", 81546
-													var bridge = encWorld.GetActorBySNO(ActorSno._test_cainintro_greybox_bridge_trout_tempworking);
-													bridge.PlayAnimation(5, (AnimationSno)bridge.AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault]);
-													//}
-													foreach (var skeleton in skeletons)
-													{
-													//Убиваем скелетов
-													skeleton.Destroy();
-													}
-												});
-												Task.Delay(5000).ContinueWith(delegate
-												{
-													cainRun.Move(secondPoint, thirdfacingAngle);
+													//Leoric.PlayActionAnimation(9854); //Леорик призывает скелетов
 
-												//(Должен быть диалог Король скилет.)
-												var leoric = encWorld.SpawnMonster(ActorSno._skeletonking_ghost, fakeLeoricPosition);
-													leoric.PlayActionAnimation(AnimationSno.skeletonking_ghost_spawn);
+													leoric.PlayActionAnimation(AnimationSno
+														.skeletonking_ghost_despawn); //Себаса
 													Task.Delay(1000).ContinueWith(delegate
 													{
 														foreach (var plr in Players.Values)
-															plr.Conversations.StartConversation(17692); //Фраза Леорика
-															Task.Delay(14000).ContinueWith(delegate
-															{
-															//Leoric.PlayActionAnimation(9854); //Леорик призывает скелетов
+														{
+															plr.InGameClient.SendMessage(
+																new BoolDataMessage(Opcodes
+																		.CameraTriggerFadeToBlackMessage)
+																	{ Field0 = true });
+															plr.InGameClient.SendMessage(
+																new SimpleMessage(Opcodes
+																	.CameraSriptedSequenceStopMessage) { });
+														}
 
-															leoric.PlayActionAnimation(AnimationSno.skeletonking_ghost_despawn); //Себаса
-															Task.Delay(1000).ContinueWith(delegate
-																	{
-																		foreach (var plr in Players.Values)
-																		{
-																			plr.InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });
-																			plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
-																		}
-																		cainQuest.SetVisible(true);
-																		cainRun.SetVisible(false);
+														cainQuest.SetVisible(true);
+														cainRun.SetVisible(false);
 
-																		foreach (var fake in encWorld.GetActorsBySNO(ActorSno._skeletonking_ghost))
-																		{
-																			fakeLeoricPosition = fake.Position;
-																			fake.Destroy();
-																		}
-																	});
-															});
+														foreach (var fake in encWorld.GetActorsBySNO(
+															         ActorSno._skeletonking_ghost))
+														{
+															fakeLeoricPosition = fake.Position;
+															fake.Destroy();
+														}
 													});
 												});
 											});
+										});
 									});
+								});
 							});
 						});
 
@@ -1613,46 +1745,53 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 						break;
 					case 158915: //ButcherLair
-								 //if (this.CurrentAct == 0)
+						//if (this.CurrentAct == 0)
 
 						var butcher = encWorld.GetActorBySNO(ActorSno._butcher);
 						if (butcher != null)
 							(butcher as Monster).Brain.DeActivate();
 						else
 						{
-							butcher = encWorld.SpawnMonster(ActorSno._butcher, new Vector3D { X = 93.022f, Y = 89.86f, Z = 0.1f });
+							butcher = encWorld.SpawnMonster(ActorSno._butcher,
+								new Vector3D { X = 93.022f, Y = 89.86f, Z = 0.1f });
 							(butcher as Monster).Brain.DeActivate();
 						}
+
 						Task.Delay(1000).ContinueWith(delegate
 						{
 							//Butcher - 3526
 							foreach (var plr in Players.Values)
-								plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage() { Activate = true });
+								plr.InGameClient.SendMessage(
+									new MessageSystem.Message.Definitions.Camera.CameraCriptedSequenceStartMessage()
+										{ Activate = true });
 
 							Task.Delay(1000).ContinueWith(delegate
 							{
 								if (butcher != null)
 									(butcher as Monster).Brain.DeActivate();
 								foreach (var plr in Players.Values)
-									plr.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Camera.CameraFocusMessage() { ActorID = (int)butcher.DynamicID(plr), Duration = 1f, Snap = false });
+									plr.InGameClient.SendMessage(
+										new MessageSystem.Message.Definitions.Camera.CameraFocusMessage()
+											{ ActorID = (int)butcher.DynamicID(plr), Duration = 1f, Snap = false });
 
 
 								foreach (var plr in Players.Values)
 									plr.Conversations.StartConversation(211980); //ФРЭШ МИТ
-																				 //	StartConversation(ButcherLair, 211980);
+								//	StartConversation(ButcherLair, 211980);
 								Task.Delay(3000).ContinueWith(delegate
+								{
+									foreach (var plr in Players.Values)
 									{
-										foreach (var plr in Players.Values)
-										{
-											plr.InGameClient.SendMessage(new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage) { Field0 = true });
-											plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
+										plr.InGameClient.SendMessage(
+											new BoolDataMessage(Opcodes.CameraTriggerFadeToBlackMessage)
+												{ Field0 = true });
+										plr.InGameClient.SendMessage(
+											new SimpleMessage(Opcodes.CameraSriptedSequenceStopMessage) { });
 
-										}
-										Task.Delay(1500).ContinueWith(delegate
-										{
-											(butcher as Monster).Brain.Activate();
-										});
-									});
+									}
+
+									Task.Delay(1500).ContinueWith(delegate { (butcher as Monster).Brain.Activate(); });
+								});
 							});
 						});
 
@@ -1696,22 +1835,24 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		}
 
 		public void AddOnLoadSceneAction(int sceneSno, Action action)
-        {
+		{
 			Logger.Trace("AddOnLoadSceneAction: {0}", sceneSno);
 			if (!OnLoadSceneActions.ContainsKey(sceneSno))
-					OnLoadSceneActions.Add(sceneSno, new List<Action>());
+				OnLoadSceneActions.Add(sceneSno, new List<Action>());
 
-	        OnLoadSceneActions[sceneSno].Add(action);
+			OnLoadSceneActions[sceneSno].Add(action);
 		}
 
-#endregion
+		#endregion
 
 		#region world collection
 
 		public void AddWorld(World world)
 		{
 			if (world.SNO == WorldSno.__NONE || WorldExists(world.SNO))
-				Logger.Error(String.Format("World has an invalid SNO or was already being tracked (ID = {0}, SNO = {1})", world.GlobalID, world.SNO));
+				Logger.Error(String.Format(
+					"World has an invalid SNO or was already being tracked (ID = {0}, SNO = {1})", world.GlobalID,
+					world.SNO));
 			else
 				_worlds.TryAdd(world.SNO, world);
 		}
@@ -1720,7 +1861,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			World removed;
 			if (world.SNO == WorldSno.__NONE || !WorldExists(world.SNO))
-				Logger.Error(String.Format("World has an invalid SNO or was not being tracked (ID = {0}, SNO = {1})", world.GlobalID, world.SNO));
+				Logger.Error(String.Format("World has an invalid SNO or was not being tracked (ID = {0}, SNO = {1})",
+					world.GlobalID, world.SNO));
 			else
 				_worlds.TryRemove(world.SNO, out removed);
 		}
@@ -1757,6 +1899,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				world = WorldGenerator.Generate(worldSno);
 				if (world == null) Logger.Warn("Failed to generate world with sno: {0}", worldSno);
 			}
+
 			_worlds.TryGetValue(worldSno, out world);
 			return world;
 		}
@@ -1768,7 +1911,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public bool WorldCleared(WorldSno worldSno)
 		{
-			return _worlds[worldSno].Actors.Values.OfType<Monster>().Count(m => m.OriginalLevelArea != -1 && !m.Dead) < 5;
+			return _worlds[worldSno].Actors.Values.OfType<Monster>().Count(m => m.OriginalLevelArea != -1 && !m.Dead) <
+			       5;
 		}
 
 		/// <summary>
@@ -1783,22 +1927,25 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			ImmutableArray<WaypointInfo> actData;
 			if (isOpenWorld)
 				actData = ((Act)MPQStorage.Data.Assets[SNOGroup.Act][70015].Data).WayPointInfo
-							.Union(((Act)MPQStorage.Data.Assets[SNOGroup.Act][70016].Data).WayPointInfo)
-							.Union(((Act)MPQStorage.Data.Assets[SNOGroup.Act][70017].Data).WayPointInfo)
-							.Union(((Act)MPQStorage.Data.Assets[SNOGroup.Act][70018].Data).WayPointInfo)
-							.Union(((Act)MPQStorage.Data.Assets[SNOGroup.Act][236915].Data).WayPointInfo)
-							.Where(w => w.SNOWorld != -1).ToImmutableArray();
+					.Union(((Act)MPQStorage.Data.Assets[SNOGroup.Act][70016].Data).WayPointInfo)
+					.Union(((Act)MPQStorage.Data.Assets[SNOGroup.Act][70017].Data).WayPointInfo)
+					.Union(((Act)MPQStorage.Data.Assets[SNOGroup.Act][70018].Data).WayPointInfo)
+					.Union(((Act)MPQStorage.Data.Assets[SNOGroup.Act][236915].Data).WayPointInfo)
+					.Where(w => w.SNOWorld != -1).ToImmutableArray();
 			else
 			{
-				actData = ((Act)MPQStorage.Data.Assets[SNOGroup.Act][CurrentActSnoId].Data).WayPointInfo.ToImmutableArray();
+				actData = ((Act)MPQStorage.Data.Assets[SNOGroup.Act][CurrentActSnoId].Data).WayPointInfo
+					.ToImmutableArray();
 
 			}
-			var wayPointInfo = actData.Where(w => w.Flags == 3 || (isOpenWorld ? (w.Flags == 2) : (w.Flags == 1))).ToList();
+
+			var wayPointInfo = actData.Where(w => w.Flags == 3 || (isOpenWorld ? (w.Flags == 2) : (w.Flags == 1)))
+				.ToList();
 			//Logger.Debug("GetWayPointWorldById: world id {0}", wayPointInfo[id].SNOWorld);
 			return GetWorld((WorldSno)wayPointInfo[id].SNOWorld);
 		}
 
-#endregion
+		#endregion
 
 	}
 }
