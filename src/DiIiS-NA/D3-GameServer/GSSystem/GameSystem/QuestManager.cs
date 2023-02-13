@@ -953,7 +953,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 								if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(point, Scene.NavCellFlags.AllowWalk))
 									break;
 							}
-							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.PickRandom(), point);
+							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].Melee.PickRandom(), point);
 							monsterCount++;
 						}
 					} // Need additional monster spawn, there are few of them

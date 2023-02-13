@@ -145,10 +145,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				return;
 			}
 
-			if (Context != null)
-				if (Context.User is Player player) //Hitpoints_On_Kill
-					if (player.Attributes[GameAttributes.Hitpoints_On_Kill] > 0)
-						player.AddHP(player.Attributes[GameAttributes.Hitpoints_On_Kill]);
+			if (Context?.User is Player plr) //Hitpoints_On_Kill
+				if (plr.Attributes[GameAttributes.Hitpoints_On_Kill] > 0)
+					plr.AddHP(plr.Attributes[GameAttributes.Hitpoints_On_Kill]);
 
 			// HACK: add to hackish list thats used to defer deleting actor and filter it from powers targetting
 			if (!(Target is Boss))
@@ -175,7 +174,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			if (Target is Minion minionTarget)
 			{
-				if (minionTarget.Master != null && minionTarget.Master is Player player)
+				if (minionTarget.Master is Player player)
 				{
 					player.Followers.Remove(minionTarget.GlobalID);
 					player.FreeFollowerIndex(minionTarget.SNO);
@@ -198,9 +197,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			// send this death payload to buffs
 			Target.World.BuffManager.SendTargetPayload(Target, this);
 
-			if (Context != null)
-				if (Context.User != null)
-					Target.World.BuffManager.SendTargetPayload(Context.User, this);
+			if (Context?.User != null)
+				Target.World.BuffManager.SendTargetPayload(Context.User, this);
 
 			Target.World.BroadcastIfRevealed(plr => new PlayEffectMessage()
 			{
@@ -405,95 +403,95 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			// Spawn Random item and give exp for each player in range
 			List<Player> players = Target.GetPlayersInRange(100f);
-			foreach (Player plr in players)
+			foreach (Player rangedPlayer in players)
 			{
 				int grantedExp = 0;
-				if (plr.Attributes[GameAttributes.Level] <= Target.Attributes[GameAttributes.Level])
-					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttributes.Level]] /
+				if (rangedPlayer.Attributes[GameAttributes.Level] <= Target.Attributes[GameAttributes.Level])
+					grantedExp = (int)(Player.LevelBorders[rangedPlayer.Attributes[GameAttributes.Level]] /
 					                   (40 * Target.Attributes[GameAttributes.Level] * 0.85f) *
 					                   (Target is Monster monster1 ? Math.Min(monster1.HpMultiplier, 3f) : 1f));
 				else
-					grantedExp = (int)(Player.LevelBorders[plr.Attributes[GameAttributes.Level]] /
+					grantedExp = (int)(Player.LevelBorders[rangedPlayer.Attributes[GameAttributes.Level]] /
 						(40 * Target.Attributes[GameAttributes.Level] * 0.85f) * (1 -
-							Math.Abs(plr.Attributes[GameAttributes.Level] - Target.Attributes[GameAttributes.Level]) /
+							Math.Abs(rangedPlayer.Attributes[GameAttributes.Level] - Target.Attributes[GameAttributes.Level]) /
 							20));
 
-				grantedExp = (int)(grantedExp * (plr.Attributes[GameAttributes.Experience_Bonus_Percent] + 1));
-				grantedExp += (int)plr.Attributes[GameAttributes.Experience_Bonus];
+				grantedExp = (int)(grantedExp * (rangedPlayer.Attributes[GameAttributes.Experience_Bonus_Percent] + 1));
+				grantedExp += (int)rangedPlayer.Attributes[GameAttributes.Experience_Bonus];
 
 
 
 				if (LootAndExp)
 				{
-					grantedExp = (int)(grantedExp * plr.World.Game.XpModifier);
+					grantedExp = (int)(grantedExp * rangedPlayer.World.Game.XpModifier);
 
 					float tempExp = grantedExp * GameServerConfig.Instance.RateExp;
 
-					plr.UpdateExp(Math.Max((int)tempExp, 1));
-					var a = (int)plr.Attributes[GameAttributes.Experience_Bonus];
-					var a1 = (int)plr.Attributes[GameAttributes.Experience_Bonus_Percent];
+					rangedPlayer.UpdateExp(Math.Max((int)tempExp, 1));
+					var a = (int)rangedPlayer.Attributes[GameAttributes.Experience_Bonus];
+					var a1 = (int)rangedPlayer.Attributes[GameAttributes.Experience_Bonus_Percent];
 
-					plr.KilledMonstersTempCount++;
+					rangedPlayer.KilledMonstersTempCount++;
 				}
 
 				if (Target is Champion or Rare or Boss or Unique)
 				{
-					plr.KilledElitesTempCount++;
+					rangedPlayer.KilledElitesTempCount++;
 				}
 
 				//achievements here
 				if (Target is Monster monster)
 				{
-					if (plr.Toon.Class == ToonClass.DemonHunter)
+					if (rangedPlayer.Toon.Class == ToonClass.DemonHunter)
 					{
 						if (monster.MonsterType == (int)DiIiS_NA.Core.MPQ.FileFormats.Monster.MonsterType.Demon)
-							plr.AddAchievementCounter(74987243307065, 1);
+							rangedPlayer.AddAchievementCounter(74987243307065, 1);
 
-						if (PowerMath.Distance2D(plr.Position, monster.Position) >= 45f)
-							plr.AddAchievementCounter(74987243307061, 1);
+						if (PowerMath.Distance2D(rangedPlayer.Position, monster.Position) >= 45f)
+							rangedPlayer.AddAchievementCounter(74987243307061, 1);
 
 						if (monster.Attributes[GameAttributes.Feared])
-							plr.AddAchievementCounter(74987243307064, 1);
+							rangedPlayer.AddAchievementCounter(74987243307064, 1);
 
 						if (Context.PowerSNO == 75301)
 						{
-							plr.SpikeTrapsKilled++;
-							if (plr.SpikeTrapsKilled >= 15)
-								plr.GrantAchievement(74987243307060);
+							rangedPlayer.SpikeTrapsKilled++;
+							if (rangedPlayer.SpikeTrapsKilled >= 15)
+								rangedPlayer.GrantAchievement(74987243307060);
 
-							plr.AddTimedAction(5f, new Action<int>((q) => plr.SpikeTrapsKilled--));
+							rangedPlayer.AddTimedAction(5f, (_) => rangedPlayer.SpikeTrapsKilled--);
 						}
 					}
 
-					if (plr.Toon.Class == ToonClass.Monk)
+					if (rangedPlayer.Toon.Class == ToonClass.Monk)
 					{
-						if (plr.Attributes[GameAttributes.Resource_Cur, 3] <
-						    plr.Attributes[GameAttributes.Resource_Max_Total, 3])
-							plr.AddAchievementCounter(74987243307550, 1);
+						if (rangedPlayer.Attributes[GameAttributes.Resource_Cur, 3] <
+						    rangedPlayer.Attributes[GameAttributes.Resource_Max_Total, 3])
+							rangedPlayer.AddAchievementCounter(74987243307550, 1);
 					}
 
-					if (plr.Toon.Class == ToonClass.Wizard)
+					if (rangedPlayer.Toon.Class == ToonClass.Wizard)
 					{
 						if (monster.Attributes[GameAttributes.Frozen])
-							plr.AddAchievementCounter(74987243307585, 1);
+							rangedPlayer.AddAchievementCounter(74987243307585, 1);
 					}
 
-					if (plr.Toon.Class == ToonClass.WitchDoctor)
+					if (rangedPlayer.Toon.Class == ToonClass.WitchDoctor)
 					{
 						if (Context.User.Attributes[GameAttributes.Team_Override] == 1)
-							plr.AddAchievementCounter(74987243307564, 1);
+							rangedPlayer.AddAchievementCounter(74987243307564, 1);
 					}
 
 					switch (monster)
 					{
 						case Champion:
-							plr.CheckKillMonsterCriteria(monster.SNO, 1);
+							rangedPlayer.CheckKillMonsterCriteria(monster.SNO, 1);
 							break;
 						case Rare:
-							plr.CheckKillMonsterCriteria(monster.SNO, 2);
+							rangedPlayer.CheckKillMonsterCriteria(monster.SNO, 2);
 							break;
 						case Unique:
-							plr.CheckKillMonsterCriteria(monster.SNO, 4);
+							rangedPlayer.CheckKillMonsterCriteria(monster.SNO, 4);
 							break;
 					}
 				}
@@ -503,26 +501,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					if (LoreRegistry.Lore.ContainsKey(Target.World.SNO) &&
 					    LoreRegistry.Lore[Target.World.SNO].chests_lore.ContainsKey(Target.SNO))
 						foreach (int loreId in LoreRegistry.Lore[Target.World.SNO].chests_lore[Target.SNO])
-							if (!plr.HasLore(loreId))
+							if (!rangedPlayer.HasLore(loreId))
 							{
-								Target.World.DropItem(Target, null, ItemGenerator.CreateLore(plr, loreId));
+								Target.World.DropItem(Target, null, ItemGenerator.CreateLore(rangedPlayer, loreId));
 								break;
 							}
 				}
 
-				if (plr.SkillSet.HasPassive(218191) && PowerMath.Distance2D(plr.Position, Target.Position) <=
-				    20f + plr.Attributes[GameAttributes.Gold_PickUp_Radius]) //GraveInjustice (WD)
+				if (rangedPlayer.SkillSet.HasPassive(218191) && PowerMath.Distance2D(rangedPlayer.Position, Target.Position) <=
+				    20f + rangedPlayer.Attributes[GameAttributes.Gold_PickUp_Radius]) //GraveInjustice (WD)
 				{
-					plr.AddHP(plr.Attributes[GameAttributes.Hitpoints_Max_Total] / 100f);
-					plr.GeneratePrimaryResource(plr.Attributes[GameAttributes.Resource_Max_Total, 0] / 100f);
-					foreach (var cdBuff in plr.World.BuffManager.GetBuffs<CooldownBuff>(plr))
+					rangedPlayer.AddHP(rangedPlayer.Attributes[GameAttributes.Hitpoints_Max_Total] / 100f);
+					rangedPlayer.GeneratePrimaryResource(rangedPlayer.Attributes[GameAttributes.Resource_Max_Total, 0] / 100f);
+					foreach (var cdBuff in rangedPlayer.World.BuffManager.GetBuffs<CooldownBuff>(rangedPlayer))
 						cdBuff.Reduce(60);
 				}
 
-				if (plr.SkillSet.HasPassive(357218) &&
-				    PowerMath.Distance2D(plr.Position, Target.Position) <= 15f) //Fervor (Crusader)
+				if (rangedPlayer.SkillSet.HasPassive(357218) &&
+				    PowerMath.Distance2D(rangedPlayer.Position, Target.Position) <= 15f) //Fervor (Crusader)
 				{
-					plr.World.BuffManager.AddBuff(plr, plr, new FervorBuff());
+					rangedPlayer.World.BuffManager.AddBuff(rangedPlayer, rangedPlayer, new FervorBuff());
 				}
 
 				if (Target.World.BuffManager.HasBuff<Leech.Rune_E_Buff>(Target))
@@ -541,14 +539,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					if (Target.World.BuffManager.GetFirstBuff<CrusaderJudgment.JudgedDebuffRooted>(Target).conversion)
 						if (FastRandom.Instance.Next() < 0.2f)
 						{
-							var avatar = new AvatarMelee(plr.World, Context, 0, 1f, Context.WaitSeconds(7f));
+							var avatar = new AvatarMelee(rangedPlayer.World, Context, 0, 1f, Context.WaitSeconds(7f));
 							avatar.Brain.DeActivate();
-							avatar.Position = PowerContext.RandomDirection(plr.Position, 3f, 8f);
+							avatar.Position = PowerContext.RandomDirection(rangedPlayer.Position, 3f, 8f);
 							avatar.Attributes[GameAttributes.Untargetable] = true;
 
 							avatar.EnterWorld(avatar.Position);
 
-							Task.Delay(1000).ContinueWith(d =>
+							Task.Delay(1000).ContinueWith(_ =>
 							{
 								(avatar as Minion).Brain.Activate();
 								avatar.Attributes[GameAttributes.Untargetable] = false;
@@ -556,20 +554,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							});
 						}
 
-				if (plr.SkillSet.HasPassive(208571) &&
-				    PowerMath.Distance2D(plr.Position, Target.Position) <=
-				    12f + plr.Attributes[GameAttributes.Gold_PickUp_Radius] &&
+				if (rangedPlayer.SkillSet.HasPassive(208571) &&
+				    PowerMath.Distance2D(rangedPlayer.Position, Target.Position) <=
+				    12f + rangedPlayer.Attributes[GameAttributes.Gold_PickUp_Radius] &&
 				    FastRandom.Instance.Next(100) < 5) //CircleOfLife (WD)
 				{
-					var dog = new ZombieDog(plr.World, plr, 0);
+					var dog = new ZombieDog(rangedPlayer.World, rangedPlayer, 0);
 					dog.Brain.DeActivate();
-					dog.Position = PowerContext.RandomDirection(plr.Position, 3f, 8f);
+					dog.Position = PowerContext.RandomDirection(rangedPlayer.Position, 3f, 8f);
 					dog.Attributes[GameAttributes.Untargetable] = true;
 					dog.EnterWorld(dog.Position);
 					dog.PlayActionAnimation(AnimationSno.zombiedog_summon_01);
 					Context.DogsSummoned++;
 
-					Task.Delay(1000).ContinueWith(d =>
+					Task.Delay(1000).ContinueWith(_ =>
 					{
 						dog.Brain.Activate();
 						dog.Attributes[GameAttributes.Untargetable] = false;
@@ -578,19 +576,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					});
 				}
 
-				if (plr.SkillSet.HasPassive(341344)) //Dominance (Wiz)
+				if (rangedPlayer.SkillSet.HasPassive(341344)) //Dominance (Wiz)
 				{
-					plr.World.BuffManager.AddBuff(plr, plr, new DominanceBuff());
+					rangedPlayer.World.BuffManager.AddBuff(rangedPlayer, rangedPlayer, new DominanceBuff());
 				}
 
-				if (plr.SkillSet.HasPassive(296572)) //Rampage (Burb)
+				if (rangedPlayer.SkillSet.HasPassive(296572)) //Rampage (Burb)
 				{
-					plr.World.BuffManager.AddBuff(plr, plr, new RampageBuff());
+					rangedPlayer.World.BuffManager.AddBuff(rangedPlayer, rangedPlayer, new RampageBuff());
 				}
 
 				if (Context != null)
 					if (Context.DogsSummoned >= 3)
-						plr.GrantAchievement(74987243307567);
+						rangedPlayer.GrantAchievement(74987243307567);
 			}
 
 			Logger.Trace(
@@ -640,13 +638,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				Target.World.Game.ActiveNephalemProgress +=
 					GameServerConfig.Instance.NephalemRiftProgressMultiplier * (Target.Quality + 1);
 				Player master = null;
-				foreach (var plr in Target.World.Game.Players.Values)
+				foreach (var plr3 in Target.World.Game.Players.Values)
 				{
-					if (plr.PlayerIndex == 0)
-						master = plr;
+					if (plr3.PlayerIndex == 0)
+						master = plr3;
 					if (GameServerConfig.Instance.NephalemRiftAutoFinish && Target.World.Monsters.Count(s => !s.Dead) <= GameServerConfig.Instance.NephalemRiftAutoFinishThreshold) Target.World.Game.ActiveNephalemProgress = 651;
-					plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.KillCounterRefresh));
-					plr.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DungeonFinderProgressMessage)
+					plr3.InGameClient.SendMessage(new SimpleMessage(Opcodes.KillCounterRefresh));
+					plr3.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DungeonFinderProgressMessage)
 					{
 						Field0 = Target.World.Game.ActiveNephalemProgress
 					});
@@ -655,7 +653,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					Target.World.Game.ActiveNephalemKilledMobs = true;
 					if (Target.World.Game.NephalemGreater)
 					{
-						plr.InGameClient.SendMessage(new QuestCounterMessage()
+						plr3.InGameClient.SendMessage(new QuestCounterMessage()
 						{
 							snoQuest = 0x00052654,
 							snoLevelArea = 0x000466E2,
@@ -664,7 +662,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							Checked = 1,
 							Counter = 1
 						});
-						plr.InGameClient.SendMessage(new QuestUpdateMessage()
+						plr3.InGameClient.SendMessage(new QuestUpdateMessage()
 						{
 							snoQuest = 0x00052654,
 							snoLevelArea = 0x000466E2,
@@ -675,7 +673,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					}
 					else
 					{
-						plr.InGameClient.SendMessage(new QuestCounterMessage()
+						plr3.InGameClient.SendMessage(new QuestCounterMessage()
 						{
 							snoQuest = 0x00052654,
 							snoLevelArea = 0x000466E2,
@@ -684,7 +682,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							Checked = 1,
 							Counter = 1
 						});
-						plr.InGameClient.SendMessage(new QuestUpdateMessage()
+						plr3.InGameClient.SendMessage(new QuestUpdateMessage()
 						{
 							snoQuest = 0x00052654,
 							snoLevelArea = 0x000466E2,
@@ -694,21 +692,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						});
 					}
 
-					plr.InGameClient.SendMessage(new PlayMusicMessage(Opcodes.PlayMusicMessage)
+					plr3.InGameClient.SendMessage(new PlayMusicMessage(Opcodes.PlayMusicMessage)
 					{
 						SNO = 0x0005BBD8
 					});
 
-					plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameChatTextMessage)
+					plr3.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameChatTextMessage)
 						{ Message = "Messages:LR_BossSpawned" });
-					plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameTextMessage)
+					plr3.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameTextMessage)
 						{ Message = "Messages:LR_BossSpawned" });
 
 					StartConversation(Target.World, 366542);
 
-					if (plr.PlayerIndex == 0)
+					if (plr3.PlayerIndex == 0)
 					{
-						plr.SpawnNephalemBoss(Target.World);
+						plr3.SpawnNephalemBoss(Target.World);
 					}
 
 				}
@@ -733,13 +731,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (Target.Attributes[GameAttributes.Is_Loot_Run_Boss])
 			{
 				Target.World.Game.ActiveNephalemKilledBoss = true;
-				foreach (var plr in Target.World.Game.Players.Values)
+				foreach (var plr3 in Target.World.Game.Players.Values)
 				{
 					//Enable banner /advocaite
-					plr.Attributes[GameAttributes.Banner_Usable] = true;
+					plr3.Attributes[GameAttributes.Banner_Usable] = true;
 					if (Target.World.Game.NephalemGreater)
 					{
-						plr.InGameClient.SendMessage(new QuestCounterMessage()
+						plr3.InGameClient.SendMessage(new QuestCounterMessage()
 						{
 							snoQuest = 0x00052654,
 							snoLevelArea = 0x000466E2,
@@ -748,7 +746,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							Checked = 1,
 							Counter = 1
 						});
-						plr.InGameClient.SendMessage(new QuestUpdateMessage()
+						plr3.InGameClient.SendMessage(new QuestUpdateMessage()
 						{
 							snoQuest = 0x00052654,
 							snoLevelArea = 0x000466E2,
@@ -757,35 +755,35 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							Failed = false
 						});
 
-						plr.Attributes[GameAttributes.Jewel_Upgrades_Max] = 3;
-						plr.Attributes[GameAttributes.Jewel_Upgrades_Used] = 0;
-						plr.Attributes[GameAttributes.Jewel_Upgrades_Bonus] = 0;
-						if (plr.Attributes[GameAttributes.Tiered_Loot_Run_Death_Count] == 0)
-							plr.Attributes[GameAttributes.Jewel_Upgrades_Bonus]++;
-						if (plr.InGameClient.Game.NephalemBuff)
-							plr.Attributes[GameAttributes.Jewel_Upgrades_Bonus]++;
+						plr3.Attributes[GameAttributes.Jewel_Upgrades_Max] = 3;
+						plr3.Attributes[GameAttributes.Jewel_Upgrades_Used] = 0;
+						plr3.Attributes[GameAttributes.Jewel_Upgrades_Bonus] = 0;
+						if (plr3.Attributes[GameAttributes.Tiered_Loot_Run_Death_Count] == 0)
+							plr3.Attributes[GameAttributes.Jewel_Upgrades_Bonus]++;
+						if (plr3.InGameClient.Game.NephalemBuff)
+							plr3.Attributes[GameAttributes.Jewel_Upgrades_Bonus]++;
 
-						plr.InGameClient.Game.LastTieredRiftTimeout =
-							(int)((plr.InGameClient.Game.TiredRiftTimer.TimeoutTick -
-							       plr.InGameClient.Game.TickCounter) / plr.InGameClient.Game.TickRate /
-								plr.InGameClient.Game.UpdateFrequency * 10f);
-						plr.InGameClient.Game.TiredRiftTimer.Stop();
-						plr.InGameClient.Game.TiredRiftTimer = null;
+						plr3.InGameClient.Game.LastTieredRiftTimeout =
+							(int)((plr3.InGameClient.Game.TiredRiftTimer.TimeoutTick -
+							       plr3.InGameClient.Game.TickCounter) / plr3.InGameClient.Game.TickRate /
+								plr3.InGameClient.Game.UpdateFrequency * 10f);
+						plr3.InGameClient.Game.TiredRiftTimer.Stop();
+						plr3.InGameClient.Game.TiredRiftTimer = null;
 
-						plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameTextMessage)
+						plr3.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameTextMessage)
 						{
 							Message = "Messages:TieredRift_Success",
-							Param1 = plr.InGameClient.Game.LastTieredRiftTimeout / 60, //Minutes
-							Param2 = plr.InGameClient.Game.LastTieredRiftTimeout % 60 //Seconds
+							Param1 = plr3.InGameClient.Game.LastTieredRiftTimeout / 60, //Minutes
+							Param2 = plr3.InGameClient.Game.LastTieredRiftTimeout % 60 //Seconds
 						});
-						plr.InGameClient.SendMessage(new SNODataMessage(Opcodes.TimedEventResetMessage)
+						plr3.InGameClient.SendMessage(new SNODataMessage(Opcodes.TimedEventResetMessage)
 						{
 							Field0 = 0x0005D6EA
 						});
 
 						Target.World.SpawnMonster(ActorSno._p1_lr_tieredrift_nephalem, Target.Position);
 
-						Target.World.SpawnRandomUniqueGem(Target, plr);
+						Target.World.SpawnRandomUniqueGem(Target, plr3);
 
 						TagMap newTagMap = new TagMap();
 						newTagMap.Add(new TagKeySNO(526850), new TagMapEntry(526850, 332336, 0)); //World
@@ -799,7 +797,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					}
 					else
 					{
-						plr.InGameClient.SendMessage(new QuestCounterMessage()
+						plr3.InGameClient.SendMessage(new QuestCounterMessage()
 						{
 							snoQuest = 0x00052654,
 							snoLevelArea = 0x000466E2,
@@ -808,7 +806,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							Checked = 1,
 							Counter = 1
 						});
-						plr.InGameClient.SendMessage(new QuestUpdateMessage()
+						plr3.InGameClient.SendMessage(new QuestUpdateMessage()
 						{
 							snoQuest = 0x00052654,
 							snoLevelArea = 0x000466E2,
@@ -818,7 +816,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						});
 					}
 
-					plr.InGameClient.SendMessage(new WorldSyncedDataMessage()
+					plr3.InGameClient.SendMessage(new WorldSyncedDataMessage()
 					{
 						WorldID = Target.World.GlobalID,
 						SyncedData = new WorldSyncedData()
@@ -839,13 +837,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					orek.Attributes[GameAttributes.Conversation_Icon, 3] = 2;
 					orek.Attributes.BroadcastChangedIfRevealed();
 					// Unique spawn
-					Target.World.SpawnBloodShards(Target, plr, RandomHelper.Next(10, 30));
-					Target.World.SpawnGold(Target, plr);
-					Target.World.SpawnGold(Target, plr);
-					Target.World.SpawnGold(Target, plr);
-					plr.Toon.GameAccount.BigPortalKey++;
+					Target.World.SpawnBloodShards(Target, plr3, RandomHelper.Next(10, 30));
+					Target.World.SpawnGold(Target, plr3);
+					Target.World.SpawnGold(Target, plr3);
+					Target.World.SpawnGold(Target, plr3);
+					plr3.Toon.GameAccount.BigPortalKey++;
 					Target.World.Game.ActiveNephalemProgress = 0f;
-					plr.InGameClient.BnetClient.SendServerWhisper(
+					plr3.InGameClient.BnetClient.SendServerWhisper(
 						"You have completed the Nephalem Rift! You have been rewarded with a Big Portal Key and 10-30 Blood Shards!");
 				}
 			}
@@ -913,21 +911,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						}
 
 						//loot spawning
-						foreach (var plr in Target.GetPlayersInRange(100))
+						foreach (var lootSpawnPlayer in Target.GetPlayersInRange(100))
 						{
 							if (FastRandom.Instance.NextDouble() < 0.45)
-								Target.World.SpawnGold(Target, plr);
+								Target.World.SpawnGold(Target, lootSpawnPlayer);
 							if (FastRandom.Instance.NextDouble() < 0.06)
-								Target.World.SpawnRandomCraftItem(Target, plr);
+								Target.World.SpawnRandomCraftItem(Target, lootSpawnPlayer);
 							if (FastRandom.Instance.NextDouble() < 0.04)
-								Target.World.SpawnRandomGem(Target, plr);
+								Target.World.SpawnRandomGem(Target, lootSpawnPlayer);
 							if (FastRandom.Instance.NextDouble() < 0.15)
-								Target.World.SpawnRandomPotion(Target, plr);
+								Target.World.SpawnRandomPotion(Target, lootSpawnPlayer);
 							if (Target.World.Game.Difficulty > 1)
 								if (FastRandom.Instance.NextDouble() < 0.15)
-									Target.World.SpawnItem(Target, plr, 2087837753);
+									Target.World.SpawnItem(Target, lootSpawnPlayer, 2087837753);
 							if (FastRandom.Instance.NextDouble() < 0.04)
-								Target.World.SpawnRandomGem(Target, plr);
+								Target.World.SpawnRandomGem(Target, lootSpawnPlayer);
 							//Logger.Debug("seed: {0}", seed);
 							var dropRates = Target.World.Game.IsSeasoned
 								? LootManager.GetSeasonalDropRates((int)Target.Quality,
@@ -939,7 +937,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							{
 								// if seed is less than the drop rate, drop the item
 								if (seed < rate * (1f
-								                   + plr.Attributes[GameAttributes.Magic_Find])
+								                   + lootSpawnPlayer.Attributes[GameAttributes.Magic_Find])
 								                * GameServerConfig.Instance.RateDrop)
 								{
 									//Logger.Debug("rate: {0}", rate);
@@ -947,22 +945,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 										? LootManager.GetSeasonalLootQuality((int)Target.Quality,
 											Target.World.Game.Difficulty)
 										: LootManager.GetLootQuality((int)Target.Quality, Target.World.Game.Difficulty);
-									Target.World.SpawnRandomEquip(Target, plr, lootQuality);
+									Target.World.SpawnRandomEquip(Target, lootSpawnPlayer, lootQuality);
 									if (Target is Goblin)
-										Target.World.SpawnRandomGem(Target, plr);
+										Target.World.SpawnRandomGem(Target, lootSpawnPlayer);
 								}
 								else
 									break;
 							}
 
-							if ((int)Target.Quality >= 4 && plr.AdditionalLootItems > 0)
-								for (int d = 0; d < plr.AdditionalLootItems; d++)
+							if ((int)Target.Quality >= 4 && lootSpawnPlayer.AdditionalLootItems > 0)
+								for (int d = 0; d < lootSpawnPlayer.AdditionalLootItems; d++)
 								{
 									var lootQuality = Target.World.Game.IsHardcore
 										? LootManager.GetSeasonalLootQuality((int)Target.Quality,
 											Target.World.Game.Difficulty)
 										: LootManager.GetLootQuality((int)Target.Quality, Target.World.Game.Difficulty);
-									Target.World.SpawnRandomEquip(Target, plr, lootQuality);
+									Target.World.SpawnRandomEquip(Target, lootSpawnPlayer, lootQuality);
 								}
 
 							if (Target is Champion or Rare or Unique or Boss)
@@ -970,7 +968,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 								//if (FastRandom.Instance.NextDouble() < LootManager.GetEssenceDropChance(this.Target.World.Game.Difficulty))
 								//	this.Target.World.SpawnEssence(this.Target, plr);
 								if (Target.World.Game.IsSeasoned)
-									Target.World.SpawnBloodShards(Target, plr);
+									Target.World.SpawnBloodShards(Target, lootSpawnPlayer);
 							}
 
 							if (Target.World.Game.IsSeasoned)
@@ -978,16 +976,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 								switch (Target.SNO)
 								{
 									case ActorSno._despair: //Rakanot
-										plr.GrantCriteria(74987254022737);
+										lootSpawnPlayer.GrantCriteria(74987254022737);
 										break;
 									case ActorSno._skeletonking: //Skillet King
-										plr.GrantCriteria(74987252582955);
+										lootSpawnPlayer.GrantCriteria(74987252582955);
 										break;
 									case ActorSno._siegebreakerdemon: //Siegebreaker - Make your choice
-										plr.GrantCriteria(74987246511881);
+										lootSpawnPlayer.GrantCriteria(74987246511881);
 										break;
 									case ActorSno._x1_adria_boss: //Adria - I become a star
-										plr.GrantCriteria(74987252384014);
+										lootSpawnPlayer.GrantCriteria(74987252384014);
 										break;
 								}
 							}
@@ -996,26 +994,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 							{
 								if (Target.SNO == ActorSno._lacunifemale_c_unique) //Chiltara
 									if ((float)FastRandom.Instance.NextDouble() < 0.5f)
-										Target.World.SpawnItem(Target, plr, -799974399);
+										Target.World.SpawnItem(Target, lootSpawnPlayer, -799974399);
 								if (Target.SNO == ActorSno._bigred_izual) //Izual
 									if ((float)FastRandom.Instance.NextDouble() < 0.2f)
 									{
 										switch (Target.World.Game.Difficulty)
 										{
 											case 0:
-												Target.World.SpawnItem(Target, plr, -1463195022);
+												Target.World.SpawnItem(Target, lootSpawnPlayer, -1463195022);
 												break;
 											case 1:
-												Target.World.SpawnItem(Target, plr, 645585264);
+												Target.World.SpawnItem(Target, lootSpawnPlayer, 645585264);
 												break;
 											case 2:
-												Target.World.SpawnItem(Target, plr, -501637898);
+												Target.World.SpawnItem(Target, lootSpawnPlayer, -501637898);
 												break;
 											case 3:
-												Target.World.SpawnItem(Target, plr, 253048194);
+												Target.World.SpawnItem(Target, lootSpawnPlayer, 253048194);
 												break;
 											default:
-												Target.World.SpawnItem(Target, plr, -1463195022);
+												Target.World.SpawnItem(Target, lootSpawnPlayer, -1463195022);
 												break;
 										}
 									}
@@ -1023,25 +1021,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 								switch (Target.SNO)
 								{
 									case ActorSno._graverobber_a_ghost_unique_03:
-										plr.GrantCriteria(74987243307212);
+										lootSpawnPlayer.GrantCriteria(74987243307212);
 										break;
 									case ActorSno._gravedigger_b_ghost_unique_01:
-										plr.GrantCriteria(74987243309859);
+										lootSpawnPlayer.GrantCriteria(74987243309859);
 										break;
 									case ActorSno._graverobber_a_ghost_unique_01:
-										plr.GrantCriteria(74987243309860);
+										lootSpawnPlayer.GrantCriteria(74987243309860);
 										break;
 									case ActorSno._graverobber_a_ghost_unique_02:
-										plr.GrantCriteria(74987243309861);
+										lootSpawnPlayer.GrantCriteria(74987243309861);
 										break;
 									case ActorSno._ghost_a_unique_01:
-										plr.GrantCriteria(74987243309862);
+										lootSpawnPlayer.GrantCriteria(74987243309862);
 										break;
 									case ActorSno._ghost_d_unique01:
-										plr.GrantCriteria(74987243309863);
+										lootSpawnPlayer.GrantCriteria(74987243309863);
 										break;
 									case ActorSno._ghost_d_unique_01:
-										plr.GrantCriteria(74987243309864);
+										lootSpawnPlayer.GrantCriteria(74987243309864);
 										break;
 								}
 							}
@@ -1073,103 +1071,90 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 			if (Target is not Boss) return;
 
-			foreach (Player plr in players)
+			foreach (Player rangedPlayer in players)
 				switch (Target.SNO)
 				{
 					case ActorSno._skeletonking: //Leoric
 						if (Context.PowerSNO == 93885) //weapon throw
-							plr.GrantAchievement(74987243307050);
-						if (isCoop) plr.GrantAchievement(74987252301189);
-						if (isHardcore) plr.GrantAchievement(74987243307489);
-						else plr.GrantAchievement(74987249381288);
+							rangedPlayer.GrantAchievement(74987243307050);
+						if (isCoop) rangedPlayer.GrantAchievement(74987252301189);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987243307489 : (ulong)74987249381288);
 						break;
 					case ActorSno._butcher: //Butcher
 						if (Context.PowerSNO == 93885) //weapon throw
-							plr.GrantAchievement(74987243307050);
+							rangedPlayer.GrantAchievement(74987243307050);
 						if (Context.PowerSNO == 71548) //spectral blade
-							plr.GrantCriteria(74987243307946);
-						if (isCoop) plr.GrantAchievement(74987252696819);
-						if (isHardcore) plr.GrantAchievement(74987254551339);
-						else plr.GrantAchievement(74987258164419);
-						plr.SetProgress(1, Target.World.Game.Difficulty);
+							rangedPlayer.GrantCriteria(74987243307946);
+						if (isCoop) rangedPlayer.GrantAchievement(74987252696819);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987254551339 : (ulong)74987258164419);
+						rangedPlayer.SetProgress(1, Target.World.Game.Difficulty);
 						break;
 					case ActorSno._maghda: //Maghda
 						if (Context.PowerSNO == 93885) //weapon throw
-							plr.GrantAchievement(74987243307050);
-						if (isCoop) plr.GrantAchievement(74987255855515);
-						if (isHardcore) plr.GrantAchievement(74987243307507);
-						else plr.GrantAchievement(74987246434969);
+							rangedPlayer.GrantAchievement(74987243307050);
+						if (isCoop) rangedPlayer.GrantAchievement(74987255855515);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987243307507 : (ulong)74987246434969);
 						break;
 					case ActorSno._zoltunkulle: //Zoltun Kulle
-						if (isCoop) plr.GrantAchievement(74987246137208);
-						if (isHardcore) plr.GrantAchievement(74987243307509);
-						else plr.GrantAchievement(74987252195665);
+						if (isCoop) rangedPlayer.GrantAchievement(74987246137208);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987243307509 : (ulong)74987252195665);
 						break;
 					case ActorSno._belial: //Belial (big)
 						if (Context.PowerSNO == 93885) //weapon throw
-							plr.GrantAchievement(74987243307050);
+							rangedPlayer.GrantAchievement(74987243307050);
 						if (Context.PowerSNO == 71548) //spectral blade
-							plr.GrantCriteria(74987243310916);
-						if (isCoop) plr.GrantAchievement(74987256826382);
-						if (isHardcore) plr.GrantAchievement(74987244906887);
-						else plr.GrantAchievement(74987244645044);
-						plr.SetProgress(2, Target.World.Game.Difficulty);
+							rangedPlayer.GrantCriteria(74987243310916);
+						if (isCoop) rangedPlayer.GrantAchievement(74987256826382);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987244906887 : (ulong)74987244645044);
+						rangedPlayer.SetProgress(2, Target.World.Game.Difficulty);
 						break;
 					case ActorSno._gluttony: //Gluttony
-						if (isCoop) plr.GrantAchievement(74987249112946);
-						if (isHardcore) plr.GrantAchievement(74987243307519);
-						else plr.GrantAchievement(74987259418615);
+						if (isCoop) rangedPlayer.GrantAchievement(74987249112946);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987243307519 : (ulong)74987259418615);
 						break;
 					case ActorSno._siegebreakerdemon: //Siegebreaker
 						if (Context.PowerSNO == 93885) //weapon throw
-							plr.GrantAchievement(74987243307050);
-						if (isCoop) plr.GrantAchievement(74987253664242);
-						if (isHardcore) plr.GrantAchievement(74987243307521);
-						else plr.GrantAchievement(74987248255991);
+							rangedPlayer.GrantAchievement(74987243307050);
+						if (isCoop) rangedPlayer.GrantAchievement(74987253664242);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987243307521 : (ulong)74987248255991);
 						break;
 					case ActorSno._mistressofpain: //Cydaea
 						if (Context.PowerSNO == 93885) //weapon throw
-							plr.GrantAchievement(74987243307050);
-						if (isCoop) plr.GrantAchievement(74987257890442);
-						if (isHardcore) plr.GrantAchievement(74987243307523);
-						else plr.GrantAchievement(74987254675042);
+							rangedPlayer.GrantAchievement(74987243307050);
+						if (isCoop) rangedPlayer.GrantAchievement(74987257890442);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987243307523 : (ulong)74987254675042);
 						break;
 					case ActorSno._azmodan: //Azmodan
 						if (Context.PowerSNO == 93885) //weapon throw
-							plr.GrantAchievement(74987243307050);
+							rangedPlayer.GrantAchievement(74987243307050);
 						if (Context.PowerSNO == 71548) //spectral blade
-							plr.GrantCriteria(74987243310915);
-						if (isCoop) plr.GrantAchievement(74987247100576);
-						if (isHardcore) plr.GrantAchievement(74987251893684);
-						else plr.GrantAchievement(74987247855713);
-						plr.SetProgress(3, Target.World.Game.Difficulty);
+							rangedPlayer.GrantCriteria(74987243310915);
+						if (isCoop) rangedPlayer.GrantAchievement(74987247100576);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987251893684 : (ulong)74987247855713);
+						rangedPlayer.SetProgress(3, Target.World.Game.Difficulty);
 						break;
 					case ActorSno._terrordemon_a_unique_1000monster: //Iskatu
-						if (isCoop) plr.GrantAchievement(74987255392558);
-						if (isHardcore) plr.GrantAchievement(74987248632930);
-						else plr.GrantAchievement(74987246017001);
+						if (isCoop) rangedPlayer.GrantAchievement(74987255392558);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987248632930 : (ulong)74987246017001);
 						break;
 					case ActorSno._despair: //Rakanoth
 						if (Context.PowerSNO == 93885) //weapon throw
-							plr.GrantAchievement(74987243307050);
-						if (isCoop) plr.GrantAchievement(74987248781143);
-						if (isHardcore) plr.GrantAchievement(74987243307533);
-						else plr.GrantAchievement(74987256508058);
+							rangedPlayer.GrantAchievement(74987243307050);
+						if (isCoop) rangedPlayer.GrantAchievement(74987248781143);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987243307533 : (ulong)74987256508058);
 						break;
 					case ActorSno._bigred_izual: //Izual
-						if (isCoop) plr.GrantAchievement(74987254969009);
-						if (isHardcore) plr.GrantAchievement(74987247989681);
-						else plr.GrantAchievement(74987244988685);
-						if (isSeasoned) plr.GrantCriteria(74987249642121);
+						if (isCoop) rangedPlayer.GrantAchievement(74987254969009);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987247989681 : (ulong)74987244988685);
+						if (isSeasoned) rangedPlayer.GrantCriteria(74987249642121);
 						break;
 					case ActorSno._diablo: //Diablo
 						if (Context.PowerSNO == 93885) //weapon throw
-							plr.GrantAchievement(74987243307050);
-						if (isCoop) plr.GrantAchievement(74987250386944);
-						if (isHardcore) plr.GrantAchievement(74987250070969);
-						else plr.GrantAchievement(74987248188984);
-						plr.SetProgress(4, Target.World.Game.Difficulty);
-						if (isSeasoned) plr.GrantCriteria(74987250915380);
+							rangedPlayer.GrantAchievement(74987243307050);
+						if (isCoop) rangedPlayer.GrantAchievement(74987250386944);
+						rangedPlayer.GrantAchievement(isHardcore ? (ulong)74987250070969 : (ulong)74987248188984);
+						rangedPlayer.SetProgress(4, Target.World.Game.Difficulty);
+						if (isSeasoned) rangedPlayer.GrantCriteria(74987250915380);
 						break;
 					default:
 						break;
@@ -1237,7 +1222,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				player.Inventory.DecreaseDurability(0.1f);
 				if (player.World.Game.IsHardcore)
 				{
-					player.AddTimedAction(3f, new Action<int>((q) => player.Revive(player.CheckPointPosition)));
+					player.AddTimedAction(3f, (_) => player.Revive(player.CheckPointPosition));
 					var toon = player.Toon.DBToon;
 					toon.Deaths++;
 					player.World.Game.GameDbSession.SessionUpdate(toon);
@@ -1289,20 +1274,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				return AnimationSno._NONE;
 		}
 
-		private static TagKeyInt GetTagForSpecialDeath(int specialDeathType)
-		{
-			switch (specialDeathType)
+		private static TagKeyInt GetTagForSpecialDeath(int specialDeathType) =>
+			specialDeathType switch
 			{
-				default: return null;
-				case 1: return AnimationSetKeys.DeathDisintegration;
-				case 2: return AnimationSetKeys.DeathPulverise;
-				case 3: return AnimationSetKeys.DeathPlague;
-				case 4: return AnimationSetKeys.DeathDismember;
-				case 5: return AnimationSetKeys.DeathDecap;
-				case 6: return AnimationSetKeys.DeathAcid;
-				case 7: return AnimationSetKeys.DeathLava;  // haven't seen lava used, but there's no other place for it
-				case 8: return AnimationSetKeys.DeathSpirit;
-			}
-		}
+				1 => AnimationSetKeys.DeathDisintegration,
+				2 => AnimationSetKeys.DeathPulverise,
+				3 => AnimationSetKeys.DeathPlague,
+				4 => AnimationSetKeys.DeathDismember,
+				5 => AnimationSetKeys.DeathDecap,
+				6 => AnimationSetKeys.DeathAcid,
+				7 => AnimationSetKeys.DeathLava, // haven't seen lava used, but there's no other place for it
+				8 => AnimationSetKeys.DeathSpirit,
+				_ => null
+			};
 	}
 }

@@ -16,7 +16,7 @@ public class DropCommand : CommandGroup
         var amount = 1;
         if (@params != null && @params.Any())
             if (!int.TryParse(@params[0], out amount))
-                amount = 1;
+                return "Invalid amount.";
 
         amount = amount switch
         {

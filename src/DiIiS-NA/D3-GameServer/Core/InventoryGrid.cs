@@ -275,9 +275,8 @@ namespace DiIiS_NA.GameServer.Core
 				}
 
 			item.Owner = _owner;
-			if (_owner is Player)
+			if (_owner is Player ownerPlayer)
 			{
-				var ownerPlayer = _owner as Player;
 				item.SetInventoryLocation(EquipmentSlot, column, row);
 				if (EquipmentSlot == 15)
 					ownerPlayer.Inventory.SaveItemToDB(ownerPlayer.Toon.GameAccount.DBGameAccount, null, EquipmentSlotId.Stash, item);
@@ -416,8 +415,7 @@ namespace DiIiS_NA.GameServer.Core
 
 		public Item GetItem(uint itemId)
 		{
-			Item item;
-			if (!Items.TryGetValue(itemId, out item))
+			if (!Items.TryGetValue(itemId, out var item))
 				return null;
 			return item;
 		}

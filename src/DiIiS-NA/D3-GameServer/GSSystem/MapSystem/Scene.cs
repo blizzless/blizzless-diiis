@@ -297,8 +297,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 						{
 							int index = (int)marker.Type - 50; // LocationA has id 50...
 
-							if (GizmoSpawningLocations[index] == null)
-								GizmoSpawningLocations[index] = new List<PRTransform>();
+							GizmoSpawningLocations[index] ??= new List<PRTransform>();
 
 							marker.PRTransform.Vector3D += Position;
 							GizmoSpawningLocations[index].Add(marker.PRTransform);
@@ -380,10 +379,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// </summary>
 		/// <param name="player">The player.</param>
 		/// <returns><see cref="bool"/></returns>
-		public bool IsRevealedToPlayer(Player player)
-		{
-			return player.RevealedObjects.ContainsKey(GlobalID);
-		}
+		public bool IsRevealedToPlayer(Player player) => player.RevealedObjects.ContainsKey(GlobalID);
 
 		/// <summary>
 		/// Reveal the scene to given player.

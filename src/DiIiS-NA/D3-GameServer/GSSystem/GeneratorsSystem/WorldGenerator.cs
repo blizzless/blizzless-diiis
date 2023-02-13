@@ -70,7 +70,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 		public void CheckLevelArea(World world, int levelAreaSNO)
 		{
-			if (SpawnGenerator.Spawns.ContainsKey(levelAreaSNO) && SpawnGenerator.Spawns[levelAreaSNO].lazy_load)
+			if (SpawnGenerator.Spawns.ContainsKey(levelAreaSNO) && SpawnGenerator.Spawns[levelAreaSNO].LazyLoad)
 				if (!LoadedLevelAreas.Contains(levelAreaSNO))
 				{
 					LoadedLevelAreas.Add(levelAreaSNO);
@@ -2311,7 +2311,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					foreach (var scene in levelAreas.First().Value)
 					{
 						if (!SpawnGenerator.Spawns.ContainsKey(wid)) break;
-						if (SpawnGenerator.Spawns[wid].lazy_load)
+						if (SpawnGenerator.Spawns[wid].LazyLoad)
 						{
 							_lazyLevelAreas.Add(wid, levelAreas.First().Value);
 							break;
@@ -2321,9 +2321,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					#region unique spawn
 					//unique spawn
-					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].dangerous.Count > 0 && FastRandom.Instance.NextDouble() < 0.5)
+					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].Dangerous.Count > 0 && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[wid].dangerous.PickRandom());
+						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[wid].Dangerous.PickRandom());
 						var scene = levelAreas.First().Value.PickRandom();
 						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
 						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
@@ -2363,7 +2363,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					#endregion
 					#region goblin spawn
 					//goblin spawn
-					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].can_spawn_goblin && FastRandom.Instance.NextDouble() < 0.5)
+					if (SpawnGenerator.Spawns.ContainsKey(wid) && SpawnGenerator.Spawns[wid].CanSpawnGoblin && FastRandom.Instance.NextDouble() < 0.5)
 					{
 						var randomGoblin = new SNOHandle(Goblins.PickRandom());
 						if (world.Game.IsHardcore) randomGoblin = new SNOHandle(3852);
@@ -2408,7 +2408,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					foreach (var scene in levelAreas[la])
 					{
 						if (!SpawnGenerator.Spawns.ContainsKey(la)) break;
-						if (SpawnGenerator.Spawns[la].lazy_load)
+						if (SpawnGenerator.Spawns[la].LazyLoad)
 						{
 							_lazyLevelAreas.Add(la, levelAreas[la]);
 							break;
@@ -2418,9 +2418,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					#region unique spawn
 					//unique spawn
-					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].dangerous.Count > 0 && FastRandom.Instance.NextDouble() < 0.5)
+					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].Dangerous.Count > 0 && FastRandom.Instance.NextDouble() < 0.5)
 					{
-						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[la].dangerous.PickRandom());
+						var randomUnique = new SNOHandle(SpawnGenerator.Spawns[la].Dangerous.PickRandom());
 						var scene = levelAreas[la].PickRandom();
 						int x = FastRandom.Instance.Next(scene.NavMesh.SquaresCountX);
 						int y = FastRandom.Instance.Next(scene.NavMesh.SquaresCountY);
@@ -2460,7 +2460,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					#endregion
 					#region goblin spawn
 					//goblin spawn
-					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].can_spawn_goblin && FastRandom.Instance.NextDouble() < 0.5)
+					if (SpawnGenerator.Spawns.ContainsKey(la) && SpawnGenerator.Spawns[la].CanSpawnGoblin && FastRandom.Instance.NextDouble() < 0.5)
 					{
 						var randomGoblin = new SNOHandle(Goblins.PickRandom());
 						if (world.Game.IsHardcore) randomGoblin = new SNOHandle(3852);
@@ -2521,7 +2521,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 			}
 
 			if (Game.Difficulty > 4)
-				packs_count += SpawnGenerator.Spawns[la].additional_density;
+				packs_count += SpawnGenerator.Spawns[la].AdditionalDensity;
 
 			var groupId = 0;
 
@@ -2540,8 +2540,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						#region elite spawn
 						int randomMeleeMonsterId = -1;
 						int randomRangedMonsterId = -1;
-						if (SpawnGenerator.Spawns[la].melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee.PickRandom();
-						if (SpawnGenerator.Spawns[la].range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range.PickRandom();
+						if (SpawnGenerator.Spawns[la].Melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].Melee.PickRandom();
+						if (SpawnGenerator.Spawns[la].Range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].Range.PickRandom();
 						SNOHandle meleeMonsterHandle = (randomMeleeMonsterId == -1 ? null : new SNOHandle(randomMeleeMonsterId));
 						SNOHandle rangedMonsterHandle = (randomRangedMonsterId == -1 ? null : new SNOHandle(randomRangedMonsterId));
 						if (rangedMonsterHandle == null) rangedMonsterHandle = meleeMonsterHandle;
@@ -2585,8 +2585,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						{
 							int randomMeleeMonsterId = -1;
 							int randomRangedMonsterId = -1;
-							if (SpawnGenerator.Spawns[la].melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].melee.PickRandom();
-							if (SpawnGenerator.Spawns[la].range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].range.PickRandom();
+							if (SpawnGenerator.Spawns[la].Melee.Count > 0) randomMeleeMonsterId = SpawnGenerator.Spawns[la].Melee.PickRandom();
+							if (SpawnGenerator.Spawns[la].Range.Count > 0) randomRangedMonsterId = SpawnGenerator.Spawns[la].Range.PickRandom();
 							SNOHandle meleeMonsterHandle = (randomMeleeMonsterId == -1 ? null : new SNOHandle(randomMeleeMonsterId));
 							SNOHandle rangedMonsterHandle = (randomRangedMonsterId == -1 ? null : new SNOHandle(randomRangedMonsterId));
 							//int maxMobsInStack = (SpawnGenerator.IsMelee(la, randomMonsterId) ? 6 : (SpawnGenerator.IsDangerous(la, randomMonsterId) ? 1 : 3));
@@ -2617,7 +2617,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						else //spawn champions
 						#region champion spawn
 						{
-							SNOHandle championHandle = new SNOHandle(SpawnGenerator.Spawns[la].melee.PickRandom());
+							SNOHandle championHandle = new SNOHandle(SpawnGenerator.Spawns[la].Melee.PickRandom());
 							groupId = FastRandom.Instance.Next();
 							for (int n = 0; n < 4; n++)
 							{

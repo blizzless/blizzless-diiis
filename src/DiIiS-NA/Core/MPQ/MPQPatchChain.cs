@@ -85,7 +85,7 @@ namespace DiIiS_NA.Core.MPQ
             {
                 foreach (var mpq in pair.Value)
                 {
-                    Logger.Trace("MPQ: {0}, added to the system.", System.IO.Path.GetFileName(mpq));
+                    Logger.Debug("MPQ: {0}, added to the system.", System.IO.Path.GetFileName(mpq));
                     this.FileSystem.Archives.Add(new MpqArchive(new FileStream(mpq, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), true));
                 }
             }

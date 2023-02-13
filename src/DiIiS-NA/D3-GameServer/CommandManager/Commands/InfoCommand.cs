@@ -35,6 +35,7 @@ public class InfoCommand : CommandGroup
             foreach (var world in game.Worlds)
             {
                 info.Add($"World: {world.SNO.ToString()} - {(int)world.SNO}");
+                info.Add($"World Id: {world.GlobalID}");
                 info.Add($"Players: {world.Players.Count}");
                 info.Add($"Monsters: {world.Monsters.Count}");
                 info.Add($"{world.Monsters.Count} players in world: ");
