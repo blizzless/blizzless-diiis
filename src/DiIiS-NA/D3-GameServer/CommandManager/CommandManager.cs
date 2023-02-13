@@ -157,6 +157,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 						? CommandGroups.Where(pair => pair.Key.MinUserLevel > invokerClient?.Account.UserLevel)
 							.Aggregate(output, (current, pair) => current + ($"{CommandsConfig.Instance.CommandPrefix}{pair.Key.Name}: {pair.Key.Help}\n\n")) 
 						: CommandGroups
+							.Where(s=>!s.Key.InGameOnly)
 							.Aggregate(output, (current, pair) => current + (($"$[underline green]${CommandsConfig.Instance.CommandPrefix}{pair.Key.Name}$[/]$: {pair.Key.Help}\n\n")));
 
 				return output + "Type 'help <command>' to get help about a specific command.";
