@@ -66,7 +66,7 @@ ForceMinimapVisibility = false
 | `HealthPotionCooldown` | How much (in seconds) to use a health potion again. |
 | `UnlockAllWaypoints` | Unlocks all waypoints in campaign |
 | `StrengthMultiplier` | Player's strength multiplier |
-| `StrengthMultiplier` | Player's strength multiplier **for paragons** |
+| `StrengthParagonMultiplier` | Player's strength multiplier **for paragons** |
 | `DexterityMultiplier` | Player's dexterity multiplier |
 | `DexterityParagonMultiplier` | Player's dexterity multiplier **for paragons** |
 | `IntelligenceMultiplier` | Player's intelligence multiplier |
