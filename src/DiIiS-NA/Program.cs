@@ -91,10 +91,7 @@ namespace DiIiS_NA
             Console.Title = name;
 
             InitLoggers();
-#if DEBUG
             DiabloCoreEnabled = true;
-            Logger.Warn("Diablo III Core forced enable on $[underline white on olive]$ DEBUG $[/]$");
-#endif
             
 #pragma warning disable CS4014
             Task.Run(async () =>
@@ -133,8 +130,9 @@ namespace DiIiS_NA
             });
             AchievementManager.Initialize();
             Core.Storage.AccountDataBase.SessionProvider.RebuildSchema();
-            string GeneratePassword(int size) => new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", size)
-                .Select(s => s[new Random().Next(s.Length)]).ToArray());
+            string GeneratePassword(int size) => 
+                    new(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", size)
+                    .Select(s => s[new Random().Next(s.Length)]).ToArray());
             void LogAccountCreated(string username, string password)
                 => Logger.Success($"Created account: $[springgreen4]${username}$[/]$ with password: $[springgreen4]${password}$[/]$");
 #if DEBUG
