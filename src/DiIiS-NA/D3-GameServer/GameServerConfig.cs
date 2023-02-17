@@ -306,13 +306,7 @@ namespace DiIiS_NA.GameServer
 			get => GetBoolean(nameof(ForceMinimapVisibility), false);
 			set => Set(nameof(ForceMinimapVisibility), value);
 		}
-		
-		public int NecroSkeletonCount
-		{
-			get => GetInt(nameof(NecroSkeletonCount), 7);
-			set => Set(nameof(NecroSkeletonCount), value);
-		}
-		
+
 		#endregion
 		public static GameServerConfig Instance { get; } = new();
 

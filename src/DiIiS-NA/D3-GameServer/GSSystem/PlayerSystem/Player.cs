@@ -3203,7 +3203,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
                 NecroSkeletons.Clear();
             }
-            while (NecroSkeletons.Count < GameServerConfig.Instance.NecroSkeletonCount)
+            while (NecroSkeletons.Count < 7)
             {
                 var necroSkeleton = new NecromancerSkeleton_A(World, ActorSno._p6_necro_commandskeletons_a, this);
                 necroSkeleton.Brain.DeActivate();
