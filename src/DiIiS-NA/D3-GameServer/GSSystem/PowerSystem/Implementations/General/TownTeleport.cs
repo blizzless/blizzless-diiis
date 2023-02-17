@@ -60,11 +60,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (User.World.Game.QuestProgress.QuestTriggers.ContainsKey(town_levelArea)) //EnterLevelArea
 			{
 				var trigger = User.World.Game.QuestProgress.QuestTriggers[town_levelArea];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 				{
 					try
 					{
-						trigger.questEvent.Execute(User.World); // launch a questEvent
+						trigger.QuestEvent.Execute(User.World); // launch a questEvent
 					}
 					catch (Exception e)
 					{

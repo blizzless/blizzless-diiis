@@ -35,13 +35,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
 				var trigger = World.Game.QuestProgress.QuestTriggers[(int)SNO];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 				{
 					World.Game.QuestProgress.UpdateCounter((int)SNO);
-					if (trigger.count == World.Game.QuestProgress.QuestTriggers[(int)SNO].counter)
+					if (trigger.Count == World.Game.QuestProgress.QuestTriggers[(int)SNO].Counter)
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{

@@ -56,6 +56,16 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(IWServer), value);
 		}
 		
+		public bool AfkDisconnect
+		{
+#if DEBUG
+			get => GetBoolean(nameof(AfkDisconnect), false);
+#else
+			get => GetBoolean(nameof(AfkTimeoutEnabled), true);
+#endif
+			set => Set(nameof(AfkDisconnect), value);
+		}
+		
 		#region Game Mods
 
 		/// <summary>

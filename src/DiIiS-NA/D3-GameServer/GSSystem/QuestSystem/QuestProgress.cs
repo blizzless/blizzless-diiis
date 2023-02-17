@@ -21,10 +21,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public struct QuestTrigger
 		{
-			public DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType triggerType;
-			public int count;
-			public int counter;
-			public QuestEvent questEvent;
+			public DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType TriggerType;
+			public int Count;
+			public int Counter;
+			public QuestEvent QuestEvent;
 		}
 		
 		public class Quest
@@ -88,19 +88,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		protected void ListenConversation(int convId, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd(convId,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void GlobalListenConversation(int convId, QuestEvent qevent)
 		{
 			GlobalQuestTriggers.TryAdd(convId,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void ListenKill(ActorSno monsterSno, int monsterCount, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)monsterSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster, count = monsterCount, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster, Count = monsterCount, Counter = 0, QuestEvent = qevent });
 		}
 
 		public void ActiveArrow(World world, ActorSno sno, WorldSno destworld = WorldSno.__NONE)
@@ -192,40 +192,40 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		protected void ListenKillBonus(ActorSno monsterSno, int monsterCount, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)monsterSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup, count = monsterCount, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup, Count = monsterCount, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void ListenTeleport(int laId, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd(laId,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 		protected void GlobalListenTeleport(int laId, QuestEvent qevent)
 		{
 			GlobalQuestTriggers.TryAdd(laId,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void ListenProximity(ActorSno actorSno, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)actorSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void ListenInteract(ActorSno actorSno, int actorCount, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)actorSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, Count = actorCount, Counter = 0, QuestEvent = qevent });
 		}
 		protected void ListenInteractBonus(ActorSno actorSno, int actorCount, int counter, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)actorSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = counter, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, Count = actorCount, Counter = counter, QuestEvent = qevent });
 		}
 		protected void GlobalListenInteract(ActorSno actorSno, int actorCount, QuestEvent qevent)
 		{
 			GlobalQuestTriggers.TryAdd((int)actorSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, Count = actorCount, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void UnlockTeleport(int waypointId)
@@ -236,30 +236,30 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		public void UpdateCounter(int dataId)
 		{
 			var trigger = QuestTriggers[dataId];
-			trigger.counter++;
+			trigger.Counter++;
 			QuestTriggers[dataId] = trigger;
-			if (trigger.counter <= trigger.count)
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
-					Game.QuestManager.NotifyBonus(trigger.counter, (trigger.counter >= trigger.count));
-				else if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor && dataId == 3628)
-					Game.QuestManager.NotifyBonus(trigger.counter, (trigger.counter >= trigger.count));
+			if (trigger.Counter <= trigger.Count)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
+					Game.QuestManager.NotifyBonus(trigger.Counter, (trigger.Counter >= trigger.Count));
+				else if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor && dataId == 3628)
+					Game.QuestManager.NotifyBonus(trigger.Counter, (trigger.Counter >= trigger.Count));
 				else
-					Game.QuestManager.NotifyQuest(trigger.counter, (trigger.counter >= trigger.count));
+					Game.QuestManager.NotifyQuest(trigger.Counter, (trigger.Counter >= trigger.Count));
 		}
 
 		public void UpdateSideCounter(int dataId)
 		{
 			var trigger = QuestTriggers[dataId];
-			trigger.counter++;
+			trigger.Counter++;
 			QuestTriggers[dataId] = trigger;
-			if (trigger.counter <= trigger.count)
-				Game.QuestManager.NotifySideQuest(trigger.counter, (trigger.counter >= trigger.count));
+			if (trigger.Counter <= trigger.Count)
+				Game.QuestManager.NotifySideQuest(trigger.Counter, (trigger.Counter >= trigger.Count));
 		}
 
 		public void UpdateGlobalCounter(int dataId)
 		{
 			var trigger = GlobalQuestTriggers[dataId];
-			trigger.counter++;
+			trigger.Counter++;
 			GlobalQuestTriggers[dataId] = trigger;
 		}
 

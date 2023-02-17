@@ -41,13 +41,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
 				var trigger = World.Game.QuestProgress.QuestTriggers[(int)SNO];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 				{
 					World.Game.QuestProgress.UpdateCounter((int)SNO);
-					if (trigger.count == World.Game.QuestProgress.QuestTriggers[(int)SNO].counter)
+					if (trigger.Count == World.Game.QuestProgress.QuestTriggers[(int)SNO].Counter)
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -58,23 +58,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			else if (World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
 				var trigger = World.Game.SideQuestProgress.QuestTriggers[(int)SNO];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 				{
 					World.Game.SideQuestProgress.UpdateSideCounter((int)SNO);
-					if (trigger.count == World.Game.SideQuestProgress.QuestTriggers[(int)SNO].counter)
-						trigger.questEvent.Execute(World); // launch a questEvent
+					if (trigger.Count == World.Game.SideQuestProgress.QuestTriggers[(int)SNO].Counter)
+						trigger.QuestEvent.Execute(World); // launch a questEvent
 				}
 			}
 			if (World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey((int)SNO))
 			{
 				var trigger = World.Game.SideQuestProgress.GlobalQuestTriggers[(int)SNO];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 				{
 					World.Game.SideQuestProgress.UpdateGlobalCounter((int)SNO);
-					if (trigger.count == World.Game.SideQuestProgress.GlobalQuestTriggers[(int)SNO].counter)
+					if (trigger.Count == World.Game.SideQuestProgress.GlobalQuestTriggers[(int)SNO].Counter)
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 							World.Game.SideQuestProgress.GlobalQuestTriggers.Remove((int)SNO);
 						}
 						catch (Exception e)

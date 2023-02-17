@@ -50,10 +50,10 @@ public class TeleportCommand : CommandGroup
             {
                 var trigger =
                     invokerClient.InGameClient.Player.World.Game.SideQuestProgress.GlobalQuestTriggers[levelArea];
-                if (trigger.triggerType == QuestStepObjectiveType.EnterLevelArea)
+                if (trigger.TriggerType == QuestStepObjectiveType.EnterLevelArea)
                     try
                     {
-                        trigger.questEvent.Execute(invokerClient.InGameClient.Player.World); // launch a questEvent
+                        trigger.QuestEvent.Execute(invokerClient.InGameClient.Player.World); // launch a questEvent
                     }
                     catch
                     {

@@ -1481,11 +1481,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (World.Game.QuestProgress.QuestTriggers.ContainsKey(Destination.DestLevelAreaSNO)) //EnterLevelArea
 				{
 					var trigger = World.Game.QuestProgress.QuestTriggers[Destination.DestLevelAreaSNO];
-					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+					if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -1496,11 +1496,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (World.Game.SideQuestProgress.QuestTriggers.ContainsKey(Destination.DestLevelAreaSNO)) //EnterLevelArea
 				{
 					var trigger = World.Game.SideQuestProgress.QuestTriggers[Destination.DestLevelAreaSNO];
-					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+					if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -1511,11 +1511,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(Destination.DestLevelAreaSNO)) //EnterLevelArea
 				{
 					var trigger = World.Game.SideQuestProgress.GlobalQuestTriggers[Destination.DestLevelAreaSNO];
-					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+					if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 							World.Game.SideQuestProgress.GlobalQuestTriggers.Remove(Destination.DestLevelAreaSNO);
 						}
 						catch (Exception e)

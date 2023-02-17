@@ -119,7 +119,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				{
 					PetId = skeletonA.DynamicID(skeletonA.Master as Player)
 				});
-				masterPlr.NecroSkeletons.Remove(skeletonA);
+				masterPlr.NecromancerSkeletons.Remove(skeletonA);
 			}
 
 			if (Target is Minion { Master: Player masterPlr2 }
@@ -600,13 +600,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (Target.World.Game.QuestProgress.QuestTriggers.ContainsKey((int)Target.SNO))
 			{
 				var trigger = Target.World.Game.QuestProgress.QuestTriggers[(int)Target.SNO];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
 				{
 					Target.World.Game.QuestProgress.UpdateCounter((int)Target.SNO);
-					if (trigger.count == Target.World.Game.QuestProgress.QuestTriggers[(int)Target.SNO].counter)
-						trigger.questEvent.Execute(Target.World); // launch a questEvent
+					if (trigger.Count == Target.World.Game.QuestProgress.QuestTriggers[(int)Target.SNO].Counter)
+						trigger.QuestEvent.Execute(Target.World); // launch a questEvent
 				}
-				else if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
+				else if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
 				{
 					Target.World.Game.QuestProgress.UpdateCounter((int)Target.SNO);
 				}
@@ -614,11 +614,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			else if (Target.World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)Target.SNO))
 			{
 				var trigger = Target.World.Game.SideQuestProgress.QuestTriggers[(int)Target.SNO];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster)
 				{
 					Target.World.Game.SideQuestProgress.UpdateSideCounter((int)Target.SNO);
-					if (trigger.count == Target.World.Game.SideQuestProgress.QuestTriggers[(int)Target.SNO].counter)
-						trigger.questEvent.Execute(Target.World); // launch a questEvent
+					if (trigger.Count == Target.World.Game.SideQuestProgress.QuestTriggers[(int)Target.SNO].Counter)
+						trigger.QuestEvent.Execute(Target.World); // launch a questEvent
 				}
 			}
 

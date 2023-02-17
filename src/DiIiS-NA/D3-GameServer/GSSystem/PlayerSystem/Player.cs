@@ -104,7 +104,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public int PreSceneId = -1;
 
-    public List<Actor> NecroSkeletons = new() { };
+    public List<Actor> NecromancerSkeletons = new() { };
     public bool ActiveSkeletons = false;
     
     public Actor ActiveGolem = null;
@@ -2663,11 +2663,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             if (World.Game.QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
             {
                 var trigger = World.Game.QuestProgress.QuestTriggers[levelArea];
-                if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+                if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
                     try
                     {
                         Logger.MethodTrace($"EnterLevelArea: {levelArea}");
-                        trigger.questEvent.Execute(World); // launch a questEvent
+                        trigger.QuestEvent.Execute(World); // launch a questEvent
                     }
                     catch (Exception e)
                     {
@@ -2749,10 +2749,10 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         if (World.Game.QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
         {
             var trigger = World.Game.QuestProgress.QuestTriggers[levelArea];
-            if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+            if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
                 try
                 {
-                    trigger.questEvent.Execute(World); // launch a questEvent
+                    trigger.QuestEvent.Execute(World); // launch a questEvent
                 }
                 catch (Exception e)
                 {
@@ -2988,19 +2988,21 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         TimedActions.Add(TickTimer.WaitSeconds(World.Game, seconds, onTimeout));
     }
 
+    private bool DisconnectIdle()
+    {
+        if (!GameServerConfig.Instance.AfkDisconnect || InGameClient.Game.TickCounter - LastMovementTick <= 54000) 
+            return false;
+        
+        Logger.Warn($"Player $[underline white]${Name}$[/]$ disconnected for being AFK.");
+        Opcodes.CloseGameMessage.SendTo(InGameClient);
+        return true;
+
+    }
     public void Update(int tickCounter)
     {
         if (BetweenWorlds) return;
-
-#if DEBUG
-#else
-			if ((this.InGameClient.Game.TickCounter - this.LastMovementTick) > 54000) //15m AFK
-			{
-
-				this.InGameClient.SendMessage(new SimpleMessage(Opcodes.CloseGameMessage));
-			}
-#endif
-
+        if (DisconnectIdle()) return;
+        
         // Check the gold
         if (InGameClient.Game.TickCounter % 120 == 0 && World != null && GoldCollectedTempCount > 0)
         {
@@ -3069,18 +3071,16 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         // Check if there is an conversation to close in this tick
         Conversations.Update(World.Game.TickCounter);
 
-        foreach (var proximityGizmo in GetObjectsInRange<Actor>(20f, true))
+        foreach (var proximityGizmo in GetObjectsInRange<Actor>(20f, true).Where(proximityGizmo => proximityGizmo != null && proximityGizmo.SNO != ActorSno.__NONE))
         {
-            if (proximityGizmo == null || proximityGizmo.SNO == ActorSno.__NONE) continue;
-            if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO) &&
-                proximityGizmo.Visible) //EnterTrigger
+            if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO) && proximityGizmo.Visible) //EnterTrigger
             {
                 var trigger = World.Game.QuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
-                if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
+                if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
                     //this.World.Game.Quests.NotifyQuest(this.World.Game.CurrentQuest, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, proximityGizmo.ActorSNO.Id);
                     try
                     {
-                        trigger.questEvent.Execute(World); // launch a questEvent
+                        trigger.QuestEvent.Execute(World); // launch a questEvent
                     }
                     catch (Exception e)
                     {
@@ -3090,11 +3090,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             else if (World.Game.SideQuestProgress.QuestTriggers.ContainsKey((int)proximityGizmo.SNO))
             {
                 var trigger = World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO];
-                if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
+                if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
                 {
                     World.Game.SideQuestProgress.UpdateSideCounter((int)proximityGizmo.SNO);
-                    if (trigger.count == World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO].counter)
-                        trigger.questEvent.Execute(World); // launch a questEvent
+                    if (trigger.Count == World.Game.SideQuestProgress.QuestTriggers[(int)proximityGizmo.SNO].Counter)
+                        trigger.QuestEvent.Execute(World); // launch a questEvent
                 }
             }
 
@@ -3102,11 +3102,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                 proximityGizmo.Visible) //EnterTrigger
             {
                 var trigger = World.Game.SideQuestProgress.GlobalQuestTriggers[(int)proximityGizmo.SNO];
-                if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
+                if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger)
                     //this.World.Game.Quests.NotifyQuest(this.World.Game.CurrentQuest, Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, proximityGizmo.ActorSNO.Id);
                     try
                     {
-                        trigger.questEvent.Execute(World); // launch a questEvent
+                        trigger.QuestEvent.Execute(World); // launch a questEvent
                         World.Game.SideQuestProgress.GlobalQuestTriggers.Remove((int)proximityGizmo.SNO);
                     }
                     catch (Exception e)
@@ -3159,22 +3159,21 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         }
 
         #region Necromancer summons
-
-        var switcherToBool = false;
-        var switcherToBool2 = false;
-        ActiveSkillSavedData nowSkillGolen = null;
+        // ActiveSkillSavedData nowSkillGolen = null; - removed by @iamdroppy - not used in any path; written once, never read
+        var hasActiveSkeletons = false;
+        var hasActiveGolem = false;
         foreach (var skill in SkillSet.ActiveSkills)
             if (skill.snoSkill == 453801)
-                switcherToBool = true;
+                hasActiveSkeletons = true;
         foreach (var skill in SkillSet.ActiveSkills)
             if (skill.snoSkill == 451537)
             {
-                switcherToBool2 = true;
-                nowSkillGolen = skill;
+                hasActiveGolem = true;
+                // nowSkillGolen = skill; - removed by @iamdroppy - not used in any path; written once, never read
             }
 
-        ActiveSkeletons = switcherToBool;
-        EnableGolem = switcherToBool2;
+        ActiveSkeletons = hasActiveSkeletons;
+        EnableGolem = hasActiveGolem;
 
 
         var killer = new PowerContext
@@ -3186,9 +3185,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         if (ActiveSkeletons)
         {
-            if (Followers.All(s => s.Value != ActorSno._p6_necro_commandskeletons_a) && NecroSkeletons.Any())
+            if (Followers.All(s => s.Value != ActorSno._p6_necro_commandskeletons_a) && NecromancerSkeletons.Any())
             {
-                foreach (var skeleton in NecroSkeletons)
+                foreach (var skeleton in NecromancerSkeletons)
                 {
                     try
                     {
@@ -3201,17 +3200,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     catch{}
                 }
 
-                NecroSkeletons.Clear();
+                NecromancerSkeletons.Clear();
             }
-            while (NecroSkeletons.Count < 7)
+            while (NecromancerSkeletons.Count < 7)
             {
-                var necroSkeleton = new NecromancerSkeleton_A(World, ActorSno._p6_necro_commandskeletons_a, this);
-                necroSkeleton.Brain.DeActivate();
-                necroSkeleton.Scale = 1.2f;
+                var necromancerSkeleton = new NecromancerSkeleton_A(World, ActorSno._p6_necro_commandskeletons_a, this);
+                necromancerSkeleton.Brain.DeActivate();
+                necromancerSkeleton.Scale = 1.2f;
 
-                necroSkeleton.EnterWorld(PowerContext.RandomDirection(Position, 3f, 8f));
-                NecroSkeletons.Add(necroSkeleton);
-                /*this.InGameClient.SendMessage(new PetMessage()
+                necromancerSkeleton.EnterWorld(PowerContext.RandomDirection(Position, 3f, 8f));
+                NecromancerSkeletons.Add(necromancerSkeleton);
+                /*
+                this.InGameClient.SendMessage(new PetMessage()
                 {
                     Owner = this.PlayerIndex,
                     Index = this.CountFollowers(473147),
@@ -3219,21 +3219,21 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                     Type = 70,
                 });
                 //*/
-                necroSkeleton.Brain.Activate();
+                necromancerSkeleton.Brain.Activate();
             }
         }
         else
         {
-            foreach (var skel in NecroSkeletons)
+            foreach (var necromancerSkeleton in NecromancerSkeletons)
             {
                 InGameClient.SendMessage(new PetDetachMessage()
                 {
-                    PetId = skel.GlobalID
+                    PetId = necromancerSkeleton.GlobalID
                 });
-                World.Leave(skel);
+                World.Leave(necromancerSkeleton);
             }
 
-            NecroSkeletons.Clear();
+            NecromancerSkeletons.Clear();
         }
 
         if (EnableGolem || ActiveGolem != null)
@@ -4084,7 +4084,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             },
             SkillSlotEverAssigned = 0x0F, //0xB4,
             PlaytimeTotal = Toon.TimePlayed,
-            WaypointFlags = GameServerConfig.Instance.UnlockAllWaypoints ? 0x0000ffff : this.World.Game.WaypointFlags,
+            WaypointFlags = GameServerConfig.Instance.UnlockAllWaypoints ? 0x0000ffff : World.Game.WaypointFlags,
             HirelingData = new HirelingSavedData()
             {
                 HirelingInfos = HirelingInfo,

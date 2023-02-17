@@ -553,7 +553,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			if (Game.QuestProgress.QuestTriggers.Count == 1)
 			{
 				var trigger = Game.QuestProgress.QuestTriggers.First();
-				switch (trigger.Value.triggerType)
+				switch (trigger.Value.TriggerType)
 				{
 					case QuestStepObjectiveType.InteractWithActor:
 					{

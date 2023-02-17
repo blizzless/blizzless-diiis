@@ -11,20 +11,22 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
 
 namespace DiIiS_NA.GameServer.ClientSystem
 {
 	public class GameClient : IClient
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger("GC");
+		private static readonly Logger Logger = LogManager.CreateLogger("GameClient");
 
 		public IConnection Connection { get; set; }
 		public BattleClient BnetClient { get; set; }
 
 		//private readonly GameBitBuffer _incomingBuffer = new GameBitBuffer(512);
-		private readonly GameBitBuffer _outgoingBuffer = new GameBitBuffer(ushort.MaxValue);
+		private readonly GameBitBuffer _outgoingBuffer = new(ushort.MaxValue);
 
-		private object _clientStreamLock = new object();
+		private readonly object _clientStreamLock = new object();
 
 		public Game Game { get; set; }
 		public Player Player { get; set; }
@@ -33,21 +35,11 @@ namespace DiIiS_NA.GameServer.ClientSystem
 
 		public bool TickingEnabled
 		{
-			get
-			{
-				return _tickingEnabled;
-			}
-			set
-			{
-				_tickingEnabled = value;
-				//if (value == true)
-				//this.SendTick();
-			}
+			get => _tickingEnabled;
+			set => _tickingEnabled = value;
 		}
-
-		public object _bufferLock = new object(); // we should be locking on this private object, locking on gameclient (this) may cause deadlocks. detailed information: http://msdn.microsoft.com/fr-fr/magazine/cc188793%28en-us%29.aspx /raist.
-
-		public bool IsLoggingOut;
+		
+		public bool IsLoggingOut { get; set; }
 
 		public GameClient(IConnection connection)
 		{
@@ -58,8 +50,6 @@ namespace DiIiS_NA.GameServer.ClientSystem
 
 		public virtual void Parse(ConnectionDataEventArgs e)
 		{
-			//Console.WriteLine(e.Data.Dump());
-
 			//lock (_clientStreamLock)
 			//{
 			Task.Run(() =>
@@ -70,25 +60,25 @@ namespace DiIiS_NA.GameServer.ClientSystem
 					//Task.Delay(5000, cancelToken.Token).ContinueWith((task) => { Logger.Warn("Character {0} caused server CPU overload!", this.Player.Toon.Name); this.Game.Dispose(); }, TaskContinuationOptions.NotOnCanceled);
 					try
 					{
-						GameBitBuffer _incomingBuffer = new GameBitBuffer(512);
+						GameBitBuffer incomingBuffer = new(512);
 
-						_incomingBuffer.AppendData(e.Data.ToArray());
+						incomingBuffer.AppendData(e.Data.ToArray());
 
-						while (Connection.IsOpen() && _incomingBuffer.IsPacketAvailable())
+						while (Connection.IsOpen() && incomingBuffer.IsPacketAvailable())
 						{
-							int end = _incomingBuffer.Position;
-							end += _incomingBuffer.ReadInt(32) * 8;
+							int end = incomingBuffer.Position;
+							end += incomingBuffer.ReadInt(32) * 8;
 
-							while ((end - _incomingBuffer.Position) >= 9 && Connection.IsOpen())
+							while ((end - incomingBuffer.Position) >= 9 && Connection.IsOpen())
 							{
-								var message = _incomingBuffer.ParseMessage();
+								var message = incomingBuffer.ParseMessage();
 								//217
 								//
 								if (message == null) continue;
 								try
 								{
 									Logger.LogIncomingPacket(message); // change ConsoleTarget's level to Level.Dump in program.cs if u want to see messages on console.
-									if (message.Id == 96 || message.Id == 369 || message.Id == 269)
+									if (message.Id is 96 or 369 or 269)
 										message.Consumer = Consumers.Inventory;
 									if (message.Consumer != Consumers.None)
 									{
@@ -96,7 +86,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 										else Game.Route(this, message);
 									}
 
-									else if (message is ISelfHandler) (message as ISelfHandler).Handle(this); // if message is able to handle itself, let it do so.
+									else if (message is ISelfHandler handler) handler.Handle(this); // if message is able to handle itself, let it do so.
 									else if (message.Id != 217)
 										Logger.Warn("{0} - ID:{1} has no consumer or self-handler.", message.GetType().Name, message.Id);
 
@@ -107,9 +97,9 @@ namespace DiIiS_NA.GameServer.ClientSystem
 								}
 							}
 
-							_incomingBuffer.Position = end;
+							incomingBuffer.Position = end;
 						}
-						_incomingBuffer.ConsumeData();
+						incomingBuffer.ConsumeData();
 						//Thread.Sleep(5);
 					}
 					catch (Exception ex)
@@ -125,14 +115,15 @@ namespace DiIiS_NA.GameServer.ClientSystem
 			//}
 		}
 
-		private int LastReplicatedTick = 0;
-
+		public void SendMessage(Opcodes opcode) => SendMessage(new SimpleMessage(opcode));
+		
+		private int _lastReplicatedTick;
 		public virtual void SendMessage(GameMessage message)
 		{
 			//System.Threading.Thread.Sleep(50);
 			lock (_outgoingBuffer)
 			{
-				if (Game.TickCounter > LastReplicatedTick && TickingEnabled && !(message is GameTickMessage) /*&& !(message is EndOfTickMessage)*/ && !Player.BetweenWorlds)
+				if (Game.TickCounter > _lastReplicatedTick && TickingEnabled && message is not GameTickMessage /*&& !(message is EndOfTickMessage)*/ && !Player.BetweenWorlds)
 				{
 					/*var endMessage = new EndOfTickMessage()
 					{
@@ -143,12 +134,12 @@ namespace DiIiS_NA.GameServer.ClientSystem
 					_outgoingBuffer.EncodeMessage(endMessage);
 					Connection.Send(_outgoingBuffer.GetPacketAndReset());*/
 
-					LastReplicatedTick = Game.TickCounter;
+					_lastReplicatedTick = Game.TickCounter;
 					var tickMessage = new GameTickMessage(Game.TickCounter);
 					Logger.LogOutgoingPacket(tickMessage);
 					_outgoingBuffer.EncodeMessage(tickMessage);
 					Connection.Send(_outgoingBuffer.GetPacketAndReset());
-					dataSent = false;
+					_dataSent = false;
 				}
 				//if (message is GameTickMessage)
 				//message = new GameTickMessage(this.Game.TickCounter); //reassigning new tick value
@@ -160,17 +151,14 @@ namespace DiIiS_NA.GameServer.ClientSystem
 					var data = _outgoingBuffer.GetPacketAndReset();
 					Connection.Send(data);
 				}
-				dataSent = true;
+				_dataSent = true;
 				//if (flushImmediately) this.SendTick();
 			}
 		}
 
-		public void SendBytes(byte[] data)
-		{
-			Connection.Send(data);
-		}
+		public void SendBytes(byte[] data) => Connection.Send(data);
 
-		protected bool dataSent = true;
+		private bool _dataSent = true;
 
 		public bool OpenWorldDefined = false;
 
@@ -179,9 +167,9 @@ namespace DiIiS_NA.GameServer.ClientSystem
 			//if (_outgoingBuffer.Length <= 32) return;
 			lock (_outgoingBuffer)
 			{
-				if (!dataSent) return;
+				if (!_dataSent) return;
 
-				if (TickingEnabled && Game.TickCounter > LastReplicatedTick)
+				if (TickingEnabled && Game.TickCounter > _lastReplicatedTick)
 				{
 					/*this.SendMessage(new EndOfTickMessage()
 					{
@@ -189,14 +177,14 @@ namespace DiIiS_NA.GameServer.ClientSystem
 						Field1 = this.LastReplicatedTick
 					}); // send the tick end.*/
 					SendMessage(new GameTickMessage(Game.TickCounter)); // send the tick.
-					LastReplicatedTick = Game.TickCounter;
+					_lastReplicatedTick = Game.TickCounter;
 					//this.SendMessage(new GameTickMessage(0)); //before client enters game causes freeze with PvP scoreboard
 					/*this.SendMessage(new EndOfTickMessage()
 					{
 						Field0 = this.Game.TickCounter,
 						Field1 = 0
 					}); // send the tick end*/
-					dataSent = false;
+					_dataSent = false;
 					FlushOutgoingBuffer();
 				}
 			}
@@ -212,5 +200,22 @@ namespace DiIiS_NA.GameServer.ClientSystem
 				Connection.Send(data);
 			}
 		}
+	}
+
+	public static class OpcodesExtensions
+	{
+		/// <summary>
+		/// Sends a simple message with the given opcode.
+		/// </summary>
+		/// <param name="opcode">The opcode</param>
+		/// <param name="clients">The InGameClients</param>
+		public static void SendTo(this Opcodes opcode, params GameClient[] clients) { foreach (var client in clients) client.SendMessage(opcode); }
+		
+		/// <summary>
+		/// Sends a message with a given opcode.
+		/// </summary>
+		/// <param name="message">Message to send to client</param>
+		/// <param name="clients">The InGameClients</param>
+		public static void SendTo(this GameMessage message, params GameClient[] clients)  { foreach (var client in clients) client.SendMessage(message); }
 	}
 }

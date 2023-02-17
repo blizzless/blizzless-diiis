@@ -1573,11 +1573,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			if (QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
 			{
 				var trigger = QuestProgress.QuestTriggers[levelArea];
-				if (trigger.triggerType == QuestStepObjectiveType.EnterLevelArea)
+				if (trigger.TriggerType == QuestStepObjectiveType.EnterLevelArea)
 				{
 					try
 					{
-						trigger.questEvent.Execute(encWorld); // launch a questEvent
+						trigger.QuestEvent.Execute(encWorld); // launch a questEvent
 					}
 					catch (Exception e)
 					{

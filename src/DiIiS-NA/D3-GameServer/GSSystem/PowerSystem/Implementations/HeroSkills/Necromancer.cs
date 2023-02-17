@@ -2005,7 +2005,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 }
                 
 
-                foreach (var skeleton in ((Player)User).NecroSkeletons)
+                foreach (var skeleton in ((Player)User).NecromancerSkeletons)
                 {
                     //User.PlayEffectGroup(474172);
                     ActorMover mover = new ActorMover(skeleton);

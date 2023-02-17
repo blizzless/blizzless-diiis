@@ -279,11 +279,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (player.World.Game.QuestProgress.QuestTriggers.ContainsKey(SNOId))
 			{
 				var trigger = player.World.Game.QuestProgress.QuestTriggers[SNOId];
-				if (trigger.triggerType == QuestStepObjectiveType.HadConversation)
+				if (trigger.TriggerType == QuestStepObjectiveType.HadConversation)
 				{
 					try
 					{
-						trigger.questEvent.Execute(player.World); // launch a questEvent
+						trigger.QuestEvent.Execute(player.World); // launch a questEvent
 					}
 					catch (Exception e)
 					{
@@ -295,11 +295,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (player.World.Game.SideQuestProgress.QuestTriggers.ContainsKey(SNOId)) //EnterLevelArea
 			{
 				var trigger = player.World.Game.SideQuestProgress.QuestTriggers[SNOId];
-				if (trigger.triggerType == QuestStepObjectiveType.HadConversation)
+				if (trigger.TriggerType == QuestStepObjectiveType.HadConversation)
 				{
 					try
 					{
-						trigger.questEvent.Execute(player.World); // launch a questEvent
+						trigger.QuestEvent.Execute(player.World); // launch a questEvent
 					}
 					catch (Exception e)
 					{
@@ -311,11 +311,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (player.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(SNOId))
 			{
 				var trigger = player.World.Game.SideQuestProgress.GlobalQuestTriggers[SNOId];
-				if (trigger.triggerType == QuestStepObjectiveType.HadConversation)
+				if (trigger.TriggerType == QuestStepObjectiveType.HadConversation)
 				{
 					try
 					{
-						trigger.questEvent.Execute(player.World); // launch a questEvent
+						trigger.QuestEvent.Execute(player.World); // launch a questEvent
 						player.World.Game.SideQuestProgress.GlobalQuestTriggers.Remove(SNOId);
 					}
 					catch (Exception e)
