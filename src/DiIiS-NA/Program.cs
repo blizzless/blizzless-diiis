@@ -90,6 +90,7 @@ namespace DiIiS_NA
             Console.WriteLine();
 
             InitLoggers();
+            // forcing diablo core to be enabled - @iamdroppy
             DiabloCoreEnabled = true;
             
 #pragma warning disable CS4014
