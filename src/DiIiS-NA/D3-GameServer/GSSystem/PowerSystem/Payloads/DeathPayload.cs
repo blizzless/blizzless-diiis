@@ -58,24 +58,24 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			if (Target.Dead)
 				return;
 
-			if (Target is Player plr)
+			if (Target is Player playerTarget)
 			{
-				if(plr.World.Game.NephalemGreater)
-					plr.Attributes[GameAttributes.Tiered_Loot_Run_Death_Count]++;
-				if (plr.SkillSet.HasPassive(218501) && plr.World.BuffManager.GetFirstBuff<SpiritVesselCooldownBuff>(plr) == null) //SpiritWessel (wd)
+				if(playerTarget.World.Game.NephalemGreater)
+					playerTarget.Attributes[GameAttributes.Tiered_Loot_Run_Death_Count]++;
+				if (playerTarget.SkillSet.HasPassive(218501) && playerTarget.World.BuffManager.GetFirstBuff<SpiritVesselCooldownBuff>(playerTarget) == null) //SpiritWessel (wd)
 				{
-					plr.Attributes[GameAttributes.Hitpoints_Cur] = plr.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.15f;
-					plr.Attributes.BroadcastChangedIfRevealed();
-					plr.World.BuffManager.AddBuff(plr, plr, new ActorGhostedBuff());
-					plr.World.BuffManager.AddBuff(plr, plr, new SpiritVesselCooldownBuff());
+					playerTarget.Attributes[GameAttributes.Hitpoints_Cur] = playerTarget.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.15f;
+					playerTarget.Attributes.BroadcastChangedIfRevealed();
+					playerTarget.World.BuffManager.AddBuff(playerTarget, playerTarget, new ActorGhostedBuff());
+					playerTarget.World.BuffManager.AddBuff(playerTarget, playerTarget, new SpiritVesselCooldownBuff());
 					return;
 				}
-				if (plr.SkillSet.HasPassive(156484) && plr.World.BuffManager.GetFirstBuff<NearDeathExperienceCooldownBuff>(plr) == null) //NearDeathExperience (monk)
+				if (playerTarget.SkillSet.HasPassive(156484) && playerTarget.World.BuffManager.GetFirstBuff<NearDeathExperienceCooldownBuff>(playerTarget) == null) //NearDeathExperience (monk)
 				{
-					plr.Attributes[GameAttributes.Hitpoints_Cur] = plr.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.35f;
-					plr.Attributes[GameAttributes.Resource_Cur, 3] = plr.Attributes[GameAttributes.Resource_Max_Total, 3] * 0.35f;
-					plr.Attributes.BroadcastChangedIfRevealed();
-					plr.World.BuffManager.AddBuff(plr, plr, new NearDeathExperienceCooldownBuff());
+					playerTarget.Attributes[GameAttributes.Hitpoints_Cur] = playerTarget.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.35f;
+					playerTarget.Attributes[GameAttributes.Resource_Cur, 3] = playerTarget.Attributes[GameAttributes.Resource_Max_Total, 3] * 0.35f;
+					playerTarget.Attributes.BroadcastChangedIfRevealed();
+					playerTarget.World.BuffManager.AddBuff(playerTarget, playerTarget, new NearDeathExperienceCooldownBuff());
 					return;
 				}
 			}

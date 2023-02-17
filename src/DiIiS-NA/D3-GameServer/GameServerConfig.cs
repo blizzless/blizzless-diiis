@@ -61,7 +61,7 @@ namespace DiIiS_NA.GameServer
 #if DEBUG
 			get => GetBoolean(nameof(AfkDisconnect), false);
 #else
-			get => GetBoolean(nameof(AfkTimeoutEnabled), true);
+			get => GetBoolean(nameof(AfkDisconnect), true);
 #endif
 			set => Set(nameof(AfkDisconnect), value);
 		}
