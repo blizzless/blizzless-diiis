@@ -60,38 +60,46 @@ namespace DiIiS_NA
         public static Thread GameServerThread;
         public static Thread WatchdogThread;
 
-        public static string LoginServerIp = DiIiS_NA.LoginServer.LoginServerConfig.Instance.BindIP;
+        public static string LoginServerIp = LoginServerConfig.Instance.BindIP;
         public static string GameServerIp = DiIiS_NA.GameServer.GameServerConfig.Instance.BindIP;
-        public static string RestServerIp = REST.RestConfig.Instance.IP;
+        public static string RestServerIp = RestConfig.Instance.IP;
         public static string PublicGameServerIp = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
 
         public static int Build => 30;
         public static int Stage => 2;
         public static TypeBuildEnum TypeBuild => TypeBuildEnum.Beta;
         private static bool DiabloCoreEnabled = DiIiS_NA.GameServer.GameServerConfig.Instance.CoreActive;
-        
-    static async Task LoginServer()
+
+        static async Task StartAsync()
         {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
             DbProviderFactories.RegisterFactory("Npgsql", NpgsqlFactory.Instance);
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            
+
             string name = $"Blizzless: Build {Build}, Stage: {Stage} - {TypeBuild}";
             SetTitle(name);
             Maximize();
             AnsiConsole.Write(new Rule("[dodgerblue1]Blizz[/][deepskyblue2]less[/]").RuleStyle("steelblue1"));
-            AnsiConsole.Write(new Rule($"[dodgerblue3]Build [/][deepskyblue3]{Build}[/]").RightJustified().RuleStyle("steelblue1_1"));
-            AnsiConsole.Write(new Rule($"[dodgerblue3]Stage [/][deepskyblue3]{Stage}[/]").RightJustified().RuleStyle("steelblue1_1"));
+            AnsiConsole.Write(new Rule($"[dodgerblue3]Build [/][deepskyblue3]{Build}[/]").RightJustified()
+                .RuleStyle("steelblue1_1"));
+            AnsiConsole.Write(new Rule($"[dodgerblue3]Stage [/][deepskyblue3]{Stage}[/]").RightJustified()
+                .RuleStyle("steelblue1_1"));
             AnsiConsole.Write(new Rule($"[deepskyblue3]{TypeBuild}[/]").RightJustified().RuleStyle("steelblue1_1"));
-            AnsiConsole.Write(new Rule($"Diablo III [red]RoS 2.7.4.84161[/] - [link=https://github.com/blizzless/blizzless-diiis]https://github.com/blizzless/blizzless-diiis[/]").RuleStyle("red"));
-        
+            AnsiConsole.Write(
+                new Rule(
+                        $"Diablo III [red]RoS 2.7.4.84161[/] - [link=https://github.com/blizzless/blizzless-diiis]https://github.com/blizzless/blizzless-diiis[/]")
+                    .RuleStyle("red"));
+
             AnsiConsole.MarkupLine("");
             Console.WriteLine();
 
             InitLoggers();
-            // forcing diablo core to be enabled - @iamdroppy
+            
+#if DEBUG
             DiabloCoreEnabled = true;
+            Logger.Info("Forcing Diablo III Core to be $[green]$enabled$[/]$ on debug mode.");
+#endif
             
 #pragma warning disable CS4014
             Task.Run(async () =>
@@ -130,11 +138,14 @@ namespace DiIiS_NA
             });
             AchievementManager.Initialize();
             Core.Storage.AccountDataBase.SessionProvider.RebuildSchema();
-            string GeneratePassword(int size) => 
-                    new(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", size)
+
+            string GeneratePassword(int size) =>
+                new(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", size)
                     .Select(s => s[new Random().Next(s.Length)]).ToArray());
+
             void LogAccountCreated(string username, string password)
-                => Logger.Success($"Created account: $[springgreen4]${username}$[/]$ with password: $[springgreen4]${password}$[/]$");
+                => Logger.Success(
+                    $"Created account: $[springgreen4]${username}$[/]$ with password: $[springgreen4]${password}$[/]$");
 #if DEBUG
             if (!DBSessions.SessionQuery<DBAccount>().Any())
             {
@@ -143,7 +154,7 @@ namespace DiIiS_NA
                 var password3 = GeneratePassword(6);
                 var password4 = GeneratePassword(6);
                 Logger.Info($"Initializing account database...");
-               var account = AccountManager.CreateAccount("owner@", password1, "owner",  Account.UserLevels.Owner);
+                var account = AccountManager.CreateAccount("owner@", password1, "owner", Account.UserLevels.Owner);
                 var gameAccount = GameAccountManager.CreateGameAccount(account);
                 LogAccountCreated("owner@", password1);
                 var account1 = AccountManager.CreateAccount("gm@", password2, "gm", Account.UserLevels.GM);
@@ -160,16 +171,18 @@ namespace DiIiS_NA
             if (!Enumerable.Any(DBSessions.SessionQuery<DBAccount>()))
             {
                 var password = GeneratePassword(6);
-                var account = AccountManager.CreateAccount("iwannatry@", password, "iwannatry", Account.UserLevels.User);
+                var account =
+ AccountManager.CreateAccount("iwannatry@", password, "iwannatry", Account.UserLevels.User);
                 var gameAccount = GameAccountManager.CreateGameAccount(account);
                 LogAccountCreated("iwannatry@", password);
             }
 #endif
-            
+
             if (DBSessions.SessionQuery<DBAccount>().Any())
             {
                 Logger.Success("Database connection has been $[underline bold italic]$successfully established$[/]$.");
             }
+
             //*/
             StartWatchdog();
 
@@ -178,42 +191,43 @@ namespace DiIiS_NA
             ToonManager.PreLoadToons();
             GuildManager.PreLoadGuilds();
 
-            Logger.Info("Loading Diablo III - Core..."); 
+            Logger.Info("Loading Diablo III - Core...");
             if (DiabloCoreEnabled)
             {
                 if (!MPQStorage.Initialized)
                 {
                     throw new Exception("MPQ archives not found...");
                 }
-                Logger.Info("Loaded - {0} items.", ItemGenerator.TotalItems); 
-                Logger.Info("Diablo III Core - Loaded"); 
+
+                Logger.Info("Loaded - {0} items.", ItemGenerator.TotalItems);
+                Logger.Info("Diablo III Core - Loaded");
             }
             else
             {
                 Logger.Fatal("Diablo III Core - Disabled");
-                throw new Exception("Diablo III Core - Disabled");
             }
-           
+
             var restSocketServer = new SocketManager<RestSession>();
-            if (!restSocketServer.StartNetwork(RestServerIp, REST.RestConfig.Instance.Port))
-            {
-                throw new Exception("Diablo III Core - Disabled");
-            }
-            Logger.Success($"$[underline darkgreen]$REST$[/]$ server started - {REST.RestConfig.Instance.IP}:{REST.RestConfig.Instance.Port}");
-            
+            if (!restSocketServer.StartNetwork(RestServerIp, RestConfig.Instance.Port))
+                throw new Exception($"Failed to start REST server on {RestServerIp}:{RestConfig.Instance.Port} - please check your configuration and if the port is in use.");
+
+            Logger.Success(
+                $"$[darkgreen]$REST$[/]$ server started - {RestConfig.Instance.IP}:{RestConfig.Instance.Port}");
+
             //BGS
-            var loginConfig = DiIiS_NA.LoginServer.LoginServerConfig.Instance;
+            var loginConfig = LoginServerConfig.Instance;
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             IEventLoopGroup boss = new MultithreadEventLoopGroup(1),
-                            worker = new MultithreadEventLoopGroup();
+                worker = new MultithreadEventLoopGroup();
             serverBootstrap.LocalAddress(loginConfig.BindIP, loginConfig.Port);
             Logger.Success(
                 $"Blizzless server $[underline]$started$[/]$ - $[lightseagreen]${loginConfig.BindIP}:{loginConfig.Port}$[/]$");
             BattleBackend = new BattleBackend(loginConfig.BindIP, loginConfig.WebPort);
 
             //Diablo 3 Game-Server
-            if (DiabloCoreEnabled) 
+            if (DiabloCoreEnabled)
                 StartGameServer();
+            else Logger.Fatal("Game server is disabled in the configs.");
 
             try
             {
@@ -224,7 +238,8 @@ namespace DiIiS_NA
 
                 IChannel boundChannel = await serverBootstrap.BindAsync(loginConfig.Port);
 
-                Logger.Info("$[bold red3_1]$Tip:$[/]$ graceful shutdown with $[red3_1]$CTRL+C$[/]$ or $[red3_1]$!q[uit]$[/]$ or $[red3_1]$!exit$[/]$.");
+                Logger.Info(
+                    "$[bold red3_1]$Tip:$[/]$ graceful shutdown with $[red3_1]$CTRL+C$[/]$ or $[red3_1]$!q[uit]$[/]$ or $[red3_1]$!exit$[/]$.");
                 Logger.Info("$[bold red3_1]$" +
                             "Tip:$[/]$ SNO breakdown with $[red3_1]$!sno$[/]$ $[red3_1]$<fullSnoBreakdown(true:false)>$[/]$.");
                 while (true)
@@ -238,23 +253,27 @@ namespace DiIiS_NA
                         AnsiConsole.Cursor.SetPosition(0, 0);
                         continue;
                     }
+
                     if (line.ToLower().StartsWith("!sno"))
                     {
                         if (IsTargetEnabled("ansi"))
                             Console.Clear();
-                        MPQStorage.Data.SnoBreakdown(line.ToLower().Equals("!sno 1") || line.ToLower().Equals("!sno true"));
+                        MPQStorage.Data.SnoBreakdown(line.ToLower().Equals("!sno 1") ||
+                                                     line.ToLower().Equals("!sno true"));
                         continue;
                     }
+
                     CommandManager.Parse(line);
                 }
 
                 if (PlayerManager.OnlinePlayers.Count > 0)
                 {
-                    Logger.Info($"Server is shutting down in 1 minute, $[blue]${PlayerManager.OnlinePlayers.Count} players$[/]$ are still online.");
+                    Logger.Info(
+                        $"Server is shutting down in 1 minute, $[blue]${PlayerManager.OnlinePlayers.Count} players$[/]$ are still online.");
                     PlayerManager.SendWhisper("Server is shutting down in 1 minute.");
                     await Task.Delay(TimeSpan.FromMinutes(1));
                 }
-                
+
                 Shutdown(delay: 25);
             }
             catch (Exception e)
@@ -298,7 +317,7 @@ namespace DiIiS_NA
         {
             try
             {
-                await LoginServer();
+                await StartAsync();
             }
             catch (Exception ex)
             {
@@ -396,7 +415,7 @@ namespace DiIiS_NA
                 Logger.Info("Discord bot Disabled..");
             }
             DiIiS_NA.GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.RegenerateDensity();
-            DiIiS_NA.GameServer.ClientSystem.GameServer.GSBackend = new GsBackend(DiIiS_NA.LoginServer.LoginServerConfig.Instance.BindIP, DiIiS_NA.LoginServer.LoginServerConfig.Instance.WebPort);
+            DiIiS_NA.GameServer.ClientSystem.GameServer.GSBackend = new GsBackend(LoginServerConfig.Instance.BindIP, LoginServerConfig.Instance.WebPort);
         }
 
         static bool SetTitle(string text)
