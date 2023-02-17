@@ -88,7 +88,6 @@ namespace DiIiS_NA
         
             AnsiConsole.MarkupLine("");
             Console.WriteLine();
-            Console.Title = name;
 
             InitLoggers();
             DiabloCoreEnabled = true;
