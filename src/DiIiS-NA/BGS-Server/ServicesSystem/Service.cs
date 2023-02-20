@@ -28,14 +28,14 @@ namespace DiIiS_NA.LoginServer.ServicesSystem
     public static class Service
     {
         private static uint _notImplementedServiceCounter = 99;
-        public readonly static Dictionary<Type, ServiceAttribute> ProvidedServices = new Dictionary<Type, ServiceAttribute>();
-        public readonly static Dictionary<Type, IService> Services = new Dictionary<Type, IService>();
+        private readonly static Dictionary<Type, ServiceAttribute> ProvidedServices = new();
+        private readonly static Dictionary<Type, IService> Services = new();
 
         static Service()
         {
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface("IServerService") != null))
             {
-                object[] attributes = type.GetCustomAttributes(typeof(ServiceAttribute), true);
+                var attributes = type.GetCustomAttributes(typeof(ServiceAttribute), true);
                 if (attributes.Length == 0) return;
 
                 ProvidedServices.Add(type, (ServiceAttribute)attributes[0]);
