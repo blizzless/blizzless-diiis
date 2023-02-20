@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.Storage;
@@ -467,11 +468,9 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				if (_paragonLevelChanged || !LoginServerConfig.Instance.Enabled)
-				{
-					_cachedParagonLevel = GameAccount.DBGameAccount.ParagonLevel;
-					_paragonLevelChanged = false;
-				}
+				if (!_paragonLevelChanged && LoginServerConfig.Instance.Enabled) return _cachedParagonLevel;
+				_cachedParagonLevel = GameAccount.DBGameAccount.ParagonLevel;
+				_paragonLevelChanged = false;
 
 				return _cachedParagonLevel;
 			}
@@ -690,17 +689,7 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public ulong CollectedGold
 		{
-			get
-			{
-				if (IsHardcore)
-				{
-					return GameAccount.DBGameAccount.HardTotalGold;
-				}
-				else
-				{
-					return GameAccount.DBGameAccount.TotalGold;
-				}
-			}
+			get => IsHardcore ? GameAccount.DBGameAccount.HardTotalGold : GameAccount.DBGameAccount.TotalGold;
 			set
 			{
 				var dbGAcc = GameAccount.DBGameAccount;
@@ -816,8 +805,7 @@ namespace DiIiS_NA.LoginServer.Toons
 				}
 				else
 				{
-					IEnumerable<DBQuestHistory> _dbQuests = null;
-					_dbQuests = DBSessions.SessionQueryWhere<DBQuestHistory>(dbi => dbi.DBToon.Id == PersistentID);
+					var dbQuests = DBSessions.SessionQueryWhere<DBQuestHistory>(dbi => dbi.DBToon.Id == PersistentID);
 #if DEBUG
 					digest
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
@@ -842,7 +830,7 @@ namespace DiIiS_NA.LoginServer.Toons
 							.SetSnoQuest(72801))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(136656))
-						//2 Акт
+						//2 act
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(80322))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
@@ -863,7 +851,7 @@ namespace DiIiS_NA.LoginServer.Toons
 							.SetSnoQuest(121792))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(57339))
-						//3 Акт
+						//3 act
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(93595))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
@@ -878,7 +866,7 @@ namespace DiIiS_NA.LoginServer.Toons
 							.SetSnoQuest(101750))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(101758))
-						//4 Акт
+						//4 act
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(112498))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
@@ -887,7 +875,7 @@ namespace DiIiS_NA.LoginServer.Toons
 							.SetSnoQuest(114795))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(114901))
-						//5 Акт
+						//5 act
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(251355))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
@@ -920,9 +908,7 @@ namespace DiIiS_NA.LoginServer.Toons
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(80322))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(93595))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(112498))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(251355))
-						;
-
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(251355));
 #endif
 				}
 
@@ -939,17 +925,17 @@ namespace DiIiS_NA.LoginServer.Toons
 			get
 			{
 				var itemList = D3.Items.ItemList.CreateBuilder();
-				List<DBInventory> heroInventoryItems =
-					DBSessions.SessionQueryWhere<DBInventory>(dbi => dbi.DBToon.Id == PersistentID);
+				var heroInventoryItems =
+					DBSessions.SessionQueryWhere<DBInventory>(dbi => dbi.DBToon.Id == PersistentID).ToImmutableArray();
 				//*
 				foreach (var invItem in heroInventoryItems)
 				{
-					if ((invItem.EquipmentSlot) == 0 || (invItem.EquipmentSlot == 15)) continue;
+					if (invItem.EquipmentSlot is 0 or 15) continue;
 					var item = D3.Items.SavedItem.CreateBuilder()
 						.SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0)
-							.SetIdHigh(0x3C000002517A293 + (ulong)invItem.Id))
+							.SetIdHigh(0x3C000002517A293 + invItem.Id))
 						.SetHirelingClass(0)
-						.SetItemSlot(272 + (invItem.EquipmentSlot * 16))
+						.SetItemSlot(272 + invItem.EquipmentSlot * 16)
 						.SetOwnerEntityId(D3EntityID)
 						.SetSquareIndex(0)
 						.SetUsedSocketCount(0);
@@ -973,8 +959,7 @@ namespace DiIiS_NA.LoginServer.Toons
 					generator.SetItemQualityLevel(invItem.Quality);
 					foreach (string affix in affixes)
 					{
-						int result = 0;
-						Int32.TryParse(affix, out result);
+						Int32.TryParse(affix, out var result);
 						generator.AddBaseAffixes(result);
 					}
 
@@ -1065,17 +1050,23 @@ namespace DiIiS_NA.LoginServer.Toons
 					var dbActiveSkills = DBActiveSkills;
 					var skills = new[]
 					{
-						D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill0)
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill0)
 							.SetRuneType(dbActiveSkills.Rune0).Build(),
-						D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill1)
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill1)
 							.SetRuneType(dbActiveSkills.Rune1).Build(),
-						D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill2)
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill2)
 							.SetRuneType(dbActiveSkills.Rune2).Build(),
-						D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill3)
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill3)
 							.SetRuneType(dbActiveSkills.Rune3).Build(),
-						D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill4)
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill4)
 							.SetRuneType(dbActiveSkills.Rune4).Build(),
-						D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill5)
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill5)
 							.SetRuneType(dbActiveSkills.Rune5).Build()
 					};
 					var passives = new[]
@@ -1107,41 +1098,24 @@ namespace DiIiS_NA.LoginServer.Toons
 			get
 			{
 				if (!GameAccount.IsOnline) return false;
-				else
-				{
-					if (GameAccount.CurrentToon != null)
-						return GameAccount.CurrentToon == this;
-					else
-						return false;
-				}
+				if (GameAccount.CurrentToon != null)
+					return GameAccount.CurrentToon == this;
+				return false;
 			}
 		}
 
-		public int ClassID
-		{
-			get
+		public int ClassID =>
+			Class switch
 			{
-				switch (Class)
-				{
-					case ToonClass.Barbarian:
-						return 0x4FB91EE2;
-					case ToonClass.Crusader:
-						return unchecked((int)0xBE27DC19);
-					case ToonClass.DemonHunter:
-						return unchecked((int)0xC88B9649);
-					case ToonClass.Monk:
-						return 0x3DAC15;
-					case ToonClass.WitchDoctor:
-						return 0x343C22A;
-					case ToonClass.Wizard:
-						return 0x1D4681B1;
-					case ToonClass.Necromancer:
-						return unchecked((int)0x8D4D94ED);
-				}
-
-				return 0x0;
-			}
-		}
+				ToonClass.Barbarian => 0x4FB91EE2,
+				ToonClass.Crusader => unchecked((int)0xBE27DC19),
+				ToonClass.DemonHunter => unchecked((int)0xC88B9649),
+				ToonClass.Monk => 0x3DAC15,
+				ToonClass.WitchDoctor => 0x343C22A,
+				ToonClass.Wizard => 0x1D4681B1,
+				ToonClass.Necromancer => unchecked((int)0x8D4D94ED),
+				_ => 0x0
+			};
 
 		// Used for Conversations
 		public int VoiceClassID =>
@@ -1163,8 +1137,7 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public readonly Core.MPQ.FileFormats.GameBalance.HeroTable HeroTable;
 
-		private readonly Dictionary<int, int> _visualToSlotMapping = new Dictionary<int, int>
-			{ { 1, 0 }, { 2, 1 }, { 7, 2 }, { 5, 3 }, { 4, 4 }, { 3, 5 }, { 8, 6 }, { 9, 7 } };
+		private readonly Dictionary<int, int> _visualToSlotMapping = new() { { 1, 0 }, { 2, 1 }, { 7, 2 }, { 5, 3 }, { 4, 4 }, { 3, 5 }, { 8, 6 }, { 9, 7 } };
 
 		private static readonly Core.MPQ.FileFormats.GameBalance HeroData =
 			(Core.MPQ.FileFormats.GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][19740].Data;
@@ -1254,17 +1227,17 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public override List<bgs.protocol.presence.v1.FieldOperation> GetSubscriptionNotifications()
 		{
-			var operationList = new List<bgs.protocol.presence.v1.FieldOperation>();
-			operationList.Add(HeroClassField.GetFieldOperation());
-			operationList.Add(HeroLevelField.GetFieldOperation());
-			operationList.Add(HeroParagonLevelField.GetFieldOperation());
-			operationList.Add(HeroVisualEquipmentField.GetFieldOperation());
-			operationList.Add(HeroFlagsField.GetFieldOperation());
-			operationList.Add(HeroNameField.GetFieldOperation());
-			operationList.Add(HighestUnlockedAct.GetFieldOperation());
-			operationList.Add(HighestUnlockedDifficulty.GetFieldOperation());
-
-			return operationList;
+			return new List<bgs.protocol.presence.v1.FieldOperation>
+			{
+				HeroClassField.GetFieldOperation(),
+				HeroLevelField.GetFieldOperation(),
+				HeroParagonLevelField.GetFieldOperation(),
+				HeroVisualEquipmentField.GetFieldOperation(),
+				HeroFlagsField.GetFieldOperation(),
+				HeroNameField.GetFieldOperation(),
+				HighestUnlockedAct.GetFieldOperation(),
+				HighestUnlockedDifficulty.GetFieldOperation()
+			};
 		}
 
 		#endregion
