@@ -15253,6 +15253,9 @@
 		p75_cos_wings_inarius_anim_wizf_idle_2_intimidate = 488182,
 		p75_cos_wings_inarius_anim_wizm_idle_0_neutral = 488183,
 		p75_cos_wings_inarius_anim_wizm_idle_2_intimidate = 488185,
+        p75_cos_pet_angelicdragon_creation = 488486,
+        p75_cos_pet_angelicdragon_fidget_grp = 488487,
+        p75_cos_pet_angelicdragon_run = 488488,
         #endregion
     }
 }

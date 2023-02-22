@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DiIiS_NA.GameServer.MessageSystem
@@ -1497,6 +1497,9 @@ namespace DiIiS_NA.GameServer.MessageSystem
         public static readonly GameAttributeB Soul_shards_unlocked = new(1478, "Soulshardsunlocked");
         public static readonly GameAttributeB Item_was_sanctified = new(1479, "Itemwassanctified");
         public static readonly GameAttributeB Sanctified_items_unlocked = new(1480, "Sanctifieditemsunlocked");
+        public static readonly GameAttributeI Heros_Unlocked_Dark_Alchemy_Nodes = new(1481, "HerosunlockedDarkAlchemynodes");
+        public static readonly GameAttributeI Dark_Alchemy_Powers_Unlocked = new(1482, "DarkAlchemypowersunlocked");
+        public static readonly GameAttributeB Item_Was_Primalized = new(1483, "Itemwasprimalized");
         #endregion
     }
 }

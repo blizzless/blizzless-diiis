@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.Core.MPQ;
 
@@ -19043,8 +19042,39 @@ namespace DiIiS_NA.D3_GameServer.Core.Types.SNO
 		_p74_dh_multishotrune_discipline_cast_proj_actor = 487919,
 		_p74_dh_multishotrune_width_cast_proj_actor = 487920,
 		_p74_cosmetic_pet_zombiewolfpup = 487966,
-		#endregion
-	}
+        _holidaygift = 488101,
+        _p75_cos_pet_murlocinarius = 488105,
+        _p75_displayicon = 488117,
+        _p75_cos_pet_inariusmurloc_wings = 488119,
+        _p75_displayicon_024 = 488129,
+        _p75_displayicon_002 = 488130,
+        _p75_displayicon_004 = 488131,
+        _p75_displayicon_023 = 488132,
+        _p75_cosmetic_pet_inariusmurloc = 488138,
+        _p75_cos_wings_inarius = 488139,
+        _p75_cos_wings_inarius_barbf = 488186,
+        _p75_cos_wings_inarius_barbm = 488189,
+        _p75_cos_wings_inarius_cdrf = 488191,
+        _p75_cos_wings_inarius_cdrm = 488193,
+        _p75_cos_wings_inarius_dhf = 488195,
+        _p75_cos_wings_inarius_dhm = 488197,
+        _p75_cos_wings_inarius_monkf = 488199,
+        _p75_cos_wings_inarius_monkm = 488201,
+        _p75_cos_wings_inarius_nmf = 488203,
+        _p75_cos_wings_inarius_nmm = 488205,
+        _p75_cos_wings_inarius_wdf = 488207,
+        _p75_cos_wings_inarius_wdm = 488209,
+        _p75_cos_wings_inarius_wizf = 488211,
+        _p75_cos_wings_inarius_wizm = 488213,
+        _p75_darkalchemy_gizmo_altar = 488275,
+        _p75_cos_pet_angelicdragon = 488485,
+        _p75_cosmetic_pet_angelicdragon = 488498,
+        _p75_displayicon_018 = 488500,
+        _p75_displayicon_020 = 488501,
+        _p75_crafting_primal = 488515,
+        _p75_itempassive_unique_ring_017_dome_purple_red = 488528,
+        #endregion
+    }
 
 	static class ActorSnoExtensions
     {
