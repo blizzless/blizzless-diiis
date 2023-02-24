@@ -14,10 +14,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		private static readonly Logger Logger = LogManager.CreateLogger(nameof(CommandManager));
 		private static readonly Dictionary<CommandGroupAttribute, CommandGroup> CommandGroups = new();
 
-		static CommandManager()
-		{
-			RegisterCommandGroups();
-		}
+		static CommandManager() => RegisterCommandGroups();
 
 		private static void RegisterCommandGroups()
 		{
@@ -30,7 +27,8 @@ namespace DiIiS_NA.GameServer.CommandManager
 				if (groupAttribute.Name == null) continue;
 				if (groupAttribute.Name.Contains(" "))
 				{
-					Logger.Warn($"Command group name '{groupAttribute.Name}' contains spaces (which is $[red]$not$[/]$ allowed). Command group will be ignored.");
+					Logger.Warn($"Command group name '{groupAttribute.Name}' contains spaces (which is $[red]$not$[/]$ allowed). $[red]$Command group will be ignored.$[/]$");
+					continue;
 				}
 
 				if (CommandsConfig.Instance.DisabledGroupsData.Contains(groupAttribute.Name))
@@ -147,10 +145,10 @@ namespace DiIiS_NA.GameServer.CommandManager
 			if (line[0] != CommandsConfig.Instance.CommandPrefix) // if line does not start with command-prefix
 				return false;
 
-			line = line.Substring(1); // advance to actual command.
+			line = line[1..]; // advance to actual command.
 			command = line.Split(' ')[0].ToLower(); // get command
 			parameters = String.Empty;
-			if (line.Contains(' ')) parameters = line.Substring(line.IndexOf(' ') + 1).Trim(); // get parameters if any.
+			if (line.Contains(' ')) parameters = line[(line.IndexOf(' ') + 1)..].Trim(); // get parameters if any.
 
 			return true;
 		}

@@ -12,7 +12,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 {
 	public class CommandGroup
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger("CmdGrp");
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(CommandGroup));
 
 		private CommandGroupAttribute Attributes { get; set; }
 
@@ -29,7 +29,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		{
 			foreach (var method in GetType().GetMethods())
 			{
-				object[] attributes = method.GetCustomAttributes(typeof(CommandAttribute), true);
+				var attributes = method.GetCustomAttributes(typeof(CommandAttribute), true);
 				if (attributes.Length == 0) continue;
 
 				var attribute = (CommandAttribute)attributes[0];
@@ -46,7 +46,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		{
 			foreach (var method in GetType().GetMethods())
 			{
-				object[] attributes = method.GetCustomAttributes(typeof(DefaultCommand), true);
+				var attributes = method.GetCustomAttributes(typeof(DefaultCommand), true);
 				if (attributes.Length == 0) continue;
 				if (method.Name.ToLower() == "fallback") continue;
 
@@ -111,10 +111,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 		public string GetHelp(string command)
 		{
-			foreach (var pair in _commands.Where(pair => command == pair.Key.Name))
-			{
-				return pair.Key.Help;
-			}
+			var commandData = _commands.FirstOrDefault(pair => command == pair.Key.Name);
+			if (commandData.Key?.Help is {} help && !string.IsNullOrWhiteSpace(help))
+				return help;
 
 			return string.Empty;
 		}
