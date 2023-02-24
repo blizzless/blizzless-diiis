@@ -1242,28 +1242,18 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		#endregion
 
-		public static ToonClass GetClassByID(int classId)
-		{
-			switch (classId)
+		public static ToonClass GetClassByID(int classId) =>
+			classId switch
 			{
-				case 0x4FB91EE2:
-					return ToonClass.Barbarian;
-				case unchecked((int)0xBE27DC19):
-					return ToonClass.Crusader;
-				case unchecked((int)0xC88B9649):
-					return ToonClass.DemonHunter;
-				case 0x003DAC15:
-					return ToonClass.Monk;
-				case 0x0343C22A:
-					return ToonClass.WitchDoctor;
-				case 0x1D4681B1:
-					return ToonClass.Wizard;
-				case unchecked((int)0x8D4D94ED):
-					return ToonClass.Necromancer;
-			}
-
-			return ToonClass.Barbarian;
-		}
+				0x4FB91EE2 => ToonClass.Barbarian,
+				unchecked((int)0xBE27DC19) => ToonClass.Crusader,
+				unchecked((int)0xC88B9649) => ToonClass.DemonHunter,
+				0x003DAC15 => ToonClass.Monk,
+				0x0343C22A => ToonClass.WitchDoctor,
+				0x1D4681B1 => ToonClass.Wizard,
+				unchecked((int)0x8D4D94ED) => ToonClass.Necromancer,
+				_ => ToonClass.Barbarian
+			};
 
 		public override string ToString()
 		{

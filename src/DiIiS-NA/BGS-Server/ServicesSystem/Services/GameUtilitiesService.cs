@@ -1075,7 +1075,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             HeroDigestListResponse.Builder builder = HeroDigestListResponse.CreateBuilder();
             foreach (var toon in request.ToonIdList)
             {
-                builder.AddDigestList(ToonManager.GetToonByLowID(toon).Digest);
+                builder.AddDigestList(ToonManager.GetToonByLowId(toon).Digest);
             }
 
             return builder.Build().ToByteString();
@@ -1103,7 +1103,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         private ByteString OnHeroDeleteParams(BattleClient client, ByteString data)
         {
             var deleteParams = DeleteHero.ParseFrom(data);
-            var toon = ToonManager.GetToonByLowID(deleteParams.HeroId);
+            var toon = ToonManager.GetToonByLowId(deleteParams.HeroId);
             ToonManager.DeleteToon(toon);
             return ByteString.Empty;
         }
@@ -1113,7 +1113,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             var request = GetToonSettings.ParseFrom(data);
 
             var oldToon = client.Account.GameAccount.CurrentToon;
-            var newToon = ToonManager.GetToonByLowID(request.HeroId);
+            var newToon = ToonManager.GetToonByLowId(request.HeroId);
 
             if (oldToon != newToon)
             {
@@ -3022,7 +3022,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             {
                 foreach (var hero in testRequest.HeroIdsList)
                 {
-                    var toon = ToonManager.GetToonByLowID(hero);
+                    var toon = ToonManager.GetToonByLowId(hero);
                     if (toon.Dead == false)
                         profileList.AddHeros(toon.Profile);
                 }
@@ -3091,7 +3091,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             var request = HeroDigestListRequest.ParseFrom(data);
             var builder = HeroDigestListResponse.CreateBuilder();
             foreach (var toon in request.ToonIdList)
-                builder.AddDigestList(ToonManager.GetToonByLowID(toon).Digest);
+                builder.AddDigestList(ToonManager.GetToonByLowId(toon).Digest);
 
             return builder.Build().ToByteString();
         }

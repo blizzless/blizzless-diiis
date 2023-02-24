@@ -264,7 +264,7 @@ public class GameAccount : PersistentRPCObject
 
     public Toon CurrentToon
     {
-        get => _currentToonId == 0 ? null : ToonManager.GetToonByLowID(_currentToonId);
+        get => _currentToonId == 0 ? null : ToonManager.GetToonByLowId(_currentToonId);
         set
         {
             if (value.GameAccount.PersistentID != PersistentID) return; //just in case...

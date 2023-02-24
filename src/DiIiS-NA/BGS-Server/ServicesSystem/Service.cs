@@ -33,7 +33,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem
 
         static Service()
         {
-            foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface("IServerService") != null))
+            foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterface(nameof(IServerService)) != null))
             {
                 var attributes = type.GetCustomAttributes(typeof(ServiceAttribute), true);
                 if (attributes.Length == 0) return;

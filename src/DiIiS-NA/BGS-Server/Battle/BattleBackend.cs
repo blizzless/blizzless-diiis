@@ -282,7 +282,7 @@ namespace DiIiS_NA.LoginServer.Battle
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
 						try
 						{
-							Toons.ToonManager.GetToonByLowID((ulong)tscToonId).StateChanged();
+							Toons.ToonManager.GetToonByLowId((ulong)tscToonId).StateChanged();
 						}
 						catch { }
 					});
