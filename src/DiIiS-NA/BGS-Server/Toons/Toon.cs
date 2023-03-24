@@ -894,7 +894,7 @@ namespace DiIiS_NA.LoginServer.Toons
 							.SetSnoQuest(273408))
 						;
 #else
-										foreach (var inv in _dbQuests)
+										foreach (var inv in dbQuests)
 										{
 											// load quests
 											var quest = D3.Hero.QuestHistoryEntry.CreateBuilder()
