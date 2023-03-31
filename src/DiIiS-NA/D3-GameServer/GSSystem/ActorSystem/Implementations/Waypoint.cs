@@ -4,6 +4,7 @@ using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
@@ -44,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		private void ReadWaypointId()
 		{
-			bool isOpenWorld = World.Game.CurrentAct == 3000;
+			bool isOpenWorld = World.Game.CurrentAct == ActEnum.OpenWorld;
 			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][World.Game.CurrentActSnoId].Data).WayPointInfo.ToList();
 			if (isOpenWorld)
 				actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70015].Data).WayPointInfo
@@ -133,12 +134,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				}
 			}
 
-			if (World.Game.CurrentAct == 3000 && !player.InGameClient.OpenWorldDefined)
+			if (World.Game.CurrentAct == ActEnum.OpenWorld && !player.InGameClient.OpenWorldDefined)
 			{
 				player.InGameClient.OpenWorldDefined = true;
 				player.InGameClient.SendMessage(new ActTransitionMessage
 				{
-					Act = 3000,
+					Act = (int)ActEnum.OpenWorld,
 					OnJoin = false
 				});
 
@@ -147,12 +148,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					SyncedData = new GameSyncedData
 					{
 						GameSyncedFlags = World.Game.IsSeasoned ? World.Game.IsHardcore ? 3 : 2 : World.Game.IsHardcore ? 1 : 0,
-						Act = 3000,       //act id
+						Act = (int)ActEnum.OpenWorld,       //act id
 						InitialMonsterLevel = player.InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
 						MonsterLevel = 0x0000000, //MonsterLevel
 						RandomWeatherSeed = player.InGameClient.Game.WeatherSeed, //RandomWeatherSeed
 						OpenWorldMode = 1, //OpenWorldMode
-						OpenWorldModeAct = 3000, //OpenWorldModeAct
+						OpenWorldModeAct = (int)ActEnum.OpenWorld, //OpenWorldModeAct
 						OpenWorldModeParam = 0, //OpenWorldModeParam
 						OpenWorldTransitionTime = 0, //OpenWorldTransitionTime
 						OpenWorldDefaultAct = 1, //OpenWorldDefaultAct
@@ -232,7 +233,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			{
 				_activated = true;
 
-				if (World.Game.OpenedWaypoints.Contains(WaypointId) || World.Game.CurrentAct == 3000) return;
+				if (World.Game.OpenedWaypoints.Contains(WaypointId) || World.Game.CurrentAct == ActEnum.OpenWorld) return;
 
 				Logger.MethodTrace($"Waypoint has been activated: {WaypointId}, levelArea: {SNOLevelArea}");
 

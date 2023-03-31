@@ -830,7 +830,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = true,
 				NextStep = 4,
 				OnAdvance = new Action(() => { //use Heaven portal
-					ListenInteract(ActorSno._event47_bigportal, 1, new ChangeAct(300));
+					ListenInteract(ActorSno._event47_bigportal, 1, new ChangeAct(ActEnum.Act4));
 				})
 			});
 

@@ -42,7 +42,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		
 		public Game Game { get; set; }
 
-		public int CurrentAct => Game.CurrentAct;
+		public ActEnum CurrentAct => Game.CurrentAct;
 
 		public delegate void QuestProgressDelegate();
 		public event QuestProgressDelegate OnQuestProgress = delegate { };
@@ -270,7 +270,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			if (!Game.Empty)
 			{
 				RevealQuestProgress();
-				if ((Game.CurrentActEnum != ActEnum.OpenWorld && GameServerConfig.Instance.AutoSaveQuests) ||
+				if ((Game.CurrentAct != ActEnum.OpenWorld && GameServerConfig.Instance.AutoSaveQuests) ||
 				    Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Saveable)
 					SaveQuestProgress(false);
 			}
@@ -543,12 +543,12 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		public void AutoSetQuestMarker()
 		{
 			Logger.MethodTrace(
-				$"{Game.QuestProgress.QuestTriggers.Count} triggers found on {Game.CurrentActEnum.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep}");
+				$"{Game.QuestProgress.QuestTriggers.Count} triggers found on {Game.CurrentAct.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep}");
 
 			// TODO: more triggers?
 			#if DEBUG
 			if (Game.QuestProgress.QuestTriggers.Count > 1)
-				Logger.Warn($"Found {Game.QuestProgress.QuestTriggers.Count} triggers on {Game.CurrentActEnum.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep} but only one is supported");
+				Logger.Warn($"Found {Game.QuestProgress.QuestTriggers.Count} triggers on {Game.CurrentAct.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep} but only one is supported");
 			#endif
 			if (Game.QuestProgress.QuestTriggers.Count == 1)
 			{
@@ -728,7 +728,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 		public bool IsInQuestRange(QuestRange range)
 		{
-			if (range.Header.SNOId == 312431) return (Game.CurrentAct == 3000);
+			if (range.Header.SNOId == 312431) return (Game.CurrentAct == ActEnum.OpenWorld);
 			if (range.Header.SNOId == 214766) return true; 
 
 			bool started = false;

@@ -127,7 +127,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				var monster = ActorFactory.Create(Target.World, Monsters.PickRandom(), new TagMap());
 				monster.EnterWorld(RandomDirection(Target.Position, 5f, Radius));
-				monster.HasLoot = (Target.World.Game.CurrentAct == 3000);
+				monster.HasLoot = (Target.World.Game.CurrentAct == GameSystem.ActEnum.OpenWorld);
 				monster.Unstuck();
 				monster.Teleport(new Vector3D(monster.Position.X, monster.Position.Y, monster.World.GetZForLocation(monster.Position, Target.Position.Z)));
 				_tickTimer = WaitSeconds(0.5f);
@@ -210,7 +210,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				{
 					var monster = ActorFactory.Create(Target.World, Monsters.PickRandom(), new TagMap());
 					monster.EnterWorld(RandomDirection(Target.Position, 5f, Radius));
-					monster.HasLoot = (Target.World.Game.CurrentAct == 3000);
+					monster.HasLoot = (Target.World.Game.CurrentAct == GameSystem.ActEnum.OpenWorld);
 					monster.Unstuck();
 					monster.Teleport(new Vector3D(monster.Position.X, monster.Position.Y, monster.World.GetZForLocation(monster.Position, Target.Position.Z)));
 				}

@@ -1,12 +1,13 @@
 ﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 {
 	class ChangeAct : QuestEvent
 	{
-		int ActId = 0;
+		ActEnum ActId = ActEnum.Act1;
 
-		public ChangeAct(int actId)
+		public ChangeAct(ActEnum actId)
 			: base(0)
 		{
 			ActId = actId;
@@ -24,8 +25,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 
         private ActorSno GetChangeActor() => ActId switch
         {
-            300 => ActorSno._event47_bigportal,
-            400 => ActorSno._hope,
+            ActEnum.Act4 => ActorSno._event47_bigportal,
+            ActEnum.Act5 => ActorSno._hope,
             _ => ActorSno._actchangetempobject,
         };
     }

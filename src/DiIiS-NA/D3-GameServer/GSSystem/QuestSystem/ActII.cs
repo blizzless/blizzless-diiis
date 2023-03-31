@@ -1449,7 +1449,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 3,
 				OnAdvance = new Action(() => { //talk with caravan leader
 					ListenInteract(ActorSno._hub_caravanleader, 1, new LaunchConversation(177669));
-					ListenConversation(177669, new ChangeAct(200));
+					ListenConversation(177669, new ChangeAct(ActEnum.Act3));
 					Game.GetWorld(WorldSno.caout_refugeecamp).GetActorBySNO(ActorSno._hub_caravanleader, true).NotifyConversation(1);
 				})
 			});

@@ -2229,7 +2229,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //talk with caravan leader
                     
-                    ListenConversation(177564, new ChangeAct(100));
+                    ListenConversation(177564, new ChangeAct(ActEnum.Act2));
                 }
             });
 

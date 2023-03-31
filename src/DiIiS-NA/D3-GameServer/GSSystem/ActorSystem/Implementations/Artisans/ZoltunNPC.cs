@@ -2,10 +2,9 @@
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Interactions;
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
@@ -17,7 +16,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
         public ZoltunNPC(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            if (world.Game.CurrentAct == 3000)
+            if (world.Game.CurrentAct == ActEnum.OpenWorld)
             {
 
                 Conversations.Add(new ConversationInteraction(430146));
@@ -37,7 +36,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
         public override void OnTargeted(Player player, TargetMessage message)
         {
             // TODO: check behavior for campaign mode
-            if (World.Game.CurrentAct == 3000 && player.KanaiUnlocked)
+            if (World.Game.CurrentAct == ActEnum.OpenWorld && player.KanaiUnlocked)
             {
                 // works as ArtisanShortcut if we've found a cube. maybe only after all conversations
                 OnCraft(player);
