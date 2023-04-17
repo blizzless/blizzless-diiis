@@ -528,6 +528,11 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="actor">The actor leaving the world.</param>
 		public void Leave(Actor actor)
 		{
+			if (actor == null)
+			{
+				Logger.Warn("Attempt for leave for null actor");
+				return;
+			}
 			actor.OnLeave(this);
 
 			foreach (var player in Players.Values)

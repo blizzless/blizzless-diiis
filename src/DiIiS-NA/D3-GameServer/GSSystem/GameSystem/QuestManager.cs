@@ -42,7 +42,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		
 		public Game Game { get; set; }
 
-		public ActEnum CurrentAct => Game.CurrentAct;
+		public ActEnum? CurrentAct => Game.CurrentAct;
 
 		public delegate void QuestProgressDelegate();
 		public event QuestProgressDelegate OnQuestProgress = delegate { };
@@ -543,12 +543,12 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		public void AutoSetQuestMarker()
 		{
 			Logger.MethodTrace(
-				$"{Game.QuestProgress.QuestTriggers.Count} triggers found on {Game.CurrentAct.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep}");
+				$"{Game.QuestProgress.QuestTriggers.Count} triggers found on {Game.CurrentAct?.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep}");
 
 			// TODO: more triggers?
 			#if DEBUG
 			if (Game.QuestProgress.QuestTriggers.Count > 1)
-				Logger.Warn($"Found {Game.QuestProgress.QuestTriggers.Count} triggers on {Game.CurrentAct.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep} but only one is supported");
+				Logger.Warn($"Found {Game.QuestProgress.QuestTriggers.Count} triggers on {Game.CurrentAct?.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep} but only one is supported");
 			#endif
 			if (Game.QuestProgress.QuestTriggers.Count == 1)
 			{
@@ -817,7 +817,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		{
 			Game.BroadcastPlayers((client, player) =>
 			{
-				player.Toon.CurrentAct = CurrentAct;
+				player.Toon.CurrentAct = (CurrentAct ?? ActEnum.OpenWorld);
 				player.Toon.CurrentQuestId = Game.CurrentQuest;
 				player.Toon.CurrentQuestStepId = Game.CurrentStep;
 

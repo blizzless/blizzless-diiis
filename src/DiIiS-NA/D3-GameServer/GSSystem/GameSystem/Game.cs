@@ -203,7 +203,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// <summary>
 		/// Current act.
 		/// </summary>
-		public ActEnum CurrentAct { get; set; } = ActEnum.Act1;
+		public ActEnum? CurrentAct { get; set; } = null;
 		private int _difficulty = 0;
 
 		/// <summary>
@@ -396,7 +396,6 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			InitialMonsterLevel = initalLevel;
 			MonsterLevel = initalLevel;
 			QuestManager = new QuestManager(this);
-			CurrentAct = ActEnum.Act1;
 			QuestsOrder = null;
 			CurrentQuest = -1;
 			CurrentStep = -1;
@@ -704,7 +703,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							SyncedData = new GameSyncedData
 							{
 								GameSyncedFlags = 6,
-								Act = (int)CurrentAct, //act id
+								Act = (int)(CurrentAct ?? ActEnum.OpenWorld), //act id
 								InitialMonsterLevel = InitialMonsterLevel, //InitialMonsterLevel
 								MonsterLevel = 0x6FEA8DF5, //MonsterLevel
 								RandomWeatherSeed = 0, //RandomWeatherSeed
@@ -1160,7 +1159,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					SyncedData = new GameSyncedData
 					{
 						GameSyncedFlags = IsSeasoned ? IsHardcore ? 6 : 4 : IsHardcore == true ? 4 : 6,
-						Act = (int)CurrentAct, //act id
+						Act = (int)(CurrentAct ?? ActEnum.OpenWorld), //act id
 						InitialMonsterLevel = InitialMonsterLevel, //InitialMonsterLevel
 						MonsterLevel = 0x7044248F, //MonsterLevel
 						RandomWeatherSeed = 0, //RandomWeatherSeed

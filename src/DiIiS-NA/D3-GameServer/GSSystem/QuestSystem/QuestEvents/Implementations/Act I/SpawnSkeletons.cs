@@ -66,17 +66,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 					});
 				});
 			});
-			
-			
 
-			var spawner = world.GetActorBySNO(ActorSno._trdun_rescuecainskelspawner);
-			while (spawner != null)
+
+			foreach (var spawner in world.GetActorsBySNO(ActorSno._trdun_rescuecainskelspawner))
 			{
-				var monster = FastRandom.Instance.Next(10) % 2 == 0 ? ActorSno._skeletonking_shield_skeleton : ActorSno._skeletonking_skeleton;
-				world.SpawnMonster(monster, spawner.Position);
-				spawner.Destroy();
-				spawner = world.GetActorBySNO(ActorSno._trdun_rescuecainskelspawner);
-			}
+				//var monster = FastRandom.Instance.Next(10) % 2 == 0 ? ActorSno._skeletonking_shield_skeleton : ActorSno._skeletonking_skeleton;
+				var monster = ActorSno._skeletonking_shield_skeleton; // quest wants 4 killed _skeletonking_shield_skeleton
+                world.SpawnMonster(monster, spawner.Position);
+                spawner.Destroy();
+            }
 		}
 
 		private bool StartConversation(MapSystem.World world, Int32 conversationId)

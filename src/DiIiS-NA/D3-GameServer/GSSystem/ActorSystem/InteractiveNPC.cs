@@ -96,7 +96,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					if (entry.SNOConversation == 181330)
 						ConversationsNew.Add(entry.SNOConversation);
 					if (World == null) return;
-					if (entry.SpecialEventFlag != (int)World.Game.CurrentAct && entry.SpecialEventFlag != -1) continue;
+					if (World.Game.CurrentAct != null && entry.SpecialEventFlag != (int)World.Game.CurrentAct) continue;
 
 					if (entry.SNOQuestActive == -1)
 						ConversationsNew.Add(entry.SNOConversation);

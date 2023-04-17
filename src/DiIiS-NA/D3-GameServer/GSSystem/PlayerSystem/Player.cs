@@ -5174,7 +5174,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         {
                             GameSyncedFlags = InGameClient.Game.IsSeasoned ? InGameClient.Game.IsHardcore ? 3 : 2 :
                                 InGameClient.Game.IsHardcore ? 1 : 0,
-                            Act = (int)InGameClient.Game.CurrentAct, //act id
+                            Act = (int)(InGameClient.Game.CurrentAct ?? ActEnum.OpenWorld), //act id
                             InitialMonsterLevel = InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
                             MonsterLevel = 0x64E4425E, //MonsterLevel
                             RandomWeatherSeed = InGameClient.Game.WeatherSeed, //RandomWeatherSeed

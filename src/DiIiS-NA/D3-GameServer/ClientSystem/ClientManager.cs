@@ -116,7 +116,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 				// transition player to act so client can load act related data? /raist
 				client.SendMessage(new ActTransitionMessage
 				{
-					Act = (int)game.CurrentAct,
+					Act = (int)(game.CurrentAct ?? ActEnum.OpenWorld),
 					OnJoin = true, //without cutscenes
 				});
 
