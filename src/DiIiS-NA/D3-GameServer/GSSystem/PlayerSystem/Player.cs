@@ -352,7 +352,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         // Enabled stone of recall
         if (!World.Game.PvP & Toon.StoneOfPortal)
             EnableStoneOfRecall();
-        else if (InGameClient.Game.CurrentAct == 3000)
+        else if (InGameClient.Game.CurrentAct == ActEnum.OpenWorld)
             EnableStoneOfRecall();
 
         var lores = UnserializeBytes(Toon.DBToon.Lore);
@@ -4446,7 +4446,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
 
         var blacksmith = D3.ItemCrafting.CrafterData.CreateBuilder()
-            .SetLevel(InGameClient.Game.CurrentAct == 3000
+            .SetLevel(InGameClient.Game.CurrentAct == ActEnum.OpenWorld
                 ? BlacksmithUnlocked == false && _blacksmithData.Level < 1 ? 1 : _blacksmithData.Level
                 : _blacksmithData.Level)
             .SetCooldownEnd(0)
@@ -4454,7 +4454,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             .Build();
         _learnedBlacksmithRecipes = UnserializeBytes(_blacksmithData.LearnedRecipes);
         var jeweler = D3.ItemCrafting.CrafterData.CreateBuilder()
-            .SetLevel(InGameClient.Game.CurrentAct == 3000
+            .SetLevel(InGameClient.Game.CurrentAct == ActEnum.OpenWorld
                 ? JewelerUnlocked == false && _jewelerData.Level < 1 ? 1 : _jewelerData.Level
                 : _jewelerData.Level)
             .SetCooldownEnd(0)
@@ -4462,7 +4462,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             .Build();
         _learnedJewelerRecipes = UnserializeBytes(_jewelerData.LearnedRecipes);
         var mystic = D3.ItemCrafting.CrafterData.CreateBuilder()
-            .SetLevel(InGameClient.Game.CurrentAct == 3000
+            .SetLevel(InGameClient.Game.CurrentAct == ActEnum.OpenWorld
                 ? MysticUnlocked == false && _mysticData.Level < 1 ? 1 : _mysticData.Level
                 : _mysticData.Level)
             .SetCooldownEnd(0)
@@ -4475,15 +4475,15 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             .Build();
         _learnedTransmogs = UnserializeBytes(_mysticData.LearnedRecipes);
 
-        if (BlacksmithUnlocked || InGameClient.Game.CurrentAct == 3000)
+        if (BlacksmithUnlocked || InGameClient.Game.CurrentAct == ActEnum.OpenWorld)
             InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataBlacksmithInitialMessage)
                 { Data = blacksmith.ToByteArray() });
 
-        if (JewelerUnlocked || InGameClient.Game.CurrentAct == 3000)
+        if (JewelerUnlocked || InGameClient.Game.CurrentAct == ActEnum.OpenWorld)
             InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataJewelerInitialMessage)
                 { Data = jeweler.ToByteArray() });
 
-        if (MysticUnlocked || InGameClient.Game.CurrentAct == 3000)
+        if (MysticUnlocked || InGameClient.Game.CurrentAct == ActEnum.OpenWorld)
         {
             InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataMysticInitialMessage)
                 { Data = mystic.ToByteArray() });
@@ -5174,11 +5174,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         {
                             GameSyncedFlags = InGameClient.Game.IsSeasoned ? InGameClient.Game.IsHardcore ? 3 : 2 :
                                 InGameClient.Game.IsHardcore ? 1 : 0,
-                            Act = Math.Min(InGameClient.Game.CurrentAct, 3000), //act id
+                            Act = (int)(InGameClient.Game.CurrentAct ?? ActEnum.OpenWorld), //act id
                             InitialMonsterLevel = InGameClient.Game.InitialMonsterLevel, //InitialMonsterLevel
                             MonsterLevel = 0x64E4425E, //MonsterLevel
                             RandomWeatherSeed = InGameClient.Game.WeatherSeed, //RandomWeatherSeed
-                            OpenWorldMode = InGameClient.Game.CurrentAct == 3000 ? 1 : 0, //OpenWorldMode
+                            OpenWorldMode = InGameClient.Game.CurrentAct == ActEnum.OpenWorld? 1 : 0, //OpenWorldMode
                             OpenWorldModeAct = -1, //OpenWorldModeAct
                             OpenWorldModeParam = -1, //OpenWorldModeParam
                             OpenWorldTransitionTime = 0x00000064, //OpenWorldTransitionTime

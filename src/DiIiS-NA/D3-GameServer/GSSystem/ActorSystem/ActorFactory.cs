@@ -5,6 +5,7 @@ using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using System;
 using System.Collections.Generic;
@@ -63,14 +64,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					break;
 			}
 
-			if (world.Game.CurrentAct != 3000 && (
+			if (world.Game.CurrentAct != ActEnum.OpenWorld && (
 				(tags.ContainsKey(MarkerKeys.QuestRange) && tags[MarkerKeys.QuestRange].Id == 312431) ||
 				(tags.ContainsKey(MarkerKeys.AdventureModeOnly) && tags[MarkerKeys.AdventureModeOnly] == 1)
 				)) //non-Adventure Mode
 				return null;
 
 
-			if (world.Game.CurrentAct == 3000 && !world.IsPvP
+			if (world.Game.CurrentAct == ActEnum.OpenWorld && !world.IsPvP
 				&& tags.ContainsKey(MarkerKeys.StoryModeOnly)
 				&& tags[MarkerKeys.StoryModeOnly] == 1
 				&& sno != ActorSno._waypoint) //only-Adventure Mode

@@ -54,7 +54,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 				{
 					game = GameManager.CreateGame(message.SGameId, 1);
 					toon = ToonManager.GetToonByLowId((ulong)message.HeroID, game.GameDbSession);
-					game.SetAct(0);
+					game.SetAct(ActEnum.Act1);
 				}
 				else
 				{
@@ -116,7 +116,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 				// transition player to act so client can load act related data? /raist
 				client.SendMessage(new ActTransitionMessage
 				{
-					Act = game.CurrentAct,
+					Act = (int)(game.CurrentAct ?? ActEnum.OpenWorld),
 					OnJoin = true, //without cutscenes
 				});
 

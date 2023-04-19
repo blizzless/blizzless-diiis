@@ -756,7 +756,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (!Hidden)
 				{
 					if (_questRange != null)
-						Visible = (World.Game.CurrentAct == 3000 && !(this is Monster)) || World.Game.QuestManager.IsInQuestRange(_questRange);
+						Visible = (World.Game.CurrentAct == ActEnum.OpenWorld && !(this is Monster)) || World.Game.QuestManager.IsInQuestRange(_questRange);
 					else
 						Visible = true;
 				}
@@ -847,7 +847,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					return false;
 
 				if (SNO.IsUberWorldActor() && !World.SNO.IsUberWorld()) return false;
-				if (SNO.IsAdventureModeActor() && World.Game.CurrentAct != 3000) return false;
+				if (SNO.IsAdventureModeActor() && World.Game.CurrentAct != ActEnum.OpenWorld) return false;
 				if (SNO == ActorSno._x1_adria_boss_scriptedsequenceonly) return false;
 
 				if (player.RevealedObjects.ContainsKey(GlobalID)) return false; // already revealed

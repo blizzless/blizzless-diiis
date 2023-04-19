@@ -43,15 +43,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			var LeoricGhost = player.World.SpawnMonster(ActorSno._skeletonking_leoricghost, GhostLeoricPoint);
 			var LachdananGhost = player.World.SpawnMonster(ActorSno._ghostknight3, GhostKingtsSpawners[4].Position);
 
-			LachdananGhost.Move(Position, MovementHelpers.GetFacingAngle(LeoricGhost, LachdananGhost));
+            LeoricGhost.Attributes[GameAttributes.TeamID] = 2;
+            LeoricGhost.Attributes[GameAttributes.Untargetable] = true;
+            LachdananGhost.Move(Position, MovementHelpers.GetFacingAngle(LeoricGhost, LachdananGhost));
 			LachdananGhost.Move(Position, MovementHelpers.GetFacingAngle(LachdananGhost, Position));
 			LachdananGhost.Attributes[GameAttributes.TeamID] = 2;
+			LachdananGhost.Attributes[GameAttributes.Untargetable] = true;
 			LachdananGhost.Attributes.BroadcastChangedIfRevealed();
 			(LachdananGhost as Monster).Brain.DeActivate();
 			foreach (var GKnight in GhostKnights)
 			{
 				GKnight.Attributes[GameAttributes.TeamID] = 2;
-				GKnight.Attributes.BroadcastChangedIfRevealed();
+                GKnight.Attributes[GameAttributes.Untargetable] = true;
+                GKnight.Attributes.BroadcastChangedIfRevealed();
 				(GKnight as Monster).Brain.DeActivate();
 				GKnight.Move(Position, MovementHelpers.GetFacingAngle(GKnight, Position));
 			}

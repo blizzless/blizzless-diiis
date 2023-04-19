@@ -271,10 +271,10 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 							{
 								Logger.Trace("Encounter option {0} - {1} - {2} - {3}", option.SNOSpawn, option.Probability, option.I1, option.I2);
 							}*/ //only for debugging purposes
-							if ((ActorSno)actorsno.SNOSpawn == ActorSno.__NONE)
+							if ((ActorSno)actorsno.SNOSpawn == ActorSno.__NONE && encounter.Spawnoptions.Count == 1)
 							{
 								var path = Path.GetFileName(filePath);
-								Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
+								Logger.Trace($"$[underline red on white]$We have only one incorrect actor spawn option. Possible incorrect MPQ spawn options for encounter {encounter.SNOSpawn}$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
 								continue;	
 							}
 							

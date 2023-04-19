@@ -41,7 +41,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 							var game = GameManager.CreateGame(int.Parse(args[0].Trim()), int.Parse(args[1].Trim()));
 							lock (game.Players)
 							{
-								game.SetAct(int.Parse(args[2].Trim()));
+								game.SetAct((ActEnum)int.Parse(args[2].Trim()));
 								game.SetGameMode((Game.Mode)int.Parse(args[7].Trim()));
 								game.IsHardcore = args[6].Trim() == "True" ? true : false;
 								game.IsSeasoned = args[8].Trim() == "True" ? true : false;

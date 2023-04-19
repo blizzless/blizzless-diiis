@@ -21,6 +21,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -75,7 +76,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public override bool Reveal(Player player)
 		{
 			if (SNO == ActorSno._a1_uniquevendor_armorer) return false;
-			if (SNO == ActorSno._tyrael_heaven && World.SNO == WorldSno.trout_town && World.Game.CurrentAct != 3000) return false;
+			if (SNO == ActorSno._tyrael_heaven && World.SNO == WorldSno.trout_town && World.Game.CurrentAct != ActEnum.OpenWorld) return false;
 			return base.Reveal(player);
 		}
 
@@ -95,7 +96,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					if (entry.SNOConversation == 181330)
 						ConversationsNew.Add(entry.SNOConversation);
 					if (World == null) return;
-					if (entry.SpecialEventFlag != World.Game.CurrentAct && entry.SpecialEventFlag != -1) continue;
+					if (World.Game.CurrentAct != null && entry.SpecialEventFlag != (int)World.Game.CurrentAct) continue;
 
 					if (entry.SNOQuestActive == -1)
 						ConversationsNew.Add(entry.SNOConversation);
@@ -204,7 +205,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					{
 						if (ConversationList != null)
 						{
-							var suitableEntries = ConversationList.AmbientConversationListEntries.Where(entry => entry.SpecialEventFlag == World.Game.CurrentAct).ToList();
+							var suitableEntries = ConversationList.AmbientConversationListEntries.Where(entry => entry.SpecialEventFlag == (int)World.Game.CurrentAct).ToList();
 							if (suitableEntries.Count > 0)
 							{
 								var random_conv = suitableEntries.PickRandom();

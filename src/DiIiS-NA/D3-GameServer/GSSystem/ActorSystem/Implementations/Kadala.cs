@@ -1,10 +1,8 @@
 ﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-using System;
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -42,7 +40,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override bool Reveal(PlayerSystem.Player player)
 		{
-			if (World.Game.CurrentAct != 3000) return false;
+			if (World.Game.CurrentAct != ActEnum.OpenWorld) return false;
 			return base.Reveal(player);
 		}
 

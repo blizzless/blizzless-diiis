@@ -417,7 +417,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					}
 					foreach (var door in world.GetActorsBySNO(ActorSno._house_door_trout_newtristram))
 						door.Destroy();
-					if (Game.CurrentActEnum == ActEnum.OpenWorld)
+					if (Game.CurrentAct == ActEnum.OpenWorld)
 					{
 						var townDoor = world.GetActorBySNO(ActorSno._trout_newtristram_gate_town);
 						townDoor.Attributes[GameAttributes.Team_Override] = 2;
@@ -460,7 +460,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 					break;
 
 				case WorldSno.a2dun_swr_swr_to_oasis_level01: //kill useless portal in location if game not in adventure mode
-					if (Game.CurrentAct != 3000)
+					if (Game.CurrentAct != ActEnum.OpenWorld)
 						foreach (var waypoint in world.GetActorsBySNO(ActorSno._waypoint)) waypoint.Destroy();
 					break;
 				case WorldSno.a2dun_zolt_head_random01: //remove blood pool
@@ -473,7 +473,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								portal.Destroy();
 					break;
 				case WorldSno.a3dun_keep_level04: //kill useless portal in location if game not in adventure mode
-					if (Game.CurrentAct != 3000)
+					if (Game.CurrentAct != ActEnum.OpenWorld)
 						foreach (var waypoint in world.GetActorsBySNO(ActorSno._waypoint)) waypoint.Destroy();
 					break;
 				#region kill all portals in demonic rifts on the first floor of the gardens (now and on the second floor), because there are a lot of them), the script will create a script to destroy the demon. Add the voice of Diablo to several areas;

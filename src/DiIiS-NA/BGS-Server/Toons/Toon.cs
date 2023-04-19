@@ -6,6 +6,7 @@ using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 using DiIiS_NA.GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.LoginServer.Helpers;
 using DiIiS_NA.LoginServer.Objects;
@@ -528,15 +529,15 @@ namespace DiIiS_NA.LoginServer.Toons
 			}
 		}
 
-		public int CurrentAct
+		public ActEnum CurrentAct
 		{
-			get => DBToon.CurrentAct;
+			get => (ActEnum)DBToon.CurrentAct;
 			set
 			{
 				lock (DBToon)
 				{
 					var dbToon = DBToon;
-					dbToon.CurrentAct = value;
+					dbToon.CurrentAct = (int)value;
 					DBSessions.SessionUpdate(dbToon);
 				}
 			}
