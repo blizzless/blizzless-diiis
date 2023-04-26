@@ -245,8 +245,11 @@ namespace DiIiS_NA
                 while (true)
                 {
                     var line = Console.ReadLine();
-                    if (line is null or "!q" or "!quit" or "!exit")
+                    if (line == null) continue;
+                    if (line is "!q" or "!quit" or "!exit")
+                    {
                         break;
+                    }
                     if (line is "!cls" or "!clear" or "cls" or "clear")
                     {
                         AnsiConsole.Clear();

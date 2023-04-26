@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14.5
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+       - ./db/data:/var/lib/postgresql/data
+       - ./db/initdb:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 4G
+  
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:6
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-password}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+       - ./db/pgadmin:/var/lib/pgadmin
+       - ./db/servers.json:/pgadmin4/servers.json
+    ports:
+      - "5555:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 1G
+
+  diiis:
+    container_name: diiis
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - postgres
+    ports:
+      - "9800:9800"
+      - "1119:1119"
+      - "80:80"
+      - "9100:9100"
+      - "2001:2001"
+    depends_on: 
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
