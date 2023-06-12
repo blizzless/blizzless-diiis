@@ -37,6 +37,7 @@ public class SpeedCommand : CommandGroup
         if (speedValue <= baseSpeed) // Base Run Speed [Necrosummon]
         {
             playerSpeed[GameAttributes.Running_Rate] = baseSpeed;
+            playerSpeed.BroadcastChangedIfRevealed();
             return $"Speed reset to Base Speed ({baseSpeed:0.000}).";
         }
         playerSpeed.FixedMap.Add(FixedAttribute.Speed, attr => attr[GameAttributes.Running_Rate] = speedValue);
