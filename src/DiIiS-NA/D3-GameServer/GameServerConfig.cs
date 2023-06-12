@@ -66,6 +66,15 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(AfkDisconnect), value);
 		}
 		
+		/// <summary>
+		/// Always send motd when world loads for player.
+		/// </summary>
+		public bool MotdWhenWorldLoads
+		{
+			get => GetBoolean(nameof(MotdWhenWorldLoads), true);
+			set => Set(nameof(MotdWhenWorldLoads), value);
+		}
+		
 		#region Game Mods
 
 		/// <summary>

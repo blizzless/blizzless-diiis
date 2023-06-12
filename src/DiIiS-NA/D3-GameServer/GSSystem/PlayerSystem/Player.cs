@@ -3604,8 +3604,13 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         System.Threading.Tasks.Task.Delay(3).Wait();
         RevealActorsToPlayer();
+        
         if (!_motdSent && LoginServer.LoginServerConfig.Instance.MotdEnabled)
+        {
+            if (GameServerConfig.Instance.MotdWhenWorldLoads)
+                _motdSent = true;
             InGameClient.BnetClient.SendMotd();
+        }
         //
     }
 
