@@ -26,7 +26,7 @@ namespace DiIiS_NA.Core.Logging
 		public override void LogMessage(Logger.Level level, string logger, string message)
 		{
 			var timeStamp = IncludeTimeStamps ? "[[" + DateTime.Now.ToString(TimeStampFormat) + "]] " : "";
-			AnsiConsole.MarkupLine($"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{Cleanup(logger),20}]]: {Cleanup(message)}[/]");
+			AnsiConsole.MarkupLine($"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{Cleanup(logger),20}]]: {AnsiTarget.Cleanup(message)}[/]");
 		}
 
 		/// <param name="level">Log level.</param>

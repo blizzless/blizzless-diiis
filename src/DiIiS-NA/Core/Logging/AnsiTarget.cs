@@ -56,14 +56,17 @@ public class AnsiTarget : LogTarget
         });
     }
     
-    public static void StopIfRunning()
+    public static void StopIfRunning(bool clear = false)
     {
         CancellationTokenSource.Cancel();
         while(!_shutdown)
             Thread.Sleep(100);
         Thread.Sleep(1000);
-        AnsiConsole.Clear();
-        AnsiConsole.Cursor.SetPosition(0,0);
+        if (clear)
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.Cursor.SetPosition(0, 0);
+        }
     }
     
     /// <summary>
@@ -109,7 +112,7 @@ public class AnsiTarget : LogTarget
     /// </summary>
     /// <param name="x"></param>
     /// <returns></returns>
-    string Cleanup(string x) => Beautify(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
+    public static string Cleanup(string x) => Beautify(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
 
     public override void LogMessage(Logger.Level level, string logger, string message)
     {

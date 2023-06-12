@@ -70,7 +70,21 @@ namespace DiIiS_NA
         public static TypeBuildEnum TypeBuild => TypeBuildEnum.Beta;
         private static bool DiabloCoreEnabled = DiIiS_NA.GameServer.GameServerConfig.Instance.CoreActive;
 
-        static async Task StartAsync()
+        static void WriteBanner()
+        {
+            void RightTextRule(string text, string ruleStyle) => AnsiConsole.Write(new Rule(text).RuleStyle(ruleStyle));
+            string Url(string url) => $"[link={url}]{url}[/]";
+            RightTextRule("[dodgerblue1]Blizz[/][deepskyblue2]less[/]", "steelblue1");
+            RightTextRule($"[dodgerblue3]Build [/][deepskyblue3]{Build}[/]", "steelblue1_1");
+            RightTextRule($"[dodgerblue3]Stage [/][deepskyblue3]{Stage}[/]", "steelblue1_1");
+            RightTextRule($"[deepskyblue3]{TypeBuild}[/]", "steelblue1_1");
+            RightTextRule($"Diablo III [red]RoS 2.7.4.84161[/] - {Url("https://github.com/blizzless/blizzless-diiis")}",
+                "red");
+            AnsiConsole.MarkupLine("");
+            AnsiConsole.MarkupLine("");
+        }
+        
+        static async Task StartAsync(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
@@ -79,26 +93,16 @@ namespace DiIiS_NA
 
             string name = $"Blizzless: Build {Build}, Stage: {Stage} - {TypeBuild}";
             SetTitle(name);
-            Maximize();
-            AnsiConsole.Write(new Rule("[dodgerblue1]Blizz[/][deepskyblue2]less[/]").RuleStyle("steelblue1"));
-            AnsiConsole.Write(new Rule($"[dodgerblue3]Build [/][deepskyblue3]{Build}[/]").RightJustified()
-                .RuleStyle("steelblue1_1"));
-            AnsiConsole.Write(new Rule($"[dodgerblue3]Stage [/][deepskyblue3]{Stage}[/]").RightJustified()
-                .RuleStyle("steelblue1_1"));
-            AnsiConsole.Write(new Rule($"[deepskyblue3]{TypeBuild}[/]").RightJustified().RuleStyle("steelblue1_1"));
-            AnsiConsole.Write(
-                new Rule(
-                        $"Diablo III [red]RoS 2.7.4.84161[/] - [link=https://github.com/blizzless/blizzless-diiis]https://github.com/blizzless/blizzless-diiis[/]")
-                    .RuleStyle("red"));
-
-            AnsiConsole.MarkupLine("");
-            Console.WriteLine();
-
+            if (LogConfig.Instance.Targets.Any(x => x.MaximizeWhenEnabled && x.Enabled))
+                Maximize();
+            WriteBanner();
             InitLoggers();
-            
 #if DEBUG
             DiabloCoreEnabled = true;
             Logger.Info("Forcing Diablo III Core to be $[green]$enabled$[/]$ on debug mode.");
+#else
+            if (!DiabloCoreEnabled)
+                Logger.Warning("Diablo III Core is $[red]$disabled$[/]$.");
 #endif
             
 #pragma warning disable CS4014
@@ -274,11 +278,11 @@ namespace DiIiS_NA
                     await Task.Delay(TimeSpan.FromMinutes(1));
                 }
 
-                Shutdown(delay: 25);
+                Shutdown();
             }
             catch (Exception e)
             {
-                Shutdown(e, delay: 200);
+                Shutdown(e);
             }
             finally
             {
@@ -288,11 +292,11 @@ namespace DiIiS_NA
             }
         }
 
-        private static void Shutdown(Exception exception = null, int delay = 200)
+        private static void Shutdown(Exception exception = null)
         {
             // if (!IsTargetEnabled("ansi"))
             {
-                AnsiTarget.StopIfRunning();
+                AnsiTarget.StopIfRunning(IsTargetEnabled("ansi"));
                 if (exception != null)
                 {
                     AnsiConsole.WriteLine("An unhandled exception occured at initialization. Please report this to the developers.");
@@ -300,24 +304,34 @@ namespace DiIiS_NA
                 }
                 AnsiConsole.Progress().Start(ctx =>
                 {
-                    var task = ctx.AddTask("[red]Shutting down...[/]");
-                    for (int i = 0; i < 100; i++)
+                    var task = ctx.AddTask("[darkred_1]Shutting down[/] [white]in[/] [red underline]10 seconds[/]");
+                    for (int i = 1; i < 11; i++)
                     {
-                        task.Increment(1);
-                        Thread.Sleep(delay);
+                        task.Description = $"[darkred_1]Shutting down[/] [white]in[/] [red underline]{11 - i} seconds[/]";
+                        for (int j = 0; j < 10; j++)
+                        {
+                            task.Increment(1);
+                            Thread.Sleep(100);
+
+                        }
                     }
+                    
+                    task.Description = $"[darkred_1]Shutting down[/]";
+
+                    task.StopTask();
                 });
             }
-            Environment.Exit(-1);
+            Environment.Exit(exception is null ? 0 : -1);
         }
 
         [HandleProcessCorruptedStateExceptions]
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
-        static async Task Main()
+        static async Task Main(string[] args)
         {
             try
             {
-                await StartAsync();
+                args ??= Array.Empty<string>();
+                await StartAsync(args);
             }
             catch (Exception ex)
             {
