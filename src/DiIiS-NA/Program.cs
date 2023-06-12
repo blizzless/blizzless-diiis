@@ -324,13 +324,12 @@ namespace DiIiS_NA
             Environment.Exit(exception is null ? 0 : -1);
         }
 
-        [HandleProcessCorruptedStateExceptions]
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         static async Task Main(string[] args)
         {
+            args ??= Array.Empty<string>();
+
             try
             {
-                args ??= Array.Empty<string>();
                 await StartAsync(args);
             }
             catch (Exception ex)
@@ -340,7 +339,6 @@ namespace DiIiS_NA
         }
 
         [SecurityCritical]
-        [HandleProcessCorruptedStateExceptionsAttribute]
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = e.ExceptionObject as Exception;
@@ -361,17 +359,8 @@ namespace DiIiS_NA
             
             if (TargetsEnabled("ansi") > 1 || (IsTargetEnabled("console") && IsTargetEnabled("ansi")))
             {
-                AnsiConsole.MarkupLine("[underline red on white]Fatal:[/] [red]You can't use both ansi and console targets at the same time, nor have more than one ansi target.[/]");
-                AnsiConsole.Progress().Start(ctx =>
-                {
-                    var sd = ctx.AddTask("[red3_1]Shutting down[/]");
-                    for (int i = 0; i < 100; i++)
-                    {
-                        sd.Increment(1);
-                        Thread.Sleep(25);
-                    }
-                });
-                Environment.Exit(-1);
+                AnsiConsole.MarkupLine("[underline red on white]Fatal:[/] [red]It is impossible to have both ANSI and Console targets activated concurrently.[/]");
+                Shutdown();
             }
             foreach (var targetConfig in LogConfig.Instance.Targets)
             {
