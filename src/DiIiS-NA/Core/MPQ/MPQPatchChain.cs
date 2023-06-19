@@ -30,11 +30,11 @@ namespace DiIiS_NA.Core.MPQ
                 var mpqFile = MPQStorage.GetMPQFile(file);
                 if (mpqFile == null)
                 {
-                    Logger.Error("Cannot find base MPQ file: {0}.", file);
+                    Logger.Fatal("Cannot find base MPQ file: $[white on red]${0}$[/]$.", file);
                     return;
                 }
                 this.BaseMPQFiles.Add(mpqFile);
-                Logger.Trace("Added MPQ storage: {0}.", file);
+                Logger.Debug($"Added MPQ storage: $[white underline]${file}$[/]$.");
             }
 
             this.PatchPattern = patchPattern;
@@ -45,7 +45,7 @@ namespace DiIiS_NA.Core.MPQ
                 this.Loaded = true;
             else
             {
-                Logger.Error("Required patch-chain version {0} is not satified (found version: {1}).", this.RequiredVersion, topMostMPQVersion);
+                Logger.Error("Required patch-chain version {0} is not satisfied (found version: {1}).", this.RequiredVersion, topMostMPQVersion);
             }
         }
 

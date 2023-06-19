@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,12 +26,12 @@ public class AnsiTarget : LogTarget
         _table = new Table().Expand().ShowFooters().ShowHeaders().Border(TableBorder.Rounded);
 
         if (IncludeTimeStamps)
-            _table.AddColumn("Time");
+            _table.AddColumn("Time").Centered();
         _table
-            .AddColumn("Level")
-            .AddColumn("Logger")
-            .AddColumn("Message")
-            .AddColumn("Error");
+            .AddColumn("Level").RightAligned()
+            .AddColumn("Message").Centered()
+            .AddColumn("Logger").LeftAligned()
+            .AddColumn("Error").RightAligned();
 
         AnsiConsole.Live(_table).StartAsync(async ctx =>
         {
@@ -101,6 +103,15 @@ public class AnsiTarget : LogTarget
     }
 
     
+    private static Dictionary<string, string> _replacements = new () 
+    {
+        ["["] = "[[",
+        ["]"] = "]]",
+        ["$[[/]]$"] = "[/]",
+        ["$[["] = "[",
+        ["]]$"] = "]"
+    };
+    
     /// <summary>
     /// Performs a cleanup on the target.
     /// All [ becomes [[, and ] becomes ]] (for ignoring ANSI codes)
@@ -112,122 +123,81 @@ public class AnsiTarget : LogTarget
     /// </summary>
     /// <param name="x"></param>
     /// <returns></returns>
-    public static string Cleanup(string x) => Beautify(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
-
+    public static string Cleanup(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return "";
+        return Beautify(_replacements.Aggregate(input, (current, replacement) => current.Replace(replacement.Key, replacement.Value)));
+    }
     public override void LogMessage(Logger.Level level, string logger, string message)
     {
-        if (CancellationTokenSource.IsCancellationRequested)
-            return;
+        if (CancellationTokenSource.IsCancellationRequested) return;
+
         try
         {
-            if (IncludeTimeStamps)
-                _table.AddRow(
-                    new Markup(DateTime.Now.ToString(TimeStampFormat), GetStyleByLevel(level)),
-                    new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
-                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
-                    new Markup("", new Style(foreground: Color.Green3_1)).Centered());
-            else
-                _table.AddRow(
-                    new Markup(level.ToString()).RightJustified(),
-                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
-                    new Markup("", new Style(foreground: Color.Green3_1)).Centered());
+            AddRow(level, logger, message, "");
         }
         catch (Exception ex)
         {
-            var regex = new Regex(@"\$\[.*?\]\$");
-            var matches = regex.Matches(message);
-            foreach (Match match in matches)
-            {
-                message = message.Replace(match.Value, "");
-            }
-
-            if (IncludeTimeStamps)
-            {
-                _table.AddRow(
-                    new Markup(DateTime.Now.ToString(TimeStampFormat), GetStyleByLevel(level)),
-                    new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
-                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(ex.Message, new Style(foreground: Color.Red3_1)).Centered());
-            }
-            else
-            {
-                _table.AddRow(
-                    new Markup(level.ToString()).RightJustified(),
-                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(ex.Message, new Style(foreground: Color.Red3_1)).Centered());
-            }
+            AddRow(level, logger, Cleanup(StripMarkup(message)), ex.Message, true);
         }
     }
 
     public override void LogException(Logger.Level level, string logger, string message, Exception exception)
     {
-        if (CancellationTokenSource.IsCancellationRequested)
-            return;
+        if (CancellationTokenSource.IsCancellationRequested) return;
+
         try
         {
-            if (IncludeTimeStamps)
-                _table.AddRow(
-                    new Markup(DateTime.Now.ToString(TimeStampFormat), GetStyleByLevel(level)),
-                    new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
-                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(
-                        $"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message),
-                        new Style(foreground: Color.Red3_1)).Centered());
-            else
-                _table.AddRow(
-                    new Markup(level.ToString()).RightJustified(),
-                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(message, GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(
-                        $"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message),
-                        new Style(foreground: Color.Red3_1)).Centered());
+            AddRow(level, logger, message, $"[underline red3_1 on white]{exception.GetType().Name}[/]\n" + Cleanup(exception.Message), exFormat: true);
         }
         catch (Exception ex)
         {
-            var regex = new Regex(@"\$\[.*?\]\$");
-            var matches = regex.Matches(message);
-            foreach (Match match in matches)
-            {
-                message = message.Replace(match.Value, "");
-            }
-
-            if (IncludeTimeStamps)
-            {
-                _table.AddRow(
-                    new Markup(DateTime.Now.ToString(TimeStampFormat), GetStyleByLevel(level)),
-                    new Markup(level.ToString(), GetStyleByLevel(level)).RightJustified(),
-                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(ex.Message, new Style(foreground: Color.Red3_1)).Centered());
-            }
-            else
-            {
-                _table.AddRow(
-                    new Markup(level.ToString()).RightJustified(),
-                    new Markup(logger, GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(Cleanup(message), GetStyleByLevel(level)).LeftJustified(),
-                    new Markup(ex.Message, new Style(foreground: Color.Red3_1)).Centered());
-            }
+            AddRow(level, logger, Cleanup(StripMarkup(message)), ex.Message, true);
         }
-}
+    }
+
+    private void AddRow(Logger.Level level, string logger, string message, string exMessage, bool isError = false,
+        bool exFormat = false)
+    {
+        Style messageStyle = GetStyleByLevel(level);
+        Style exStyle = exFormat ? new Style(foreground: Color.Red3_1) : new Style(foreground: Color.Green3_1);
+        var colTimestamp = new Markup(DateTime.Now.ToString(TimeStampFormat), messageStyle).Centered();
+        var colLevel = new Markup(level.ToString(), messageStyle).RightJustified();
+        var colMessage = new Markup(Cleanup(message), messageStyle).Centered();
+        var colLogger = new Markup(logger, new Style(messageStyle.Foreground, messageStyle.Background, messageStyle.Decoration
+        #if DEBUG
+        //, link = ...
+        #endif
+        )).LeftJustified();
+        var colError = new Markup(isError ? exMessage : "", exStyle).RightJustified();
+        if (IncludeTimeStamps) _table.AddRow(colTimestamp, colLevel, colMessage, colLogger, colError);
+        else _table.AddRow(colLevel, colMessage, colLogger, colError);
+    }
+
+    private string StripMarkup(string message)
+    {
+        var regex = new Regex(@"\$\[.*?\]\$");
+        var matches = regex.Matches(message);
+        foreach (Match match in matches)
+        {
+            message = message.Replace(match.Value, "");
+        }
+
+        return message;
+    }
 
     private static Style GetStyleByLevel(Logger.Level level)
     {
         return level switch
         {
-            Logger.Level.RenameAccountLog => new Style(Color.DarkSlateGray3),//
-            Logger.Level.ChatMessage => new Style(Color.DarkSlateGray2),//
-            Logger.Level.Debug => new Style(Color.Olive),//
-            Logger.Level.MethodTrace => new Style(Color.DarkOliveGreen1_1),//
-            Logger.Level.Trace => new Style(Color.BlueViolet),//
-            Logger.Level.Info => new Style(Color.White),
-            Logger.Level.Success => new Style(Color.Green3_1),
-            Logger.Level.Warn => new Style(Color.Yellow),//
+            Logger.Level.RenameAccountLog => new Style(Color.Gold1),//
+            Logger.Level.ChatMessage => new Style(Color.Plum2),//
+            Logger.Level.Debug => new Style(Color.Grey62),//
+            Logger.Level.MethodTrace => new Style(Color.Grey74, decoration: Decoration.Dim | Decoration.Italic),//
+            Logger.Level.Trace => new Style(Color.Grey82),//
+            Logger.Level.Info => new Style(Color.SteelBlue),
+            Logger.Level.Success => new Style(Color.DarkOliveGreen3_2),
+            Logger.Level.Warn => new Style(Color.DarkOrange),//
             Logger.Level.Error => new Style(Color.IndianRed1),//
             Logger.Level.Fatal => new Style(Color.Red3_1),//
             Logger.Level.PacketDump => new Style(Color.Maroon),//

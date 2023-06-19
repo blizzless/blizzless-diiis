@@ -270,7 +270,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			if (!Game.Empty)
 			{
 				RevealQuestProgress();
-				if ((Game.CurrentActEnum != ActEnum.OpenWorld && GameServerConfig.Instance.AutoSaveQuests) ||
+				if ((Game.CurrentActEnum != ActEnum.OpenWorld && GameModsConfig.Instance.Quest.AutoSave) ||
 				    Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Saveable)
 					SaveQuestProgress(false);
 			}

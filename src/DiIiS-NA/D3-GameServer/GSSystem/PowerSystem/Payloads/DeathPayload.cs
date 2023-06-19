@@ -14,6 +14,7 @@ using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Combat;
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer;
 using DiIiS_NA.LoginServer.Toons;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
@@ -425,7 +426,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				{
 					grantedExp = (int)(grantedExp * rangedPlayer.World.Game.XpModifier);
 
-					float tempExp = grantedExp * GameServerConfig.Instance.RateExp;
+					float tempExp = grantedExp * GameModsConfig.Instance.Rate.Experience;
 
 					rangedPlayer.UpdateExp(Math.Max((int)tempExp, 1));
 					var a = (int)rangedPlayer.Attributes[GameAttributes.Experience_Bonus];
@@ -636,13 +637,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			    Target.World.Game.ActiveNephalemTimer && Target.World.Game.ActiveNephalemKilledMobs == false)
 			{
 				Target.World.Game.ActiveNephalemProgress +=
-					GameServerConfig.Instance.NephalemRiftProgressMultiplier * (Target.Quality + 1);
+					GameModsConfig.Instance.NephalemRift.ProgressMultiplier * (Target.Quality + 1);
 				Player master = null;
 				foreach (var plr3 in Target.World.Game.Players.Values)
 				{
 					if (plr3.PlayerIndex == 0)
 						master = plr3;
-					if (GameServerConfig.Instance.NephalemRiftAutoFinish && Target.World.Monsters.Count(s => !s.Dead) <= GameServerConfig.Instance.NephalemRiftAutoFinishThreshold) Target.World.Game.ActiveNephalemProgress = 651;
+					if (GameModsConfig.Instance.NephalemRift.AutoFinish && Target.World.Monsters.Count(s => !s.Dead) <= GameModsConfig.Instance.NephalemRift.AutoFinishThreshold) Target.World.Game.ActiveNephalemProgress = 651;
 					plr3.InGameClient.SendMessage(new SimpleMessage(Opcodes.KillCounterRefresh));
 					plr3.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DungeonFinderProgressMessage)
 					{
@@ -711,7 +712,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 				}
 
-				if (Target.Quality > 1 || FastRandom.Instance.Chance(GameServerConfig.Instance.NephalemRiftOrbsChance))
+				if (Target.Quality > 1 || FastRandom.Instance.Chance(GameModsConfig.Instance.NephalemRift.OrbsChance))
 				{
 					//spawn spheres for mining indicator
 					for (int i = 0; i < Target.Quality + 1; i++)
@@ -938,7 +939,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 								// if seed is less than the drop rate, drop the item
 								if (seed < rate * (1f
 								                   + lootSpawnPlayer.Attributes[GameAttributes.Magic_Find])
-								                * GameServerConfig.Instance.RateDrop)
+								                * GameModsConfig.Instance.Rate.Drop)
 								{
 									//Logger.Debug("rate: {0}", rate);
 									var lootQuality = Target.World.Game.IsHardcore

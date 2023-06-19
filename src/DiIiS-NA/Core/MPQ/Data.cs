@@ -79,7 +79,7 @@ namespace DiIiS_NA.Core.MPQ
 
         public void Init()
         {
-            Logger.Info("Loading Diablo III Assets..");
+            Logger.Info("Loading Diablo III Assets...");
             DictSNOAccolade = Dicts.LoadAccolade();
             DictSNOAct = Dicts.LoadActs();
             DictSNOActor = Dicts.LoadActors();

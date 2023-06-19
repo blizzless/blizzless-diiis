@@ -33,6 +33,7 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using DiIiS_NA.Core.Extensions;
+using DiIiS_NA.D3_GameServer;
 using Spectre.Console;
 using Environment = System.Environment;
 
@@ -65,11 +66,19 @@ namespace DiIiS_NA
         public static string RestServerIp = RestConfig.Instance.IP;
         public static string PublicGameServerIp = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
 
-        public static int Build => 30;
-        public static int Stage => 2;
+        public const int Build = 30;
+        public const int Stage = 3;
         public static TypeBuildEnum TypeBuild => TypeBuildEnum.Beta;
         private static bool DiabloCoreEnabled = DiIiS_NA.GameServer.GameServerConfig.Instance.CoreActive;
 
+        private static readonly CancellationTokenSource CancellationTokenSource = new();
+        public static readonly CancellationToken Token = CancellationTokenSource.Token;
+        public static void Cancel() => CancellationTokenSource.Cancel();
+        public static void CancelAfter(TimeSpan span) => CancellationTokenSource.CancelAfter(span);
+        public static bool IsCancellationRequested() => CancellationTokenSource.IsCancellationRequested;
+
+        public void MergeCancellationWith(params CancellationToken[] tokens) =>
+            CancellationTokenSource.CreateLinkedTokenSource(tokens);
         static void WriteBanner()
         {
             void RightTextRule(string text, string ruleStyle) => AnsiConsole.Write(new Rule(text).RuleStyle(ruleStyle));
@@ -104,7 +113,7 @@ namespace DiIiS_NA
             if (!DiabloCoreEnabled)
                 Logger.Warning("Diablo III Core is $[red]$disabled$[/]$.");
 #endif
-            
+            var mod = GameModsConfig.Instance;
 #pragma warning disable CS4014
             Task.Run(async () =>
 #pragma warning restore CS4014
@@ -126,6 +135,9 @@ namespace DiIiS_NA
                             $"Memory: {totalMemory:0.000} GB | " +
                             $"CPU Time: {cpuTime.ToSmallText()} | " +
                             $"Uptime: {uptime.ToSmallText()}";
+
+                        if (IsCancellationRequested())
+                            text = "SHUTTING DOWN: " + text;
                         if (SetTitle(text))
                             await Task.Delay(1000);
                         else
@@ -242,15 +254,15 @@ namespace DiIiS_NA
 
                 IChannel boundChannel = await serverBootstrap.BindAsync(loginConfig.Port);
 
-                Logger.Info(
-                    "$[bold red3_1]$Tip:$[/]$ graceful shutdown with $[red3_1]$CTRL+C$[/]$ or $[red3_1]$!q[uit]$[/]$ or $[red3_1]$!exit$[/]$.");
-                Logger.Info("$[bold red3_1]$" +
-                            "Tip:$[/]$ SNO breakdown with $[red3_1]$!sno$[/]$ $[red3_1]$<fullSnoBreakdown(true:false)>$[/]$.");
-                while (true)
+                Logger.Info("$[bold deeppink4]$Gracefully$[/]$ shutdown with $[red3_1]$CTRL+C$[/]$ or $[deeppink4]$!q[uit]$[/]$.");
+                while (!IsCancellationRequested())
                 {
                     var line = Console.ReadLine();
                     if (line is null or "!q" or "!quit" or "!exit")
+                    {
                         break;
+                    }
+
                     if (line is "!cls" or "!clear" or "cls" or "clear")
                     {
                         AnsiConsole.Clear();
@@ -272,9 +284,11 @@ namespace DiIiS_NA
 
                 if (PlayerManager.OnlinePlayers.Count > 0)
                 {
+                    Logger.Success("Gracefully shutting down...");
                     Logger.Info(
                         $"Server is shutting down in 1 minute, $[blue]${PlayerManager.OnlinePlayers.Count} players$[/]$ are still online.");
                     PlayerManager.SendWhisper("Server is shutting down in 1 minute.");
+                 
                     await Task.Delay(TimeSpan.FromMinutes(1));
                 }
 
@@ -292,35 +306,39 @@ namespace DiIiS_NA
             }
         }
 
-        private static void Shutdown(Exception exception = null)
+        private static bool _shuttingDown = false;
+        public static void Shutdown(Exception exception = null)
         {
-            // if (!IsTargetEnabled("ansi"))
+            if (_shuttingDown) return;
+            _shuttingDown = true;
+            if (!IsCancellationRequested())
+                Cancel();
+         
+            AnsiTarget.StopIfRunning(IsTargetEnabled("ansi"));
+            if (exception != null)
             {
-                AnsiTarget.StopIfRunning(IsTargetEnabled("ansi"));
-                if (exception != null)
-                {
-                    AnsiConsole.WriteLine("An unhandled exception occured at initialization. Please report this to the developers.");
-                    AnsiConsole.WriteException(exception);
-                }
-                AnsiConsole.Progress().Start(ctx =>
-                {
-                    var task = ctx.AddTask("[darkred_1]Shutting down[/] [white]in[/] [red underline]10 seconds[/]");
-                    for (int i = 1; i < 11; i++)
-                    {
-                        task.Description = $"[darkred_1]Shutting down[/] [white]in[/] [red underline]{11 - i} seconds[/]";
-                        for (int j = 0; j < 10; j++)
-                        {
-                            task.Increment(1);
-                            Thread.Sleep(100);
-
-                        }
-                    }
-                    
-                    task.Description = $"[darkred_1]Shutting down[/]";
-
-                    task.StopTask();
-                });
+                AnsiConsole.WriteLine(
+                    "An unhandled exception occured at initialization. Please report this to the developers.");
+                AnsiConsole.WriteException(exception);
             }
+
+            AnsiConsole.Progress().Start(ctx =>
+            {
+                var task = ctx.AddTask("[darkred_1]Shutting down[/] [white]in[/] [red underline]10 seconds[/]");
+                for (int i = 1; i < 11; i++)
+                {
+                    task.Description = $"[darkred_1]Shutting down[/] [white]in[/] [red underline]{11 - i} seconds[/]";
+                    for (int j = 0; j < 10; j++)
+                    {
+                        task.Increment(1);
+                        Thread.Sleep(100);
+                    }
+                }
+
+                task.Description = $"[darkred_1]Shutting down now.[/]";
+                task.StopTask();
+            });
+
             Environment.Exit(exception is null ? 0 : -1);
         }
 

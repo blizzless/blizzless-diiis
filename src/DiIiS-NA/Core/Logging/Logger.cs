@@ -13,15 +13,17 @@ namespace DiIiS_NA.Core.Logging
 	public class Logger
 	{
 		public string Name { get; protected set; }
+		public string FilePath { get; protected set; }
 
 		/// <summary>
 		/// A logger base type is used to create a logger instance.
 		/// E.g. ConsoleTarget, FileTarget, etc.
 		/// </summary>
 		/// <param name="name">Logger name</param>
-		public Logger(string name)
+		public Logger(string name, string filePath = null)
 		{
 			Name = name;
+			FilePath = filePath;
 		}
 
 		public enum Level

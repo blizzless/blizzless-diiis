@@ -56,6 +56,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.D3_GameServer;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans;
@@ -2481,6 +2482,21 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public bool SpeedCheckDisabled = false;
 
+    public float StrengthMultiplier => ParagonLevel > 0
+            ? GameModsConfig.Instance.Player.Multipliers.Strength.Paragon
+            : GameModsConfig.Instance.Player.Multipliers.Strength.Normal;
+    public float DexterityMultiplier => ParagonLevel > 0
+        ? GameModsConfig.Instance.Player.Multipliers.Dexterity.Paragon
+        : GameModsConfig.Instance.Player.Multipliers.Dexterity.Normal;
+
+    public float IntelligenceMultiplier => ParagonLevel > 0
+        ? GameModsConfig.Instance.Player.Multipliers.Intelligence.Paragon
+        : GameModsConfig.Instance.Player.Multipliers.Intelligence.Normal;
+    
+    public float VitalityMultiplier => ParagonLevel > 0
+        ? GameModsConfig.Instance.Player.Multipliers.Vitality.Paragon
+        : GameModsConfig.Instance.Player.Multipliers.Intelligence.Normal;
+
     public static byte[] StringToByteArray(string hex)
     {
         return Enumerable.Range(0, hex.Length)
@@ -2675,8 +2691,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         Logger.WarnException(e, "questEvent()");
                     }
             }
-            // Reset resurrection charges on zone change - TODO: do not reset charges on reentering the same zone
-            Attributes[GameAttributes.Corpse_Resurrection_Charges] = GameServerConfig.Instance.ResurrectionCharges; 
+            // Reset resurrection charges on zone change
+            // TODO: do not reset charges on reentering the same zone
+            Attributes[GameAttributes.Corpse_Resurrection_Charges] = GameModsConfig.Instance.Health.ResurrectionCharges; 
 
 #if DEBUG
             Logger.Warn($"Player Location {Toon.Name}, Scene: {CurrentScene.SceneSNO.Name} SNO: {CurrentScene.SceneSNO.Id} LevelArea: {CurrentScene.Specification.SNOLevelAreas[0]}");
@@ -3995,8 +4012,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         get
         {
             var baseStrength = 0.0f;
-            var multiplier = ParagonLevel > 0 ? GameServerConfig.Instance.StrengthParagonMultiplier : GameServerConfig.Instance.StrengthMultiplier;
-            baseStrength = Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Strength
+            var multiplier = StrengthMultiplier;
+                baseStrength = Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Strength
                 ? Toon.HeroTable.Strength + (Level - 1) * 3
                 : Toon.HeroTable.Strength + (Level - 1);
 
@@ -4011,8 +4028,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         get
         {
-            var multiplier = ParagonLevel > 0 ? GameServerConfig.Instance.DexterityParagonMultiplier : GameServerConfig.Instance.DexterityMultiplier;
-
+            var multiplier = DexterityMultiplier;
             return Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Dexterity
                 ? Toon.HeroTable.Dexterity + (Level - 1) * 3 * multiplier
                 : Toon.HeroTable.Dexterity + (Level - 1) * multiplier;
@@ -4022,7 +4038,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public float TotalDexterity =>
         Attributes[GameAttributes.Dexterity] + Inventory.GetItemBonus(GameAttributes.Dexterity_Item);
 
-    public float Vitality => Toon.HeroTable.Vitality + (Level - 1) * 2 * (ParagonLevel > 0 ? GameServerConfig.Instance.VitalityParagonMultiplier : GameServerConfig.Instance.VitalityMultiplier);
+    public float Vitality => Toon.HeroTable.Vitality + (Level - 1) * 2 * (VitalityMultiplier);
 
     public float TotalVitality =>
         Attributes[GameAttributes.Vitality] + Inventory.GetItemBonus(GameAttributes.Vitality_Item);
@@ -4031,7 +4047,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         get
         {
-            var multiplier = ParagonLevel > 0 ? GameServerConfig.Instance.IntelligenceParagonMultiplier : GameServerConfig.Instance.IntelligenceMultiplier;
+            var multiplier = IntelligenceMultiplier;
             return Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Intelligence
                 ? Toon.HeroTable.Intelligence + (Level - 1) * 3 * multiplier
                 : Toon.HeroTable.Intelligence + (Level - 1) * multiplier;
@@ -4090,7 +4106,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             },
             SkillSlotEverAssigned = 0x0F, //0xB4,
             PlaytimeTotal = Toon.TimePlayed,
-            WaypointFlags = GameServerConfig.Instance.UnlockAllWaypoints ? 0x0000ffff : World.Game.WaypointFlags,
+            WaypointFlags = GameModsConfig.Instance.Quest.UnlockAllWaypoints ? 0x0000ffff : World.Game.WaypointFlags,
             HirelingData = new HirelingSavedData()
             {
                 HirelingInfos = HirelingInfo,
@@ -5499,7 +5515,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             {
                 if (InGameClient.Game.ActiveNephalemTimer && InGameClient.Game.ActiveNephalemKilledMobs == false)
                 {
-                    InGameClient.Game.ActiveNephalemProgress += 15f * GameServerConfig.Instance.NephalemRiftProgressMultiplier;
+                    InGameClient.Game.ActiveNephalemProgress += 15f * GameModsConfig.Instance.NephalemRift.ProgressMultiplier;
                     foreach (var plr in InGameClient.Game.Players.Values)
                     {
                         plr.InGameClient.SendMessage(new FloatDataMessage(Opcodes.DunggeonFinderProgressGlyphPickUp)
