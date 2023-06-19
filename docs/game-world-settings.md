@@ -12,7 +12,7 @@ The default configuration can be found at [config.mods.json](https://github.com/
 
 ## Description
 
-```jsonp
+```json
 {
   "Rate": {
     "Experience": 1.0, // Experience Rate
