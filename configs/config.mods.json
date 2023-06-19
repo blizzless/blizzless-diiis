@@ -1,0 +1,60 @@
+{
+  "Rate": {
+    "Experience": 1.0,
+    "Money": 1.0,
+    "Drop": 1.0,
+    "ChangeDrop": 1.0
+  },
+  "Health": {
+    "PotionRestorePercentage": 60.0,
+    "PotionCooldown": 30.0,
+    "ResurrectionCharges": 3
+  },
+  "Monster": {
+    "HealthMultiplier": 1.0,
+    "DamageMultiplier": 1.0
+  },
+  "Boss": {
+    "HealthMultiplier": 6.0,
+    "DamageMultiplier": 3.0
+  },
+  "Quest": {
+    "AutoSave": false,
+    "UnlockAllWaypoints": false
+  },
+  "Player": {
+    "Multipliers": {
+      "Strength": {
+        "Normal": 1.0,
+        "Paragon": 1.0
+      },
+      "Dexterity": {
+        "Normal": 1.0,
+        "Paragon": 1.0
+      },
+      "Intelligence": {
+        "Normal": 1.0,
+        "Paragon": 1.0
+      },
+      "Vitality": {
+        "Normal": 1.0,
+        "Paragon": 1.0
+      }
+    }
+  },
+  "Items": {
+    "UnidentifiedDropChances": {
+      "HighQuality": 30.0,
+      "NormalQuality": 5.0
+    }
+  },
+  "Minimap": {
+    "ForceVisibility": false
+  },
+  "NephalemRift": {
+    "ProgressMultiplier": 1.0,
+    "AutoFinish": false,
+    "AutoFinishThreshold": 2,
+    "OrbsChance": 2.0
+  }
+}

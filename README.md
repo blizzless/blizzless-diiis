@@ -51,23 +51,18 @@ The currently supported version of the client: **2.7.4.84161**
 ### Compile and run
 1. Install [.NET 7 SDK and runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) (just runtime, not asp.net or desktop)
 2. Go to the repo directory and compile the project using this command:
-   ```shell
-   dotnet publish ./src/DiIiS-NA/Blizzless.csproj --configuration Release --output ./publish
-	```
-3. __Skip this stage for local game__ Copy the [config.ini](https://github.com/blizzless/blizzless-diiis/blob/community/src/DiIiS-NA/config.ini) file to the publish folder (It overwrites the default settings):
-	- Update the parameter entries with your IP record on the network: `BindIP` and `PublicIP`.
-4. Go to the publish folder, launch Blizzless executable, wait until server start - it creates a hierarchy.
-5. Create user account(s) using console: `!account add Login Password Tag`
-
-#### Example:
-
-> !account add username@ YourPassword YourBattleTag
-
-Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag`
-
-> !account add username@ YourPassword YourBattleTag owner
-
-Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag` with rank `owner`
+```shell
+dotnet publish ./src/DiIiS-NA/Blizzless.csproj --configuration Release --output ./publish
+```
+3. __Skip this stage for local game__ Copy the [config.mods.json](https://github.com/blizzless/blizzless-diiis/blob/community/configs/config.mods.json) file to the folder, and modify however you want. A file will be generated automatically from the `config.ini` for now.
+4. Update your `config.ini` file on the published folder with your network's IP records (`BindIP` and `PublicIP`)
+5. Go to the publish folder, launch Blizzless executable, wait until server start - it creates a hierarchy.
+6. Create user account(s) using console: `!account add Login Password Tag`
+ - Example:
+  - `!account add username@ YourPassword YourBattleTag`
+ - Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag`
+  - `!account add username@ YourPassword YourBattleTag owner`
+ - Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag` with rank `owner`
 
 ## Prepare Client
 
