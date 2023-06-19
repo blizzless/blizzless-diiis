@@ -54,7 +54,7 @@ The currently supported version of the client: **2.7.4.84161**
    ```shell
    dotnet publish ./src/DiIiS-NA/Blizzless.csproj --configuration Release --output ./publish
 	```
-3. [Skip this stage for local game] Copy the [config.ini](configs/config.ini) file to the publish folder (It overwrites the default settings):
+3. __Skip this stage for local game__ Copy the [config.ini](https://github.com/blizzless/blizzless-diiis/blob/community/src/DiIiS-NA/config.ini) file to the publish folder (It overwrites the default settings):
 	- Update the parameter entries with your IP record on the network: `BindIP` and `PublicIP`.
 4. Go to the publish folder, launch Blizzless executable, wait until server start - it creates a hierarchy.
 5. Create user account(s) using console: `!account add Login Password Tag`
