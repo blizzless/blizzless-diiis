@@ -60,6 +60,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans;
 using DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem;
+using DiIiS_NA.LoginServer;
 using NHibernate.Util;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem;
@@ -3607,7 +3608,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         
         if (!_motdSent && LoginServer.LoginServerConfig.Instance.MotdEnabled)
         {
-            if (GameServerConfig.Instance.MotdWhenWorldLoads)
+            if (!LoginServerConfig.Instance.MotdEnabledWhenWorldLoads)
                 _motdSent = true;
             InGameClient.BnetClient.SendMotd();
         }
