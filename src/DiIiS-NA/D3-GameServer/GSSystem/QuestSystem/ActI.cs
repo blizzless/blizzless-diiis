@@ -244,16 +244,23 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //AddFollower(this.Game.GetWorld(71150), 4580);
                     Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
-                        // TODO: CHeck for possible removing outer adding
-                        Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
+                        if (Game.CurrentQuest == 72095 && Game.CurrentStep is -1 or 7)
                         {
-                            if (Game.CurrentQuest == 72095)
-                                if (Game.CurrentStep == -1 || Game.CurrentStep == 7)
-                                {
-                                    AddFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
-                                }
-                        });
-                        
+                            // var world = Game.GetWorld(WorldSno.trout_town);
+                            // Logger.QuestStep("Adding leah follower");
+                            // // teleport leah
+                            // var actor = world.GetActorBySNO(ActorSno._leah);
+                            // if (actor != null)
+                            // {
+                            //     actor.Teleport(Game.FirstPlayer().Position.Around(2f));
+                            // }
+                            AddFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
+                        }
+                        else
+                        {
+                            Logger.QuestStep($"Can't add leah follower: {Game.CurrentQuest} / {Game.CurrentStep}");
+                        }
+
                     });
                 }
             });

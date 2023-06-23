@@ -200,6 +200,8 @@ public class AnsiTarget : LogTarget
             Logger.Level.Warn => new Style(Color.DarkOrange),//
             Logger.Level.Error => new Style(Color.IndianRed1),//
             Logger.Level.Fatal => new Style(Color.Red3_1),//
+            Logger.Level.QuestInfo => new Style(Color.Plum2),
+            Logger.Level.QuestStep => new Style(Color.Plum3, decoration: Decoration.Dim),
             Logger.Level.PacketDump => new Style(Color.Maroon),//
             _ => new Style(Color.White)
         };
@@ -212,4 +214,7 @@ public static class AnsiTargetExtensions
     {
         return text.Replace("$[", "").Replace("]$", "").Replace("[", "[[").Replace("]", "]]");
     }
+
+    public static string StyleAnsi(this object obj, string style) =>
+        $"$[{style}]$" + obj.ToString().EscapeMarkup() + "$[/]$";
 }

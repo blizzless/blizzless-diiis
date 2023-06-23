@@ -33,6 +33,7 @@ using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
@@ -42,16 +43,6 @@ using World = DiIiS_NA.GameServer.GSSystem.MapSystem.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 {
-	public enum ActEnum
-	{
-		Act1 = 0,
-		Act2 = 100,
-		Act3 = 200,
-		Act4 = 300,
-		Act5 = 400,
-		OpenWorld = 3000
-	}
-
 	public class Game : IMessageConsumer
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger();
@@ -65,6 +56,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Dictionary that maps gameclient's to players.
 		/// </summary>
 		public ConcurrentDictionary<GameClient, Player> Players { get; private set; }
+
+		public Player FirstPlayer() => Players.Values.First();
 
 		public ImmutableArray<Player> ConnectedPlayers => Players
 			.Where(s => s.Value != null && s.Key.Connection.IsOpen() && !s.Key.IsLoggingOut)
@@ -190,9 +183,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Current quest SNOid.
 		/// </summary>
 		public int CurrentQuest = -1;
-
 		public int CurrentSideQuest = -1;
 
+		public bool IsCurrentOpenWorld => CurrentQuest == 312429;
+		
 		/// <summary>
 		/// Current quest step SNOid.
 		/// </summary>
@@ -1283,11 +1277,23 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			if (diff > 0)
 			{
 				var handicapLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][256027].Data;
-				HpModifier = handicapLevels.HandicapLevelTables[diff].HPMod;
-				DmgModifier = handicapLevels.HandicapLevelTables[diff].DmgMod;
-				XpModifier = (1f + handicapLevels.HandicapLevelTables[diff].XPMod);
-				GoldModifier = (1f + handicapLevels.HandicapLevelTables[diff].GoldMod);
+				HpModifier = handicapLevels.HandicapLevelTables[diff].HPMod * GameModsConfig.Instance.Rate.HealthByDifficulty[Difficulty] 
+				                                                            * GameModsConfig.Instance.Monster.HealthMultiplier;
+				DmgModifier = handicapLevels.HandicapLevelTables[diff].DmgMod 
+				              * GameModsConfig.Instance.Rate.GetDamageByDifficulty(diff)
+				              * GameModsConfig.Instance.Monster.DamageMultiplier;
+				XpModifier = (1f + handicapLevels.HandicapLevelTables[diff].XPMod) * GameModsConfig.Instance.Rate.Experience;
+				GoldModifier = (1f + handicapLevels.HandicapLevelTables[diff].GoldMod * GameModsConfig.Instance.Rate.Gold);
 			}
+			else
+			{
+				HpModifier = GameModsConfig.Instance.Rate.HealthByDifficulty[Difficulty] * GameModsConfig.Instance.Monster.HealthMultiplier;
+				DmgModifier = GameModsConfig.Instance.Rate.GetDamageByDifficulty(Difficulty) * GameModsConfig.Instance.Monster.DamageMultiplier;
+				XpModifier = 1f + GameModsConfig.Instance.Rate.Experience;
+				GoldModifier = (1f * GameModsConfig.Instance.Rate.Gold);
+			}
+			
+			Logger.Info($"$[italic]$Updated Game #$[underline]${GameId}$[/]$ difficulty to {diff}.$[/]$");
 
 			foreach (var wld in _worlds)
 			foreach (var monster in wld.Value.Monsters)

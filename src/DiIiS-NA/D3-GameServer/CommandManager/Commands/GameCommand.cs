@@ -13,6 +13,6 @@ public class GameCommand : CommandGroup
     public void ReloadMods(string[] @params, BattleClient invokerClient)
     {
         GameModsConfig.ReloadSettings();
-        invokerClient.SendServerWhisper("Game mods updated successfully!");
+        invokerClient?.SendServerWhisper("Game mods updated successfully!");
     }
 }

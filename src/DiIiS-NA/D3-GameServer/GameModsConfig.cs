@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
+using System.Threading.Tasks;
 using DiIiS_NA;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer;
@@ -10,8 +12,35 @@ namespace DiIiS_NA.D3_GameServer;
 
 public class RateConfig
 {
+    public float GetDamageByDifficulty(int diff)
+    {
+        if (diff > 19) diff = 19;
+        if (!DamageByDifficulty.ContainsKey(diff) || Math.Abs(DamageByDifficulty[diff] - (-1)) < 0.001)
+        {
+            if (diff == 0)
+                return 1;
+            return GetDamageByDifficulty(diff - 1);
+        }
+        
+        return DamageByDifficulty[diff];
+    }
+    public Dictionary<int, float> HealthByDifficulty { get; set; } = new()
+    {
+        [0] = 1.0f, [1] = 1.0f, [2] = 1.0f, [3] = 1.0f, [4] = 1.0f, [5] = 1.0f,
+        [6] = 1.0f, [7] = 1.0f, [8] = 1.0f, [9] = 1.0f, [10] = 1.0f, [11] = 1.0f,
+        [12] = 1.0f, [13] = 1.0f, [14] = 1.0f, [15] = 1.0f, [16] = 1.0f,
+        [17] = 1.0f, [18] = 1.0f, [19] = 1.0f,
+    };
+    
+    public Dictionary<int, float> DamageByDifficulty { get; set; } = new()
+    {
+        [0] = 1.0f, [1] = 1.0f, [2] = 1.0f, [3] = 1.0f, [4] = 1.0f, [5] = 1.0f,
+        [6] = 1.0f, [7] = 1.0f, [8] = 1.0f, [9] = 1.0f, [10] = 1.0f, [11] = 1.0f,
+        [12] = 1.0f, [13] = 1.0f, [14] = 1.0f, [15] = 1.0f, [16] = 1.0f,
+        [17] = 1.0f, [18] = 1.0f, [19] = 1.0f,
+    };
     public float Experience { get; set; } = 1;
-    public float Money { get; set; } = 1;
+    public float Gold { get; set; } = 1;
     public float Drop { get; set; } = 1;
     public float ChangeDrop { get; set; } = 1;
 }
@@ -91,21 +120,20 @@ public class GameModsConfig
     {
         CreateInstance();
     }
-
+    
     public static void ReloadSettings()
     {
-        CreateInstance(reload: true);
+        CreateInstance();
     }
-    
+
     private static readonly object InstanceCreationLock = new();
     public static GameModsConfig Instance { get; private set; }
 
-    private static void CreateInstance(bool reload = false)
+    private static void CreateInstance()
     {
         lock (InstanceCreationLock)
         {
-            if (reload && File.Exists("config.mods.json")) File.Delete("config.mods.json");
-            if (reload || !File.Exists("config.mods.json"))
+            if (!File.Exists("config.mods.json"))
             {
                 Instance = CreateDefaultFile();
             }
@@ -115,6 +143,10 @@ public class GameModsConfig
                 if (content.TryFromJson(out GameModsConfig config, out Exception ex))
                 {
                     Logger.Success("Game mods loaded successfully!");
+                    Logger.Info("$[italic]$Recreating $[underline]$config.mods.json$[/]$ in order to keep the structure and with all fields...$[/]$");
+                    var @new = config.ToJson(Formatting.Indented);
+                    File.WriteAllText(@"config.mods.json", @new);
+                    Logger.Success("Game mods re-structured!");
                     Instance = config;
                     return;
                 }
@@ -132,63 +164,7 @@ public class GameModsConfig
         GameModsConfig content = new()
         {
 #pragma warning disable CS0618
-            Rate =
-            {
-                Experience = migration.RateExp,
-                Money = migration.RateMoney,
-                ChangeDrop = migration.RateChangeDrop,
-                Drop = migration.RateDrop
-            },
-            Health =
-            {
-                ResurrectionCharges = migration.ResurrectionCharges,
-                PotionCooldown = migration.HealthPotionCooldown,
-                PotionRestorePercentage = migration.HealthPotionRestorePercentage
-            },
-            Monster =
-            {
-                HealthMultiplier = migration.RateMonsterHP,
-                DamageMultiplier = migration.RateMonsterDMG
-            },
-            Boss =
-            {
-                HealthMultiplier = migration.BossHealthMultiplier,
-                DamageMultiplier = migration.BossDamageMultiplier
-            },
-            Quest =
-            {
-                AutoSave = migration.AutoSaveQuests,
-                UnlockAllWaypoints = migration.UnlockAllWaypoints
-            },
-            Player =
-            {
-                Multipliers = 
-                {
-                Strength = new(migration.StrengthMultiplier, migration.StrengthParagonMultiplier),
-                Dexterity = new(migration.DexterityMultiplier, migration.DexterityParagonMultiplier),
-                Intelligence = new(migration.IntelligenceMultiplier, migration.IntelligenceParagonMultiplier),
-                Vitality = new(migration.VitalityMultiplier, migration.VitalityParagonMultiplier)
-                }
-            },
-            Items =
-            {
-                UnidentifiedDropChances =
-                {
-                    HighQuality = migration.ChanceHighQualityUnidentified,
-                    NormalQuality = migration.ChanceNormalUnidentified
-                }
-            },
-            Minimap =
-            {
-                ForceVisibility = migration.ForceMinimapVisibility
-            },
-            NephalemRift =
-            {
-                AutoFinish = migration.NephalemRiftAutoFinish,
-                AutoFinishThreshold = migration.NephalemRiftAutoFinishThreshold,
-                OrbsChance = migration.NephalemRiftAutoFinishThreshold,
-                ProgressMultiplier = migration.NephalemRiftProgressMultiplier
-            }
+           
 #pragma warning restore CS0618
         };
         File.WriteAllText("config.mods.json", content.ToJson());

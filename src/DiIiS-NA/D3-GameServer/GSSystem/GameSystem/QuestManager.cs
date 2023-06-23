@@ -21,6 +21,7 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using Spectre.Console;
 using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
 
 namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
@@ -29,11 +30,6 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 	{
 		private static readonly Logger Logger = new(nameof(QuestManager));
 
-		/// <summary>
-		/// Accessor for quests
-		/// </summary>
-		/// <param name="snoQuest">snoId of the quest to retrieve</param>
-		/// <returns></returns>
 		public readonly Dictionary<int, QuestRegistry.Quest> Quests = new();
 
 		public readonly Dictionary<int, QuestRegistry.Quest> SideQuests = new();
@@ -164,12 +160,30 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A5].Take(4));
 		}
 
+		private readonly struct Rewards
+		{
+			public int Experience { get; }
+			public int Gold { get; }
+
+			public Rewards(int experience, int gold)
+			{
+				Experience = experience;
+				Gold = gold;
+			}
+			
+			public Rewards(float experience, float gold) : this((int) Math.Floor(experience), (int) Math.Floor(gold)) {}
+		}
+
+		private Rewards GetCurrentQuestRewards() =>
+			new Rewards(Quests[Game.CurrentQuest].RewardXp, Quests[Game.CurrentQuest].RewardGold);
 		/// <summary>
 		/// Advances a quest by a step
 		/// </summary>
 		/// <param name="snoQuest">snoID of the quest to advance</param>                               
 		public void Advance()
 		{
+			int oldQuest = Game.CurrentQuest;
+			int oldStep = Game.CurrentStep;
 			Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Completed = true;
 			Game.CurrentStep = Quests[Game.CurrentQuest].Steps[Game.CurrentStep].NextStep;
 			Game.QuestProgress.QuestTriggers.Clear();
@@ -185,6 +199,13 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 			if (Quests[Game.CurrentQuest].Steps[Game.CurrentStep].NextStep != -1)
 			{
+				Logger.QuestInfo(
+					$"{Emoji.Known.RightArrow} Step Advance ".StyleAnsi("deeppink4") + 
+					$"Game #{Game.GameId.StyleAnsi("underline")} " +
+					$"from quest {oldQuest}/" +
+					$"step {oldStep.StyleAnsi("deeppink4")}" +
+					$"to quest {Game.CurrentQuest}'s " +
+					$"step {Game.CurrentStep.StyleAnsi("deeppink4")}");
 			}
 			else
 			{
@@ -192,23 +213,25 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				if (!Game.Empty)
 				{
 					SaveQuestProgress(true);
-					Logger.Trace(
-						$"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, completed $[underline white]${Quests[Game.CurrentQuest].Completed}$[/]$");
+					Logger.QuestInfo(
+						$"{Emoji.Known.NextTrackButton} Quest Advance ".StyleAnsi("white") + 
+						$"Game #{Game.GameId.StyleAnsi("underline")} " +
+						$"from quest {oldQuest.StyleAnsi("turquoise2")}/" +
+						$"step {oldStep.StyleAnsi("deeppink4")}" +
+						$"to quest {Game.CurrentQuest.StyleAnsi("turquoise2")}/" +
+						$"step {Game.CurrentStep.StyleAnsi("deeppink4")}");
 					Game.BroadcastPlayers((client, player) =>
 					{
-						if (Game.CurrentQuest == 312429) return; // open world quest
+						if (Game.IsCurrentOpenWorld) return; // open world quest
 
-						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp *
-						                     Game.XpModifier);
-						int goldReward = (int)(Quests[Game.CurrentQuest].RewardGold *
-						                       Game.GoldModifier);
+						var rewards = GetCurrentQuestRewards();
 						player.InGameClient.SendMessage(new QuestStepCompleteMessage()
 						{
 							QuestStepComplete = QuestStepComplete.CreateBuilder()
 
 								.SetReward(QuestReward.CreateBuilder()
-									.SetGoldGranted(goldReward)
-									.SetXpGranted((ulong)xpReward)
+									.SetGoldGranted(rewards.Gold)
+									.SetXpGranted((ulong)rewards.Experience)
 									.SetSnoQuest(Game.CurrentQuest)
 								)
 								.SetIsQuestComplete(true)
@@ -224,7 +247,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 										WorldID = player.World.DynamicID(player),
 									},
 
-									Amount = xpReward,
+									Amount = rewards.Experience,
 									Type = GameServer.MessageSystem.Message.Definitions.Base
 										.FloatingAmountMessage.FloatType.Experience,
 								});
@@ -238,13 +261,13 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 										WorldID = player.World.DynamicID(player),
 									},
 
-									Amount = goldReward,
+									Amount = rewards.Gold,
 									Type = GameServer.MessageSystem.Message.Definitions.Base
 										.FloatingAmountMessage.FloatType.Gold,
 								});
-						player.UpdateExp(xpReward);
-						player.Inventory.AddGoldAmount(goldReward);
-						player.AddAchievementCounter(74987243307173, (uint)goldReward);
+						player.UpdateExp(rewards.Experience);
+						player.Inventory.AddGoldAmount(rewards.Gold);
+						player.AddAchievementCounter(74987243307173, (uint)rewards.Gold);
 						player.CheckQuestCriteria(Game.CurrentQuest);
 					});
 				}

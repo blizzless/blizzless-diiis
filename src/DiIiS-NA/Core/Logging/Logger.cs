@@ -68,6 +68,15 @@ namespace DiIiS_NA.Core.Logging
 			/// Fatal messages (usually unrecoverable errors that leads to client or server crashes).
 			/// </summary>
 			Fatal,
+			
+			/// <summary>
+			/// The messages meant for quest general logging purposes.
+			/// </summary>
+			QuestInfo,
+			/// <summary>
+			/// The messages meant for quest logging purposes.
+			/// </summary>
+			QuestStep,
 			/// <summary>
 			/// Packet messages.
 			/// </summary>
@@ -109,10 +118,32 @@ namespace DiIiS_NA.Core.Logging
 		{
 			#if DEBUG
 			var fileName = Path.GetFileName(filePath);
-			Log(Level.MethodTrace, $"$[underline white]${fileName}:{lineNumber}$[/]$ $[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
+			Log(Level.MethodTrace, $"$[link={filePath}]${fileName}:{lineNumber} in {methodName}()$[/]$: " + message, null);
 			#else
 			Log(Level.MethodTrace, $"$[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
 			#endif
+		}
+
+		public void QuestStep(string message, [CallerMemberName] string methodName = "",
+			[CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+		{
+#if DEBUG
+			var fileName = Path.GetFileName(filePath);
+			Log(Level.QuestStep, $"$[link={filePath}]${fileName}:{lineNumber} in {methodName}()$[/]$: " + message, null);
+#else
+			Log(Level.MethodTrace, $":crossed_swords: $[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
+#endif
+		}
+
+		public void QuestInfo(string message, [CallerMemberName] string methodName = "",
+			[CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+		{
+#if DEBUG
+			var fileName = Path.GetFileName(filePath);
+			Log(Level.MethodTrace, $"$[link={filePath}]${fileName}:{lineNumber} in {methodName}()$[/]$: " + message, null);
+#else
+			Log(Level.MethodTrace, $"$[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
+#endif
 		}
 
 		/// <param name="message">The log message.</param>
@@ -155,7 +186,7 @@ namespace DiIiS_NA.Core.Logging
 
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
-		public void Fatal(string message, params object[] args) => Log(Level.Fatal, message, args);
+		public void Fatal(string message, params object[] args) => Log(Level.Fatal, ":skull_and_crossbones: " +  message, args);
 
 		#endregion
 
