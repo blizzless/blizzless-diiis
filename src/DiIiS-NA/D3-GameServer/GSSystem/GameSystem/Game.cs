@@ -1576,9 +1576,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 
 			//handling quest triggers
-			if (QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
+			if (QuestProgress.QuestTriggers.TryGetValue(levelArea, out var trigger)) //EnterLevelArea
 			{
-				var trigger = QuestProgress.QuestTriggers[levelArea];
 				if (trigger.TriggerType == QuestStepObjectiveType.EnterLevelArea)
 				{
 					try
@@ -1651,7 +1650,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								//Берем каина
 								var firstPoint = new Vector3D(120.92718f, 121.26151f, 0.099973306f);
 								var secondPoint = new Vector3D(120.73298f, 160.61829f, 0.31863004f);
-								var sceletonPoint = new Vector3D(120.11514f, 140.77332f, 0.31863004f);
+								var sketonPosition = new Vector3D(120.11514f, 140.77332f, 0.31863004f);
 
 								var firstfacingAngle =
 									ActorSystem.Movement.MovementHelpers.GetFacingAngle(cainRun, firstPoint);
@@ -1672,9 +1671,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 									{
 										foreach (var skeleton in skeletons)
 										{
-											skeleton.Move(sceletonPoint,
+											skeleton.Move(sketonPosition,
 												ActorSystem.Movement.MovementHelpers.GetFacingAngle(skeleton,
-													sceletonPoint));
+													sketonPosition));
 										}
 
 										cainRun.Move(secondPoint, secondfacingAngle);
