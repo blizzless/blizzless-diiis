@@ -1287,8 +1287,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 			else
 			{
-				HpModifier = GameModsConfig.Instance.Rate.HealthByDifficulty[Difficulty] * GameModsConfig.Instance.Monster.HealthMultiplier;
-				DmgModifier = GameModsConfig.Instance.Rate.GetDamageByDifficulty(Difficulty) * GameModsConfig.Instance.Monster.DamageMultiplier;
+				HpModifier = GameModsConfig.Instance.Rate.HealthByDifficulty[diff] * GameModsConfig.Instance.Monster.HealthMultiplier;
+				DmgModifier = GameModsConfig.Instance.Rate.GetDamageByDifficulty(diff) * GameModsConfig.Instance.Monster.DamageMultiplier;
 				XpModifier = 1f + GameModsConfig.Instance.Rate.Experience;
 				GoldModifier = (1f * GameModsConfig.Instance.Rate.Gold);
 			}

@@ -14,15 +14,9 @@ public class RateConfig
 {
     public float GetDamageByDifficulty(int diff)
     {
+        if (diff < 0) diff = 0;
         if (diff > 19) diff = 19;
-        if (!DamageByDifficulty.ContainsKey(diff) || Math.Abs(DamageByDifficulty[diff] - (-1)) < 0.001)
-        {
-            if (diff == 0)
-                return 1;
-            return GetDamageByDifficulty(diff - 1);
-        }
-        
-        return DamageByDifficulty[diff];
+        return !DamageByDifficulty.ContainsKey(diff) ? 1f : DamageByDifficulty[diff];
     }
     public Dictionary<int, float> HealthByDifficulty { get; set; } = new()
     {
