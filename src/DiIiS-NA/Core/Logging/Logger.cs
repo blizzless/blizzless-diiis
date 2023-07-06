@@ -116,33 +116,36 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="message">The log message.</param>
 		public void MethodTrace(string message, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
+			var m = $"$[darkolivegreen3_2]${methodName}()$[/]$";
 			#if DEBUG
 			var fileName = Path.GetFileName(filePath);
-			Log(Level.MethodTrace, $"$[link={filePath}]${fileName}:{lineNumber} in {methodName}()$[/]$: " + message, null);
+			Log(Level.MethodTrace, $"$[red]${fileName}:{lineNumber}$[/]$ in {m}: " + message, null);
 			#else
-			Log(Level.MethodTrace, $"$[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
+			Log(Level.MethodTrace, $"{m}: " + message, null);
 			#endif
 		}
 
 		public void QuestStep(string message, [CallerMemberName] string methodName = "",
 			[CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
+			var m = $"$[darkolivegreen3_2]${methodName}()$[/]$";
 #if DEBUG
 			var fileName = Path.GetFileName(filePath);
-			Log(Level.QuestStep, $"$[link={filePath}]${fileName}:{lineNumber} in {methodName}()$[/]$: " + message, null);
+			Log(Level.MethodTrace, $"$[red]${fileName}:{lineNumber}$[/]$ in {m}: " + message, null);
 #else
-			Log(Level.MethodTrace, $":crossed_swords: $[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
+			Log(Level.MethodTrace, $"{m}: " + message, null);
 #endif
 		}
 
 		public void QuestInfo(string message, [CallerMemberName] string methodName = "",
 			[CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
+			var m = $"$[darkolivegreen3_2]${methodName}()$[/]$";
 #if DEBUG
 			var fileName = Path.GetFileName(filePath);
-			Log(Level.MethodTrace, $"$[link={filePath}]${fileName}:{lineNumber} in {methodName}()$[/]$: " + message, null);
+			Log(Level.MethodTrace, $"$[red]${fileName}:{lineNumber}$[/]$ in {m}: " + message, null);
 #else
-			Log(Level.MethodTrace, $"$[darkolivegreen3_2]${methodName}()$[/]$: " + message, null);
+			Log(Level.MethodTrace, $"{m}: " + message, null);
 #endif
 		}
 
@@ -186,7 +189,7 @@ namespace DiIiS_NA.Core.Logging
 
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
-		public void Fatal(string message, params object[] args) => Log(Level.Fatal, ":skull_and_crossbones: " +  message, args);
+		public void Fatal(string message, params object[] args) => Log(Level.Fatal,  message, args);
 
 		#endregion
 
