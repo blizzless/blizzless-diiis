@@ -272,6 +272,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 49,
                 OnAdvance = () =>
                 { //go to gates
+                    AddFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
                     var world = Game.GetWorld(WorldSno.trout_town);
                     StartConversation(world, 166678);
                     ListenProximity(ActorSno._trout_oldtristram_exit_gate, new Advance());
@@ -416,12 +417,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Saveable = true,
                 NextStep = 23,
                 OnAdvance = () =>
-                { //go to church				
+                {
+                    //go to church				
                     var world = Game.GetWorld(WorldSno.trout_town);
                     ListenProximity(ActorSno._trdun_cath_cathedraldoorexterior, new Advance());
                     var leah = world.GetActorBySNO(ActorSno._leah);
                     if (leah != null)
+                    {
                         leah.Hidden = false;
+                        leah.SetVisible(true);
+                    }
                     SetActorVisible(world, ActorSno._tristram_mayor, false);
                     var cart = world.GetActorBySNO(ActorSno._trout_newtristram_blocking_cart, true);
                     if (cart != null)
@@ -489,6 +494,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //go with Cain
                     Game.CurrentEncounter.Activated = false;
+                    
                     StartConversation(Game.GetWorld(WorldSno.trdun_cain_intro), 72496);
                     ListenTeleport(19938, new Advance());
                 }
@@ -511,6 +517,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         StartConversation(tristramWorld, 72498);
                     });
                     //StartConversation(this.Game.GetWorld(71150), 72496);
+                    DestroyFollower(ActorSno._leah);
+
                     var leah = tristramWorld.GetActorBySNO(ActorSno._leah, true);
                     if (leah == null)
                     {

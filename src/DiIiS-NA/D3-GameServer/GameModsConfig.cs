@@ -159,6 +159,63 @@ public class GameModsConfig
         {
 #pragma warning disable CS0618
            
+            Rate =
+            {
+                Experience = migration.RateExp,
+                Gold = migration.RateMoney,
+                ChangeDrop = migration.RateChangeDrop,
+                Drop = migration.RateDrop
+            },
+            Health =
+            {
+                ResurrectionCharges = migration.ResurrectionCharges,
+                PotionCooldown = migration.HealthPotionCooldown,
+                PotionRestorePercentage = migration.HealthPotionRestorePercentage
+            },
+            Monster =
+            {
+                HealthMultiplier = migration.RateMonsterHP,
+                DamageMultiplier = migration.RateMonsterDMG
+            },
+            Boss =
+            {
+                HealthMultiplier = migration.BossHealthMultiplier,
+                DamageMultiplier = migration.BossDamageMultiplier
+            },
+            Quest =
+            {
+                AutoSave = migration.AutoSaveQuests,
+                UnlockAllWaypoints = migration.UnlockAllWaypoints
+            },
+            Player =
+            {
+                Multipliers = 
+                {
+                Strength = new(migration.StrengthMultiplier, migration.StrengthParagonMultiplier),
+                Dexterity = new(migration.DexterityMultiplier, migration.DexterityParagonMultiplier),
+                Intelligence = new(migration.IntelligenceMultiplier, migration.IntelligenceParagonMultiplier),
+                Vitality = new(migration.VitalityMultiplier, migration.VitalityParagonMultiplier)
+                }
+            },
+            Items =
+            {
+                UnidentifiedDropChances =
+                {
+                    HighQuality = migration.ChanceHighQualityUnidentified,
+                    NormalQuality = migration.ChanceNormalUnidentified
+                }
+            },
+            Minimap =
+            {
+                ForceVisibility = migration.ForceMinimapVisibility
+            },
+            NephalemRift =
+            {
+                AutoFinish = migration.NephalemRiftAutoFinish,
+                AutoFinishThreshold = migration.NephalemRiftAutoFinishThreshold,
+                OrbsChance = migration.NephalemRiftAutoFinishThreshold,
+                ProgressMultiplier = migration.NephalemRiftProgressMultiplier
+            }
 #pragma warning restore CS0618
         };
         File.WriteAllText("config.mods.json", content.ToJson());
