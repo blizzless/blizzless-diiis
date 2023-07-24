@@ -190,6 +190,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				int count = player.World.Game.Players.Count;
 				if (count > 0 && _adjustedPlayers != count)
 				{
+					// TODO: add modifiers for difficulty settings?
 					Attributes[GameAttributes.Damage_Weapon_Min, 0] = _nativeDmg * (1f + (0.05f * (count - 1) * player.World.Game.Difficulty));
 					Attributes[GameAttributes.Hitpoints_Max] = _nativeHp * (1f + ((0.75f + (0.1f * player.World.Game.Difficulty)) * (count - 1)));
 					Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];

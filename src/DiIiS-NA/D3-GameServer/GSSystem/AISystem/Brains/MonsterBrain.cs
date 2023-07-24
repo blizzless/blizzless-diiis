@@ -383,13 +383,18 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
                         // Logger.Trace("PowerAction to target");
                         CurrentAction = new PowerAction(Body, powerToUse, Target);
 
-                        if (power is SummoningSkill)
-                            PresetPowers[powerToUse] = new Cooldown
-                                { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) };
-
-                        if (power is MonsterAffixSkill monsterSkill)
-                            PresetPowers[powerToUse] = new Cooldown
-                                { CooldownTimer = null, CooldownTime = monsterSkill.CooldownTime };
+                        PresetPowers[powerToUse] = power switch
+                        {
+                            SummoningSkill => new Cooldown
+                            {
+                                CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f)
+                            },
+                            MonsterAffixSkill monsterSkill => new Cooldown
+                            {
+                                CooldownTimer = null, CooldownTime = monsterSkill.CooldownTime
+                            },
+                            _ => PresetPowers[powerToUse]
+                        };
 
                         if (PresetPowers[powerToUse].CooldownTime > 0f)
                             PresetPowers[powerToUse] = new Cooldown
@@ -472,13 +477,15 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
                 $"{GetType().Name} {nameof(FastAttack)} {nameof(PowerAction)} to target [{Target.ActorType}] {Target.SNO.ToString()}");
             CurrentAction = new PowerAction(Body, skillSno, target);
 
-            if (power is SummoningSkill)
-                PresetPowers[skillSno] = new Cooldown
-                    { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) };
-
-            if (power is MonsterAffixSkill monsterAffixSkill)
-                PresetPowers[skillSno] = new Cooldown
-                    { CooldownTimer = null, CooldownTime = monsterAffixSkill.CooldownTime };
+            PresetPowers[skillSno] = power switch
+            {
+                SummoningSkill => new Cooldown { CooldownTimer = null, CooldownTime = (Body is Boss ? 15f : 7f) },
+                MonsterAffixSkill monsterAffixSkill => new Cooldown
+                {
+                    CooldownTimer = null, CooldownTime = monsterAffixSkill.CooldownTime
+                },
+                _ => PresetPowers[skillSno]
+            };
 
             if (PresetPowers[skillSno].CooldownTime > 0f)
                 PresetPowers[skillSno] = new Cooldown
