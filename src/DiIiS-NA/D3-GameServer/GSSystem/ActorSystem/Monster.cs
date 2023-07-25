@@ -23,7 +23,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
 	public class Monster : Living, IUpdateable
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger(nameof(Monster));
+		private static readonly Logger Logger = LogManager.CreateLogger();
 
 		public override ActorType ActorType => ActorType.Monster;
 		public TickTimer DestroyTimer { get; }
