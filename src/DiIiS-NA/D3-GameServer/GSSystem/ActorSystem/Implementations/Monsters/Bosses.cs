@@ -2,6 +2,7 @@
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.MessageSystem;
+using Microsoft.Extensions.Logging;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 {
@@ -27,13 +28,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 
 		public override int Quality
 		{
-			get
-			{
-				return (int)DiIiS_NA.Core.MPQ.FileFormats.SpawnType.Boss;
-			}
+			get => (int)DiIiS_NA.Core.MPQ.FileFormats.SpawnType.Boss;
 			set
 			{
-		
 			}
 		}
 
