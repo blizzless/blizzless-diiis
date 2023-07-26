@@ -52,6 +52,14 @@ public class HealthDamageMultiplier
     public float DamageMultiplier { get; set; } = 1;
 }
 
+public class MonsterConfig
+{
+    public float AttacksPerSecond { get; set; } = 1.2f;
+
+    public float HealthMultiplier { get; set; } = 1;
+    public float DamageMultiplier { get; set; } = 1;
+}
+
 public class QuestConfig
 {
     public bool AutoSave { get; set; } = false;
@@ -98,7 +106,7 @@ public class GameModsConfig
 {
     public RateConfig Rate { get; set; } = new();
     public HealthConfig Health { get; set; } = new();
-    public HealthDamageMultiplier Monster { get; set; } = new();
+    public MonsterConfig Monster { get; set; } = new();
     public HealthDamageMultiplier Boss { get; set; } = new();
     public QuestConfig Quest { get; set; } = new();
     public PlayerConfig Player { get; set; } = new();
