@@ -276,6 +276,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			return Game.Players.Values.First().Followers.Any(x => x.Value == sno);
 		}
 
+		public void AddUniqueFollower(World world, ActorSno sno)
+		{
+			if (!HasFollower(sno))
+				AddFollower(world, sno);
+		}
+
 		public void AddFollower(World world, ActorSno sno)
 		{
 			if (Game.Players.Count > 0)

@@ -254,7 +254,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             // {
                             //     actor.Teleport(Game.FirstPlayer().Position.Around(2f));
                             // }
-                            AddFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
+                            AddUniqueFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
                         }
                         else
                         {
@@ -272,7 +272,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 49,
                 OnAdvance = () =>
                 { //go to gates
-                    AddFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
+                    AddUniqueFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
                     var world = Game.GetWorld(WorldSno.trout_town);
                     StartConversation(world, 166678);
                     ListenProximity(ActorSno._trout_oldtristram_exit_gate, new Advance());
