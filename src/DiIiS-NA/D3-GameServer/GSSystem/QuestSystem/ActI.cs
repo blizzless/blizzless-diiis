@@ -519,19 +519,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //StartConversation(this.Game.GetWorld(71150), 72496);
                     DestroyFollower(ActorSno._leah);
 
-                    var leah = tristramWorld.GetActorBySNO(ActorSno._leah, true);
-                    if (leah == null)
+                    var leah = tristramWorld.GetActorsBySNO(ActorSno._leah);
+                    if (!leah.Any())
                     {
-                        leah = tristramWorld.GetActorBySNO(ActorSno._leah, false);
-                        if (leah != null)
-                        {
-                            leah.Hidden = false;
-                            leah.SetVisible(true);
-                        }
-                        else
-                        {
-                            Logger.Warn($"Leah not found in world {tristramWorld.SNO.ToString()} - quest 72095/step 32");
-                        }
+                        Logger.Warn("Leah not found in world.");
+                    }
+                    foreach (var l in leah)
+                    {
+                        l.Hidden = false;
+                        l.SetVisible(true);
                     }
                     ListenConversation(198617, new Advance());
                 }
