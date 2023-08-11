@@ -81,7 +81,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#if DEBUG
 			string monster = "monster";
 			if (this is Boss) monster = "boss";
-			Logger.MethodTrace($"Player {player.Name} targeted {monster} {GetType().Name}.");
+			Logger.MethodTrace($"Player {player.Name} targeted $[underline]${monster}$[/]$ {GetType().Name}.");
 			#endif
 		}
 
@@ -188,14 +188,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			lock (_adjustLock)
 			{
 				int count = player.World.Game.Players.Count;
-				if (count > 0 && _adjustedPlayers != count)
-				{
-					Attributes[GameAttributes.Damage_Weapon_Min, 0] = _nativeDmg * (1f + (0.05f * (count - 1) * player.World.Game.Difficulty));
-					Attributes[GameAttributes.Hitpoints_Max] = _nativeHp * (1f + ((0.75f + (0.1f * player.World.Game.Difficulty)) * (count - 1)));
-					Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
-					Attributes.BroadcastChangedIfRevealed();
-					_adjustedPlayers = count;
-				}
+				if (count <= 0 || _adjustedPlayers == count) return true;
+				Attributes[GameAttributes.Damage_Weapon_Min, 0] = _nativeDmg * (1f + (0.05f * (count - 1) * player.World.Game.Difficulty));
+				Attributes[GameAttributes.Hitpoints_Max] = _nativeHp * (1f + ((0.75f + (0.1f * player.World.Game.Difficulty)) * (count - 1)));
+				Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+				Attributes.BroadcastChangedIfRevealed();
+				_adjustedPlayers = count;
 			}
 
 			return true;
