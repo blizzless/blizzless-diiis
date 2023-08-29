@@ -47,6 +47,12 @@ namespace DiIiS_NA.LoginServer
 			get => GetBoolean(nameof(MotdEnabled), true);
 			set => Set(nameof(MotdEnabled), value);
 		}
+
+		public bool MotdEnabledWhenWorldLoads
+		{
+			get => GetBoolean(nameof(MotdEnabledWhenWorldLoads), false);
+			set => Set(nameof(MotdEnabledWhenWorldLoads), value);
+		}
 		
 		/// <summary>
 		///	Motd text
@@ -56,6 +62,18 @@ namespace DiIiS_NA.LoginServer
 			get => GetString(nameof(Motd),
 				$"Welcome to Blizzless Server Build {Program.Build} - Stage: {Program.Stage} [{Program.TypeBuild}]!");
 			set => Set(nameof(Motd), value);
+		}
+
+		public bool MotdEnabledRemote
+		{
+			get => GetBoolean(nameof(MotdEnabledRemote), false);
+			set => Set(nameof(MotdEnabledRemote), value);
+		}
+
+		public string MotdRemoteUrl
+		{
+			get => GetString(nameof(MotdRemoteUrl), "");
+			set => Set(nameof(MotdRemoteUrl), value);
 		}
 
 		public static readonly LoginServerConfig Instance = new();

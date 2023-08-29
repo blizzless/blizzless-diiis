@@ -10,6 +10,7 @@ using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.Core.Types.QuadTrees;
@@ -930,7 +931,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		/// <param name="position">The position for drop.</param>
 		public void SpawnGold(Actor source, Player player, int Min = -1)
 		{
-			int amount = (int)(LootManager.GetGoldAmount(player.Attributes[GameAttributes.Level]) * Game.GoldModifier * GameServerConfig.Instance.RateMoney);
+			int amount = (int)(LootManager.GetGoldAmount(player.Attributes[GameAttributes.Level]) * Game.GoldModifier * GameModsConfig.Instance.Rate.Gold);
 			if (Min != -1)
 				amount += Min;
 			var item = ItemGenerator.CreateGold(player, amount); // somehow the actual ammount is not shown on ground /raist.

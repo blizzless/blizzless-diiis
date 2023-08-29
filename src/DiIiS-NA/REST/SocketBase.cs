@@ -45,16 +45,14 @@ namespace DiIiS_NA.REST
 
             try
             {
-                                using (var socketEventargs = new SocketAsyncEventArgs())
-                {
-                    socketEventargs.SetBuffer(_receiveBuffer, 0, _receiveBuffer.Length);
-                    socketEventargs.Completed += (sender, args) => ReadHandlerInternal(args);
-                    socketEventargs.SocketFlags = SocketFlags.None;
-                    socketEventargs.RemoteEndPoint = _socket.RemoteEndPoint;
+                using var socketEventArgs = new SocketAsyncEventArgs();
+                socketEventArgs.SetBuffer(_receiveBuffer, 0, _receiveBuffer.Length);
+                socketEventArgs.Completed += (sender, args) => ReadHandlerInternal(args);
+                socketEventArgs.SocketFlags = SocketFlags.None;
+                socketEventArgs.RemoteEndPoint = _socket.RemoteEndPoint;
 
-                    if (!_socket.ReceiveAsync(socketEventargs))
-                        ReadHandlerInternal(socketEventargs);
-                }
+                if (!_socket.ReceiveAsync(socketEventArgs))
+                    ReadHandlerInternal(socketEventArgs);
             }
             catch (Exception ex)
             {

@@ -119,7 +119,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				output = $"Unknown command.";
 #endif
 				
-			if (output == string.Empty)
+			if (string.IsNullOrEmpty(output))
 				return true;
 
 			if (output.Contains("\n"))

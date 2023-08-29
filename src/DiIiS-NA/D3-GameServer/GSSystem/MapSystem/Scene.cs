@@ -24,6 +24,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.D3_GameServer;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
 
 namespace DiIiS_NA.GameServer.GSSystem.MapSystem
@@ -549,7 +550,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				SceneSNO = SceneSNO.Id,
 				Transform = Transform,
 				WorldID = World.GlobalID,
-				MiniMapVisibility = GameServerConfig.Instance.ForceMinimapVisibility
+				MiniMapVisibility = GameModsConfig.Instance.Minimap.ForceVisibility
 			};
 		}
 

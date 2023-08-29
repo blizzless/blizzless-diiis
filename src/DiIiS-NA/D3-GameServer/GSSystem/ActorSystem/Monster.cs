@@ -6,6 +6,7 @@ using GameBalance = DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.Core.Types.SNO;
@@ -22,7 +23,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
 	public class Monster : Living, IUpdateable
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger(nameof(Monster));
+		private static readonly Logger Logger = LogManager.CreateLogger();
 
 		public override ActorType ActorType => ActorType.Monster;
 		public TickTimer DestroyTimer { get; }
@@ -70,7 +71,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			//WalkSpeed /= 2f;
 			
 			Brain = new MonsterBrain(this);
-			Attributes[GameAttributes.Attacks_Per_Second] = 1.2f;
+			Attributes[GameAttributes.Attacks_Per_Second] = GameModsConfig.Instance.Monster.AttacksPerSecond;// 1.2f;
 
 			UpdateStats();
 		}
@@ -80,7 +81,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			#if DEBUG
 			string monster = "monster";
 			if (this is Boss) monster = "boss";
-			Logger.MethodTrace($"Player {player.Name} targeted {monster} {GetType().Name}.");
+			Logger.MethodTrace($"Player {player.Name} targeted $[underline]${monster}$[/]$ {GetType().Name}.");
 			#endif
 		}
 
@@ -96,26 +97,26 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 			Attributes[GameAttributes.Hitpoints_Max] = (int)((int)monsterLevels.MonsterLevel[monsterLevel].HPMin + DiIiS_NA.Core.Helpers.Math.RandomHelper.Next(0, (int)monsterLevels.MonsterLevel[monsterLevel].HPDelta) * HpMultiplier * World.Game.HpModifier);
 			Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] = ((int)World.Game.ConnectedPlayers.Length + 1) * 1.5f;
-			Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] *= GameServerConfig.Instance.RateMonsterHP;
+			Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] *= GameModsConfig.Instance.Monster.HealthMultiplier;
 			if (World.Game.ConnectedPlayers.Length > 1)
 				Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] = Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative];// / 2f;
 			var hpMax = Attributes[GameAttributes.Hitpoints_Max];
 			var hpTotal = Attributes[GameAttributes.Hitpoints_Max_Total];
 			float damageMin = monsterLevels.MonsterLevel[World.Game.MonsterLevel].Dmg * DmgMultiplier;// * 0.5f;
 			float damageDelta = damageMin;
-			Attributes[GameAttributes.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * GameServerConfig.Instance.RateMonsterDMG;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * GameModsConfig.Instance.Monster.DamageMultiplier;
 			Attributes[GameAttributes.Damage_Weapon_Delta, 0] = damageDelta;
 
 			if (monsterLevel > 30)
 			{
 				Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] = Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative];// * 0.5f;
-				Attributes[GameAttributes.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * GameServerConfig.Instance.RateMonsterDMG;// * 0.2f;
+				Attributes[GameAttributes.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * GameModsConfig.Instance.Monster.DamageMultiplier;// * 0.2f;
 				Attributes[GameAttributes.Damage_Weapon_Delta, 0] = damageDelta;
 			}
 			if (monsterLevel > 60)
 			{
 				Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] = Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative];// * 0.7f;
-				Attributes[GameAttributes.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * GameServerConfig.Instance.RateMonsterDMG;// * 0.15f;
+				Attributes[GameAttributes.Damage_Weapon_Min, 0] = damageMin * World.Game.DmgModifier * GameModsConfig.Instance.Monster.DamageMultiplier;// * 0.15f;
 				//this.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = DamageDelta * 0.5f;
 			}
 
@@ -187,14 +188,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			lock (_adjustLock)
 			{
 				int count = player.World.Game.Players.Count;
-				if (count > 0 && _adjustedPlayers != count)
-				{
-					Attributes[GameAttributes.Damage_Weapon_Min, 0] = _nativeDmg * (1f + (0.05f * (count - 1) * player.World.Game.Difficulty));
-					Attributes[GameAttributes.Hitpoints_Max] = _nativeHp * (1f + ((0.75f + (0.1f * player.World.Game.Difficulty)) * (count - 1)));
-					Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
-					Attributes.BroadcastChangedIfRevealed();
-					_adjustedPlayers = count;
-				}
+				if (count <= 0 || _adjustedPlayers == count) return true;
+				Attributes[GameAttributes.Damage_Weapon_Min, 0] = _nativeDmg * (1f + (0.05f * (count - 1) * player.World.Game.Difficulty));
+				Attributes[GameAttributes.Hitpoints_Max] = _nativeHp * (1f + ((0.75f + (0.1f * player.World.Game.Difficulty)) * (count - 1)));
+				Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+				Attributes.BroadcastChangedIfRevealed();
+				_adjustedPlayers = count;
 			}
 
 			return true;

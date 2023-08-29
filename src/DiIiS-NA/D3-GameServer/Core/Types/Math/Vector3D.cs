@@ -112,6 +112,24 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 
 			return ((x * x) + (y * y)) + (z * z);
 		}
+		private static Random rand = new Random();
+
+		public Vector3D Around(float radius)
+		{
+			return Around(radius, radius, radius);
+		}
+		public Vector3D Around(float x, float y, float z)
+		{
+			float newX = X + ((float)rand.NextDouble() * 2 * x) - x;
+			float newY = Y + ((float)rand.NextDouble() * 2 * y) - y;
+			float newZ = Z + ((float)rand.NextDouble() * 2 * z) - z;
+			return new Vector3D(newX, newY, newZ);
+		}
+
+		public Vector3D Around(Vector3D vector)
+		{
+			return Around(vector.X, vector.Y, vector.Z);
+		}
 
 		public static bool operator ==(Vector3D a, Vector3D b) => a?.Equals(b) ?? ReferenceEquals(null, b);
 

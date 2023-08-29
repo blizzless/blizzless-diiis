@@ -65,21 +65,13 @@ namespace DiIiS_NA.GameServer
 #endif
 			set => Set(nameof(AfkDisconnect), value);
 		}
-		
-		/// <summary>
-		/// Always send motd when world loads for player.
-		/// </summary>
-		public bool MotdWhenWorldLoads
-		{
-			get => GetBoolean(nameof(MotdWhenWorldLoads), true);
-			set => Set(nameof(MotdWhenWorldLoads), value);
-		}
-		
+
 		#region Game Mods
 
 		/// <summary>
 		/// Rate of experience gain.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float RateExp
 		{
 			get => GetFloat(nameof(RateExp), 1);
@@ -89,6 +81,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Rate of gold gain.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float RateMoney
 		{
 			get => GetFloat(nameof(RateMoney), 1);
@@ -98,12 +91,14 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Rate of item drop.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float RateDrop
 		{
 			get => GetFloat(nameof(RateDrop), 1);
 			set => Set(nameof(RateDrop), value);
 		}
 
+		[Obsolete("Use GameModsConfig instead.")]
 		public float RateChangeDrop
 		{
 			get => GetFloat(nameof(RateChangeDrop), 1);
@@ -113,6 +108,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Rate of monster's HP.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float RateMonsterHP
 		{
 			get => GetFloat(nameof(RateMonsterHP), 1);
@@ -122,6 +118,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Rate of monster's damage.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float RateMonsterDMG
 		{
 			get => GetFloat(nameof(RateMonsterDMG), 1);
@@ -131,6 +128,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Percentage that a unique, legendary, set or special item created is unidentified
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float ChanceHighQualityUnidentified
 		{
 			get => GetFloat(nameof(ChanceHighQualityUnidentified), 30f);
@@ -140,6 +138,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Percentage that a normal item created is unidentified
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float ChanceNormalUnidentified
 		{
 			get => GetFloat(nameof(ChanceNormalUnidentified), 5f);
@@ -149,6 +148,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Resurrection charges on changing worlds
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public int ResurrectionCharges
 		{
 			get => GetInt(nameof(ResurrectionCharges), 3);
@@ -158,6 +158,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Boss Health Multiplier
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float BossHealthMultiplier
 		{
 			get => GetFloat(nameof(BossHealthMultiplier), 6f);
@@ -167,6 +168,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Boss Damage Multiplier
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float BossDamageMultiplier
 		{
 			get => GetFloat(nameof(BossDamageMultiplier), 3f);
@@ -176,6 +178,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Whether to bypass the quest's settings of "Saveable" to TRUE (unless in OpenWorld)
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public bool AutoSaveQuests
 		{
 			get => GetBoolean(nameof(AutoSaveQuests), false);
@@ -185,6 +188,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Progress gained when killing a monster in Nephalem Rifts
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float NephalemRiftProgressMultiplier
 		{
 			get => GetFloat(nameof(NephalemRiftProgressMultiplier), 1f);
@@ -194,6 +198,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		///	How much a health potion heals in percentage
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float HealthPotionRestorePercentage
 		{
 			get => GetFloat(nameof(HealthPotionRestorePercentage), 60f);
@@ -203,6 +208,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Cooldown (in seconds) to use a health potion again.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float HealthPotionCooldown
 		{
 			get => GetFloat(nameof(HealthPotionCooldown), 30f);
@@ -212,6 +218,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Unlocks all waypoints in the campaign.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public bool UnlockAllWaypoints
 		{
 			get => GetBoolean(nameof(UnlockAllWaypoints), false);
@@ -221,6 +228,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Strength multiplier when you're not a paragon.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float StrengthMultiplier
 		{
 			get => GetFloat(nameof(StrengthMultiplier), 1f);
@@ -230,6 +238,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Strength multiplier when you're a paragon.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float StrengthParagonMultiplier
 		{
 			get => GetFloat(nameof(StrengthParagonMultiplier), 1f);
@@ -239,6 +248,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Dexterity multiplier when you're not a paragon.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float DexterityMultiplier
 		{
 			get => GetFloat(nameof(DexterityMultiplier), 1f);
@@ -248,6 +258,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Dexterity multiplier when you're a paragon.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float DexterityParagonMultiplier
 		{
 			get => GetFloat(nameof(DexterityParagonMultiplier), 1f);
@@ -257,6 +268,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Intelligence multiplier when you're not a paragon.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float IntelligenceMultiplier
 		{
 			get => GetFloat(nameof(IntelligenceMultiplier), 1f);
@@ -266,6 +278,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Intelligence multiplier when you're a paragon.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float IntelligenceParagonMultiplier
 		{
 			get => GetFloat(nameof(IntelligenceParagonMultiplier), 1f);
@@ -275,6 +288,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Vitality multiplier when you're not a paragon.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float VitalityMultiplier
 		{
 			get => GetFloat(nameof(VitalityMultiplier), 1f);
@@ -284,6 +298,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Vitality multiplier when you're a paragon.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float VitalityParagonMultiplier
 		{
 			get => GetFloat(nameof(VitalityParagonMultiplier), 1f);
@@ -293,6 +308,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Auto finishes nephalem rift when there's <see cref="NephalemRiftAutoFinishThreshold"></see> or less monsters left.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public bool NephalemRiftAutoFinish
 		{
 			get => GetBoolean(nameof(NephalemRiftAutoFinish), false);
@@ -302,6 +318,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// If <see cref="NephalemRiftAutoFinish"></see> is enabled, this is the threshold.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public int NephalemRiftAutoFinishThreshold
 		{
 			get => GetInt(nameof(NephalemRiftAutoFinishThreshold), 2);
@@ -311,6 +328,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Nephalem Rifts chance of spawning a orb.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public float NephalemRiftOrbsChance
 		{
 			get => GetFloat(nameof(NephalemRiftOrbsChance), 0f);
@@ -320,6 +338,7 @@ namespace DiIiS_NA.GameServer
 		/// <summary>
 		/// Forces the game to reveal all the map.
 		/// </summary>
+		[Obsolete("Use GameModsConfig instead.")]
 		public bool ForceMinimapVisibility
 		{
 			get => GetBoolean(nameof(ForceMinimapVisibility), false);
@@ -327,6 +346,7 @@ namespace DiIiS_NA.GameServer
 		}
 
 		#endregion
+
 		public static GameServerConfig Instance { get; } = new();
 
 		private GameServerConfig() : base("Game-Server")

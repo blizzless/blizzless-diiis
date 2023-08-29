@@ -4,6 +4,7 @@ using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -73,9 +74,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
 			Attributes[GameAttributes.using_Bossbar] = true;
 			Attributes[GameAttributes.InBossEncounter] = true;
-			Attributes[GameAttributes.Hitpoints_Max] *= GameServerConfig.Instance.BossHealthMultiplier;
-			Attributes[GameAttributes.Damage_Weapon_Min, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
-			Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
+			Attributes[GameAttributes.Hitpoints_Max] *= GameModsConfig.Instance.Boss.HealthMultiplier;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] *= GameModsConfig.Instance.Boss.DamageMultiplier;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= GameModsConfig.Instance.Boss.DamageMultiplier;
 			Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
 			Attributes[GameAttributes.TeamID] = 10;
 

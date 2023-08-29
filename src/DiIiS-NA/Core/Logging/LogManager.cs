@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace DiIiS_NA.Core.Logging
 {
@@ -25,7 +26,7 @@ namespace DiIiS_NA.Core.Logging
 		/// Creates and returns a logger named with declaring type.
 		/// </summary>
 		/// <returns>A <see cref="Logger"/> instance.</returns>
-		public static Logger CreateLogger()
+		public static Logger CreateLogger([CallerFilePath] string filePath = "")
 		{
 			var frame = new StackFrame(1, false); // read stack frame.
 			var name = frame.GetMethod().DeclaringType.Name; // get declaring type's name.
@@ -33,7 +34,7 @@ namespace DiIiS_NA.Core.Logging
 			if (name == null) // see if we got a name.
 				throw new Exception("Error getting full name for declaring type.");
 
-			return CreateLogger(name); // return the newly created logger.
+			return CreateLogger(name, filePath); // return the newly created logger.
 		}
 
 		/// <summary>
@@ -41,10 +42,10 @@ namespace DiIiS_NA.Core.Logging
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns>A <see cref="Logger"/> instance.</returns>
-		public static Logger CreateLogger(string name)
+		public static Logger CreateLogger(string name, [CallerFilePath] string filePath = "")
 		{
 			if (!Loggers.ContainsKey(name)) // see if we already have instance for the given name.
-				Loggers.Add(name, new Logger(name)); // add it to dictionary of loggers.
+				Loggers.Add(name, new Logger(name, filePath)); // add it to dictionary of loggers.
 
 			return Loggers[name]; // return the newly created logger.
 		}

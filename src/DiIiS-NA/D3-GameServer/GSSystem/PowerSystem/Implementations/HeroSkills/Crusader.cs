@@ -148,7 +148,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (Rune_B > 0) DmgType = DamageType.Lightning;     //Electrify
 			AttackPayload attack = new AttackPayload(this);
 			attack.Targets = GetEnemiesInArcDirection(User.Position, TargetPosition, 12f, Rune_D > 0 ? 120f : 90f); //Carve
-			if (Rune_C > 0) attack.chcBonus = ScriptFormula(14);    //Crush
+			if (Rune_C > 0) attack.ChcBonus = ScriptFormula(14);    //Crush
 			attack.AddWeaponDamage(ScriptFormula(0), DmgType);
 			attack.OnHit = hitPayload =>
 			{
@@ -3150,7 +3150,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				attack.Targets = GetEnemiesInRadius(point, 12f);
 				attack.AddWeaponDamage(ScriptFormula(3), DamageType.Physical);
 				if (Rune_B > 0)     //Annihilate
-					attack.chcBonus = 1f;       //will be capped to 85% anyway
+					attack.ChcBonus = 1f;       //will be capped to 85% anyway
 				attack.OnHit = (hitPayload) =>
 				{
 					if (Rune_A > 0)     //Barrels of tar
