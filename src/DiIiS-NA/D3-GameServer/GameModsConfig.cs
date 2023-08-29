@@ -58,6 +58,8 @@ public class MonsterConfig
 
     public float HealthMultiplier { get; set; } = 1;
     public float DamageMultiplier { get; set; } = 1;
+
+    public float LookupRange { get; set; } = 50f;
 }
 
 public class QuestConfig
@@ -145,10 +147,10 @@ public class GameModsConfig
                 if (content.TryFromJson(out GameModsConfig config, out Exception ex))
                 {
                     Logger.Success("Game mods loaded successfully!");
-                    Logger.Info("$[italic]$Recreating $[underline]$config.mods.json$[/]$ in order to keep the structure and with all fields...$[/]$");
+                    Logger.Info("$[italic]$Re-formatting$[/]$ $[white on red underline]$ config.mods.json $[/]$...");
                     var @new = config.ToJson(Formatting.Indented);
                     File.WriteAllText(@"config.mods.json", @new);
-                    Logger.Success("Game mods re-structured!");
+                    Logger.Success("Game mods re-formatted!");
                     Instance = config;
                     return;
                 }
@@ -199,10 +201,10 @@ public class GameModsConfig
             {
                 Multipliers = 
                 {
-                Strength = new(migration.StrengthMultiplier, migration.StrengthParagonMultiplier),
-                Dexterity = new(migration.DexterityMultiplier, migration.DexterityParagonMultiplier),
-                Intelligence = new(migration.IntelligenceMultiplier, migration.IntelligenceParagonMultiplier),
-                Vitality = new(migration.VitalityMultiplier, migration.VitalityParagonMultiplier)
+                    Strength = new(migration.StrengthMultiplier, migration.StrengthParagonMultiplier),
+                    Dexterity = new(migration.DexterityMultiplier, migration.DexterityParagonMultiplier),
+                    Intelligence = new(migration.IntelligenceMultiplier, migration.IntelligenceParagonMultiplier),
+                    Vitality = new(migration.VitalityMultiplier, migration.VitalityParagonMultiplier)
                 }
             },
             Items =

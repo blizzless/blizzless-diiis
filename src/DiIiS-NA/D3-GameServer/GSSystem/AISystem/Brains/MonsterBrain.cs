@@ -5,6 +5,7 @@ using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.D3_GameServer;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
@@ -151,7 +152,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
             if (CurrentAction != null) return;
             _powerDelay ??= new SecondsTickTimer(Body.World.Game, 1.0f);
             // Check if the character has been attacked or if there are any players within 50 units range
-            if (AttackedBy != null || Body.GetObjectsInRange<Player>(50f).Count != 0)
+            if (AttackedBy != null || Body.GetObjectsInRange<Player>(GameModsConfig.Instance.Monster.LookupRange).Count != 0)
             {
                 // If the power delay hasn't timed out, return
                 if (!_powerDelay.TimedOut) return;
@@ -170,13 +171,13 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
                     // If the character is part of a team, search for alive monsters within a range of 60 units and order them by distance
                     if (Body.Attributes[GameAttributes.Team_Override] == 1)
-                        targets = Body.GetObjectsInRange<Monster>(60f)
+                        targets = Body.GetObjectsInRange<Monster>(GameModsConfig.Instance.Monster.LookupRange +10f)
                             .Where(p => !p.Dead)
                             .OrderBy((monster) => PowerMath.Distance2D(monster.Position, Body.Position))
                             .ToArray();
                     else
                         // Otherwise, search for different types of actors including players, minions, destructible loot containers, or hirelings that are alive, not loading and not helpers, and order them by distance
-                        targets = Body.GetActorsInRange(50f)
+                        targets = Body.GetActorsInRange(GameModsConfig.Instance.Monster.LookupRange)
                             .Where(p => ((p is Player) && !p.Dead && p.Attributes[GameAttributes.Loading] == false &&
                                          p.Attributes[GameAttributes.Is_Helper] == false &&
                                          p.World.BuffManager.GetFirstBuff<ActorGhostedBuff>(p) == null)
@@ -295,7 +296,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
                 }
             }
 
-            else if (Body.GetObjectsInRange<Living>(50f).Count != 0)
+            else if (Body.GetObjectsInRange<Living>(GameModsConfig.Instance.Monster.LookupRange).Count != 0)
             {
                 if (!_powerDelay.TimedOut) return;
                 _powerDelay = new SecondsTickTimer(Body.World.Game, 1.0f);
@@ -305,7 +306,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
                 if (PriorityTarget == null)
                 {
-                    var targets = Body.GetActorsInRange(50f)
+                    var targets = Body.GetActorsInRange(GameModsConfig.Instance.Monster.LookupRange)
                         .Where(p => ((p is LorathNahr_NPC) && !p.Dead)
                                     || ((p is CaptainRumford) && !p.Dead)
                                     || (p is DesctructibleLootContainer && p.SNO.IsDoorOrBarricade())
