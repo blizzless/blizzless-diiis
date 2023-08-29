@@ -24,7 +24,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 {
     public class MonsterBrain : Brain
     {
-        private new readonly Logger _logger;
+        private readonly Logger _logger;
 
         // list of power SNOs that are defined for the monster
         public Dictionary<int, Cooldown> PresetPowers { get; private set; }
@@ -39,7 +39,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
         private bool _warnedNoPowers;
         private Actor Target { get; set; }
-        private int _mpqPowerCount;
+        private readonly int _mpqPowerCount;
         private bool _feared = false;
 
         public Actor AttackedBy = null;
