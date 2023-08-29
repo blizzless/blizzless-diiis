@@ -59,6 +59,9 @@ public class MonsterConfig
     public float HealthMultiplier { get; set; } = 1;
     public float DamageMultiplier { get; set; } = 1;
 
+    /// <summary>
+    /// Attack target range
+    /// </summary>
     public float LookupRange { get; set; } = 50f;
 }
 
