@@ -24,7 +24,7 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
 		public event ConnectionEventHandler OnDisconnect;
 		public event ConnectionDataEventHandler DataReceived;
 
-		protected static readonly Logger Logger = LogManager.CreateLogger("S");
+		protected static readonly Logger Logger = LogManager.CreateLogger();
 		private static bool _disposed = false;
 
 		public virtual void Run() { }
