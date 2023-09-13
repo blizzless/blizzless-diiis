@@ -149,10 +149,8 @@ public class GameModsConfig
                 if (content.TryFromJson(out GameModsConfig config, out Exception ex))
                 {
                     Logger.Success("Game mods loaded successfully!");
-                    Logger.Info("$[italic]$Re-formatting$[/]$ $[white on red underline]$ config.mods.json $[/]$...");
                     var @new = config.ToJson(Formatting.Indented);
                     File.WriteAllText(@"config.mods.json", @new);
-                    Logger.Success("Game mods re-formatted!");
                     Instance = config;
                     return;
                 }
@@ -166,79 +164,9 @@ public class GameModsConfig
     private static GameModsConfig CreateDefaultFile()
     {
         var migration = GameServerConfig.Instance;
-        Logger.Info("$[blue]$Migrating mods configuration file...$[/]$");
-        GameModsConfig content = new()
-        {
-#pragma warning disable CS0618
-           
-            Rate =
-            {
-                Experience = migration.RateExp,
-                Gold = migration.RateMoney,
-                ChangeDrop = migration.RateChangeDrop,
-                Drop = migration.RateDrop
-            },
-            Health =
-            {
-                ResurrectionCharges = migration.ResurrectionCharges,
-                PotionCooldown = migration.HealthPotionCooldown,
-                PotionRestorePercentage = migration.HealthPotionRestorePercentage
-            },
-            Monster =
-            {
-                HealthMultiplier = migration.RateMonsterHP,
-                DamageMultiplier = migration.RateMonsterDMG
-            },
-            Boss =
-            {
-                HealthMultiplier = migration.BossHealthMultiplier,
-                DamageMultiplier = migration.BossDamageMultiplier
-            },
-            Quest =
-            {
-                AutoSave = migration.AutoSaveQuests,
-                UnlockAllWaypoints = migration.UnlockAllWaypoints
-            },
-            Player =
-            {
-                Multipliers = 
-                {
-                    Strength = new(migration.StrengthMultiplier, migration.StrengthParagonMultiplier),
-                    Dexterity = new(migration.DexterityMultiplier, migration.DexterityParagonMultiplier),
-                    Intelligence = new(migration.IntelligenceMultiplier, migration.IntelligenceParagonMultiplier),
-                    Vitality = new(migration.VitalityMultiplier, migration.VitalityParagonMultiplier)
-                }
-            },
-            Items =
-            {
-                UnidentifiedDropChances =
-                {
-                    HighQuality = migration.ChanceHighQualityUnidentified,
-                    NormalQuality = migration.ChanceNormalUnidentified
-                }
-            },
-            Minimap =
-            {
-                ForceVisibility = migration.ForceMinimapVisibility
-            },
-            NephalemRift =
-            {
-                AutoFinish = migration.NephalemRiftAutoFinish,
-                AutoFinishThreshold = migration.NephalemRiftAutoFinishThreshold,
-                OrbsChance = migration.NephalemRiftAutoFinishThreshold,
-                ProgressMultiplier = migration.NephalemRiftProgressMultiplier
-            }
-#pragma warning restore CS0618
-        };
-        File.WriteAllText("config.mods.json", content.ToJson());
-        
-        if (Program.Build == 30 && Program.Stage < 6)
-        {
-            Logger.Success(
-                "$[underline]$Migration is complete!$[/]$ - All game mods migrated from $[white]$config.ini$[/]$ to $[white]$config.mods.json$[/]$.");
-        }
-
-        return content;
+        File.WriteAllText("config.mods.json", new GameModsConfig().ToJson());
+        Logger.Success("Game mods file created successfully!");
+        return new GameModsConfig();
     }
 }
 

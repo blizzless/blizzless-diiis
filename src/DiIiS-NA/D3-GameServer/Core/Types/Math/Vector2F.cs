@@ -12,25 +12,13 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 		private static Vector2F _unitX;
 		private static Vector2F _unitY;
 
-		public static Vector2F Zero
-		{
-			get { return _zero; }
-		}
+		public static Vector2F Zero => _zero;
 
-		public static Vector2F One
-		{
-			get { return _one; }
-		}
+		public static Vector2F One => _one;
 
-		public static Vector2F UnitX
-		{
-			get { return _unitX; }
-		}
+		public static Vector2F UnitX => _unitX;
 
-		public static Vector2F UnitY
-		{
-			get { return _unitY; }
-		}
+		public static Vector2F UnitY => _unitY;
 
 		public Vector2F(float x, float y)
 		{
