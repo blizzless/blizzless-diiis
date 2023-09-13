@@ -433,7 +433,7 @@ namespace DiIiS_NA
             }
             else
             {
-                Logger.Info("Discord bot Disabled..");
+                Logger.Trace("Discord bot Disabled..");
             }
             DiIiS_NA.GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.RegenerateDensity();
             DiIiS_NA.GameServer.ClientSystem.GameServer.GSBackend = new GsBackend(LoginServerConfig.Instance.BindIP, LoginServerConfig.Instance.WebPort);
