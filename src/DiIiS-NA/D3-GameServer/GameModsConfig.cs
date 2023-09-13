@@ -14,8 +14,7 @@ public class RateConfig
 {
     public float GetDamageByDifficulty(int diff)
     {
-        if (diff < 0) diff = 0;
-        if (diff > 19) diff = 19;
+        diff = Math.Clamp(diff, 0, 19);
         return !DamageByDifficulty.ContainsKey(diff) ? 1f : DamageByDifficulty[diff];
     }
     public Dictionary<int, float> HealthByDifficulty { get; set; } = new()
