@@ -453,7 +453,6 @@ namespace DiIiS_NA
         }
         
         [DllImport("kernel32.dll", ExactSpelling = true)]
-
         static extern IntPtr GetConsoleWindow();
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
