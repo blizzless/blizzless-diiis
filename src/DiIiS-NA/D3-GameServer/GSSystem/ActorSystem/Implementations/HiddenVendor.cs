@@ -1,26 +1,11 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -37,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 	public class HiddenVendor : Vendor
 	{
 		// TODO: extract
-		private static readonly Dictionary<ActorSno, ulong> criteria = new Dictionary<ActorSno, ulong>
+		private static readonly Dictionary<ActorSno, ulong> criteria = new()
 		{
 			[ActorSno._a1_genericvendor_tinker] = 74987243309911,
 			[ActorSno._a1_uniquevendor_alchemist] = 74987243309912,
@@ -63,7 +48,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			for (int i = 0; i < 9; i++)
 			{
 				var itm = ItemGenerator.GenerateRandomEquip(this, level, 6, 7);
-				itm.Attributes[GameAttribute.Item_Cost_Percent_Bonus] = 3f;
+				itm.Attributes[GameAttributes.Item_Cost_Percent_Bonus] = 3f;
 				list.Add(itm);
 			}
 

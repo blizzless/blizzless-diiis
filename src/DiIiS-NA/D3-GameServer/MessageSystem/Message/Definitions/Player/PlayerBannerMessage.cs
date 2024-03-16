@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using D3.GameMessage;
-//Blizzless Project 2022 
+﻿using D3.GameMessage;
 using System.Text;
 
 namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Player

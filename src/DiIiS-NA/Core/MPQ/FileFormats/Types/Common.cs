@@ -1,15 +1,8 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using System.Text;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats.Types
@@ -26,13 +19,13 @@ namespace DiIiS_NA.Core.MPQ.FileFormats.Types
 
         public Header(MpqFileStream stream)
         {
-            this.DeadBeef = stream.ReadValueS32();
-            this.SnoType = stream.ReadValueS32();
-            this.Unknown1 = stream.ReadValueS32();
-            this.Unknown2 = stream.ReadValueS32();
-            this.SNOId = stream.ReadValueS32();
-            this.Unknown3 = stream.ReadValueS32();
-            this.Unknown4 = stream.ReadValueS32();
+            DeadBeef = stream.ReadValueS32();
+            SnoType = stream.ReadValueS32();
+            Unknown1 = stream.ReadValueS32();
+            Unknown2 = stream.ReadValueS32();
+            SNOId = stream.ReadValueS32();
+            Unknown3 = stream.ReadValueS32();
+            Unknown4 = stream.ReadValueS32();
         }
     }
 
@@ -72,15 +65,15 @@ namespace DiIiS_NA.Core.MPQ.FileFormats.Types
 
         public ScriptFormula(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
-            this.I2 = stream.ReadValueS32();
-            this.I3 = stream.ReadValueS32();
-            this.I4 = stream.ReadValueS32();
-            this.NameSize = stream.ReadValueS32();
-            this.I5 = stream.ReadValueS32();
-            this.OpcodeSize = stream.ReadValueS32();
-            this.OpCodeName = stream.ReadStringZ(Encoding.ASCII);
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
+            I2 = stream.ReadValueS32();
+            I3 = stream.ReadValueS32();
+            I4 = stream.ReadValueS32();
+            NameSize = stream.ReadValueS32();
+            I5 = stream.ReadValueS32();
+            OpcodeSize = stream.ReadValueS32();
+            OpCodeName = stream.ReadStringZ(Encoding.ASCII);
 
             switch (NameSize % 4)
             {
@@ -97,7 +90,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats.Types
                     break;
 
             }
-            this.OpCodeArray = new byte[OpcodeSize];
+            OpCodeArray = new byte[OpcodeSize];
             stream.Read(OpCodeArray, 0, OpcodeSize);
         }
 
@@ -131,7 +124,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats.Types
 
         public HardPointLink(MpqFileStream stream)
         {
-            this.Name = stream.ReadString(64, true);
+            Name = stream.ReadString(64, true);
             I0 = stream.ReadValueS32();
         }
     }
@@ -277,8 +270,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats.Types
             HardPointLinks = new HardPointLink[2];
             HardPointLinks[0] = new HardPointLink(stream);
             HardPointLinks[1] = new HardPointLink(stream);
-            this.LookLink = stream.ReadString(64, true);
-            this.ConstraintLink = stream.ReadString(64, true);
+            LookLink = stream.ReadString(64, true);
+            ConstraintLink = stream.ReadString(64, true);
             AnimTag = stream.ReadValueS32();
             Alpha = stream.ReadValueF32();
             MsgPassMethod = stream.ReadValueS32();

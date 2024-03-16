@@ -1,11 +1,6 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -30,15 +25,15 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public AmbientSound(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.I0 = stream.ReadValueS32();
-            this.SoundSNO00 = stream.ReadValueS32();
-            this.RandomAmbientSoundParams = new RandomAmbientSoundParams(stream);
+            Header = new Header(stream);
+            I0 = stream.ReadValueS32();
+            SoundSNO00 = stream.ReadValueS32();
+            RandomAmbientSoundParams = new RandomAmbientSoundParams(stream);
             //stream.Position = 76;
-            this.SoundSNO01 = stream.ReadValueS32();
+            SoundSNO01 = stream.ReadValueS32();
             Time01 = stream.ReadValueF32();
             Time02 = stream.ReadValueF32();
-            this.Text = stream.ReadString(64);
+            Text = stream.ReadString(64);
             F0 = stream.ReadValueF32();
             F1 = stream.ReadValueF32();
             F2 = stream.ReadValueF32();

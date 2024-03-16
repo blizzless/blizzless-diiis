@@ -1,10 +1,6 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem

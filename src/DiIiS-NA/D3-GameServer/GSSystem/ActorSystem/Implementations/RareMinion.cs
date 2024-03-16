@@ -1,20 +1,9 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
-using System;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -23,10 +12,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public RareMinion(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.Hitpoints_Max] *= 3.0f;
-			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max];
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 1.5f;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 1.5f;
+			Attributes[GameAttributes.Hitpoints_Max] *= 3.0f;
+			Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max];
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] *= 1.5f;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= 1.5f;
 
 			//MonsterAffixGenerator.Generate(this, this.World.Game.Difficulty + 1);
 		}

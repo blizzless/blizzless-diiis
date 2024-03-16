@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using Microsoft.Data.Sqlite;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
 
 namespace DiIiS_NA.Core.Storage

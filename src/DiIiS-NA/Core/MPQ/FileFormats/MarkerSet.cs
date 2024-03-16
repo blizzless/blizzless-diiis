@@ -1,19 +1,10 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Collision;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -33,12 +24,12 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public MarkerSet(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);//0
-            this.Markers = stream.ReadSerializedData<Marker>(); //28
+            Header = new Header(stream);//0
+            Markers = stream.ReadSerializedData<Marker>(); //28
             stream.Position += 4;
             NoSpawns = stream.ReadSerializedData<Circle>(); //96
             stream.Position += (15 * 4);
-            this.AABB = new AABB(stream); //160
+            AABB = new AABB(stream); //160
             //stream.Position += (14 * 4);
             int i0 = stream.ReadValueS32(); //184
 
@@ -46,11 +37,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
                 //this.ContainsActorLocations = false;
                 throw new System.Exception("Farmy thought this field is a bool, but apparently its not");
             else
-                this.ContainsActorLocations = i0 == 1;
+                ContainsActorLocations = i0 == 1;
 
-            this.NLabel = stream.ReadValueS32(); //200
-            this.SpecialIndexCount = stream.ReadValueS32(); //204
-            this.SpecialIndexList = stream.ReadSerializedShorts(); //208
+            NLabel = stream.ReadValueS32(); //200
+            SpecialIndexCount = stream.ReadValueS32(); //204
+            SpecialIndexList = stream.ReadSerializedShorts(); //208
             stream.Close();
         }
     }
@@ -67,14 +58,14 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.Name = stream.ReadString(128, true);
-            this.Type = (MarkerType)stream.ReadValueS32();
-            this.PRTransform = new PRTransform(stream);
-            this.SNOHandle = new SNOHandle(stream);
-            this.TagMap = stream.ReadSerializedItem<TagMap>();
+            Name = stream.ReadString(128, true);
+            Type = (MarkerType)stream.ReadValueS32();
+            PRTransform = new PRTransform(stream);
+            SNOHandle = new SNOHandle(stream);
+            TagMap = stream.ReadSerializedItem<TagMap>();
             stream.Position += 8;
-            this.MarkerLinksCount = stream.ReadValueS32();
-            this.MarkerLinks = stream.ReadSerializedData<MarkerLink>();
+            MarkerLinksCount = stream.ReadValueS32();
+            MarkerLinks = stream.ReadSerializedData<MarkerLink>();
             stream.Position += (3 * 4);
         }
 
@@ -103,8 +94,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.String1 = stream.ReadString(128, true);
-            this.String2 = stream.ReadString(128, true);
+            String1 = stream.ReadString(128, true);
+            String2 = stream.ReadString(128, true);
         }
     }
 

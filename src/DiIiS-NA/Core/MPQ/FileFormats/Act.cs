@@ -1,15 +1,8 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -26,20 +19,20 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Act(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
+            Header = new Header(stream);
 
-            this.ActQuestInfo = stream.ReadSerializedData<ActQuestInfo>(); //12
+            ActQuestInfo = stream.ReadSerializedData<ActQuestInfo>(); //12
             stream.Position += 12;
 
-            this.WayPointInfo = new WaypointInfo[100]; //32
+            WayPointInfo = new WaypointInfo[100]; //32
             for (int i = 0; i < WayPointInfo.Length; i++)
-                this.WayPointInfo[i] = new WaypointInfo(stream);
+                WayPointInfo[i] = new WaypointInfo(stream);
 
-            this.ResolvedPortalDestination = new ResolvedPortalDestination(stream);
+            ResolvedPortalDestination = new ResolvedPortalDestination(stream);
 
-            this.ActStartLocOverrides = new ActStartLocOverride[6];
+            ActStartLocOverrides = new ActStartLocOverride[6];
             for (int i = 0; i < ActStartLocOverrides.Length; i++)
-                this.ActStartLocOverrides[i] = new ActStartLocOverride(stream);
+                ActStartLocOverrides[i] = new ActStartLocOverride(stream);
 
             stream.Close();
         }

@@ -1,24 +1,11 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 {
@@ -51,11 +38,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			if (context != null)
 				if (context.PowerSNO != 0)
 				{
-					Attributes[GameAttribute.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_A, context.PowerSNO];
-					Attributes[GameAttribute.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_B, context.PowerSNO];
-					Attributes[GameAttribute.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_C, context.PowerSNO];
-					Attributes[GameAttribute.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_D, context.PowerSNO];
-					Attributes[GameAttribute.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttribute.Rune_E, context.PowerSNO];
+					Attributes[GameAttributes.Rune_A, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_A, context.PowerSNO];
+					Attributes[GameAttributes.Rune_B, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_B, context.PowerSNO];
+					Attributes[GameAttributes.Rune_C, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_C, context.PowerSNO];
+					Attributes[GameAttributes.Rune_D, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_D, context.PowerSNO];
+					Attributes[GameAttributes.Rune_E, context.PowerSNO] = context.User.Attributes[GameAttributes.Rune_E, context.PowerSNO];
 				}
 		}
 

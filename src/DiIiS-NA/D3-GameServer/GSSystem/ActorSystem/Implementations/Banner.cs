@@ -1,15 +1,9 @@
-﻿//Blizzless Project 2022
-using System;
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022
 using System.Linq;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.MessageSystem;
@@ -18,7 +12,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	class Banner : Gizmo
 	{
-		private static readonly Dictionary<int, ActorSno[]> bannerActors = new Dictionary<int, ActorSno[]>()
+		private static readonly Dictionary<int, ActorSno[]> bannerActors = new()
 		{
 			[0] = new ActorSno[] {
 				ActorSno._banner_player_1,
@@ -78,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			}
 
 			//if banner has been disabled for events like active greater active swarm  /advocaite
-			if(!player.Attributes[GameAttribute.Banner_Usable])
+			if(!player.Attributes[GameAttributes.Banner_Usable])
 			{
 				return;
 			}

@@ -1,62 +1,26 @@
-﻿//Blizzless Project 2022
-using System;
-//Blizzless Project 2022
-using System.Collections.Generic;
-//Blizzless Project 2022
+﻿using System;
 using System.Linq;
-//Blizzless Project 2022
 using System.Threading.Tasks;
-//Blizzless Project 2022
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022
-using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022
-using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022
-using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Inventory;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
-//Blizzless Project 2022
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022
-using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022
-using DiIiS_NA.GameServer.Core;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Conversation;
-//Blizzless Project 2022
 using System.Collections.Concurrent;
-//Blizzless Project 2022
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Platinum;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.Core.Types.TagMap;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 {
@@ -99,20 +63,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		// Find a childnode with a matching class id, that one holds information about how long the speaker talks
 		// If there is no matching childnode, there must be one with -1 which only combines all class specific into one
-		private int duration
+		private int GetDuration()
 		{
-			get
-			{
-				var node = from a in currentLineNode.ChildNodes
-					where a.ClassFilter == player.Toon.VoiceClassID
-					select a;
-				if (node.Count() == 0)
-					node = from a in currentLineNode.ChildNodes where a.ClassFilter == -1 select a;
-				if (node.Count() == 0) return 1;
+			var node = currentLineNode.ChildNodes.FirstOrDefault(a => a.ClassFilter == player.Toon.VoiceClassID);
+			node ??= currentLineNode.ChildNodes.FirstOrDefault(a => a.ClassFilter == -1);
 
-				return node.First().CompressedDisplayTimes.ElementAt((int)manager.ClientLanguage)
-					.Languages[player.Toon.VoiceClassID * 2 + (player.Toon.Gender == 0 ? 0 : 1)];
+			if (node == null)
+			{
+				return 1;
 			}
+
+			return node.CompressedDisplayTimes[(int)manager.ClientLanguage]
+				.Languages[player.Toon.VoiceClassID * 2 + (player.Toon.Gender == 0 ? 0 : 1)];
 		}
 
 		// This returns the dynamicID of other conversation partners. The client uses its position to identify where you can hear the conversation.
@@ -313,15 +275,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			    asset.ConversationType != ConversationTypes.GlobalFloat)
 				player.CheckConversationCriteria(asset.Header.SNOId);
 
-			Logger.Trace("Handling conversation for Conversation: {0}", SNOId);
+			Logger.Debug("Handling conversation for Conversation: {0}", SNOId);
 			if (player.World.Game.QuestProgress.QuestTriggers.ContainsKey(SNOId))
 			{
 				var trigger = player.World.Game.QuestProgress.QuestTriggers[SNOId];
-				if (trigger.triggerType == QuestStepObjectiveType.HadConversation)
+				if (trigger.TriggerType == QuestStepObjectiveType.HadConversation)
 				{
 					try
 					{
-						trigger.questEvent.Execute(player.World); // launch a questEvent
+						trigger.QuestEvent.Execute(player.World); // launch a questEvent
 					}
 					catch (Exception e)
 					{
@@ -333,11 +295,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (player.World.Game.SideQuestProgress.QuestTriggers.ContainsKey(SNOId)) //EnterLevelArea
 			{
 				var trigger = player.World.Game.SideQuestProgress.QuestTriggers[SNOId];
-				if (trigger.triggerType == QuestStepObjectiveType.HadConversation)
+				if (trigger.TriggerType == QuestStepObjectiveType.HadConversation)
 				{
 					try
 					{
-						trigger.questEvent.Execute(player.World); // launch a questEvent
+						trigger.QuestEvent.Execute(player.World); // launch a questEvent
 					}
 					catch (Exception e)
 					{
@@ -349,11 +311,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (player.World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(SNOId))
 			{
 				var trigger = player.World.Game.SideQuestProgress.GlobalQuestTriggers[SNOId];
-				if (trigger.triggerType == QuestStepObjectiveType.HadConversation)
+				if (trigger.TriggerType == QuestStepObjectiveType.HadConversation)
 				{
 					try
 					{
-						trigger.questEvent.Execute(player.World); // launch a questEvent
+						trigger.QuestEvent.Execute(player.World); // launch a questEvent
 						player.World.Game.SideQuestProgress.GlobalQuestTriggers.Remove(SNOId);
 					}
 					catch (Exception e)
@@ -393,9 +355,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				{
 					if (player.InGameClient.Game.NephalemGreater)
 					{
-						plr.Attributes[GameAttribute.Jewel_Upgrades_Max] = 0;
-						plr.Attributes[GameAttribute.Jewel_Upgrades_Bonus] = 0;
-						plr.Attributes[GameAttribute.Jewel_Upgrades_Used] = 0;
+						plr.Attributes[GameAttributes.Jewel_Upgrades_Max] = 0;
+						plr.Attributes[GameAttributes.Jewel_Upgrades_Bonus] = 0;
+						plr.Attributes[GameAttributes.Jewel_Upgrades_Used] = 0;
 
 						plr.InGameClient.SendMessage(new QuestCounterMessage()
 						{
@@ -525,21 +487,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				player.InGameClient.Game.ActiveNephalemTimer = false;
 				player.InGameClient.Game.ActiveNephalemProgress = 0;
 				//Enabled banner /advocaite
-				player.Attributes[GameAttribute.Banner_Usable] = true;
+				player.Attributes[GameAttributes.Banner_Usable] = true;
 				var HubWorld = player.InGameClient.Game.GetWorld(WorldSno.x1_tristram_adventure_mode_hub);
 				var NStone = HubWorld.GetActorBySNO(ActorSno._x1_openworld_lootrunobelisk_b);
 				bool Activated = true;
-				NStone.SetIdleAnimation(
-					NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.IdleDefault]);
-				NStone.PlayActionAnimation(
-					NStone.AnimationSet.TagMapAnimDefault[Core.Types.TagMap.AnimationSetKeys.Closing]);
-				NStone.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-				NStone.Attributes[GameAttribute.Untargetable] = !Activated;
-				NStone.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-				NStone.Attributes[GameAttribute.Operatable] = Activated;
-				NStone.Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-				NStone.Attributes[GameAttribute.Disabled] = !Activated;
-				NStone.Attributes[GameAttribute.Immunity] = !Activated;
+				NStone.SetIdleAnimation((AnimationSno)NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
+				NStone.PlayActionAnimation((AnimationSno)NStone.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Closing]);
+				NStone.Attributes[GameAttributes.Team_Override] = (Activated ? -1 : 2);
+				NStone.Attributes[GameAttributes.Untargetable] = !Activated;
+				NStone.Attributes[GameAttributes.NPC_Is_Operatable] = Activated;
+				NStone.Attributes[GameAttributes.Operatable] = Activated;
+				NStone.Attributes[GameAttributes.Operatable_Story_Gizmo] = Activated;
+				NStone.Attributes[GameAttributes.Disabled] = !Activated;
+				NStone.Attributes[GameAttributes.Immunity] = !Activated;
 				NStone.Attributes.BroadcastChangedIfRevealed();
 
 				foreach (var p in HubWorld.GetActorsBySNO(ActorSno._x1_openworld_lootrunportal,
@@ -565,26 +525,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		/// <summary>
 		/// Starts readout and display of a certain conversation line
 		/// </summary>
-		/// <param name="LineIndex">index of the line withing the rootnodes</param>
-		private void PlayLine(int LineIndex)
+		/// <param name="lineIndex">index of the line withing the rootnodes</param>
+		private void PlayLine(int lineIndex)
 		{
-			if (asset.RootTreeNodes[LineIndex].ConvNodeType == 6)
+			if (asset.RootTreeNodes[lineIndex].ConvNodeType == 6)
 			{
 				currentLineNode = null;
 				return;
 			}
 
-			if (asset.RootTreeNodes[LineIndex].ConvNodeType == 4)
-				currentLineNode = asset.RootTreeNodes[LineIndex]
-					.ChildNodes[RandomHelper.Next(asset.RootTreeNodes[LineIndex].ChildNodes.Count)];
+			if (asset.RootTreeNodes[lineIndex].ConvNodeType == 4)
+				currentLineNode = asset.RootTreeNodes[lineIndex].ChildNodes.PickRandom();
 			else
-				currentLineNode = asset.RootTreeNodes[LineIndex];
+				currentLineNode = asset.RootTreeNodes[lineIndex];
 
 			currentUniqueLineID = manager.GetNextUniqueLineID();
 
 			if (!GetSpeaker(currentLineNode.LineSpeaker).IsRevealedToPlayer(player))
 				GetSpeaker(currentLineNode.LineSpeaker).Reveal(player);
 
+			var duration = GetDuration();
 			startTick = player.World.Game.TickCounter;
 			endTick = startTick + duration;
 
@@ -593,7 +553,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			{
 				ActorID = GetSpeaker(currentLineNode.LineSpeaker)
 					.DynamicID(player), // GetActorBySNO(asset.SNOPrimaryNpc).DynamicID,
-				Field1 = new uint[9]
+				Field1 = new[]
 				{
 					player.DynamicID(player),
 					asset.SNOPrimaryNpc != -1
@@ -731,12 +691,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		void ConversationEnded(object sender, EventArgs e)
 		{
 			Conversation conversation = sender as Conversation;
-			Logger.Trace(" (ConversationEnded) Sending a notify with type {0} and value {1}",
+			Logger.Debug(" (ConversationEnded) Sending a notify with type {0} and value {1}",
 				conversation.ConversationType, conversation.SNOId);
 
 			//quests.Notify(QuestStepObjectiveType.HadConversation, conversation.SNOId); //deprecated
 
-			//����������
+			//Conversation ended
 			if (player.PlayerIndex == 0)
 				switch (conversation.SNOId)
 				{
@@ -802,9 +762,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						foreach (var wall in wrld.GetActorsBySNO(ActorSno._trdun_cath_bonewall_a_door))
 							if (wall.Position.Z > -23f)
 							{
-								wall.PlayAnimation(11, 108568);
-								wall.Attributes[GameAttribute.Deleted_On_Server] = true;
-								wall.Attributes[GameAttribute.Could_Have_Ragdolled] = true;
+								wall.PlayAnimation(11, AnimationSno.trdun_cath_bonewall_a_death);
+								wall.Attributes[GameAttributes.Deleted_On_Server] = true;
+								wall.Attributes[GameAttributes.Could_Have_Ragdolled] = true;
 								wall.Attributes.BroadcastChangedIfRevealed();
 								wall.Destroy();
 							}
@@ -896,7 +856,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							player.World.GetActorBySNO(ActorSno._x1_npc_westmarch_introguy) as
 								ActorSystem.InteractiveNPC;
 						npc.Conversations.Clear();
-						npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+						npc.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 						npc.Attributes.BroadcastChangedIfRevealed();
 						break;
 

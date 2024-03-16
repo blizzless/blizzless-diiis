@@ -1,20 +1,9 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
+using DiIiS_NA.Core.Logging;
+using DiIiS_NA.Core.MPQ.FileFormats;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -74,115 +63,123 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 	)/*Act Bosses*/]
 	public sealed class Boss : Monster
 	{
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(Boss));
+
 		public Boss(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
 			if (sno == ActorSno._zoltunkulle && world.SNO == WorldSno.a2dun_zolt_lobby) SetVisible(false);
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
-			Attributes[GameAttribute.//Blizzless Project 2022 
-using_Bossbar] = true;
-			Attributes[GameAttribute.InBossEncounter] = true;
-			Attributes[GameAttribute.Hitpoints_Max] *= 10.0f;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 7.8f;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] *= 7.8f;
-			Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
-			Attributes[GameAttribute.TeamID] = 10;
-			
+			Attributes[GameAttributes.using_Bossbar] = true;
+			Attributes[GameAttributes.InBossEncounter] = true;
+			Attributes[GameAttributes.Hitpoints_Max] *= GameServerConfig.Instance.BossHealthMultiplier;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
+			Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+			Attributes[GameAttributes.TeamID] = 10;
+
 			WalkSpeed *= 0.5f;
-            MonsterBrain monsterBrain = (Brain as MonsterBrain);
-            switch (sno)
+			if (Brain is MonsterBrain monsterBrain)
 			{
-				case ActorSno._diablo: //Diablo
-                             //(Brain as MonsterBrain).RemovePresetPower(30592);
-                             //(Brain as MonsterBrain).AddPresetPower(136189); //[136189] Diablo_ClawRip
-                    monsterBrain.AddPresetPower(136223); //Diablo_RingOfFire
-                    monsterBrain.AddPresetPower(136226); //Diablo_HellSpikes
-					;
+				switch (sno)
+				{
+					case ActorSno._diablo: //Diablo
+						//(Brain as MonsterBrain).RemovePresetPower(30592);
+						//(Brain as MonsterBrain).AddPresetPower(136189); //[136189] Diablo_ClawRip
+						monsterBrain.AddPresetPower(136223); //Diablo_RingOfFire
+						monsterBrain.AddPresetPower(136226); //Diablo_HellSpikes
+						;
 
-					/*
-						[199476] Diablo_StompAndStun
-						[219598] Diablo_Teleport
-						[167560] Diablo_LightningBreath_v2
-						[185997] Diablo_ExpandingFireRing
-						[169212] Diablo_Smash_Puny_Destructible
-						[136828] Diablo_CurseOfAnguish
-						[136829] Diablo_CurseOfPain
-						[136830] Diablo_CurseOfHate
-						[136831] Diablo_CurseOfDestruction
-						
-						[439719] Diablo_LightningBreath_LR_TerrorDemon_Clone
-						[214831] Diablo_FireMeteor
-						[161174] Diablo_CorruptionShield
-						[136219] Diablo_LightningBreath
-						[136223] Diablo_RingOfFire
-						[136226] Diablo_HellSpikes
-						
-						[214668] Diablo_GetHit
-						
-						[136237] Diablo_ShadowVanish
-						[136281] Diablo_ShadowClones
-						[142582] Diablo_ShadowVanish_Charge
-						[136849] Diablo_ShadowVanish_Grab
-						
-						[141865] Diablo_Phase1Buff
-						[136850] Diablo_Phase2Buff
-						[136852] Diablo_Phase3Buff
-						[478072] Diablo_StompAndStunMB313
-						
-						[478410] Diablo_LightningBreath_Turret_MB313
-						[195816] Diablo_Charge
-						[428985] Diablo_LightningBreath_LR_TerrorDemon
-						[376396] Uber_Gluttony_Gas_Cloud_Diablo
-						[375473] Uber_SkeletonKing_Summon_Skeleton_Diablo
-						[375493] Uber_Maghda_Summon_Beserker_Diablo
-						[365978] Uber_Diablo_StompAndStun
-						[375537] Uber_Despair_SummonMinion_Diablo
-						[375929] UberDiablo_MirrorImage
-						[376039] Uber_Despair_TeleportEnrage_Diablo
-						[376043] Uber_ZoltunKulle_SlowTime_Diablo
-						[376056] Uber_Despair_Volley_Diablo
-						[375439] x1_Uber_Diablo_HellSpikes
-						[375904] Diablo_LightningBreath_Uber
-						[375905] Diablo_ClawRip_Uber
-						[375907] Diablo_RingOfFire_Uber
-						[375908] Diablo_ExpandingFireRing_Uber
-
-						[453765] p43_d1_Diablo_ClawRip
-												
-						[328715] x1_Malthael_Diablo_AIState
-						[334760] x1_Malthael_Diablo_TeleportFireNovaLightning
-						
-						
-					*/
-					break;
-				case ActorSno._skeletonking://Leoric King
-                    monsterBrain.RemovePresetPower(30592);
-                    monsterBrain.AddPresetPower(30496);
-                    monsterBrain.AddPresetPower(30504);
-                    monsterBrain.AddPresetPower(73824);
-                    monsterBrain.AddPresetPower(79334);
-					break;
-				case ActorSno._butcher://Butcher
-                    monsterBrain.AddPresetPower(83008);
-					break;
-				case ActorSno._belial_trueform://Belial (small)
-					HasLoot = false;
-					break;
-				case ActorSno._belial://Belial (big)
-                    monsterBrain.AddPresetPower(152540);
-					break;
-				case ActorSno._maghda://Maghda
-                    monsterBrain.AddPresetPower(131744); //summon berserker
-                                                         //(Brain as MonsterBrain).AddPresetPower(131745); //mothDust
-                    monsterBrain.AddPresetPower(131749); //teleport
-					break;
-				case ActorSno._gluttony://Gluttony
-                    monsterBrain.AddPresetPower(93676); //gas cloud
-                    monsterBrain.AddPresetPower(211292); //slime spawn
-					break;
-				default:
-					break;
+						/*
+							[199476] Diablo_StompAndStun
+							[219598] Diablo_Teleport
+							[167560] Diablo_LightningBreath_v2
+							[185997] Diablo_ExpandingFireRing
+							[169212] Diablo_Smash_Puny_Destructible
+							[136828] Diablo_CurseOfAnguish
+							[136829] Diablo_CurseOfPain
+							[136830] Diablo_CurseOfHate
+							[136831] Diablo_CurseOfDestruction
+							
+							[439719] Diablo_LightningBreath_LR_TerrorDemon_Clone
+							[214831] Diablo_FireMeteor
+							[161174] Diablo_CorruptionShield
+							[136219] Diablo_LightningBreath
+							[136223] Diablo_RingOfFire
+							[136226] Diablo_HellSpikes
+							
+							[214668] Diablo_GetHit
+							
+							[136237] Diablo_ShadowVanish
+							[136281] Diablo_ShadowClones
+							[142582] Diablo_ShadowVanish_Charge
+							[136849] Diablo_ShadowVanish_Grab
+							
+							[141865] Diablo_Phase1Buff
+							[136850] Diablo_Phase2Buff
+							[136852] Diablo_Phase3Buff
+							[478072] Diablo_StompAndStunMB313
+							
+							[478410] Diablo_LightningBreath_Turret_MB313
+							[195816] Diablo_Charge
+							[428985] Diablo_LightningBreath_LR_TerrorDemon
+							[376396] Uber_Gluttony_Gas_Cloud_Diablo
+							[375473] Uber_SkeletonKing_Summon_Skeleton_Diablo
+							[375493] Uber_Maghda_Summon_Beserker_Diablo
+							[365978] Uber_Diablo_StompAndStun
+							[375537] Uber_Despair_SummonMinion_Diablo
+							[375929] UberDiablo_MirrorImage
+							[376039] Uber_Despair_TeleportEnrage_Diablo
+							[376043] Uber_ZoltunKulle_SlowTime_Diablo
+							[376056] Uber_Despair_Volley_Diablo
+							[375439] x1_Uber_Diablo_HellSpikes
+							[375904] Diablo_LightningBreath_Uber
+							[375905] Diablo_ClawRip_Uber
+							[375907] Diablo_RingOfFire_Uber
+							[375908] Diablo_ExpandingFireRing_Uber
+	
+							[453765] p43_d1_Diablo_ClawRip
+													
+							[328715] x1_Malthael_Diablo_AIState
+							[334760] x1_Malthael_Diablo_TeleportFireNovaLightning
+							
+							
+						*/
+						break;
+					case ActorSno._skeletonking: //Leoric King
+						monsterBrain.RemovePresetPower(30592);
+						monsterBrain.AddPresetPower(30496);
+						monsterBrain.AddPresetPower(30504);
+						monsterBrain.AddPresetPower(73824);
+						monsterBrain.AddPresetPower(79334);
+						break;
+					case ActorSno._butcher: //Butcher
+						monsterBrain.AddPresetPower(83008);
+						break;
+					case ActorSno._belial_trueform: //Belial (small)
+						HasLoot = false;
+						break;
+					case ActorSno._belial: //Belial (big)
+						monsterBrain.AddPresetPower(152540);
+						break;
+					case ActorSno._maghda: //Maghda
+						monsterBrain.AddPresetPower(131744); //summon berserker
+						//(Brain as MonsterBrain).AddPresetPower(131745); //mothDust
+						monsterBrain.AddPresetPower(131749); //teleport
+						break;
+					case ActorSno._gluttony: //Gluttony
+						monsterBrain.AddPresetPower(93676); //gas cloud
+						monsterBrain.AddPresetPower(211292); //slime spawn
+						break;
+					default:
+						Logger.Warn($"Unhandled boss type {sno}");
+						break;
+				}
+			}
+			else
+			{
+				Logger.Error($"Boss $[underline red]${GetType().Name}$[/]$ ({sno}) has no monster brain!");
 			}
 		}
 
@@ -190,14 +187,9 @@ using_Bossbar] = true;
 
 		public override int Quality
 		{
-			get
-			{
-				return (int)DiIiS_NA.Core.MPQ.FileFormats.SpawnType.Boss;
-			}
-			set
-			{
-				// TODO MonsterQuality setter not implemented. Throwing a NotImplementedError is catched as message not beeing implemented and nothing works anymore...
-			}
+			get => (int) SpawnType.Boss;
+			set => Logger.Warn("Boss MonsterQuality setter not implemented.");
+			// TODO MonsterQuality setter not implemented. Throwing a NotImplementedError is catched as message not beeing implemented and nothing works anymore...
 		}
 
 

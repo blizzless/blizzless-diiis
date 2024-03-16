@@ -1,34 +1,19 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -63,10 +48,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			if (portals.Count == 0) return;
 			foreach (var dest in PortalDests)
 			{
-				var random_portal = portals[FastRandom.Instance.Next(0, portals.Count - 1)];
-				random_portal.Destination = dest;
+				var randomPortal = portals.PickRandom();
+				randomPortal.Destination = dest;
 				//portal.EnterWorld(random_spot);
-				portals.Remove(random_portal);
+				portals.Remove(randomPortal);
 			}
 		}
 	}

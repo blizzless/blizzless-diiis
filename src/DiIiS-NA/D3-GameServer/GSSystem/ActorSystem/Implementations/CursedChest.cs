@@ -1,18 +1,9 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -22,7 +13,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public CursedChest(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 		}
 
 		private bool _collapsed = false;
@@ -38,7 +29,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					_collapsed = true;
 
 					World.Game.SideQuestGizmo = this;
-					World.Game.QuestManager.LaunchSideQuest(eventIds[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, eventIds.Count())], true);
+					World.Game.QuestManager.LaunchSideQuest(eventIds.PickRandom(), true);
 				}
 			}
 			catch { }

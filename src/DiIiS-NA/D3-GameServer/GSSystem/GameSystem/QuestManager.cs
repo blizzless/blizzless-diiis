@@ -1,63 +1,48 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.QuestSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-//Blizzless Project 2022 
+using System.Collections.Immutable;
+using System.Linq;
+using D3.Quests;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+using DiIiS_NA.Core.Logging;
+using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem;
+using DiIiS_NA.GameServer.GSSystem.GameSystem;
+using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
+using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+using DiIiS_NA.GameServer.GSSystem.QuestSystem;
+using DiIiS_NA.GameServer.GSSystem.TickerSystem;
+using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
+using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
 
-namespace DiIiS_NA.GameServer.GSSystem.GameSystem
+namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 {
 	public class QuestManager
 	{
-		private static readonly Logger Logger = new Logger("QuestManager");
+		private static readonly Logger Logger = new(nameof(QuestManager));
 
 		/// <summary>
 		/// Accessor for quests
 		/// </summary>
 		/// <param name="snoQuest">snoId of the quest to retrieve</param>
 		/// <returns></returns>
-		public Dictionary<int, QuestRegistry.Quest> Quests = new Dictionary<int, QuestRegistry.Quest>();
+		public readonly Dictionary<int, QuestRegistry.Quest> Quests = new();
 
-		public Dictionary<int, QuestRegistry.Quest> SideQuests = new Dictionary<int, QuestRegistry.Quest>();
+		public readonly Dictionary<int, QuestRegistry.Quest> SideQuests = new();
 
-		public List<Bounty> Bounties = new List<Bounty>(); 
+		public readonly List<Bounty> Bounties = new(); 
 		
 		public Game Game { get; set; }
 
-		public int CurrentAct
-		{
-			get
-			{
-				return Game.CurrentAct;
-			}
-		}
+		public int CurrentAct => Game.CurrentAct;
 
 		public delegate void QuestProgressDelegate();
 		public event QuestProgressDelegate OnQuestProgress = delegate { };
@@ -75,7 +60,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			Game.QuestProgress.SetQuests();
 			Game.SideQuestProgress.SetQuests();
-			Game.QuestSetuped = true;
+			Game.QuestSetup = true;
 		}
 
 		public void ClearQuests()
@@ -94,91 +79,89 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			Bounties.Clear();
 			
-			var kill_boss_bounties = ItemGenerator.Bounties.Values
-				.Where(b => b.BountyData0.Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillBoss)
-				.Where(b => !Bounties.Select(b => b.LevelArea).Contains(b.BountyData0.LeveAreaSNO0))
-				.OrderBy(b => FastRandom.Instance.Next())
-				.Select(b => new Bounty()
+			var actToKillBossBounties = ItemGenerator.Bounties.Values
+				.Where(bounty => bounty.BountyData0.Type == BountyData.BountyType.KillBoss)
+				.Where(bounty => !Bounties.Select(b => b.LevelArea).Contains(bounty.BountyData0.LeveAreaSNO0))
+				.OrderBy(_ => FastRandom.Instance.Next())
+				.Select(bounty =>
 				{
-					QuestManager = this,
-					BountySNOid = b.Header.SNOId,
-					Act = b.BountyData0.ActData,
-					Type = b.BountyData0.Type,
-					LevelArea = b.BountyData0.LeveAreaSNO0,
-					World = WorldSno.__NONE,
-					Target = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Single(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster).SNOName1.Id,
-					TargetTaskId = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.ToList()
-								.FindIndex(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster),
-					AdditionalTaskId = 0,
-					AdditionalTargetCounter = 0,
-					AdditionalTargetNeed = 0,
-					LevelAreaChecks = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Where(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
-								.Select(o => o.SNOName1.Id)
-								.ToList()
-				});
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A1).Take(1)); //A1
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A2).Take(1)); //A2
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A3).Take(1)); //A3
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A4).Take(1)); //A4
-			Bounties.AddRange(kill_boss_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A5).Take(1)); //A5
+					var stepObjectives = bounty.QuestSteps
+						.SelectMany(s => s.StepObjectiveSets)
+						.SelectMany(s => s.StepObjectives)
+						.ToArray();
+					var killMonsterObjectiveIndex = stepObjectives
+						.FindIndex(o => o.ObjectiveType == QuestStepObjectiveType.KillMonster);
+					var levelAreaChecks = stepObjectives
+						.Where(o => o.ObjectiveType == QuestStepObjectiveType.EnterLevelArea)
+						.Select(o => o.SNOName1.Id)
+						.ToList();
+					
+					return new Bounty
+					{
+						QuestManager = this,
+						BountySNOid = bounty.Header.SNOId,
+						Act = bounty.BountyData0.ActData,
+						Type = bounty.BountyData0.Type,
+						LevelArea = bounty.BountyData0.LeveAreaSNO0,
+						World = WorldSno.__NONE,
+						Target = stepObjectives[killMonsterObjectiveIndex].SNOName1.Id,
+						TargetTaskId = killMonsterObjectiveIndex,
+						AdditionalTaskId = 0,
+						AdditionalTargetCounter = 0,
+						AdditionalTargetNeed = 0,
+						LevelAreaChecks = levelAreaChecks
+					};
+				})
+				.ToLookup(bounty => bounty.Act);
+			
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A1].Take(1));
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A2].Take(1));
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A3].Take(1));
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A4].Take(1));
+			Bounties.AddRange(actToKillBossBounties[BountyData.ActT.A5].Take(1));
 
-			var kill_unique_bounties = ItemGenerator.Bounties.Values
-				.Where(b => b.BountyData0.Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique)
-				.Where(b => !Bounties.Select(b => b.LevelArea).Contains(b.BountyData0.LeveAreaSNO0))
-				.OrderBy(b => FastRandom.Instance.Next())
-				.GroupBy(b => b.BountyData0.LeveAreaSNO0)//b.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Single(o => o.ObjectiveType == Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.KillAny).SNOName1.Id)
-				.Select(b => b.First())
-				.Select(b => new Bounty()
+			var actToKillUniqueBounties = ItemGenerator.Bounties.Values
+				.Where(bounty => bounty.BountyData0.Type == BountyData.BountyType.KillUnique)
+				.Where(bounty => !Bounties.Select(b => b.LevelArea).Contains(bounty.BountyData0.LeveAreaSNO0))
+				.OrderBy(_ => FastRandom.Instance.Next())
+				.GroupBy(bounty => bounty.BountyData0.LeveAreaSNO0)//b.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Single(o => o.ObjectiveType == Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType.KillAny).SNOName1.Id)
+				.Select(group => group.First())
+				.Select(bounty =>
 				{
-					QuestManager = this,
-					BountySNOid = b.Header.SNOId,
-					Act = b.BountyData0.ActData,
-					Type = b.BountyData0.Type,
-					LevelArea = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Single(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillAny).SNOName1.Id,
-					World = WorldSno.__NONE,
-					Target = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Single(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster).SNOName1.Id,
-					TargetTaskId = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.ToList()
-								.FindIndex(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster),
-					AdditionalTaskId = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.ToList()
-								.FindIndex(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillAny),
-					AdditionalTargetCounter = 0,
-					AdditionalTargetNeed = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Single(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillAny).CounterTarget,
-					LevelAreaChecks = b.QuestSteps
-								.SelectMany(s => s.StepObjectiveSets)
-								.SelectMany(s => s.StepObjectives)
-								.Where(o => o.ObjectiveType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
-								.Select(o => o.SNOName1.Id)
-								.ToList()
-				});
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A1).Take(4)); //A1
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A2).Take(4)); //A2
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A3).Take(4)); //A3
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A4).Take(4)); //A4
-			Bounties.AddRange(kill_unique_bounties.Where(b => b.Act == DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A5).Take(4)); //A5
+					var stepObjectives = bounty.QuestSteps
+						.SelectMany(s => s.StepObjectiveSets)
+						.SelectMany(s => s.StepObjectives)
+						.ToArray();
+					var killMonsterObjectiveIndex = stepObjectives.FindIndex(o => o.ObjectiveType == QuestStepObjectiveType.KillMonster);
+					var killAnyObjectiveIndex = stepObjectives.FindIndex(o => o.ObjectiveType == QuestStepObjectiveType.KillAny);
+					var levelAreaChecks = stepObjectives
+						.Where(o => o.ObjectiveType == QuestStepObjectiveType.EnterLevelArea)
+						.Select(o => o.SNOName1.Id)
+						.ToList();
+
+					return new Bounty
+					{
+						QuestManager = this,
+						BountySNOid = bounty.Header.SNOId,
+						Act = bounty.BountyData0.ActData,
+						Type = bounty.BountyData0.Type,
+						LevelArea = stepObjectives[killAnyObjectiveIndex].SNOName1.Id,
+						World = WorldSno.__NONE,
+						Target = stepObjectives[killMonsterObjectiveIndex].SNOName1.Id,
+						TargetTaskId = killMonsterObjectiveIndex,
+						AdditionalTaskId = killAnyObjectiveIndex,
+						AdditionalTargetCounter = 0,
+						AdditionalTargetNeed = stepObjectives[killAnyObjectiveIndex].CounterTarget,
+						LevelAreaChecks = levelAreaChecks
+					};
+				})
+				.ToLookup(bounty => bounty.Act);
+			
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A1].Take(4));
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A2].Take(4));
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A3].Take(4));
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A4].Take(4));
+			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A5].Take(4));
 		}
 
 		/// <summary>
@@ -209,57 +192,61 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				if (!Game.Empty)
 				{
 					SaveQuestProgress(true);
-					Logger.Trace(" (Advance) quest {0} completed: {1}", Game.CurrentQuest, Quests[Game.CurrentQuest].Completed);
-					foreach (var player in Game.Players.Values)
+					Logger.Trace(
+						$"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, completed $[underline white]${Quests[Game.CurrentQuest].Completed}$[/]$");
+					Game.BroadcastPlayers((client, player) =>
 					{
-						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp * Game.XPModifier);
-						int goldReward = (int)(Quests[Game.CurrentQuest].RewardGold * Game.GoldModifier);
-						if (Game.CurrentQuest != 312429)
-						{
-							player.InGameClient.SendMessage(new QuestStepCompleteMessage()
-							{
-								QuestStepComplete = D3.Quests.QuestStepComplete.CreateBuilder()
+						if (Game.CurrentQuest == 312429) return; // open world quest
 
-								.SetReward(D3.Quests.QuestReward.CreateBuilder()
+						int xpReward = (int)(Quests[Game.CurrentQuest].RewardXp *
+						                     Game.XpModifier);
+						int goldReward = (int)(Quests[Game.CurrentQuest].RewardGold *
+						                       Game.GoldModifier);
+						player.InGameClient.SendMessage(new QuestStepCompleteMessage()
+						{
+							QuestStepComplete = QuestStepComplete.CreateBuilder()
+
+								.SetReward(QuestReward.CreateBuilder()
 									.SetGoldGranted(goldReward)
 									.SetXpGranted((ulong)xpReward)
 									.SetSnoQuest(Game.CurrentQuest)
-									)
+								)
 								.SetIsQuestComplete(true)
 								.Build()
-								//snoQuest = this.Game.CurrentQuest,
-								//isQuestComplete = true,
-								//rewardXp = xpReward,
-								//rewardGold = goldReward
-							});
-							player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
-							{
-								Place = new WorldPlace()
+						});
+						player.InGameClient.SendMessage(
+							new GameServer.MessageSystem.Message.Definitions.Base.
+								FloatingAmountMessage()
 								{
-									Position = player.Position,
-									WorldID = player.World.DynamicID(player),
-								},
+									Place = new WorldPlace()
+									{
+										Position = player.Position,
+										WorldID = player.World.DynamicID(player),
+									},
 
-								Amount = xpReward,
-								Type = MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Experience,
-							});
-							player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.FloatingAmountMessage()
-							{
-								Place = new WorldPlace()
+									Amount = xpReward,
+									Type = GameServer.MessageSystem.Message.Definitions.Base
+										.FloatingAmountMessage.FloatType.Experience,
+								});
+						player.InGameClient.SendMessage(
+							new GameServer.MessageSystem.Message.Definitions.Base.
+								FloatingAmountMessage()
 								{
-									Position = player.Position,
-									WorldID = player.World.DynamicID(player),
-								},
+									Place = new WorldPlace()
+									{
+										Position = player.Position,
+										WorldID = player.World.DynamicID(player),
+									},
 
-								Amount = goldReward,
-								Type = MessageSystem.Message.Definitions.Base.FloatingAmountMessage.FloatType.Gold,
-							});
-							player.UpdateExp(xpReward);
-							player.Inventory.AddGoldAmount(goldReward);
-							player.AddAchievementCounter(74987243307173, (uint)goldReward);
-							player.CheckQuestCriteria(Game.CurrentQuest);
-						}
-					};
+									Amount = goldReward,
+									Type = GameServer.MessageSystem.Message.Definitions.Base
+										.FloatingAmountMessage.FloatType.Gold,
+								});
+						player.UpdateExp(xpReward);
+						player.Inventory.AddGoldAmount(goldReward);
+						player.AddAchievementCounter(74987243307173, (uint)goldReward);
+						player.CheckQuestCriteria(Game.CurrentQuest);
+					});
 				}
 
 				if (Quests[Game.CurrentQuest].NextQuest == -1) return;
@@ -273,21 +260,25 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				{
 					Logger.WarnException(e, "Advance() exception caught:");
 				}
+
 				//Пока только для одного квеста
-			//	if (this.Game.CurrentQuest != 72221)
-			//		if (this.Game.CurrentStep != -1)
-						Advance();
+				//	if (this.Game.CurrentQuest != 72221)
+				//		if (this.Game.CurrentStep != -1)
+				Advance();
 			}
 
 			if (!Game.Empty)
 			{
 				RevealQuestProgress();
-				if (Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Saveable)
+				if ((Game.CurrentActEnum != ActEnum.OpenWorld && GameServerConfig.Instance.AutoSaveQuests) ||
+				    Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Saveable)
 					SaveQuestProgress(false);
 			}
+
 			OnQuestProgress();
 			AutoSetQuestMarker();
-			Logger.Trace(" (Advance) Advanced to quest {0}, step {1}", Game.CurrentQuest, Game.CurrentStep);
+			Logger.Trace(
+				$"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, step $[underline white]${Game.CurrentStep}$[/]$");
 		}
 
 		public void SideAdvance()
@@ -313,18 +304,18 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				SideQuests[Game.CurrentSideQuest].Steps[Game.CurrentSideStep] == SideQuests[Game.CurrentSideQuest].Steps.Last().Value)
 			{
 				SideQuests[Game.CurrentSideQuest].Completed = true;
-				Logger.Trace(" (SideAdvance) quest {0} completed: {1}", Game.CurrentSideQuest, SideQuests[Game.CurrentSideQuest].Completed);
+				Logger.Trace($"$[white]$(Side-Advance)$[/]$ Game {Game.GameId} Side-Advanced to quest {Game.CurrentSideQuest} completed: {SideQuests[Game.CurrentSideQuest].Completed}");
 
 				foreach (var player in Game.Players.Values)
 				{
-					int xpReward = (int)(SideQuests[Game.CurrentSideQuest].RewardXp * Game.XPModifier);
+					int xpReward = (int)(SideQuests[Game.CurrentSideQuest].RewardXp * Game.XpModifier);
 					int goldReward = (int)(SideQuests[Game.CurrentSideQuest].RewardGold * Game.GoldModifier);
 
 					player.InGameClient.SendMessage(new QuestStepCompleteMessage()
 					{
-						QuestStepComplete = D3.Quests.QuestStepComplete.CreateBuilder()
+						QuestStepComplete = QuestStepComplete.CreateBuilder()
 							
-							.SetReward(D3.Quests.QuestReward.CreateBuilder()
+							.SetReward(QuestReward.CreateBuilder()
 								.SetGoldGranted(goldReward)
 								.SetXpGranted((ulong)xpReward)
 								.SetSnoQuest(Game.CurrentSideQuest)
@@ -344,11 +335,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					int chance = Game.IsHardcore ? 6 : 2;
 					if (FastRandom.Instance.Next(100) < chance && Game.MonsterLevel >= 70)
 					{
-						player.World.SpawnRandomEquip(player, player, LootManager.Epic, player.Attributes[GameAttribute.Level]);
+						player.World.SpawnRandomEquip(player, player, LootManager.Epic, player.Attributes[GameAttributes.Level]);
 					}
 					var toon = player.Toon.DBToon;
 					toon.EventsCompleted++;
-					Game.GameDBSession.SessionUpdate(toon);
+					Game.GameDbSession.SessionUpdate(toon);
 					player.CheckQuestCriteria(Game.CurrentSideQuest);
 				};
 
@@ -357,7 +348,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			}
 
 			OnQuestProgress();
-			Logger.Trace(" (SideAdvance) Advanced to side quest {0}, step {1}", Game.CurrentSideQuest, Game.CurrentSideStep);
+			Logger.Trace($"$[white]$(Side-Advance)$[/]$ Game {Game.GameId} Side-Advanced to side-quest {Game.CurrentSideQuest} completed: {Game.CurrentSideStep}");
 		}
 
 		public void LaunchSideQuest(int questId, bool forceAbandon = false)
@@ -418,16 +409,23 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				if (cycle > 200) break;
 			}
 		}
+		public void AdvanceToFirstStep(int snoQuest)
+		{
+			var quest = Quests[snoQuest].Steps.OrderBy(s => s.Key).FirstOrDefault();
+			if (quest.Value != null)
+			{
+				AdvanceTo(snoQuest, quest.Key == -1 ? quest.Value.NextStep : quest.Key);
+			}
+			else
+			{
+				Logger.Error("AdvanceToNext: quest {0} not found", snoQuest);
+			}
+		}
 
 		public float QuestTimerEstimate = 0f;
 
-		public void LaunchRiftQuestTimer(float duration, Action<int> onDone, int idSNO = 0)
+		public void LaunchRiftQuestTimer(float duration, Action<int> onDone, int idSno = 0)
 		{
-			foreach (var player in Game.Players.Values)
-			{
-				
-			};
-
 			QuestTimerEstimate = duration;
 
 			Game.QuestTimer = SteppedTickTimer.WaitSecondsStepped(Game, 1f, duration, new Action<int>((q) =>
@@ -438,17 +436,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			onDone);
 		}
 
-		public void LaunchQuestTimer(int questId, float duration, Action<int> onDone, int Meterid = 0)
+		public void LaunchQuestTimer(int questId, float duration, Action<int> onDone, int masterId = 0)
 		{
-			foreach (var player in Game.Players.Values)
+			Game.BroadcastPlayers((client, player) =>
 			{
 				player.InGameClient.SendMessage(new QuestMeterMessage()
 				{
 					snoQuest = questId,
-					annMeter = Meterid,
+					annMeter = masterId,
 					flMeter = 1f
 				});
-			};
+			});
 
 			QuestTimerEstimate = duration;
 
@@ -460,7 +458,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					player.InGameClient.SendMessage(new QuestMeterMessage()
 					{
 						snoQuest = questId,
-						annMeter = Meterid,
+						annMeter = masterId,
 						flMeter = (QuestTimerEstimate / duration)
 					});
 				};
@@ -477,7 +475,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Objectives[objId].Counter++;
 
 			var objective = Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Objectives[objId];
-			foreach (var player in Game.Players.Values)
+			Game.BroadcastPlayers((client, player) =>
 				player.InGameClient.SendMessage(new QuestCounterMessage()
 				{
 					snoQuest = Game.CurrentQuest,
@@ -486,7 +484,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					TaskIndex = objId,
 					Counter = objective.Counter,
 					Checked = objective.Counter < objective.Limit ? 0 : 1,
-				});
+				}));
 
 			if (!Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Objectives.Any(obj => obj.Counter < obj.Limit))
 				Advance();
@@ -544,69 +542,83 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void AutoSetQuestMarker()
 		{
+			Logger.MethodTrace(
+				$"{Game.QuestProgress.QuestTriggers.Count} triggers found on {Game.CurrentActEnum.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep}");
+
+			// TODO: more triggers?
+			#if DEBUG
+			if (Game.QuestProgress.QuestTriggers.Count > 1)
+				Logger.Warn($"Found {Game.QuestProgress.QuestTriggers.Count} triggers on {Game.CurrentActEnum.ToString()} - quest {Game.CurrentQuest} step {Game.CurrentStep} but only one is supported");
+			#endif
 			if (Game.QuestProgress.QuestTriggers.Count == 1)
 			{
-				Logger.Trace("AutoSetQuestMarker()");
 				var trigger = Game.QuestProgress.QuestTriggers.First();
-				if (trigger.Value.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
-					foreach (var world in Game.Worlds)
+				switch (trigger.Value.TriggerType)
+				{
+					case QuestStepObjectiveType.InteractWithActor:
 					{
-						var actors = world.GetActorsBySNO((ActorSno)trigger.Key).Where(d => d.Visible);
-						Actor actor = null;
-						if (actors.Count() == 1) actor = actors.First();
-						if (actor != null)
-							foreach (var plr in world.Players.Values)
-								plr.InGameClient.SendMessage(new MapMarkerInfoMessage
-								{
-									HashedName = StringHashHelper.HashItemName("QuestMarker"),
-									Place = new WorldPlace { Position = actor.Position, WorldID = world.GlobalID },
-									ImageInfo = 81058,
-									Label = -1,
-									snoStringList = -1,
-									snoKnownActorOverride = -1,
-									snoQuestSource = -1,
-									Image = -1,
-									Active = true,
-									CanBecomeArrow = true,
-									RespectsFoW = false,
-									IsPing = true,
-									PlayerUseFlags = 0
-								});
-					}
+						foreach (var world in Game.Worlds)
+						{
+							var actor = world.GetActorsBySNO((ActorSno)trigger.Key).FirstOrDefault(d => d.Visible);
+							if (actor != null)
+								world.BroadcastOperation(player =>
+									player.InGameClient.SendMessage(new MapMarkerInfoMessage
+									{
+										HashedName = StringHashHelper.HashItemName("QuestMarker"),
+										Place = new WorldPlace { Position = actor.Position, WorldID = world.GlobalID },
+										ImageInfo = 81058,
+										Label = -1,
+										snoStringList = -1,
+										snoKnownActorOverride = -1,
+										snoQuestSource = -1,
+										Image = -1,
+										Active = true,
+										CanBecomeArrow = true,
+										RespectsFoW = false,
+										IsPing = true,
+										PlayerUseFlags = 0
+									}));
+						}
 
-				if (trigger.Value.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation)
-					foreach (var world in Game.Worlds)
-					{
-						var actors = world.Actors.Values.Where(d => d.Visible && (d is InteractiveNPC) && (d as InteractiveNPC).Conversations.Any(c => c.ConversationSNO == trigger.Key));
-						Actor actor = null;
-						if (actors.Count() == 1) actor = actors.First();
-						if (actor != null)
-							foreach (var plr in world.Players.Values)
-								plr.InGameClient.SendMessage(new MapMarkerInfoMessage
-								{
-									HashedName = StringHashHelper.HashItemName("QuestMarker"),
-									Place = new WorldPlace { Position = actor.Position, WorldID = world.GlobalID },
-									ImageInfo = 81058,
-									Label = -1,
-									snoStringList = -1,
-									snoKnownActorOverride = -1,
-									snoQuestSource = -1,
-									Image = -1,
-									Active = true,
-									CanBecomeArrow = true,
-									RespectsFoW = false,
-									IsPing = true,
-									PlayerUseFlags = 0
-								});
+						break;
 					}
+					case QuestStepObjectiveType.HadConversation:
+					{
+						foreach (var world in Game.Worlds)
+						{
+							var actor = world.Actors.Values.FirstOrDefault(d => d.Visible && (d is InteractiveNPC npc) 
+								&& npc.Conversations.Any(c => c.ConversationSNO == trigger.Key));
+							if (actor != null)
+								world.BroadcastOperation(player =>
+									player.InGameClient.SendMessage(new MapMarkerInfoMessage
+									{
+										HashedName = StringHashHelper.HashItemName("QuestMarker"),
+										Place = new WorldPlace { Position = actor.Position, WorldID = world.GlobalID },
+										ImageInfo = 81058,
+										Label = -1,
+										snoStringList = -1,
+										snoKnownActorOverride = -1,
+										snoQuestSource = -1,
+										Image = -1,
+										Active = true,
+										CanBecomeArrow = true,
+										RespectsFoW = false,
+										IsPing = true,
+										PlayerUseFlags = 0
+									}));
+						}
+
+						break;
+					}
+				}
 			}
 		}
 
 		public void SetBountyMarker(Player player)
 		{
-			foreach (var bounty in Bounties.Where(b => !b.Finished && b.Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique))
+			foreach (var bounty in Bounties.Where(b => !b.Finished && b.Type == BountyData.BountyType.KillUnique))
 			{
-				var unique = player.World.GetActorsBySNO((ActorSno)bounty.Target).Where(u => !u.Dead).FirstOrDefault();
+				var unique = player.World.GetActorsBySNO((ActorSno)bounty.Target).FirstOrDefault(u => !u.Dead);
 				if (unique == null) continue;
 				player.InGameClient.SendMessage(new MapMarkerInfoMessage
 				{
@@ -676,30 +688,26 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public bool HasCurrentQuest(int snoQuest, int Step, bool strictFilter)
 		{
-			if (Quests.ContainsKey(snoQuest) || SideQuests.ContainsKey(snoQuest))
+			if (!Quests.ContainsKey(snoQuest) && !SideQuests.ContainsKey(snoQuest)) return false;
+			if (strictFilter)
 			{
-				if (strictFilter)
-				{
-					if ((Game.CurrentQuest == snoQuest) && (Game.CurrentStep == Step)
-						||
-					(Game.CurrentSideQuest == snoQuest) && (Game.CurrentSideStep == Step))
-						return true;
-				}
-				else
-				{
-					if ((Game.CurrentQuest == snoQuest || snoQuest == -1) && (Game.CurrentStep == Step || Step == -1 || Step == 0)
-						||
-					(Game.CurrentSideQuest == snoQuest || snoQuest == -1) && (Game.CurrentSideStep == Step || Step == -1 || Step == 0))
-						return true;
-				}
+				if ((Game.CurrentQuest == snoQuest) && (Game.CurrentStep == Step) ||
+				    (Game.CurrentSideQuest == snoQuest) && (Game.CurrentSideStep == Step))
+					return true;
 			}
+			else
+			{
+				if ((Game.CurrentQuest == snoQuest || snoQuest == -1) &&
+				    (Game.CurrentStep == Step || Step == -1 || Step == 0) ||
+				    (Game.CurrentSideQuest == snoQuest || snoQuest == -1) &&
+				    (Game.CurrentSideStep == Step || Step == -1 || Step == 0))
+					return true;
+			}
+
 			return false;
 		}
 
-		public bool HasQuest(int snoQuest)
-		{
-			return Quests.ContainsKey(snoQuest);
-		}
+		public bool HasQuest(int snoQuest) => Quests.ContainsKey(snoQuest);
 
 		public void SetQuestsForJoined(Player joinedPlayer)
 		{
@@ -716,14 +724,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			});
 		}
 
-		public bool IsDone(int snoQuest)
-		{
-			return Quests.ContainsKey(snoQuest) && Quests[snoQuest].Completed;
-		}
+		public bool IsDone(int snoQuest) => Quests.ContainsKey(snoQuest) && Quests[snoQuest].Completed;
 
-		public bool IsInQuestRange(DiIiS_NA.Core.MPQ.FileFormats.QuestRange range)
+		public bool IsInQuestRange(QuestRange range)
 		{
-			
 			if (range.Header.SNOId == 312431) return (Game.CurrentAct == 3000);
 			if (range.Header.SNOId == 214766) return true; 
 
@@ -731,19 +735,19 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			bool ended = false;
 
 
-			foreach (var range_entry in range.Enitys)
+			foreach (var rangeEntry in range.Enitys)
 			{
-				if (range_entry != null)
+				if (rangeEntry != null)
 				{
-					if (range_entry.Start.SNOQuest == -1 || range_entry.Start.StepID == -1)
+					if (rangeEntry.Start.SNOQuest == -1 || rangeEntry.Start.StepID == -1)
 						started = true;
 					else
 					{
-						if (Quests.ContainsKey(range_entry.Start.SNOQuest) && Quests[range_entry.Start.SNOQuest].Steps.ContainsKey(range_entry.Start.StepID))
+						if (Quests.ContainsKey(rangeEntry.Start.SNOQuest) && Quests[rangeEntry.Start.SNOQuest].Steps.ContainsKey(rangeEntry.Start.StepID))
 						{
-							if (Quests[range_entry.Start.SNOQuest].Completed ||
-							Quests[range_entry.Start.SNOQuest].Steps[range_entry.Start.StepID].Completed ||
-							(Game.CurrentQuest == range_entry.Start.SNOQuest && Game.CurrentStep == range_entry.Start.StepID)) // rumford conversation needs current step
+							if (Quests[rangeEntry.Start.SNOQuest].Completed ||
+							Quests[rangeEntry.Start.SNOQuest].Steps[rangeEntry.Start.StepID].Completed ||
+							(Game.CurrentQuest == rangeEntry.Start.SNOQuest && Game.CurrentStep == rangeEntry.Start.StepID)) // rumford conversation needs current step
 								started = true;
 						}
 						//else logger.Warn("QuestRange {0} references unknown quest {1}", range.Header.SNOId, range.Start.SNOQuest);
@@ -751,14 +755,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 					//Logger.Debug("IsInQuestRange {0} and started? {1} ", range.Header.SNOId, started);
 
-					if (range_entry.End.SNOQuest == -1 || range_entry.End.StepID < 0)
+					if (rangeEntry.End.SNOQuest == -1 || rangeEntry.End.StepID < 0)
 						ended = false;
 					else
 					{
-						if (Quests.ContainsKey(range_entry.End.SNOQuest) && Quests[range_entry.End.SNOQuest].Steps.ContainsKey(range_entry.End.StepID))
+						if (Quests.ContainsKey(rangeEntry.End.SNOQuest) && Quests[rangeEntry.End.SNOQuest].Steps.ContainsKey(rangeEntry.End.StepID))
 						{
-							if (Quests[range_entry.End.SNOQuest].Completed ||
-								Quests[range_entry.End.SNOQuest].Steps[range_entry.End.StepID].Completed)
+							if (Quests[rangeEntry.End.SNOQuest].Completed ||
+								Quests[rangeEntry.End.SNOQuest].Steps[rangeEntry.End.StepID].Completed)
 								ended = true;
 						}
 						//else logger.Warn("QuestRange {0} references unknown quest {1}", range.Header.SNOId, range.End.SNOQuest);
@@ -811,21 +815,23 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void SaveQuestProgress(bool questCompleted)
 		{
-			foreach (var player in Game.Players.Values)
+			Game.BroadcastPlayers((client, player) =>
 			{
 				player.Toon.CurrentAct = CurrentAct;
 				player.Toon.CurrentQuestId = Game.CurrentQuest;
 				player.Toon.CurrentQuestStepId = Game.CurrentStep;
 
-				List<DBQuestHistory> query = Game.GameDBSession.SessionQueryWhere<DBQuestHistory>(
+				List<DBQuestHistory> query = Game.GameDbSession.SessionQueryWhere<DBQuestHistory>(
 					dbi => dbi.DBToon.Id == player.Toon.PersistentID && dbi.QuestId == Game.CurrentQuest);
 				if (query.Count == 0)
 				{
-					var questHistory = new DBQuestHistory();
-					questHistory.DBToon = player.Toon.DBToon;
-					questHistory.QuestId = Game.CurrentQuest;
-					questHistory.QuestStep = Game.CurrentStep;
-					Game.GameDBSession.SessionSave(questHistory);
+					var questHistory = new DBQuestHistory
+					{
+						DBToon = player.Toon.DBToon,
+						QuestId = Game.CurrentQuest,
+						QuestStep = Game.CurrentStep
+					};
+					Game.GameDbSession.SessionSave(questHistory);
 				}
 				else
 				{
@@ -834,10 +840,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 					{
 						questHistory.QuestStep = Game.CurrentStep;
 						if (questCompleted) questHistory.isCompleted = true;
-						Game.GameDBSession.SessionUpdate(questHistory);
+						Game.GameDbSession.SessionUpdate(questHistory);
 					}
 				}
-			}
+			});
 		}
 	}
 
@@ -845,8 +851,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 	{
 		public QuestManager QuestManager { get; set; }
 		public int BountySNOid { get; set; }
-		public DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT Act { get; set; }
-		public DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType Type { get; set; }
+		public BountyData.ActT Act { get; set; }
+		public BountyData.BountyType Type { get; set; }
 		public int LevelArea { get; set; }
 		public WorldSno World { get; set; }
 		public bool PortalSpawned = false;
@@ -861,7 +867,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		public List<int> LevelAreaChecks { get; set; }
 		public bool Finished = false;
 
-		public static Dictionary<int, int> LevelAreaOverrides = new Dictionary<int, int>() //first is in-game, second is in-data
+		public static Dictionary<int, int> LevelAreaOverrides = new() //first is in-game, second is in-data
 		{
 			{338602, 377700}, //battlefields of eterntity
 			{271234, 370512}, //x1 fortress lv1
@@ -881,9 +887,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			if (Finished) return;
 			if (levelArea == 19943) levelArea = 19780;
-			if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique && LevelArea == levelArea && AdditionalTargetNeed != AdditionalTargetCounter)
+			if (Type == BountyData.BountyType.KillUnique && LevelArea == levelArea && AdditionalTargetNeed != AdditionalTargetCounter)
 			{
-				var Quest = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Quest][BountySNOid];
+				var Quest = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[GameServer.Core.Types.SNO.SNOGroup.Quest][BountySNOid];
 				AdditionalTargetCounter++;
 
 				foreach (var player in QuestManager.Game.Players.Values)
@@ -904,25 +910,25 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			//220789
 
 			if (Finished) return;
-			if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillBoss && Target == snoId)
+			if (Type == BountyData.BountyType.KillBoss && Target == snoId)
 			{
 				Complete();
 			}
-			if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique && (LevelArea == levelArea || (LevelAreaOverrides.ContainsKey(levelArea) && LevelAreaOverrides[levelArea] == LevelArea)))
+			if (Type == BountyData.BountyType.KillUnique && (LevelArea == levelArea || (LevelAreaOverrides.ContainsKey(levelArea) && LevelAreaOverrides[levelArea] == LevelArea)))
 			{
 				AdditionalTargetCounter++;
 				foreach (var player in QuestManager.Game.Players.Values)
 				{
-					List<MapSystem.Scene> Scenes = new List<MapSystem.Scene>();
-					int MonsterCount = 0;
+					List<GameServer.GSSystem.MapSystem.Scene> scenes = new List<GameServer.GSSystem.MapSystem.Scene>();
+					int monsterCount = 0;
 					foreach (var scene in QuestManager.Game.GetWorld(world).Scenes.Values)
 						if (!scene.SceneSNO.Name.ToLower().Contains("filler"))
 							if (scene.Specification.SNOLevelAreas[0] == LevelArea)
 							{
-								Scenes.Add(scene);
+								scenes.Add(scene);
 								foreach (var act in scene.Actors)
 									if (act is Monster)
-										MonsterCount++;
+										monsterCount++;
 							}
 
 
@@ -935,22 +941,22 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 						Counter = AdditionalTargetCounter,
 						Checked = (AdditionalTargetNeed <= AdditionalTargetCounter) ? 1 : 0
 					});
-					if (MonsterCount < AdditionalTargetCounter + 20)
+					if (monsterCount < AdditionalTargetCounter + 20)
 					{
-						while (MonsterCount < AdditionalTargetCounter + 20)
+						while (monsterCount < AdditionalTargetCounter + 20)
 						{
-							Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count - 1)].Position;
-							Core.Types.Math.Vector3D SP = null;
+							GameServer.Core.Types.Math.Vector3D scenePoint = scenes.PickRandom().Position;
+							GameServer.Core.Types.Math.Vector3D point = null;
 							while (true)
 							{
-								SP = new Core.Types.Math.Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
-								if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+								point = new GameServer.Core.Types.Math.Vector3D(scenePoint.X + RandomHelper.Next(0, 240), scenePoint.Y + RandomHelper.Next(0, 240), scenePoint.Z);
+								if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(point, Scene.NavCellFlags.AllowWalk))
 									break;
 							}
-							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee[FastRandom.Instance.Next(GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].melee.Count())], SP);
-							MonsterCount++;
+							QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)GameServer.GSSystem.GeneratorsSystem.SpawnGenerator.Spawns[LevelArea].Melee.PickRandom(), point);
+							monsterCount++;
 						}
-					} //Нужен дополнительный спаун монстров, их мало
+					} // Need additional monster spawn, there are few of them
 				}
 				if (Target == snoId)
 				{
@@ -969,30 +975,30 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				if (!TargetSpawned)
 					if (QuestManager.Game.GetWorld(world).GetActorBySNO((ActorSno)Target) == null)
 					{
-						List<MapSystem.Scene> Scenes = new List<MapSystem.Scene>();
+						List<GameServer.GSSystem.MapSystem.Scene> scenes = new List<GameServer.GSSystem.MapSystem.Scene>();
 						foreach (var scene in QuestManager.Game.GetWorld(world).Scenes.Values)
 						{
 							if (!scene.SceneSNO.Name.ToLower().Contains("filler"))
 								if (scene.Specification.SNOLevelAreas[0] == LevelArea)
-									Scenes.Add(scene);
+									scenes.Add(scene);
 						}
 
-						Core.Types.Math.Vector3D SSV = Scenes[RandomHelper.Next(0, Scenes.Count - 1)].Position;
-						Core.Types.Math.Vector3D SP = null;
+						GameServer.Core.Types.Math.Vector3D scenePoint = scenes.PickRandom().Position;
+						GameServer.Core.Types.Math.Vector3D point = null;
 						while (true)
 						{
-							SP = new Core.Types.Math.Vector3D(SSV.X + RandomHelper.Next(0, 240), SSV.Y + RandomHelper.Next(0, 240), SSV.Z);
-							if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(SP, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+							point = new GameServer.Core.Types.Math.Vector3D(scenePoint.X + RandomHelper.Next(0, 240), scenePoint.Y + RandomHelper.Next(0, 240), scenePoint.Z);
+							if (QuestManager.Game.GetWorld(world).CheckLocationForFlag(point, Scene.NavCellFlags.AllowWalk))
 								break;
 						}
-						QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)Target, SP);
+						QuestManager.Game.GetWorld(world).SpawnMonster((ActorSno)Target, point);
 						TargetSpawned = true;
 					}
 
 				if (AdditionalTargetNeed <= AdditionalTargetCounter && TargetKilled)
 					Complete();
 			}
-			if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.ClearDungeon && World == world)
+			if (Type == BountyData.BountyType.ClearDungeon && World == world)
 			{
 				if (QuestManager.Game.WorldCleared(world))
 					Complete();
@@ -1021,10 +1027,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		{
 			foreach (var player in QuestManager.Game.Players.Values)
 			{
-				var xpReward = 1000 * player.Level * (1 + (player.Level / 7)) * QuestManager.Game.XPModifier;
-				if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.KillUnique)
+				var xpReward = 1000 * player.Level * (1 + (player.Level / 7)) * QuestManager.Game.XpModifier;
+				if (Type == BountyData.BountyType.KillUnique)
 					xpReward *= 1.8f;
-				if (Type == DiIiS_NA.Core.MPQ.FileFormats.BountyData.BountyType.ClearDungeon)
+				if (Type == BountyData.BountyType.ClearDungeon)
 					xpReward *= 5f;
 				var goldReward = 10000 * QuestManager.Game.GoldModifier;
 				player.InGameClient.SendMessage(new QuestUpdateMessage()
@@ -1037,44 +1043,41 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 				});
 				player.InGameClient.SendMessage(new QuestStepCompleteMessage()
 				{
-					QuestStepComplete = D3.Quests.QuestStepComplete.CreateBuilder()
+					QuestStepComplete = QuestStepComplete.CreateBuilder()
 						.SetIsQuestComplete(true)
-						.SetReward(D3.Quests.QuestReward.CreateBuilder()
+						.SetReward(QuestReward.CreateBuilder()
 							.SetSnoQuest(BountySNOid)
 							.SetXpGranted((ulong)xpReward)
 							.SetGoldGranted((int)goldReward)
 							.Build()
 							).Build()
 				});
-				//Добавляем критерий!
+				// Adding the criterion!
 				player.GrantCriteria(3367569);
-				//Повышаем за выполнене поручения.
+				// Increase for the completion of the assignment.
 				player.UpdateExp((int)xpReward);
 				player.Inventory.AddGoldAmount((int)goldReward);
 				player.Toon.TotalBounties++;
-				if (player.World.Game.IsHardcore)
-					player.Toon.TotalBountiesHardcore++;
 				player.UpdateAchievementCounter(412, 1);
 			}
 			Finished = true;
-			QuestManager.Game.BountiesCompleted[Act]++;
-			if (QuestManager.Game.BountiesCompleted[Act] == 5)
+			if (++QuestManager.Game.BountiesCompleted[Act] == 5)
 			{
 				switch (Act)
 				{
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A1:
+					case BountyData.ActT.A1:
 						QuestManager.LaunchSideQuest(356988, true); //x1_AdventureMode_BountyTurnin_A1
 						break;
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A2:
+					case BountyData.ActT.A2:
 						QuestManager.LaunchSideQuest(356994, true); //x1_AdventureMode_BountyTurnin_A2
 						break;
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A3:
+					case BountyData.ActT.A3:
 						QuestManager.LaunchSideQuest(356996, true); //x1_AdventureMode_BountyTurnin_A3
 						break;
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A4:
+					case BountyData.ActT.A4:
 						QuestManager.LaunchSideQuest(356999, true); //x1_AdventureMode_BountyTurnin_A4
 						break;
-					case DiIiS_NA.Core.MPQ.FileFormats.BountyData.ActT.A5:
+					case BountyData.ActT.A5:
 						QuestManager.LaunchSideQuest(357001, true); //x1_AdventureMode_BountyTurnin_A5
 						break;
 				}

@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents

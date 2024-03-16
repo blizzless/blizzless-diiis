@@ -1,15 +1,8 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -28,14 +21,14 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Anim(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.Flags = stream.ReadValueS32();
-            this.PlaybackMode = stream.ReadValueS32();
-            this.SNOAppearance = stream.ReadValueS32();
-            this.Permutations = stream.ReadSerializedData<AnimPermutation>();
-            this.PermutationCount = stream.ReadValueS32();
+            Header = new Header(stream);
+            Flags = stream.ReadValueS32();
+            PlaybackMode = stream.ReadValueS32();
+            SNOAppearance = stream.ReadValueS32();
+            Permutations = stream.ReadSerializedData<AnimPermutation>();
+            PermutationCount = stream.ReadValueS32();
             stream.Position += 12;
-            this.MachineTime = stream.ReadValueS32();
+            MachineTime = stream.ReadValueS32();
             stream.Close();
         }
     }
@@ -80,49 +73,49 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.Flags = stream.ReadValueS32();
-            this.PermutationName = stream.ReadString(65, true);
+            Flags = stream.ReadValueS32();
+            PermutationName = stream.ReadString(65, true);
             stream.Position += 3;
-            this.FrameRate = stream.ReadValueF32();
-            this.Compression = stream.ReadValueF32();
-            this.TramslationCompressionRatio = stream.ReadValueF32();
-            this.RotationComressionRatio = stream.ReadValueF32();
-            this.ScaleCompressionRatio = stream.ReadValueF32();
-            this.BlendTime = stream.ReadValueS32();
-            this.FromPermBlendTime = stream.ReadValueS32();
-            this.Weight = stream.ReadValueS32();
-            this.SpeedMultMin = stream.ReadValueF32();
-            this.SpeedMultDelta = stream.ReadValueF32();
-            this.RagdollVelocityFactor = stream.ReadValueF32();
-            this.RagdollMomentumFactor = stream.ReadValueF32();
-            this.BoneNameCount = stream.ReadValueS32();
-            this.BoneNames = stream.ReadSerializedData<BoneName>();
+            FrameRate = stream.ReadValueF32();
+            Compression = stream.ReadValueF32();
+            TramslationCompressionRatio = stream.ReadValueF32();
+            RotationComressionRatio = stream.ReadValueF32();
+            ScaleCompressionRatio = stream.ReadValueF32();
+            BlendTime = stream.ReadValueS32();
+            FromPermBlendTime = stream.ReadValueS32();
+            Weight = stream.ReadValueS32();
+            SpeedMultMin = stream.ReadValueF32();
+            SpeedMultDelta = stream.ReadValueF32();
+            RagdollVelocityFactor = stream.ReadValueF32();
+            RagdollMomentumFactor = stream.ReadValueF32();
+            BoneNameCount = stream.ReadValueS32();
+            BoneNames = stream.ReadSerializedData<BoneName>();
             stream.Position += 12;
-            this.KeyframePosCount = stream.ReadValueS32();
-            this.TranslationCurves = stream.ReadSerializedData<TranslationCurve>();
+            KeyframePosCount = stream.ReadValueS32();
+            TranslationCurves = stream.ReadSerializedData<TranslationCurve>();
             stream.Position += 12;
-            this.RotationCurves = stream.ReadSerializedData<RotationCurve>();
+            RotationCurves = stream.ReadSerializedData<RotationCurve>();
             stream.Position += 8;
-            this.ScaleCurves = stream.ReadSerializedData<ScaleCurve>();
+            ScaleCurves = stream.ReadSerializedData<ScaleCurve>();
             stream.Position += 8;
-            this.ContactKeyframe0 = stream.ReadValueF32();
-            this.ContactKeyframe1 = stream.ReadValueF32();
-            this.ContactKeyframe2 = stream.ReadValueF32();
-            this.ContactKeyframe3 = stream.ReadValueF32();
-            this.ContactOffset0 = new Vector3D(stream);
-            this.ContactOffset1 = new Vector3D(stream);
-            this.ContactOffset2 = new Vector3D(stream);
-            this.ContactOffset3 = new Vector3D(stream);
-            this.EarliestInterruptKeyFrame = stream.ReadValueF32();
-            this.KeyedAttachments = stream.ReadSerializedData<KeyframedAttachment>();
-            this.KeyedAttachmentsCount = stream.ReadValueS32();
+            ContactKeyframe0 = stream.ReadValueF32();
+            ContactKeyframe1 = stream.ReadValueF32();
+            ContactKeyframe2 = stream.ReadValueF32();
+            ContactKeyframe3 = stream.ReadValueF32();
+            ContactOffset0 = new Vector3D(stream);
+            ContactOffset1 = new Vector3D(stream);
+            ContactOffset2 = new Vector3D(stream);
+            ContactOffset3 = new Vector3D(stream);
+            EarliestInterruptKeyFrame = stream.ReadValueF32();
+            KeyedAttachments = stream.ReadSerializedData<KeyframedAttachment>();
+            KeyedAttachmentsCount = stream.ReadValueS32();
             stream.Position += 8;
-            this.KeyframePosList = stream.ReadSerializedData<Vector3D>();
+            KeyframePosList = stream.ReadSerializedData<Vector3D>();
             stream.Position += 8;
-            this.NonlinearOffset = stream.ReadSerializedData<Vector3D>();
+            NonlinearOffset = stream.ReadSerializedData<Vector3D>();
             stream.Position += 8;
-            this.AvgVelocity = new VelocityVector3D(stream);
-            this.HardPointLink = new HardPointLink(stream);
+            AvgVelocity = new VelocityVector3D(stream);
+            HardPointLink = new HardPointLink(stream);
             //this.S0 = stream.ReadString(256, true);
             //this.S1 = stream.ReadString(256, true);
             stream.Position += 8;
@@ -135,7 +128,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.Name = stream.ReadString(64, true);
+            Name = stream.ReadString(64, true);
         }
     }
 
@@ -146,8 +139,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.Keys = stream.ReadSerializedData<TranslationKey>();
+            I0 = stream.ReadValueS32();
+            Keys = stream.ReadSerializedData<TranslationKey>();
         }
     }
 
@@ -158,8 +151,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.Keys = stream.ReadSerializedData<RotationKey>();
+            I0 = stream.ReadValueS32();
+            Keys = stream.ReadSerializedData<RotationKey>();
         }
     }
 
@@ -170,8 +163,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.Keys = stream.ReadSerializedData<ScaleKey>();
+            I0 = stream.ReadValueS32();
+            Keys = stream.ReadSerializedData<ScaleKey>();
         }
     }
 
@@ -182,8 +175,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.Location = new Vector3D(stream);
+            I0 = stream.ReadValueS32();
+            Location = new Vector3D(stream);
         }
     }
 
@@ -194,8 +187,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.Q0 = new Quaternion16(stream);
+            I0 = stream.ReadValueS32();
+            Q0 = new Quaternion16(stream);
         }
     }
 
@@ -206,8 +199,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.Scale = stream.ReadValueF32();
+            I0 = stream.ReadValueS32();
+            Scale = stream.ReadValueF32();
         }
     }
 
@@ -218,8 +211,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.KeyframeIndex = stream.ReadValueF32();
-            this.Event = new TriggerEvent(stream);
+            KeyframeIndex = stream.ReadValueF32();
+            Event = new TriggerEvent(stream);
         }
     }
 
@@ -231,9 +224,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public VelocityVector3D(MpqFileStream stream)
         {
-            this.VelocityX = stream.ReadValueF32();
-            this.VelocityY = stream.ReadValueF32();
-            this.VelocityZ = stream.ReadValueF32();
+            VelocityX = stream.ReadValueF32();
+            VelocityY = stream.ReadValueF32();
+            VelocityZ = stream.ReadValueF32();
         }
     }
 
@@ -252,10 +245,10 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         /// <param name="stream">The MPQFileStream to read from.</param>
         public Quaternion16(MpqFileStream stream)
         {
-            this.Short0 = stream.ReadValueS16();
-            this.Short1 = stream.ReadValueS16();
-            this.Short2 = stream.ReadValueS16();
-            this.Short3 = stream.ReadValueS16();
+            Short0 = stream.ReadValueS16();
+            Short1 = stream.ReadValueS16();
+            Short2 = stream.ReadValueS16();
+            Short3 = stream.ReadValueS16();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
@@ -615,16 +613,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			switch (MonsterQuality)
 			{
 				case 0: //Normal
-					return new List<float> { 0.18f * Config.Instance.RateChangeDrop };
+					return new List<float> { 0.18f * GameServerConfig.Instance.RateChangeDrop };
 				case 1: //Champion
-					return new List<float> { 1f, 1f, 1f, 1f, 0.75f * Config.Instance.RateChangeDrop };
+					return new List<float> { 1f, 1f, 1f, 1f, 0.75f * GameServerConfig.Instance.RateChangeDrop };
 				case 2: //Rare (Elite)
 				case 4: //Unique
 					return new List<float> { 1f, 1f, 1f, 1f, 1f };
 				case 7: //Boss
-					return new List<float> { 1f, 1f, 1f, 1f, 1f, 0.75f * Config.Instance.RateChangeDrop, 0.4f * Config.Instance.RateChangeDrop };
+					return new List<float> { 1f, 1f, 1f, 1f, 1f, 0.75f * GameServerConfig.Instance.RateChangeDrop, 0.4f * GameServerConfig.Instance.RateChangeDrop };
 				default:
-					return new List<float> { 0.12f * Config.Instance.RateChangeDrop };
+					return new List<float> { 0.12f * GameServerConfig.Instance.RateChangeDrop };
 			}
 		}
 

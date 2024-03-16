@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.Core.Schedulers

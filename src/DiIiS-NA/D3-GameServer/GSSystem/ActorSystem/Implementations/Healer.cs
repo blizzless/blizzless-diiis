@@ -1,13 +1,7 @@
-﻿//Blizzless Project 2022 
-using System.Linq;
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -23,8 +17,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Healer(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.TeamID] = 0;
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.TeamID] = 0;
+			Attributes[GameAttributes.MinimapActive] = true;
 		}
 
 		public override void OnTargeted(PlayerSystem.Player player, TargetMessage message)

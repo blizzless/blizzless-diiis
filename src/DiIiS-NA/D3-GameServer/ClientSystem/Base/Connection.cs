@@ -1,20 +1,11 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Linq;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Net;
-//Blizzless Project 2022 
 using System.Net.Sockets;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.ClientSystem.Base
@@ -116,8 +107,7 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
 
 			try
 			{
-				//Blizzless Project 2022 
-using (var socketEventargs = new SocketAsyncEventArgs())
+				using (var socketEventargs = new SocketAsyncEventArgs())
 				{
 					socketEventargs.SetBuffer(_recvBuffer, 0, BufferSize);
 					socketEventargs.Completed += (sender, args) => ReadCallback(args);

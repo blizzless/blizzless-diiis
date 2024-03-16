@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.ClientSystem.Base
@@ -18,14 +13,14 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
 		public ConnectionDataEventArgs(IConnection connection, IEnumerable<byte> data)
 			: base(connection)
 		{
-			Data = data ?? new byte[0];
+			Data = data ?? Array.Empty<byte>();
 		}
 
 		public override string ToString()
 		{
 			return Connection.RemoteEndPoint != null
-				? string.Format("{0}: {1} bytes", Connection.RemoteEndPoint, Data.Count())
-				: string.Format("Not Connected: {0} bytes", Data.Count());
+				? $"{Connection.RemoteEndPoint}: {Data.Count()} bytes"
+				: $"Not Connected: {Data.Count()} bytes";
 		}
 	}
 }

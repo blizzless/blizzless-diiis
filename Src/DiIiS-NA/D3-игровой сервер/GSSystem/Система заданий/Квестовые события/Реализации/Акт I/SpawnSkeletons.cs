@@ -1,36 +1,19 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -65,7 +48,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 					
 					StartConversation(world, 17923);
 
-					SkeletonKing_Bridge.PlayAnimation(5, SkeletonKing_Bridge.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening], 1f);
+					SkeletonKing_Bridge.PlayAnimation(5, (AnimationSno)SkeletonKing_Bridge.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening], 1f);
 
 					world.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
 					{
@@ -89,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			var spawner = world.GetActorBySNO(ActorSno._trdun_rescuecainskelspawner);
 			while (spawner != null)
 			{
-				var monster = FastRandom.Instance.Next(10) % 2 == 0 ? ActorSno._skeletonking_shield_skeleton : ActorSno._skeletonking_skeleton;
+				var monster = ActorSno._skeletonking_shield_skeleton;
 				world.SpawnMonster(monster, spawner.Position);
 				spawner.Destroy();
 				spawner = world.GetActorBySNO(ActorSno._trdun_rescuecainskelspawner);

@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-namespace DiIiS_NA.LoginServer.Crypthography
+﻿namespace DiIiS_NA.LoginServer.Crypthography
 {
 	public class ARC4
 	{

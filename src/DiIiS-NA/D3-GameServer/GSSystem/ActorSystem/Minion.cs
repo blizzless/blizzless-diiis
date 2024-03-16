@@ -1,38 +1,15 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System;
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
-//Blizzless Project 2022 
-using MonsterFF = DiIiS_NA.Core.MPQ.FileFormats.Monster;
-//Blizzless Project 2022 
-using ActorFF = DiIiS_NA.Core.MPQ.FileFormats.Actor;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -81,21 +58,21 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			var monsterLevels = (GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.GameBalance][19760].Data;
 			if (Revived)
 				LifeTime = TickTimer.WaitSeconds(world.Game, 15f);
-			Attributes[GameAttribute.Level] = master.Attributes[GameAttribute.Level];
+			Attributes[GameAttributes.Level] = master.Attributes[GameAttributes.Level];
 			if (!QuestFollower)
 			{
 				//this.Attributes[GameAttribute.Hitpoints_Max] = monsterLevels.MonsterLevel[this.Attributes[GameAttribute.Level]].F0;
-				Attributes[GameAttribute.Hitpoints_Max] = 1000f + (Attributes[GameAttribute.Level] * 150f) + (Attributes[GameAttribute.Alt_Level] * 150f) + (master.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.35f);
-				Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max];
-				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
-				Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = 1f;
+				Attributes[GameAttributes.Hitpoints_Max] = 1000f + (Attributes[GameAttributes.Level] * 150f) + (Attributes[GameAttributes.Alt_Level] * 150f) + (master.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.35f);
+				Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max];
+				Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
+				Attributes[GameAttributes.Hitpoints_Regen_Per_Second] = 1f;
 			}
-			Attributes[GameAttribute.Weapon_Crit_Chance] = master.Attributes[GameAttribute.Weapon_Crit_Chance];
-			Attributes[GameAttribute.Crit_Damage_Percent] = master.Attributes[GameAttribute.Crit_Damage_Percent];
-			Attributes[GameAttribute.Crit_Percent_Bonus_Capped] = master.Attributes[GameAttribute.Crit_Percent_Bonus_Capped];
+			Attributes[GameAttributes.Weapon_Crit_Chance] = master.Attributes[GameAttributes.Weapon_Crit_Chance];
+			Attributes[GameAttributes.Crit_Damage_Percent] = master.Attributes[GameAttributes.Crit_Damage_Percent];
+			Attributes[GameAttributes.Crit_Percent_Bonus_Capped] = master.Attributes[GameAttributes.Crit_Percent_Bonus_Capped];
 			//this.Attributes[GameAttribute.Attack_Percent] = master.Attributes[GameAttribute.Attack_Bonus_Percent];
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = master.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0];
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] = master.Attributes[GameAttributes.Damage_Weapon_Min_Total, 0];
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] = master.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0];
 
 			if (Master is Player)
 			{
@@ -107,7 +84,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (master != null)
 			{
 				//this.Attributes[GameAttribute.Summoned_By_ACDID] = (int)master.DynamicID;
-				Attributes[GameAttribute.TeamID] = master.Attributes[GameAttribute.TeamID];
+				Attributes[GameAttributes.TeamID] = master.Attributes[GameAttributes.TeamID];
 				if (master is Player)
 				{
 					if ((master as Player).Followers.Values.Count(a => a == sno) >= SummonLimit)
@@ -136,13 +113,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				_lastResourceUpdateTick = World.Game.TickCounter;
 				if (!QuestFollower)
 				{
-					float quantity = tickSeconds * Attributes[GameAttribute.Hitpoints_Regen_Per_Second];
+					float quantity = tickSeconds * Attributes[GameAttributes.Hitpoints_Regen_Per_Second];
 
-					if (Attributes[GameAttribute.Hitpoints_Cur] < Attributes[GameAttribute.Hitpoints_Max_Total])
+					if (Attributes[GameAttributes.Hitpoints_Cur] < Attributes[GameAttributes.Hitpoints_Max_Total])
 					{
-						Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
-							Attributes[GameAttribute.Hitpoints_Cur] + quantity,
-							Attributes[GameAttribute.Hitpoints_Max_Total]);
+						Attributes[GameAttributes.Hitpoints_Cur] = Math.Min(
+							Attributes[GameAttributes.Hitpoints_Cur] + quantity,
+							Attributes[GameAttributes.Hitpoints_Max_Total]);
 
 						Attributes.BroadcastChangedIfRevealed();
 					}

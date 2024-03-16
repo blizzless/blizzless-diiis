@@ -1,10 +1,6 @@
-﻿//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
+﻿using System.Text;
 using CrystalMpq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.Core.Types.Math

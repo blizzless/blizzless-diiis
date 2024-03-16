@@ -1,52 +1,26 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Interactions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.NPC;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -65,25 +39,25 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public InteractiveNPC(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = true; //second param - playerIndex
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 1] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 2] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 3] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 4] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 5] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 6] = true;
-			Attributes[GameAttribute.NPC_Has_Interact_Options, 7] = true;
-			Attributes[GameAttribute.NPC_Is_Operatable] = true;
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 0] = true; //second param - playerIndex
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 1] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 2] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 3] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 4] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 5] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 6] = true;
+			Attributes[GameAttributes.NPC_Has_Interact_Options, 7] = true;
+			Attributes[GameAttributes.NPC_Is_Operatable] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 			Interactions = new List<IInteraction>();
 			Conversations = new List<ConversationInteraction>();
 
 			
-			World.Game.QuestManager.OnQuestProgress += new QuestManager.QuestProgressDelegate(quest_OnQuestProgress);
+			World.Game.QuestManager.OnQuestProgress += new QuestManager.QuestProgressDelegate(QuestProgress);
 			UpdateConversationList(); // show conversations with no quest dependency
 		}
 
-		protected override void quest_OnQuestProgress() // shadows Actors'Mooege.Core.GS.Actors.InteractiveNPC.quest_OnQuestProgress(Mooege.Core.GS.Games.Quest)'
+		protected override void QuestProgress() // shadows Actors'Mooege.Core.GS.Actors.InteractiveNPC.quest_OnQuestProgress(Mooege.Core.GS.Games.Quest)'
 		{
 			if (this is Hireling && (this as Hireling).IsHireling) return;
 			// call base classe update range stuff			
@@ -174,12 +148,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 				if (this is Healer) return;
 				
-				Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
+				Attributes[GameAttributes.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
 				
 				if (ForceConversationSNO != -1)
 				{
 					questConversation = true;
-					Attributes[GameAttribute.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
+					Attributes[GameAttributes.Conversation_Icon, 0] = questConversation ? 2 : (sideConversation ? 4 : 0);
 					Conversations.Add(new ConversationInteraction(ForceConversationSNO));
 				}
 
@@ -193,7 +167,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					World.Game.CurrentSideQuest == 356996 ||
 					World.Game.CurrentSideQuest == 356999 ||
 					World.Game.CurrentSideQuest == 357001;
-				Attributes[GameAttribute.Conversation_Icon, 0] = active ? 1 : 3;
+				Attributes[GameAttributes.Conversation_Icon, 0] = active ? 1 : 3;
 				Attributes.BroadcastChangedIfRevealed();
 			}
 
@@ -201,9 +175,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			foreach (var conv in Conversations)
 				if (conv.Read == false)
 					HasReaded = true;
-			if (!HasReaded && Attributes[GameAttribute.Conversation_Icon, 0] != 2)
+			if (!HasReaded && Attributes[GameAttributes.Conversation_Icon, 0] != 2)
 			{
-				Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 
 				//if (entry.Type == ConversationTypes.GlobalFloat)
 				
@@ -223,17 +197,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			
 			try
 			{
-				if (player.Position.DistanceSquared(ref _position) < 121f && !_ambientPlayed && Attributes[GameAttribute.Conversation_Icon, 0] != 2)
+				if (player.Position.DistanceSquared(ref _position) < 121f && !_ambientPlayed && Attributes[GameAttributes.Conversation_Icon, 0] != 2)
 				{
 					_ambientPlayed = true;
 					if (FastRandom.Instance.Next(100) < 50)
 					{
 						if (ConversationList != null)
 						{
-							var suitable_entries = ConversationList.AmbientConversationListEntries.Where(entry => entry.SpecialEventFlag == World.Game.CurrentAct).ToList();
-							if (suitable_entries.Count() > 0)
+							var suitableEntries = ConversationList.AmbientConversationListEntries.Where(entry => entry.SpecialEventFlag == World.Game.CurrentAct).ToList();
+							if (suitableEntries.Count > 0)
 							{
-								var random_conv = suitable_entries[FastRandom.Instance.Next(suitable_entries.Count())];
+								var random_conv = suitableEntries.PickRandom();
 								player.Conversations.StartConversation(random_conv.SNOConversation);
 								if (ForceConversationSNO == Conversations[0].ConversationSNO) ForceConversationSNO = -1;
 							}
@@ -260,13 +234,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
 				var trigger = World.Game.QuestProgress.QuestTriggers[(int)SNO];
-				if (trigger.triggerType == QuestStepObjectiveType.InteractWithActor)
+				if (trigger.TriggerType == QuestStepObjectiveType.InteractWithActor)
 				{
 					World.Game.QuestProgress.UpdateCounter((int)SNO);
-					if (trigger.count == World.Game.QuestProgress.QuestTriggers[(int)SNO].counter)
+					if (trigger.Count == World.Game.QuestProgress.QuestTriggers[(int)SNO].Counter)
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{

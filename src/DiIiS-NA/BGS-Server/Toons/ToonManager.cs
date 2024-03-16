@@ -1,33 +1,21 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.SkillsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using static DiIiS_NA.LoginServer.Toons.Toon;
 
 namespace DiIiS_NA.LoginServer.Toons
 {
 	public static class ToonManager
 	{
-		private static readonly ConcurrentDictionary<ulong, Toon> LoadedToons = new ConcurrentDictionary<ulong, Toon>();
+		private static readonly ConcurrentDictionary<ulong, Toon> LoadedToons = new();
 		private static readonly Logger Logger = LogManager.CreateLogger("DataBaseSystem");
 
 		private static readonly DBInventory NewbiePants = new DBInventory
@@ -158,7 +146,7 @@ namespace DiIiS_NA.LoginServer.Toons
 			Attributes = "383,:1|1E-45;103,:0|0;406,:0|0;409,:1|1E-45;401,:1|1E-45;405,:1941814752|3.0065772E+31;194,:1067030938|1.2;196,:1067030938|1.2;198,:1067030938|1.2;538,:1067030938|1.2;540,:1067030938|1.2;546,:1067030938|1.2;201,:1067030938|1.2;446,:0|0;447,:0|0;448,:0|0;449,:0|0;539,:0|0;541,:0|0;195,:0|0;197,:0|0;231,0:1073741824|2;224,0:1077936128|3;232,0:1073741824|2;225,0:1077936128|3;226,:1077936128|3;233,:1073741824|2;236,:1075838976|2.5;235,0:1075838976|2.5;542,0:1073741824|2;547,0:1073741824|2;220,0:1073741824|2;216,0:1073741824|2;543,0:0|0;234,0:1075838976|2.5;222,0:1065353216|1;223,0:1065353216|1;227,0:1065353216|1;228,:1065353216|1;544,0:1065353216|1;548,0:1065353216|1;213,0:1065353216|1;545,0:0|0;381,:1000|1.401E-42;380,:1000|1.401E-42;100,30592:1|1E-45;102,30592:1|1E-45;388,57:0|0"
 		};
 
-		private static readonly DBInventory NewbieNecr = new DBInventory
+		private static readonly DBInventory NewbieNecromancer = new DBInventory
 		{
 			EquipmentSlot = 4,
 			LocationX = 0,
@@ -193,11 +181,8 @@ namespace DiIiS_NA.LoginServer.Toons
 		public static void PreLoadToons()
 		{
 			Logger.Info("Loading Diablo III - Toons...");
-			List<DBToon> all_toons = DBSessions.SessionQuery<DBToon>();
-			foreach (var toon in all_toons)
-			{
+			foreach (var toon in DBSessions.SessionQuery<DBToon>())
 				LoadedToons.TryAdd(toon.Id, new Toon(toon, null));
-			}
 		}
 
 		public static Toon GetToonByDBToon(DBToon dbToon, GameDBSession session = null)
@@ -215,15 +200,15 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public static Account GetOwnerAccountByToonLowId(ulong id)
 		{
-			return GetToonByLowID(id).GameAccount.Owner;
+			return GetToonByLowId(id).GameAccount.Owner;
 		}
 
 		public static GameAccount GetOwnerGameAccountByToonLowId(ulong id)
 		{
-			return GetToonByLowID(id).GameAccount;
+			return GetToonByLowId(id).GameAccount;
 		}
 
-		public static Toon GetToonByLowID(ulong id, GameDBSession session = null)
+		public static Toon GetToonByLowId(ulong id, GameDBSession session = null)
 		{
 			if (LoadedToons.ContainsKey(id))
 				return LoadedToons[id];
@@ -237,20 +222,14 @@ namespace DiIiS_NA.LoginServer.Toons
 		public static Toon GetDeletedToon(GameAccount account)
 		{
 			var query = DBSessions.SessionQueryWhere<DBToon>(dbt => dbt.DBGameAccount.Id == account.PersistentID && dbt.Deleted);
-			return query.Any() ? GetToonByLowID(query.Last().Id) : null;
+			return query.Any() ? GetToonByLowId(query.Last().Id) : null;
 		}
 
-		public static List<Toon> GetToonsForGameAccount(GameAccount account)
-		{
-			var toons = DBSessions.SessionQueryWhere<DBToon>(t => t.DBGameAccount.Id == account.PersistentID).Select(dbt => GetToonByLowID(dbt.Id));
-			return toons.ToList();
-		}
+		public static List<Toon> GetToonsForGameAccount(GameAccount account) =>
+			DBSessions.SessionQueryWhere<DBToon>(t => t.DBGameAccount.Id == account.PersistentID)
+				.Select(dbt => GetToonByLowId(dbt.Id)).ToList();
 
-
-		public static int TotalToons
-		{
-			get { return DBSessions.SessionQuery<DBToon>().Count; }
-		}
+		public static int TotalToons => DBSessions.SessionQuery<DBToon>().Count;
 
 
 		public static Toon CreateNewToon(string name, int classId, ToonFlags flags, byte level, bool IsHardcore, GameAccount gameAccount, int Season)
@@ -275,7 +254,7 @@ namespace DiIiS_NA.LoginServer.Toons
 				CurrentQuestId = 87700,
 				CurrentQuestStepId = -1,
 				CurrentDifficulty = 0,
-				Lore = new byte[0],
+				Lore = Array.Empty<byte>(),
 				Stats = "0;0;0;0;0;0",
 				DBGameAccount = dbGameAccount,
 				Cosmetic1 = -1,
@@ -286,7 +265,7 @@ namespace DiIiS_NA.LoginServer.Toons
 
 			DBSessions.SessionSave(newDBToon);
 
-			Toon createdToon = GetToonByLowID(newDBToon.Id);
+			Toon createdToon = GetToonByLowId(newDBToon.Id);
 
 			CreateSkillSet(newDBToon);
 
@@ -341,7 +320,7 @@ namespace DiIiS_NA.LoginServer.Toons
 			armor.isHardcore = isHardcore;
 			DBSessions.SessionSave(armor);
 
-			DBInventory weapon = new DBInventory();
+			DBInventory weapon;
 			switch (toon.DBToon.Class)
 			{
 				case ToonClass.Barbarian:
@@ -363,7 +342,7 @@ namespace DiIiS_NA.LoginServer.Toons
 					weapon = NewbieWand;
 					break;
 				case ToonClass.Necromancer:
-					weapon = NewbieNecr;
+					weapon = NewbieNecromancer;
 					break;
 				default:
 					weapon = NewbieKnife;
@@ -375,7 +354,6 @@ namespace DiIiS_NA.LoginServer.Toons
 			DBSessions.SessionSave(weapon);
 			if (toon.DBToon.Class == ToonClass.Crusader) //add shield
 			{
-				DBInventory shield = new DBInventory();
 				weapon = NewbieShield;
 				weapon.DBToon = toon.DBToon;
 				weapon.DBGameAccount = toon.GameAccount.DBGameAccount;
@@ -386,14 +364,15 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public static void CreateHirelingProfile(Toon toon, int type)
 		{
-			var hireling = new DBHireling();
-			hireling.Class = type;
-			hireling.DBToon = toon.DBToon;
-			hireling.Skill1SNOId = -1;
-			hireling.Skill2SNOId = -1;
-			hireling.Skill3SNOId = -1;
-			hireling.Skill4SNOId = -1;
-			DBSessions.SessionSave(hireling);
+			DBSessions.SessionSave(new DBHireling
+			{
+				Class = type,
+				DBToon = toon.DBToon,
+				Skill1SNOId = -1,
+				Skill2SNOId = -1,
+				Skill3SNOId = -1,
+				Skill4SNOId = -1
+			});
 		}
 
 		public static void DeleteToon(Toon toon)
@@ -436,7 +415,7 @@ namespace DiIiS_NA.LoginServer.Toons
 				DBGameAccount = gaccount,
 				TimePlayed = 0,
 				Stats = "",
-				Lore = new byte[0],
+				Lore = Array.Empty<byte>(),
 				Deleted = false,
 				Archieved = false,
 				Cosmetic1 = -1,

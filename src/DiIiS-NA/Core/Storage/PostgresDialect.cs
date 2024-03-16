@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using System.Data;
-//Blizzless Project 2022 
+﻿using System.Data;
 using NHibernate.Dialect;
 
 namespace DiIiS_NA.Core.Storage

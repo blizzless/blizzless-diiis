@@ -1,11 +1,6 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -24,13 +19,13 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Animation2D(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
-            this.FrameAnim = new FrameAnim(stream);
-            this.SNOSound = stream.ReadValueS32();
-            this.I2 = stream.ReadValueS32();
-            this.Anim2DFrame = new Anim2DFrame(stream);
+            Header = new Header(stream);
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
+            FrameAnim = new FrameAnim(stream);
+            SNOSound = stream.ReadValueS32();
+            I2 = stream.ReadValueS32();
+            Anim2DFrame = new Anim2DFrame(stream);
 
             stream.Close();
         }
@@ -46,11 +41,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public FrameAnim(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.Velocity0 = stream.ReadValueF32();
-            this.Velocity1 = stream.ReadValueF32();
-            this.I1 = stream.ReadValueS32();
-            this.I2 = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            Velocity0 = stream.ReadValueF32();
+            Velocity1 = stream.ReadValueF32();
+            I1 = stream.ReadValueS32();
+            I2 = stream.ReadValueS32();
         }
     }
     public class Anim2DFrame
@@ -60,7 +55,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public Anim2DFrame(MpqFileStream stream)
         {
-            this.Text = stream.ReadString(64);
+            Text = stream.ReadString(64);
             DT_RGBACOLOR = new DT_RGBACOLOR(stream);
         }
     }
@@ -73,10 +68,10 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public DT_RGBACOLOR(MpqFileStream stream)
         {
-            this.B0 = stream.ReadValueU8();
-            this.B1 = stream.ReadValueU8();
-            this.B2 = stream.ReadValueU8();
-            this.B3 = stream.ReadValueU8();
+            B0 = stream.ReadValueU8();
+            B1 = stream.ReadValueU8();
+            B2 = stream.ReadValueU8();
+            B3 = stream.ReadValueU8();
         }
     }
 }

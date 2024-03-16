@@ -1,38 +1,19 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
-using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
@@ -71,10 +52,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			if (Body.World.Game.Paused) return;
 
 			// check if in disabled state, if so cancel any action then do nothing
-			if (Body.Attributes[GameAttribute.Frozen] ||
-				Body.Attributes[GameAttribute.Stunned] ||
-				Body.Attributes[GameAttribute.Blind] ||
-				Body.Attributes[GameAttribute.Webbed] ||
+			if (Body.Attributes[GameAttributes.Frozen] ||
+				Body.Attributes[GameAttributes.Stunned] ||
+				Body.Attributes[GameAttributes.Blind] ||
+				Body.Attributes[GameAttributes.Webbed] ||
 				Body.Disable ||
 				Body.World.BuffManager.GetFirstBuff<KnockbackBuff>(Body) != null)
 			{
@@ -88,7 +69,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				return;
 			}
 
-			if (Body.Attributes[GameAttribute.Feared])
+			if (Body.Attributes[GameAttributes.Feared])
 			{
 				if (!Feared || CurrentAction == null)
 				{
@@ -122,11 +103,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					int powerToUse = PickPowerToUse();
 					if (powerToUse > 0)
 					{
-						var elites = targets.Where(t => t is Champion || t is Rare || t is RareMinion);
-						if (elites.Count() > 0)
-							_target = elites.First();
-						else
-							_target = targets.First();
+						var elite = targets.FirstOrDefault(t => t is Champion or Rare or RareMinion);
+						_target = elite ?? targets.First();
 
 						PowerScript power = PowerLoader.CreateImplementationForPowerSNO(powerToUse);
 						power.User = Body;
@@ -170,16 +148,11 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		protected virtual int PickPowerToUse()
 		{
-											  // randomly used an implemented power
-			if (PresetPowers.Count > 0)
-			{
-				int powerIndex = RandomHelper.Next(PresetPowers.Count);
-				if (PowerLoader.HasImplementationForPowerSNO(PresetPowers[powerIndex]))
-					return PresetPowers[powerIndex];
-			}
-
-			// no usable power
-			return -1;
+			// randomly used an implemented power
+			var implementedPowers = PresetPowers.Where(PowerLoader.HasImplementationForPowerSNO);
+			return implementedPowers.TryPickRandom(out var randomPower)
+				? randomPower
+				: -1;
 		}
 
 		public void AddPresetPower(int powerSNO)

@@ -1,52 +1,95 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
+using System.Collections.Immutable;
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
 using NHibernate.Linq;
 
 namespace DiIiS_NA.LoginServer.Toons
 {
 	public class Toon : PersistentRPCObject
 	{
-        #region Cosmetics
-        public int Cosmetic1 { get { return this.DBToon.Cosmetic1; } set { lock (this.DBToon) { var dbToon = this.DBToon; dbToon.Cosmetic1 = value; DBSessions.SessionUpdate(dbToon); } } }
-		public int Cosmetic2 { get { return this.DBToon.Cosmetic2; } set { lock (this.DBToon) { var dbToon = this.DBToon; dbToon.Cosmetic2 = value; DBSessions.SessionUpdate(dbToon); } } }
-		public int Cosmetic3 { get { return this.DBToon.Cosmetic3; } set { lock (this.DBToon) { var dbToon = this.DBToon; dbToon.Cosmetic3 = value; DBSessions.SessionUpdate(dbToon); } } }
-		public int Cosmetic4 { get { return this.DBToon.Cosmetic4; } set { lock (this.DBToon) { var dbToon = this.DBToon; dbToon.Cosmetic4 = value; DBSessions.SessionUpdate(dbToon); } } }
-        #endregion
+		#region Cosmetics
 
-        public DBToon DBToon
+		public int Cosmetic1
+		{
+			get => DBToon.Cosmetic1;
+			set
+			{
+				lock (DBToon)
+				{
+					var dbToon = DBToon;
+					dbToon.Cosmetic1 = value;
+					DBSessions.SessionUpdate(dbToon);
+				}
+			}
+		}
+
+		public int Cosmetic2
+		{
+			get => DBToon.Cosmetic2;
+			set
+			{
+				lock (DBToon)
+				{
+					var dbToon = DBToon;
+					dbToon.Cosmetic2 = value;
+					DBSessions.SessionUpdate(dbToon);
+				}
+			}
+		}
+
+		public int Cosmetic3
+		{
+			get => DBToon.Cosmetic3;
+			set
+			{
+				lock (DBToon)
+				{
+					var dbToon = DBToon;
+					dbToon.Cosmetic3 = value;
+					DBSessions.SessionUpdate(dbToon);
+				}
+			}
+		}
+
+		public int Cosmetic4
+		{
+			get => DBToon.Cosmetic4;
+			set
+			{
+				lock (DBToon)
+				{
+					var dbToon = DBToon;
+					dbToon.Cosmetic4 = value;
+					DBSessions.SessionUpdate(dbToon);
+				}
+			}
+		}
+
+		#endregion
+
+		public DBToon DBToon
 		{
 			get;
-				/*
+			/*
+		{
+			if (LoginServer.Config.Instance.Enabled)
 			{
-				if (LoginServer.Config.Instance.Enabled)
-				{
-					if (this.GameAccount.IsOnline)
-						this.CachedDBToon = DBSessions.SessionGet<DBToon>(this.PersistentID);
-					return this.CachedDBToon;
-				}
-				else
-					return DBSessions.SessionGet<DBToon>(this.PersistentID);
+				if (this.GameAccount.IsOnline)
+					this.CachedDBToon = DBSessions.SessionGet<DBToon>(this.PersistentID);
+				return this.CachedDBToon;
 			}
-			//*/
+			else
+				return DBSessions.SessionGet<DBToon>(this.PersistentID);
+		}
+		//*/
 			set;
 		}
 
@@ -56,10 +99,7 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public DBActiveSkills DBActiveSkills
 		{
-			get
-			{
-				return DBSessions.SessionQuerySingle<DBActiveSkills>(s => s.DBToon.Id == this.PersistentID);
-			}
+			get { return DBSessions.SessionQuerySingle<DBActiveSkills>(s => s.DBToon.Id == PersistentID); }
 			set { }
 		}
 
@@ -67,7 +107,8 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				var val = new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 1, 0, this.ClassID);
+				var val = new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 1, 0,
+					ClassID);
 				return val;
 			}
 		}
@@ -76,7 +117,8 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				var val = new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 2, 0, this.Level);
+				var val = new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 2, 0,
+					Level);
 				return val;
 			}
 		}
@@ -85,26 +127,29 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				var tFlags = this.Flags;
-				if (this.IsHardcore) tFlags |= ToonFlags.Hardcore;
-				var val = new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 4, 0, (int)tFlags);
+				var tFlags = Flags;
+				if (IsHardcore) tFlags |= ToonFlags.Hardcore;
+				var val = new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 4, 0,
+					(int)tFlags);
 				return val;
 			}
 		}
 
-		public IntPresenceField HighestUnlockedAct = new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 6, 0, 3000);
+		public IntPresenceField HighestUnlockedAct =
+			new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 6, 0, 3000);
 
 		public IntPresenceField HeroParagonLevelField
 		{
 			get
 			{
-				var val = new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 8, 0, this.ParagonLevel);
+				var val = new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 8, 0,
+					ParagonLevel);
 				return val;
 			}
 		}
 
-		public StringPresenceField HeroNameField
-		{ get { return new StringPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 5, 0, this._heroName); } }
+		public StringPresenceField HeroNameField => new StringPresenceField(FieldKeyHelper.Program.D3,
+			FieldKeyHelper.OriginatingClass.Hero, 5, 0, _heroName);
 
 		private D3.Hero.VisualEquipment _visualEquipment = null;
 		public bool _visualEquipmentChanged = true;
@@ -113,35 +158,37 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				if (this._visualEquipmentChanged)
+				if (_visualEquipmentChanged)
 				{
 					var visualItems = new[]
-				{
-					D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Head
-					D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Chest
-					D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Feet
-					D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Hands
-					D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Weapon (1)
-					D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Weapon (2)
-					D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Shoulders
-					D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Legs
-				};
+					{
+						D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Head
+						D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Chest
+						D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Feet
+						D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Hands
+						D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Weapon (1)
+						D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Weapon (2)
+						D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Shoulders
+						D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Legs
+					};
 					var CosmeticItems = new[]
 					{
-					D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Cosmetic1).Build(), // Wings
-					D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Cosmetic2).Build(), // Flag
-					D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Cosmetic3).Build(), // Pet
-					D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Cosmetic4).Build(), // Frame
-				};
-					var visibleEquipment = DBSessions.SessionQueryWhere<DBInventory>(inv => inv.DBToon.Id == this.PersistentID && inv.EquipmentSlot > 0 && inv.EquipmentSlot < 15 && inv.ForSale == false);
+						D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Cosmetic1).Build(), // Wings
+						D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Cosmetic2).Build(), // Flag
+						D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Cosmetic3).Build(), // Pet
+						D3.Hero.VisualCosmeticItem.CreateBuilder().SetGbid(Cosmetic4).Build(), // Frame
+					};
+					var visibleEquipment = DBSessions.SessionQueryWhere<DBInventory>(inv =>
+						inv.DBToon.Id == PersistentID && inv.EquipmentSlot > 0 && inv.EquipmentSlot < 15 &&
+						inv.ForSale == false);
 
 					foreach (var inv in visibleEquipment)
 					{
 						var slot = inv.EquipmentSlot;
-						if (!visualToSlotMapping.ContainsKey(slot))
+						if (!_visualToSlotMapping.ContainsKey(slot))
 							continue;
 						// decode vislual slot from equipment slot
-						slot = visualToSlotMapping[slot];
+						slot = _visualToSlotMapping[slot];
 						visualItems[slot] = D3.Hero.VisualItem.CreateBuilder()
 							.SetGbid(inv.TransmogGBID == -1 ? inv.GbId : inv.TransmogGBID)
 							.SetDyeType(inv.DyeType)
@@ -149,173 +196,18 @@ namespace DiIiS_NA.LoginServer.Toons
 							.Build();
 					}
 
-					this._visualEquipment = D3.Hero.VisualEquipment.CreateBuilder().AddRangeVisualItem(visualItems).AddRangeCosmeticItem(CosmeticItems).Build();
-					this._visualEquipmentChanged = false;
+					_visualEquipment = D3.Hero.VisualEquipment.CreateBuilder().AddRangeVisualItem(visualItems)
+						.AddRangeCosmeticItem(CosmeticItems).Build();
+					_visualEquipmentChanged = false;
 				}
-				return new ByteStringPresenceField<D3.Hero.VisualEquipment>(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 3, 0, _visualEquipment);
+
+				return new ByteStringPresenceField<D3.Hero.VisualEquipment>(FieldKeyHelper.Program.D3,
+					FieldKeyHelper.OriginatingClass.Hero, 3, 0, _visualEquipment);
 			}
 		}
 
-		public IntPresenceField HighestUnlockedDifficulty
-		{ get { return new IntPresenceField(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Hero, 7, 0, 9); } }
-
-		public int CraftItem1
-		{
-			get { return this.DBToon.CraftItem1; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem1 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int CraftItem2
-		{
-			get { return this.DBToon.CraftItem2; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem2 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int CraftItem3
-		{
-			get { return this.DBToon.CraftItem3; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem3 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int CraftItem4
-		{
-			get { return this.DBToon.CraftItem4; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem4 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int CraftItem5
-		{
-			get { return this.DBToon.CraftItem5; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.CraftItem5 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int BigPortalKey
-		{
-			get { return this.DBToon.BigPortalKey; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.BigPortalKey = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int LeorikKey
-		{
-			get { return this.DBToon.LeorikKey; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.LeorikKey = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-
-		public int HoradricA1Res
-		{
-			get { return this.DBToon.HoradricA1; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA1 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int HoradricA2Res
-		{
-			get { return this.DBToon.HoradricA2; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA2 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int HoradricA3Res
-		{
-			get { return this.DBToon.HoradricA3; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA3 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int HoradricA4Res
-		{
-			get { return this.DBToon.HoradricA4; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA4 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
-		public int HoradricA5Res
-		{
-			get { return this.DBToon.HoradricA5; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.HoradricA5 = value;
-					DBSessions.SessionUpdate(dbToon);
-				}
-			}
-		}
+		public IntPresenceField HighestUnlockedDifficulty => new IntPresenceField(FieldKeyHelper.Program.D3,
+			FieldKeyHelper.OriginatingClass.Hero, 7, 0, 9);
 
 		/// <summary>
 		/// D3 EntityID encoded id.
@@ -327,32 +219,28 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public bool Deleted
 		{
-			get { return this.DBToon.Deleted; }
+			get => DBToon.Deleted;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.Deleted = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
 			}
 		}
 
-		public bool isSeassoned
-		{
-			get;
-			set;
-		}
+		public bool IsSeasoned { get; set; }
 
 		public int SeasonCreated
 		{
-			get { return this.DBToon.CreatedSeason; }
+			get => DBToon.CreatedSeason;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.CreatedSeason = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -361,12 +249,12 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public bool StoneOfPortal
 		{
-			get { return this.DBToon.StoneOfPortal; }
+			get => DBToon.StoneOfPortal;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.StoneOfPortal = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -375,12 +263,12 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public bool Dead
 		{
-			get { return this.DBToon.Dead; }
+			get => DBToon.Dead;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.Dead = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -392,12 +280,12 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public bool Archieved
 		{
-			get { return this.DBToon.Archieved; }
+			get => DBToon.Archieved;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.Archieved = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -408,8 +296,8 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				var _editions = DBSessions.SessionQueryWhere<DBBonusSets>(dbi => dbi.SetId == 6 && dbi.ClaimedToon.Id == this.PersistentID);
-				return _editions.Count() > 0;
+				return DBSessions
+					.SessionQueryWhere<DBBonusSets>(dbi => dbi.SetId == 6 && dbi.ClaimedToon.Id == PersistentID).Any();
 			}
 
 			set { }
@@ -425,22 +313,20 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public string Name
 		{
-			get
-			{
+			get =>
 				//return this.IsHardcore ? string.Format("{{c_green}}{0}{{/c}}", this._heroName) : this._heroName;
-				return this._heroName;//this.IsHardcore ? this.isSeassoned ? string.Format("{{c_yellow}}{0}{{/c}}", this._heroName) : string.Format("{{c_red}}{0}{{/c}}", this._heroName) : this.isSeassoned ? string.Format("{{c_green}}{0}{{/c}}", this._heroName) : this._heroName;
-			}
+				_heroName; //this.IsHardcore ? this.isSeassoned ? string.Format("{{c_yellow}}{0}{{/c}}", this._heroName) : string.Format("{{c_red}}{0}{{/c}}", this._heroName) : this.isSeassoned ? string.Format("{{c_green}}{0}{{/c}}", this._heroName) : this._heroName;
 			set
 			{
-				this._heroName = value;
-				lock (this.DBToon)
+				_heroName = value;
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.Name = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
 
-				this.HeroNameField.Value = value;
+				HeroNameField.Value = value;
 			}
 		}
 
@@ -460,16 +346,13 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public GameAccount GameAccount
 		{
-			get
-			{
-				return GameAccountManager.GetAccountByPersistentID(this.GameAccountId);
-			}
+			get => GameAccountManager.GetAccountByPersistentID(GameAccountId);
 			set
 			{
-				this.GameAccountId = value.PersistentID;
-				lock (this.DBToon)
+				GameAccountId = value.PersistentID;
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.DBGameAccount = value.DBGameAccount;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -483,10 +366,7 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public ToonClass Class
 		{
-			get
-			{
-				return _toonClass;
-			}
+			get => _toonClass;
 			private set
 			{
 				/*var dbToon = this.DBToon;
@@ -498,28 +378,28 @@ namespace DiIiS_NA.LoginServer.Toons
 				switch (_toonClass)
 				{
 					case ToonClass.Barbarian:
-						this.HeroClassField.Value = 0x4FB91EE2;
+						HeroClassField.Value = 0x4FB91EE2;
 						break;
 					case ToonClass.Crusader:
-						this.HeroClassField.Value = unchecked((int)0xBE27DC19);
+						HeroClassField.Value = unchecked((int)0xBE27DC19);
 						break;
 					case ToonClass.DemonHunter:
-						this.HeroClassField.Value = unchecked((int)0xC88B9649);
+						HeroClassField.Value = unchecked((int)0xC88B9649);
 						break;
 					case ToonClass.Monk:
-						this.HeroClassField.Value = 0x3DAC15;
+						HeroClassField.Value = 0x3DAC15;
 						break;
 					case ToonClass.WitchDoctor:
-						this.HeroClassField.Value = 0x343C22A;
+						HeroClassField.Value = 0x343C22A;
 						break;
 					case ToonClass.Wizard:
-						this.HeroClassField.Value = 0x1D4681B1;
+						HeroClassField.Value = 0x1D4681B1;
 						break;
 					case ToonClass.Necromancer:
-						this.HeroClassField.Value = 0x8D4D94ED;//unchecked((int)0x8D4D94ED);
+						HeroClassField.Value = 0x8D4D94ED; //unchecked((int)0x8D4D94ED);
 						break;
 					default:
-						this.HeroClassField.Value = 0x0;
+						HeroClassField.Value = 0x0;
 						break;
 				}
 			}
@@ -530,16 +410,13 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public ToonFlags Flags
 		{
-			get
-			{
-				return this._flags;// | ToonFlags.AllUnknowns;
-			}
+			get => _flags; // | ToonFlags.AllUnknowns;
 			set
 			{
-				this._flags = value;
-				lock (this.DBToon)
+				_flags = value;
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.Flags = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -553,6 +430,7 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		private byte _cachedLevel = 0;
 		private bool _levelChanged = true;
+
 		/// <summary>
 		/// Toon's level.
 		/// </summary>
@@ -560,19 +438,20 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				if (_levelChanged || !LoginServer.Config.Instance.Enabled)
+				if (_levelChanged || !LoginServerConfig.Instance.Enabled)
 				{
-					_cachedLevel = this.DBToon.Level;
+					_cachedLevel = DBToon.Level;
 					_levelChanged = false;
 				}
-				return this._cachedLevel;
+
+				return _cachedLevel;
 			}
 			private set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
 					_cachedLevel = value;
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.Level = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -589,23 +468,19 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				if (_paragonLevelChanged || !LoginServer.Config.Instance.Enabled)
-				{
-					if (this.IsHardcore)
-						this._cachedParagonLevel = this.GameAccount.DBGameAccount.ParagonLevelHardcore;
-					else
-						this._cachedParagonLevel = this.GameAccount.DBGameAccount.ParagonLevel;
-					_paragonLevelChanged = false;
-				}
-				return this._cachedParagonLevel;
+				if (!_paragonLevelChanged && LoginServerConfig.Instance.Enabled) return _cachedParagonLevel;
+				_cachedParagonLevel = GameAccount.DBGameAccount.ParagonLevel;
+				_paragonLevelChanged = false;
+
+				return _cachedParagonLevel;
 			}
 			private set
 			{
-				lock (this.GameAccount.DBGameAccount)
+				lock (GameAccount.DBGameAccount)
 				{
-					this._cachedParagonLevel = value;
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					if (this.IsHardcore)
+					_cachedParagonLevel = value;
+					var dbGAcc = GameAccount.DBGameAccount;
+					if (IsHardcore)
 						dbGAcc.ParagonLevelHardcore = value;
 					else
 						dbGAcc.ParagonLevel = value;
@@ -619,16 +494,16 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public long ExperienceNext
 		{
-			get { return (this.Level >= 70 ? this.ParagonExperienceNext : this.DBToon.Experience); }
+			get => (Level >= 70 ? ParagonExperienceNext : DBToon.Experience);
 			set
 			{
-				if (this.Level >= 70)
-					this.ParagonExperienceNext = value;
+				if (Level >= 70)
+					ParagonExperienceNext = value;
 				else
 				{
-					lock (this.DBToon)
+					lock (DBToon)
 					{
-						var dbToon = this.DBToon;
+						var dbToon = DBToon;
 						dbToon.Experience = value;
 						DBSessions.SessionUpdate(dbToon);
 					}
@@ -638,13 +513,13 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public long ParagonExperienceNext
 		{
-			get { return (this.IsHardcore ? this.GameAccount.DBGameAccount.ExperienceHardcore : this.GameAccount.DBGameAccount.Experience); }
+			get => (IsHardcore ? GameAccount.DBGameAccount.ExperienceHardcore : GameAccount.DBGameAccount.Experience);
 			set
 			{
-				lock (this.GameAccount.DBGameAccount)
+				lock (GameAccount.DBGameAccount)
 				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					if (this.IsHardcore)
+					var dbGAcc = GameAccount.DBGameAccount;
+					if (IsHardcore)
 						dbGAcc.ExperienceHardcore = value;
 					else
 						dbGAcc.Experience = value;
@@ -655,12 +530,12 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public int CurrentAct
 		{
-			get { return this.DBToon.CurrentAct; }
+			get => DBToon.CurrentAct;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.CurrentAct = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -669,12 +544,12 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public int CurrentQuestId
 		{
-			get { return this.DBToon.CurrentQuestId; }
+			get => DBToon.CurrentQuestId;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.CurrentQuestId = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -683,12 +558,12 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public int PvERating
 		{
-			get { return this.DBToon.PvERating; }
+			get => DBToon.PvERating;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.PvERating = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -697,12 +572,12 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public int CurrentQuestStepId
 		{
-			get { return this.DBToon.CurrentQuestStepId; }
+			get => DBToon.CurrentQuestStepId;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.CurrentQuestStepId = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -711,12 +586,12 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public int CurrentDifficulty
 		{
-			get { return this.DBToon.CurrentDifficulty; }
+			get => DBToon.CurrentDifficulty;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.CurrentDifficulty = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -726,16 +601,16 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// <summary>
 		/// Killed monsters(total for account)
 		/// </summary>
-		public ulong KilledMonsters
+		public ulong TotalKilled
 		{
-			get { return this.GameAccount.DBGameAccount.TotalKilled; }
+			get => GameAccount.DBGameAccount.TotalKilled;
 			set
 			{
-				lock (this.GameAccount.DBGameAccount)
+				var dbGA = GameAccount.DBGameAccount;
+				lock (dbGA)
 				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.TotalKilled = value;
-					DBSessions.SessionUpdate(dbGAcc);
+					dbGA.TotalKilled = value;
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
@@ -743,16 +618,16 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// <summary>
 		/// Killed elites(total for account)
 		/// </summary>
-		public ulong KilledElites
+		public ulong ElitesKilled
 		{
-			get { return this.GameAccount.DBGameAccount.ElitesKilled; }
+			get => GameAccount.DBGameAccount.ElitesKilled;
 			set
 			{
-				lock (this.GameAccount.DBGameAccount)
+				var dbGA = GameAccount.DBGameAccount;
+				lock (dbGA)
 				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.ElitesKilled = value;
-					DBSessions.SessionUpdate(dbGAcc);
+					dbGA.ElitesKilled = value;
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
@@ -762,48 +637,32 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public int TotalBounties
 		{
-			get { return this.GameAccount.DBGameAccount.TotalBounties; }
-			set
+			get
 			{
-				lock (this.GameAccount.DBGameAccount)
+				if (IsHardcore)
 				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.TotalBounties = value;
-					DBSessions.SessionUpdate(dbGAcc);
+					return GameAccount.DBGameAccount.TotalBountiesHardcore;
+				}
+				else
+				{
+					return GameAccount.DBGameAccount.TotalBounties;
 				}
 			}
-		}
-
-		/// <summary>
-		/// Bounties completed(seasonal)
-		/// </summary>
-		public int TotalBountiesHardcore
-		{
-			get { return this.GameAccount.DBGameAccount.TotalBountiesHardcore; }
 			set
 			{
-				lock (this.GameAccount.DBGameAccount)
+				var dbGA = GameAccount.DBGameAccount;
+				lock (dbGA)
 				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.TotalBountiesHardcore = value;
-					DBSessions.SessionUpdate(dbGAcc);
-				}
-			}
-		}
+					if (IsHardcore)
+					{
+						dbGA.TotalBountiesHardcore = value;
+					}
+					else
+					{
+						dbGA.TotalBounties = value;
+					}
 
-		/// <summary>
-		/// Killed elites(seasonal)
-		/// </summary>
-		public int KilledElitesSeasonal
-		{
-			get { return this.DBToon.ElitesKilled; }
-			set
-			{
-				lock (this.DBToon)
-				{
-					var dbToon = this.DBToon;
-					dbToon.ElitesKilled = value;
-					DBSessions.SessionUpdate(dbToon);
+					DBSessions.SessionUpdate(dbGA);
 				}
 			}
 		}
@@ -813,12 +672,12 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public int SeasonalKills
 		{
-			get { return this.DBToon.Kills; }
+			get => DBToon.Kills;
 			set
 			{
-				lock (this.DBToon)
+				var dbToon = DBToon;
+				lock (dbToon)
 				{
-					var dbToon = this.DBToon;
 					dbToon.Kills = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -830,13 +689,21 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public ulong CollectedGold
 		{
-			get { return this.GameAccount.DBGameAccount.TotalGold; }
+			get => IsHardcore ? GameAccount.DBGameAccount.HardTotalGold : GameAccount.DBGameAccount.TotalGold;
 			set
 			{
-				lock (this.GameAccount.DBGameAccount)
+				var dbGAcc = GameAccount.DBGameAccount;
+				lock (dbGAcc)
 				{
-					var dbGAcc = this.GameAccount.DBGameAccount;
-					dbGAcc.TotalGold = value;
+					if (IsHardcore)
+					{
+						dbGAcc.HardTotalGold = value;
+					}
+					else
+					{
+						dbGAcc.TotalGold = value;
+					}
+
 					DBSessions.SessionUpdate(dbGAcc);
 				}
 			}
@@ -847,12 +714,12 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public int CollectedGoldSeasonal
 		{
-			get { return this.DBToon.GoldGained; }
+			get => DBToon.GoldGained;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.GoldGained = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -864,12 +731,12 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// </summary>
 		public int TimePlayed
 		{
-			get { return this.DBToon.TimePlayed; }
+			get => DBToon.TimePlayed;
 			set
 			{
-				lock (this.DBToon)
+				lock (DBToon)
 				{
-					var dbToon = this.DBToon;
+					var dbToon = DBToon;
 					dbToon.TimePlayed = value;
 					DBSessions.SessionUpdate(dbToon);
 				}
@@ -890,16 +757,11 @@ namespace DiIiS_NA.LoginServer.Toons
 		/// Settings for toon.
 		/// </summary>
 		private D3.Client.ToonSettings _settings = D3.Client.ToonSettings.CreateBuilder().Build();
+
 		public D3.Client.ToonSettings Settings
 		{
-			get
-			{
-				return D3.Client.ToonSettings.CreateBuilder().SetUiFlags(0xFFFFFFFF).Build();//this._settings;
-			}
-			set
-			{
-				this._settings = value;
-			}
+			get => D3.Client.ToonSettings.CreateBuilder().SetUiFlags(0xFFFFFFFF).Build(); //this._settings;
+			set => _settings = value;
 		}
 
 		/// <summary>
@@ -910,31 +772,31 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				var dbToon = this.DBToon;
-				if (this.IsHardcore) dbToon.Flags |= ToonFlags.Hardcore;
+				var dbToon = DBToon;
+				if (IsHardcore) dbToon.Flags |= ToonFlags.Hardcore;
 				//var isSeason = Convert.ToUInt16(isSeassoned);
 
 				var digest = D3.Hero.Digest.CreateBuilder().SetVersion(905)
-								.SetHeroId(this.D3EntityID)
-								.SetHeroName(this.Name)
-								.SetGbidClass((int)this.ClassID)
-								.SetLevel(this.Level)
-								//deprecated //.SetAltLevel(dbToon.ParagonLevel)
-								.SetPlayerFlags((uint)dbToon.Flags)// + isSeason)
-								.SetSeasonCreated((uint)this.SeasonCreated)
-								
-								.SetVisualEquipment(this.HeroVisualEquipmentField.Value)
-								.SetLastPlayedAct(dbToon.CurrentAct)
-								.SetHighestUnlockedAct(3000)
-								//deprecated //.SetLastPlayedDifficulty(dbToon.CurrentDifficulty)
-								
-								//deprecated //.SetHighestCompletedDifficulty(0)
-								.SetHighestSoloRiftCompleted(3)
-								.SetLastPlayedQuest(dbToon.CurrentQuestId)
-								.SetLastPlayedQuestStep(dbToon.CurrentQuestStepId)
-								.SetTimePlayed((uint)dbToon.TimePlayed);
+					.SetHeroId(D3EntityID)
+					.SetHeroName(Name)
+					.SetGbidClass((int)ClassID)
+					.SetLevel(Level)
+					//deprecated //.SetAltLevel(dbToon.ParagonLevel)
+					.SetPlayerFlags((uint)dbToon.Flags) // + isSeason)
+					.SetSeasonCreated((uint)SeasonCreated)
 
-				if (!this.IsHardcore)
+					.SetVisualEquipment(HeroVisualEquipmentField.Value)
+					.SetLastPlayedAct(dbToon.CurrentAct)
+					.SetHighestUnlockedAct(3000)
+					//deprecated //.SetLastPlayedDifficulty(dbToon.CurrentDifficulty)
+
+					//deprecated //.SetHighestCompletedDifficulty(0)
+					.SetHighestSoloRiftCompleted(3)
+					.SetLastPlayedQuest(dbToon.CurrentQuestId)
+					.SetLastPlayedQuestStep(dbToon.CurrentQuestStepId)
+					.SetTimePlayed((uint)dbToon.TimePlayed);
+
+				if (!IsHardcore)
 				{
 					foreach (var quest in _allQuests)
 					{
@@ -943,57 +805,96 @@ namespace DiIiS_NA.LoginServer.Toons
 				}
 				else
 				{
-					IEnumerable<DBQuestHistory> _dbQuests = null;
-					_dbQuests = DBSessions.SessionQueryWhere<DBQuestHistory>(dbi => dbi.DBToon.Id == this.PersistentID);
+					var dbQuests = DBSessions.SessionQueryWhere<DBQuestHistory>(dbi => dbi.DBToon.Id == PersistentID);
 #if DEBUG
 					digest
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(87700))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(72095))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(72221))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(72061))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(117779))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(72738))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(72738))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(73236))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(72546))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(72801))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(136656))
-						//2 Акт
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(80322))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(93396))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(74128))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(57331))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(78264))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(78266))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(57335))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(57337))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(121792))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(57339))
-						//3 Акт
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(93595))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(93684))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(93697))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(203595))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(101756))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(101750))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(101758))
-						//4 Акт
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(112498))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(113910))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(114795))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(114901))
-						//5 Акт
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(251355))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(284683))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(285098))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(257120))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(263851))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(273790))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(269552))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(273408))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(87700))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(72095))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(72221))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(72061))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(117779))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(72738))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(72738))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(73236))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(72546))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(72801))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(136656))
+						//2 act
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(80322))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(93396))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(74128))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(57331))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(78264))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(78266))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(57335))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(57337))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(121792))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(57339))
+						//3 act
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(93595))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(93684))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(93697))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(203595))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(101756))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(101750))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(101758))
+						//4 act
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(112498))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(113910))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(114795))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(114901))
+						//5 act
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(251355))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(284683))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(285098))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(257120))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(263851))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(273790))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(269552))
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
+							.SetSnoQuest(273408))
 						;
 #else
-										foreach (var inv in _dbQuests)
+										foreach (var inv in dbQuests)
 										{
 											// load quests
 											var quest = D3.Hero.QuestHistoryEntry.CreateBuilder()
@@ -1007,14 +908,14 @@ namespace DiIiS_NA.LoginServer.Toons
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(80322))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(93595))
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(112498))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(251355))
-						;
-
+						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(251355));
 #endif
 				}
+
 				return digest.Build();
 			}
 		}
+
 		//*/
 		/// <summary>
 		/// Hero Profile.
@@ -1024,88 +925,104 @@ namespace DiIiS_NA.LoginServer.Toons
 			get
 			{
 				var itemList = D3.Items.ItemList.CreateBuilder();
-				List<DBInventory> heroInventoryItems = DBSessions.SessionQueryWhere<DBInventory>(dbi => dbi.DBToon.Id == this.PersistentID);
+				var heroInventoryItems =
+					DBSessions.SessionQueryWhere<DBInventory>(dbi => dbi.DBToon.Id == PersistentID).ToImmutableArray();
 				//*
 				foreach (var invItem in heroInventoryItems)
 				{
-					if ((invItem.EquipmentSlot) == 0 || (invItem.EquipmentSlot == 15)) continue;
+					if (invItem.EquipmentSlot is 0 or 15) continue;
 					var item = D3.Items.SavedItem.CreateBuilder()
-						.SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0).SetIdHigh(0x3C000002517A293 + (ulong)invItem.Id))
+						.SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0)
+							.SetIdHigh(0x3C000002517A293 + invItem.Id))
 						.SetHirelingClass(0)
-						.SetItemSlot(272 + (invItem.EquipmentSlot * 16))
-						.SetOwnerEntityId(this.D3EntityID)
+						.SetItemSlot(272 + invItem.EquipmentSlot * 16)
+						.SetOwnerEntityId(D3EntityID)
 						.SetSquareIndex(0)
 						.SetUsedSocketCount(0);
 
 					var generator = D3.Items.Generator.CreateBuilder()
-							.SetGbHandle(D3.GameBalance.Handle.CreateBuilder().SetGbid(invItem.GbId).SetGameBalanceType(2))
-							.SetStackSize(0)
-							.SetDyeType((uint)invItem.DyeType)
-							.SetFlags((uint)((invItem.Version == 1 || GameServer.GSSystem.ItemsSystem.ItemGenerator.IsCrafted(invItem.Attributes)) ? 2147483647 : 10633))
-							.SetSeed((uint)GameServer.GSSystem.ItemsSystem.ItemGenerator.GetSeed(invItem.Attributes))
-							.SetTransmogGbid(invItem.TransmogGBID)
-							.SetDurability(509);
-					if (invItem.RareItemName != null) generator.SetRareItemName(D3.Items.RareItemName.ParseFrom(invItem.RareItemName));
-					List<string> affixes = invItem.Affixes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+						.SetGbHandle(D3.GameBalance.Handle.CreateBuilder().SetGbid(invItem.GbId).SetGameBalanceType(2))
+						.SetStackSize(0)
+						.SetDyeType((uint)invItem.DyeType)
+						.SetFlags((uint)((invItem.Version == 1 ||
+						                  GameServer.GSSystem.ItemsSystem.ItemGenerator.IsCrafted(invItem.Attributes))
+							? 2147483647
+							: 10633))
+						.SetSeed((uint)GameServer.GSSystem.ItemsSystem.ItemGenerator.GetSeed(invItem.Attributes))
+						.SetTransmogGbid(invItem.TransmogGBID)
+						.SetDurability(509);
+					if (invItem.RareItemName != null)
+						generator.SetRareItemName(D3.Items.RareItemName.ParseFrom(invItem.RareItemName));
+					List<string> affixes = invItem.Affixes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+						.ToList();
 					//if (affixes.Count() > 3 ) generator.SetFlags(10633);
 					generator.SetItemQualityLevel(invItem.Quality);
 					foreach (string affix in affixes)
 					{
-						int result = 0;
-						Int32.TryParse(affix, out result);
+						Int32.TryParse(affix, out var result);
 						generator.AddBaseAffixes(result);
 					}
-					#region gems				
+
+					#region gems
+
 					if (invItem.FirstGem != -1)
 						generator.AddContents(D3.Items.EmbeddedGenerator.CreateBuilder()
-							.SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0).SetIdHigh(0x3C000002517A293 + (ulong)invItem.Id))
+							.SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0)
+								.SetIdHigh(0x3C000002517A293 + (ulong)invItem.Id))
 							.SetGenerator(D3.Items.Generator.CreateBuilder()
-								.SetGbHandle(D3.GameBalance.Handle.CreateBuilder().SetGbid(invItem.FirstGem).SetGameBalanceType(2))
+								.SetGbHandle(D3.GameBalance.Handle.CreateBuilder().SetGbid(invItem.FirstGem)
+									.SetGameBalanceType(2))
 								.SetFlags(2147483647)
 								.SetSeed(0)
 								.SetDurability(509)
 								.SetStackSize(0)
 							)
-					);
+						);
 
 					if (invItem.SecondGem != -1)
 						generator.AddContents(D3.Items.EmbeddedGenerator.CreateBuilder()
-							.SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0).SetIdHigh(0x3C000002517A293 + (ulong)invItem.Id))
+							.SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0)
+								.SetIdHigh(0x3C000002517A293 + (ulong)invItem.Id))
 							.SetGenerator(D3.Items.Generator.CreateBuilder()
-								.SetGbHandle(D3.GameBalance.Handle.CreateBuilder().SetGbid(invItem.SecondGem).SetGameBalanceType(2))
+								.SetGbHandle(D3.GameBalance.Handle.CreateBuilder().SetGbid(invItem.SecondGem)
+									.SetGameBalanceType(2))
 								.SetFlags(2147483647)
 								.SetSeed(0)
 								.SetDurability(509)
 								.SetStackSize(0)
 							)
-					);
+						);
 
 					if (invItem.ThirdGem != -1)
 						generator.AddContents(D3.Items.EmbeddedGenerator.CreateBuilder()
-							.SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0).SetIdHigh(0x3C000002517A293 + (ulong)invItem.Id))
+							.SetId(D3.OnlineService.ItemId.CreateBuilder().SetIdLow(0)
+								.SetIdHigh(0x3C000002517A293 + (ulong)invItem.Id))
 							.SetGenerator(D3.Items.Generator.CreateBuilder()
-								.SetGbHandle(D3.GameBalance.Handle.CreateBuilder().SetGbid(invItem.ThirdGem).SetGameBalanceType(2))
+								.SetGbHandle(D3.GameBalance.Handle.CreateBuilder().SetGbid(invItem.ThirdGem)
+									.SetGameBalanceType(2))
 								.SetFlags(2147483647)
 								.SetSeed(0)
 								.SetDurability(509)
 								.SetStackSize(0)
 							)
-					);
+						);
+
 					#endregion
 
 					item.SetGenerator(generator);
 					itemList.AddItems(item.Build());
 				}
+
 				//*/
-				var dbToon = this.DBToon;
+				var dbToon = DBToon;
 				string[] stats = dbToon.Stats.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 				var profile = D3.Profile.HeroProfile.CreateBuilder()
-					.SetHardcore(this.IsHardcore)
+					.SetHardcore(IsHardcore)
 					.SetDeathTime(1476016727)
 					//deprecated //.SetLife(0)
 					.SetSnoKillLocation(71150)
 					.SetKillerInfo(D3.Profile.KillerInfo.CreateBuilder().SetSnoKiller(6031).SetRarity(4))
-					.SetHeroId(this.D3EntityID)
+					.SetHeroId(D3EntityID)
 					//deprecated //.SetHighestDifficulty(0)
 					.SetHighestLevel(dbToon.Level)
 					//.SetMonstersKilled(111)
@@ -1128,30 +1045,46 @@ namespace DiIiS_NA.LoginServer.Toons
 					//.SetResistCold(110)
 					//.SetResistPoison(111)
 					.SetEquipment(itemList);
-				if (this.DBActiveSkills != null)
+				if (DBActiveSkills != null)
 				{
-					var dbActiveSkills = this.DBActiveSkills;
-					var skills = new[]{
-							D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill0).SetRuneType(dbActiveSkills.Rune0).Build(),
-							D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill1).SetRuneType(dbActiveSkills.Rune1).Build(),
-							D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill2).SetRuneType(dbActiveSkills.Rune2).Build(),
-							D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill3).SetRuneType(dbActiveSkills.Rune3).Build(),
-							D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill4).SetRuneType(dbActiveSkills.Rune4).Build(),
-							D3.Profile.SkillWithRune.CreateBuilder().SetSkill(dbActiveSkills.Skill5).SetRuneType(dbActiveSkills.Rune5).Build()
-						};
-					var passives = new[]{
-							dbActiveSkills.Passive0, dbActiveSkills.Passive1, dbActiveSkills.Passive2, dbActiveSkills.Passive3
-						};
+					var dbActiveSkills = DBActiveSkills;
+					var skills = new[]
+					{
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill0)
+							.SetRuneType(dbActiveSkills.Rune0).Build(),
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill1)
+							.SetRuneType(dbActiveSkills.Rune1).Build(),
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill2)
+							.SetRuneType(dbActiveSkills.Rune2).Build(),
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill3)
+							.SetRuneType(dbActiveSkills.Rune3).Build(),
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill4)
+							.SetRuneType(dbActiveSkills.Rune4).Build(),
+						D3.Profile.SkillWithRune.CreateBuilder()
+							.SetSkill(dbActiveSkills.Skill5)
+							.SetRuneType(dbActiveSkills.Rune5).Build()
+					};
+					var passives = new[]
+					{
+						dbActiveSkills.Passive0, dbActiveSkills.Passive1, dbActiveSkills.Passive2,
+						dbActiveSkills.Passive3
+					};
 					profile.SetSnoActiveSkills(D3.Profile.SkillsWithRunes.CreateBuilder().AddRangeRunes(skills));
 					profile.SetSnoTraits(D3.Profile.PassiveSkills.CreateBuilder().AddRangeSnoTraits(passives));
-					
+
 				}
+
 				profile.SetLegendaryPowers(D3.Profile.LegendaryPowers.CreateBuilder()
 						.AddGbidLegendaryPowers(-1)
 						.AddGbidLegendaryPowers(-1)
 						.AddGbidLegendaryPowers(-1)
-						)
-						.SetPvpDamage(0)
+					)
+					.SetPvpDamage(0)
 					.SetPvpWins(0)
 					.SetPvpGlory(0)
 					.SetPvpTakedowns(0)
@@ -1164,132 +1097,109 @@ namespace DiIiS_NA.LoginServer.Toons
 		{
 			get
 			{
-				if (!this.GameAccount.IsOnline) return false;
-				else
-				{
-					if (this.GameAccount.CurrentToon != null)
-						return this.GameAccount.CurrentToon == this;
-					else
-						return false;
-				}
+				if (!GameAccount.IsOnline) return false;
+				if (GameAccount.CurrentToon != null)
+					return GameAccount.CurrentToon == this;
+				return false;
 			}
 		}
 
-		public int ClassID
-		{
-			get
+		public int ClassID =>
+			Class switch
 			{
-				switch (this.Class)
-				{
-					case ToonClass.Barbarian:
-						return 0x4FB91EE2;
-					case ToonClass.Crusader:
-						return unchecked((int)0xBE27DC19);
-					case ToonClass.DemonHunter:
-						return unchecked((int)0xC88B9649);
-					case ToonClass.Monk:
-						return 0x3DAC15;
-					case ToonClass.WitchDoctor:
-						return 0x343C22A;
-					case ToonClass.Wizard:
-						return 0x1D4681B1;
-					case ToonClass.Necromancer:
-						return unchecked((int)0x8D4D94ED);
-				}
-				return 0x0;
-			}
-		}
+				ToonClass.Barbarian => 0x4FB91EE2,
+				ToonClass.Crusader => unchecked((int)0xBE27DC19),
+				ToonClass.DemonHunter => unchecked((int)0xC88B9649),
+				ToonClass.Monk => 0x3DAC15,
+				ToonClass.WitchDoctor => 0x343C22A,
+				ToonClass.Wizard => 0x1D4681B1,
+				ToonClass.Necromancer => unchecked((int)0x8D4D94ED),
+				_ => 0x0
+			};
 
 		// Used for Conversations
-		public int VoiceClassID
-		{
-			get
+		public int VoiceClassID =>
+			Class switch
 			{
-				switch (this.Class)
-				{
-					case ToonClass.DemonHunter:
-						return 0;
-					case ToonClass.Barbarian:
-						return 1;
-					case ToonClass.Wizard:
-						return 2;
-					case ToonClass.WitchDoctor:
-						return 3;
-					case ToonClass.Monk:
-						return 4;
-					case ToonClass.Crusader:
-						return 5;
-					case ToonClass.Necromancer:
-						return 6;
-				}
-				return 0;
-			}
-		}
+				ToonClass.DemonHunter => 0,
+				ToonClass.Barbarian => 1,
+				ToonClass.Wizard => 2,
+				ToonClass.WitchDoctor => 3,
+				ToonClass.Monk => 4,
+				ToonClass.Crusader => 5,
+				ToonClass.Necromancer => 6,
+				_ => 0
+			};
 
-		public int Gender
-		{
-			get
-			{
-				return (int)(this.Flags & ToonFlags.Female);
-			}
-		}
+		public int Gender => (int)(Flags & ToonFlags.Female);
 
 		#region c-tor and setfields
 
 		public readonly Core.MPQ.FileFormats.GameBalance.HeroTable HeroTable;
-		private readonly Dictionary<int, int> visualToSlotMapping = new Dictionary<int, int> { { 1, 0 }, { 2, 1 }, { 7, 2 }, { 5, 3 }, { 4, 4 }, { 3, 5 }, { 8, 6 }, { 9, 7 } };
-		private static readonly DiIiS_NA.Core.MPQ.FileFormats.GameBalance HeroData = (DiIiS_NA.Core.MPQ.FileFormats.GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][19740].Data;
+
+		private readonly Dictionary<int, int> _visualToSlotMapping = new() { { 1, 0 }, { 2, 1 }, { 7, 2 }, { 5, 3 }, { 4, 4 }, { 3, 5 }, { 8, 6 }, { 9, 7 } };
+
+		private static readonly Core.MPQ.FileFormats.GameBalance HeroData =
+			(Core.MPQ.FileFormats.GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][19740].Data;
 
 		public Toon(DBToon dbToon, GameDBSession DBSession = null)
 			: base(dbToon.Id)
 		{
-			this.D3EntityID = D3.OnlineService.EntityId.CreateBuilder().SetIdHigh((ulong)EntityIdHelper.HighIdType.ToonId).SetIdLow(this.PersistentID).Build();
-			this._heroName = dbToon.Name;
-			this._flags = dbToon.Flags;
-			this.GameAccountId = dbToon.DBGameAccount.Id;
-			this._toonClass = dbToon.Class;
+			D3EntityID = D3.OnlineService.EntityId.CreateBuilder().SetIdHigh((ulong)EntityIdHelper.HighIdType.ToonId)
+				.SetIdLow(PersistentID).Build();
+			_heroName = dbToon.Name;
+			_flags = dbToon.Flags;
+			GameAccountId = dbToon.DBGameAccount.Id;
+			_toonClass = dbToon.Class;
 
-			this.DBToon = dbToon;
+			DBToon = dbToon;
 			this.DBSession = DBSession;
-			this.IsHardcore = dbToon.isHardcore;
-			this.isSeassoned = dbToon.isSeasoned;
-			this.HeroTable = HeroData.Heros.Find(item => item.Name == this.Class.ToString());
+			IsHardcore = dbToon.isHardcore;
+			IsSeasoned = dbToon.isSeasoned;
+			HeroTable = HeroData.Heros.Find(item => item.Name == Class.ToString());
 		}
 
 		#endregion
 
 		public void LevelUp()
 		{
-			this.Level++;
-			this.GameAccount.ChangedFields.SetIntPresenceFieldValue(this.HeroLevelField);
+			Level++;
+			GameAccount.ChangedFields.SetIntPresenceFieldValue(HeroLevelField);
 		}
 
 		public void ParagonLevelUp()
 		{
-			this.ParagonLevel++;
-			this.GameAccount.ChangedFields.SetIntPresenceFieldValue(this.HeroParagonLevelField);
+			ParagonLevel++;
+			GameAccount.ChangedFields.SetIntPresenceFieldValue(HeroParagonLevelField);
 		}
 
-		private List<int> _allQuests = new List<int>() { 87700, 72095, 72221, 72061, 117779, 72738, 73236, 72546, 72801, 136656, 80322, 93396, 74128, 57331, 78264, 78266, 57335, 57337, 121792, 57339, 93595, 93684, 93697, 203595, 101756, 101750, 101758, 112498, 113910, 114795, 114901, 251355, 284683, 285098, 257120, 263851, 273790, 269552, 273408 };
+		private readonly List<int> _allQuests = new()
+		{
+			87700, 72095, 72221, 72061, 117779, 72738, 73236, 72546, 72801, 136656, 80322, 93396, 74128, 57331, 78264,
+			78266, 57335, 57337, 121792, 57339, 93595, 93684, 93697, 203595, 101756, 101750, 101758, 112498, 113910,
+			114795, 114901, 251355, 284683, 285098, 257120, 263851, 273790, 269552, 273408
+		};
 
 		public void UnlockAllQuests()
 		{
-			var questList = DBSessions.SessionQueryWhere<DBQuestHistory>(qh => qh.DBToon.Id == this.PersistentID);
+			var questList = DBSessions.SessionQueryWhere<DBQuestHistory>(qh => qh.DBToon.Id == PersistentID);
 
 			foreach (var quest in _allQuests)
 			{
-				if (!questList.Any(qh => qh.QuestId == quest))
+				if (questList.All(qh => qh.QuestId != quest))
 				{
-					var questHistory = new DBQuestHistory();
-					questHistory.DBToon = this.DBToon;
-					questHistory.QuestId = quest;
-					questHistory.QuestStep = -1;
-					questHistory.isCompleted = true;
+					var questHistory = new DBQuestHistory
+					{
+						DBToon = DBToon,
+						QuestId = quest,
+						QuestStep = -1,
+						isCompleted = true
+					};
 					DBSessions.SessionSave(questHistory);
 				}
 				else
 				{
-					var questHistory = questList.Where(qh => qh.QuestId == quest).First();
+					var questHistory = questList.First(qh => qh.QuestId == quest);
 					questHistory.isCompleted = true;
 					DBSessions.SessionUpdate(questHistory);
 				}
@@ -1302,6 +1212,7 @@ namespace DiIiS_NA.LoginServer.Toons
 			_paragonLevelChanged = true;
 			_visualEquipmentChanged = true;
 		}
+
 		#region Notifications
 
 		//hero class generated
@@ -1316,60 +1227,52 @@ namespace DiIiS_NA.LoginServer.Toons
 
 		public override List<bgs.protocol.presence.v1.FieldOperation> GetSubscriptionNotifications()
 		{
-			var operationList = new List<bgs.protocol.presence.v1.FieldOperation>();
-			operationList.Add(this.HeroClassField.GetFieldOperation());
-			operationList.Add(this.HeroLevelField.GetFieldOperation());
-			operationList.Add(this.HeroParagonLevelField.GetFieldOperation());
-			operationList.Add(this.HeroVisualEquipmentField.GetFieldOperation());
-			operationList.Add(this.HeroFlagsField.GetFieldOperation());
-			operationList.Add(this.HeroNameField.GetFieldOperation());
-			operationList.Add(this.HighestUnlockedAct.GetFieldOperation());
-			operationList.Add(this.HighestUnlockedDifficulty.GetFieldOperation());
-
-			return operationList;
+			return new List<bgs.protocol.presence.v1.FieldOperation>
+			{
+				HeroClassField.GetFieldOperation(),
+				HeroLevelField.GetFieldOperation(),
+				HeroParagonLevelField.GetFieldOperation(),
+				HeroVisualEquipmentField.GetFieldOperation(),
+				HeroFlagsField.GetFieldOperation(),
+				HeroNameField.GetFieldOperation(),
+				HighestUnlockedAct.GetFieldOperation(),
+				HighestUnlockedDifficulty.GetFieldOperation()
+			};
 		}
 
 		#endregion
 
-		public static ToonClass GetClassByID(int classId)
-		{
-			switch (classId)
+		public static ToonClass GetClassByID(int classId) =>
+			classId switch
 			{
-				case 0x4FB91EE2:
-					return ToonClass.Barbarian;
-				case unchecked((int)0xBE27DC19):
-					return ToonClass.Crusader;
-				case unchecked((int)0xC88B9649):
-					return ToonClass.DemonHunter;
-				case 0x003DAC15:
-					return ToonClass.Monk;
-				case 0x0343C22A:
-					return ToonClass.WitchDoctor;
-				case 0x1D4681B1:
-					return ToonClass.Wizard;
-				case unchecked((int)0x8D4D94ED):
-					return ToonClass.Necromancer;
-			}
-			return ToonClass.Barbarian;
-		}
+				0x4FB91EE2 => ToonClass.Barbarian,
+				unchecked((int)0xBE27DC19) => ToonClass.Crusader,
+				unchecked((int)0xC88B9649) => ToonClass.DemonHunter,
+				0x003DAC15 => ToonClass.Monk,
+				0x0343C22A => ToonClass.WitchDoctor,
+				0x1D4681B1 => ToonClass.Wizard,
+				unchecked((int)0x8D4D94ED) => ToonClass.Necromancer,
+				_ => ToonClass.Barbarian
+			};
 
 		public override string ToString()
 		{
-			return String.Format("{{ Toon: {0} [lowId: {1}] }}", this.Name, this.D3EntityID.IdLow);
+			return $"{{ Toon: {Name} [lowId: {D3EntityID.IdLow}] }}";
 		}
 
 	}
 
 	#region Definitions and Enums
+
 	//Order is important as actor voices and saved data is based on enum index
-	public enum ToonClass// : uint
+	public enum ToonClass // : uint
 	{
-		Barbarian,// = 0x4FB91EE2,
-		Monk,//= 0x3DAC15,
-		DemonHunter,// = 0xC88B9649,
-		WitchDoctor,// = 0x343C22A,
-		Wizard,// = 0x1D4681B1
-		Crusader,// = 0xBE27DC19
+		Barbarian, // = 0x4FB91EE2,
+		Monk, //= 0x3DAC15,
+		DemonHunter, // = 0xC88B9649,
+		WitchDoctor, // = 0x343C22A,
+		Wizard, // = 0x1D4681B1
+		Crusader, // = 0xBE27DC19
 		Necromancer,
 		Unknown
 	}
@@ -1382,6 +1285,7 @@ namespace DiIiS_NA.LoginServer.Toons
 		Female = 0x02,
 		Fallen = 0x08,
 		NeedRename = 0x20000000,
+
 		// TODO: These two need to be figured out still.. /plash
 		//Unknown1 = 0x20,
 		Unknown2 = 0x40,
@@ -1389,5 +1293,6 @@ namespace DiIiS_NA.LoginServer.Toons
 		Unknown4 = 0x2000000,
 		AllUnknowns = Unknown2 | Unknown3 | Unknown4
 	}
+
 	#endregion
 }

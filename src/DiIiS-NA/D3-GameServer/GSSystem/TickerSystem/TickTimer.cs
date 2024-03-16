@@ -1,8 +1,5 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
 using System;
 
 namespace DiIiS_NA.GameServer.GSSystem.TickerSystem

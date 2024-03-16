@@ -1,15 +1,8 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using Gibbed.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -33,7 +26,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Power(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
+            Header = new Header(stream);
             LuaName = stream.ReadString(64, true); //28
             stream.Position += 4; // 
             Powerdef = new PowerDef(stream); //108

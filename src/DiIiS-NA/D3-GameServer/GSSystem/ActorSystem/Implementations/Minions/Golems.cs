@@ -1,28 +1,8 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 {
@@ -42,12 +22,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
             WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
-            Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+            Attributes[GameAttributes.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
 
-            Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f * (master as Player).Attributes[GameAttribute.Damage_Weapon_Min, 0];
-            Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f * (master as Player).Attributes[GameAttributes.Damage_Weapon_Min, 0];
+            Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
 
             
         }
@@ -62,12 +42,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
             WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
-            Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+            Attributes[GameAttributes.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
 
-            Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
-            Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
             //SNOSummons
 
         }
@@ -82,12 +62,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
             WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
-            Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+            Attributes[GameAttributes.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
 
-            Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
-            Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
 
 
         }
@@ -102,12 +82,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
             WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
-            Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+            Attributes[GameAttributes.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
 
-            Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
-            Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
 
         }
     }
@@ -121,12 +101,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
             WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
-            Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+            Attributes[GameAttributes.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
 
-            Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
-            Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
 
             
         }
@@ -141,12 +121,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
             WalkSpeed *= 3;
             SetBrain(new MinionBrain(this));
             //TODO: These values should most likely scale, but we don't know how yet, so just temporary values.
-            Attributes[GameAttribute.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttribute.Hitpoints_Max];
-            Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+            Attributes[GameAttributes.Hitpoints_Max] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Hitpoints_Cur] = 3000f * (master as Player).Attributes[GameAttributes.Hitpoints_Max];
+            Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
 
-            Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
-            Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f * (master as Player).Toon.Level;
+            Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 3 * master.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0] * (master as Player).Toon.Level;
 
            
         }

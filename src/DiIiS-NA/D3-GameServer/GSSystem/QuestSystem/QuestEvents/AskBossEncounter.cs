@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
+﻿using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 {

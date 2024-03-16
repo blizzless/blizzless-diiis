@@ -1,20 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -35,10 +22,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			: base(world, sno, tags)
 		{
 			//this.Attributes[GameAttribute.MinimapActive] = true;
-			Attributes[GameAttribute.Untargetable] = false;
-			Attributes[GameAttribute.Operatable] = true;
-			Attributes[GameAttribute.Disabled] = false;
-			Attributes[GameAttribute.TeamID] = 0;
+			Attributes[GameAttributes.Untargetable] = false;
+			Attributes[GameAttributes.Operatable] = true;
+			Attributes[GameAttributes.Disabled] = false;
+			Attributes[GameAttributes.TeamID] = 0;
 			WalkSpeed = 0.5f;
 		}
 

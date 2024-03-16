@@ -1,22 +1,13 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using bgs.protocol;
-//Blizzless Project 2022 
+﻿using bgs.protocol;
 using bgs.protocol.user_manager.v1;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.FriendsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
 using System;
+using System.Reflection;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 {
@@ -25,15 +16,15 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger();
 
-		public override void Subscribe(Google.ProtocolBuffers.IRpcController controller, SubscribeRequest request, System.Action<SubscribeResponse> done)
+		public override void Subscribe(IRpcController controller, SubscribeRequest request, Action<SubscribeResponse> done)
 		{
-			Logger.Trace("Subscribe() {0}", ((controller as HandlerController).Client));
+			Logger.MethodTrace((((HandlerController) controller).Client).ToString());
 
-			UserManager.Instance.AddSubscriber(((controller as HandlerController).Client), request.ObjectId);
+			UserManager.Instance.AddSubscriber((((HandlerController) controller).Client), request.ObjectId);
 
 			var builder = SubscribeResponse.CreateBuilder();
 
-			var blockedIds = (controller as HandlerController).Client.Account.IgnoreIds;
+			var blockedIds = ((HandlerController) controller).Client.Account.IgnoreIds;
 
 			foreach (var blocked in blockedIds)
 			{
@@ -50,7 +41,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void AddRecentPlayers(IRpcController controller, AddRecentPlayersRequest request, Action<NoData> done)
 		{
-			Logger.Trace("AddRecentPlayers()");
+			Logger.MethodTrace("");
 			done(NoData.DefaultInstance);
 		}
 
@@ -61,18 +52,18 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 		public override void BlockPlayer(IRpcController controller, BlockPlayerRequest request, Action<NoData> done)
 		{
-			Logger.Trace("BlockEntity()");
+			Logger.MethodTrace("");
 			done(NoData.CreateBuilder().Build());
 
-			UserManager.BlockAccount(((controller as HandlerController).Client), request);
+			UserManager.BlockAccount((((HandlerController) controller).Client), request);
 		}
 
 		public override void UnblockPlayer(IRpcController controller, UnblockPlayerRequest request, Action<NoData> done)
 		{
-			Logger.Trace("UnblockPlayer()");
+			Logger.MethodTrace("");
 			done(NoData.CreateBuilder().Build());
 
-			UserManager.UnblockAccount(((controller as HandlerController).Client), request);
+			UserManager.UnblockAccount((((HandlerController) controller).Client), request);
 		}
 
         public override void BlockPlayerForSession(IRpcController controller, BlockPlayerRequest request, Action<NoData> done)

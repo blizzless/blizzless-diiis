@@ -1,15 +1,10 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
+using System.Reflection;
 using bgs.protocol;
-//Blizzless Project 2022 
 using bgs.protocol.session.v1;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
@@ -17,12 +12,13 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
     [Service(serviceID: 0x13, serviceName: "bnet.protocol.session.SessionService")]
     public class SessionService : bgs.protocol.session.v1.SessionService, IServerService
     {
+        private static readonly Logger Logger = LogManager.CreateLogger(nameof(SessionService)); 
         public override void CreateSession(IRpcController controller, CreateSessionRequest request, Action<CreateSessionResponse> done)
         {
             string Start = "A7B5C8B0593FFEC10000000";
             string End = "BCABD";
 
-            string session = Start + RandomHelper.Next(0, 9).ToString() + RandomHelper.Next(0, 9).ToString() + RandomHelper.Next(0, 9).ToString() + RandomHelper.Next(0, 9).ToString() + End;
+            string session = Start + RandomHelper.Next(0, 9) + RandomHelper.Next(0, 9) + RandomHelper.Next(0, 9) + RandomHelper.Next(0, 9) + End;
             CreateSessionResponse.Builder builder = CreateSessionResponse.CreateBuilder();
             builder.SetSessionId(session);
             done(builder.Build());
@@ -31,23 +27,26 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             n.SetIdentity(request.Identity)
              .SetReason(0)
              .SetSessionId(session);
-            (controller as HandlerController).Client.MakeRPC((lid) => SessionListener.CreateStub((controller as HandlerController).Client).OnSessionCreated(controller, n.Build(), callback => { }));
+            ((HandlerController) controller).Client.MakeRpc((lid) => SessionListener.CreateStub(((HandlerController) controller).Client).OnSessionCreated(controller, n.Build(), callback => { }));
         }
 
         private void DisconnectClient(HandlerController controller)
         {
-            if (controller.Client.Account != null && controller.Client.Account.GameAccount != null) controller.Client.Account.GameAccount.LoggedInClient = null;
-            LoginServer.Battle.PlayerManager.PlayerDisconnected(controller.Client);
+            if (controller.Client.Account is { GameAccount: { } }) controller.Client.Account.GameAccount.LoggedInClient = null;
+            Battle.PlayerManager.PlayerDisconnected(controller.Client);
         }
 
         public override void DestroySession(IRpcController controller, DestroySessionRequest request, Action<NoData> done)
         {
-            Console.WriteLine("Клиент - {0} , отключен", (controller as HandlerController).Client.SocketConnection.RemoteAddress);
-            this.DisconnectClient(controller as HandlerController);
-            if ((controller as HandlerController).Client.Account != null)
-                (controller as HandlerController).Client.Account.GameAccount.Logined = false;
-            ((controller as HandlerController).Client).Connect.CloseAsync();
-            (controller as HandlerController).Client.SocketConnection.CloseAsync();
+            Logger.MethodTrace($"Destroying game session for client {((HandlerController) controller).Client}");
+            if (controller is HandlerController handlerController)
+            {
+                DisconnectClient(handlerController);
+                if (handlerController.Client.Account != null)
+                    handlerController.Client.Account.GameAccount.IsLoggedIn = false;
+                (handlerController.Client).Connect.CloseAsync();
+                handlerController.Client.SocketConnection.CloseAsync();
+            }
 
             done(NoData.CreateBuilder().Build());
         }
@@ -63,10 +62,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             throw new NotImplementedException();
         }
 
-        public override void GetSignedSessionState(IRpcController controller, GetSignedSessionStateRequest request, Action<GetSignedSessionStateResponse> done)
-        {
-            done(GetSignedSessionStateResponse.CreateBuilder().SetToken("eyJ0eXAiOiJKV1QiLCJlbnYiOiJwcm9kLmV1IiwiYWxnIjoiUlMyNTYiLCJraWQiOiJmMDE5NzgzMi0zMWMwLTQzN2MtOTc2NC1iMzliOTM5MDJlNWMiLCJrdHkiOiJSU0EifQ").Build());
-        }
+        public override void GetSignedSessionState(IRpcController controller, GetSignedSessionStateRequest request, Action<GetSignedSessionStateResponse> done) 
+            => done(GetSignedSessionStateResponse.CreateBuilder().SetToken("eyJ0eXAiOiJKV1QiLCJlbnYiOiJwcm9kLmV1IiwiYWxnIjoiUlMyNTYiLCJraWQiOiJmMDE5NzgzMi0zMWMwLTQzN2MtOTc2NC1iMzliOTM5MDJlNWMiLCJrdHkiOiJSU0EifQ").Build());
 
         public override void MarkSessionsAlive(IRpcController controller, MarkSessionsAliveRequest request, Action<MarkSessionsAliveResponse> done)
         {

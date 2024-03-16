@@ -1,18 +1,9 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
@@ -257,7 +248,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				case 0:
 					b.Append("GetAttribute ");
-					b.Append(GameAttribute.Attributes[numb2].Name);
+					b.Append(GameAttributes.Attributes[numb2].Name);
 					b.Append(" ("); b.Append(numb2); b.Append("); ");
 					break;
 				case 22:

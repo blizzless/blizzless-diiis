@@ -1,9 +1,5 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
 
 namespace DiIiS_NA.LoginServer.Objects
@@ -13,7 +9,7 @@ namespace DiIiS_NA.LoginServer.Objects
         private static readonly Logger Logger = LogManager.CreateLogger();
 
         private static ulong _nextId = 10000;
-        public static readonly Dictionary<ulong, RPCObject> Objects = new Dictionary<ulong, RPCObject>();
+        public static readonly Dictionary<ulong, RPCObject> Objects = new();
 
 		static RPCObjectManager()
 		{ }

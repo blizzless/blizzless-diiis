@@ -1,35 +1,19 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using DotNetty.Codecs;
-//Blizzless Project 2022 
 using DotNetty.Codecs.Http;
-//Blizzless Project 2022 
 using DotNetty.Handlers.Tls;
-//Blizzless Project 2022 
 using DotNetty.Transport.Channels;
-//Blizzless Project 2022 
 using DotNetty.Transport.Channels.Sockets;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Security.Cryptography.X509Certificates;
-//Blizzless Project 2022 
 using System.Text;
 
 
-//Blizzless Project 2022 
 using DotNetty.Buffers;
-//Blizzless Project 2022 
 using DotNetty.Common.Utilities;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
-//Blizzless Project 2022 
 using DotNetty.Codecs.Http.WebSockets;
 
 namespace DiIiS_NA.LoginServer.Base

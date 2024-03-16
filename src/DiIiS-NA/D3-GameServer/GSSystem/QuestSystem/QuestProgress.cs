@@ -1,32 +1,15 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -38,36 +21,39 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public struct QuestTrigger
 		{
-			public DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType triggerType;
-			public int count;
-			public int counter;
-			public QuestEvent questEvent;
-		};
-
+			public DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType TriggerType;
+			public int Count;
+			public int Counter;
+			public QuestEvent QuestEvent;
+		}
+		
 		public class Quest
 		{
 			public bool Completed;
-			public Dictionary<int, QuestStep> Steps;
+			public Dictionary<int, QuestStep> Steps = new();
 			public int NextQuest;
 			public int RewardXp;
 			public int RewardGold;
 			public bool Saveable;
-		};
+		}
 
 		public class QuestStep
 		{
 			public bool Completed;
-			public List<Objective> Objectives;
+			public List<Objective> Objectives = new() { Objective.Default() };
 			public int NextStep;
 			public Action OnAdvance;
 			public bool Saveable;
-		};
+		}
 
 		public class Objective
 		{
 			public int Limit;
 			public int Counter;
-		};
+			
+			public static Objective Default() => new () { Limit = 1, Counter = 0 };
+			public static Objective WithLimit(int limit) => new () { Limit = limit, Counter = 0 };
+		}
 
 		// key can be ActorSno (also multiplied), DestLevelAreaSno, ConversationSno
 		public Dictionary<int, QuestTrigger> QuestTriggers { get; set; }
@@ -89,9 +75,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		}
 
 
-		protected void SetRiftTimer(float duration, World world, QuestEvent qevent, int idSNO = 0)
+		protected void SetRiftTimer(float duration, World world, QuestEvent qevent, int idSno = 0)
 		{
-			Game.QuestManager.LaunchRiftQuestTimer(duration, new Action<int>((q) => { qevent.Execute(world); }), idSNO);
+			Game.QuestManager.LaunchRiftQuestTimer(duration, new Action<int>((q) => { qevent.Execute(world); }), idSno);
 		}
 
 		protected void SetQuestTimer(int questId, float duration, World world, QuestEvent qevent, int Meterid = 0)
@@ -102,19 +88,19 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		protected void ListenConversation(int convId, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd(convId,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void GlobalListenConversation(int convId, QuestEvent qevent)
 		{
 			GlobalQuestTriggers.TryAdd(convId,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.HadConversation, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void ListenKill(ActorSno monsterSno, int monsterCount, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)monsterSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster, count = monsterCount, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.KillMonster, Count = monsterCount, Counter = 0, QuestEvent = qevent });
 		}
 
 		public void ActiveArrow(World world, ActorSno sno, WorldSno destworld = WorldSno.__NONE)
@@ -170,7 +156,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		{
             foreach (var actr in world.Actors.Values.Where(x => x.SNO == sno))
 			{
-				actr.Attributes[GameAttribute.Quest_Monster] = true;
+				actr.Attributes[GameAttributes.Quest_Monster] = true;
 				actr.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -178,7 +164,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		{
 			foreach (var actr in world.Actors.Values.Where(x => x.SNO == sno))
             {
-				actr.Attributes[GameAttribute.Quest_Monster] = false;
+				actr.Attributes[GameAttributes.Quest_Monster] = false;
 				actr.Attributes.BroadcastChangedIfRevealed();
             }
         }
@@ -186,58 +172,60 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		//opening gates or door(for getting pass)
 		protected bool Open(World world, ActorSno sno)
 		{
-			var actor = world.GetActorsBySNO(sno).Where(d => d.Visible).FirstOrDefault();
-            if (actor == null)
-                return false;
-            
-            (actor as Door).Open();
+			var doors = world.GetAllDoors(sno);
+			if (!doors.Any()) return false;
+			foreach (var door in doors)
+				door.Open();
             return true;
 		}
-
-		protected bool OpenAll(World world, ActorSno sno)
+		
+		//opening all doors
+		protected bool OpenAll(World world)
 		{
-			foreach (var actor in world.GetActorsBySNO(sno).Where(d => d.Visible).ToList())
-				(actor as Door).Open();
+			var doors = world.GetAllDoors();
+			if (!doors.Any()) return false;
+			foreach (var door in doors)
+				door.Open();
 			return true;
 		}
-
+		
 		protected void ListenKillBonus(ActorSno monsterSno, int monsterCount, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)monsterSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup, count = monsterCount, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup, Count = monsterCount, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void ListenTeleport(int laId, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd(laId,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 		protected void GlobalListenTeleport(int laId, QuestEvent qevent)
 		{
 			GlobalQuestTriggers.TryAdd(laId,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void ListenProximity(ActorSno actorSno, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)actorSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, count = 1, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterTrigger, Count = 1, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void ListenInteract(ActorSno actorSno, int actorCount, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)actorSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, Count = actorCount, Counter = 0, QuestEvent = qevent });
 		}
 		protected void ListenInteractBonus(ActorSno actorSno, int actorCount, int counter, QuestEvent qevent)
 		{
 			QuestTriggers.TryAdd((int)actorSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = counter, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, Count = actorCount, Counter = counter, QuestEvent = qevent });
 		}
 		protected void GlobalListenInteract(ActorSno actorSno, int actorCount, QuestEvent qevent)
 		{
 			GlobalQuestTriggers.TryAdd((int)actorSno,
-				new QuestTrigger { triggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, count = actorCount, counter = 0, questEvent = qevent });
+				new QuestTrigger { TriggerType = DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor, Count = actorCount, Counter = 0, QuestEvent = qevent });
 		}
 
 		protected void UnlockTeleport(int waypointId)
@@ -248,30 +236,30 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		public void UpdateCounter(int dataId)
 		{
 			var trigger = QuestTriggers[dataId];
-			trigger.counter++;
+			trigger.Counter++;
 			QuestTriggers[dataId] = trigger;
-			if (trigger.counter <= trigger.count)
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
-					Game.QuestManager.NotifyBonus(trigger.counter, (trigger.counter >= trigger.count));
-				else if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor && dataId == 3628)
-					Game.QuestManager.NotifyBonus(trigger.counter, (trigger.counter >= trigger.count));
+			if (trigger.Counter <= trigger.Count)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.MonsterFromGroup)
+					Game.QuestManager.NotifyBonus(trigger.Counter, (trigger.Counter >= trigger.Count));
+				else if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor && dataId == 3628)
+					Game.QuestManager.NotifyBonus(trigger.Counter, (trigger.Counter >= trigger.Count));
 				else
-					Game.QuestManager.NotifyQuest(trigger.counter, (trigger.counter >= trigger.count));
+					Game.QuestManager.NotifyQuest(trigger.Counter, (trigger.Counter >= trigger.Count));
 		}
 
 		public void UpdateSideCounter(int dataId)
 		{
 			var trigger = QuestTriggers[dataId];
-			trigger.counter++;
+			trigger.Counter++;
 			QuestTriggers[dataId] = trigger;
-			if (trigger.counter <= trigger.count)
-				Game.QuestManager.NotifySideQuest(trigger.counter, (trigger.counter >= trigger.count));
+			if (trigger.Counter <= trigger.Count)
+				Game.QuestManager.NotifySideQuest(trigger.Counter, (trigger.Counter >= trigger.Count));
 		}
 
 		public void UpdateGlobalCounter(int dataId)
 		{
 			var trigger = GlobalQuestTriggers[dataId];
-			trigger.counter++;
+			trigger.Counter++;
 			GlobalQuestTriggers[dataId] = trigger;
 		}
 
@@ -281,6 +269,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			foreach (var plr in world.Players)
 				plr.Value.Conversations.StartConversation(conversationId);
 			return true;
+		}
+
+		public bool HasFollower(ActorSno sno)
+		{
+			return Game.Players.Values.First().Followers.Any(x => x.Value == sno);
 		}
 
 		public void AddFollower(World world, ActorSno sno)
@@ -312,13 +305,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (actor == null)
 				return false;
 
-			actor.Attributes[GameAttribute.Team_Override] = (status ? -1 : 2);
-			actor.Attributes[GameAttribute.Untargetable] = !status;
-			actor.Attributes[GameAttribute.NPC_Is_Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable_Story_Gizmo] = status;
-			actor.Attributes[GameAttribute.Disabled] = !status;
-			actor.Attributes[GameAttribute.Immunity] = !status;
+			actor.Attributes[GameAttributes.Team_Override] = (status ? -1 : 2);
+			actor.Attributes[GameAttributes.Untargetable] = !status;
+			actor.Attributes[GameAttributes.NPC_Is_Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable_Story_Gizmo] = status;
+			actor.Attributes[GameAttributes.Disabled] = !status;
+			actor.Attributes[GameAttributes.Immunity] = !status;
 			actor.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -330,13 +323,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (actor == null)
 				return false;
 
-			actor.Attributes[GameAttribute.NPC_Is_Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable_Story_Gizmo] = status;
-			actor.Attributes[GameAttribute.Untargetable] = !status;
-			actor.Attributes[GameAttribute.Disabled] = !status;
-			actor.Attributes[GameAttribute.Immunity] = !status;
-			actor.Attributes[GameAttribute.Hidden] = !status;
+			actor.Attributes[GameAttributes.NPC_Is_Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable_Story_Gizmo] = status;
+			actor.Attributes[GameAttributes.Untargetable] = !status;
+			actor.Attributes[GameAttributes.Disabled] = !status;
+			actor.Attributes[GameAttributes.Immunity] = !status;
+			actor.Attributes[GameAttributes.Hidden] = !status;
 			actor.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -369,7 +362,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			{
 				NPC.Conversations.Clear();
 				NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-				NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+				NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 				NPC.Attributes.BroadcastChangedIfRevealed();
 				NPC.ForceConversationSNO = conversation;
 			}
@@ -381,7 +374,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						NPC = N as InteractiveNPC;
 						NPC.Conversations.Clear();
 						NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-						NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+						NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 						NPC.Attributes.BroadcastChangedIfRevealed();
 						NPC.ForceConversationSNO = conversation;
 					}
@@ -396,7 +389,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (NPC != null)
 			{
 				NPC.Conversations.Clear();
-				NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 				NPC.Attributes.BroadcastChangedIfRevealed();
 			}
 		}

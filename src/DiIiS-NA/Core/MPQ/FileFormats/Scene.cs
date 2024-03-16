@@ -1,21 +1,11 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using CrystalMpq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Collision;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using System.Drawing;
-//Blizzless Project 2022 
 using System;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -43,41 +33,41 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public Scene(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
+            Header = new Header(stream);
             ///+16
             Int0 = stream.ReadValueS32(); //12 - 28
-            this.AABBBounds = new AABB(stream); //16 - 32
-            this.AABBMarketSetBounds = new AABB(stream); //40 - 56
-            this.NavMesh = new NavMeshDef(stream); //64 - 80
-            this.Exclusions = stream.ReadSerializedInts(); //104 - 120
+            AABBBounds = new AABB(stream); //16 - 32
+            AABBMarketSetBounds = new AABB(stream); //40 - 56
+            NavMesh = new NavMeshDef(stream); //64 - 80
+            Exclusions = stream.ReadSerializedInts(); //104 - 120
             stream.Position += (14 * 4);
-            this.Inclusions = stream.ReadSerializedInts(); //168 - 184
+            Inclusions = stream.ReadSerializedInts(); //168 - 184
             stream.Position += (14 * 4);
-            this.MarkerSets = stream.ReadSerializedInts(); //232 - 248
+            MarkerSets = stream.ReadSerializedInts(); //232 - 248
             stream.Position += (14 * 4);
-            this.LookLink = stream.ReadString(64, true); //296 - 312
+            LookLink = stream.ReadString(64, true); //296 - 312
             //stream.Position += (14 * 4;
-            this.MsgTriggeredEvent = stream.ReadSerializedData<MsgTriggeredEvent>(); //360 - 376
-            this.Int1 = stream.ReadValueS32(); //368 - 384
+            MsgTriggeredEvent = stream.ReadSerializedData<MsgTriggeredEvent>(); //360 - 376
+            Int1 = stream.ReadValueS32(); //368 - 384
             stream.Position += (3 * 4);
-            this.NavZone = new NavZoneDef(stream); //384 - 400
-            this.SNOAppearance = stream.ReadValueS32(); //520 - 536
+            NavZone = new NavZoneDef(stream); //384 - 400
+            SNOAppearance = stream.ReadValueS32(); //520 - 536
             stream.Position += 4;
-            this.SNOPhysMesh = stream.ReadValueS32(); //528 - 544
+            SNOPhysMesh = stream.ReadValueS32(); //528 - 544
             stream.Close();
 
-            this.NoSpawn = false;
+            NoSpawn = false;
             int NoSpawnSquares = 0;
 
-            foreach (var zone in this.NavMesh.Squares)
+            foreach (var zone in NavMesh.Squares)
             {
-                if (!((zone.Flags & DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.NoSpawn) == 0))
+                if (!((zone.Flags & NavCellFlags.NoSpawn) == 0))
                 {
                     NoSpawnSquares++;
                 }
             }
 
-            if ((this.NavMesh.Squares.Count - NoSpawnSquares) < (this.NavMesh.Squares.Count / 10)) this.NoSpawn = true;
+            if ((NavMesh.Squares.Count - NoSpawnSquares) < (NavMesh.Squares.Count / 10)) NoSpawn = true;
         }
 
         public class NavMeshDef
@@ -94,12 +84,12 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
             public NavMeshDef(MpqFileStream stream)
             {
-                this.SquaresCountX = stream.ReadValueS32();
-                this.SquaresCountY = stream.ReadValueS32();
-                this.Int0 = stream.ReadValueS32();
-                this.NavMeshSquareCount = stream.ReadValueS32();
-                this.Float0 = stream.ReadValueF32();
-                this.Squares = stream.ReadSerializedData<NavMeshSquare>();
+                SquaresCountX = stream.ReadValueS32();
+                SquaresCountY = stream.ReadValueS32();
+                Int0 = stream.ReadValueS32();
+                NavMeshSquareCount = stream.ReadValueS32();
+                Float0 = stream.ReadValueF32();
+                Squares = stream.ReadSerializedData<NavMeshSquare>();
 
 
                 if (SquaresCountX <= 64 && SquaresCountY <= 64)
@@ -127,7 +117,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
                 // Loop thru each NavmeshSquare in the array, and fills the grid
                 for (int i = 0; i < NavMeshSquareCount; i++)
                 {
-                    WalkGrid[i % SquaresCountX, i / SquaresCountY] = (byte)(Squares[i].Flags & Scene.NavCellFlags.AllowWalk);
+                    WalkGrid[i % SquaresCountX, i / SquaresCountY] = (byte)(Squares[i].Flags & NavCellFlags.AllowWalk);
                     // Set the grid to 0x1 if its walkable, left as 0 if not. - DarkLotus
                 }
 
@@ -154,29 +144,29 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
             public NavZoneDef(MpqFileStream stream)
             {
-                this.NavCellCount = stream.ReadValueS32();
+                NavCellCount = stream.ReadValueS32();
                 stream.Position += (3 * 4);
-                this.NavCells = stream.ReadSerializedData<NavCell>();
+                NavCells = stream.ReadSerializedData<NavCell>();
 
-                this.NeighbourCount = stream.ReadValueS32();
+                NeighbourCount = stream.ReadValueS32();
                 stream.Position += (3 * 4);
-                this.NavCellNeighbours = stream.ReadSerializedData<NavCellLookup>();
+                NavCellNeighbours = stream.ReadSerializedData<NavCellLookup>();
 
-                this.Float0 = stream.ReadValueF32();
-                this.Float1 = stream.ReadValueF32();
-                this.Int2 = stream.ReadValueS32();
-                this.V0 = new Vector2D(stream);
+                Float0 = stream.ReadValueF32();
+                Float1 = stream.ReadValueF32();
+                Int2 = stream.ReadValueS32();
+                V0 = new Vector2D(stream);
 
                 stream.Position += (3 * 4);
-                this.GridSquares = stream.ReadSerializedData<NavGridSquare>();
+                GridSquares = stream.ReadSerializedData<NavGridSquare>();
 
-                this.Int3 = stream.ReadValueS32();
+                Int3 = stream.ReadValueS32();
                 stream.Position += (3 * 4);
-                this.CellLookups = stream.ReadSerializedData<NavCellLookup>();
+                CellLookups = stream.ReadSerializedData<NavCellLookup>();
 
-                this.BorderDataCount = stream.ReadValueS32();
+                BorderDataCount = stream.ReadValueS32();
                 stream.Position += (3 * 4);
-                this.BorderData = stream.ReadSerializedData<NavCellBorderData>();
+                BorderData = stream.ReadSerializedData<NavCellBorderData>();
             }
         }
 
@@ -187,8 +177,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
             public void Read(MpqFileStream stream)
             {
-                this.Z = stream.ReadValueF32();
-                this.Flags = (NavCellFlags)stream.ReadValueS32();
+                Z = stream.ReadValueF32();
+                Flags = (NavCellFlags)stream.ReadValueS32();
             }
         }
 
@@ -202,11 +192,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             public RectangleF Bounds { get { return new RectangleF(Min.X, Min.Y, Max.X - Min.X, Max.Y - Min.Y); } }
             public void Read(MpqFileStream stream)
             {
-                this.Min = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
-                this.Max = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
-                this.Flags = (NavCellFlags)stream.ReadValueS16();
-                this.NeighbourCount = stream.ReadValueS16();
-                this.NeighborsIndex = stream.ReadValueS32();
+                Min = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
+                Max = new Vector3D(stream.ReadValueF32(), stream.ReadValueF32(), stream.ReadValueF32());
+                Flags = (NavCellFlags)stream.ReadValueS16();
+                NeighbourCount = stream.ReadValueS16();
+                NeighborsIndex = stream.ReadValueS32();
             }
         }
 
@@ -241,8 +231,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
             public void Read(MpqFileStream stream)
             {
-                this.Flags = stream.ReadValueS16();
-                this.WCell = stream.ReadValueS16();
+                Flags = stream.ReadValueS16();
+                WCell = stream.ReadValueS16();
             }
         }
 

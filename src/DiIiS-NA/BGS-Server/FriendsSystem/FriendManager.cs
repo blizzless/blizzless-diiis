@@ -1,23 +1,12 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.LoginServer.FriendsSystem
@@ -77,7 +66,7 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 					.SetInvitation(invitation)
 					.SetAccountId(invitee.BnetEntityId);
 
-				invitee.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+				invitee.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 					bgs.protocol.friends.v1.FriendsListener.CreateStub(invitee.GameAccount.LoggedInClient).OnReceivedInvitationAdded(new HandlerController() { ListenerId = lid }, notification.Build(), callback =>
 					{
 					}));
@@ -99,13 +88,13 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 
 			if (inviter.GameAccount.IsOnline)
 			{
-				inviter.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+				inviter.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 					bgs.protocol.friends.v1.FriendsListener.CreateStub(inviter.GameAccount.LoggedInClient).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, declinedNotification, callback => { }));
 			}
 
 			if (invitee.GameAccount.IsOnline)
 			{
-				invitee.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+				invitee.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 					bgs.protocol.friends.v1.FriendsListener.CreateStub(invitee.GameAccount.LoggedInClient).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, declinedNotification, callback => { }));
 			}
 
@@ -154,19 +143,19 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 
 			if (inviter.GameAccount.IsOnline)
 			{
-				inviter.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+				inviter.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 					bgs.protocol.friends.v1.FriendsListener.CreateStub(inviter.GameAccount.LoggedInClient).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, notificationToInviter, callback => { }));
 
-				inviter.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+				inviter.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 					bgs.protocol.friends.v1.FriendsListener.CreateStub(inviter.GameAccount.LoggedInClient).OnFriendAdded(new HandlerController() { ListenerId = lid }, friendAddedNotificationToInviter, callback => { }));
 			}
 
 			if (invitee.GameAccount.IsOnline)
 			{
-				invitee.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+				invitee.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 					bgs.protocol.friends.v1.FriendsListener.CreateStub(invitee.GameAccount.LoggedInClient).OnFriendAdded(new HandlerController() { ListenerId = lid }, friendAddedNotificationToInvitee, callback => { }));
 
-				invitee.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+				invitee.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 					bgs.protocol.friends.v1.FriendsListener.CreateStub(invitee.GameAccount.LoggedInClient).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, notificationToInvitee, callback => { }));
 			}
 
@@ -187,13 +176,13 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 
 			if (inviter.GameAccount.IsOnline)
 			{
-				inviter.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+				inviter.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 					bgs.protocol.friends.v1.FriendsListener.CreateStub(inviter.GameAccount.LoggedInClient).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, declinedNotification, callback => { }));
 			}
 
 			if (invitee.GameAccount.IsOnline)
 			{
-				invitee.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+				invitee.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 					bgs.protocol.friends.v1.FriendsListener.CreateStub(invitee.GameAccount.LoggedInClient).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, declinedNotification, callback => { }));
 			}
 
@@ -225,13 +214,13 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 				.SetAccountId(remover.BnetEntityId)
 				.Build();
 
-			client.MakeTargetedRPC(FriendManager.Instance, (lid) =>
+			client.MakeTargetedRpc(FriendManager.Instance, (lid) =>
 				bgs.protocol.friends.v1.FriendsListener.CreateStub(client).OnFriendRemoved(new HandlerController() { ListenerId = lid }, notifyRemover, callback => { }));
 
 			if (removee.GameAccount.IsOnline)
 			{
 				var notifyRemovee = bgs.protocol.friends.v1.FriendNotification.CreateBuilder().SetTarget(removerAsFriend).SetAccountId(removee.BnetEntityId).Build();
-				removee.GameAccount.LoggedInClient.MakeTargetedRPC(FriendManager.Instance, (lid) => bgs.protocol.friends.v1.FriendsListener.CreateStub(removee.GameAccount.LoggedInClient).OnFriendRemoved(new HandlerController() { ListenerId = lid }, notifyRemovee, callback => { }));
+				removee.GameAccount.LoggedInClient.MakeTargetedRpc(FriendManager.Instance, (lid) => bgs.protocol.friends.v1.FriendsListener.CreateStub(removee.GameAccount.LoggedInClient).OnFriendRemoved(new HandlerController() { ListenerId = lid }, notifyRemovee, callback => { }));
 			}
 		}
 

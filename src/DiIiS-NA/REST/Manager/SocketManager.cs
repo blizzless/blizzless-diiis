@@ -1,8 +1,5 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.REST.Networking;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.REST.Networking;
 using System;
-//Blizzless Project 2022 
 using System.Net.Sockets;
 
 namespace DiIiS_NA.REST.Manager

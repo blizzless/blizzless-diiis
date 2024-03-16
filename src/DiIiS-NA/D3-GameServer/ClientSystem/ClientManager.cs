@@ -1,28 +1,15 @@
-﻿//Blizzless Project 2022
-using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022
+﻿using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Act;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Connection;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
-//Blizzless Project 2022
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022
 using System;
-//Blizzless Project 2022
 using System.Linq;
 
 namespace DiIiS_NA.GameServer.ClientSystem
@@ -56,17 +43,17 @@ namespace DiIiS_NA.GameServer.ClientSystem
 			var game = GameManager.GetGameById(message.SGameId);
 			Toon toon = null;
 			if (game != null)
-				toon = ToonManager.GetToonByLowID((ulong)message.HeroID, game.GameDBSession);
+				toon = ToonManager.GetToonByLowId((ulong)message.HeroID, game.GameDbSession);
 			bool PVP = false;
 			if (PVP)
-				toon = new Toon(ToonManager.CreateFakeDBToon(toon.GameAccount.Owner.BattleTag, toon.GameAccount.DBGameAccount), game.GameDBSession);
+				toon = new Toon(ToonManager.CreateFakeDBToon(toon.GameAccount.Owner.BattleTag, toon.GameAccount.DBGameAccount), game.GameDbSession);
 
 			if (game == null)
 			{
 				if (PVP)
 				{
 					game = GameManager.CreateGame(message.SGameId, 1);
-					toon = ToonManager.GetToonByLowID((ulong)message.HeroID, game.GameDBSession);
+					toon = ToonManager.GetToonByLowId((ulong)message.HeroID, game.GameDbSession);
 					game.SetAct(0);
 				}
 				else
@@ -133,18 +120,18 @@ namespace DiIiS_NA.GameServer.ClientSystem
 					OnJoin = true, //without cutscenes
 				});
 
-				if (client.Player.PlayerIndex > 0)
-        {
-          //make sure toons Difficulty is set
-          toon.CurrentDifficulty = (int)game.Difficulty;
-					client.SendMessage(new HandicapMessage(Opcodes.HandicapMessage)
-					{
-						Difficulty = (uint)game.Difficulty
-					});
-        }
+                if (client.Player.PlayerIndex > 0)
+                {
+                    //make sure toons Difficulty is set
+                    toon.CurrentDifficulty = game.Difficulty;
+                    client.SendMessage(new HandicapMessage(Opcodes.HandicapMessage)
+                    {
+                        Difficulty = (uint)game.Difficulty
+                    });
+                }
 
 
-				toon.LoginTime = DateTimeExtensions.ToUnixTime(DateTime.UtcNow);
+                toon.LoginTime = DateTimeExtensions.ToUnixTime(DateTime.UtcNow);
 				Logger.Debug("Log in time:" + toon.LoginTime.ToString());
 
 				game.Enter(client.Player);

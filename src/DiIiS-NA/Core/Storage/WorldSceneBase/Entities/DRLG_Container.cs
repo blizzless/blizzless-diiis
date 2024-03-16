@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022 
-using FluentNHibernate.Data;
+﻿using FluentNHibernate.Data;
 
 namespace DiIiS_NA.Core.Storage.WorldSceneBase.Entities
 {

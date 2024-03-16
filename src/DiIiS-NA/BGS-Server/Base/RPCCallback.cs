@@ -1,7 +1,4 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using Google.ProtocolBuffers;
-//Blizzless Project 2022 
+﻿using Google.ProtocolBuffers;
 using System;
 
 namespace DiIiS_NA.LoginServer.Base

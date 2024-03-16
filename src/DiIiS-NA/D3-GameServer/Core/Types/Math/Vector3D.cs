@@ -1,15 +1,12 @@
-﻿//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
+﻿using System.Text;
 using CrystalMpq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
+using System;
+using System.Numerics;
+using DiIiS_NA.Core.Helpers.Math;
 
 namespace DiIiS_NA.GameServer.Core.Types.Math
 {
@@ -107,50 +104,33 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 		/// </summary>
 		/// <param name="point">the second <see cref="Vector3" /></param>
 		/// <returns>the distance squared between the vectors</returns>
-		public float DistanceSquared(ref Vector3D point)
+		public float DistanceSquared(ref Vector3D point) // todo: remove ref
 		{
-			float x = point.X - X;
-			float y = point.Y - Y;
-			float z = point.Z - Z;
+			float x = point.X - X, 
+				y = point.Y - Y,
+				z = point.Z - Z;
 
 			return ((x * x) + (y * y)) + (z * z);
 		}
 
-		public static bool operator ==(Vector3D a, Vector3D b)
-		{
-			if (ReferenceEquals(null, a))
-				return ReferenceEquals(null, b);
-			return a.Equals(b);
-		}
+		public static bool operator ==(Vector3D a, Vector3D b) => a?.Equals(b) ?? ReferenceEquals(null, b);
 
-		public static bool operator !=(Vector3D a, Vector3D b)
-		{
-			return !(a == b);
-		}
+		public static bool operator !=(Vector3D a, Vector3D b) => !(a == b);
 
 		public static bool operator >(Vector3D a, Vector3D b)
 		{
-			if (ReferenceEquals(null, a))
-				return !ReferenceEquals(null, b);
-			return a.X > b.X
-				&& a.Y > b.Y
-				&& a.Z > b.Z;
+			return ReferenceEquals(null, a)
+				? !ReferenceEquals(null, b)
+				: a.X > b.X
+				  && a.Y > b.Y
+				  && a.Z > b.Z;
 		}
 
-		public static Vector3D operator +(Vector3D a, Vector3D b)
-		{
-			return new Vector3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-		}
+		public static Vector3D operator +(Vector3D a, Vector3D b) => new Vector3D(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 
-		public static Vector3D operator -(Vector3D a, Vector3D b)
-		{
-			return new Vector3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-		}
+		public static Vector3D operator -(Vector3D a, Vector3D b) => new Vector3D(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 
-		public static bool operator <(Vector3D a, Vector3D b)
-		{
-			return !(a > b);
-		}
+		public static bool operator <(Vector3D a, Vector3D b) => !(a > b);
 
 		public static bool operator >=(Vector3D a, Vector3D b)
 		{
@@ -177,21 +157,15 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 			var v = o as Vector3D;
 			if (v != null)
 			{
-				return X == v.X
-					&& Y == v.Y
-					&& Z == v.Z;
+				return System.Math.Abs(X - v.X) < Globals.FLOAT_TOLERANCE
+				       && System.Math.Abs(Y - v.Y) < Globals.FLOAT_TOLERANCE
+				       && System.Math.Abs(Z - v.Z) < Globals.FLOAT_TOLERANCE;
 			}
 			return false;
 		}
 
-		public override int GetHashCode()
-		{
-			return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode();
-		}
+		public override string ToString() => $"X:{X:F4}, Y:{Y:F4} Z:{Z:F4}";
 
-		public override string ToString()
-		{
-			return string.Format("x:{0} y:{1} z:{2}", X, Y, Z);
-		}
+		public bool IsNear(Vector3D other, float distance) => DistanceSquared(ref other) < distance;
 	}
 }

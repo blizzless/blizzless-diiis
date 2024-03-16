@@ -1,18 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -33,9 +22,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			if (Maghda == null)
 				Maghda = AttackedTown.SpawnMonster(ActorSno._maghda_a_tempprojection, new Core.Types.Math.Vector3D(580f,563f,70f));
 			Maghda.EnterWorld(Maghda.Position);
-			Maghda.Attributes[GameAttribute.Untargetable] = true;
+			Maghda.Attributes[GameAttributes.Untargetable] = true;
 			Maghda.Attributes.BroadcastChangedIfRevealed();
-			Maghda.PlayAnimation(5, 193535);
+			Maghda.PlayAnimation(5, AnimationSno.maghdaprojection_transition_in_01);
 
 			StartConversation(AttackedTown, 194933);
 		}

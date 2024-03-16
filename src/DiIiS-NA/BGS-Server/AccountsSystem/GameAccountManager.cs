@@ -1,15 +1,9 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
+﻿using System;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.LoginServer.AccountsSystem
@@ -18,12 +12,9 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger("DataBaseSystem");
 
-		public static readonly ConcurrentDictionary<ulong, GameAccount> LoadedGameAccounts = new ConcurrentDictionary<ulong, GameAccount>();
+		public static readonly ConcurrentDictionary<ulong, GameAccount> LoadedGameAccounts = new();
 
-		public static int TotalAccounts
-		{
-			get { return DBSessions.SessionQuery<DBGameAccount>().Count(); }
-		}
+		public static int TotalAccounts => DBSessions.SessionQuery<DBGameAccount>().Count;
 
 		public static void PreLoadGameAccounts()
 		{
@@ -44,7 +35,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				return null;
 			if (LoadedGameAccounts.ContainsKey(dbGameAccount.Id))
 			{
-				LoadedGameAccounts[dbGameAccount.Id].DBGameAccount = dbGameAccount;
+				// LoadedGameAccounts[dbGameAccount.Id].DBGameAccount = dbGameAccount;
 				return LoadedGameAccounts[dbGameAccount.Id];
 			}
 			else
@@ -81,24 +72,65 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				ParagonLevelHardcore = 0,
 				Experience = 7200000,
 				ExperienceHardcore = 7200000,
-				StashSize = 700,			// Default stash sizes should be 70 with purchasable upgrades
-				HardcoreStashSize = 700,
+				StashSize = 700,			// Default stash sizes should be 70 with purchasable upgrades.
+				HardcoreStashSize = 700,    // Default stash sizes should be 70 with purchasable upgrades.
 				SeasonStashSize = 700,
+				HardSeasonStashSize = 700,
 				BloodShards = 0,
 				HardcoreBloodShards = 0,
 				BossProgress = new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff },
 				SeenTutorials = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
 				StashIcons = new byte[] { 0x00, 0x00, 0x00, 0x00 },
 				RmtCurrency = 0,
+				HardRmtCurrency = 0,
+				Platinum = 0,
+				HardPlatinum = 0,
 				Gold = 0,
 				HardcoreGold = 0,
 				ElitesKilled = 0,
+				HardElitesKilled = 0,
 				TotalKilled = 0,
+				HardTotalKilled = 0,
 				TotalGold = 0,
+				HardTotalGold = 0,
 				TotalBloodShards = 0,
+				HardTotalBloodShards = 0,
 				PvPTotalKilled = 0,
+				HardPvPTotalKilled = 0,
 				PvPTotalWins = 0,
-				PvPTotalGold = 0
+				HardPvPTotalWins = 0,
+				PvPTotalGold = 0,
+				HardPvPTotalGold = 0,
+				CraftItem1 = 0,
+				HardCraftItem1 = 0,
+				CraftItem2 = 0,
+				HardCraftItem2 = 0,
+				CraftItem3 = 0,
+				HardCraftItem3 = 0,
+				CraftItem4 = 0,
+				HardCraftItem4 = 0,
+				CraftItem5 = 0,
+				HardCraftItem5 = 0,
+				BigPortalKey = 0,
+				HardBigPortalKey = 0,
+				LeorikKey = 0,
+				HardLeorikKey = 0,
+				VialofPutridness = 0,
+				HardVialofPutridness = 0,
+				IdolofTerror = 0,
+				HardIdolofTerror = 0,
+				HeartofFright = 0,
+				HardHeartofFright = 0,
+				HoradricA1 = 0,
+				HardHoradricA1 = 0,
+				HoradricA2 = 0,
+				HardHoradricA2 = 0,
+				HoradricA3 = 0,
+				HardHoradricA3 = 0,
+				HoradricA4 = 0,
+				HardHoradricA4 = 0,
+				HoradricA5 = 0,
+				HardHoradricA5 = 0
 			};
 
 			DBSessions.SessionSave(newDBGameAccount);
@@ -135,7 +167,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			crafting.DBGameAccount = dbGAcc;
 			crafting.isHardcore = hardcore;
 			crafting.isSeasoned = seasoned;
-			crafting.LearnedRecipes = new byte[0];
+			crafting.LearnedRecipes = Array.Empty<byte>();
 			crafting.Level = 1;
 			DBSessions.SessionSave(crafting);
 		}

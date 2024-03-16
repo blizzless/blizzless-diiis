@@ -1,24 +1,18 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Runtime.Serialization.Json;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.REST.Extensions;
 
 namespace DiIiS_NA.REST.JSON
 {
     public class Json
     {
+        private static readonly Logger Logger = LogManager.CreateLogger(nameof(Json));
         public static string CreateString<T>(T dataObject)
         {
             return Encoding.UTF8.GetString(CreateArray(dataObject));
@@ -36,14 +30,29 @@ namespace DiIiS_NA.REST.JSON
 
         public static T CreateObject<T>(Stream jsonData)
         {
-            var serializer = new DataContractJsonSerializer(typeof(T));
-
-            return (T)serializer.ReadObject(jsonData);
+            try
+            {
+                var serializer = new DataContractJsonSerializer(typeof(T));
+                return (T)serializer.ReadObject(jsonData);
+            }
+            catch (Exception ex)
+            {
+                Logger.FatalException(ex, "Could not deserialize JSON data");
+                return default;
+            }
         }
 
         public static T CreateObject<T>(string jsonData, bool split = false)
         {
-            return CreateObject<T>(Encoding.UTF8.GetBytes(split ? jsonData.Split(new[] { ':' }, 2)[1] : jsonData));
+            try
+            {
+                return CreateObject<T>(Encoding.UTF8.GetBytes(split ? jsonData.Split(new[] { ':' }, 2)[1] : jsonData));
+            }
+            catch (Exception ex)
+            {
+                Logger.FatalException(ex, "Could not deserialize JSON data");
+                return default;
+            }
         }
 
         public static T CreateObject<T>(byte[] jsonData) => CreateObject<T>(new MemoryStream(jsonData));

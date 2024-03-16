@@ -1,40 +1,18 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Interactions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Inventory;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -62,25 +40,25 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 		public Hireling(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.TeamID] = 2;
+			Attributes[GameAttributes.TeamID] = 2;
 			Interactions.Add(new HireInteraction());
 			Interactions.Add(new InventoryInteraction());
 			if (skillKit != -1)
-				Attributes[GameAttribute.SkillKit] = skillKit;
+				Attributes[GameAttributes.SkillKit] = skillKit;
 		}
 
 		public void SetUpAttributes(Player player)
 		{
 			owner = player;
 
-			var info = player.HirelingInfo[Attributes[GameAttribute.Hireling_Class]];
+			var info = player.HirelingInfo[Attributes[GameAttributes.Hireling_Class]];
 			//*
 			// TODO: fix this hardcoded crap
 			if (!IsProxy)
-				Attributes[GameAttribute.Buff_Visual_Effect, 0x000FFFFF] = true;
+				Attributes[GameAttributes.Buff_Visual_Effect, 0x000FFFFF] = true;
 
-			Attributes[GameAttribute.Level] = player.Level;
-			Attributes[GameAttribute.Experience_Next_Lo] = 0;
+			Attributes[GameAttributes.Level] = player.Level;
+			Attributes[GameAttributes.Experience_Next_Lo] = 0;
 
 			if (!IsHireling && !IsProxy) // original doesn't need more attribs
 				return;
@@ -88,70 +66,70 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			if (info.Skill1SNOId != -1)
 			{
 				//scripted //this.Attributes[GameAttribute.Skill_Total, info.Skill1SNOId] = 1;
-				Attributes[GameAttribute.Skill, info.Skill1SNOId] = 1;
+				Attributes[GameAttributes.Skill, info.Skill1SNOId] = 1;
 			}
 
 			if (info.Skill2SNOId != -1)
 			{
 				//scripted //this.Attributes[GameAttribute.Skill_Total, info.Skill2SNOId] = 1;
-				Attributes[GameAttribute.Skill, info.Skill2SNOId] = 1;
+				Attributes[GameAttributes.Skill, info.Skill2SNOId] = 1;
 			}
 
 			if (info.Skill3SNOId != -1)
 			{
 				//scripted //this.Attributes[GameAttribute.Skill_Total, info.Skill3SNOId] = 1;
-				Attributes[GameAttribute.Skill, info.Skill3SNOId] = 1;
+				Attributes[GameAttributes.Skill, info.Skill3SNOId] = 1;
 			}
 
 			if (info.Skill4SNOId != -1)
 			{
 				//scripted //this.Attributes[GameAttribute.Skill_Total, info.Skill4SNOId] = 1;
-				Attributes[GameAttribute.Skill, info.Skill4SNOId] = 1;
+				Attributes[GameAttributes.Skill, info.Skill4SNOId] = 1;
 			}
 
 			/**/
 			_lastResourceUpdateTick = 0;
-			Attributes[GameAttribute.SkillKit] = skillKit;
+			Attributes[GameAttributes.SkillKit] = skillKit;
 			WalkSpeed = 0.45f;
 			
 			#region hardcoded attribs :/
 			//*
-			Attributes[GameAttribute.Attacks_Per_Second] = 1f;
-			Attributes[GameAttribute.Attacks_Per_Second_Item] = 1.199219f;
-			Attributes[GameAttribute.Casting_Speed] = 1;
-			Attributes[GameAttribute.Damage_Delta, 0] = 1f;
-			Attributes[GameAttribute.Damage_Min, 0] = 1f;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 2f;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 6f;
-			Attributes[GameAttribute.General_Cooldown] = 0;
-			Attributes[GameAttribute.Hit_Chance] = 1;
-			Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f + Math.Max(Attributes[GameAttribute.Level] - 35, 0);
-			Attributes[GameAttribute.Hitpoints_Max] = 276f;
-			Attributes[GameAttribute.Hitpoints_Cur] = 1f;
-			Attributes[GameAttribute.Level_Cap] = 70;
-			Attributes[GameAttribute.Movement_Scalar] = 1;
-			Attributes[GameAttribute.Resource_Max, 0] = 1.0f;
-			Attributes[GameAttribute.Resource_Cur, 0] = 1.0f;
-			Attributes[GameAttribute.Resource_Type_Primary] = 0;
-			Attributes[GameAttribute.Running_Rate] = 0.3598633f;
-			Attributes[GameAttribute.Sprinting_Rate] = 0.3598633f;
-			Attributes[GameAttribute.Strafing_Rate] = 0.1799316f;
-			Attributes[GameAttribute.Walking_Rate] = 0.3598633f;
+			Attributes[GameAttributes.Attacks_Per_Second] = 1f;
+			Attributes[GameAttributes.Attacks_Per_Second_Item] = 1.199219f;
+			Attributes[GameAttributes.Casting_Speed] = 1;
+			Attributes[GameAttributes.Damage_Delta, 0] = 1f;
+			Attributes[GameAttributes.Damage_Min, 0] = 1f;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 2f;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] = 6f;
+			Attributes[GameAttributes.General_Cooldown] = 0;
+			Attributes[GameAttributes.Hit_Chance] = 1;
+			Attributes[GameAttributes.Hitpoints_Factor_Vitality] = 10f + Math.Max(Attributes[GameAttributes.Level] - 35, 0);
+			Attributes[GameAttributes.Hitpoints_Max] = 276f;
+			Attributes[GameAttributes.Hitpoints_Cur] = 1f;
+			Attributes[GameAttributes.Level_Cap] = 70;
+			Attributes[GameAttributes.Movement_Scalar] = 1;
+			Attributes[GameAttributes.Resource_Max, 0] = 1.0f;
+			Attributes[GameAttributes.Resource_Cur, 0] = 1.0f;
+			Attributes[GameAttributes.Resource_Type_Primary] = 0;
+			Attributes[GameAttributes.Running_Rate] = 0.3598633f;
+			Attributes[GameAttributes.Sprinting_Rate] = 0.3598633f;
+			Attributes[GameAttributes.Strafing_Rate] = 0.1799316f;
+			Attributes[GameAttributes.Walking_Rate] = 0.3598633f;
 
 			if (IsProxy)
 				return;
 
-			Attributes[GameAttribute.Callout_Cooldown, 0x000FFFFF] = 0x00000797;
-			Attributes[GameAttribute.Buff_Visual_Effect, 0x000FFFFF] = true;
-			Attributes[GameAttribute.Buff_Icon_Count0, 0x000075C1] = 1;
-			Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0x000075C1] = true;
-			Attributes[GameAttribute.Conversation_Icon, 0] = 1;
-			Attributes[GameAttribute.Buff_Exclusive_Type_Active, 0x20c51] = true;
-			Attributes[GameAttribute.Buff_Icon_End_Tick0, 0x00020C51] = 0x00000A75;
-			Attributes[GameAttribute.Buff_Icon_Start_Tick0, 0x00020C51] = 0x00000375;
-			Attributes[GameAttribute.Buff_Icon_Count0, 0x00020C51] = 3;
-			Attributes[GameAttribute.Callout_Cooldown, 0x1618a] = 743;
-			Attributes[GameAttribute.Callout_Cooldown, 0x01CAB6] = 743;
+			Attributes[GameAttributes.Callout_Cooldown, 0x000FFFFF] = 0x00000797;
+			Attributes[GameAttributes.Buff_Visual_Effect, 0x000FFFFF] = true;
+			Attributes[GameAttributes.Buff_Icon_Count0, 0x000075C1] = 1;
+			Attributes[GameAttributes.Buff_Exclusive_Type_Active, 0x000075C1] = true;
+			Attributes[GameAttributes.Conversation_Icon, 0] = 1;
+			Attributes[GameAttributes.Buff_Exclusive_Type_Active, 0x20c51] = true;
+			Attributes[GameAttributes.Buff_Icon_End_Tick0, 0x00020C51] = 0x00000A75;
+			Attributes[GameAttributes.Buff_Icon_Start_Tick0, 0x00020C51] = 0x00000375;
+			Attributes[GameAttributes.Buff_Icon_Count0, 0x00020C51] = 3;
+			Attributes[GameAttributes.Callout_Cooldown, 0x1618a] = 743;
+			Attributes[GameAttributes.Callout_Cooldown, 0x01CAB6] = 743;
 			//*/
 			#endregion
 
@@ -169,59 +147,59 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			//*
 			try
 			{
-				Attributes[GameAttribute.Vitality] = 5f + (Attributes[GameAttribute.Level] * 2) + (GetItemBonus(GameAttribute.Vitality_Item));// * 2.5f);
-				Attributes[GameAttribute.Strength] = 5f + (Attributes[GameAttribute.Level] * (this is Templar ? 3 : 1)) + (GetItemBonus(GameAttribute.Strength_Item));// * 2.5f);
-				Attributes[GameAttribute.Dexterity] = 5f + (Attributes[GameAttribute.Level] * (this is Scoundrel ? 3 : 1)) + (GetItemBonus(GameAttribute.Dexterity_Item));// * 2.5f);
-				Attributes[GameAttribute.Intelligence] = 5f + (Attributes[GameAttribute.Level] * (this is Enchantress ? 3 : 1)) + (GetItemBonus(GameAttribute.Intelligence_Item));// * 2.5f);
+				Attributes[GameAttributes.Vitality] = 5f + (Attributes[GameAttributes.Level] * 2) + (GetItemBonus(GameAttributes.Vitality_Item));// * 2.5f);
+				Attributes[GameAttributes.Strength] = 5f + (Attributes[GameAttributes.Level] * (this is Templar ? 3 : 1)) + (GetItemBonus(GameAttributes.Strength_Item));// * 2.5f);
+				Attributes[GameAttributes.Dexterity] = 5f + (Attributes[GameAttributes.Level] * (this is Scoundrel ? 3 : 1)) + (GetItemBonus(GameAttributes.Dexterity_Item));// * 2.5f);
+				Attributes[GameAttributes.Intelligence] = 5f + (Attributes[GameAttributes.Level] * (this is Enchantress ? 3 : 1)) + (GetItemBonus(GameAttributes.Intelligence_Item));// * 2.5f);
 
-				Attributes[GameAttribute.Attacks_Per_Second_Item] = GetItemBonus(GameAttribute.Attacks_Per_Second_Item);
+				Attributes[GameAttributes.Attacks_Per_Second_Item] = GetItemBonus(GameAttributes.Attacks_Per_Second_Item);
 				//*
-				Attributes[GameAttribute.Crit_Percent_Bonus_Capped] = GetItemBonus(GameAttribute.Crit_Percent_Bonus_Capped);
-				Attributes[GameAttribute.Weapon_Crit_Chance] = GetItemBonus(GameAttribute.Weapon_Crit_Chance);
-				Attributes[GameAttribute.Crit_Damage_Percent] = 0.5f + GetItemBonus(GameAttribute.Crit_Damage_Percent);
-				Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped] = GetItemBonus(GameAttribute.Crit_Percent_Bonus_Uncapped);
+				Attributes[GameAttributes.Crit_Percent_Bonus_Capped] = GetItemBonus(GameAttributes.Crit_Percent_Bonus_Capped);
+				Attributes[GameAttributes.Weapon_Crit_Chance] = GetItemBonus(GameAttributes.Weapon_Crit_Chance);
+				Attributes[GameAttributes.Crit_Damage_Percent] = 0.5f + GetItemBonus(GameAttributes.Crit_Damage_Percent);
+				Attributes[GameAttributes.Crit_Percent_Bonus_Uncapped] = GetItemBonus(GameAttributes.Crit_Percent_Bonus_Uncapped);
 
-				Attributes[GameAttribute.Armor_Item] = GetItemBonus(GameAttribute.Armor_Item);
+				Attributes[GameAttributes.Armor_Item] = GetItemBonus(GameAttributes.Armor_Item);
 				//*
 				for (int i = 0; i < 7; i++)
 				{
-					Attributes[GameAttribute.Damage_Weapon_Min, i] = Math.Max(GetItemBonus(GameAttribute.Damage_Weapon_Min, i), 2f) + GetItemBonus(GameAttribute.Damage_Min, i);
-					Attributes[GameAttribute.Damage_Weapon_Delta, i] = Math.Max(GetItemBonus(GameAttribute.Damage_Weapon_Delta_Total, i), 2f) + GetItemBonus(GameAttribute.Damage_Delta, i);
-					Attributes[GameAttribute.Damage_Weapon_Bonus_Min, i] = GetItemBonus(GameAttribute.Damage_Weapon_Bonus_Min, i);
-					Attributes[GameAttribute.Damage_Weapon_Bonus_Delta, i] = GetItemBonus(GameAttribute.Damage_Weapon_Bonus_Delta, i);
-					Attributes[GameAttribute.Resistance, i] = GetItemBonus(GameAttribute.Resistance, i);
+					Attributes[GameAttributes.Damage_Weapon_Min, i] = Math.Max(GetItemBonus(GameAttributes.Damage_Weapon_Min, i), 2f) + GetItemBonus(GameAttributes.Damage_Min, i);
+					Attributes[GameAttributes.Damage_Weapon_Delta, i] = Math.Max(GetItemBonus(GameAttributes.Damage_Weapon_Delta_Total, i), 2f) + GetItemBonus(GameAttributes.Damage_Delta, i);
+					Attributes[GameAttributes.Damage_Weapon_Bonus_Min, i] = GetItemBonus(GameAttributes.Damage_Weapon_Bonus_Min, i);
+					Attributes[GameAttributes.Damage_Weapon_Bonus_Delta, i] = GetItemBonus(GameAttributes.Damage_Weapon_Bonus_Delta, i);
+					Attributes[GameAttributes.Resistance, i] = GetItemBonus(GameAttributes.Resistance, i);
 				}
 				//*/
-				Attributes[GameAttribute.Resistance_All] = GetItemBonus(GameAttribute.Resistance_All);
-				Attributes[GameAttribute.Resistance_Percent_All] = GetItemBonus(GameAttribute.Resistance_Percent_All);
-				Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] = GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Melee);
-				Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] = GetItemBonus(GameAttribute.Damage_Percent_Reduction_From_Ranged);
+				Attributes[GameAttributes.Resistance_All] = GetItemBonus(GameAttributes.Resistance_All);
+				Attributes[GameAttributes.Resistance_Percent_All] = GetItemBonus(GameAttributes.Resistance_Percent_All);
+				Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] = GetItemBonus(GameAttributes.Damage_Percent_Reduction_From_Melee);
+				Attributes[GameAttributes.Damage_Percent_Reduction_From_Ranged] = GetItemBonus(GameAttributes.Damage_Percent_Reduction_From_Ranged);
 
-				Attributes[GameAttribute.Thorns_Fixed] = GetItemBonus(GameAttribute.Thorns_Fixed, 0);
+				Attributes[GameAttributes.Thorns_Fixed] = GetItemBonus(GameAttributes.Thorns_Fixed, 0);
 
-				Attributes[GameAttribute.Steal_Health_Percent] = GetItemBonus(GameAttribute.Steal_Health_Percent);
-				Attributes[GameAttribute.Hitpoints_On_Hit] = GetItemBonus(GameAttribute.Hitpoints_On_Hit);
-				Attributes[GameAttribute.Hitpoints_On_Kill] = GetItemBonus(GameAttribute.Hitpoints_On_Kill);
+				Attributes[GameAttributes.Steal_Health_Percent] = GetItemBonus(GameAttributes.Steal_Health_Percent);
+				Attributes[GameAttributes.Hitpoints_On_Hit] = GetItemBonus(GameAttributes.Hitpoints_On_Hit);
+				Attributes[GameAttributes.Hitpoints_On_Kill] = GetItemBonus(GameAttributes.Hitpoints_On_Kill);
 
-				Attributes[GameAttribute.Magic_Find] = GetItemBonus(GameAttribute.Magic_Find);
-				Attributes[GameAttribute.Gold_Find] = GetItemBonus(GameAttribute.Gold_Find);
+				Attributes[GameAttributes.Magic_Find] = GetItemBonus(GameAttributes.Magic_Find);
+				Attributes[GameAttributes.Gold_Find] = GetItemBonus(GameAttributes.Gold_Find);
 
-				Attributes[GameAttribute.Dodge_Chance_Bonus] = GetItemBonus(GameAttribute.Dodge_Chance_Bonus);
+				Attributes[GameAttributes.Dodge_Chance_Bonus] = GetItemBonus(GameAttributes.Dodge_Chance_Bonus);
 				
-				Attributes[GameAttribute.Block_Amount_Item_Min] = GetItemBonus(GameAttribute.Block_Amount_Item_Min);
-				Attributes[GameAttribute.Block_Amount_Item_Delta] = GetItemBonus(GameAttribute.Block_Amount_Item_Delta);
-				Attributes[GameAttribute.Block_Amount_Bonus_Percent] = GetItemBonus(GameAttribute.Block_Amount_Bonus_Percent);
-				Attributes[GameAttribute.Block_Chance] = GetItemBonus(GameAttribute.Block_Chance_Item_Total);
+				Attributes[GameAttributes.Block_Amount_Item_Min] = GetItemBonus(GameAttributes.Block_Amount_Item_Min);
+				Attributes[GameAttributes.Block_Amount_Item_Delta] = GetItemBonus(GameAttributes.Block_Amount_Item_Delta);
+				Attributes[GameAttributes.Block_Amount_Bonus_Percent] = GetItemBonus(GameAttributes.Block_Amount_Bonus_Percent);
+				Attributes[GameAttributes.Block_Chance] = GetItemBonus(GameAttributes.Block_Chance_Item_Total);
 				//*/
-				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Item] = GetItemBonus(GameAttribute.Hitpoints_Max_Percent_Bonus_Item);
-				Attributes[GameAttribute.Hitpoints_Max_Bonus] = GetItemBonus(GameAttribute.Hitpoints_Max_Bonus);
-				Attributes[GameAttribute.Hitpoints_Factor_Vitality] = 10f + Math.Max(Attributes[GameAttribute.Level] - 35, 0);
-				Attributes[GameAttribute.Hitpoints_Regen_Per_Second] = GetItemBonus(GameAttribute.Hitpoints_Regen_Per_Second) + 10f + (10f * Attributes[GameAttribute.Level]);
+				Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Item] = GetItemBonus(GameAttributes.Hitpoints_Max_Percent_Bonus_Item);
+				Attributes[GameAttributes.Hitpoints_Max_Bonus] = GetItemBonus(GameAttributes.Hitpoints_Max_Bonus);
+				Attributes[GameAttributes.Hitpoints_Factor_Vitality] = 10f + Math.Max(Attributes[GameAttributes.Level] - 35, 0);
+				Attributes[GameAttributes.Hitpoints_Regen_Per_Second] = GetItemBonus(GameAttributes.Hitpoints_Regen_Per_Second) + 10f + (10f * Attributes[GameAttributes.Level]);
 
-				Attributes[GameAttribute.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
-				Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
-				Attributes[GameAttribute.Hitpoints_Max] = 276f; //+ (this.Attributes[GameAttribute.Vitality] * (10f + Math.Max(this.Attributes[GameAttribute.Level] - 35, 0)));
-				Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max_Total];
+				Attributes[GameAttributes.Core_Attributes_From_Item_Bonus_Multiplier] = 1;
+				Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] = 1;
+				Attributes[GameAttributes.Hitpoints_Max] = 276f; //+ (this.Attributes[GameAttribute.Vitality] * (10f + Math.Max(this.Attributes[GameAttribute.Level] - 35, 0)));
+				Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
 				/**/
 			}
 			catch { }
@@ -246,11 +224,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			hireling.GBHandle.Type = 4;
 			hireling.GBHandle.GBID = hirelingGBID;
 
-			hireling.Attributes[GameAttribute.Pet_Creator] = player.PlayerIndex + 1;
-			hireling.Attributes[GameAttribute.Pet_Type] = 1;
-			hireling.Attributes[GameAttribute.Pet_Owner] = player.PlayerIndex + 1;
-			hireling.Attributes[GameAttribute.Untargetable] = false;
-			hireling.Attributes[GameAttribute.NPC_Is_Escorting] = true;
+			hireling.Attributes[GameAttributes.Pet_Creator] = player.PlayerIndex + 1;
+			hireling.Attributes[GameAttributes.Pet_Type] = 1;
+			hireling.Attributes[GameAttributes.Pet_Owner] = player.PlayerIndex + 1;
+			hireling.Attributes[GameAttributes.Untargetable] = false;
+			hireling.Attributes[GameAttributes.NPC_Is_Escorting] = true;
 
 			hireling.RotationW = RotationW;
 			hireling.RotationAxis = RotationAxis;
@@ -281,21 +259,21 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			if (IsHireling || IsProxy)
 				return;
 
-			if (player.ActiveHireling.Attributes[GameAttribute.Hireling_Class] == Attributes[GameAttribute.Hireling_Class])
+			if (player.ActiveHireling.Attributes[GameAttributes.Hireling_Class] == Attributes[GameAttributes.Hireling_Class])
 				return;
 
 			var hireling = CreateHireling(World, proxySNO, Tags);
 			hireling.SetUpAttributes(player);
 			hireling.GBHandle.Type = 4;
 			hireling.GBHandle.GBID = hirelingGBID;
-			hireling.Attributes[GameAttribute.Is_NPC] = false;
-			hireling.Attributes[GameAttribute.NPC_Is_Operatable] = false;
-			hireling.Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = false;
-			hireling.Attributes[GameAttribute.Buff_Visual_Effect, 0x00FFFFF] = false;
+			hireling.Attributes[GameAttributes.Is_NPC] = false;
+			hireling.Attributes[GameAttributes.NPC_Is_Operatable] = false;
+			hireling.Attributes[GameAttributes.NPC_Has_Interact_Options, 0] = false;
+			hireling.Attributes[GameAttributes.Buff_Visual_Effect, 0x00FFFFF] = false;
 
-			hireling.Attributes[GameAttribute.Pet_Creator] = player.PlayerIndex + 1;
-			hireling.Attributes[GameAttribute.Pet_Type] = 1;
-			hireling.Attributes[GameAttribute.Pet_Owner] = player.PlayerIndex + 1;
+			hireling.Attributes[GameAttributes.Pet_Creator] = player.PlayerIndex + 1;
+			hireling.Attributes[GameAttributes.Pet_Type] = 1;
+			hireling.Attributes[GameAttributes.Pet_Owner] = player.PlayerIndex + 1;
 
 			hireling.RotationW = RotationW;
 			hireling.RotationAxis = RotationAxis;
@@ -320,23 +298,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			{
 				float tickSeconds = 1f / 60f * (World.Game.TickCounter - _lastResourceUpdateTick);
 				_lastResourceUpdateTick = World.Game.TickCounter;
-				float quantity = tickSeconds * Attributes[GameAttribute.Hitpoints_Regen_Per_Second];
+				float quantity = tickSeconds * Attributes[GameAttributes.Hitpoints_Regen_Per_Second];
 
 				AddHP(quantity);
 			}
 		}
 
-		public override void AddHP(float quantity, bool GuidingLight = false)
+		public override void AddHP(float quantity, bool guidingLight = false)
 		{
 			if (Dead) return;
 			if (quantity == 0) return;
 			if (quantity > 0)
 			{
-				if (Attributes[GameAttribute.Hitpoints_Cur] < Attributes[GameAttribute.Hitpoints_Max_Total])
+				if (Attributes[GameAttributes.Hitpoints_Cur] < Attributes[GameAttributes.Hitpoints_Max_Total])
 				{
-					Attributes[GameAttribute.Hitpoints_Cur] = Math.Min(
-						Attributes[GameAttribute.Hitpoints_Cur] + quantity,
-						Attributes[GameAttribute.Hitpoints_Max_Total]);
+					Attributes[GameAttributes.Hitpoints_Cur] = Math.Min(
+						Attributes[GameAttributes.Hitpoints_Cur] + quantity,
+						Attributes[GameAttributes.Hitpoints_Max_Total]);
 
 					Attributes.BroadcastChangedIfRevealed();
 				}
@@ -421,7 +399,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			if (World.Game.Players.Count > 1)
 				return false;
 
-			if (!IsHireling && ((player.ActiveHireling != null && Attributes[GameAttribute.Hireling_Class] == player.ActiveHireling.Attributes[GameAttribute.Hireling_Class])))// || (player.HirelingId != null && this.Attributes[GameAttribute.Hireling_Class] == player.HirelingId)))
+			if (!IsHireling && ((player.ActiveHireling != null && Attributes[GameAttributes.Hireling_Class] == player.ActiveHireling.Attributes[GameAttributes.Hireling_Class])))// || (player.HirelingId != null && this.Attributes[GameAttribute.Hireling_Class] == player.HirelingId)))
 				return false;
 
 			if (owner == null)
@@ -467,12 +445,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 		public void LoadInventory(Player player)
 		{
 			_equipment.Add(player, new Dictionary<int, Item>());
-			var inventory_list = World.Game.GameDBSession.SessionQueryWhere<DBInventory>(dbi => dbi.DBToon.Id == player.Toon.PersistentID && dbi.HirelingId != 0 && dbi.HirelingId == Attributes[GameAttribute.Hireling_Class]);
+			var inventory_list = World.Game.GameDbSession.SessionQueryWhere<DBInventory>(dbi => dbi.DBToon.Id == player.Toon.PersistentID && dbi.HirelingId != 0 && dbi.HirelingId == Attributes[GameAttributes.Hireling_Class]);
 			foreach (var inv_item in inventory_list)
 			{
 				Item item = ItemGenerator.LoadFromDB(player, inv_item);
 				item.Owner = this;
-				item.Attributes[GameAttribute.Item_Equipped] = true;
+				item.Attributes[GameAttributes.Item_Equipped] = true;
 				item.SetInventoryLocation(inv_item.EquipmentSlot, 0, 0);
 				if (!_equipment[player].ContainsKey(inv_item.EquipmentSlot))
 					_equipment[player].Add(inv_item.EquipmentSlot, item);
@@ -491,12 +469,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 			item.Owner = this;
 			item.SetInventoryLocation(slot, 0, 0);
-			item.DBInventory.HirelingId = Attributes[GameAttribute.Hireling_Class];
+			item.DBInventory.HirelingId = Attributes[GameAttributes.Hireling_Class];
 			item.DBInventory.EquipmentSlot = slot;
 			item.DBInventory.LocationX = 0;
 			item.DBInventory.LocationY = 0;
-			World.Game.GameDBSession.SessionUpdate(item.DBInventory);
-			item.Attributes[GameAttribute.Item_Equipped] = true;
+			World.Game.GameDbSession.SessionUpdate(item.DBInventory);
+			item.Attributes[GameAttributes.Item_Equipped] = true;
 			_equipment[owner].Add(slot, item);
 			RefreshEquipment(owner);
 			UpdateAttributes();
@@ -513,10 +491,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 			item.Owner = owner;
 			_equipment[owner].Remove(slot);
-			World.Game.GameDBSession.SessionDelete(item.DBInventory);
+			World.Game.GameDbSession.SessionDelete(item.DBInventory);
 			owner.Inventory.PickUp(item);
 			item.Unreveal(owner);
-			item.Attributes[GameAttribute.Item_Equipped] = false;
+			item.Attributes[GameAttributes.Item_Equipped] = false;
 			item.Reveal(owner);
 			RefreshEquipment(owner);
 			UpdateAttributes();
@@ -529,12 +507,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 			UnequipItem(owner, slot, item);
 		}
 
-		public Item GetItemByDynId(Player player, uint DynamicId)
+		public Item GetItemByDynId(Player player, uint dynamicId)
 		{
-			if (_equipment[player].Values.Where(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == DynamicId).Count() > 0)
-				return _equipment[player].Values.Single(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == DynamicId);
-			else
-				return null;
+			if (_equipment[player].Values.Any(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == dynamicId))
+				return _equipment[player].Values.Single(it => it.IsRevealedToPlayer(player) && it.DynamicID(player) == dynamicId);
+
+			return null;
 		}
 
 		public void RefreshEquipment(Player player)
@@ -549,39 +527,44 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings
 
 		#region EqupimentStats
 
-		public List<Item> GetEquippedItems(Player player)
+		public IEnumerable<Item> GetEquippedItems(Player player)
 		{
-			return _equipment[player].Values.ToList();
+			return _equipment[player].Values;
 		}
 
 		public float GetItemBonus(GameAttributeF attributeF)
 		{
-			var stats = GetEquippedItems(owner).Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 || item.Attributes[GameAttribute.Durability_Max] == 0);
+			var stats = GetEquippedItems(owner)
+				.Where(item => item.Attributes[GameAttributes.Durability_Cur] > 0 ||
+				               item.Attributes[GameAttributes.Durability_Max] == 0);
 
-			if (attributeF == GameAttribute.Attacks_Per_Second_Item)
-				return stats.Count() > 0 ? stats.Select(item => item.Attributes[attributeF]).Where(a => a > 0f).Aggregate(1f, (x, y) => x * y) : 0f;
-
+			if (attributeF == GameAttributes.Attacks_Per_Second_Item)
+			{
+				return stats.Any()
+					? stats.Select(item => item.Attributes[attributeF]).Where(a => a > 0f).Aggregate(1f, (x, y) => x * y)
+					: 0f;
+			}
 			return stats.Sum(item => item.Attributes[attributeF]);
 		}
 
 		public int GetItemBonus(GameAttributeI attributeI)
 		{
-			return GetEquippedItems(owner).Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 || item.Attributes[GameAttribute.Durability_Max] == 0).Sum(item => item.Attributes[attributeI]);
+			return GetEquippedItems(owner).Where(item => item.Attributes[GameAttributes.Durability_Cur] > 0 || item.Attributes[GameAttributes.Durability_Max] == 0).Sum(item => item.Attributes[attributeI]);
 		}
 
 		public bool GetItemBonus(GameAttributeB attributeB)
 		{
-			return GetEquippedItems(owner).Where(item => item.Attributes[attributeB] == true).Count() > 0;
+			return GetEquippedItems(owner).Any(item => item.Attributes[attributeB]);
 		}
 
 		public float GetItemBonus(GameAttributeF attributeF, int attributeKey)
 		{
-			return GetEquippedItems(owner).Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 || item.Attributes[GameAttribute.Durability_Max] == 0).Sum(item => item.Attributes[attributeF, attributeKey]);
+			return GetEquippedItems(owner).Where(item => item.Attributes[GameAttributes.Durability_Cur] > 0 || item.Attributes[GameAttributes.Durability_Max] == 0).Sum(item => item.Attributes[attributeF, attributeKey]);
 		}
 
 		public int GetItemBonus(GameAttributeI attributeI, int attributeKey)
 		{
-			return GetEquippedItems(owner).Where(item => item.Attributes[GameAttribute.Durability_Cur] > 0 || item.Attributes[GameAttribute.Durability_Max] == 0).Sum(item => item.Attributes[attributeI, attributeKey]);
+			return GetEquippedItems(owner).Where(item => item.Attributes[GameAttributes.Durability_Cur] > 0 || item.Attributes[GameAttributes.Durability_Max] == 0).Sum(item => item.Attributes[attributeI, attributeKey]);
 		}
 		#endregion
 	}

@@ -1,9 +1,6 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -26,7 +23,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 			CollFlags = 0;
 			WalkSpeed = 0;
-			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttributes.Invulnerable] = true;
 		}
 	}
 }

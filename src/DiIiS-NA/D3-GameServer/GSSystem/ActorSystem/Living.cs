@@ -1,32 +1,14 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -54,11 +36,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			Field10 = 0x0;
 
 			//scripted //this.Attributes[GameAttribute.Hitpoints_Max_Total] = 4.546875f;
-			Attributes[GameAttribute.Hitpoints_Max] = 4.546875f;
+			Attributes[GameAttributes.Hitpoints_Max] = 4.546875f;
 			//scripted //this.Attributes[GameAttribute.Hitpoints_Total_From_Level] = 0f;
-			Attributes[GameAttribute.Hitpoints_Cur] = 4.546875f;
+			Attributes[GameAttributes.Hitpoints_Cur] = 4.546875f;
 
-			Attributes[GameAttribute.Level] = 1;
+			Attributes[GameAttributes.Level] = 1;
 		}
 
 		public override bool Reveal(Player player)

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Configurations>Debug;Release;github</Configurations>
   </PropertyGroup>
 
@@ -9,6 +9,10 @@
     <Reference Include="Google.ProtocolBuffers">
       <HintPath>..\DiIiS-NA\libs\Google.ProtocolBuffers.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console" Version="0.46.0" />
   </ItemGroup>
 
 </Project>

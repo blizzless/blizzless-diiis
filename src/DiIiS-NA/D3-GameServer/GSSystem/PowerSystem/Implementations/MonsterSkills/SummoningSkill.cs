@@ -1,25 +1,14 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
@@ -62,7 +51,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			InFrontPostion();
-			SummonMonster((User as Monster).SNOSummons[0]);
+			SummonMonster((User as Monster).SnoSummons[0]);
 			yield break;
 		}
 	}
@@ -87,7 +76,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (payload.Target == User && payload is DeathPayload)
 				{
 					if (User.GetActorsInRange(80f).Count > 100) return;
-					var monster = ActorFactory.Create(User.World, (User as Monster).SNOSummons[0], new TagMap());
+					var monster = ActorFactory.Create(User.World, (User as Monster).SnoSummons[0], new TagMap());
 					if (monster != null)
 					{
 						monster.Scale = 1.35f;
@@ -119,10 +108,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (payload.Target == User && payload is DeathPayload)
 				{
 					if (User.GetActorsInRange(80f).Count > 100) return;
-					User.PlayAnimation(11, User.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Explode]);
+					User.PlayAnimation(11, (AnimationSno)User.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Explode]);
 					for (int i = 0; i < 3; i++)
 					{
-						var monster = ActorFactory.Create(User.World, (User as Monster).SNOSummons[0], new TagMap());
+						var monster = ActorFactory.Create(User.World, (User as Monster).SnoSummons[0], new TagMap());
 						monster.Scale = 1.35f;
 						monster.EnterWorld(RandomDirection(User.Position, 1, 3));
 						World.BuffManager.AddBuff(User, monster, new SummonedBuff());
@@ -170,7 +159,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					SuicideTimer = null;
 					var dmgTargets = GetEnemiesInRadius(User.Position, 6f);
 					WeaponDamage(dmgTargets, 5.0f, DamageType.Physical);
-					User.PlayAnimation(11, User.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Attack]);
+					User.PlayAnimation(11, (AnimationSno)User.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Attack]);
 					WeaponDamage(User, 1000.0f, DamageType.Physical);
 					//(User as Living).Kill();
 					//foreach (var anim in Target.AnimationSet.TagMapAnimDefault)
@@ -196,7 +185,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			RandomPostion();
 			if (User is Monster)
-				SummonMonster((User as Monster).SNOSummons[0]);
+				SummonMonster((User as Monster).SnoSummons[0]);
 			yield break;
 		}
 	}
@@ -217,7 +206,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			UserPostion();
-			SummonMonster((User as Monster).SNOSummons[0]);
+			SummonMonster((User as Monster).SnoSummons[0]);
 			yield break;
 		}
 	}

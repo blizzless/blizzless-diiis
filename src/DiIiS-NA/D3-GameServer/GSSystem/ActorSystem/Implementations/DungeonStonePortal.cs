@@ -1,22 +1,11 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
+﻿using System;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -35,7 +24,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		{
 
 			//this.Field2 = 0x9;//16;
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 218394;
 			if (World.SNO.IsDungeon())
 			{

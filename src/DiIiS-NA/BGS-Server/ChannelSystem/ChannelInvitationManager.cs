@@ -1,19 +1,10 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using bgs.protocol;
-//Blizzless Project 2022 
+﻿using bgs.protocol;
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.LoginServer.ChannelSystem
@@ -62,7 +53,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 			var notification = bgs.protocol.channel.v1.InvitationAddedNotification.CreateBuilder().SetInvitation(invitation);
 
-			invitee.MakeTargetedRPC(this, (lid) =>
+			invitee.MakeTargetedRpc(this, (lid) =>
 				bgs.protocol.channel.v1.ChannelInvitationListener.CreateStub(invitee).OnReceivedInvitationAdded(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
 		}
 
@@ -88,7 +79,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			_onGoingInvitations.Remove(invitation.Id);
 			GoingInvitations.Remove(request.InvitationId);
 
-			client.MakeTargetedRPC(this, (lid) =>
+			client.MakeTargetedRpc(this, (lid) =>
 				bgs.protocol.channel.v1.ChannelInvitationListener.CreateStub(client).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
 
 			channel.Join(client, request.ObjectId); 
@@ -100,7 +91,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 			foreach (var member in channel.Members.Keys)
 			{
-				member.MakeTargetedRPC(channel, (lid) =>
+				member.MakeTargetedRpc(channel, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, stateNotification, callback => { }));
 			}
 
@@ -122,9 +113,9 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 
 			#region
-			string GAME_SERVER_IP = Program.GAMESERVERIP;
+			string gameServerIp = Program.GameServerIp;
 			if (GameServer.NATConfig.Instance.Enabled)
-				GAME_SERVER_IP = Program.PUBLICGAMESERVERIP;
+				gameServerIp = Program.PublicGameServerIp;
 			uint GAME_SERVER_PORT = 2001;
 
 			var member = bgs.protocol.account.v1.GameAccountHandle.CreateBuilder();
@@ -132,7 +123,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 			var notification = bgs.protocol.matchmaking.v1.MatchmakingResultNotification.CreateBuilder();
 			var connectInfo = bgs.protocol.matchmaking.v1.ConnectInfo.CreateBuilder();
-			connectInfo.SetAddress(Address.CreateBuilder().SetAddress_(GAME_SERVER_IP).SetPort(GAME_SERVER_PORT));
+			connectInfo.SetAddress(Address.CreateBuilder().SetAddress_(gameServerIp).SetPort(GAME_SERVER_PORT));
 			connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("GameAccount").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetBlobValue(member.Build().ToByteString())));
 			connectInfo.AddAttribute(bgs.protocol.v2.Attribute.CreateBuilder().SetName("Token").SetValue(bgs.protocol.v2.Variant.CreateBuilder().SetUintValue(0xEEF4364684EE186E))); // FIXME
 			//connectInfo.AddAttribute(AttributeOfServer); // Game settings
@@ -165,7 +156,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 					.SetStateChange(channelStatePermission)
 					.Build();
 
-				JoinClient.MakeTargetedRPC(JoinClient.CurrentChannel, (lid) =>
+				JoinClient.MakeTargetedRpc(JoinClient.CurrentChannel, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(JoinClient).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notificationPermission, callback => { }));
 			}
 			gameFound.StartGame(clients, gameFound.DynamicId);
@@ -179,7 +170,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 				.SetValue(Variant.CreateBuilder().SetUintValue(gameFound.RequestId).Build());
 			notificationFound.AddAttribute(attrF);
 
-			JoinClient.MakeRPC((lid) =>
+			JoinClient.MakeRpc((lid) =>
 				bgs.protocol.notification.v1.NotificationListener.CreateStub(JoinClient).OnNotificationReceived(new HandlerController() { ListenerId = lid }, notificationFound.Build(), callback => { }));
 
 
@@ -194,7 +185,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			notification.SetGameHandle(gh);
 
 			System.Threading.Tasks.Task.Delay(2000).ContinueWith(delegate {
-				JoinClient.MakeRPC((lid) => bgs.protocol.matchmaking.v1.GameRequestListener.CreateStub(JoinClient).OnMatchmakingResult(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
+				JoinClient.MakeRpc((lid) => bgs.protocol.matchmaking.v1.GameRequestListener.CreateStub(JoinClient).OnMatchmakingResult(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
 			});
 			#endregion
 
@@ -244,9 +235,9 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 			foreach (var member in channel.Members.Keys)
 			{
-				member.MakeTargetedRPC(channel, (lid) =>
+				member.MakeTargetedRpc(channel, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, stateNotification, callback => { }));
-				member.MakeTargetedRPC(channel, (lid) =>
+				member.MakeTargetedRpc(channel, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnJoin(new HandlerController() { ListenerId = lid }, joinstateNotification, callback => { }));
 			}
 
@@ -272,7 +263,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 
 
-			client.MakeTargetedRPC(this, (lid) => bgs.protocol.channel.v1.ChannelInvitationListener.CreateStub(client).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
+			client.MakeTargetedRpc(this, (lid) => bgs.protocol.channel.v1.ChannelInvitationListener.CreateStub(client).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
 
 			
 			channel.Join(mem, request.ObjectId); // add invitee to channel -- so inviter and other members will also be notified too.
@@ -289,7 +280,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 			foreach (var member in channel.Members.Keys)
 			{
-				member.MakeTargetedRPC(channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, stateNotification, callback => { }));
+				member.MakeTargetedRpc(channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, stateNotification, callback => { }));
 				//member.MakeTargetedRPC(channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnJoin(new HandlerController() { ListenerId = lid }, build, callback => { }));
 			}
 
@@ -313,7 +304,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			_onGoingInvitations.Remove(invitation.Id);
 			GoingInvitations.Remove(request.InvitationId);
 
-			inviter.LoggedInClient.MakeTargetedRPC(inviter.LoggedInClient.CurrentChannel, (lid) =>
+			inviter.LoggedInClient.MakeTargetedRpc(inviter.LoggedInClient.CurrentChannel, (lid) =>
 				bgs.protocol.channel.v1.ChannelListener.CreateStub(inviter.LoggedInClient).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
 		}
 
@@ -336,7 +327,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 			_onGoingInvitations.Remove(request.InvitationId);
 			GoingInvitations.Remove(request.InvitationId);
 
-			inviter.LoggedInClient.MakeTargetedRPC(inviter.LoggedInClient.CurrentChannel, (lid) =>
+			inviter.LoggedInClient.MakeTargetedRpc(inviter.LoggedInClient.CurrentChannel, (lid) =>
 				bgs.protocol.channel.v1.ChannelListener.CreateStub(client).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, updateChannelNotification.Build(), callback => { }));
 
 			//notify invitee about revoke
@@ -347,7 +338,7 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 
 			if (Subscribers.All(subscriber => subscriber.Key.Account.GameAccount.BnetEntityId.Low != invitation.InviteeIdentity.AccountId.Low)) return;
 
-			client.MakeTargetedRPC(this, (lid) =>
+			client.MakeTargetedRpc(this, (lid) =>
 				bgs.protocol.channel.v1.ChannelInvitationListener.CreateStub(client).OnReceivedInvitationRemoved(new HandlerController() { ListenerId = lid }, invitationRemoved.Build(), callback => { }));
 		}
 

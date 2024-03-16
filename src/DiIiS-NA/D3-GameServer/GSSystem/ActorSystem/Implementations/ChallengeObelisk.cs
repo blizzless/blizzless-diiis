@@ -1,27 +1,11 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -32,29 +16,29 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public ChallengeObelisk(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.MinimapActive] = true;
             Attributes.BroadcastChangedIfRevealed();
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
-            bool Activated = false;
+            bool activated = false;
 
-            PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
-            Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-            Attributes[GameAttribute.Untargetable] = !Activated;
-            Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-            Attributes[GameAttribute.Operatable] = Activated;
-            Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-            Attributes[GameAttribute.Disabled] = !Activated;
-            Attributes[GameAttribute.Immunity] = !Activated;
+            PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+            Attributes[GameAttributes.Team_Override] = (activated ? -1 : 2);
+            Attributes[GameAttributes.Untargetable] = !activated;
+            Attributes[GameAttributes.NPC_Is_Operatable] = activated;
+            Attributes[GameAttributes.Operatable] = activated;
+            Attributes[GameAttributes.Operatable_Story_Gizmo] = activated;
+            Attributes[GameAttributes.Disabled] = !activated;
+            Attributes[GameAttributes.Immunity] = !activated;
             Attributes.BroadcastChangedIfRevealed();
             CollFlags = 0;
 
-            TickTimer Timeout = new SecondsTickTimer(World.Game, 3.5f);
-            var Boom = Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
-            Boom.ContinueWith(delegate
+            TickTimer timeout = new SecondsTickTimer(World.Game, 3.5f);
+            var boom = Task<bool>.Factory.StartNew(() => WaitToSpawn(timeout));
+            boom.ContinueWith(delegate
             {
                 var actor = World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
                 actor.SetVisible(true);
@@ -71,9 +55,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
         public override bool Reveal(Player player)
         {
-             if (!base.Reveal(player))
+            if (!base.Reveal(player))
                 return false;
-            if (!Attributes[GameAttribute.Operatable])
+            if (!Attributes[GameAttributes.Operatable])
             {
                 var actor = World.GetActorBySNO(ActorSno._x1_openworld_challenge_rifts_portal);
                 actor.SetVisible(false);
@@ -81,8 +65,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             }
             else
             {
-                PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+                PlayAnimation(5, (AnimationSno)AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
             }
+
             return true;
         }
 

@@ -1,26 +1,10 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.MPQ;
+﻿using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -181,7 +165,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 foreach (var target in Targets)
                     if (target is PlayerSystem.Player || target is ActorSystem.Monster)
                     {
-                        User.Attributes[GameAttribute.Damage_Min] = target.Attributes[GameAttribute.Hitpoints_Max] / 20f;
+                        User.Attributes[GameAttributes.Damage_Min] = target.Attributes[GameAttributes.Hitpoints_Max] / 20f;
                         WeaponDamage(target, 1.5f, DamageType.Fire); 
                     }
                 //*/

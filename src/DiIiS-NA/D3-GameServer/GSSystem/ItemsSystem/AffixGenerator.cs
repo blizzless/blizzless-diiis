@@ -1,24 +1,13 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
@@ -182,30 +171,28 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			if (IsUnique)
 			{
-				var restrictedFamily = item.ItemDefinition.LegendaryAffixFamily.Where(af => af != -1);
-				filteredList = filteredList.Where(
-					a =>
-					!(restrictedFamily.Contains(a.AffixFamily0) || restrictedFamily.Contains(a.AffixFamily1))
-					);
+				var restrictedFamily = item.ItemDefinition.LegendaryAffixFamily.Where(af => af != -1).ToHashSet();
+				filteredList = filteredList
+					.Where(a => !(restrictedFamily.Contains(a.AffixFamily0) || restrictedFamily.Contains(a.AffixFamily1)));
 
 				if (restrictedFamily.Contains(1616088365) ||
-						restrictedFamily.Contains(-1461069734) ||
-						restrictedFamily.Contains(234326220) ||
-						restrictedFamily.Contains(1350281776) ||
-						restrictedFamily.Contains(-812845450) ||
-						restrictedFamily.Contains(1791554648) ||
-						restrictedFamily.Contains(125900958)) //MinMaxDam and ele damage
-					filteredList = filteredList.Where(
-						a =>
-						!a.Name.Contains("FireD") &&
-						!a.Name.Contains("PoisonD") &&
-						!a.Name.Contains("HolyD") &&
-						!a.Name.Contains("ColdD") &&
-						!a.Name.Contains("LightningD") &&
-						!a.Name.Contains("ArcaneD") &&
-						!a.Name.Contains("MinMaxDam") &&
-						isCrafting ? !a.Name.ToLower().Contains("socket") : !a.Name.Contains("ASDHUIOPASDHIOU")
-						);
+				    restrictedFamily.Contains(-1461069734) ||
+				    restrictedFamily.Contains(234326220) ||
+				    restrictedFamily.Contains(1350281776) ||
+				    restrictedFamily.Contains(-812845450) ||
+				    restrictedFamily.Contains(1791554648) ||
+				    restrictedFamily.Contains(125900958)) //MinMaxDam and ele damage
+				{
+					filteredList = filteredList
+						.Where(a => !a.Name.Contains("FireD") &&
+						            !a.Name.Contains("PoisonD") &&
+						            !a.Name.Contains("HolyD") &&
+						            !a.Name.Contains("ColdD") &&
+						            !a.Name.Contains("LightningD") &&
+						            !a.Name.Contains("ArcaneD") &&
+						            !a.Name.Contains("MinMaxDam") &&
+						            isCrafting ? !a.Name.ToLower().Contains("socket") : !a.Name.Contains("ASDHUIOPASDHIOU"));
+				}
 			}
 
 			if (affixesCount <= 1)
@@ -239,7 +226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				if (item.AffixFamilies.Contains(affix_group.First().AffixFamily0)) continue;
 				int s = item.ItemDefinition.RequiredLevel;
 
-				bestDefinitions[affix_group.First().AffixFamily0] = affix_group.ToList()[FastRandom.Instance.Next(0, affix_group.Count())];
+				bestDefinitions[affix_group.First().AffixFamily0] = affix_group.PickRandom();
 			}
 
 			//if (bestDefinitions.Values.Where(a => a.Name.Contains("PoisonD")).Count() > 0) Logger.Debug("PoisonD in bestDefinitions");
@@ -284,19 +271,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 								//
 
 
-								if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeF)
+								if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
 								{
 									
 									//
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 									if (effect.SNOParam != -1)
 										item.Attributes[attr, effect.SNOParam] += result;
 									else
 										item.Attributes[attr] += result;
 								}
-								else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+								else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 									if (effect.SNOParam != -1)
 										item.Attributes[attr, effect.SNOParam] += (int)result;
 									else
@@ -332,24 +319,28 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public static int FindSuitableAffix(Item item, int affixGroup, int affixLevel, bool extendedFilter)
 		{
 			if (affixGroup == -1) return -1;
-			var all_group = LegendaryAffixList.Where(a => (a.AffixFamily0 == affixGroup || a.AffixFamily1 == affixGroup) && (Item.Is2H(item.ItemType) ? !a.Name.EndsWith("1h") : (!a.Name.Contains("Two-Handed") && !a.Name.EndsWith("2h"))));
+			var allGroup = LegendaryAffixList
+				.Where(a => (a.AffixFamily0 == affixGroup || a.AffixFamily1 == affixGroup) && (Item.Is2H(item.ItemType) ? !a.Name.EndsWith("1h") : (!a.Name.Contains("Two-Handed") && !a.Name.EndsWith("2h"))))
+				.ToArray();
 
-			if (all_group.Count() == 0) return -1;
+			if (!allGroup.Any()) return -1;
 
-			bool secondGroup = (all_group.First().AffixFamily1 == affixGroup);
+			bool secondGroup = allGroup.First().AffixFamily1 == affixGroup;
 
-			var suitable = all_group.Where(a => a.AffixLevel <= affixLevel || affixLevel <= 0);
+			var suitable = allGroup.Where(a => a.AffixLevel <= affixLevel || affixLevel <= 0).ToArray();
 
-			if (suitable.Count() == 0) return -1;
+			if (!suitable.Any()) return -1;
 
 			List<int> itemTypes = ItemGroup.HierarchyToHashList(item.ItemType);
 
-			suitable = suitable.Where(a => itemTypes.ContainsAtLeastOne(a.ItemGroup) || (extendedFilter ? itemTypes.ContainsAtLeastOne(a.LegendaryAllowedTypes) : false));
+			suitable = suitable.Where(a =>
+				itemTypes.ContainsAtLeastOne(a.ItemGroup) ||
+				(extendedFilter && itemTypes.ContainsAtLeastOne(a.LegendaryAllowedTypes))).ToArray();
 
-			if (suitable.Count() == 0) return -1;
+			if (!suitable.Any()) return -1;
 
-			int suitableAffixLevel = suitable.OrderByDescending(a => a.AffixLevel).First().AffixLevel;
-			suitable = suitable.Where(a => a.AffixLevel == suitableAffixLevel);
+			int suitableAffixLevel = suitable.MaxBy(a => a.AffixLevel).AffixLevel;
+			suitable = suitable.Where(a => a.AffixLevel == suitableAffixLevel).ToArray();
 
 			//if (i18 && !secondGroup)
 			//	suitable = suitable.Where(a => a.MaxLevel <= (Program.MaxLevel + 4));
@@ -358,8 +349,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//else
 			//suitable = suitable.Where(a => itemTypes.ContainsAtLeastOne(a.I10));
 
-			if (suitable.Count() == 0)
-				suitable = all_group.Where(a => a.AffixLevel == 1);
+			if (!suitable.Any())
+				suitable = allGroup.Where(a => a.AffixLevel == 1).ToArray();
 
 			/*int suitableMaxLevel = suitable.OrderByDescending(a => a.AffixLevel).First().MaxLevel;
 			int suitableAffixLevel = suitable.OrderByDescending(a => a.AffixLevel).First().AffixLevel;
@@ -372,36 +363,36 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			if (suitable.Count() > 1 && i18 && !secondGroup && suitable.Where(a => a.Name.Contains("Secondary")).Count() > 0)
 				suitable = suitable.Where(a => a.Name.Contains("Secondary"));*/
 
-			if (suitable.Count() > 0)
-				return suitable.ToList()[FastRandom.Instance.Next(0, suitable.Count())].Hash;
-			else
-				return -1;
+			if (suitable.TryPickRandom(out var randomAffix))
+				return randomAffix.Hash;
+
+			return -1;
 		}
 
-		public static void AddAffix(Item item, int AffixGbId, bool findFromTotal = false)
+		public static void AddAffix(Item item, int affixGbId, bool findFromTotal = false)
 		{
-			if (AffixGbId == -1) return;
+			if (affixGbId == -1) return;
 			AffixTable definition = null;
 
 			if (findFromTotal)
 			{
-				definition = AllAffix.Where(def => def.Hash == AffixGbId).FirstOrDefault();
-				var testc = AllAffix.Where(def => def.ItemGroup[0] == AffixGbId || def.ItemGroup[1] == AffixGbId).FirstOrDefault();
+				definition = AllAffix.FirstOrDefault(def => def.Hash == affixGbId);
+				var testc = AllAffix.FirstOrDefault(def => def.ItemGroup[0] == affixGbId || def.ItemGroup[1] == affixGbId);
 			}
 			else
 			{
-				definition = AffixList.Where(def => def.Hash == AffixGbId).FirstOrDefault();
+				definition = AffixList.FirstOrDefault(def => def.Hash == affixGbId);
 
 				if (definition == null)
 				{
-					definition = LegendaryAffixList.Where(def => def.Hash == AffixGbId).FirstOrDefault();
+					definition = LegendaryAffixList.FirstOrDefault(def => def.Hash == affixGbId);
 
 				}
 			}
 
 			if (definition == null)
 			{
-				Logger.Warn("Affix {0} was not found!", AffixGbId);
+				Logger.Warn("Affix {0} was not found!", affixGbId);
 				return;
 			}
 
@@ -418,7 +409,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				float maxValue;
 				if (FormulaScript.Evaluate(effect.Formula.ToArray(), item.RandomGenerator, out result, out minValue, out maxValue))
 				{
-					var attribute = GameAttribute.Attributes[effect.AttributeId];
+					var attribute = GameAttributes.Attributes[effect.AttributeId];
 
 					if (effect.AttributeId == 369) continue; //Durability_Max
 					if (effect.AttributeId == 380) //Sockets
@@ -431,23 +422,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					Scores.Add(score);
 					if (attribute is GameAttributeF)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 						if (effect.SNOParam != -1)
 							item.Attributes[attr, effect.SNOParam] += result;
 						else
 							item.Attributes[attr] += result;
 					}
-					else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+					else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 						if (effect.SNOParam != -1)
 							item.Attributes[attr, effect.SNOParam] += (int)result;
 						else
 							item.Attributes[attr] += (int)result;
 					}
-					else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeB)
+					else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeB)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeB;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeB;
 						if (result == 1)
 							item.Attributes[attr] = true;
 						else
@@ -455,7 +446,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					}
 				}
 			}
-			var affix = new Affix(AffixGbId);
+			var affix = new Affix(affixGbId);
 			affix.Score = (Scores.Count == 0 ? 0 : Scores.Average());
 			item.AffixList.Add(affix);
 			//item.Attributes[GameAttribute.Item_Quality_Level]++;
@@ -478,22 +469,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					if (effect.AttributeId <= 0)
 						continue;
 
-					var attribute = GameAttribute.Attributes[effect.AttributeId];
+					var attribute = GameAttributes.Attributes[effect.AttributeId];
 
 					if (attribute.ScriptFunc != null && !attribute.ScriptedAndSettable)
 						continue;
 
 					if (attribute is GameAttributeF)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 						if (effect.SNOParam != -1)
 							target.Attributes[attr, effect.SNOParam] = source.Attributes[attr, effect.SNOParam];
 						else
 							target.Attributes[attr] = source.Attributes[attr];
 					}
-					else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+					else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 					{
-						var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+						var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 						if (effect.SNOParam != -1)
 							target.Attributes[attr, effect.SNOParam] = source.Attributes[attr, effect.SNOParam];
 						else
@@ -513,7 +504,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			bool itemIsPrefix = (FastRandom.Instance.Next(0, 2) > 0);
 			var randomName = D3.Items.RareItemName.CreateBuilder()
 				.SetItemNameIsPrefix(itemIsPrefix)
-				.SetSnoAffixStringList(itemIsPrefix ? SuffixAffixLists[FastRandom.Instance.Next(0, SuffixAffixLists.Count)] : PrefixAffixLists[FastRandom.Instance.Next(0, PrefixAffixLists.Count)])
+				.SetSnoAffixStringList(itemIsPrefix ? SuffixAffixLists.PickRandom() : PrefixAffixLists.PickRandom())
 				.SetAffixStringListIndex(FastRandom.Instance.Next(0, 6))
 				.SetItemStringListIndex(FastRandom.Instance.Next(0, 6));
 			return randomName.Build();

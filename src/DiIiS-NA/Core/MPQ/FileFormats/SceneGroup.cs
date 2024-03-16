@@ -1,13 +1,7 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using Gibbed.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -23,11 +17,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 		public SceneGroup(MpqFile file)
 		{
 			var stream = file.Open();
-			this.Header = new Header(stream);
-			this.I0 = stream.ReadValueS32();
-			this.Items = stream.ReadSerializedData<SceneGroupItem>();
+			Header = new Header(stream);
+			I0 = stream.ReadValueS32();
+			Items = stream.ReadSerializedData<SceneGroupItem>();
 			stream.Position += 8;
-			this.I1 = stream.ReadValueS32();
+			I1 = stream.ReadValueS32();
 			stream.Close();
 		}
 	}
@@ -40,9 +34,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
 		public void Read(MpqFileStream stream)
 		{
-			this.SNOScene = stream.ReadValueS32();
-			this.I0 = stream.ReadValueS32();
-			this.LabelGBId = stream.ReadValueS32();
+			SNOScene = stream.ReadValueS32();
+			I0 = stream.ReadValueS32();
+			LabelGBId = stream.ReadValueS32();
 		}
 	}
 }

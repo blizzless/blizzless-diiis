@@ -1,17 +1,9 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using CrystalMpq;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Misc;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -29,13 +21,13 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         {
 
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.I0 = stream.ReadValueS32();
-            this.SNOLevelArea0 = stream.ReadValueS32();
-            this.SNOLevelArea1 = stream.ReadValueS32();
+            Header = new Header(stream);
+            I0 = stream.ReadValueS32();
+            SNOLevelArea0 = stream.ReadValueS32();
+            SNOLevelArea1 = stream.ReadValueS32();
             stream.Position += 8;
             if (stream.Position + 8 != stream.Length)
-                this.LevelAreaServerData = stream.ReadSerializedData<LevelAreaServerData>(); //32 - 48
+                LevelAreaServerData = stream.ReadSerializedData<LevelAreaServerData>(); //32 - 48
 
             stream.Close();
         }
@@ -52,11 +44,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SNOLevelArea0 = stream.ReadValueS32();
-            this.LocSet = new GizmoLocSet(stream);
-            this.SNOLevelArea1 = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
-            this.SpawnPopulation = stream.ReadSerializedData<LevelAreaSpawnPopulation>();
+            SNOLevelArea0 = stream.ReadValueS32();
+            LocSet = new GizmoLocSet(stream);
+            SNOLevelArea1 = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            SpawnPopulation = stream.ReadSerializedData<LevelAreaSpawnPopulation>();
         }
     }
 
@@ -67,9 +59,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public GizmoLocSet(MpqFileStream stream)
         {
             //stream.Position = 0;
-            this.SpawnType = new GizmoLocSpawnType[52];
+            SpawnType = new GizmoLocSpawnType[52];
             for (int i = 0; i < 52; i++)
-                this.SpawnType[i] = new GizmoLocSpawnType(stream);
+                SpawnType[i] = new GizmoLocSpawnType(stream);
         }
     }
 
@@ -82,7 +74,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public GizmoLocSpawnType(MpqFileStream stream)
         {
             stream.Position += 8;
-            this.SpawnEntry = stream.ReadSerializedData<GizmoLocSpawnEntry>();
+            SpawnEntry = stream.ReadSerializedData<GizmoLocSpawnEntry>();
             //this.Description = stream.ReadString(80, true);
             //this.Comment = stream.ReadString(256, true);
         }
@@ -98,10 +90,10 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SNOHandle = new SNOHandle(stream);
-            this.ForceRandomFacing = stream.ReadValueS32();
-            this.Weight = stream.ReadValueF32();
-            this.MaxTimesPicked = stream.ReadValueS32();
+            SNOHandle = new SNOHandle(stream);
+            ForceRandomFacing = stream.ReadValueS32();
+            Weight = stream.ReadValueF32();
+            MaxTimesPicked = stream.ReadValueS32();
         }
     }
 
@@ -119,16 +111,16 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.Min = stream.ReadValueS32();
-            this.Max = stream.ReadValueS32();
+            Min = stream.ReadValueS32();
+            Max = stream.ReadValueS32();
             //this.SNOHandle = new SNOHandle(stream);
-            this.SnoRequiredQuest = stream.ReadValueS32();
-            this.SnoCondition = stream.ReadValueS32();
-            this.Flags = stream.ReadValueS32();
-            this.HighPrecisionPercent = stream.ReadValueF32();
-            this.ConditionSNO = stream.ReadValueS32();
+            SnoRequiredQuest = stream.ReadValueS32();
+            SnoCondition = stream.ReadValueS32();
+            Flags = stream.ReadValueS32();
+            HighPrecisionPercent = stream.ReadValueF32();
+            ConditionSNO = stream.ReadValueS32();
             stream.Position += 8;
-            this.GizmoLocSpawnChoices = stream.ReadSerializedData<GizmoLocSpawnChoice>();
+            GizmoLocSpawnChoices = stream.ReadSerializedData<GizmoLocSpawnChoice>();
         }
     }
 
@@ -152,25 +144,25 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public int SNO { get; private set; }
         public void Read(MpqFileStream stream)
         {
-            this.Description = stream.ReadString(64, true);
-            this.I0 = stream.ReadValueS32();
-            this.F0 = stream.ReadValueF32();
-            this.F1 = stream.ReadValueF32();
+            Description = stream.ReadString(64, true);
+            I0 = stream.ReadValueS32();
+            F0 = stream.ReadValueF32();
+            F1 = stream.ReadValueF32();
 
-            this.I1 = new int[4];
+            I1 = new int[4];
             for (int i = 0; i < 4; i++)
-                this.I1[i] = stream.ReadValueS32();
-            this.I2 = new int[4];
+                I1[i] = stream.ReadValueS32();
+            I2 = new int[4];
             for (int i = 0; i < 4; i++)
-                this.I2[i] = stream.ReadValueS32();
-            this.SpawnGroupsCount = stream.ReadValueS32();
+                I2[i] = stream.ReadValueS32();
+            SpawnGroupsCount = stream.ReadValueS32();
 
             stream.Position += 8;
-            this.SpawnGroup = stream.ReadSerializedData<LevelAreaSpawnGroup>();
+            SpawnGroup = stream.ReadSerializedData<LevelAreaSpawnGroup>();
             stream.Position += 8;
             SNOs = stream.ReadSerializedInts();
 
-            this.SNO = stream.ReadValueS32();
+            SNO = stream.ReadValueS32();
         }
     }
 
@@ -195,16 +187,16 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public int SNO { get; private set; }
         public void Read(MpqFileStream stream)
         {
-            this.GroupType = (SpawnGroupType)stream.ReadValueS32();
-            this.F0 = stream.ReadValueF32();
-            this.F1 = stream.ReadValueF32();
-            this.I0 = stream.ReadValueS32();
-            this.SpawnItemsCount = stream.ReadValueS32();
+            GroupType = (SpawnGroupType)stream.ReadValueS32();
+            F0 = stream.ReadValueF32();
+            F1 = stream.ReadValueF32();
+            I0 = stream.ReadValueS32();
+            SpawnItemsCount = stream.ReadValueS32();
             stream.Position += 12;
-            this.SpawnItems = stream.ReadSerializedData<LevelAreaSpawnItem>();
-            this.I2 = stream.ReadValueS32();
-            this.I3 = stream.ReadValueS32();
-            this.SNO = stream.ReadValueS32();
+            SpawnItems = stream.ReadSerializedData<LevelAreaSpawnItem>();
+            I2 = stream.ReadValueS32();
+            I3 = stream.ReadValueS32();
+            SNO = stream.ReadValueS32();
         }
     }
 
@@ -232,13 +224,13 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SNOHandle = new SNOHandle(stream);
-            this.SpawnType = (SpawnType)stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
-            this.I2 = stream.ReadValueS32();
-            this.I3 = stream.ReadValueS32();
-            this.F0 = stream.ReadValueF32();
+            SNOHandle = new SNOHandle(stream);
+            SpawnType = (SpawnType)stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
+            I2 = stream.ReadValueS32();
+            I3 = stream.ReadValueS32();
+            F0 = stream.ReadValueF32();
         }
     }
 

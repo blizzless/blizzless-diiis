@@ -1,35 +1,18 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
 	[HandledSNO(ActorSno._caout_stingingwinds_khamsin_gate)]
-	class Door : Gizmo
+	public class Door : Gizmo
 	{
 		public bool isOpened = false;
 		public Portal NearestPortal = null;
@@ -88,12 +71,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public void Open()
 		{
+			Logger.MethodTrace($"Opening door $[underline green]${SNO}$[/]$ in world $[underline green]${World.SNO}$[/]$");
 			World.BroadcastIfRevealed(plr => new PlayAnimationMessage
 			{
 				ActorID = DynamicID(plr),
 				AnimReason = 5,
 				UnitAniimStartTime = 0,
-				tAnim = new PlayAnimationMessageSpec[]
+				tAnim = new[]
 				{
 					new PlayAnimationMessageSpec()
 					{
@@ -119,17 +103,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				AnimationSNO = AnimationSetKeys.Open.ID
 			}, this);
 
-			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			Attributes[GameAttribute.Gizmo_State] = 1;
+			Attributes[GameAttributes.Gizmo_State] = 1;
 			CollFlags = 0;
 			isOpened = true;
 
 			TickerSystem.TickTimer Timeout = new TickerSystem.SecondsTickTimer(World.Game, 1.8f);
 			if (NearestPortal != null)
 			{
-				var Boom = Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
-				Boom.ContinueWith(delegate
+				var nearestPortalOpen = Task<bool>.Factory.StartNew(() => WaitToSpawn(Timeout));
+				nearestPortalOpen.ContinueWith(delegate
 				{
 					NearestPortal.SetVisible(true);
 					foreach (var plr in World.Players.Values)
@@ -142,11 +126,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (Attributes[GameAttribute.Disabled]) return;
+			if (Attributes[GameAttributes.Disabled]) return;
 			Open();
             
 			base.OnTargeted(player, message);
-			Attributes[GameAttribute.Disabled] = true;
+			Attributes[GameAttributes.Disabled] = true;
 		}
 
 		private bool WaitToSpawn(TickerSystem.TickTimer timer)

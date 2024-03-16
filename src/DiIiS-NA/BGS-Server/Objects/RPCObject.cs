@@ -1,19 +1,10 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
 
 namespace DiIiS_NA.LoginServer.Objects
@@ -41,7 +32,7 @@ namespace DiIiS_NA.LoginServer.Objects
 			if (this.Subscribers.ContainsKey(client)) return;
 
 			this.Subscribers.TryAdd(client, 0);
-			client.MapLocalObjectID(this.DynamicId, remoteObjectId);
+			client.MapLocalObjectId(this.DynamicId, remoteObjectId);
 
 			if (client.SocketConnection.Active)
 			{
@@ -64,7 +55,7 @@ namespace DiIiS_NA.LoginServer.Objects
 			return new List<bgs.protocol.presence.v1.FieldOperation>();
 		}
 
-		public Helpers.FieldKeyHelper ChangedFields = new Helpers.FieldKeyHelper();
+		public readonly Helpers.FieldKeyHelper ChangedFields = new();
 
 		protected void NotifySubscriptionAdded(BattleClient client)
 		{
@@ -104,8 +95,8 @@ namespace DiIiS_NA.LoginServer.Objects
 				var altnotification = bgs.protocol.channel.v1.JoinNotification.CreateBuilder().SetChannelState(channelState);
 				if (gameAccount.LoggedInClient != null)
 				{
-					gameAccount.LoggedInClient.MakeTargetedRPC(this, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(gameAccount.LoggedInClient).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
-					gameAccount.LoggedInClient.MakeTargetedRPC(this, (lid) =>
+					gameAccount.LoggedInClient.MakeTargetedRpc(this, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(gameAccount.LoggedInClient).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
+					gameAccount.LoggedInClient.MakeTargetedRpc(this, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(gameAccount.LoggedInClient).OnJoin(new HandlerController() { ListenerId = lid }, altnotification.Build(), callback => { }));
 				}
 			}
@@ -118,10 +109,10 @@ namespace DiIiS_NA.LoginServer.Objects
 			var channelState = bgs.protocol.channel.v1.ChannelState.CreateBuilder().SetExtension(bgs.protocol.presence.v1.ChannelState.Presence, state);
 			var builder = bgs.protocol.channel.v1.JoinNotification.CreateBuilder().SetChannelState(channelState);
 			var notification = bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder().SetStateChange(channelState);
-			client.MakeTargetedRPC(this, (lid) =>
+			client.MakeTargetedRpc(this, (lid) =>
 				bgs.protocol.channel.v1.ChannelListener.CreateStub(client).OnJoin(new HandlerController() { ListenerId = lid }, builder.Build(), callback => { }));
 
-			client.MakeTargetedRPC(this, (lid) =>
+			client.MakeTargetedRpc(this, (lid) =>
 				bgs.protocol.channel.v1.ChannelListener.CreateStub(client).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification.Build(), callback => { }));
 
 		}

@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.IO;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.IO;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Linq;
 
 
@@ -36,7 +31,7 @@ namespace DiIiS_NA.Core.MPQ
                 return;
             }
 
-            Logger.Info("Initializing of data..");
+            Logger.Info("Initializing MPQ archives...");
             MPQList = FileHelpers.GetFilesByExtensionRecursive(MpqRoot, ".mpq");
 
             Data = new Data();

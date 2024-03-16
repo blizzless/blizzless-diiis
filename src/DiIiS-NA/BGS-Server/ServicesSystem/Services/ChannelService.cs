@@ -1,29 +1,16 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.CommandManager;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.ChannelSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
+using System.Reflection;
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
@@ -34,15 +21,15 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		private static readonly Logger Logger = LogManager.CreateLogger();
 
 		
-		public override void Dissolve(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.DissolveRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void Dissolve(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.DissolveRequest request, Action<bgs.protocol.NoData> done)
 		{
 			throw new NotImplementedException();
 		}
 
-		public override void RemoveMember(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.RemoveMemberRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void RemoveMember(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.RemoveMemberRequest request, Action<bgs.protocol.NoData> done)
 		{
-			Logger.Trace("RemoveMember()");
-			var channel = ChannelManager.GetChannelByDynamicId(((controller as HandlerController).LastCallHeader).ObjectId);
+			Logger.MethodTrace("");
+			var channel = ChannelManager.GetChannelByDynamicId((((HandlerController) controller).LastCallHeader).ObjectId);
 			var gameAccount = GameAccountManager.GetAccountByPersistentID(request.MemberId.Low);
 
 			var builder = bgs.protocol.NoData.CreateBuilder();
@@ -51,17 +38,17 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			channel.RemoveMember(gameAccount.LoggedInClient, Channel.GetRemoveReasonForRequest((Channel.RemoveRequestReason)request.Reason));
 			if (request.Reason == 0)
 			{
-				ulong invId = ChannelInvitationManager.FindInvAsForClient((controller as HandlerController).Client);
-				if (invId != System.UInt64.MaxValue)
-					ChannelInvitationManager.AltConnectToJoin((controller as HandlerController).Client, bgs.protocol.channel.v1.AcceptInvitationRequest.CreateBuilder().SetInvitationId(invId).SetObjectId(0).Build());
-				//ServicesSystem.Services.ChannelInvitationService.CreateStub((controller as HandlerController).Client).AcceptInvitation(controller, bgs.protocol.channel.v1.AcceptInvitationRequest.CreateBuilder().SetInvitationId(invId).SetObjectId(0).Build(), callback => { });
+				ulong invId = ChannelInvitationManager.FindInvAsForClient(((HandlerController) controller).Client);
+				if (invId != UInt64.MaxValue)
+					ChannelInvitationManager.AltConnectToJoin(((HandlerController) controller).Client, bgs.protocol.channel.v1.AcceptInvitationRequest.CreateBuilder().SetInvitationId(invId).SetObjectId(0).Build());
+				//ServicesSystem.Services.ChannelInvitationService.CreateStub(((HandlerController) controller).Client).AcceptInvitation(controller, bgs.protocol.channel.v1.AcceptInvitationRequest.CreateBuilder().SetInvitationId(invId).SetObjectId(0).Build(), callback => { });
 			}
 		}
 
-		public override void SendMessage(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.SendMessageRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void SendMessage(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.SendMessageRequest request, Action<bgs.protocol.NoData> done)
 		{
-			var channel = ChannelManager.GetChannelByDynamicId(((controller as HandlerController).LastCallHeader).ObjectId);
-			//Logger.Trace("{0} sent a message to channel {1}.", ((controller as HandlerController).Client).Account.GameAccount.CurrentToon, channel);
+			var channel = ChannelManager.GetChannelByDynamicId((((HandlerController) controller).LastCallHeader).ObjectId);
+			//Logger.Trace("{0} sent a message to channel {1}.", (((HandlerController) controller).Client).Account.GameAccount.CurrentToon, channel);
 
 			var builder = bgs.protocol.NoData.CreateBuilder();
 			done(builder.Build());
@@ -72,13 +59,13 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			if (request.Message.AttributeCount == 0 || !request.Message.AttributeList.First().HasValue)
 				return; // check if it has attributes.
 
-			var parsedAsCommand = CommandManager.TryParse(request.Message.AttributeList[0].Value.StringValue, ((controller as HandlerController).Client)); // try parsing the message as a command
+			var parsedAsCommand = CommandManager.TryParse(request.Message.AttributeList[0].Value.StringValue, (((HandlerController) controller).Client)); // try parsing the message as a command
 
 			if (!parsedAsCommand)
-				channel.SendMessage(((controller as HandlerController).Client), request.Message); // if it's not parsed as an command - let channel itself to broadcast message to it's members.			  
+				channel.SendMessage((((HandlerController) controller).Client), request.Message); // if it's not parsed as an command - let channel itself to broadcast message to it's members.			  
 		}
 
-		public override void UpdateChannelState(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.UpdateChannelStateRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void UpdateChannelState(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.UpdateChannelStateRequest request, Action<bgs.protocol.NoData> done)
 		{
 			/*
 			if (this._loggedInClient.CurrentChannel != channel)
@@ -88,9 +75,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 				ServicesSystem.Services.ChannelInvitationService.CreateStub(this.LoggedInClient).AcceptInvitation(null, request.Build(), callback => { });
 			}
 			//*/
-			Channel channel = ChannelManager.GetChannelByDynamicId(((controller as HandlerController).LastCallHeader).ObjectId);
+			Channel channel = ChannelManager.GetChannelByDynamicId((((HandlerController) controller).LastCallHeader).ObjectId);
 			
-			Logger.Trace("UpdateChannelState(): {0}", request.ToString());
+			Logger.Debug($"Agent ID: {(request.HasAgentId ? request.AgentId.ToString() : "N/A")}, gas state change: {(request.HasStateChange ? request.StateChange.ToString() : "N/A")}");
 
 			foreach (bgs.protocol.Attribute attribute in request.StateChange.AttributeList)
 			{
@@ -99,9 +86,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 					if (attribute.HasValue && !attribute.Value.MessageValue.IsEmpty) //Sometimes not present -Egris
 					{
 						var gameCreateParams = D3.OnlineService.GameCreateParams.ParseFrom(attribute.Value.MessageValue);
-						Logger.Trace("D3.Party.GameCreateParams: {0}", gameCreateParams.ToString());
+						Logger.Debug("$[underline]$D3.Party.GameCreateParams:$[/]$ {0}", gameCreateParams.ToString());
 						//D3.OnlineService.EntityId hero = gameCreateParams.Coop.ResumeFromSaveHeroId;
-						bool clear_quests = ((controller as HandlerController).Client.GameChannel != null && gameCreateParams.CampaignOrAdventureMode.QuestStepId == -1 &&
+						bool clear_quests = (((HandlerController) controller).Client.GameChannel != null && gameCreateParams.CampaignOrAdventureMode.QuestStepId == -1 &&
 								(gameCreateParams.CampaignOrAdventureMode.SnoQuest == 87700 ||
 								gameCreateParams.CampaignOrAdventureMode.SnoQuest == 80322 ||
 								gameCreateParams.CampaignOrAdventureMode.SnoQuest == 93595 ||
@@ -110,9 +97,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 						var paramsBuilder = D3.OnlineService.GameCreateParams.CreateBuilder(gameCreateParams);
 						var Mode = D3.OnlineService.CampaignOrAdventureModeCreateParams.CreateBuilder(gameCreateParams.CampaignOrAdventureMode);
 
-						lock ((controller as HandlerController).Client.Account.GameAccount.CurrentToon.DBToon)
+						lock (((HandlerController) controller).Client.Account.GameAccount.CurrentToon.DBToon)
 						{
-							DBToon toonByClient = ((controller as HandlerController).Client).Account.GameAccount.CurrentToon.DBToon;
+							DBToon toonByClient = (((HandlerController) controller).Client).Account.GameAccount.CurrentToon.DBToon;
 							if(toonByClient.CurrentAct == 400)
 								toonByClient.CurrentAct = gameCreateParams.CampaignOrAdventureMode.Act;
 							if (!clear_quests)
@@ -141,7 +128,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 						//paramsBuilder.ClearCoop();
 						//paramsBuilder.SetPvp(D3.OnlineService.PvPCreateParams.CreateBuilder().SetSnoWorld(79100));
 
-						/*var toon = ((controller as HandlerController).Client).Account.GameAccount.CurrentToon.DBToon;
+						/*var toon = (((HandlerController) controller).Client).Account.GameAccount.CurrentToon.DBToon;
 						paramsBuilder.SetCoop(D3.OnlineService.CoopCreateParams.CreateBuilder()
 							.SetDifficultyLevel(toon.CurrentDifficulty)
 							.SetAct(toon.CurrentAct)
@@ -164,8 +151,8 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 					else
 					{
 						var gameCreateParamsBuilder = D3.OnlineService.GameCreateParams.CreateBuilder();
-						var toon = ((controller as HandlerController).Client).Account.GameAccount.CurrentToon;
-						var dbToon = ((controller as HandlerController).Client).Account.GameAccount.CurrentToon.DBToon;
+						var toon = (((HandlerController) controller).Client).Account.GameAccount.CurrentToon;
+						var dbToon = (((HandlerController) controller).Client).Account.GameAccount.CurrentToon.DBToon;
 						gameCreateParamsBuilder.SetGameType(1);
 						gameCreateParamsBuilder.SetCreationFlags(0);
 						gameCreateParamsBuilder.SetCampaignOrAdventureMode(D3.OnlineService.CampaignOrAdventureModeCreateParams.CreateBuilder()
@@ -189,7 +176,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 				{
 					// TODO: Find a game that fits the clients params and join /raist.
 					var publicGameParams = D3.PartyMessage.SearchForPublicGameParams.ParseFrom(attribute.Value.MessageValue);
-					Logger.Trace("SearchForPublicGameParams: {0}", publicGameParams.ToString());
+					Logger.Debug("$[underline]$SearchForPublicGameParams:$[/]$ {0}", publicGameParams.ToString());
 					var attr = bgs.protocol.Attribute.CreateBuilder()
 						.SetName("D3.Party.SearchForPublicGame.Params")
 						.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(publicGameParams.ToByteString()).Build());
@@ -205,12 +192,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.ScreenStatus = null");
+						Logger.Debug("$[underline]$D3.Party.ScreenStatus$[/]$ is null");
 					}
 					else
 					{
 						var oldScreen = D3.PartyMessage.ScreenStatus.ParseFrom(attribute.Value.MessageValue);
-						((controller as HandlerController).Client).Account.GameAccount.ScreenStatus = oldScreen;
+						(((HandlerController) controller).Client).Account.GameAccount.ScreenStatus = oldScreen;
 
 						// TODO: save screen status for use with friends -Egris
 						var attr = bgs.protocol.Attribute.CreateBuilder()
@@ -218,7 +205,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(oldScreen.ToByteString()));
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("Client moving to Screen: {0}, with Status: {1}", oldScreen.Screen, oldScreen.Status);
+						Logger.Debug("Client moving to Screen: {0}, with Status: {1}", oldScreen.Screen, oldScreen.Status);
 					}
 				}
 				else if (attribute.Name == "D3.Party.JoinPermissionPreviousToLock")
@@ -232,7 +219,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 						.SetValue(joinPermission);
 
 					channel.AddAttribute(attr.Build());
-					Logger.Trace("D3.Party.JoinPermissionPreviousToLock = {0}", joinPermission.IntValue);
+					Logger.Debug("$[underline]$D3.Party.JoinPermissionPreviousToLock$[/]$ = {0}", joinPermission.IntValue);
 				}
 				else if (attribute.Name == "D3.Party.JoinPermissionPreviousToClose")
 				{
@@ -245,7 +232,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 						.SetValue(joinPermission);
 
 					channel.AddAttribute(attr.Build());
-					Logger.Trace("D3.Party.JoinPermissionPreviousToClose = {0}", joinPermission.IntValue);
+					Logger.Debug("$[underline]$D3.Party.JoinPermissionPreviousToClose$[/]$ = {0}", joinPermission.IntValue);
 				}
 				else if (attribute.Name == "D3.Party.LockReasons")
 				{
@@ -258,7 +245,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 						.SetValue(lockReason);
 
 					channel.AddAttribute(attr.Build());
-					Logger.Trace("D3.Party.LockReasons = {0}", lockReason.IntValue);
+					Logger.Debug("$[underline]$D3.Party.LockReasons$[/]$ = {0}", lockReason.IntValue);
 				}
 				else if (attribute.Name == "D3.Party.GameId")
 				{
@@ -270,10 +257,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(gameId.ToByteString()).Build());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.GameId = {0}", gameId.GameInstanceId);
+						Logger.Debug("$[underline]$D3.Party.GameId$[/]$ = {0}", gameId.GameInstanceId);
 					}
 					else
-						Logger.Trace("D3.Party.GameId = null");
+						Logger.Debug("$[underline]$D3.Party.GameId$[/]$ is null");
 
 				}
 				else if (attribute.Name == "D3.Party.EnterGame.Members")
@@ -286,10 +273,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(members.ToByteString()).Build());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.EnterGame.Members = {0}", members.ToString());
+						Logger.Debug("$[underline]$D3.Party.EnterGame.Members$[/]$ = {0}", members.ToString());
 					}
 					else
-						Logger.Trace("D3.Party.EnterGame.Members = null");
+						Logger.Debug("$[underline]$D3.Party.EnterGame.Members$[/]$ is null");
 
 				}
 				else if (attribute.Name == "D3.Party.JoinPermission")
@@ -302,10 +289,10 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(permission.ToByteString()).Build());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.JoinPermission = {0}", permission.ToString());
+						Logger.Debug("$[underline]$D3.Party.JoinPermission$[/]$ = {0}", permission.ToString());
 					}
 					else
-						Logger.Trace("D3.Party.JoinPermission = null");
+						Logger.Debug("$[underline]$D3.Party.JoinPermission$[/]$ is null");
 
 				}
 				else if (attribute.Name == "D3.Party.EnterGame.Leader.AtQueueStart")
@@ -318,15 +305,15 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(queueStart.ToByteString()).Build());
 
 						channel.AddAttribute(attr.Build());
-						Logger.Trace("D3.Party.EnterGame.Leader.AtQueueStart = {0}", queueStart.ToString());
+						Logger.Debug("$[underline]$D3.Party.EnterGame.Leader.AtQueueStart$[/]$ = {0}", queueStart.ToString());
 					}
 					else
-						Logger.Trace("D3.Party.EnterGame.Leader.AtQueueStart = null");
+						Logger.Debug("$[underline]$D3.Party.EnterGame.Leader.AtQueueStart$[/]$ = null");
 
 				}
 				else
 				{
-					Logger.Warn("UpdateChannelState(): Unknown attribute: {0}", attribute.Name);
+					Logger.MethodTrace($"Unknown attribute: {attribute.Name}");
 				}
 			}
 
@@ -337,13 +324,13 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			done(builder.Build());
 
 			var notification = bgs.protocol.channel.v1.UpdateChannelStateNotification.CreateBuilder()
-				.SetAgentId(((controller as HandlerController).Client).Account.GameAccount.BnetEntityId)
+				.SetAgentId((((HandlerController) controller).Client).Account.GameAccount.BnetEntityId)
 				/*
 				.SetChannelId(bgs.protocol.channel.v1.ChannelId.CreateBuilder().SetId((uint)channel.BnetEntityId.Low))
 				.SetSubscriber(bgs.protocol.account.v1.Identity.CreateBuilder()
-					.SetAccount(bgs.protocol.account.v1.AccountId.CreateBuilder().SetId((uint)((controller as HandlerController).Client).Account.BnetEntityId.Low))
+					.SetAccount(bgs.protocol.account.v1.AccountId.CreateBuilder().SetId((uint)(((HandlerController) controller).Client).Account.BnetEntityId.Low))
 					.SetGameAccount(bgs.protocol.account.v1.GameAccountHandle.CreateBuilder()
-						.SetId((uint)((controller as HandlerController).Client).Account.GameAccount.BnetEntityId.Low)
+						.SetId((uint)(((HandlerController) controller).Client).Account.GameAccount.BnetEntityId.Low)
 						.SetProgram(17459)
 						.SetRegion(1))
 					.SetProcess(bgs.protocol.ProcessId.CreateBuilder().SetLabel(0).SetEpoch(DateTime.Today.ToUnixTime())))
@@ -353,18 +340,18 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 
 			var altnotif = bgs.protocol.channel.v1.JoinNotification.CreateBuilder().SetChannelState(channel.State).Build();
 
-			var client = (controller as HandlerController).Client;
+			var client = ((HandlerController) controller).Client;
 			
 			//Notify all Channel members
 			foreach (var member in channel.Members.Keys)
 			{
-				member.MakeTargetedRPC(channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification, callback => {  }));
+				member.MakeTargetedRpc(channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification, callback => {  }));
 			}
 		}
 
-		public override void UpdateMemberState(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.UpdateMemberStateRequest request, System.Action<bgs.protocol.NoData> done)
+		public override void UpdateMemberState(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.UpdateMemberStateRequest request, Action<bgs.protocol.NoData> done)
 		{
-			var channel = ChannelManager.GetChannelByDynamicId(((controller as HandlerController).LastCallHeader).ObjectId);
+			var channel = ChannelManager.GetChannelByDynamicId((((HandlerController) controller).LastCallHeader).ObjectId);
 			var builder = bgs.protocol.NoData.CreateBuilder();
 			done(builder.Build());
 
@@ -380,12 +367,12 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetName("D3.PartyMember.GameId")
 							.SetValue(bgs.protocol.Variant.CreateBuilder().SetMessageValue(gameId.ToByteString()).Build());
 						state.AddAttribute(attr);
-						Logger.Trace("D3.PartyMember.GameId = {0}", gameId.GameInstanceId);
+						Logger.Debug("$[underline]$D3.PartyMember.GameId$[/]$ = {0}", gameId.GameInstanceId);
 					}
 					else
 					{
-						Logger.Trace("D3.PartyMember.GameId = null");
-						channel.RemoveMember((controller as HandlerController).Client, Channel.GetRemoveReasonForRequest((Channel.RemoveRequestReason)2));
+						Logger.Debug("$[underline]$D3.PartyMember.GameId$[/]$ is null");
+						channel.RemoveMember(((HandlerController) controller).Client, Channel.GetRemoveReasonForRequest((Channel.RemoveRequestReason)2));
 					}
 			}
 
@@ -397,7 +384,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			channelMember.SetState(state);
 
 			var notification = bgs.protocol.channel.v1.UpdateMemberStateNotification.CreateBuilder()
-				.SetAgentId(((controller as HandlerController).Client).Account.GameAccount.BnetEntityId)
+				.SetAgentId((((HandlerController) controller).Client).Account.GameAccount.BnetEntityId)
 				.AddStateChange(channelMember)
 				.Build();
 
@@ -413,7 +400,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			//Notify all Channel members
 			foreach (var member in channel.Members.Keys)
 			{
-				member.MakeTargetedRPC(channel, (lid) =>
+				member.MakeTargetedRpc(channel, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(member).OnUpdateMemberState(new HandlerController() { ListenerId = lid }, notification, callback => { }));
 			}
 			//*/

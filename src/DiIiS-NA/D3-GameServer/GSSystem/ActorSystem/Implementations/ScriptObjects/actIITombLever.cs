@@ -1,24 +1,9 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -50,15 +35,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (Attributes[GameAttribute.Disabled] == true) return;
+			if (Attributes[GameAttributes.Disabled] == true) return;
 			try
 			{
-				Door waterfall = World.FindAt(ActorSno._caout_oasis_door_aqueduct_a_top, Position, 80.0f) as Door;
+				Door waterfall = World.FindActorAt(ActorSno._caout_oasis_door_aqueduct_a_top, Position, 80.0f) as Door;
 				if (waterfall == null)
 				{
-					Door gate = World.FindAt(ActorSno._caout_oasis_door_aqueduct_a, Position, 80.0f) as Door;
+					Door gate = World.FindActorAt(ActorSno._caout_oasis_door_aqueduct_a, Position, 80.0f) as Door;
 					if (gate == null)
-						(World.FindAt(ActorSno._caout_oasis_cenote_door, Position, 80.0f) as Door).Open();
+						(World.FindActorAt(ActorSno._caout_oasis_cenote_door, Position, 80.0f) as Door).Open();
 					else
 						gate.Open();
 				}
@@ -66,9 +51,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 				{
 					waterfall.Open();
 				}
-				Attributes[GameAttribute.Disabled] = true;
-				Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
-				Attributes[GameAttribute.Gizmo_State] = 1;
+				Attributes[GameAttributes.Disabled] = true;
+				Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
+				Attributes[GameAttributes.Gizmo_State] = 1;
 				Attributes.BroadcastChangedIfRevealed();
 			}
 			catch { }

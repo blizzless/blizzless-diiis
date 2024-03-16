@@ -1,67 +1,69 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
 {
     [FileFormat(SNOGroup.AnimSet)]
     public class AnimSet : FileFormat
     {
+        private static readonly AnimationTags[] deathTags = new AnimationTags[]
+        {
+            AnimationTags.DeathArcane,
+            AnimationTags.DeathFire,
+            AnimationTags.DeathLightning,
+            AnimationTags.DeathPoison,
+            AnimationTags.DeathPlague,
+            AnimationTags.DeathDismember,
+            AnimationTags.DeathDefault,
+            AnimationTags.DeathPulverise,
+            AnimationTags.DeathCold,
+            AnimationTags.DeathLava,
+            AnimationTags.DeathHoly,
+            AnimationTags.DeathSpirit,
+            AnimationTags.DeathFlyingOrDefault
+        };
         public Header Header { get; private set; }
         public int SNOParentAnimSet { get; private set; }
         public TagMap TagMapAnimDefault { get; private set; }
         public TagMap[] AnimSetTagMaps;
 
 
-        private Dictionary<int, int> _animations;
-        public Dictionary<int, int> Animations
+        private Dictionary<int, AnimationSno> _animations;
+        public Dictionary<int, AnimationSno> Animations
         {
             get
             {
-                if (_animations == null)
-                {
-                    _animations = new Dictionary<int, int>();
-                    foreach (var x in TagMapAnimDefault.TagMapEntries)
-                    {
-                        _animations.Add(x.TagID, x.Int);
-                    }
-                    //not sure how better to do this, cant load parents anims on init as they may not be loaded first. - DarkLotus
-                    if (SNOParentAnimSet != -1)
-                    {
-                        var ani = (FileFormats.AnimSet)MPQStorage.Data.Assets[SNOGroup.AnimSet][SNOParentAnimSet].Data;
-                        foreach (var x in ani.Animations)
-                        {
-                            if (!_animations.ContainsKey(x.Key))
-                                _animations.Add(x.Key, x.Value);
-                        }
-                    }
-
-                }
-                return _animations;
+                return _animations ??= InitAnimations();
             }
+        }
+
+        private Dictionary<int, AnimationSno> InitAnimations()
+        {
+            var defaultAnimations = TagMapAnimDefault.TagMapEntries.ToDictionary(x => x.TagID, x => (AnimationSno)x.Int);
+
+            //not sure how better to do this, cant load parents anims on init as they may not be loaded first. - DarkLotus
+            if (SNOParentAnimSet != -1)
+            {
+                var ani = (AnimSet)MPQStorage.Data.Assets[SNOGroup.AnimSet][SNOParentAnimSet].Data;
+                return defaultAnimations.Union(ani.Animations.Where(x => !defaultAnimations.ContainsKey(x.Key))).ToDictionary(x => x.Key, x => x.Value);
+            }
+            return defaultAnimations;
         }
 
         public AnimSet(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.SNOParentAnimSet = stream.ReadValueS32();
+            Header = new Header(stream);
+            SNOParentAnimSet = stream.ReadValueS32();
             TagMapAnimDefault = stream.ReadSerializedItem<TagMap>();
             stream.Position += 8;
             AnimSetTagMaps = new TagMap[28];
@@ -74,24 +76,17 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             stream.Close();
         }
 
-        public int GetAniSNO(AnimationTags type)
+        public AnimationSno GetAniSNO(AnimationTags type)
         {
             if (Animations.Keys.Contains((int)type))
             {
-                if (Animations[(int)type] != -1)
-                {
-                    return Animations[(int)type];
-                }
+                return Animations[(int)type];
             }
-            return -1;
+            return AnimationSno._NONE;
         }
         public bool TagExists(AnimationTags type)
         {
-            if (Animations.Keys.Contains((int)type))
-            {
-                return true;
-            }
-            return false;
+            return Animations.Keys.Contains((int)type);
         }
         public int GetAnimationTag(AnimationTags type)
         {
@@ -101,32 +96,15 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             }
             return -1;
         }
-        public int GetRandomDeath()
+        public AnimationSno GetRandomDeath()
         {
-            int ani = -1;
-            if (!TagExists(AnimationTags.DeathDefault)) { return -1; }
-            while (ani == -1)
+            if (!TagExists(AnimationTags.DeathDefault))
             {
-                Array values = Enum.GetValues(typeof(DeathTags));
-                ani = GetAniSNO((AnimationTags)values.GetValue(RandomHelper.Next(0, values.Length - 1)));
+                return AnimationSno._NONE;
             }
-            return ani;
-        }
-        private enum DeathTags
-        {
-            Arcane = 73776,
-            Fire = 73744,
-            Lightning = 73760,
-            Poison = 73792,
-            Plague = 73856,
-            Dismember = 73872,
-            Default = 69712,
-            Pulverise = 73824,
-            Cold = 74016,
-            Lava = 74032,
-            Holy = 74048,
-            Spirit = 74064,
-            FlyingOrDefault = 71424
+
+            var possibleDeaths = deathTags.Select(GetAniSNO).Where(x => x != AnimationSno._NONE);
+            return possibleDeaths.PickRandom();
         }
     }
     public enum AnimationTags

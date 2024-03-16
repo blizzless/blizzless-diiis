@@ -1,32 +1,31 @@
-﻿//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using Microsoft.Data.Sqlite;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using Spectre.Console;
 
 namespace DiIiS_NA.Core.MPQ
 {
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
+    public class SnoFileNameAttribute : Attribute 
+    {
+        public string FileName { get; }
+
+        public SnoFileNameAttribute(string fileName)
+        {
+            FileName = fileName;
+        }
+    }
     public class Data : MPQPatchChain
     {
         public Dictionary<SNOGroup, ConcurrentDictionary<int, Asset>> Assets = new Dictionary<SNOGroup, ConcurrentDictionary<int, Asset>>();
@@ -68,12 +67,15 @@ namespace DiIiS_NA.Core.MPQ
         #endregion
 
 
-        private static new readonly Logger Logger = LogManager.CreateLogger("DataBaseWorker");
+        private new static readonly Logger Logger = LogManager.CreateLogger("MPQWorker");
 
         public Data()
             //: base(0, new List<string> { "CoreData.mpq", "ClientData.mpq" }, "/base/d3-update-base-(?<version>.*?).mpq")
-            : base(0, new List<string> { "Core.mpq", "Core1.mpq", "Core2.mpq", "Core3.mpq", "Core4.mpq" }, "/base/d3-update-base-(?<version>.*?).mpq")
-        { }
+            : base(0, new List<string> { "Core.mpq", "Core1.mpq", "Core2.mpq", "Core3.mpq", "Core4.mpq" },
+                "/base/d3-update-base-(?<version>.*?).mpq")
+        {
+            
+        }
 
         public void Init()
         {
@@ -137,8 +139,7 @@ namespace DiIiS_NA.Core.MPQ
             string[] MyFiles = Directory.GetFiles(@"E:\\Unpacked\\2.7.1\\Rope\\", @"*", SearchOption.AllDirectories);
             string writePath = @"E:\Unpacked\Rope.txt";
             int i = 0;
-            //Blizzless Project 2022 
-using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
+            using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
             {
 
                 foreach (var file in MyFiles)
@@ -197,10 +198,57 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             this.LoadSNODict(DictSNOTutorial, SNOGroup.Tutorial);
             this.LoadSNODict(DictSNOWeathers, SNOGroup.Weather);
             this.LoadSNODict(DictSNOWorlds, SNOGroup.Worlds);
-
             this.LoadDBCatalog();
+            #if DEBUG
+            SnoBreakdown();
+            #endif
         }
 
+        public void SnoBreakdown(bool fullBreakdown = false)
+        {
+            Console.WriteLine();
+            if (Program.IsTargetEnabled("ansi"))
+                Console.Clear();
+            var breakdownChart = new BreakdownChart()
+                .FullSize()
+                .AddItem("Actor", DictSNOActor.Count, Color.Blue)
+                .AddItem("Effect Group", DictSNOEffectGroup.Count, Color.Yellow)
+                .AddItem("Game Balance", DictSNOGameBalance.Count, Color.Cyan3)
+                .AddItem("Monster", DictSNOMonster.Count, Color.Red)
+                .AddItem("Power", DictSNOPower.Count, Color.LightPink1)
+                .AddItem("Quest", DictSNOQuest.Count, Color.Fuchsia)
+                .AddItem("Quest Range", DictSNOQuestRange.Count, Color.Magenta2_1)
+                .AddItem("Recipe", DictSNORecipe.Count, Color.Lime)
+                .AddItem("Scene", DictSNOScene.Count, Color.DarkOrange3);
+
+            if (fullBreakdown)
+            {
+                breakdownChart.AddItem("Accolade", DictSNOAccolade.Count, Color.Gold1)
+                    .AddItem("Boss Encounter", DictSNOBossEncounter.Count, Color.Cornsilk1)
+                    .AddItem("Act", DictSNOAct.Count, Color.IndianRed)
+                    .AddItem("Adventure", DictSNOAdventure.Count, Color.Orange4_1)
+                    .AddItem("Ambient Sound", DictSNOAmbientSound.Count, Color.OrangeRed1)
+                    .AddItem("Animations", DictSNOAnim.Count, Color.Orchid)
+                    .AddItem("Animation 2D", DictSNOAnimation2D.Count, Color.BlueViolet)
+                    .AddItem("Animation Set", DictSNOAnimSet.Count, Color.LightGoldenrod1)
+                    .AddItem("Conversation", DictSNOConversation.Count, Color.Aquamarine1_1)
+                    .AddItem("Encounter", DictSNOEncounter.Count, Color.Green3_1)
+                    .AddItem("Level Area", DictSNOLevelArea.Count, Color.Grey62)
+                    .AddItem("Lore", DictSNOLore.Count, Color.Plum4)
+                    .AddItem("Marker Set", DictSNOMarkerSet.Count, Color.Salmon1)
+                    .AddItem("Music", DictSNOMusic.Count, Color.Olive)
+                    .AddItem("Observer", DictSNOObserver.Count, Color.Violet)
+                    .AddItem("Phys Mesh", DictSNOPhysMesh.Count, Color.CornflowerBlue)
+                    .AddItem("Ropes", DictSNORopes.Count, Color.Yellow2)
+                    .AddItem("Skill Kit", DictSNOSkillKit.Count, Color.DeepPink4_1)
+                    .AddItem("Tutorial", DictSNOTutorial.Count, Color.NavajoWhite3)
+                    .AddItem("Weather", DictSNOWeathers.Count, Color.Navy)
+                    .AddItem("Worlds", DictSNOWorlds.Count, Color.SlateBlue3_1);
+            }
+
+            AnsiConsole.Write(breakdownChart);
+            Console.WriteLine();
+        }
         private void LoadSNODict(Dictionary<string, int> DictSNO, SNOGroup group)
         {
             foreach (var point in DictSNO)
@@ -279,8 +327,7 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             int assetCount = 0;
             var timerStart = DateTime.Now;
 
-            //Blizzless Project 2022 
-using (var cmd = new SqliteCommand("SELECT * FROM TOC", Storage.DBManager.MPQMirror))
+            using (var cmd = new SqliteCommand("SELECT * FROM TOC", Storage.DBManager.MPQMirror))
             {
                 var itemReader = cmd.ExecuteReader();
 

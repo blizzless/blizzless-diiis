@@ -1,24 +1,9 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -42,7 +27,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			Field2 = 0x8;
 			CollFlags = 0;
 			WalkSpeed = 0;
-			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttributes.Invulnerable] = true;
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			(Brain as MonsterBrain).AddPresetPower(96925);
 		}
@@ -60,10 +45,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			Field2 = 0x8;
 			CollFlags = 0;
 			WalkSpeed = 0;
-			Attributes[GameAttribute.Movement_Scalar] = 0f;
-			Attributes[GameAttribute.Run_Speed_Granted] = 0f;
+			Attributes[GameAttributes.Movement_Scalar] = 0f;
+			Attributes[GameAttributes.Run_Speed_Granted] = 0f;
 			Spawner = true;
-			Attributes[GameAttribute.Invulnerable] = true;
+			Attributes[GameAttributes.Invulnerable] = true;
 			(Brain as MonsterBrain).RemovePresetPower(30592);
 			(Brain as MonsterBrain).AddPresetPower(108017);
 		}

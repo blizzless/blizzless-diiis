@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
@@ -14,8 +9,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 	[AttributeUsage(AttributeTargets.Class)]
 	public class ImplementsPowerBuff : Attribute
 	{
-		public int BuffSlot;
-		public bool CountStacks;
+		public int BuffSlot { get; }
+		public bool CountStacks { get; }
 
 		public ImplementsPowerBuff(int buffSlot, bool countStacks = false)
 		{

@@ -1,24 +1,13 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Drawing;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
@@ -35,22 +24,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			var scenes = World.QuadTree.Query<Scene>(proximity);
 			var scene = scenes[0]; // Parent scene /fasbat
 			int levelArea = scene.Specification.SNOLevelAreas[0];
-			(World.Game.GetHearthPortal() as HearthPortal).ReturnWorld = World.SNO;
-			(World.Game.GetHearthPortal() as HearthPortal).ReturnPosition = User.Position;
+			((HearthPortal)World.Game.GetHearthPortal()).ReturnWorld = World.SNO;
+			((HearthPortal)World.Game.GetHearthPortal()).ReturnPosition = User.Position;
 
 			Vector3D exCheckpoint = User.CheckPointPosition;
 
-			(User as Player).InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.SimpleMessage(MessageSystem.Opcodes.LoadingWarping));
+			((Player)User).InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.SimpleMessage(MessageSystem.Opcodes.LoadingWarping));
 			if (world != User.World)
 				User.ChangeWorld(world, World.Game.GetHearthPortal().Position);
 			else
 				User.Teleport(World.Game.GetHearthPortal().Position);
 
 			User.CheckPointPosition = exCheckpoint;
-			(World.Game.GetHearthPortal() as HearthPortal).Owner = (User as Player);
+			((HearthPortal)World.Game.GetHearthPortal()).Owner = (User as Player);
 			World.Game.GetHearthPortal().SetVisible(true);
 
-			(User as Player).InGameClient.SendMessage(new HearthPortalInfoMessage
+			((Player)User).InGameClient.SendMessage(new HearthPortalInfoMessage
 			{
 				snoLevelArea = levelArea,
 				snoUnknown = -1,
@@ -71,11 +60,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (User.World.Game.QuestProgress.QuestTriggers.ContainsKey(town_levelArea)) //EnterLevelArea
 			{
 				var trigger = User.World.Game.QuestProgress.QuestTriggers[town_levelArea];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 				{
 					try
 					{
-						trigger.questEvent.Execute(User.World); // launch a questEvent
+						trigger.QuestEvent.Execute(User.World); // launch a questEvent
 					}
 					catch (Exception e)
 					{

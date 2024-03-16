@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Numerics;
 
 namespace DiIiS_NA.Core.Extensions

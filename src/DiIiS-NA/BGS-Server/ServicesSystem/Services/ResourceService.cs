@@ -1,25 +1,17 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
+using System.Reflection;
 using bgs.protocol;
-//Blizzless Project 2022 
 using bgs.protocol.resources.v1;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 {
     [Service(serviceID: 0x3d, serviceName: "bnet.protocol.resources.Resources")]
-    public class ResourceService : bgs.protocol.resources.v1.ResourcesService, IServerService
+    public class ResourceService : ResourcesService, IServerService
     {
 		private static readonly Logger Logger = LogManager.CreateLogger();
 		private static byte[] PFTY_HASH = new byte[] { (byte)0xCF, (byte)0x61, (byte)0xE0, (byte)0x81, (byte)0x09, (byte)0x19, (byte)0xC6, (byte)0xA6, (byte)0xF9, (byte)0xC1, (byte)0xCB, (byte)0x24, (byte)0xB3, (byte)0xC6, (byte)0x9D, (byte)0x03, (byte)0xB0, (byte)0x37, (byte)0x08, (byte)0xEC, (byte)0x16, (byte)0xD9, (byte)0x44, (byte)0x51, (byte)0xC5, (byte)0x1F, (byte)0x90, (byte)0x38, (byte)0xE9, (byte)0x09, (byte)0xA7, (byte)0x5A };
@@ -27,7 +19,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 		public override void GetContentHandle(IRpcController controller, ContentHandleRequest request, Action<ContentHandle> done)
         {
 
-			Logger.Trace("GetContentHandle(): ProgramId: 0x{0:X8} StreamId: 0x{1:X8}", request.Program, request.Stream);
+			Logger.MethodTrace($"ProgramId: 0x{request.Program:X8} StreamId: 0x{request.Stream:X8}");
 			if (request.Program == (uint)FieldKeyHelper.Program.BNet)
 			{
 				var builder = ContentHandle.CreateBuilder()
@@ -62,7 +54,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 					default:
 						Logger.Warn("Unknown StreamId: 0x{0:X8}", request.Stream);
 						builder.SetHash(ByteString.Empty);
-						(controller as HandlerController).Status = 4;
+						((HandlerController) controller).Status = 4;
 						break;
 				}
 				done(builder.Build());

@@ -1,7 +1,5 @@
-﻿//Blizzless Project 2022 
-using System;
+﻿using System;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
@@ -19,14 +17,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			//if (world.Game.Empty) return;
 			//Logger.Trace("SpawnSnakemans event started");
 			var point = new Vector3D { X = 835.331f, Y = 410.121f, Z = 161.842f };
-			var snakemanHandle = new Core.Types.SNO.SNOHandle((int)ActorSno._khamsin_snakeman_melee);
-			var snakemanActor = snakemanHandle.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor;
+			var snakeManHandle = new Core.Types.SNO.SNOHandle((int)ActorSno._khamsin_snakeman_melee);
+			var snakeManActor = snakeManHandle.Target as DiIiS_NA.Core.MPQ.FileFormats.ActorData;
 			try
 			{
-				var guard_a = world.FindAt(ActorSno._caldeumguard_cleaver_a, point, 20.0f);
-				Vector3D guard_a_position = guard_a.Position;
-				guard_a.Destroy(); //world.Game.
-				world.Game.WorldGenerator.LoadActor(snakemanHandle,
+				var caldeumGuard = world.FindActorAt(ActorSno._caldeumguard_cleaver_a, point, 20.0f);
+				Vector3D guard_a_position = caldeumGuard.Position;
+				caldeumGuard.Destroy(); //world.Game.
+				world.Game.WorldGenerator.LoadActor(snakeManHandle,
 				new PRTransform()
 				{
 					Quaternion = new Quaternion()
@@ -37,15 +35,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 					Vector3D = guard_a_position
 				},
 				world,
-				snakemanActor.TagMap);
+				snakeManActor.TagMap);
 			}
 			catch { }
 			try
 			{
-				var guard_b = world.FindAt(ActorSno._caldeumguard_cleaver_a, point, 20.0f);
-				Vector3D guard_b_position = guard_b.Position;
-				guard_b.Destroy();
-				world.Game.WorldGenerator.LoadActor(snakemanHandle,
+				var caldeumGuard = world.FindActorAt(ActorSno._caldeumguard_cleaver_a, point, 20.0f);
+				Vector3D caldeumGuardPosition = caldeumGuard.Position;
+				caldeumGuard.Destroy();
+				world.Game.WorldGenerator.LoadActor(snakeManHandle,
 				new PRTransform()
 				{
 					Quaternion = new Quaternion()
@@ -53,18 +51,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 						W = 0.590017f,
 						Vector3D = new Vector3D(0, 0, 0)
 					},
-					Vector3D = guard_b_position
+					Vector3D = caldeumGuardPosition
 				},
 				world,
-				snakemanActor.TagMap);
+				snakeManActor.TagMap);
 			}
 			catch { }
 			try
 			{
-				var guard_c = world.FindAt(ActorSno._davydimpostor, point, 20.0f);
-				Vector3D guard_c_position = guard_c.Position;
-				guard_c.Destroy();
-				world.Game.WorldGenerator.LoadActor(snakemanHandle,
+				var davydImpostor = world.FindActorAt(ActorSno._davydimpostor, point, 20.0f);
+				Vector3D davydPosition = davydImpostor.Position;
+				davydImpostor.Destroy();
+				world.Game.WorldGenerator.LoadActor(snakeManHandle,
 				new PRTransform()
 				{
 					Quaternion = new Quaternion()
@@ -72,10 +70,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 						W = 0.590017f,
 						Vector3D = new Vector3D(0, 0, 0)
 					},
-					Vector3D = guard_c_position
+					Vector3D = davydPosition
 				},
 				world,
-				snakemanActor.TagMap);
+				snakeManActor.TagMap);
 			}
 			catch { }
 		}

@@ -1,13 +1,8 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -18,8 +13,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public CR_Glass(MapSystem.World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.MinimapActive] = true;
             Attributes.BroadcastChangedIfRevealed();
         }
 

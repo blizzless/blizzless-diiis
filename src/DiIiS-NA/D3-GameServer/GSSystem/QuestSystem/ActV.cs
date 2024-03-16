@@ -1,30 +1,13 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -54,7 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			{
 				NPC.Conversations.Clear();
 				NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-				NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+				NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 				NPC.Attributes.BroadcastChangedIfRevealed();
 				NPC.ForceConversationSNO = conversation;
 			}
@@ -66,7 +49,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						NPC = N as InteractiveNPC;
 						NPC.Conversations.Clear();
 						NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-						NPC.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+						NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 						NPC.Attributes.BroadcastChangedIfRevealed();
 						NPC.ForceConversationSNO = conversation;
 					}
@@ -79,7 +62,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (actor is InteractiveNPC npc)
 			{
 				npc.Conversations.Clear();
-				npc.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+				npc.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 				npc.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -95,7 +78,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 2,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk with Lorath Nahr
 					ListenKill(ActorSno._x1_ghost_dark_introoverlook, 1, new LaunchConversation(320130));
@@ -108,7 +90,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 59,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//enter Westmarch
 					var world = Game.GetWorld(WorldSno.x1_westm_intro);
@@ -136,7 +117,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					{
 						var introGuy = npc as InteractiveNPC;
 						introGuy.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(308393));
-						introGuy.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+						introGuy.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 						introGuy.Attributes.BroadcastChangedIfRevealed();
 					}
                     ListenConversation(308393, new EnterToWest());
@@ -151,7 +132,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 14,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find a5 hub
 					var npc = Game.GetWorld(WorldSno.x1_westm_intro).GetActorBySNO(ActorSno._x1_npc_westmarch_introguy);
@@ -159,7 +139,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					{
 						var introGuy = npc as InteractiveNPC;
 						introGuy.Conversations.Clear();
-						introGuy.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+						introGuy.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 						introGuy.Attributes.BroadcastChangedIfRevealed();
 
 					}
@@ -172,7 +152,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 7,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill mobs at hub
 					var world = Game.GetWorld(WorldSno.x1_westm_intro);
@@ -180,7 +159,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					{
 						if (Game.CurrentQuest == 251355 && Game.CurrentStep == 14)
 						{
-							try { world.FindAt(ActorSno._x1_westm_door_cloister_locked, new Vector3D { X = 555.9f, Y = 403.47f, Z = 10.2f }, 5.0f).Destroy(); } catch { }
+							try { world.FindActorAt(ActorSno._x1_westm_door_cloister_locked, new Vector3D { X = 555.9f, Y = 403.47f, Z = 10.2f }, 5.0f).Destroy(); } catch { }
 						}
 					});
 					ListenKill(ActorSno._x1_skeleton_westmarch_a, 10, new Advance());
@@ -207,7 +186,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 57,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					var world = Game.GetWorld(WorldSno.x1_westm_intro);
 					//Delete Monsters
@@ -230,13 +208,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 18,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//enter the church
 					var world = Game.GetWorld(WorldSno.x1_westm_intro);
 					var Tyrael = world.ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as InteractiveNPC;
 					Tyrael.Conversations.Clear();
-					Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+					Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 					Tyrael.Attributes.BroadcastChangedIfRevealed();
 
 					Game.AddOnLoadWorldAction(WorldSno.x1_westm_intro, () =>
@@ -255,7 +232,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 11,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Kill unique 273419
 					ListenKill(ActorSno._x1_deathmaiden_unique_b, 1, new AfterKillBoss());
@@ -267,7 +243,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 67,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
 					UnlockTeleport(0);
@@ -283,14 +258,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 5,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//leave the church
 					var Tyrael = Game.GetWorld(WorldSno.x1_westmarch_hub).ShowOnlyNumNPC(ActorSno._x1_tyrael_hurt, 0) as InteractiveNPC;
 					if (Tyrael != null)
 					{
 						Tyrael.Conversations.Clear();
-						Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+						Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 						Tyrael.Attributes.BroadcastChangedIfRevealed();
 					}
 					ListenTeleport(270011, new Advance());
@@ -302,7 +276,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//complete
 				})
@@ -318,7 +291,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 47,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -328,7 +300,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 62,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//OnTargetedActor ID: 315793, Name: x1_westm_Door_Cloister, NumInWorld: 0
 					Game.AddOnLoadWorldAction(WorldSno.x1_westmarch_hub, () =>
@@ -358,7 +329,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 57,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
                     //find orbs
                     var world = Game.GetWorld(WorldSno.x1_westmarch_hub);
@@ -374,7 +344,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 60,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//destroy bodies
 					var world = Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
@@ -407,7 +376,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//slay Drygha
 					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
@@ -423,7 +391,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 68,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//destroy orb
 					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
@@ -439,7 +406,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 30,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					var world = Game.GetWorld(WorldSno.x1_westm_deathorb_gideonscourt);
 					//destroy effects
@@ -461,7 +427,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 32,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Mystic
 					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
@@ -484,11 +449,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 									TurnImmediately = true
 								}, Myst);
 
-								Myst.PlayActionAnimation(324119);
+								Myst.PlayActionAnimation(AnimationSno.mystic_crawl_01);
 								AddQuestConversation(Myst, 305750);
 								(Myst as InteractiveNPC).Conversations.Clear();
 								(Myst as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(305750));
-								(Myst as InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+								(Myst as InteractiveNPC).Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 								(Myst as InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
 								(Myst as InteractiveNPC).ForceConversationSNO = 305750;
 							}
@@ -503,7 +468,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 55,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//exit alley
 					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_gideonscourt, () =>
@@ -528,13 +492,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						{
 							bool Activated = false;
 
-							Malt.Attributes[GameAttribute.Team_Override] = (Activated ? -1 : 2);
-							Malt.Attributes[GameAttribute.Untargetable] = !Activated;
-							Malt.Attributes[GameAttribute.NPC_Is_Operatable] = Activated;
-							Malt.Attributes[GameAttribute.Operatable] = Activated;
-							Malt.Attributes[GameAttribute.Operatable_Story_Gizmo] = Activated;
-							Malt.Attributes[GameAttribute.Disabled] = !Activated;
-							Malt.Attributes[GameAttribute.Immunity] = !Activated;
+							Malt.Attributes[GameAttributes.Team_Override] = (Activated ? -1 : 2);
+							Malt.Attributes[GameAttributes.Untargetable] = !Activated;
+							Malt.Attributes[GameAttributes.NPC_Is_Operatable] = Activated;
+							Malt.Attributes[GameAttributes.Operatable] = Activated;
+							Malt.Attributes[GameAttributes.Operatable_Story_Gizmo] = Activated;
+							Malt.Attributes[GameAttributes.Disabled] = !Activated;
+							Malt.Attributes[GameAttributes.Immunity] = !Activated;
 						}
 						Open(world, ActorSno._x1_westm_door_gate);
 						AddFollower(world, ActorSno._pt_mystic_novendor_nonglobalfollower);
@@ -548,7 +512,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 49,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find death orb
 					ListenTeleport(339158, new AdvanceWithNotify());
@@ -565,7 +528,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 53,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//destroy bodies
 					UnlockTeleport(2);
@@ -592,7 +554,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 34,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//slay guardian
 					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
@@ -613,7 +574,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 40,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//destroy final orb
 					Game.AddOnLoadWorldAction(WorldSno.x1_westm_deathorb_kerwinsrow, () =>
@@ -634,7 +594,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 42,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Mystic
 					ListenProximity(ActorSno._pt_mystic_novendor_nonglobalfollower, new LaunchConversation(305871));
@@ -652,7 +611,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 29,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//return to hub
 					ListenTeleport(270011, new Advance());
@@ -675,7 +633,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//complete
 				})
@@ -691,7 +648,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -701,7 +657,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 6,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//enter Westmarch Heights
 					ListenTeleport(263493, new AdvanceWithNotify());
@@ -713,7 +668,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 12,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find Tower
 					ListenTeleport(308487, new AdvanceWithNotify());
@@ -728,7 +682,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 14,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill Urzael
 					UnlockTeleport(3);
@@ -741,7 +694,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 16,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Malthael spirit
 					Game.AddOnLoadWorldAction(WorldSno.x1_urzael_arena, () =>
@@ -749,7 +701,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						var malthael = Game.GetWorld(WorldSno.x1_urzael_arena).SpawnMonster(ActorSno._x1_malthael, new Vector3D { X = 97.65f, Y = 350.23f, Z = 0.1f });
 						malthael.NotifyConversation(1);
 					});
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					ListenInteract(ActorSno._x1_malthael, 1, new LaunchConversation(274423));
 					ListenConversation(274423, new Advance());
 				})
@@ -760,7 +712,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 18,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//return to the Hub
 					ListenTeleport(270011, new AdvanceWithNotify());
@@ -772,7 +723,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 3,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
 					ListenInteract(ActorSno._x1_tyrael_hurt, 1, new LaunchConversation(283403));
@@ -785,7 +735,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//complete
 					PlayCutscene(1);
@@ -802,7 +751,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 67,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -812,7 +760,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 65,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
                     //find entrance
                     //DisableArrow(this.Game.GetWorld(304235), target);
@@ -870,7 +817,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = false,
 				NextStep = 92,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill mobs
 					Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
@@ -894,7 +840,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 106,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find Nephalem Guidestone
 					Game.AddOnLoadWorldAction(WorldSno.x1_bog_adriaritual, () =>
@@ -912,7 +857,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 73,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//use waystone
 					UnlockTeleport(4);
@@ -927,7 +871,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 10,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find catacombs
 					var world = Game.GetWorld(WorldSno.x1_bog_adriaritual);
@@ -963,7 +906,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 110,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//search tomb
 					var world = Game.GetWorld(WorldSno.x1_bog_adriaritual);
@@ -1001,7 +943,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 14,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//go Adria
 					UnlockTeleport(6);
@@ -1014,7 +955,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 78,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill Adria
 					//UnlockTeleport(7); //hacky
@@ -1027,10 +967,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 115,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Lorath
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					var world = Game.GetWorld(WorldSno.x1_adria_boss_arena_02);
 
 					foreach (var Myst in world.GetActorsBySNO(ActorSno._x1_npc_lorathnahr)) //284530
@@ -1038,7 +977,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						AddQuestConversation(Myst, 260191);
 						(Myst as InteractiveNPC).Conversations.Clear();
 						(Myst as InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(260191));
-						(Myst as InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+						(Myst as InteractiveNPC).Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 						(Myst as InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
 						(Myst as InteractiveNPC).ForceConversationSNO = 260191;
 					}
@@ -1047,7 +986,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					{
 						world.GetActorBySNO(ActorSno._x1_npc_lorathnahr).NotifyConversation(1);
 					});
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 
 					//ListenInteract(284530, 1, new LaunchConversation(260191));
 					ListenConversation(260191, new Advance());
@@ -1059,13 +998,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
 					foreach (var Myst in Game.GetWorld(WorldSno.x1_adria_boss_arena_02).GetActorsBySNO(ActorSno._x1_npc_lorathnahr)) //284530
 					{
 						(Myst as InteractiveNPC).Conversations.Clear();
-						(Myst as InteractiveNPC).Attributes[GameAttribute.Conversation_Icon, 0] = 1;
+						(Myst as InteractiveNPC).Attributes[GameAttributes.Conversation_Icon, 0] = 1;
 						(Myst as InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
 					}
 					ListenInteract(ActorSno._x1_tyrael_hurt, 1, new LaunchConversation(274440));
@@ -1078,7 +1016,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//complete
 					PlayCutscene(2);
@@ -1095,7 +1032,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 15,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -1105,7 +1041,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 17,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//go to Pandemonium Gate
 					ListenTeleport(339468, new Advance());
@@ -1117,7 +1052,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 19,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill reapers and Lamiel
 					ListenKill(ActorSno._x1_deathmaiden_unique_heaven, 1, new Advance());
@@ -1129,7 +1063,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 11,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Imperius
 					Game.AddOnLoadWorldAction(WorldSno.x1_heaven_pandemonium_portal, () =>
@@ -1146,7 +1079,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//use portal
 					ListenTeleport(299453, new Advance());
@@ -1158,7 +1090,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//complete
 				})
@@ -1174,7 +1105,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 35,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -1184,7 +1114,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 41,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//cork for Imperius
 					Game.AddOnLoadWorldAction(WorldSno.x1_pand_ext_gateoverlook, () =>
@@ -1203,7 +1132,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
                     //reach Imperius
                     ListenInteract(ActorSno._x1_imperius, 1, new LaunchConversation(361245));
@@ -1222,7 +1150,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 51,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//get to Siege Camp
 					ListenProximity(ActorSno._x1_pand_ext_imperiuscharge_towers_chain, new Advance());
@@ -1234,7 +1161,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 11,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//gather siege rune
 					ListenInteract(ActorSno._x1_pandext_siegerune, 1, new Advance());
@@ -1246,7 +1172,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 43,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
                     //talk to Imperius
                     ListenInteract(ActorSno._x1_imperius, 1, new LaunchConversation(361252));
@@ -1266,7 +1191,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 45,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//hunt for Siege Runes
 					UnlockTeleport(8);
@@ -1279,7 +1203,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 30,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//enter Siege outpost
 					ListenTeleport(339397, new Advance());
@@ -1291,7 +1214,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 33,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Kill Ram Defense Captain (Thilor)
 					ListenKill(ActorSno._x1_bigred_chronodemon_burned_ramguard, 1, new Advance());
@@ -1303,7 +1225,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 15,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//talk to Tyrael
 					ListenInteract(ActorSno._x1_tyrael_pandext, 1, new LaunchConversation(346540));
@@ -1320,7 +1241,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//complete
 				})
@@ -1336,7 +1256,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 32,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -1346,7 +1265,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 25,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
                     //Board Ram
                     UnlockTeleport(9);
@@ -1372,8 +1290,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             backgroundActor.Unreveal(plr);
                             portal.Unreveal(plr);
 						}
-						if (Game.CurrentQuest == 269552)
-							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).PlayActionAnimation(299978);
+						if (this.Game.CurrentQuest == 269552)
+							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).PlayActionAnimation(AnimationSno.x1_pand_batteringram_background_stage1);
 					});
 					
 					
@@ -1386,7 +1304,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 27,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//breach phase
 					ListenKill(ActorSno._x1_westmarchranged_b, 2, new Advance());
@@ -1402,7 +1319,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 29,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Fight Ram Boss
 					ListenKill(ActorSno._x1_westmarchbrute_batteringramboss, 1, new Advance());
@@ -1419,7 +1335,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 22,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Finish the Gate
 					
@@ -1450,12 +1365,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 8,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//enter Breach
 					var RamWorld = Game.GetWorld(WorldSno.x1_pand_batteringram);
 
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					ListenTeleport(271234, new Advance());
 					Game.AddOnLoadWorldAction(WorldSno.x1_pand_batteringram, () =>
 					{
@@ -1464,8 +1378,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 						{
 							RamWorld.GetActorBySNO(ActorSno._g_portal_archtall_blue).Reveal(plr);
 						}
-						if (Game.CurrentQuest != 269552)
-							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).SetIdleAnimation(360069);
+						if (this.Game.CurrentQuest != 269552)
+							RamWorld.GetActorBySNO(ActorSno._x1_pand_batteringram_background).SetIdleAnimation(AnimationSno.x1_pand_batteringram_background_move_in_and_out_hit_03_dead);
 						//RamWorld.GetActorBySNO(295438).PlayActionAnimation(299978); 
 						//Open(this.Game.GetWorld(295225), 345259);
 						Open(RamWorld, ActorSno._x1_pand_batteringram_background);
@@ -1478,7 +1392,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//complete
 					PlayCutscene(3);
@@ -1495,7 +1408,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 30,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 				})
 			});
@@ -1505,7 +1417,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 12,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//FortressIntroTyrael
 					var world = Game.GetWorld(WorldSno.x1_fortress_level_01);
@@ -1528,7 +1439,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 36,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Spirit Well 1
 					RemoveConversations(Game.GetWorld(WorldSno.x1_fortress_level_01).GetActorBySNO(ActorSno._tyrael));
@@ -1567,7 +1477,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 65,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Spirit Well 2
 					ListenTeleport(360494, new Advance());
@@ -1579,7 +1488,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 61,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Kill Death Maiden
 					ListenKill(ActorSno._x1_deathmaiden_pand_a_fortressunique, 1, new Advance());
@@ -1595,7 +1503,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 3,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Destroy Soul Prison
 					UnlockTeleport(11);
@@ -1612,7 +1519,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 8,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//find Malthael
 					ListenTeleport(330576, new Advance());
@@ -1624,7 +1530,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 21,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//kill Malthael
 					ListenKill(ActorSno._x1_malthael_boss, 1, new Advance());
@@ -1636,10 +1541,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = 7,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//Success
-					Game.CurrentEncounter.activated = false;
+					Game.CurrentEncounter.Activated = false;
 					ListenProximity(ActorSno._tyrael, new LaunchConversation(351334));
 					ListenConversation(351334, new Advance());
 					if (Game.IsHardcore)
@@ -1672,7 +1576,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Completed = false,
 				Saveable = true,
 				NextStep = -1,
-				Objectives = new List<Objective> { new Objective { Limit = 1, Counter = 0 } },
 				OnAdvance = new Action(() => {
 					//complete
 				})

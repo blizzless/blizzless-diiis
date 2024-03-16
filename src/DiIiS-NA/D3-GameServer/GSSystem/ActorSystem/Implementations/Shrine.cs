@@ -1,20 +1,9 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -25,7 +14,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Shrine(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 		}
 
 		private bool Activated = false;
@@ -76,9 +65,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						break;
 				}
 
-				Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+				Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
 				//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-				Attributes[GameAttribute.Gizmo_State] = 1;
+				Attributes[GameAttributes.Gizmo_State] = 1;
 				Attributes.BroadcastChangedIfRevealed();
 			}
 		}

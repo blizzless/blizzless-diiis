@@ -1,24 +1,12 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using CrystalMpq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Scene;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using Gibbed.IO;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -54,14 +42,14 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         {
             var stream = file.Open();
 
-            this.Header = new Header(stream);
+            Header = new Header(stream);
 
-            this.DynamicWorld = (stream.ReadValueS32() != 0);
+            DynamicWorld = (stream.ReadValueS32() != 0);
             stream.Position += 8;
-            this.ServerData = stream.ReadSerializedData<ServerData>(); //16
-            this.MarkerSets = stream.ReadSerializedInts(); //40
+            ServerData = stream.ReadSerializedData<ServerData>(); //16
+            MarkerSets = stream.ReadSerializedInts(); //40
 
-            this.Environment = new Environment(stream); //96  - 56
+            Environment = new Environment(stream); //96  - 56
             // - 56
             DeformationScale = stream.ReadValueF32(); //172
             Flags = stream.ReadValueS32(); //176
@@ -89,8 +77,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SceneChunks = stream.ReadSerializedData<SceneChunk>();
-            this.ChunkCount = stream.ReadValueS32();
+            SceneChunks = stream.ReadSerializedData<SceneChunk>();
+            ChunkCount = stream.ReadValueS32();
             stream.Position += (3 * 4);
         }
 
@@ -114,9 +102,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SNOHandle = new SNOHandle(stream);
-            this.PRTransform = new PRTransform(stream);
-            this.SceneSpecification = new SceneSpecification(stream);
+            SNOHandle = new SNOHandle(stream);
+            PRTransform = new PRTransform(stream);
+            SceneSpecification = new SceneSpecification(stream);
         }
     }
 
@@ -173,14 +161,14 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             Tiles = stream.ReadSerializedData<TileInfo>();
 
             stream.Position += (14 * 4);
-            this.CommandCount = stream.ReadValueS32();
-            this.Commands = stream.ReadSerializedData<DRLGCommand>();
+            CommandCount = stream.ReadValueS32();
+            Commands = stream.ReadSerializedData<DRLGCommand>();
 
             stream.Position += (3 * 4);
-            this.ParentIndices = stream.ReadSerializedInts();
+            ParentIndices = stream.ReadSerializedInts();
 
             stream.Position += (2 * 4);
-            this.TagMap = stream.ReadSerializedItem<TagMap>();
+            TagMap = stream.ReadSerializedItem<TagMap>();
             stream.Position += (2 * 4);
         }
     }
@@ -230,7 +218,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             TileType = stream.ReadValueS32();
             SNOScene = stream.ReadValueS32();
             Probability = stream.ReadValueS32();
-            this.TagMap = stream.ReadSerializedItem<TagMap>();
+            TagMap = stream.ReadSerializedItem<TagMap>();
 
             stream.Position += (2 * 4);
             CustomTileInfo = new CustomTileInfo(stream);
@@ -260,9 +248,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.Name = stream.ReadString(128, true);
+            Name = stream.ReadString(128, true);
             CommandType = stream.ReadValueS32();
-            this.TagMap = stream.ReadSerializedItem<TagMap>();
+            TagMap = stream.ReadSerializedItem<TagMap>();
             stream.Position += (3 * 4);
         }
     }
@@ -349,9 +337,9 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public SceneClusterSet(MpqFileStream stream)
         {
-            this.ClusterCount = stream.ReadValueS32();
+            ClusterCount = stream.ReadValueS32();
             stream.Position += (4 * 3);
-            this.SceneClusters = stream.ReadSerializedData<SceneCluster>();
+            SceneClusters = stream.ReadSerializedData<SceneCluster>();
         }
     }
 
@@ -382,13 +370,13 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.Name = stream.ReadString(128, true);
-            this.ClusterId = stream.ReadValueS32();
-            this.GroupCount = stream.ReadValueS32();
+            Name = stream.ReadString(128, true);
+            ClusterId = stream.ReadValueS32();
+            GroupCount = stream.ReadValueS32();
             stream.Position += (2 * 4);
-            this.SubSceneGroups = stream.ReadSerializedData<SubSceneGroup>();
+            SubSceneGroups = stream.ReadSerializedData<SubSceneGroup>();
 
-            this.Default = new SubSceneGroup(stream);
+            Default = new SubSceneGroup(stream);
         }
     }
 
@@ -405,15 +393,15 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public SubSceneGroup(MpqFileStream stream)
         {
-            this.Read(stream);
+            Read(stream);
         }
 
         public void Read(MpqFileStream stream)
         {
-            this.I0 = stream.ReadValueS32();
-            this.SubSceneCount = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            SubSceneCount = stream.ReadValueS32();
             stream.Position += (2 * 4);
-            this.Entries = stream.ReadSerializedData<SubSceneEntry>();
+            Entries = stream.ReadSerializedData<SubSceneEntry>();
         }
     }
 
@@ -440,11 +428,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SNOScene = stream.ReadValueS32();
-            this.Probability = stream.ReadValueS32();
+            SNOScene = stream.ReadValueS32();
+            Probability = stream.ReadValueS32();
             stream.Position += (3 * 4);
-            this.LabelCount = stream.ReadValueS32();
-            this.Labels = stream.ReadSerializedData<SubSceneLabel>();
+            LabelCount = stream.ReadValueS32();
+            Labels = stream.ReadSerializedData<SubSceneLabel>();
         }
     }
 
@@ -479,7 +467,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         {
             Rulecount = stream.ReadValueS32();
             stream.Position += (3 * 4);
-            this.LabelRules = stream.ReadSerializedData<LabelRule>();
+            LabelRules = stream.ReadSerializedData<LabelRule>();
         }
     }
 
@@ -500,12 +488,12 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.Name = stream.ReadString(128, true);
+            Name = stream.ReadString(128, true);
             LabelCondition = new LabelCondition(stream);
             NumToChoose = stream.ReadValueS32();
             LabelCount = stream.ReadValueS32();
             stream.Position += (2 * 4);
-            this.Entries = stream.ReadSerializedData<LabelEntry>();
+            Entries = stream.ReadSerializedData<LabelEntry>();
         }
     }
 
@@ -526,7 +514,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.GBIdLabel = stream.ReadValueS32();
+            GBIdLabel = stream.ReadValueS32();
             Int0 = stream.ReadValueS32();
             Weight = stream.ReadValueF32();
             ApplyCountMin = stream.ReadValueS32();
@@ -644,13 +632,13 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public void Read(MpqFileStream stream)
         {
             //stream.Position += 8;
-            this.DRLGParams = stream.ReadSerializedData<DRLGParams>();
+            DRLGParams = stream.ReadSerializedData<DRLGParams>();
             stream.Position += 8;
-            this.SceneParams = stream.ReadSerializedItem<SceneParams>();
+            SceneParams = stream.ReadSerializedItem<SceneParams>();
             //stream.Position += 8;
             LabelRuleSet = new LabelRuleSet(stream);
-            this.Int1 = stream.ReadValueS32();
-            this.SceneClusterSet = new SceneClusterSet(stream);
+            Int1 = stream.ReadValueS32();
+            SceneClusterSet = new SceneClusterSet(stream);
             for (int i = 0; i < SNONavMeshFunctions.Length; i++)
             {
                 SNONavMeshFunctions[i] = stream.ReadValueS32();

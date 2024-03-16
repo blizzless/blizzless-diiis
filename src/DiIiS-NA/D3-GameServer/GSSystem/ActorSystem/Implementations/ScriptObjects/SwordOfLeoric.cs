@@ -1,30 +1,14 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 {
@@ -61,12 +45,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 			LachdananGhost.Move(Position, MovementHelpers.GetFacingAngle(LeoricGhost, LachdananGhost));
 			LachdananGhost.Move(Position, MovementHelpers.GetFacingAngle(LachdananGhost, Position));
-			LachdananGhost.Attributes[GameAttribute.TeamID] = 2;
+			LachdananGhost.Attributes[GameAttributes.TeamID] = 2;
 			LachdananGhost.Attributes.BroadcastChangedIfRevealed();
 			(LachdananGhost as Monster).Brain.DeActivate();
 			foreach (var GKnight in GhostKnights)
 			{
-				GKnight.Attributes[GameAttribute.TeamID] = 2;
+				GKnight.Attributes[GameAttributes.TeamID] = 2;
 				GKnight.Attributes.BroadcastChangedIfRevealed();
 				(GKnight as Monster).Brain.DeActivate();
 				GKnight.Move(Position, MovementHelpers.GetFacingAngle(GKnight, Position));
@@ -99,13 +83,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			}, this);
 
 			bool status = false;
-			Attributes[GameAttribute.Team_Override] = (status ? -1 : 2);
-			Attributes[GameAttribute.Untargetable] = !status;
-			Attributes[GameAttribute.NPC_Is_Operatable] = status;
-			Attributes[GameAttribute.Operatable] = status;
-			Attributes[GameAttribute.Operatable_Story_Gizmo] = status;
-			Attributes[GameAttribute.Disabled] = !status;
-			Attributes[GameAttribute.Immunity] = !status;
+			Attributes[GameAttributes.Team_Override] = (status ? -1 : 2);
+			Attributes[GameAttributes.Untargetable] = !status;
+			Attributes[GameAttributes.NPC_Is_Operatable] = status;
+			Attributes[GameAttributes.Operatable] = status;
+			Attributes[GameAttributes.Operatable_Story_Gizmo] = status;
+			Attributes[GameAttributes.Disabled] = !status;
+			Attributes[GameAttributes.Immunity] = !status;
 			Attributes.BroadcastChangedIfRevealed();
 		}
 		private bool StartConversation(World world, Int32 conversationId)

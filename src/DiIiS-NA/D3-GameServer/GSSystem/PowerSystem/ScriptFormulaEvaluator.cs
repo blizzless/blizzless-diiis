@@ -1,29 +1,14 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 {
@@ -272,7 +257,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 					return LoadAttribute(powerSNO, attributes, numb2, out result);
 
 				case 1: // slevel
-					result = attributes[GameAttribute.Skill, powerSNO];
+					result = attributes[GameAttributes.Skill, powerSNO];
 					return true;
 
 				case 22: // absolute power formula ref
@@ -302,24 +287,24 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		// this lists the attributes that need to be keyed with the powerSNO to work
 		private static readonly SortedSet<int> _powerKeyedAttributes = new SortedSet<int>()
 		{
-			GameAttribute.Rune_A.Id,
-			GameAttribute.Rune_B.Id,
-			GameAttribute.Rune_C.Id,
-			GameAttribute.Rune_D.Id,
-			GameAttribute.Rune_E.Id,
-			GameAttribute.Buff_Icon_Count0.Id,
-			GameAttribute.Buff_Icon_Count1.Id,
-			GameAttribute.Buff_Icon_Count2.Id,
-			GameAttribute.Buff_Icon_Count3.Id,
-			GameAttribute.Buff_Icon_Count4.Id,
-			GameAttribute.Buff_Icon_Count5.Id,
-			GameAttribute.Buff_Icon_Count6.Id,
-			GameAttribute.Buff_Icon_Count7.Id,
+			GameAttributes.Rune_A.Id,
+			GameAttributes.Rune_B.Id,
+			GameAttributes.Rune_C.Id,
+			GameAttributes.Rune_D.Id,
+			GameAttributes.Rune_E.Id,
+			GameAttributes.Buff_Icon_Count0.Id,
+			GameAttributes.Buff_Icon_Count1.Id,
+			GameAttributes.Buff_Icon_Count2.Id,
+			GameAttributes.Buff_Icon_Count3.Id,
+			GameAttributes.Buff_Icon_Count4.Id,
+			GameAttributes.Buff_Icon_Count5.Id,
+			GameAttributes.Buff_Icon_Count6.Id,
+			GameAttributes.Buff_Icon_Count7.Id,
 		};
 
 		private static bool LoadAttribute(int powerSNO, GameAttributeMap attributes, int attributeId, out float result)
 		{
-			GameAttribute attr = GameAttribute.Attributes[attributeId];
+			GameAttribute attr = GameAttributes.Attributes[attributeId];
 			bool needs_key = _powerKeyedAttributes.Contains(attributeId);
 
 			if (attr is GameAttributeF)

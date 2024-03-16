@@ -1,101 +1,83 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Concurrent;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
-using NHibernate.Linq;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 
-//Blizzless Project 2022 
 using Scene = DiIiS_NA.GameServer.GSSystem.MapSystem.Scene;
-//Blizzless Project 2022 
 using World = DiIiS_NA.GameServer.GSSystem.MapSystem.World;
-//Blizzless Project 2022 
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 {
 	public static class ItemGenerator
 	{
-		public static readonly Logger Logger = LogManager.CreateLogger("D3Core");
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(ItemGenerator));
 
-		public static readonly ConcurrentDictionary<int, ItemTable> Items = new ConcurrentDictionary<int, ItemTable>();
-		public static readonly ConcurrentDictionary<int, ItemTable> AllowedItems = new ConcurrentDictionary<int, ItemTable>();
-		public static readonly ConcurrentDictionary<int, ItemTable> AllowedUniqueItems = new ConcurrentDictionary<int, ItemTable>();
-		private static readonly ConcurrentDictionary<int, RecipeTable> Recipes = new ConcurrentDictionary<int, RecipeTable>();
-		private static readonly ConcurrentDictionary<int, ItemTable> Lore = new ConcurrentDictionary<int, ItemTable>();
-		private static readonly List<SocketedEffectTable> GemEffects = new List<SocketedEffectTable>();
-		private static readonly List<ParagonBonusesTable> ParagonBonuses = new List<ParagonBonusesTable>();
-		private static readonly List<SetItemBonusTable> ItemSetsEffects = new List<SetItemBonusTable>();
-		private static readonly ConcurrentDictionary<int, Type> GBIDHandlers = new ConcurrentDictionary<int, Type>();
-		private static readonly ConcurrentDictionary<int, Type> TypeHandlers = new ConcurrentDictionary<int, Type>();
-		private static readonly HashSet<int> AllowedItemTypes = new HashSet<int>();
-		private static readonly List<int> CraftOnlyItems = new List<int>();
+		public static readonly ConcurrentDictionary<int, ItemTable> Items = new();
+
+		public static readonly ConcurrentDictionary<int, ItemTable> AllowedItems = new();
+
+		public static readonly ConcurrentDictionary<int, ItemTable> AllowedUniqueItems = new();
+
+		private static readonly ConcurrentDictionary<int, RecipeTable> Recipes = new();
+
+		private static readonly ConcurrentDictionary<int, ItemTable> Lore = new();
+		private static readonly List<SocketedEffectTable> GemEffects = new();
+		private static readonly List<ParagonBonusesTable> ParagonBonuses = new();
+		private static readonly List<SetItemBonusTable> ItemSetsEffects = new();
+		private static readonly ConcurrentDictionary<int, Type> GBIDHandlers = new();
+		private static readonly ConcurrentDictionary<int, Type> TypeHandlers = new();
+		private static readonly HashSet<int> AllowedItemTypes = new();
+		private static readonly List<int> CraftOnlyItems = new();
 
 		public static int TotalItems
 		{
 			get { return Items.Count; }
 		}
 
-		public static List<int> Tutorials = new List<int>();
-		public static Dictionary<int, Quest> Bounties = new Dictionary<int, Quest>();
+		public static List<int> Tutorials = new();
+		public static Dictionary<int, Quest> Bounties = new();
 
 		static ItemGenerator()
 		{
 			Player.GeneratePLB();
-			Logger.Info("Loading Recipes...");
-			Logger.Info("Loading Items...");
+			Logger.Info("Loading $[underline]$Recipes$[/]$...");
+			Logger.Info("Loading $[underline]$Items$[/]$...");
 			LoadRecipes();
 			LoadItems();
-			Logger.Info("Loading Paragons...");
+			Logger.Info("Loading $[underline]$Paragons$[/]$...");
 			LoadParagonBonuses();
 			//LoadAffixes(); //just for checking values
 			//LoadPowers();
 			//LoadQuests();
-			Logger.Info("Loading Tutorials...");
+			Logger.Info("Loading $[underline]$Tutorials$[/]$...");
 			Tutorials = MPQStorage.Data.Assets[SNOGroup.Tutorial].Keys.OrderBy(i => i).ToList();
-			Logger.Info("Loading Bonuses...");
+			Logger.Info("Loading $[underline]$Bonuses$[/]$...");
 			LoadItemSetBonuses();
 			LoadGemBonuses();
-			Logger.Info("Loading Handlers...");
+			Logger.Info("Loading $[underline]$Handlers$[/]$...");
 			LoadHandlers();
-			Logger.Info("Loading Lore...");
-			LoadLore(); 
-			Logger.Info("Loading Bounties...");
+			Logger.Info("Loading $[underline]$Lore$[/]$...");
+			LoadLore();
+			Logger.Info("Loading $[underline]$Bounties$[/]$...");
 			LoadBounties();
 			//LoadConversations();
 			//if (Net.GS.Config.Instance.Enabled)
 
-			Logger.Info("Loading Worlds...");
+			Logger.Info("Loading $[underline]$Worlds$[/]$...");
 			Scene.PreCacheMarkers();
 
 			SetAllowedTypes();
@@ -103,6 +85,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		}
 
 		#region loading generator
+
 		private static void LoadBounties()
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Quest].Values)
@@ -123,14 +106,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						if (asset.Name.Contains("_A5_"))
 							data.BountyData0.ActData = BountyData.ActT.A5;
 					}
+
 					//fixes for bugged bounties
-					if (data.BountyData0.Type != BountyData.BountyType.CompleteEvent && data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o => o.ObjectiveType == QuestStepObjectiveType.CompleteQuest))
+					if (data.BountyData0.Type != BountyData.BountyType.CompleteEvent && data.QuestSteps
+						    .SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o =>
+							    o.ObjectiveType == QuestStepObjectiveType.CompleteQuest))
 						data.BountyData0.Type = BountyData.BountyType.CompleteEvent;
-					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o => o.ObjectiveType == QuestStepObjectiveType.KillAll))
+					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && data.QuestSteps
+						    .SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives)
+						    .Any(o => o.ObjectiveType == QuestStepObjectiveType.KillAll))
 						data.BountyData0.Type = BountyData.BountyType.ClearDungeon;
-					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && !data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Any(o => o.ObjectiveType == QuestStepObjectiveType.KillAny))
+					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && !data.QuestSteps
+						    .SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives)
+						    .Any(o => o.ObjectiveType == QuestStepObjectiveType.KillAny))
 						continue;
-					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && data.QuestSteps.SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives).Where(o => o.ObjectiveType == QuestStepObjectiveType.KillMonster).Count() > 1)
+					if (data.BountyData0.Type == BountyData.BountyType.KillUnique && data.QuestSteps
+						    .SelectMany(s => s.StepObjectiveSets).SelectMany(s => s.StepObjectives)
+						    .Where(o => o.ObjectiveType == QuestStepObjectiveType.KillMonster).Count() > 1)
 						continue;
 
 					Bounties.Add(data.Header.SNOId, data);
@@ -153,7 +145,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					}
 				}
 
-				var typeAttributes = (HandledTypeAttribute[])type.GetCustomAttributes(typeof(HandledTypeAttribute), true);
+				var typeAttributes =
+					(HandledTypeAttribute[])type.GetCustomAttributes(typeof(HandledTypeAttribute), true);
 				if (typeAttributes.Length != 0)
 				{
 					foreach (var typeName in typeAttributes.First().Types)
@@ -181,13 +174,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 							ObsoleteItems.Add(itemDefinition.Hash);
 							//Logger.Debug("flagged as obsolete _104: {0}, {1}", itemDefinition.Name, itemDefinition.Hash);
 						}
+
 						if (itemDefinition.Name.EndsWith("_1xx"))
 						{
 							ObsoleteItems.Add(itemDefinition.Hash);
 							//Logger.Debug("flagged as obsolete _1xx: {0}, {1}", itemDefinition.Name, itemDefinition.Hash);
 						}
+
 						if (itemDefinition.Name.ToLower().Contains("unique") && !itemDefinition.Name.EndsWith("_x1") &&
-							!itemDefinition.Name.EndsWith("_104") && !itemDefinition.Name.EndsWith("_1xx"))
+						    !itemDefinition.Name.EndsWith("_104") && !itemDefinition.Name.EndsWith("_1xx"))
 						{
 							ObsoleteItems.Add(itemDefinition.Hash);
 							//Logger.Debug("flagged as obsolete 1.0.3: {0}, {1}", itemDefinition.Name, itemDefinition.Hash);
@@ -195,7 +190,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 						if (
 							itemDefinition.SNOActor != 4812 //orb_norm_base_03
-							&& !(itemDefinition.Name.ToLower().Contains("stone") && !itemDefinition.Name.ToLower().Contains("spiritstone")) //StoneOfRecall
+							&& !(itemDefinition.Name.ToLower().Contains("stone") &&
+							     !itemDefinition.Name.ToLower().Contains("spiritstone")) //StoneOfRecall
 							&& !itemDefinition.Name.ToLower().StartsWith("ph_") //Kadala items
 							&& !itemDefinition.Name.ToLower().Contains("talisman") //TalismanUnlock
 							&& !itemDefinition.Name.ToLower().Contains("console") //bugged console items
@@ -214,8 +210,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 							&& !itemDefinition.Name.ToLower().Contains("shadowclone") //shadowClone OP weapon
 							//&& !(itemDefinition.Name.Contains("_Set_") && itemDefinition.Name.EndsWith("_x1")) //RoS sets
 							//&& !(itemDefinition.Name.ToLower().Contains("unique") && (itemDefinition.BonusAffixes + itemDefinition.BonusMajorAffixes + itemDefinition.BonusMinorAffixes == 0) && itemDefinition.LegendaryAffixFamily[0] == -1) //2.1+ items
-							&& !(CraftOnlyItems.Contains(itemDefinition.Hash) && itemDefinition.Name.ToLower().Contains("unique")) //crafted
-							&& !(CraftOnlyItems.Contains(itemDefinition.Hash) && itemDefinition.Name.ToLower().Contains("unique")) //crafted
+							&& !(CraftOnlyItems.Contains(itemDefinition.Hash) &&
+							     itemDefinition.Name.ToLower().Contains("unique")) //crafted
+							&& !(CraftOnlyItems.Contains(itemDefinition.Hash) &&
+							     itemDefinition.Name.ToLower().Contains("unique")) //crafted
 							//&& !(itemDefinition.Name.ToLower().Contains("_10") && itemDefinition.Name.ToLower().Contains("_x1")) //"future" items
 							&& itemDefinition.ItemTypesGBID != StringHashHelper.HashItemName("Book")
 							&& itemDefinition.ItemTypesGBID != StringHashHelper.HashItemName("TreasureBag")
@@ -227,14 +225,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 							&& itemDefinition.ItemTypesGBID != StringHashHelper.HashItemName("Shard")
 							&& itemDefinition.ItemTypesGBID != StringHashHelper.HashItemName("GreaterShard")
 							&& itemDefinition.ItemTypesGBID != StringHashHelper.HashItemName("HealthPotion")
-							)
+						)
 						{
 							if (!IsBuggedItem(itemDefinition))
 							{
 								if (itemDefinition.Name.ToLower().Contains("_set_") ||
-									itemDefinition.Name.ToLower().Contains("unique") ||
-									itemDefinition.Name.ToLower().StartsWith("p71_ethereal")
-									)
+								    itemDefinition.Name.ToLower().Contains("unique") ||
+								    itemDefinition.Name.ToLower().StartsWith("p71_ethereal")
+								   )
 								{
 									AllowedUniqueItems.TryAdd(itemDefinition.Hash, itemDefinition);
 									AllowedItems.TryAdd(itemDefinition.Hash, itemDefinition);
@@ -251,7 +249,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			}
 		}
 
-		private static bool IsBuggedItem(ItemTable definition) 
+		private static bool IsBuggedItem(ItemTable definition)
 		{
 			switch (definition.Name)
 			{
@@ -317,8 +315,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				case "Unique_Quiver_104_x1":
 					return true;
 			}
+
 			return false;
 		}
+
 		private static void LoadQuests()
 		{
 			//Logger.Info("LoadItems()");
@@ -330,14 +330,18 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					Logger.Info("-------------");
 					Logger.Info("Quest: [{0}] {1}", data.Header.SNOId, asset.Name);
 					Logger.Info("Type: {0}", data.QuestType);
-					Logger.Info("NumberOfSteps: {0}, NumberOfCompletionSteps: {1}", data.NumberOfSteps, data.NumberOfCompletionSteps);
+					Logger.Info("NumberOfSteps: {0}, NumberOfCompletionSteps: {1}", data.NumberOfSteps,
+						data.NumberOfCompletionSteps);
 					foreach (var step in data.QuestSteps)
 					{
-						int nextID = step.StepObjectiveSets.Count() > 0 ? step.StepObjectiveSets.First().FollowUpStepID : -1;
+						int nextID = step.StepObjectiveSets.Any()
+							? step.StepObjectiveSets.First().FollowUpStepID
+							: -1;
 						Logger.Info("Step [{0}] {1} -> {2}", step.ID, step.Name, nextID);
 						foreach (var objSet in step.StepObjectiveSets)
-							foreach (var obj in objSet.StepObjectives)
-								Logger.Info("objective type {0}, I0 {1}, I2 {2}, Target {3}, Sno1 {4}, Sno2 {5}", obj.ObjectiveType, obj.I0, obj.I2, obj.CounterTarget, obj.SNOName1, obj.SNOName2);
+						foreach (var obj in objSet.StepObjectives)
+							Logger.Info("objective type {0}, I0 {1}, I2 {2}, Target {3}, Sno1 {4}, Sno2 {5}",
+								obj.ObjectiveType, obj.I0, obj.I2, obj.CounterTarget, obj.SNOName1, obj.SNOName2);
 					}
 				}
 			}
@@ -354,9 +358,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					foreach (var recipeDefinition in data.Recipes)
 					{
 						Recipes.TryAdd(recipeDefinition.Hash, recipeDefinition);
-						if (recipeDefinition.SNORecipe > 0 && MPQStorage.Data.Assets[SNOGroup.Recipe].ContainsKey(recipeDefinition.SNORecipe))
+						if (recipeDefinition.SNORecipe > 0 && MPQStorage.Data.Assets[SNOGroup.Recipe]
+							    .ContainsKey(recipeDefinition.SNORecipe))
 						{
-							var reward = (MPQStorage.Data.Assets[SNOGroup.Recipe][recipeDefinition.SNORecipe].Data as Recipe).ItemSpecifierData.ItemGBId;
+							var reward =
+								(MPQStorage.Data.Assets[SNOGroup.Recipe][recipeDefinition.SNORecipe].Data as Recipe)
+								.ItemSpecifierData.ItemGBId;
 							if (!CraftOnlyItems.Contains(reward))
 								CraftOnlyItems.Add(reward);
 						}
@@ -434,7 +441,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Actor].Values)
 			{
-				Actor data = asset.Data as Actor;
+				ActorData data = asset.Data as ActorData;
 				if (data != null && data.TagMap.ContainsKey(ActorKeys.Lore))
 				{
 					if (Lore.ContainsKey(data.TagMap[ActorKeys.Lore].Id)) continue;
@@ -563,7 +570,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Power].Values)
 			{
 				Power data = asset.Data as Power;
-				Logger.Info("{0} => array(\"name\" => \"{1}\", \"desc\" => \"{2}\"),", data.Header.SNOId, asset.Name, data.LuaName);
+				Logger.Info("{0} => array(\"name\" => \"{1}\", \"desc\" => \"{2}\"),", data.Header.SNOId, asset.Name,
+					data.LuaName);
 				/*Logger.Info("---------------------------------------------------------");
 				Logger.Info("asset name: {0}", asset.Name);
 				Logger.Info("SNOID: {0}", data.Header.SNOId);
@@ -927,7 +935,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.Conversation].Values)
 			{
-				DiIiS_NA.Core.MPQ.FileFormats.Conversation data = asset.Data as DiIiS_NA.Core.MPQ.FileFormats.Conversation;
+				DiIiS_NA.Core.MPQ.FileFormats.Conversation data =
+					asset.Data as DiIiS_NA.Core.MPQ.FileFormats.Conversation;
 				/*Logger.Info("Conversation: [{8}]{0} I4: {1},	Type {9}, NPC {10}	Act {2}, SNOConvUnlocks {3}, {4}, {5}, I5: {6}, I6: {7}", 
 					asset.Name, 
 					data.I4, 
@@ -966,6 +975,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					// already added structure
 					continue;
 				}
+
 				foreach (int subhash in ItemGroup.SubTypesToHashList(ItemGroup.FromHash(hash).Name))
 				{
 					if (AllowedItemTypes.Contains(subhash))
@@ -973,6 +983,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 						// already added structure
 						continue;
 					}
+
 					AllowedItemTypes.Add(subhash);
 				}
 			}
@@ -980,52 +991,58 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		}
 
 		#endregion
+
 		#region generating items
+
 		// generates a random item.
 		public static Item GenerateRandom(ActorSystem.Actor owner)
 		{
 			var itemDefinition = GetRandom(Items.Values
-				.Where(def => def.ItemLevel == owner.Attributes[GameAttribute.Level]).ToList());
+				.Where(def => def.ItemLevel == owner.Attributes[GameAttributes.Level]).ToList());
 			return CreateItem(owner, itemDefinition);
 		}
 
 		public static Item GenerateLegOrSetRandom(ActorSystem.Actor owner)
 		{
 			var itemDefinition = GetLegOrSetRandom(AllowedUniqueItems.Values
-				.Where(def => def.ItemLevel == owner.Attributes[GameAttribute.Level]).ToList());
+				.Where(def => def.ItemLevel == owner.Attributes[GameAttributes.Level]).ToList());
 			return CreateItem(owner, itemDefinition);
 		}
 
-		public static List<int> ObsoleteItems = new List<int>();
+		public static List<int> ObsoleteItems = new();
 
 		// generates a random equip item (for vendors)
-		public static Item GenerateRandomEquip(ActorSystem.Actor owner, int level, int minQuality = 1, int maxQuality = -1, ItemTypeTable type = null, ToonClass owner_class = ToonClass.Unknown, bool crafted = false)
+		public static Item GenerateRandomEquip(ActorSystem.Actor owner, int level, int minQuality = 1,
+			int maxQuality = -1, ItemTypeTable type = null, ToonClass ownerClass = ToonClass.Unknown,
+			bool crafted = false, bool canBeUnidentified = true)
 		{
-			if (level < 0) level = owner.Attributes[GameAttribute.Level];
+			if (level < 0) level = owner.Attributes[GameAttributes.Level];
 			int quality = minQuality;
 			//if (quality > 7)
 			//	quality -= 5;
 			if (maxQuality > -1)
 				quality = RandomHelper.Next(minQuality, maxQuality);
 
-			if (quality > 8)        //Unique items level scaling
+			if (quality > 8) //Unique items level scaling
 			{
 				var legaDefinition = GetRandom(AllowedItems.Values
-					.Where(def =>
-						def.ItemLevel <= Math.Min(level + 2, 73)
-						&& !ObsoleteItems.Contains(def.Hash)
-						&& UniqueItems.UniqueItemStats.ContainsKey(def.Hash)
-						&& def.Quality != ItemTable.ItemQuality.Special
-						&& (type == null ? true : ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash))
-						&& (quality > 2 ? true : !ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(-740765630)) //not jewelry
-						&& (owner_class == ToonClass.Unknown ? true :
-								(owner_class == ToonClass.Barbarian ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Barbarian) :
-								(owner_class == ToonClass.Crusader ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Crusader) :
-								(owner_class == ToonClass.Monk ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Monk) :
-								(owner_class == ToonClass.Necromancer ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Necromancer) :
-								(owner_class == ToonClass.Wizard ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Wizard) :
-								(owner_class == ToonClass.DemonHunter ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.DemonHunter) :
-								(owner_class == ToonClass.WitchDoctor ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.WitchDoctor) : true)))))))
+						.Where(def =>
+							def.ItemLevel <= Math.Min(level + 2, 73)
+							&& !ObsoleteItems.Contains(def.Hash)
+							&& UniqueItems.UniqueItemStats.ContainsKey(def.Hash)
+							&& def.Quality != ItemTable.ItemQuality.Special
+							&& (type == null || ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash))
+							&& (quality > 2 || !ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(-740765630)) //not jewelry
+							&& (ownerClass == ToonClass.Unknown || (ownerClass switch
+								{
+									ToonClass.Barbarian => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Barbarian),
+									ToonClass.Crusader => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Crusader),
+									ToonClass.Monk => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Monk),
+									ToonClass.Necromancer => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Necromancer),
+									ToonClass.Wizard => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Wizard),
+									ToonClass.DemonHunter => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.DemonHunter),
+									_ => ownerClass != ToonClass.WitchDoctor || ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.WitchDoctor)
+								})
 							)
 						).ToList()
 					, (quality > 8));
@@ -1035,33 +1052,37 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				legaDefinition.CrafterRequiredLevel = level;
 				for (int i = 0; i < 6; i++)
 					legaDefinition.MaxAffixLevel[i] = level;
-				return CreateItem(owner, legaDefinition, quality, crafted);
+				return CreateItem(owner, legaDefinition, quality, crafted, canBeUnidentified: canBeUnidentified);
 			}
 
 			var itemDefinition = GetRandom(AllowedItems.Values
-				.Where(def =>
+					.Where(def =>
 						//def.ItemLevel == owner.World.Game.InitialLevel //owner.Attributes[GameAttribute.Level]
 						def.ItemLevel >= Math.Max(Math.Min(level - 3, 60), 1)
 						&& def.ItemLevel <= Math.Min(level + 3, 73)
 
 						&& !ObsoleteItems.Contains(def.Hash) //obsolete 1.0.3 items
-						&& (type == null ? true : ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash))
-						&& (quality > 2 ? true : !ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(-740765630)) //not jewelry
-						&& (owner_class == ToonClass.Unknown ? true :
-								(owner_class == ToonClass.Barbarian ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Barbarian) :
-								owner_class == ToonClass.Crusader ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Crusader) :
-								(owner_class == ToonClass.Monk ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Monk) :
-								(owner_class == ToonClass.Wizard ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Wizard) :
-								(owner_class == ToonClass.DemonHunter ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.DemonHunter) :
-								(owner_class == ToonClass.Necromancer ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Necromancer) :
-								(owner_class == ToonClass.WitchDoctor ? ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.WitchDoctor) :
-								true
-								)))))))
-						).ToList()
-					, false//(quality > 8)
-					);
+						&& (type == null || ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash))
+						&& (quality > 2 || !ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(-740765630)) //not jewelry
+						&& (ownerClass == ToonClass.Unknown || (ownerClass switch
+						{
+							ToonClass.Barbarian => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Barbarian),
+							ToonClass.Crusader => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Crusader),
+							ToonClass.Monk => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Monk),
+							ToonClass.Wizard => ItemGroup.FromHash(def.ItemTypesGBID).Usable.HasFlag(ItemFlags.Wizard),
+							ToonClass.DemonHunter => ItemGroup.FromHash(def.ItemTypesGBID).Usable
+								.HasFlag(ItemFlags.DemonHunter),
+							ToonClass.Necromancer => ItemGroup.FromHash(def.ItemTypesGBID).Usable
+								.HasFlag(ItemFlags.Necromancer),
+							ToonClass.WitchDoctor => ItemGroup.FromHash(def.ItemTypesGBID).Usable
+								.HasFlag(ItemFlags.WitchDoctor),
+							_ => true
+						}))
+					).ToList()
+				, false //(quality > 8)
+			);
 
-			return CreateItem(owner, itemDefinition, quality, crafted);
+			return CreateItem(owner, itemDefinition, quality, crafted, canBeUnidentified: canBeUnidentified);
 		}
 
 		// generates a random dye (for vendors)
@@ -1069,10 +1090,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			var itemDefinition = GetRandom(Items.Values
 				.Where(def =>
-						def.ItemTypesGBID == StringHashHelper.HashItemName("Dye") &&
-						!def.Name.Contains("CE")
-						).ToList()
-					);
+					def.ItemTypesGBID == StringHashHelper.HashItemName("Dye") &&
+					!def.Name.Contains("CE")
+				).ToList()
+			);
 			return CreateItem(owner, itemDefinition);
 		}
 
@@ -1084,23 +1105,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public static Item GenerateRandomCraftItem(ActorSystem.Actor player, int level, bool dropRecipe = false)
 		{
-			if (level < 0) level = player.Attributes[GameAttribute.Level];
+			if (level < 0) level = player.Attributes[GameAttributes.Level];
 			ItemTable itemDefinition = null;
 			if (dropRecipe && FastRandom.Instance.Next(100) < 2)
 				itemDefinition = GetRandom(Items.Values
 					.Where(def =>
-							def.ItemLevel <= (level + 3) &&
-							!def.Name.Contains("StaffofCow") &&
-							def.Name.Contains("CraftingPlan") &&
-							!def.Name.Contains("CraftingPlan_Jeweler")
-							).ToList()
-						);
+						def.ItemLevel <= (level + 3) &&
+						!def.Name.Contains("StaffofCow") &&
+						def.Name.Contains("CraftingPlan") &&
+						!def.Name.Contains("CraftingPlan_Jeweler")
+					).ToList()
+				);
 
 			if (itemDefinition == null) return null;
 			return CreateItem(player, itemDefinition);
 		}
 
-		public static List<string> GemNames = new List<string>()
+		public static List<string> GemNames = new()
 		{
 			"x1_Topaz",
 			"x1_Ruby",
@@ -1114,16 +1135,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			string baseN = "Unique_";
 			string gemName = "Gem";
 
-			int gem_grade = RandomHelper.Next(1,23);
+			int gem_grade = RandomHelper.Next(1, 23);
 			gemName += string.Format("_0{0:00}", gem_grade) + "_x1";
 			return Cook((player as Player), baseN + gemName);
 		}
 
 		public static Item GenerateRandomGem(ActorSystem.Actor player, int level, bool is_goblin)
 		{
-			string gemName = GemNames[FastRandom.Instance.Next(GemNames.Count)];
+			string gemName = GemNames.PickRandom();
 
-			int lvl = Math.Max(player.Attributes[GameAttribute.Level], 20);
+			int lvl = Math.Max(player.Attributes[GameAttributes.Level], 20);
 			int gem_grade = ((lvl - 10) / 8) + 1;
 			if (is_goblin) gem_grade += 2;
 			gemName += string.Format("_{0:00}", gem_grade);
@@ -1136,7 +1157,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public static Item GenerateRandom(ActorSystem.Actor player, ItemTypeTable type)
 		{
 			var itemDefinition = GetRandom(Items.Values
-				.Where(def => ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash)).ToList());
+				.Where(def => ItemGroup.HierarchyToHashList(ItemGroup.FromHash(def.ItemTypesGBID)).Contains(type.Hash))
+				.ToList());
 			return CreateItem(player, itemDefinition);
 		}
 
@@ -1145,11 +1167,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//var found = false;
 			//ItemTable itemDefinition = null;
 
-			if (pool.Count() == 0) return null;
+			if (pool.Count == 0) return null;
 			List<ItemTable> pool_filtered = pool.Where(it =>
 				it.SNOActor != -1 &&
 				it.WeaponDamageMin != 100.0f &&
-				!it.Name.ToLower().Contains("lootrun") &&  //TieredLootrunKey
+				!it.Name.ToLower().Contains("lootrun") && //TieredLootrunKey
 				!it.Name.ToLower().Contains("gold") &&
 				!it.Name.ToLower().Contains("Retro") &&
 				!it.Name.ToLower().Contains("healthglobe") &&
@@ -1169,7 +1191,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				!it.Name.ToLower().Contains("debug") &&
 				!it.Name.ToLower().Contains("promo") &&
 				!it.Name.ToLower().Contains("powerpotion") &&
-				!((it.ItemTypesGBID == StringHashHelper.HashItemName("Book")) && (it.Cost == 0)) && // i hope it catches all lore with npc spawned /xsochor
+				!((it.ItemTypesGBID == StringHashHelper.HashItemName("Book")) &&
+				  (it.Cost == 0)) && // i hope it catches all lore with npc spawned /xsochor
 				!(!GBIDHandlers.ContainsKey(it.Hash) && !AllowedItemTypes.Contains(it.ItemTypesGBID))
 			).ToList();
 			/*
@@ -1198,22 +1221,23 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				).ToList();
 			//*/
 
-			if (pool_filtered.Count() == 0) return null;
+			if (pool_filtered.Count == 0) return null;
 
 
-			ItemTable selected = pool_filtered[FastRandom.Instance.Next(0, pool_filtered.Count() - 1)];
+			ItemTable selected = pool_filtered.PickRandom();
 			return selected;
 		}
+
 		private static ItemTable GetLegOrSetRandom(List<ItemTable> pool, bool isUnique = false)
 		{
 			//var found = false;
 			//ItemTable itemDefinition = null;
 
-			if (pool.Count() == 0) return null;
+			if (pool.Count == 0) return null;
 			List<ItemTable> pool_filtered = pool.Where(it =>
 				it.SNOActor != -1 &&
 				it.WeaponDamageMin != 100.0f &&
-				!it.Name.ToLower().Contains("lootrun") &&  //TieredLootrunKey
+				!it.Name.ToLower().Contains("lootrun") && //TieredLootrunKey
 				!it.Name.ToLower().Contains("gold") &&
 				!it.Name.ToLower().Contains("Retro") &&
 				!it.Name.ToLower().Contains("healthglobe") &&
@@ -1233,16 +1257,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				!it.Name.ToLower().Contains("debug") &&
 				!it.Name.ToLower().Contains("promo") &&
 				!it.Name.ToLower().Contains("powerpotion") &&
-				!((it.ItemTypesGBID == StringHashHelper.HashItemName("Book")) && (it.Cost == 0)) && // i hope it catches all lore with npc spawned /xsochor
+				!((it.ItemTypesGBID == StringHashHelper.HashItemName("Book")) &&
+				  (it.Cost == 0)) && // i hope it catches all lore with npc spawned /xsochor
 				!(!GBIDHandlers.ContainsKey(it.Hash) && !AllowedItemTypes.Contains(it.ItemTypesGBID))
 			).ToList();
-			if (pool_filtered.Count() == 0) return null;
+			if (pool_filtered.Count == 0) return null;
 
-			ItemTable selected = pool_filtered[FastRandom.Instance.Next(0, pool_filtered.Count() - 1)];
+			ItemTable selected = pool_filtered.PickRandom();
 			return selected;
 		}
+
 		#endregion
+
 		#region misc
+
 		public static Type GetItemClass(ItemTable definition)
 		{
 			Type type = typeof(Item);
@@ -1268,49 +1296,70 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public static int GetItemHash(string name)
 		{
-			var item = Items.Where(i => i.Value.Name == name).FirstOrDefault();
+			var item = Items.FirstOrDefault(i => i.Value.Name == name);
 			return (item.Value == null ? -1 : item.Key);
 		}
 
 		public static Item CloneItem(Item originalItem)
 		{
-			Item clonedItem = CreateItem(originalItem.Owner, originalItem.ItemDefinition, originalItem.Attributes[GameAttribute.Item_Quality_Level], originalItem.Attributes[GameAttribute.IsCrafted], originalItem.Attributes[GameAttribute.Seed]);
+			Item clonedItem = CreateItem(originalItem.Owner, originalItem.ItemDefinition,
+				originalItem.Attributes[GameAttributes.Item_Quality_Level],
+				originalItem.Attributes[GameAttributes.IsCrafted], originalItem.Attributes[GameAttributes.Seed]);
 			//clonedItem.AffixList = originalItem.AffixList;
 			//clonedItem.Attributes = originalItem.Attributes;
 
 			AffixGenerator.CloneIntoItem(originalItem, clonedItem);
-			clonedItem.Attributes[GameAttribute.ItemStackQuantityLo] = originalItem.Attributes[GameAttribute.ItemStackQuantityLo];
+			clonedItem.Attributes[GameAttributes.ItemStackQuantityLo] =
+				originalItem.Attributes[GameAttributes.ItemStackQuantityLo];
 			clonedItem.RareItemName = originalItem.RareItemName;
 			clonedItem.Unidentified = originalItem.Unidentified;
 			return clonedItem;
 		}
 
-		public static Item GetRandomItemOfType(Player player, ItemTypeTable itemType)
+		public static Item GetRandomItemOfType(Player player, ItemTypeTable itemType, bool canBeUnidentified = true)
 		{
 			int minQuality = 1;
 			if (ItemGroup.HierarchyToHashList(itemType).Contains(-740765630)) //jewelry
 				minQuality = 3;
 
 			Item item = GenerateRandomEquip(player, player.Level, minQuality, 10, itemType);
-
-			item.Unidentified = false;
+			if (canBeUnidentified)
+				RandomSetUnidentified(item);
 			return item;
 		}
 
 		// Creates an item based on supplied definition.
-		public static Item CreateItem(ActorSystem.Actor owner, ItemTable definition, int forceQuality = -1, bool crafted = false, int seed = -1)
+		public static Item CreateItem(ActorSystem.Actor owner, ItemTable definition, int forceQuality = -1,
+			bool crafted = false, int seed = -1, bool canBeUnidentified = true)
 		{
-			// Logger.Trace("Creating item: {0} [sno:{1}, gbid {2}]", definition.Name, definition.SNOActor, StringHashHelper.HashItemName(definition.Name));
-
-			if (definition == null) return null;
+			Logger.Debug("Creating item: $[underline blue]${0}$[/]$ [sno:$[underline blue]${1}$[/]$, gbid $[underline blue]${2}$[/]$]", definition.Name, definition.SNOActor, StringHashHelper.HashItemName(definition.Name));
 
 			Type type = GetItemClass(definition);
 
-			var item = (Item)Activator.CreateInstance(type, new object[] { owner.World, definition, forceQuality, crafted, seed });
+			var item = (Item)Activator.CreateInstance(type, owner.World, definition, forceQuality, crafted, seed);
+			if (item == null)
+			{
+				Logger.Warn($"Could not create item $[red]${definition.Name}$[/]$ [sno:$[red]${definition.SNOActor}$[/]$, gbid $[red]${StringHashHelper.HashItemName(definition.Name)}]$[/]$");
+				return null;
+			}
 			if (forceQuality == 9)
-				item.Attributes[GameAttribute.Item_Quality_Level] = 9;
+				item.Attributes[GameAttributes.Item_Quality_Level] = 9;
+			if (canBeUnidentified)
+				RandomSetUnidentified(item);
 			return item;
 		}
+		
+		/// <summary>
+		/// Randomly sets unidentified flag on item.
+		/// If the item is unique, legendary, special or set, it will have <see cref="GameServerConfig.ChanceHighQualityUnidentified"/>% chance to be unidentified.
+		/// Otherwise, it will have <see cref="GameServerConfig.ChanceNormalUnidentified"/>% chance to be unidentified.
+		/// </summary>
+		/// <param name="item">The item to set the flag</param>
+		private static void RandomSetUnidentified(Item item) => item.Unidentified = 
+			FastRandom.Instance.Chance(item.Name.Contains("unique", StringComparison.InvariantCultureIgnoreCase) 
+			|| item.ItemDefinition.Quality is ItemTable.ItemQuality.Legendary or ItemTable.ItemQuality.Special or ItemTable.ItemQuality.Set 
+			? GameServerConfig.Instance.ChanceHighQualityUnidentified 
+			: GameServerConfig.Instance.ChanceNormalUnidentified);
 
 		// Allows cooking a custom item.
 		public static Item Cook(Player player, string name)
@@ -1320,30 +1369,32 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			//Unique items level scaling
 			if (definition.Name.ToLower().Contains("unique") ||
-				definition.Quality == ItemTable.ItemQuality.Legendary ||
-				definition.Quality == ItemTable.ItemQuality.Special ||
-				definition.Quality == ItemTable.ItemQuality.Set)
+			    definition.Quality is ItemTable.ItemQuality.Legendary or ItemTable.ItemQuality.Special or ItemTable.ItemQuality.Set)
 			{
-				definition.ItemLevel = player.Attributes[GameAttribute.Level];
-				definition.RequiredLevel = player.Attributes[GameAttribute.Level];
-				definition.CrafterRequiredLevel = player.Attributes[GameAttribute.Level];
+				definition.ItemLevel = player.Attributes[GameAttributes.Level];
+				definition.RequiredLevel = player.Attributes[GameAttributes.Level];
+				definition.CrafterRequiredLevel = player.Attributes[GameAttributes.Level];
 				for (int i = 0; i < 6; i++)
-					definition.MaxAffixLevel[i] = player.Attributes[GameAttribute.Level];
+					definition.MaxAffixLevel[i] = player.Attributes[GameAttributes.Level];
 			}
+
 			return CookFromDefinition(player.World, definition);
 		}
 
 		// Allows cooking a custom item.
-		public static Item CookFromDefinition(World world, ItemTable definition, int forceQuality = -1, bool binded = false, bool crafted = false, int seed = -1)
+		public static Item CookFromDefinition(World world, ItemTable definition, int forceQuality = -1,
+			bool binded = false, bool crafted = false, int seed = -1)
 		{
 			Type type = GetItemClass(definition);
 
-			var item = (Item)Activator.CreateInstance(type, new object[] { world, definition, forceQuality, crafted, seed });
+			var item = (Item)Activator.CreateInstance(type,
+				new object[] { world, definition, forceQuality, crafted, seed });
 
-			item.Attributes[GameAttribute.Item_Quality_Level] = Math.Min(item.Attributes[GameAttribute.Item_Quality_Level], 9);
+			item.Attributes[GameAttributes.Item_Quality_Level] =
+				Math.Min(item.Attributes[GameAttributes.Item_Quality_Level], 9);
 
 			if (binded)
-				item.Attributes[GameAttribute.Item_Binding_Level_Override] = 1;
+				item.Attributes[GameAttributes.Item_Binding_Level_Override] = 1;
 
 			return item;
 		}
@@ -1353,17 +1404,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			return (Items.ContainsKey(gbid)) ? Items[gbid] : null;
 		}
 
-		public static List<ParagonBonusesTable> GetParagonBonusTable(ToonClass toon_class)
+		public static List<ParagonBonusesTable> GetParagonBonusTable(ToonClass toonClass)
 		{
-			Class gb_class = Class.None;
-			if (toon_class == ToonClass.Barbarian) gb_class = Class.Barbarian;
-			if (toon_class == ToonClass.Crusader) gb_class = Class.Crusader;
-			if (toon_class == ToonClass.DemonHunter) gb_class = Class.DemonHunter;
-			if (toon_class == ToonClass.Monk) gb_class = Class.Monk;
-			if (toon_class == ToonClass.WitchDoctor) gb_class = Class.Witchdoctor;
-			if (toon_class == ToonClass.Wizard) gb_class = Class.Wizard;
-			if (toon_class == ToonClass.Necromancer) gb_class = Class.Necromancer;
-			return ParagonBonuses.Where(b => b.HeroClass == gb_class || b.HeroClass == Class.None).ToList();
+			Class @class = Class.None;
+			if (toonClass == ToonClass.Barbarian) @class = Class.Barbarian;
+			if (toonClass == ToonClass.Crusader) @class = Class.Crusader;
+			if (toonClass == ToonClass.DemonHunter) @class = Class.DemonHunter;
+			if (toonClass == ToonClass.Monk) @class = Class.Monk;
+			if (toonClass == ToonClass.WitchDoctor) @class = Class.Witchdoctor;
+			if (toonClass == ToonClass.Wizard) @class = Class.Wizard;
+			if (toonClass == ToonClass.Necromancer) @class = Class.Necromancer;
+			return ParagonBonuses.Where(b => b.HeroClass == @class || b.HeroClass == Class.None).ToList();
 		}
 
 		public static RecipeTable GetRecipeDefinition(int gbid)
@@ -1373,8 +1424,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		public static RecipeTable GetRecipeDefinition(string name)
 		{
-			var recipe = Recipes.Where(r => r.Value.Name == name).FirstOrDefault();
-			return (recipe.Value == null) ? null : recipe.Value;
+			var recipe = Recipes.FirstOrDefault(r => r.Value.Name == name);
+			return recipe.Value;
 		}
 
 		public static SocketedEffectTable GetGemEffectDefinition(int gem_gbid, int item_type)
@@ -1397,7 +1448,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			if (amount > 500) item_name = "Gold4";
 			if (amount > 1000) item_name = "Gold5";
 			var item = Cook(player, item_name);
-			item.Attributes[GameAttribute.Gold] = amount;
+			item.Attributes[GameAttributes.Gold] = amount;
 
 			return item;
 		}
@@ -1405,7 +1456,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public static Item CreateBloodShards(Player player, int amount)
 		{
 			var item = Cook(player, "HoradricRelic");
-			item.Attributes[GameAttribute.ItemStackQuantityLo] = amount;
+			item.Attributes[GameAttributes.ItemStackQuantityLo] = amount;
 
 			return item;
 		}
@@ -1416,7 +1467,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				amount = 10 + ((amount - 10) * 5);
 
 			var item = Cook(player, "HealthGlobe" + amount);
-			item.Attributes[GameAttribute.Health_Globe_Bonus_Health] = amount;
+			item.Attributes[GameAttributes.Health_Globe_Bonus_Health] = amount;
 
 			return item;
 		}
@@ -1449,7 +1500,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		}
 
 		#endregion
+
 		#region Database handling
+
 		public static void SaveToDB(Item item)
 		{
 			//var timestart = DateTime.Now;
@@ -1458,17 +1511,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			var attributesSer = item.Attributes.Serialize();
 
 			item.DBInventory.Affixes = affixSer;
-			item.DBInventory.DyeType = item.Attributes[GameAttribute.DyeType];
-			item.DBInventory.Count = item.Attributes[GameAttribute.ItemStackQuantityLo];
-			item.DBInventory.Durability = item.Attributes[GameAttribute.Durability_Cur];
-			item.DBInventory.Binding = item.Attributes[GameAttribute.Item_Binding_Level_Override];
+			item.DBInventory.DyeType = item.Attributes[GameAttributes.DyeType];
+			item.DBInventory.Count = item.Attributes[GameAttributes.ItemStackQuantityLo];
+			item.DBInventory.Durability = item.Attributes[GameAttributes.Durability_Cur];
+			item.DBInventory.Binding = item.Attributes[GameAttributes.Item_Binding_Level_Override];
 			item.DBInventory.Rating = item.Rating;
 			item.DBInventory.RareItemName = (item.RareItemName == null ? null : item.RareItemName.ToByteArray());
-			item.DBInventory.Quality = item.Attributes[GameAttribute.Item_Quality_Level];
+			item.DBInventory.Quality = item.Attributes[GameAttributes.Item_Quality_Level];
 			item.DBInventory.Attributes = attributesSer;
 			item.DBInventory.GbId = item.GBHandle.GBID;
 			item.DBInventory.Version = 2;
-			item.DBInventory.TransmogGBID = item.Attributes[GameAttribute.TransmogGBID];
+			item.DBInventory.TransmogGBID = (int)item.Attributes[GameAttributes.TransmogGBID];
 
 			//Logger.Info("ItemFlags: {0}", (int)item.ItemType.Flags);
 
@@ -1477,18 +1530,22 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		}
 
-		public static Item LoadFromDB(Player owner, DBInventory instance)//  int dbID, int gbid, string attributesSer, string affixesSer)
+		public static Item
+			LoadFromDB(Player owner,
+				DBInventory instance) //  int dbID, int gbid, string attributesSer, string affixesSer)
 		{
 			var table = Items[instance.GbId];
-			var itm = new Item(owner.World, table, DeSerializeAffixList(instance.Affixes), instance.Attributes, instance.Count);
-			if (itm.Attributes[GameAttribute.Durability_Max] > 0)
-				itm.Attributes[GameAttribute.Durability_Cur] = instance.Durability;
-			itm.Attributes[GameAttribute.DyeType] = instance.DyeType;
-			itm.Attributes[GameAttribute.TransmogGBID] = instance.TransmogGBID;
-			itm.Unidentified = instance.Unidentified;
+			var itm = new Item(owner.World, table, DeSerializeAffixList(instance.Affixes), instance.Attributes,
+				instance.Count);
+			if (itm.Attributes[GameAttributes.Durability_Max] > 0)
+				itm.Attributes[GameAttributes.Durability_Cur] = instance.Durability;
+			itm.Attributes[GameAttributes.DyeType] = instance.DyeType;
+			itm.Attributes[GameAttributes.TransmogGBID] = instance.TransmogGBID;
 			itm.DBInventory = instance;
+			itm.Unidentified = instance.Unidentified;
+
 			if (instance.Version == 1)
-				itm.Attributes[GameAttribute.IsCrafted] = true;
+				itm.Attributes[GameAttributes.IsCrafted] = true;
 
 			if (!owner.World.DbItems.ContainsKey(owner.World))
 				owner.World.DbItems.Add(owner.World, new List<Item>());
@@ -1497,9 +1554,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			owner.World.CachedItems[instance.Id] = itm;
 
-			if (instance.FirstGem != -1) itm.Gems.Add(CookFromDefinition(owner.World, GetItemDefinition(instance.FirstGem), 1));
-			if (instance.SecondGem != -1) itm.Gems.Add(CookFromDefinition(owner.World, GetItemDefinition(instance.SecondGem), 1));
-			if (instance.ThirdGem != -1) itm.Gems.Add(CookFromDefinition(owner.World, GetItemDefinition(instance.ThirdGem), 1));
+			if (instance.FirstGem != -1)
+				itm.Gems.Add(CookFromDefinition(owner.World, GetItemDefinition(instance.FirstGem), 1));
+			if (instance.SecondGem != -1)
+				itm.Gems.Add(CookFromDefinition(owner.World, GetItemDefinition(instance.SecondGem), 1));
+			if (instance.ThirdGem != -1)
+				itm.Gems.Add(CookFromDefinition(owner.World, GetItemDefinition(instance.ThirdGem), 1));
 
 			for (int i = 0; i < itm.Gems.Count; i++)
 			{
@@ -1507,9 +1567,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				itm.Gems[i].SetInventoryLocation(20, 0, i);
 			}
 
-			itm.Attributes[GameAttribute.Sockets_Filled] = itm.Gems.Count;
+			itm.Attributes[GameAttributes.Sockets_Filled] = itm.Gems.Count;
 
-			if (instance.RareItemName != null) itm.RareItemName = D3.Items.RareItemName.ParseFrom(instance.RareItemName);
+			if (instance.RareItemName != null)
+				itm.RareItemName = D3.Items.RareItemName.ParseFrom(instance.RareItemName);
 
 			return itm;
 		}
@@ -1517,7 +1578,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public static string SerializeAffixList(List<Affix> affixList)
 		{
 			var affixgbIdList = affixList.Select(af => af.AffixGbid);
-			var affixSer = affixgbIdList.Aggregate(",", (current, affixId) => current + (affixId + ",")).Trim(new[] { ',' });
+			var affixSer = affixgbIdList.Aggregate(",", (current, affixId) => current + (affixId + ","))
+				.Trim(new[] { ',' });
 			return affixSer;
 		}
 
@@ -1534,6 +1596,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				return 0;
 			}
+
 			var pairs = attributesList.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach (var pair in pairs)
 			{
@@ -1576,6 +1639,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				return false;
 			}
+
 			var pairs = attributesList.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach (var pair in pairs)
 			{
@@ -1614,4 +1678,3 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		#endregion
 	}
 }
- 

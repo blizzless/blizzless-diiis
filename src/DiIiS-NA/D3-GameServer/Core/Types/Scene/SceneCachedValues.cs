@@ -1,14 +1,8 @@
-﻿//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
+﻿using System.Text;
 using CrystalMpq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Collision;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using Gibbed.IO;
 
 namespace DiIiS_NA.GameServer.Core.Types.Scene

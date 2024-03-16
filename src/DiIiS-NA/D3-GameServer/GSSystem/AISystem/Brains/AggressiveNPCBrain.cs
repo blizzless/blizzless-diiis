@@ -1,31 +1,14 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
-using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 {
@@ -55,10 +38,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		public override void Think(int tickCounter)
 		{
-			if (Body.Attributes[GameAttribute.Frozen] ||
-				Body.Attributes[GameAttribute.Stunned] ||
-				Body.Attributes[GameAttribute.Blind] ||
-				Body.Attributes[GameAttribute.Webbed] ||
+			if (Body.Attributes[GameAttributes.Frozen] ||
+				Body.Attributes[GameAttributes.Stunned] ||
+				Body.Attributes[GameAttributes.Blind] ||
+				Body.Attributes[GameAttributes.Webbed] ||
 				Body.Disable ||
 				Body.World.BuffManager.GetFirstBuff<PowerSystem.Implementations.KnockbackBuff>(Body) != null)
 			{
@@ -120,14 +103,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		protected virtual int PickPowerToUse()
 		{
-			if (PresetPowers.Count > 0)
-			{
-				int powerIndex = RandomHelper.Next(PresetPowers.Count);
-				if (PowerSystem.PowerLoader.HasImplementationForPowerSNO(PresetPowers[powerIndex]))
-					return PresetPowers[powerIndex];
-			}
-
-			return -1;
+			var implementedPowers = PresetPowers.Where(PowerSystem.PowerLoader.HasImplementationForPowerSNO);
+			return implementedPowers.TryPickRandom(out var randomPower)
+				? randomPower
+				: -1;
 		}
 
 		public void AddPresetPower(int powerSNO)

@@ -1,17 +1,9 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using bgs.protocol.channel.v1;
-//Blizzless Project 2022 
+﻿using bgs.protocol.channel.v1;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.ChannelSystem;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 
 namespace DiIiS_NA.LoginServer.ServicesSystem.Services
@@ -21,17 +13,17 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger();
 
-		public override void CreateChannel(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.CreateChannelRequest request, System.Action<bgs.protocol.channel.v1.CreateChannelResponse> done)
+		public override void CreateChannel(IRpcController controller, CreateChannelRequest request, Action<CreateChannelResponse> done)
 		{
-			var channel = ChannelManager.CreateNewChannel(((controller as HandlerController).Client), request.ObjectId);
-			var builder = bgs.protocol.channel.v1.CreateChannelResponse.CreateBuilder()
+			var channel = ChannelManager.CreateNewChannel((((HandlerController) controller).Client), request.ObjectId);
+			var builder = CreateChannelResponse.CreateBuilder()
 				.SetObjectId(channel.DynamicId)
 				.SetChannelId(channel.BnetEntityId)
 				;
 
 			done(builder.Build());
-			channel.SetOwner(((controller as HandlerController).Client));
-			channel.AddMember(((controller as HandlerController).Client));
+			channel.SetOwner((((HandlerController) controller).Client));
+			channel.AddMember((((HandlerController) controller).Client));
 		}
 		
 		public override void ListChannels(IRpcController controller, ListChannelsRequest request, Action<ListChannelsResponse> done)
@@ -41,17 +33,17 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			
 			foreach (Channel channel in chatChannels)
 			{
-				if (!channel.HasUser(((controller as HandlerController).Client)) && (request.Options.HasName ? request.Options.Name == channel.Name : true) && channel.MaxMembers > channel.Members.Count)
-					builder.AddChannel(bgs.protocol.channel.v1.ChannelDescription.CreateBuilder().SetCurrentMembers((uint)channel.Members.Count)
+				if (!channel.HasUser((((HandlerController) controller).Client)) && (request.Options.HasName ? request.Options.Name == channel.Name : true) && channel.MaxMembers > channel.Members.Count)
+					builder.AddChannel(ChannelDescription.CreateBuilder().SetCurrentMembers((uint)channel.Members.Count)
 						.SetChannelId(bgs.protocol.EntityId.CreateBuilder().SetHigh(channel.BnetEntityId.High).SetLow(channel.BnetEntityId.Low))
 						.SetState(channel.State));
 			}
 
 			done(builder.Build());
 		}
-		public override void GetChannelInfo(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.GetChannelInfoRequest request, System.Action<bgs.protocol.channel.v1.GetChannelInfoResponse> done)
+		public override void GetChannelInfo(IRpcController controller, GetChannelInfoRequest request, Action<GetChannelInfoResponse> done)
 		{
-			var builder = bgs.protocol.channel.v1.GetChannelInfoResponse.CreateBuilder();
+			var builder = GetChannelInfoResponse.CreateBuilder();
 			var channel = ChannelManager.GetChannelByEntityId(request.ChannelId);
 
 			if (channel != null)
@@ -62,30 +54,30 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 			done(builder.Build());
 		}
 
-		public override void JoinChannel(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.JoinChannelRequest request, System.Action<bgs.protocol.channel.v1.JoinChannelResponse> done)
+		public override void JoinChannel(IRpcController controller, JoinChannelRequest request, Action<JoinChannelResponse> done)
 		{
 			var channel = ChannelManager.GetChannelByEntityId(request.ChannelId);
 
-			channel.Join(((controller as HandlerController).Client), request.ObjectId);
-			var builder = bgs.protocol.channel.v1.JoinChannelResponse.CreateBuilder().SetObjectId(channel.DynamicId).SetMemberId((controller as HandlerController).Client.Account.BnetEntityId);
+			channel.Join((((HandlerController) controller).Client), request.ObjectId);
+			var builder = JoinChannelResponse.CreateBuilder().SetObjectId(channel.DynamicId).SetMemberId(((HandlerController) controller).Client.Account.BnetEntityId);
 			
-			((controller as HandlerController).Client).ChatChannels.Add(channel);
+			(((HandlerController) controller).Client).ChatChannels.Add(channel);
 			
 			done(builder.Build());
 		}
 
         
 
-        public override void SubscribeChannel(Google.ProtocolBuffers.IRpcController controller, bgs.protocol.channel.v1.SubscribeChannelRequest request, Action<bgs.protocol.channel.v1.SubscribeChannelResponse> done)
+        public override void SubscribeChannel(IRpcController controller, SubscribeChannelRequest request, Action<SubscribeChannelResponse> done)
 		{
 			var channel = ChannelManager.GetChannelByEntityId(request.ChannelId);
-			var builder = bgs.protocol.channel.v1.SubscribeChannelResponse.CreateBuilder();
+			var builder = SubscribeChannelResponse.CreateBuilder();
 			
 			builder.SetObjectId(channel.DynamicId);
 			done(builder.Build());
 			
-			((controller as HandlerController).Client).ChatChannels.Add(channel);
-			channel.Join(((controller as HandlerController).Client), request.ObjectId);
+			(((HandlerController) controller).Client).ChatChannels.Add(channel);
+			channel.Join((((HandlerController) controller).Client), request.ObjectId);
 
 		}
 	}

@@ -1,11 +1,6 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
@@ -27,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 			}
 			world.SpawnMonster(ActorSno._x1_sniperangel_a_fortressunique, RandomDirection(Center, 5f, 15f));
 
-			world.GetActorBySNO(ActorSno._x1_pand_batteringram_background).PlayActionAnimation(334747);
+			world.GetActorBySNO(ActorSno._x1_pand_batteringram_background).PlayActionAnimation(AnimationSno.x1_pand_batteringram_background_move_in_and_out_hit_02);
 		}
 		public static Vector3D RandomDirection(Vector3D position, float minRadius, float maxRadius)
 		{

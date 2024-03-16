@@ -1,32 +1,16 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -43,15 +27,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			Target.Attributes[GameAttribute.Invulnerable] = true;
-			Target.Attributes[GameAttribute.Has_Look_Override] = true;//0x0782CAC5;
+			Target.Attributes[GameAttributes.Invulnerable] = true;
+			Target.Attributes[GameAttributes.Has_Look_Override] = true;//0x0782CAC5;
 			return true;
 		}
 
 		public override void Remove()
 		{
-			Target.Attributes[GameAttribute.Invulnerable] = false;
-			Target.Attributes[GameAttribute.Has_Look_Override] = false;
+			Target.Attributes[GameAttributes.Invulnerable] = false;
+			Target.Attributes[GameAttributes.Has_Look_Override] = false;
 			base.Remove();
 		}
 	}
@@ -70,7 +54,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttributes.Invulnerable] = true;
 			return true;
 		}
 
@@ -102,7 +86,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override void Remove()
 		{
-			Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttributes.Invulnerable] = false;
 			base.Remove();
 		}
 	}
@@ -130,7 +114,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttributes.Invulnerable] = true;
 			return true;
 		}
 
@@ -141,7 +125,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (_tickTimer == null || _tickTimer.TimedOut)
 			{
-				var monster = ActorFactory.Create(Target.World, Monsters[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, Monsters.Count())], new TagMap());
+				var monster = ActorFactory.Create(Target.World, Monsters.PickRandom(), new TagMap());
 				monster.EnterWorld(RandomDirection(Target.Position, 5f, Radius));
 				monster.HasLoot = (Target.World.Game.CurrentAct == 3000);
 				monster.Unstuck();
@@ -180,7 +164,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					}
 				}
 			}
-			Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttributes.Invulnerable] = false;
 			base.Remove();
 			Target.Destroy();
 		}
@@ -211,7 +195,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override bool Apply()
 		{
 			base.Apply();
-			Target.Attributes[GameAttribute.Invulnerable] = true;
+			Target.Attributes[GameAttributes.Invulnerable] = true;
 			return true;
 		}
 
@@ -224,7 +208,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				for (int i = 0; i < 10; i++)
 				{
-					var monster = ActorFactory.Create(Target.World, Monsters[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, Monsters.Count())], new TagMap());
+					var monster = ActorFactory.Create(Target.World, Monsters.PickRandom(), new TagMap());
 					monster.EnterWorld(RandomDirection(Target.Position, 5f, Radius));
 					monster.HasLoot = (Target.World.Game.CurrentAct == 3000);
 					monster.Unstuck();
@@ -261,7 +245,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					}
 				}
 			}
-			Target.Attributes[GameAttribute.Invulnerable] = false;
+			Target.Attributes[GameAttributes.Invulnerable] = false;
 			base.Remove();
 			Target.Destroy();
 		}

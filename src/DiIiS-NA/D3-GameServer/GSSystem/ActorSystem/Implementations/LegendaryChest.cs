@@ -1,34 +1,14 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -50,10 +30,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			return base.Reveal(player);
 		}
 
-
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			if (Attributes[GameAttribute.Disabled]) return;
+			if (Attributes[GameAttributes.Disabled]) return;
 
 			int chance = World.Game.IsHardcore ? 99 : 25; //S4 special
 			/*
@@ -70,14 +49,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				player.Inventory.GetBag().GrabSomeItems(-110888638, 1);
 				if (!World.Game.IsHardcore)
 					player.Inventory.RemoveGoldAmount(250000);
-				if (FastRandom.Instance.Next(100) < chance)
-					World.SpawnRandomEquip(player, player, LootManager.Epic, player.Level);
-				else
-					World.SpawnRandomEquip(player, player, LootManager.Rare, player.Level);
+				World.SpawnRandomEquip(player, player,
+					FastRandom.Instance.Next(100) < chance ? LootManager.Epic : LootManager.Rare, player.Level);
 
 				var toon = player.Toon.DBToon;
 				toon.ChestsOpened++;
-				World.Game.GameDBSession.SessionUpdate(toon);
+				World.Game.GameDbSession.SessionUpdate(toon);
 			}
 
 			base.OnTargeted(player, message);

@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Linq;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Threading;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
 
 namespace DiIiS_NA.GameServer.GSSystem.GameSystem
@@ -37,7 +32,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public static GameUpdateThread FindWorker()
 		{
-			return UpdateWorkers.OrderBy(t => t.Games.Count()).First();
+			return UpdateWorkers.OrderBy(t => t.Games.Count).First();
 		}
 	}
 }

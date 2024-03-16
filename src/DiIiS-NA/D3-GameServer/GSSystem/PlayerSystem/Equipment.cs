@@ -1,22 +1,9 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
@@ -60,7 +47,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (!Items.ContainsKey(item.GlobalID))
 				Items.Add(item.GlobalID, item);
 			item.Owner = _owner;
-			item.Attributes[GameAttribute.Item_Equipped] = true; // Probaly should be handled by Equipable class /fasbat
+			item.Attributes[GameAttributes.Item_Equipped] = true; // Probaly should be handled by Equipable class /fasbat
 			item.Attributes.SendChangedMessage(_owner.InGameClient);
 			item.SetInventoryLocation(slot, 0, 0);
 			if (save)
@@ -68,14 +55,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			EquipmentChanged = true;
 
-			if (item.Attributes[GameAttribute.Item_Quality_Level] > 5)
+			if (item.Attributes[GameAttributes.Item_Quality_Level] > 5)
 			{
 				_owner.GrantAchievement(74987243307150);
-				if (item.Attributes[GameAttribute.Item_Quality_Level] > 7)
+				if (item.Attributes[GameAttributes.Item_Quality_Level] > 7)
 					_owner.GrantAchievement(74987243307151);
 			}
 
-			if (item.Attributes[GameAttribute.Sockets] > 0)
+			if (item.Attributes[GameAttributes.Sockets] > 0)
 			{
 				if (ItemGroup.IsSubType(item.ItemType, "Helm"))
 					_owner.GrantCriteria(74987243307188);
@@ -116,7 +103,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (_equipment[slot] == item.GlobalID)
 			{
 				_equipment[slot] = 0;
-				item.Attributes[GameAttribute.Item_Equipped] = false; // Probaly should be handled by Equipable class /fasbat
+				item.Attributes[GameAttributes.Item_Equipped] = false; // Probaly should be handled by Equipable class /fasbat
 				item.Unreveal(_owner);
 				item.Reveal(_owner);
 				EquipmentChanged = true;
@@ -271,7 +258,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 		public Item GetItemByDynId(Player plr, uint dynId)
 		{
-			if (Items.Values.Where(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId).Count() > 0)
+			if (Items.Values.Any(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId))
 				return Items.Values.Single(it => it.IsRevealedToPlayer(plr) && it.DynamicID(plr) == dynId);
 			else
 				return null;

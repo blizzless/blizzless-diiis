@@ -1,10 +1,6 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using System;
-//Blizzless Project 2022 
 using System.Net;
-//Blizzless Project 2022 
 using System.Net.Sockets;
 
 namespace DiIiS_NA.GameServer.ClientSystem.Base

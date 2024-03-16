@@ -1,48 +1,27 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Drawing;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -1148,16 +1127,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				var portals = GetActorsInRange<Portal>(5f).Where(p => p.Destination != null && p.Destination.DestLevelAreaSNO != -1).ToList();
 				if (portals.Count >= 2)
 				{
-					var random_portal = portals[FastRandom.Instance.Next(portals.Count)];
+					var randomPortal = portals.PickRandom();
 					var bounty_portals = World.Game.QuestManager.Bounties.Where(b => !b.PortalSpawned).SelectMany(b => b.LevelAreaChecks).Intersect(portals.Select(p => p.Destination.DestLevelAreaSNO));
 					if (bounty_portals.Any())
 					{
-						random_portal = portals.First(p => World.Game.QuestManager.Bounties.SelectMany(b => b.LevelAreaChecks).Where(w => w != -1).Contains(p.Destination.DestLevelAreaSNO));
-						World.Game.QuestManager.Bounties.First(b => b.LevelAreaChecks.Contains(random_portal.Destination.DestLevelAreaSNO)).PortalSpawned = true;
+						randomPortal = portals.First(p => World.Game.QuestManager.Bounties.SelectMany(b => b.LevelAreaChecks).Where(w => w != -1).Contains(p.Destination.DestLevelAreaSNO));
+						World.Game.QuestManager.Bounties.First(b => b.LevelAreaChecks.Contains(randomPortal.Destination.DestLevelAreaSNO)).PortalSpawned = true;
 					}
 					foreach (var portal in portals)
 						portal.randomed = false;
-					random_portal.randomed = true;
+					randomPortal.randomed = true;
 				}
 			}
 
@@ -1502,11 +1481,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (World.Game.QuestProgress.QuestTriggers.ContainsKey(Destination.DestLevelAreaSNO)) //EnterLevelArea
 				{
 					var trigger = World.Game.QuestProgress.QuestTriggers[Destination.DestLevelAreaSNO];
-					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+					if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -1517,11 +1496,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (World.Game.SideQuestProgress.QuestTriggers.ContainsKey(Destination.DestLevelAreaSNO)) //EnterLevelArea
 				{
 					var trigger = World.Game.SideQuestProgress.QuestTriggers[Destination.DestLevelAreaSNO];
-					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+					if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -1532,11 +1511,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				if (World.Game.SideQuestProgress.GlobalQuestTriggers.ContainsKey(Destination.DestLevelAreaSNO)) //EnterLevelArea
 				{
 					var trigger = World.Game.SideQuestProgress.GlobalQuestTriggers[Destination.DestLevelAreaSNO];
-					if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
+					if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 					{
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 							World.Game.SideQuestProgress.GlobalQuestTriggers.Remove(Destination.DestLevelAreaSNO);
 						}
 						catch (Exception e)

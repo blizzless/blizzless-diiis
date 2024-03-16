@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.REST.IO.Zlib
@@ -51,12 +46,20 @@ namespace DiIiS_NA.REST.IO.Zlib
         struct ct_data
         {
             ushort freq;
-            public ushort Freq { get { return freq; } set { freq = value; } } // frequency count
-            public ushort Code { get { return freq; } set { freq = value; } }   // bit string
+            public ushort Freq { get => freq;
+                set => freq = value;
+            } // frequency count
+            public ushort Code { get => freq;
+                set => freq = value;
+            }   // bit string
 
             ushort dad;
-            public ushort Dad { get { return dad; } set { dad = value; } }      // father node in Huffman tree
-            public ushort Len { get { return dad; } set { dad = value; } }      // length of bit string
+            public ushort Dad { get => dad;
+                set => dad = value;
+            }      // father node in Huffman tree
+            public ushort Len { get => dad;
+                set => dad = value;
+            }      // length of bit string
 
             public ct_data(ushort freq, ushort dad)
             {
@@ -545,8 +548,7 @@ namespace DiIiS_NA.REST.IO.Zlib
 
         //   The dictionary should consist of strings (byte sequences) that are likely
         // to be encountered later in the data to be compressed, with the most commonly
-        // used strings preferably put towards the end of the dictionary. //Blizzless Project 2022 
-
+        // used strings preferably put towards the end of the dictionary. 
         // dictionary is most useful when the data to be compressed is short and can be
         // predicted with good accuracy; the data can then be compressed better than
         // with the default empty dictionary.
@@ -777,8 +779,7 @@ namespace DiIiS_NA.REST.IO.Zlib
         //
         // For any setting other than those defaults for windowBits and memLevel,
         // the value returned is a conservative worst case for the maximum expansion
-        // resulting from //Blizzless Project 2022 
-        // can emit on compressed data for some combinations of the parameters.
+        // resulting from         // can emit on compressed data for some combinations of the parameters.
         //
         // This function could be more sophisticated to provide closer upper bounds for
         // every combination of windowBits and memLevel. But even the conservative
@@ -927,8 +928,7 @@ namespace DiIiS_NA.REST.IO.Zlib
         //   If flush is set to Z_FULL_FLUSH, all output is flushed as with
         // Z_SYNC_FLUSH, and the compression state is reset so that decompression can
         // restart from this point if previous compressed data has been damaged or if
-        // random access is desired. //Blizzless Project 2022 
-        // compression.
+        // random access is desired.         // compression.
 
         //   If deflate returns with avail_out == 0, this function must be called again
         // with the same value of the flush parameter and more output space (updated

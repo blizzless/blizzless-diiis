@@ -1,14 +1,9 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
+using System.Reflection;
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
@@ -29,7 +24,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 
 		public override void Execute(MapSystem.World world)
 		{
-			Logger.Trace("StartSideQuest(): {0}", QuestId);
+			Logger.MethodTrace($"{QuestId}");
 			world.Game.QuestManager.LaunchSideQuest(QuestId, ForceAbandon);
 		}
 	}

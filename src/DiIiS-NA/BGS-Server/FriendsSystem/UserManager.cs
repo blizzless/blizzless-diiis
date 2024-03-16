@@ -1,27 +1,15 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Objects;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
+using System.Reflection;
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.LoginServer.FriendsSystem
@@ -50,7 +38,7 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 			notifyBlock.SetPlayer(blockedPlayer);
 			notifyBlock.SetGameAccountId(blocked.BnetEntityId);
 
-			client.MakeTargetedRPC(UserManager.Instance, (lid) =>
+			client.MakeTargetedRpc(UserManager.Instance, (lid) =>
 				bgs.protocol.user_manager.v1.UserManagerListener.CreateStub(client).OnBlockedPlayerAdded(new HandlerController() { ListenerId = lid }, notifyBlock.Build(), callback => { }));
 		}
 
@@ -72,16 +60,16 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 			var notifyUnblock = bgs.protocol.user_manager.v1.BlockedPlayerRemovedNotification.CreateBuilder();
 			notifyUnblock.SetPlayer(blockedPlayer);
 
-			client.MakeTargetedRPC(UserManager.Instance, (lid) =>
+			client.MakeTargetedRpc(UserManager.Instance, (lid) =>
 				bgs.protocol.user_manager.v1.UserManagerListener.CreateStub(client).OnBlockedPlayerRemoved(new HandlerController() { ListenerId = lid }, notifyUnblock.Build(), callback => { }));
 		}
 
 		private static void AddIgnoreToDB(Account owner, Account target)
 		{
-			Logger.Trace("AddIgnoreToDB(): owner {0}, target {1}", owner.PersistentID, target.PersistentID);
+			Logger.MethodTrace($": owner {owner.PersistentID}, target {target.PersistentID}");
 			try
 			{
-				if (DBSessions.SessionQueryWhere<DBAccountLists>(dbl => dbl.ListOwner.Id == owner.PersistentID && dbl.ListTarget.Id == target.PersistentID && dbl.Type == "IGNORE").Count() > 0) return;
+				if (DBSessions.SessionQueryWhere<DBAccountLists>(dbl => dbl.ListOwner.Id == owner.PersistentID && dbl.ListTarget.Id == target.PersistentID && dbl.Type == "IGNORE").Any()) return;
 
 				var blockRecord = new DBAccountLists
 				{
@@ -99,7 +87,7 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 
 		private static void RemoveIgnoreFromDB(Account owner, Account target)
 		{
-			Logger.Trace("RemoveIgnoreFromDB(): owner {0}, target {1}", owner.PersistentID, target.PersistentID);
+			Logger.MethodTrace($": owner {owner.PersistentID}, target {target.PersistentID}");
 			try
 			{
 				var blockRecords = DBSessions.SessionQueryWhere<DBAccountLists>(dbl => dbl.ListOwner.Id == owner.PersistentID && dbl.ListTarget.Id == target.PersistentID && dbl.Type == "IGNORE");

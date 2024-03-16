@@ -1,28 +1,14 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -131,7 +117,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Init()
 		{
 			Timeout = WaitSeconds(300f);
-			HPTreshold = User.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.6f;
+			HPTreshold = User.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.6f;
 		}
 		public override bool Apply()
 		{
@@ -172,7 +158,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			base.Init();
 			Timeout = WaitSeconds(ScriptFormula(0));
 			MaxStackCount = 10;
-			HPTreshold = User.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.02f;
+			HPTreshold = User.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.02f;
 		}
 
 		public override bool Apply()
@@ -186,7 +172,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			base.Stack(buff);
 
 			if (!stacked) return true;
-			HPTreshold = User.Attributes[GameAttribute.Hitpoints_Max_Total] * 0.02f * StackCount;
+			HPTreshold = User.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.02f * StackCount;
 			Extend(30);
 
 			return true;
@@ -228,7 +214,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 			_currentBonus = 0.01f * StackCount;
-			Target.Attributes[GameAttribute.Strength_Bonus_Percent] += _currentBonus;
+			Target.Attributes[GameAttributes.Strength_Bonus_Percent] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -243,10 +229,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (!stacked) return true;
 
-			Target.Attributes[GameAttribute.Strength_Bonus_Percent] -= _currentBonus;
+			Target.Attributes[GameAttributes.Strength_Bonus_Percent] -= _currentBonus;
 
 			_currentBonus = 0.01f * StackCount;
-			Target.Attributes[GameAttribute.Strength_Bonus_Percent] += _currentBonus;
+			Target.Attributes[GameAttributes.Strength_Bonus_Percent] += _currentBonus;
 			User.Attributes.BroadcastChangedIfRevealed();
 
 			return true;
@@ -255,7 +241,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Strength_Bonus_Percent] -= _currentBonus;
+			Target.Attributes[GameAttributes.Strength_Bonus_Percent] -= _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -278,7 +264,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 			_currentBonus = 0.05f * StackCount;
-			Target.Attributes[GameAttribute.Amplify_Damage_Percent] += _currentBonus;
+			Target.Attributes[GameAttributes.Amplify_Damage_Percent] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -295,10 +281,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (!stacked) return true;
 
-			Target.Attributes[GameAttribute.Amplify_Damage_Percent] -= _currentBonus;
+			Target.Attributes[GameAttributes.Amplify_Damage_Percent] -= _currentBonus;
 
 			_currentBonus = 0.05f * StackCount;
-			Target.Attributes[GameAttribute.Amplify_Damage_Percent] += _currentBonus;
+			Target.Attributes[GameAttributes.Amplify_Damage_Percent] += _currentBonus;
 			User.Attributes.BroadcastChangedIfRevealed();
 
 			return true;
@@ -307,7 +293,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Amplify_Damage_Percent] -= _currentBonus;
+			Target.Attributes[GameAttributes.Amplify_Damage_Percent] -= _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -327,7 +313,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] += 0.15f;
+			Target.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] += 0.15f;
 			//Target.Attributes[GameAttribute.Running_Rate] = Target.Attributes[GameAttribute.Running_Rate] * 1.15f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
@@ -336,7 +322,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] -= 0.15f;
+			Target.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] -= 0.15f;
 			//Target.Attributes[GameAttribute.Running_Rate] = Target.Attributes[GameAttribute.Running_Rate] / 1.15f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
@@ -357,7 +343,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.1f;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.1f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -365,7 +351,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= 0.1f;
+			Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= 0.1f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -396,14 +382,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				{
 					if (!Applied)
 					{
-						Target.Attributes[GameAttribute.Block_Amount_Bonus_Percent] += ScriptFormula(2);
+						Target.Attributes[GameAttributes.Block_Amount_Bonus_Percent] += ScriptFormula(2);
 						Target.Attributes.BroadcastChangedIfRevealed();
 						Applied = true;
 					}
 				}
 				else if (Applied)
 				{
-					Target.Attributes[GameAttribute.Block_Amount_Bonus_Percent] -= ScriptFormula(2);
+					Target.Attributes[GameAttributes.Block_Amount_Bonus_Percent] -= ScriptFormula(2);
 					Target.Attributes.BroadcastChangedIfRevealed();
 					Applied = false;
 				}
@@ -415,7 +401,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			base.Remove();
 			if (Applied)
 			{
-				Target.Attributes[GameAttribute.Block_Amount_Bonus_Percent] -= ScriptFormula(2);
+				Target.Attributes[GameAttributes.Block_Amount_Bonus_Percent] -= ScriptFormula(2);
 				Target.Attributes.BroadcastChangedIfRevealed();
 				Applied = false;
 			}
@@ -445,11 +431,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				CheckTimer = WaitSeconds(1f);
 
-				Target.Attributes[GameAttribute.Armor_Bonus_Percent] -= LastBonusPercent;
+				Target.Attributes[GameAttributes.Armor_Bonus_Percent] -= LastBonusPercent;
 				Target.Attributes.BroadcastChangedIfRevealed();
 
-				LastBonusPercent = ((Target.Attributes[GameAttribute.Hitpoints_Max_Total] - Target.Attributes[GameAttribute.Hitpoints_Cur]) / Target.Attributes[GameAttribute.Hitpoints_Max_Total]) * 0.3f;
-				Target.Attributes[GameAttribute.Armor_Bonus_Percent] += LastBonusPercent;
+				LastBonusPercent = ((Target.Attributes[GameAttributes.Hitpoints_Max_Total] - Target.Attributes[GameAttributes.Hitpoints_Cur]) / Target.Attributes[GameAttributes.Hitpoints_Max_Total]) * 0.3f;
+				Target.Attributes[GameAttributes.Armor_Bonus_Percent] += LastBonusPercent;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 			return false;
@@ -459,7 +445,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			base.Remove();
 			if (LastBonusPercent > 0f)
 			{
-				Target.Attributes[GameAttribute.Armor_Bonus_Percent] -= LastBonusPercent;
+				Target.Attributes[GameAttributes.Armor_Bonus_Percent] -= LastBonusPercent;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -488,14 +474,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				CheckTimer = WaitSeconds(1f);
 
-				Target.Attributes[GameAttribute.Armor_Bonus_Percent] -= LastBonusPercent;
+				Target.Attributes[GameAttributes.Armor_Bonus_Percent] -= LastBonusPercent;
 				Target.Attributes.BroadcastChangedIfRevealed();
 
 				if ((Target as Player).Inventory.GetEquippedItems().Any(i => i.ItemType.Name.Contains("Shield")))
-					LastBonusPercent = (Target as Player).Inventory.GetEquippedItems().Find(i => i.ItemType.Name.Contains("Shield")).Attributes[GameAttribute.Block_Chance_Item];
+					LastBonusPercent = (Target as Player).Inventory.GetEquippedItems().Find(i => i.ItemType.Name.Contains("Shield")).Attributes[GameAttributes.Block_Chance_Item];
 				else LastBonusPercent = 0f;
 
-				Target.Attributes[GameAttribute.Armor_Bonus_Percent] += LastBonusPercent;
+				Target.Attributes[GameAttributes.Armor_Bonus_Percent] += LastBonusPercent;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 			return false;
@@ -505,7 +491,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			base.Remove();
 			if (LastBonusPercent > 0f)
 			{
-				Target.Attributes[GameAttribute.Armor_Bonus_Percent] -= LastBonusPercent;
+				Target.Attributes[GameAttributes.Armor_Bonus_Percent] -= LastBonusPercent;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -520,7 +506,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Init()
 		{
 			base.Init();
-			Heal = 5 + 0.0006f * (float)Math.Pow(User.Attributes[GameAttribute.Level], 4);
+			Heal = 5 + 0.0006f * (float)Math.Pow(User.Attributes[GameAttributes.Level], 4);
 		}
 
 		public override bool Apply()
@@ -564,11 +550,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				CheckTimer = WaitSeconds(1f);
 
-				Target.Attributes[GameAttribute.Strength_Bonus] -= LastBonus;
+				Target.Attributes[GameAttributes.Strength_Bonus] -= LastBonus;
 				Target.Attributes.BroadcastChangedIfRevealed();
 
 				LastBonus = 70f * (Target as Player).Inventory.GetEquippedItems().Sum(i => i.Gems.Count);
-				Target.Attributes[GameAttribute.Strength_Bonus] += LastBonus;
+				Target.Attributes[GameAttributes.Strength_Bonus] += LastBonus;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 			return false;
@@ -578,7 +564,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			base.Remove();
 			if (LastBonus > 0f)
 			{
-				Target.Attributes[GameAttribute.Strength_Bonus] -= LastBonus;
+				Target.Attributes[GameAttributes.Strength_Bonus] -= LastBonus;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -594,7 +580,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 		public override void Init()
 		{
-			InitialBonus = Target.Attributes[GameAttribute.Block_Chance];
+			InitialBonus = Target.Attributes[GameAttributes.Block_Chance];
 		}
 
 		public override bool Apply()
@@ -612,9 +598,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				CheckTimer = WaitSeconds(1f);
 
-				if (Target.Attributes[GameAttribute.Block_Chance] < 0.75f)
+				if (Target.Attributes[GameAttributes.Block_Chance] < 0.75f)
 				{
-					Target.Attributes[GameAttribute.Block_Chance] += 0.025f;
+					Target.Attributes[GameAttributes.Block_Chance] += 0.025f;
 					Target.Attributes.BroadcastChangedIfRevealed();
 				}
 			}
@@ -623,13 +609,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void OnPayload(Payload payload)
 		{
 			if (payload is HitPayload && payload.Target == User && (payload as HitPayload).Blocked)
-				Target.Attributes[GameAttribute.Block_Chance] -= (Target.Attributes[GameAttribute.Block_Chance] - InitialBonus);
+				Target.Attributes[GameAttributes.Block_Chance] -= (Target.Attributes[GameAttributes.Block_Chance] - InitialBonus);
 		}
 		public override void Remove()
 		{
 			base.Remove();
-			if (Target.Attributes[GameAttribute.Block_Chance] > InitialBonus)
-				Target.Attributes[GameAttribute.Block_Chance] -= (Target.Attributes[GameAttribute.Block_Chance] - InitialBonus);
+			if (Target.Attributes[GameAttributes.Block_Chance] > InitialBonus)
+				Target.Attributes[GameAttributes.Block_Chance] -= (Target.Attributes[GameAttributes.Block_Chance] - InitialBonus);
 		}
 	}
 	#endregion
@@ -642,10 +628,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += ScriptFormula(8);
-			Target.Attributes[GameAttribute.Damage_Percent_All_From_Skills] += ScriptFormula(8);
-			Target.Attributes[GameAttribute.Armor_Bonus_Percent] += ScriptFormula(2);
-			Target.Attributes[GameAttribute.Resistance_Percent_All] += ScriptFormula(3);
+			Target.Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] += ScriptFormula(8);
+			Target.Attributes[GameAttributes.Damage_Percent_All_From_Skills] += ScriptFormula(8);
+			Target.Attributes[GameAttributes.Armor_Bonus_Percent] += ScriptFormula(2);
+			Target.Attributes[GameAttributes.Resistance_Percent_All] += ScriptFormula(3);
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -653,10 +639,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] -= ScriptFormula(8);
-			Target.Attributes[GameAttribute.Damage_Percent_All_From_Skills] -= ScriptFormula(8);
-			Target.Attributes[GameAttribute.Armor_Bonus_Percent] -= ScriptFormula(2);
-			Target.Attributes[GameAttribute.Resistance_Percent_All] -= ScriptFormula(3);
+			Target.Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] -= ScriptFormula(8);
+			Target.Attributes[GameAttributes.Damage_Percent_All_From_Skills] -= ScriptFormula(8);
+			Target.Attributes[GameAttributes.Armor_Bonus_Percent] -= ScriptFormula(2);
+			Target.Attributes[GameAttributes.Resistance_Percent_All] -= ScriptFormula(3);
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -676,7 +662,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] += (Target.Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
+			Target.Attributes[GameAttributes.Hitpoints_Regen_Per_Second] += (Target.Attributes[GameAttributes.Hitpoints_Max_Total]) / 100;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -684,7 +670,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] -= (Target.Attributes[GameAttribute.Hitpoints_Max_Total]) / 100;
+			Target.Attributes[GameAttributes.Hitpoints_Regen_Per_Second] -= (Target.Attributes[GameAttributes.Hitpoints_Max_Total]) / 100;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -729,9 +715,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 
-			Target.Attributes[GameAttribute.Hitpoints_Regen_Bonus_Percent] += 0.35f;
+			Target.Attributes[GameAttributes.Hitpoints_Regen_Bonus_Percent] += 0.35f;
 			//random fixed value here, since no bonus_percent attribute for LoH stat, and multiplying base attribute by 35% is unsafe
-			Target.Attributes[GameAttribute.Hitpoints_On_Hit] += 1000;
+			Target.Attributes[GameAttributes.Hitpoints_On_Hit] += 1000;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -739,8 +725,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Hitpoints_Regen_Bonus_Percent] -= 0.35f;
-			Target.Attributes[GameAttribute.Hitpoints_On_Hit] -= 1000;
+			Target.Attributes[GameAttributes.Hitpoints_Regen_Bonus_Percent] -= 0.35f;
+			Target.Attributes[GameAttributes.Hitpoints_On_Hit] -= 1000;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -784,7 +770,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] -= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+			Target.Attributes[GameAttributes.Hitpoints_Regen_Per_Second] -= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -792,7 +778,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Hitpoints_Regen_Per_Second] += Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100;
+			Target.Attributes[GameAttributes.Hitpoints_Regen_Per_Second] += Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -842,7 +828,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 			_currentBonus = IntBonus * StackCount;
-			Target.Attributes[GameAttribute.Intelligence] += _currentBonus;
+			Target.Attributes[GameAttributes.Intelligence] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -852,9 +838,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Stack(buff))
 				return false;
 
-			Target.Attributes[GameAttribute.Intelligence] -= _currentBonus;
+			Target.Attributes[GameAttributes.Intelligence] -= _currentBonus;
 			_currentBonus = IntBonus * StackCount;
-			Target.Attributes[GameAttribute.Intelligence] += _currentBonus;
+			Target.Attributes[GameAttributes.Intelligence] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -862,7 +848,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Intelligence] -= IntBonus * StackCount;
+			Target.Attributes[GameAttributes.Intelligence] -= IntBonus * StackCount;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -883,7 +869,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 
-			Target.Attributes[GameAttribute.Resource_Regen_Bonus_Percent, 0] += 0.3f;
+			Target.Attributes[GameAttributes.Resource_Regen_Bonus_Percent, 0] += 0.3f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -891,7 +877,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Resource_Regen_Bonus_Percent, 0] -= 0.3f;
+			Target.Attributes[GameAttributes.Resource_Regen_Bonus_Percent, 0] -= 0.3f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -911,7 +897,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += 0.15f;
+			Target.Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] += 0.15f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -919,7 +905,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] -= 0.15f;
+			Target.Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] -= 0.15f;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -1061,7 +1047,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 			_currentBonus = 0.04f * StackCount;
-			Target.Attributes[GameAttribute.Weapon_Crit_Chance] += _currentBonus;
+			Target.Attributes[GameAttributes.Weapon_Crit_Chance] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -1092,10 +1078,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (!stacked) return true;
 
-			Target.Attributes[GameAttribute.Weapon_Crit_Chance] -= _currentBonus;
+			Target.Attributes[GameAttributes.Weapon_Crit_Chance] -= _currentBonus;
 
 			_currentBonus = 0.04f * StackCount;
-			Target.Attributes[GameAttribute.Weapon_Crit_Chance] += _currentBonus;
+			Target.Attributes[GameAttributes.Weapon_Crit_Chance] += _currentBonus;
 			User.Attributes.BroadcastChangedIfRevealed();
 
 			return true;
@@ -1104,7 +1090,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Weapon_Crit_Chance] -= _currentBonus;
+			Target.Attributes[GameAttributes.Weapon_Crit_Chance] -= _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -1127,7 +1113,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 			_currentBonus = 0.06f * StackCount;
-			Target.Attributes[GameAttribute.Dodge_Chance_Bonus] += _currentBonus;
+			Target.Attributes[GameAttributes.Dodge_Chance_Bonus] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -1158,10 +1144,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (!stacked) return true;
 
-			Target.Attributes[GameAttribute.Dodge_Chance_Bonus] -= _currentBonus;
+			Target.Attributes[GameAttributes.Dodge_Chance_Bonus] -= _currentBonus;
 
 			_currentBonus = 0.06f * StackCount;
-			Target.Attributes[GameAttribute.Dodge_Chance_Bonus] += _currentBonus;
+			Target.Attributes[GameAttributes.Dodge_Chance_Bonus] += _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 
 			return true;
@@ -1170,7 +1156,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Dodge_Chance_Bonus] -= _currentBonus;
+			Target.Attributes[GameAttributes.Dodge_Chance_Bonus] -= _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -1210,10 +1196,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				_damageTimer = WaitSeconds(1f);
 
-				Target.Attributes[GameAttribute.Resistance, 0] -= _currentBonus;
+				Target.Attributes[GameAttributes.Resistance, 0] -= _currentBonus;
 
-				_currentBonus = 70f * GetEnemiesInRadius(Target.Position, 20f + Target.Attributes[GameAttribute.Gold_PickUp_Radius]).Actors.Count;
-				Target.Attributes[GameAttribute.Resistance, 0] += _currentBonus;
+				_currentBonus = 70f * GetEnemiesInRadius(Target.Position, 20f + Target.Attributes[GameAttributes.Gold_PickUp_Radius]).Actors.Count;
+				Target.Attributes[GameAttributes.Resistance, 0] += _currentBonus;
 				Target.Attributes.BroadcastChangedIfRevealed();
 
 				if (!(Target as Player).SkillSet.HasPassive(340910))
@@ -1225,7 +1211,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Resistance, 0] -= _currentBonus;
+			Target.Attributes[GameAttributes.Resistance, 0] -= _currentBonus;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -1319,8 +1305,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (!base.Apply())
 				return false;
 
-			User.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += 0.15f;
-			User.Attributes[GameAttribute.Damage_Percent_All_From_Skills] += 0.15f;
+			User.Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] += 0.15f;
+			User.Attributes[GameAttributes.Damage_Percent_All_From_Skills] += 0.15f;
 			User.Attributes.BroadcastChangedIfRevealed();
 
 			return true;
@@ -1330,8 +1316,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			base.Remove();
 
-			User.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] -= 0.15f;
-			User.Attributes[GameAttribute.Damage_Percent_All_From_Skills] -= 0.15f;
+			User.Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] -= 0.15f;
+			User.Attributes[GameAttributes.Damage_Percent_All_From_Skills] -= 0.15f;
 			User.Attributes.BroadcastChangedIfRevealed();
 		}
 	}
@@ -1355,7 +1341,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				return false;
 			Logger.Debug("DashMover Called");
 			// dash speed seems to always be actor speed * 10
-			float speed = Target.Attributes[GameAttribute.Running_Rate_Total] * 9f;
+			float speed = Target.Attributes[GameAttributes.Running_Rate_Total] * 9f;
 
 			Target.TranslateFacing(_destination, true);
 			_mover = new ActorMover(Target);
@@ -1370,7 +1356,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			// make sure buff timeout is big enough otherwise the client will sometimes ignore the visual effects.
 			Timeout = _mover.ArrivalTime;
 
-			Target.Attributes[GameAttribute.Hidden] = true;
+			Target.Attributes[GameAttributes.Hidden] = true;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -1378,7 +1364,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Hidden] = false;
+			Target.Attributes[GameAttributes.Hidden] = false;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 
@@ -1400,7 +1386,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (!base.Apply())
 				return false;
-			Target.Attributes[GameAttribute.Armor_Bonus_Percent] += 1;
+			Target.Attributes[GameAttributes.Armor_Bonus_Percent] += 1;
 			Target.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -1408,7 +1394,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override void Remove()
 		{
 			base.Remove();
-			Target.Attributes[GameAttribute.Armor_Bonus_Percent] -= 1;
+			Target.Attributes[GameAttributes.Armor_Bonus_Percent] -= 1;
 			Target.Attributes.BroadcastChangedIfRevealed();
 		}
 	}

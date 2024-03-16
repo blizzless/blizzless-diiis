@@ -1,24 +1,11 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -172,7 +159,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
             var AllTablets = DrownedTempleWorld.GetActorsBySNO(ActorSno._a1dun_caves_nephalem_altar_tablet_a);
             foreach (var Tablet in AllTablets)
             {
-                Tablet.PlayAnimation(5, Tablet.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+                Tablet.PlayAnimation(5, (AnimationSno)Tablet.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
                 DrownedTempleWorld.BroadcastIfRevealed(plr => new SetIdleAnimationMessage
                 {
                     ActorID = Tablet.DynamicID(plr),
@@ -192,7 +179,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
                 var sno = actorSnos[i];
                 DrownedTempleWorld.SpawnMonster(sno, AllTablets[i].Position);
                 var actor = DrownedTempleWorld.GetActorBySNO(sno);
-                actor.Attributes[GameAttribute.Quest_Monster] = true;
+                actor.Attributes[GameAttributes.Quest_Monster] = true;
                 Skeletons2List.Add(actor.GlobalID);
             }
 

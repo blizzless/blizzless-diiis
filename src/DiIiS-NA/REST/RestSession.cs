@@ -1,34 +1,24 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
-//Blizzless Project 2022 
 using System.Net.Sockets;
-//Blizzless Project 2022 
 using System.Security.Cryptography;
-//Blizzless Project 2022 
 using System.Security.Cryptography.X509Certificates;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.Http;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.Data.Authentication;
-//Blizzless Project 2022 
 using DiIiS_NA.REST.JSON;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
+using System.Net;
+using System.Net.Security;
+using System.Web;
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.REST.Data.Forms;
+using DiIiS_NA.REST.Manager;
 
 namespace DiIiS_NA.REST
 {
@@ -53,35 +43,19 @@ namespace DiIiS_NA.REST
             }
             else
             {
+                Logger.Debug($"$[yellow]$REST Request: $[/]$ {httpRequest.Method.SafeAnsi()} {httpRequest.Path.SafeAnsi()}");
                 if (httpRequest.Path == "200")
                 {
 
                 }
-                else if (httpRequest.Path == "/client/alert?targetRegion=ruRU")
+                else if (httpRequest.Path.Contains("/client/alert"))
                 {
-                    switch (httpRequest.Method)
-                    {
-                        case "GET":
-                        default:
-                            HandleInfoRequest(httpRequest);
-                            break;
-                    }
+                    HandleInfoRequest(httpRequest);
                 }
-                else if (httpRequest.Path == "/D3/ruRU/client/alert?targetRegion=127")
+                else if (httpRequest.Path.Contains("/battlenet/login"))
                 {
                     switch (httpRequest.Method)
                     {
-                        case "GET":
-                        default:
-                            HandleInfoRequest(httpRequest);
-                            break;
-                    }
-                }
-                else
-                {
-                    switch (httpRequest.Method)
-                    {
-                        case "GET":
                         default:
                             HandleConnectRequest(httpRequest);
                             break;
@@ -90,28 +64,32 @@ namespace DiIiS_NA.REST
                             return;
                     }
                 }
+                else
+                {
+                    #if DEBUG
+                    Logger.Info($"$[red]$404 - REST Request: $[/]$ {httpRequest.Method.SafeAnsi()} {httpRequest.Path.SafeAnsi()}");
+                    SendResponseHtml(HttpCode.NotFound, "404 Not Found");
+                    #else
+                    // sends 502 Bad Gateway to the client to prevent the client from trying to connect to the server again - in case it's a crawler or bad bot.
+                    Logger.Info($"$[red]$[404/502] REST Request: $[/]$ {httpRequest.Method.SafeAnsi()} {httpRequest.Path.SafeAnsi()}");
+                    SendResponseHtml(HttpCode.BadGateway, "502 Bad Gateway");
+                    return;
+                    #endif
+                }
             }
             AsyncRead();
         }
 
-        public void HandleConnectRequest(HttpHeader request)
+        void HandleConnectRequest(HttpHeader request)
         {
-            SendResponse(HttpCode.OK, Global.Global.SessionMgr.GetFormInput());
+            SendResponse(HttpCode.OK, SessionManager.Instance.GetFormInput());
         }
 
-        public void HandleInfoRequest(HttpHeader request)
+        void HandleInfoRequest(HttpHeader request)
         {
             SendResponseHtml(HttpCode.OK, "Welcome to BlizzLess.Net" + 
                                           "\nBuild " + Program.Build +
                                           "\nSupport: 2.7.4");
-        }
-
-        public static byte[] StringToByteArray(string hex)
-        {
-            return Enumerable.Range(0, hex.Length)
-                             .Where(x => x % 2 == 0)
-                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
-                             .ToArray();
         }
 
         void SendResponse<T>(HttpCode code, T response)
@@ -121,18 +99,19 @@ namespace DiIiS_NA.REST
 
         void SendResponseHtml(HttpCode code, string response)
         {
-            AsyncWrite(HttpHelper.CreateResponse(code, response));
+            AsyncWrite(HttpHelper.CreateResponse(code, response, contentType: "text/html"));
         }
 
         public override void Start()
         {
             AsyncRead();
         }
-        public void HandleLoginRequest(HttpHeader request)
+
+        void HandleLoginRequest(HttpHeader request)
         {
             LogonData loginForm = Json.CreateObject<LogonData>(request.Content);
             LogonResult loginResult = new LogonResult();
-            if (loginForm == null)
+            if (loginForm?.Inputs is null or {Count: 0})
             {
                 loginResult.AuthenticationState = "LOGIN";
                 loginResult.ErrorCode = "UNABLE_TO_DECODE";
@@ -144,15 +123,15 @@ namespace DiIiS_NA.REST
             string login = "";
             string password = "";
 
-            for (int i = 0; i < loginForm.Inputs.Count; ++i)
+            foreach (var input in loginForm.Inputs)
             {
-                switch (loginForm.Inputs[i].Id)
+                switch (input.Id)
                 {
                     case "account_name":
-                        login = loginForm.Inputs[i].Value;
+                        login = input.Value;
                         break;
                     case "password":
-                        password = loginForm.Inputs[i].Value;
+                        password = input.Value;
                         break;
                 }
             }

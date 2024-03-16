@@ -1,13 +1,6 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
- //Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
- //Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
- //Blizzless Project 2022 
-using System;
+﻿ using DiIiS_NA.Core.Logging;
+ using DiIiS_NA.GameServer.Core.Types.SNO;
+ using System;
 
 namespace DiIiS_NA.Core.MPQ
 {

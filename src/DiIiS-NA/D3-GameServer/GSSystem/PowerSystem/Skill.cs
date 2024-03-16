@@ -1,26 +1,13 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
+using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 {
@@ -30,20 +17,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		public abstract IEnumerable<TickTimer> Main();
 
 		static new readonly Logger Logger = LogManager.CreateLogger();
-		public DiIiS_NA.Core.MPQ.FileFormats.Power DataOfSkill;
+		public Power DataOfSkill;
 		public sealed override IEnumerable<TickTimer> Run()
 		{
-			DataOfSkill = (DiIiS_NA.Core.MPQ.FileFormats.Power)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Power][PowerSNO].Data;
+			DataOfSkill = (Power)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Power][PowerSNO].Data;
 			
 			// play starting animation and effects
-			_PlayActionAnimation();
-			_PlayCastEffect();
+			PlayActionAnimation();
+			PlayCastEffect();
 
 			float contactDelay = GetContactDelay();
 			if (contactDelay > 0f)
 				yield return WaitSeconds(contactDelay);
 
-			_PlayContactEffect();
+			PlayContactEffect();
 
 			// run main effects script
 			foreach (TickTimer timer in Main())
@@ -61,75 +48,70 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				return User is Player && (User as Player).Toon.Gender == 2;  // 2 = female
 			}
 		}
-		public virtual int GetActionAnimationSNO()
+		public virtual AnimationSno GetActionAnimationSNO()
 		{
 			try
 			{
 				int tag = EvalTag(PowerKeys.AnimationTag);
-				if (User.AnimationSet != null && User.AnimationSet.Animations.ContainsKey(tag))
-					return User.AnimationSet.Animations[tag];
-				else
-					if (User.AnimationSet != null)
-						return User.AnimationSet.GetAnimationTag(DiIiS_NA.Core.MPQ.FileFormats.AnimationTags.Attack2);
-					else
-						return -1;
+				if (User.AnimationSet != null)
+                {
+	                try
+	                {
+		                if (User.AnimationSet.Animations.TryGetValue(tag, out AnimationSno value))
+			                return value;
+		                return (AnimationSno)User.AnimationSet.GetAnimationTag(AnimationTags.Attack2);
+	                }
+	                catch (Exception ex)
+	                {
+		                #if DEBUG
+		                Logger.ErrorException(ex, "GetActionAnimationSNO throws error");
+		                #endif
+		                return AnimationSno._NONE;
+	                }
+                }
 			}
-			catch
+			catch (Exception e)
 			{
-				return -1;
+				Logger.Error("GetActionAnimationSNO throws error {0}", e.Message);
 			}
-			
+			return AnimationSno._NONE;
 
 		}
 
-		public virtual float GetActionSpeed()
-		{
-			return EvalTag(PowerKeys.AttackSpeed);
-		}
+		public virtual float GetActionSpeed() => EvalTag(PowerKeys.AttackSpeed);
 
-		public virtual int GetCastEffectSNO()
-		{
-			return EvalTag(IsUserFemale ? PowerKeys.CastingEffectGroup_Female : PowerKeys.CastingEffectGroup_Male);
-		}
+		public virtual int GetCastEffectSNO() => EvalTag(IsUserFemale ? PowerKeys.CastingEffectGroup_Female : PowerKeys.CastingEffectGroup_Male);
 
-		public virtual int GetContactEffectSNO()
-		{
-			return EvalTag(IsUserFemale ? PowerKeys.ContactFrameEffectGroup_Female : PowerKeys.ContactFrameEffectGroup_Male);
-		}
+		public virtual int GetContactEffectSNO() => EvalTag(IsUserFemale ? PowerKeys.ContactFrameEffectGroup_Female : PowerKeys.ContactFrameEffectGroup_Male);
 
-		public virtual float GetContactDelay()
-		{
-			return 0f;
-		}
+		public virtual float GetContactDelay() => 0f;
 
 		public float GetCooldown()
 		{
-			if (EvalTag(PowerKeys.CooldownTime) > 0f)
-				return EvalTag(PowerKeys.CooldownTime);
-			else
-				return 1f;
+			var tag = EvalTag(PowerKeys.CooldownTime);
+			return tag > 0f ? tag : 1f;
 		}
 
-		private void _PlayActionAnimation()
+		private void PlayActionAnimation()
 		{
 			float speed = GetActionSpeed();
-			int animationSNO = GetActionAnimationSNO();
+			var animationSNO = GetActionAnimationSNO();
 			#region Патч анимаций
-			if(animationSNO == -1)
-			switch (User.SNO)
-			{
-					case ActorSno._x1_skeletonarcher_westmarch_a: //x1_SkeletonArcher_Westmarch_A
-						if (PowerSNO == 30334)
-							animationSNO = 303905;
-						break;
-					case ActorSno._p6_necro_skeletonmage_f_archer: //p6_necro_skeletonMage_F_archer
-						animationSNO = 303905;
-						speed = 2f;
-						break;
-			}
+			if(animationSNO == AnimationSno._NONE)
+				switch (User.SNO)
+				{
+						case ActorSno._x1_skeletonarcher_westmarch_a: //x1_SkeletonArcher_Westmarch_A
+							if (PowerSNO == 30334)
+								animationSNO = AnimationSno.x1_skeletonarcher_westmarch_attack_01;
+							break;
+						case ActorSno._p6_necro_skeletonmage_f_archer: //p6_necro_skeletonMage_F_archer
+							animationSNO = AnimationSno.x1_skeletonarcher_westmarch_attack_01;
+							speed = 2f;
+							break;
+				}
 			#endregion
 			
-			if (animationSNO != -1 && speed > 0f)
+			if (animationSNO != AnimationSno._NONE && speed > 0f)
 			{
 				if (User is Player)
 				{
@@ -143,7 +125,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 							new PlayAnimationMessageSpec
 							{
 								Duration = (int)(60f / speed),  // ticks
-								AnimationSNO = animationSNO,
+								AnimationSNO = (int)animationSNO,
 								PermutationIndex = 0x0,
 								AnimationTag = 0,
 								Speed = 1,
@@ -166,7 +148,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 						new PlayAnimationMessageSpec
 						{
 							Duration = (int)(60f / speed),  // ticks
-							AnimationSNO = animationSNO,
+							AnimationSNO = (int)animationSNO,
 							PermutationIndex = 0x0,
 							AnimationTag = 0,
 							Speed = User.SNO == ActorSno._pt_blacksmith_nonvendor || User.SNO == ActorSno._leah ? 1 : speed,
@@ -177,14 +159,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			}
 		}
 
-		private void _PlayCastEffect()
+		private void PlayCastEffect()
 		{
 			int sno = GetCastEffectSNO();
 			if (sno != -1)
 				User.PlayEffectGroup(sno);
 		}
 
-		private void _PlayContactEffect()
+		private void PlayContactEffect()
 		{
 			int sno = GetContactEffectSNO();
 			if (sno != -1)

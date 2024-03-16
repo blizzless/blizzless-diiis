@@ -1,39 +1,21 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
@@ -82,10 +64,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			if (Body.World.Game.Paused) return;
 
 			// check if in disabled state, if so cancel any action then do nothing
-			if (Body.Attributes[GameAttribute.Frozen] ||
-				Body.Attributes[GameAttribute.Stunned] ||
-				Body.Attributes[GameAttribute.Blind] ||
-				Body.Attributes[GameAttribute.Webbed] ||
+			if (Body.Attributes[GameAttributes.Frozen] ||
+				Body.Attributes[GameAttributes.Stunned] ||
+				Body.Attributes[GameAttributes.Blind] ||
+				Body.Attributes[GameAttributes.Webbed] ||
 				Body.Disable ||
 				Body.World.BuffManager.GetFirstBuff<KnockbackBuff>(Body) != null)
 			{
@@ -99,7 +81,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				return;
 			}
 
-			if (Body.Attributes[GameAttribute.Feared])
+			if (Body.Attributes[GameAttributes.Feared])
 			{
 				if (!Feared || CurrentAction == null)
 				{
@@ -136,17 +118,14 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						.Cast<Actor>()
 						.ToList();
 					if (Body.World.Game.PvP)
-						targets = (Body as Minion).Master.GetObjectsInRange<Player>(30f).Where(p => p.GlobalID != (Body as Minion).Master.GlobalID && p.Attributes[GameAttribute.TeamID] != (Body as Minion).Master.Attributes[GameAttribute.TeamID]).Cast<Actor>().ToList();
+						targets = (Body as Minion).Master.GetObjectsInRange<Player>(30f).Where(p => p.GlobalID != (Body as Minion).Master.GlobalID && p.Attributes[GameAttributes.TeamID] != (Body as Minion).Master.Attributes[GameAttributes.TeamID]).Cast<Actor>().ToList();
 					if (Body.World.IsPvP)
 						targets = (Body as Minion).Master.GetObjectsInRange<Player>(30f).Where(p => p.GlobalID != (Body as Minion).Master.GlobalID).Cast<Actor>().ToList();
 
 					if (targets.Count != 0 && PowerMath.Distance2D(Body.Position, (Body as Minion).Master.Position) < 80f)
 					{
-						var elites = targets.Where(t => t is Champion || t is Rare || t is RareMinion);
-						if (elites.Count() > 0)
-							_target = elites.First();
-						else
-							_target = targets.First();
+						var elite = targets.FirstOrDefault(target => target is Champion or Rare or RareMinion);
+						_target = elite ?? targets.First();
 
 						int powerToUse = PickPowerToUse();
 						if (powerToUse > 0)
@@ -173,7 +152,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							}
 							else
 							{
-								Logger.Trace("MoveToTargetWithPathfindAction to target");
+								Logger.Trace("$[underline white]$MoveToTargetWithPathfindAction$[/]$ to target");
 								CurrentAction = new MoveToTargetWithPathfindAction(
 									Body,
 									//(
@@ -217,13 +196,12 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			// randomly used an implemented power
 			if (PresetPowers.Count > 0)
 			{
-				//int power = this.PresetPowers[RandomHelper.Next(this.PresetPowers.Count)].Key;
-				List<int> availablePowers = Enumerable.ToList(PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key));
-				if (availablePowers.Where(p => p != 30592).Count() > 0)
-					return availablePowers.Where(p => p != 30592).ToList()[RandomHelper.Next(availablePowers.Where(p => p != 30592).ToList().Count())];
-				else
-					if (availablePowers.Contains(30592))
-					return 30592; //melee attack
+				// int power = this.PresetPowers[RandomHelper.Next(this.PresetPowers.Count)].Key;
+				List<int> availablePowers = PresetPowers.Where(p => (p.Value.CooldownTimer == null || p.Value.CooldownTimer.TimedOut) && PowerLoader.HasImplementationForPowerSNO(p.Key)).Select(p => p.Key).ToList();
+				if (availablePowers.Where(p => p != 30592).TryPickRandom(out var randomItem))
+					return randomItem;
+				if (availablePowers.Contains(30592))
+					return 30592; // melee attack
 			}
 
 			// no usable power
@@ -234,7 +212,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			if (PresetPowers.ContainsKey(powerSNO))
 			{
-				// Logger.Debug("AddPresetPower(): power sno {0} already defined for monster \"{1}\"",
+				// Logger.MethodTrace("power sno {0} already defined for monster \"{1}\"",
 				//powerSNO, this.Body.ActorSNO.Name);
 				return;
 			}

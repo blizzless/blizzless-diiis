@@ -1,18 +1,10 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Actions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
@@ -103,7 +95,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement
 					}
 
 					if (Owner == null ||
-						Owner.Attributes[GameAttribute.Hitpoints_Cur] == 0 ||
+						Owner.Attributes[GameAttributes.Hitpoints_Cur] == 0 ||
 						Owner.GetObjectsInRange<Player>(50f).Count == 0 ||
 						MovementHelpers.GetDistance(Owner.Position, Heading) < AttackRadius ||
 						(Owner is Monster && (Owner as Monster).Brain.CurrentAction == null)

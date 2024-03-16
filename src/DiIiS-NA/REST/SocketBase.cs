@@ -1,11 +1,6 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using System;
-//Blizzless Project 2022 
 using System.Net;
-//Blizzless Project 2022 
 using System.Net.Sockets;
 
 namespace DiIiS_NA.REST
@@ -50,8 +45,7 @@ namespace DiIiS_NA.REST
 
             try
             {
-                //Blizzless Project 2022 
-                using (var socketEventargs = new SocketAsyncEventArgs())
+                                using (var socketEventargs = new SocketAsyncEventArgs())
                 {
                     socketEventargs.SetBuffer(_receiveBuffer, 0, _receiveBuffer.Length);
                     socketEventargs.Completed += (sender, args) => ReadHandlerInternal(args);
@@ -76,8 +70,7 @@ namespace DiIiS_NA.REST
 
             try
             {
-                //Blizzless Project 2022 
-                using (var socketEventargs = new SocketAsyncEventArgs())
+                                using (var socketEventargs = new SocketAsyncEventArgs())
                 {
                     socketEventargs.SetBuffer(_receiveBuffer, 0, _receiveBuffer.Length);
                     socketEventargs.Completed += (sender, args) => callback(args);
@@ -123,8 +116,7 @@ namespace DiIiS_NA.REST
         {
             if (!IsOpen())
                 return;
-            //Blizzless Project 2022 
-            using (var socketEventargs = new SocketAsyncEventArgs())
+                        using (var socketEventargs = new SocketAsyncEventArgs())
             {
                 socketEventargs.SetBuffer(data, 0, data.Length);
                 socketEventargs.Completed += WriteHandlerInternal;

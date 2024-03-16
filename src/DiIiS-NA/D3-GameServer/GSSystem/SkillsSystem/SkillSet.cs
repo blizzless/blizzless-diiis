@@ -1,53 +1,64 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Toons;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 {
 	public class SkillSet
 	{
-		public ToonClass @Class;
-		public Toon Toon { get; private set; }
-		public Player Player { get; private set; }
+		public ToonClass ToonClass { get; }
+		public Toon Toon { get; }
+		public Player Player { get; }
 
-		public ActiveSkillSavedData[] ActiveSkills;
-		public HotbarButtonData[] HotBarSkills;
-		public int[] PassiveSkills;
+		public ActiveSkillSavedData[] ActiveSkills { get; }
+		public HotbarButtonData[] HotBarSkills { get; }
+		public int[] PassiveSkills { get; }
 
 		protected static readonly Logger Logger = LogManager.CreateLogger();
 
-		public SkillSet(Player player, ToonClass @class, Toon toon)
+		public SkillSet(Player player, ToonClass toonClass, Toon toon)
 		{
-			@Class = @class;
+			ToonClass = toonClass;
 			Player = player;
-			var dbToon = player.Toon.DBToon;
+			// var dbToon = player.Toon.DBToon;
 			var dbActiveSkills = player.Toon.DBActiveSkills;
-			ActiveSkills = new ActiveSkillSavedData[6] {
-				new ActiveSkillSavedData {  snoSkill = dbActiveSkills.Skill0, 
-											snoRune  = dbActiveSkills.Rune0 },
-				new ActiveSkillSavedData {  snoSkill = dbActiveSkills.Skill1, 
-											snoRune  = dbActiveSkills.Rune1 },
-				new ActiveSkillSavedData {  snoSkill = dbActiveSkills.Skill2, 
-											snoRune  = dbActiveSkills.Rune2 },
-				new ActiveSkillSavedData {  snoSkill = dbActiveSkills.Skill3, 
-											snoRune  = dbActiveSkills.Rune3 },
-				new ActiveSkillSavedData {  snoSkill = dbActiveSkills.Skill4, 
-											snoRune  = dbActiveSkills.Rune4 },
-				new ActiveSkillSavedData {  snoSkill = dbActiveSkills.Skill5, 
-											snoRune  = dbActiveSkills.Rune5 },
+			ActiveSkills = new ActiveSkillSavedData[6]
+			{
+				new()
+				{
+					snoSkill = dbActiveSkills.Skill0,
+					snoRune = dbActiveSkills.Rune0
+				},
+				new()
+				{
+					snoSkill = dbActiveSkills.Skill1,
+					snoRune = dbActiveSkills.Rune1
+				},
+				new()
+				{
+					snoSkill = dbActiveSkills.Skill2,
+					snoRune = dbActiveSkills.Rune2
+				},
+				new()
+				{
+					snoSkill = dbActiveSkills.Skill3,
+					snoRune = dbActiveSkills.Rune3
+				},
+				new()
+				{
+					snoSkill = dbActiveSkills.Skill4,
+					snoRune = dbActiveSkills.Rune4
+				},
+				new()
+				{
+					snoSkill = dbActiveSkills.Skill5,
+					snoRune = dbActiveSkills.Rune5
+				},
 			};
 
 			PassiveSkills = new int[4] {
@@ -59,18 +70,18 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 			//}
 
 			HotBarSkills = new HotbarButtonData[6] {
-				new HotbarButtonData { SNOSkill = ActiveSkills[0].snoSkill, ItemAnn = ActiveSkills[0].snoRune, ItemGBId = -1, RuneType = -1 }, // left-click
-				new HotbarButtonData { SNOSkill = ActiveSkills[1].snoSkill, ItemAnn = ActiveSkills[1].snoRune, ItemGBId = -1, RuneType = -1 }, // right-click
-				new HotbarButtonData { SNOSkill = ActiveSkills[2].snoSkill, ItemAnn = ActiveSkills[2].snoRune, ItemGBId = -1, RuneType = -1 }, // bar-1
-				new HotbarButtonData { SNOSkill = ActiveSkills[3].snoSkill, ItemAnn = ActiveSkills[3].snoRune, ItemGBId = -1, RuneType = -1 }, // bar-2
-				new HotbarButtonData { SNOSkill = ActiveSkills[4].snoSkill, ItemAnn = ActiveSkills[4].snoRune, ItemGBId = -1, RuneType = -1 }, // bar-3
-				new HotbarButtonData { SNOSkill = ActiveSkills[5].snoSkill, ItemAnn = ActiveSkills[5].snoRune, ItemGBId = -1, RuneType = -1 }, // bar-4
+				new() { SNOSkill = ActiveSkills[0].snoSkill, ItemAnn = ActiveSkills[0].snoRune, ItemGBId = -1, RuneType = -1 }, // left-click
+				new() { SNOSkill = ActiveSkills[1].snoSkill, ItemAnn = ActiveSkills[1].snoRune, ItemGBId = -1, RuneType = -1 }, // right-click
+				new() { SNOSkill = ActiveSkills[2].snoSkill, ItemAnn = ActiveSkills[2].snoRune, ItemGBId = -1, RuneType = -1 }, // bar-1
+				new() { SNOSkill = ActiveSkills[3].snoSkill, ItemAnn = ActiveSkills[3].snoRune, ItemGBId = -1, RuneType = -1 }, // bar-2
+				new() { SNOSkill = ActiveSkills[4].snoSkill, ItemAnn = ActiveSkills[4].snoRune, ItemGBId = -1, RuneType = -1 }, // bar-3
+				new() { SNOSkill = ActiveSkills[5].snoSkill, ItemAnn = ActiveSkills[5].snoRune, ItemGBId = -1, RuneType = -1 }, // bar-4
 			};
 		}
 
 		public void UpdateSkills(int hotBarIndex, int SNOSkill, int SNORune, Toon toon)
 		{
-			Logger.Debug("Update index {0} skill {1} rune {2}", hotBarIndex, SNOSkill, SNORune);
+			Logger.MethodTrace(string.Format("Update index {0} skill {1} rune {2}", hotBarIndex, SNOSkill, SNORune));
 			var dbActiveSkills = Player.Toon.DBActiveSkills;
 			switch (hotBarIndex)
 			{
@@ -101,7 +112,7 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 			}
 			if (!Player.World.Game.PvP)
 			{
-				Player.World.Game.GameDBSession.SessionUpdate(dbActiveSkills);
+				Player.World.Game.GameDbSession.SessionUpdate(dbActiveSkills);
 			}
 
 		}
@@ -123,35 +134,16 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 			dbActiveSkills.Passive3 = PassiveSkills[3];
 			if (!Player.World.Game.PvP)
 			{
-				Player.World.Game.GameDBSession.SessionUpdate(dbActiveSkills);
+				Player.World.Game.GameDbSession.SessionUpdate(dbActiveSkills);
 			}
 		}
 
-		public bool HasPassive(int passiveId)
-		{
-			if (PassiveSkills.Contains(passiveId))
-				return true;
-			else
-				return false;
-		}
+		public bool HasPassive(int passiveId) => PassiveSkills.Contains(passiveId);
 
-		public bool HasSkill(int skillId)
-		{
-			return ActiveSkills.Any(s => s.snoSkill == skillId);
-		}
+		public bool HasSkill(int skillId) => ActiveSkills.Any(s => s.snoSkill == skillId);
 
-		public bool HasSkillWithRune(int skillId, int runeId)
-		{
-			return ActiveSkills.Any(s => s.snoSkill == skillId && s.snoRune == runeId);
-		}
-
-
-		public bool HasItemPassiveProc(int passiveId)
-		{
-			if ((float)FastRandom.Instance.NextDouble() < Player.Attributes[GameAttribute.Item_Power_Passive, passiveId])
-				return true;
-			else
-				return false;
-		}
+		public bool HasSkillWithRune(int skillId, int runeId) => ActiveSkills.Any(s => s.snoSkill == skillId && s.snoRune == runeId);
+		
+		public bool HasItemPassiveProc(int passiveId) => (float)FastRandom.Instance.NextDouble() < Player.Attributes[GameAttributes.Item_Power_Passive, passiveId];
 	}
 }

@@ -1,25 +1,10 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -66,7 +51,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 							new PlayAnimationMessageSpec()
 							{
 								Duration = duration,
-								AnimationSNO = ActorData.TagMap.ContainsKey(ActorKeys.DeathAnimationTag) ? AnimationSet.TagMapAnimDefault[ActorData.TagMap[ActorKeys.DeathAnimationTag]].Int : AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault] ,
+								AnimationSNO = ActorData.TagMap.ContainsKey(ActorKeys.DeathAnimationTag) ? AnimationSet.TagMapAnimDefault[ActorData.TagMap[ActorKeys.DeathAnimationTag]].Int : AnimationSet.TagMapAnimDefault[AnimationSetKeys.DeathDefault],
 								PermutationIndex = 0,
 								AnimationTag = 0,
 								Speed = 1
@@ -87,7 +72,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						CollFlags = 0
 					}, this);
 
-					Attributes[GameAttribute.Deleted_On_Server] = true;
+					Attributes[GameAttributes.Deleted_On_Server] = true;
 					Attributes.BroadcastChangedIfRevealed();
 
 					RelativeTickTimer destroy = new RelativeTickTimer(World.Game, duration, x => Destroy());

@@ -1,14 +1,8 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.ClientSystem;
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter
@@ -23,7 +17,6 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter
 
         public void Handle(GameClient client)
         {
-            client.Player.ArtisanInteraction = "QueueAccepted";
             client.Game.AcceptBossEncounter();
         }
 

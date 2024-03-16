@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022
-namespace DiIiS_NA.LoginServer.Helpers
+﻿namespace DiIiS_NA.LoginServer.Helpers
 {
 	public static class EntityIdHelper
 	{

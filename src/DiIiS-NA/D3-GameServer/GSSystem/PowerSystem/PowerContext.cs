@@ -1,46 +1,21 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
 using System.Threading;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 {
@@ -92,8 +67,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public void StartCooldown(float seconds)
 		{
-			seconds -= User.Attributes[GameAttribute.Power_Cooldown_Reduction, PowerSNO];
-			seconds *= (1f - User.Attributes[GameAttribute.Power_Cooldown_Reduction_Percent_All]);
+			seconds -= User.Attributes[GameAttributes.Power_Cooldown_Reduction, PowerSNO];
+			seconds *= (1f - User.Attributes[GameAttributes.Power_Cooldown_Reduction_Percent_All]);
 			StartCooldown(WaitSeconds(seconds));
 		}
 
@@ -130,34 +105,34 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public void GeneratePrimaryResource(float amount)
 		{
-			if (User is Player)
+			if (User is Player player)
 			{
-				(User as Player).GeneratePrimaryResource(amount);
+				player.GeneratePrimaryResource(amount);
 			}
 		}
 
 		public void UsePrimaryResource(float amount)
 		{
-			if (User is Player)
+			if (User is Player player)
 			{
-				if (User.Attributes[GameAttribute.Free_Cast_All] != true)
-					(User as Player).UsePrimaryResource(amount - User.Attributes[GameAttribute.Power_Resource_Reduction, PowerSNO]);
+				if (player.Attributes[GameAttributes.Free_Cast_All] != true)
+					player.UsePrimaryResource(amount - player.Attributes[GameAttributes.Power_Resource_Reduction, PowerSNO]);
 			}
 		}
 
 		public void GenerateSecondaryResource(float amount)
 		{
-			if (User is Player)
+			if (User is Player player)
 			{
-				(User as Player).GenerateSecondaryResource(amount);
+				player.GenerateSecondaryResource(amount);
 			}
 		}
 
 		public void UseSecondaryResource(float amount)
 		{
-			if (User is Player)
+			if (User is Player player)
 			{
-				(User as Player).UseSecondaryResource(amount - User.Attributes[GameAttribute.Power_Resource_Reduction, PowerSNO]);
+				player.UseSecondaryResource(amount - player.Attributes[GameAttributes.Power_Resource_Reduction, PowerSNO]);
 			}
 		}
 
@@ -171,8 +146,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public void WeaponDamage(TargetList targets, float damageMultiplier, DamageType damageType)
 		{
-			AttackPayload payload = new AttackPayload(this);
-			payload.Targets = targets;
+			AttackPayload payload = new AttackPayload(this)
+			{
+				Targets = targets
+			};
 			payload.AddWeaponDamage(damageMultiplier, damageType);
 			payload.Apply();
 		}
@@ -187,28 +164,27 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public void Damage(TargetList targets, float minDamage, float damageDelta, DamageType damageType)
 		{
-			AttackPayload payload = new AttackPayload(this);
-			payload.Targets = targets;
+			AttackPayload payload = new AttackPayload(this)
+			{
+				Targets = targets
+			};
 			payload.AddDamage(minDamage, damageDelta, damageType);
 			payload.Apply();
 		}
 
 		public EffectActor SpawnEffect(ActorSno actorSNO, Vector3D position, float angle = 0, TickTimer timeout = null)
 		{
-			if (angle == -1)
+			if (Math.Abs(angle - -1) < Globals.FLOAT_TOLERANCE)
 				angle = (float)(Rand.NextDouble() * (Math.PI * 2));
 			if (timeout == null)
 			{
-				if (_defaultEffectTimeout == null)
-					_defaultEffectTimeout = new SecondsTickTimer(World.Game, 2f); // default timeout of 2 seconds for now
-
+				_defaultEffectTimeout ??= new SecondsTickTimer(World.Game, 2f);
 				timeout = _defaultEffectTimeout;
 			}
 
 			var actor = new EffectActor(this, actorSNO, position);
 			actor.Timeout = timeout;
 			actor.Spawn(angle);
-			//187359
 			return actor;
 		}
 
@@ -271,7 +247,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			float radiusCompensation = 5f;
 			foreach (Actor actor in World.QuadTree.Query<Actor>(new Circle(center.X, center.Y, radius + radiusCompensation + 25f)))
 			{
-				if (filter(actor) && !actor.Attributes[GameAttribute.Untargetable] && !World.PowerManager.IsDeletingActor(actor) && actor != User && (PowerMath.Distance2D(center, actor.Position) - (actor.ActorData.Cylinder.Ax2 + 5f)) <= radius + radiusCompensation)
+				if (filter(actor) && !actor.Attributes[GameAttributes.Untargetable] && !World.PowerManager.IsDeletingActor(actor) && actor != User && (PowerMath.Distance2D(center, actor.Position) - (actor.ActorData.Cylinder.Ax2 + 5f)) <= radius + radiusCompensation)
 				{
 					if (targetFilter(actor))
 					{
@@ -296,10 +272,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			get
 			{
 				if (World.IsPvP)
-					return (actor) => ((actor is Player && actor.GlobalID != User.GlobalID) || (actor is Minion && actor.GlobalID != User.GlobalID && (actor as Minion).Master.GlobalID != User.GlobalID));
+					return (actor) => ((actor is Player && actor.GlobalID != User.GlobalID) || (actor is Minion minion && minion.GlobalID != User.GlobalID && minion.Master.GlobalID != User.GlobalID));
 				else
 				{
-					if (User is Player || User is Minion || User is Hireling || (User is Monster && User.Attributes[GameAttribute.Team_Override] == 1) || User.SNO == ActorSno._pt_blacksmith_nonvendor || (User is Monster && User.Attributes[GameAttribute.Team_Override] == 1))
+					if (User is Player || User is Minion || User is Hireling || (User is Monster && User.Attributes[GameAttributes.Team_Override] == 1) || User.SNO == ActorSno._pt_blacksmith_nonvendor || (User is Monster && User.Attributes[GameAttributes.Team_Override] == 1))
 						return (actor) => (actor is Monster || actor is DesctructibleLootContainer) && actor.Visible && !(actor is ActorSystem.Implementations.ScriptObjects.ButcherFloorPanel) && !(actor is ActorSystem.Implementations.ScriptObjects.LeorFireGrate);
 					else if (User is TownLeah || User is CaptainRumford || User is ArrowGuardian || User is LorathNahr_NPC)
 						return (actor) => actor is Monster && actor.Visible;
@@ -439,11 +415,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			}
 		}
 
-		public int Rune_A { get { return User.Attributes[GameAttribute.Rune_A, PowerSNO]; } }
-		public int Rune_B { get { return User.Attributes[GameAttribute.Rune_B, PowerSNO]; } }
-		public int Rune_C { get { return User.Attributes[GameAttribute.Rune_C, PowerSNO]; } }
-		public int Rune_D { get { return User.Attributes[GameAttribute.Rune_D, PowerSNO]; } }
-		public int Rune_E { get { return User.Attributes[GameAttribute.Rune_E, PowerSNO]; } }
+		public int Rune_A { get { return User.Attributes[GameAttributes.Rune_A, PowerSNO]; } }
+		public int Rune_B { get { return User.Attributes[GameAttributes.Rune_B, PowerSNO]; } }
+		public int Rune_C { get { return User.Attributes[GameAttributes.Rune_C, PowerSNO]; } }
+		public int Rune_D { get { return User.Attributes[GameAttributes.Rune_D, PowerSNO]; } }
+		public int Rune_E { get { return User.Attributes[GameAttributes.Rune_E, PowerSNO]; } }
 
 		public T RuneSelect<T>(T none, T runeA, T runeB, T runeC, T runeD, T runeE)
 		{

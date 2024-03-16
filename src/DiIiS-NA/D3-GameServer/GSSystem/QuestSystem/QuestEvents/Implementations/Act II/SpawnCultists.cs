@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022 
-using System;
+﻿using System;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations

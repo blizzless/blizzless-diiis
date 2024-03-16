@@ -1,14 +1,8 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Reflection;
-//Blizzless Project 2022 
 using Microsoft.Data.Sqlite;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Collections;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.Core.Storage
@@ -138,8 +132,7 @@ namespace DiIiS_NA.Core.Storage
 
 		private static bool tableExists(string name)
 		{
-			//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(String.Format("SELECT name FROM sqlite_master WHERE type='table' AND name='{0}'", name), DBManager.MPQMirror))
+			using (var cmd = new SqliteCommand(String.Format("SELECT name FROM sqlite_master WHERE type='table' AND name='{0}'", name), DBManager.MPQMirror))
 			{
 				return (cmd.ExecuteScalar() != null);
 			}
@@ -172,8 +165,7 @@ using (var cmd = new SqliteCommand(String.Format("SELECT name FROM sqlite_master
 			// load the entry and begin reading
 			if (tableExists(o.GetType().Name))
 			{
-				//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(String.Format("SELECT * FROM {0} WHERE Id={1}", o.GetType().Name, id), DBManager.MPQMirror))
+				using (var cmd = new SqliteCommand(String.Format("SELECT * FROM {0} WHERE Id={1}", o.GetType().Name, id), DBManager.MPQMirror))
 				{
 					var reader = cmd.ExecuteReader();
 					if (reader.Read() && reader.HasRows)
@@ -205,8 +197,7 @@ using (var cmd = new SqliteCommand(String.Format("SELECT * FROM {0} WHERE Id={1}
 				// Load generic lists by finding the mn-mapping table and loading every entry recursivly
 				if (property.IsGenericList)
 				{
-					//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(String.Format(genericListsql, property.RelationTableName, property.ListType.Name, parent == null ? o.GetType().Name : parent.Name, entryId), DBManager.MPQMirror))
+					using (var cmd = new SqliteCommand(String.Format(genericListsql, property.RelationTableName, property.ListType.Name, parent == null ? o.GetType().Name : parent.Name, entryId), DBManager.MPQMirror))
 					{
 						var itemReader = cmd.ExecuteReader();
 						var list = Activator.CreateInstance(property.Type);
@@ -229,8 +220,7 @@ using (var cmd = new SqliteCommand(String.Format(genericListsql, property.Relati
 				// Load generic dictionaires by finding the mn-mapping table and loading every entry recursivly
 				if (property.IsGenericDictionary)
 				{
-					//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(String.Format(genericListsql, property.RelationTableName, property.ListType.Name, parent == null ? o.GetType().Name : parent.Name, entryId), DBManager.MPQMirror))
+					using (var cmd = new SqliteCommand(String.Format(genericListsql, property.RelationTableName, property.ListType.Name, parent == null ? o.GetType().Name : parent.Name, entryId), DBManager.MPQMirror))
 					{
 						var itemReader = cmd.ExecuteReader();
 						var dictionary = Activator.CreateInstance(property.Type);
@@ -338,8 +328,7 @@ using (var cmd = new SqliteCommand(String.Format(genericListsql, property.Relati
 
 					query = String.Format(query, property.RelationTableName, parent == null ? type.Name : parent.Name, property.ListType.Name);
 
-					//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(query, DBManager.MPQMirror))
+					using (var cmd = new SqliteCommand(query, DBManager.MPQMirror))
 					{
 						cmd.ExecuteNonQuery();
 					}
@@ -364,8 +353,7 @@ using (var cmd = new SqliteCommand(query, DBManager.MPQMirror))
 				columnDefinitions.Add("Id INTEGER PRIMARY KEY");
 				var tableDefinition = String.Join(",", columnDefinitions.ToArray<string>());
 
-				//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(String.Format("CREATE TABLE {0} ({1})", type.Name, tableDefinition), DBManager.MPQMirror))
+				using (var cmd = new SqliteCommand(String.Format("CREATE TABLE {0} ({1})", type.Name, tableDefinition), DBManager.MPQMirror))
 				{
 					cmd.ExecuteNonQuery();
 				}
@@ -407,8 +395,7 @@ using (var cmd = new SqliteCommand(String.Format("CREATE TABLE {0} ({1})", type.
 
 			id = Save(o, id, new Dictionary<string, string>());
 
-			//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(String.Format("INSERT INTO TOC (SNOGroup, SNOId, Name) VALUES ('{0}', '{1}', '{2}')", o.GetType().Name, id, name), DBManager.MPQMirror))
+			using (var cmd = new SqliteCommand(String.Format("INSERT INTO TOC (SNOGroup, SNOId, Name) VALUES ('{0}', '{1}', '{2}')", o.GetType().Name, id, name), DBManager.MPQMirror))
 			{
 				cmd.ExecuteNonQuery();
 			}
@@ -489,13 +476,11 @@ using (var cmd = new SqliteCommand(String.Format("INSERT INTO TOC (SNOGroup, SNO
 				string cnames = String.Join(",", (new List<string>(values.Keys).ToArray()));
 				string cvalues = String.Join(",", (new List<string>(values.Values).ToArray()));
 
-				//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(String.Format("INSERT INTO {0} ({1}) VALUES ({2})", o.GetType().Name, cnames, cvalues), DBManager.MPQMirror))
+				using (var cmd = new SqliteCommand(String.Format("INSERT INTO {0} ({1}) VALUES ({2})", o.GetType().Name, cnames, cvalues), DBManager.MPQMirror))
 				{
 					cmd.ExecuteNonQuery();
 
-					//Blizzless Project 2022 
-using (var last = new SqliteCommand("SELECT last_insert_rowid()", DBManager.MPQMirror))
+					using (var last = new SqliteCommand("SELECT last_insert_rowid()", DBManager.MPQMirror))
 					{
 						id = last.ExecuteScalar().ToString();
 					}
@@ -532,8 +517,7 @@ using (var last = new SqliteCommand("SELECT last_insert_rowid()", DBManager.MPQM
 					{
 						string newId = Save(item, null, new Dictionary<string, string>(), "");
 
-						//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(String.Format(
+						using (var cmd = new SqliteCommand(String.Format(
 							"INSERT INTO {4} ({0}Id, {1}Id) VALUES ({2}, {3})",
 							parent == null ? o.GetType().Name : parent.Name,
 							property.ListType.Name,
@@ -555,8 +539,7 @@ using (var cmd = new SqliteCommand(String.Format(
 					{
 						string newId = Save(dictionary[item], null, new Dictionary<string, string>(), "");
 
-						//Blizzless Project 2022 
-using (var cmd = new SqliteCommand(String.Format(
+						using (var cmd = new SqliteCommand(String.Format(
 							"INSERT INTO {4} ({0}Id, {1}Id, Key) VALUES ({2}, {3}, {5})",
 							parent == null ? o.GetType().Name : parent.Name,
 							property.ListType.Name,

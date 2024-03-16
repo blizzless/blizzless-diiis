@@ -1,32 +1,18 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
-//Blizzless Project 2022 
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
-//Blizzless Project 2022 
 using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
@@ -115,17 +101,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 							float result;
 							if (FormulaScript.Evaluate(effect.Formula.ToArray(), new ItemRandomHelper(FastRandom.Instance.Next()), out result))
 							{
-								if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeF)
+								if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 									if (effect.SNOParam != -1)
 										monster.Attributes[attr, effect.SNOParam] += result;
 									else
 										monster.Attributes[attr] += result;
 								}
-								else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+								else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 									if (effect.SNOParam != -1)
 										monster.Attributes[attr, effect.SNOParam] += (int)result;
 									else
@@ -201,17 +187,17 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 								//var tmpAttr = GameAttribute.Attributes[effect.AttributeId];
 								//var attrName = tmpAttr.Name;
 
-								if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeF)
+								if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeF;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
 									if (effect.SNOParam != -1)
 										monster.Attributes[attr, effect.SNOParam] += result;
 									else
 										monster.Attributes[attr] += result;
 								}
-								else if (GameAttribute.Attributes[effect.AttributeId] is GameAttributeI)
+								else if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeI)
 								{
-									var attr = GameAttribute.Attributes[effect.AttributeId] as GameAttributeI;
+									var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeI;
 									if (effect.SNOParam != -1)
 										monster.Attributes[attr, effect.SNOParam] += (int)result;
 									else
@@ -265,14 +251,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 
 		public static int GeneratePrefixName()
 		{
-			var randomPrefix = NamesList.Where(n => n.AffixType == AffixType.Prefix).OrderBy(x => RandomHelper.Next()).ToList().First();
+			var randomPrefix = NamesList.Where(n => n.AffixType == AffixType.Prefix).PickRandom();
 			return randomPrefix.Hash;
 		}
 
 		public static int GenerateSuffixName()
 		{
-			var randomSuffix = NamesList.Where(n => n.AffixType == AffixType.Suffix).OrderBy(x => RandomHelper.Next()).ToList().First();
-			return randomSuffix.Hash;
+			var randomPrefix = NamesList.Where(n => n.AffixType == AffixType.Suffix).PickRandom();
+			return randomPrefix.Hash;
 		}
 	}
 }

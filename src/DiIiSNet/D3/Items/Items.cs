@@ -2,6 +2,7 @@
 #pragma warning disable 1591, 0612
 #region Designer generated code
 
+using System;
 using pb = global::Google.ProtocolBuffers;
 using pbc = global::Google.ProtocolBuffers.Collections;
 using pbd = global::Google.ProtocolBuffers.Descriptors;
@@ -6577,7 +6578,9 @@ namespace D3.Items {
         result.currency_.Clear();
         return this;
       }
-    }
+
+            
+        }
     static CurrencySavedData() {
       object.ReferenceEquals(global::D3.Items.Items.Descriptor, null);
     }

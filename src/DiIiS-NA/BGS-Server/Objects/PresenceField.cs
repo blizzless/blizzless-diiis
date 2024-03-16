@@ -1,20 +1,14 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using DiIiS_NA.LoginServer.Helpers;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.LoginServer.Helpers;
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Text;
 
 namespace DiIiS_NA.LoginServer.Objects
 {
 	public class EntityIdPresenceFieldList
 	{
-		public List<bgs.protocol.EntityId> Value = new List<bgs.protocol.EntityId>();
+		public List<bgs.protocol.EntityId> Value = new();
 
 		protected FieldKeyHelper.Program _program;
 		protected FieldKeyHelper.OriginatingClass _originatingClass;

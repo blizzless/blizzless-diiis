@@ -1,19 +1,10 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using CrystalMpq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -85,77 +76,77 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public GameBalance(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
-            this.Type = (BalanceType)stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
-            this.I1 = stream.ReadValueS32();
-            this.ItemType = stream.ReadSerializedData<ItemTypeTable>();
+            Header = new Header(stream);
+            Type = (BalanceType)stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            I1 = stream.ReadValueS32();
+            ItemType = stream.ReadSerializedData<ItemTypeTable>();
             stream.Position += 8;
-            this.Item = stream.ReadSerializedData<ItemTable>();
+            Item = stream.ReadSerializedData<ItemTable>();
             stream.Position += 8;
-            this.Experience = stream.ReadSerializedData<ExperienceTable>();
+            Experience = stream.ReadSerializedData<ExperienceTable>();
             stream.Position += 8;
-            this.ExperienceAlt = stream.ReadSerializedData<ExperienceAltTable>();
+            ExperienceAlt = stream.ReadSerializedData<ExperienceAltTable>();
             stream.Position += 8;
-            this.HelpCodes = stream.ReadSerializedData<HelpCodesTable>();
+            HelpCodes = stream.ReadSerializedData<HelpCodesTable>();
             stream.Position += 8;
-            this.MonsterLevel = stream.ReadSerializedData<MonsterLevelTable>();
+            MonsterLevel = stream.ReadSerializedData<MonsterLevelTable>();
             stream.Position += 8;
-            this.Affixes = stream.ReadSerializedData<AffixTable>();
+            Affixes = stream.ReadSerializedData<AffixTable>();
             stream.Position += 8;
-            this.Heros = stream.ReadSerializedData<HeroTable>();
+            Heros = stream.ReadSerializedData<HeroTable>();
             stream.Position += 8;
-            this.MovementStyles = stream.ReadSerializedData<MovementStyle>();
+            MovementStyles = stream.ReadSerializedData<MovementStyle>();
             stream.Position += 8;
-            this.Labels = stream.ReadSerializedData<LabelGBIDTable>();
+            Labels = stream.ReadSerializedData<LabelGBIDTable>();
             stream.Position += 8;
-            this.LootDistribution = stream.ReadSerializedData<LootDistributionTableEntry>();
+            LootDistribution = stream.ReadSerializedData<LootDistributionTableEntry>();
             stream.Position += 8;
-            this.RareItemNames = stream.ReadSerializedData<RareItemNamesTable>();
+            RareItemNames = stream.ReadSerializedData<RareItemNamesTable>();
             stream.Position += 8;
-            this.MonsterAffixes = stream.ReadSerializedData<MonsterAffixesTable>();
+            MonsterAffixes = stream.ReadSerializedData<MonsterAffixesTable>();
             stream.Position += 8;
-            this.RareMonsterNames = stream.ReadSerializedData<MonsterNamesTable>();
+            RareMonsterNames = stream.ReadSerializedData<MonsterNamesTable>();
             stream.Position += 8;
-            this.SocketedEffects = stream.ReadSerializedData<SocketedEffectTable>();
+            SocketedEffects = stream.ReadSerializedData<SocketedEffectTable>();
             stream.Position += 8;
-            this.ItemDropTable = stream.ReadSerializedData<ItemDropTableEntry>();
+            ItemDropTable = stream.ReadSerializedData<ItemDropTableEntry>();
             stream.Position += 8;
-            this.ItemLevelModifiers = stream.ReadSerializedData<ItemLevelModifier>();
+            ItemLevelModifiers = stream.ReadSerializedData<ItemLevelModifier>();
             stream.Position += 8;
-            this.QualityClasses = stream.ReadSerializedData<QualityClass>();
+            QualityClasses = stream.ReadSerializedData<QualityClass>();
             stream.Position += 8;
-            this.HandicapLevelTables = stream.ReadSerializedData<HandicapLevelTable>();
+            HandicapLevelTables = stream.ReadSerializedData<HandicapLevelTable>();
             stream.Position += 8;
-            this.ItemSalvageLevelTables = stream.ReadSerializedData<ItemSalvageLevelTable>();
+            ItemSalvageLevelTables = stream.ReadSerializedData<ItemSalvageLevelTable>();
             stream.Position += 8;
-            this.Hirelings = stream.ReadSerializedData<HirelingTable>();
+            Hirelings = stream.ReadSerializedData<HirelingTable>();
             stream.Position += 8;
-            this.SetItemBonus = stream.ReadSerializedData<SetItemBonusTable>();
+            SetItemBonus = stream.ReadSerializedData<SetItemBonusTable>();
             stream.Position += 8;
-            this.EliteModifiers = stream.ReadSerializedData<EliteModifier>();
+            EliteModifiers = stream.ReadSerializedData<EliteModifier>();
             stream.Position += 8;
-            this.ItemTiers = stream.ReadSerializedData<ItemTier>();
+            ItemTiers = stream.ReadSerializedData<ItemTier>();
             stream.Position += 8;
-            this.PowerFormula = stream.ReadSerializedData<PowerFormulaTable>();
+            PowerFormula = stream.ReadSerializedData<PowerFormulaTable>();
             stream.Position += 8;
-            this.Recipes = stream.ReadSerializedData<RecipeTable>();
+            Recipes = stream.ReadSerializedData<RecipeTable>();
             stream.Position += 8;
-            this.ScriptedAchievementEvents = stream.ReadSerializedData<ScriptedAchievementEventsTable>();
+            ScriptedAchievementEvents = stream.ReadSerializedData<ScriptedAchievementEventsTable>();
             stream.Position += 8;
-            this.LootRunQuestTierTables = stream.ReadSerializedData<LootRunQuestTierTable>();
+            LootRunQuestTierTables = stream.ReadSerializedData<LootRunQuestTierTable>();
             stream.Position += 8;
-            this.ParagonBonusesTables = stream.ReadSerializedData<ParagonBonusesTable>();
+            ParagonBonusesTables = stream.ReadSerializedData<ParagonBonusesTable>();
             stream.Position += 8;
-            this.LegacyItemConversionTables = stream.ReadSerializedData<LegacyItemConversionTable>();
+            LegacyItemConversionTables = stream.ReadSerializedData<LegacyItemConversionTable>();
             stream.Position += 8;
-            this.EnchantItemAffixUseCountCostScalarsTables = stream.ReadSerializedData<EnchantItemAffixUseCountCostScalarsTable>();
+            EnchantItemAffixUseCountCostScalarsTables = stream.ReadSerializedData<EnchantItemAffixUseCountCostScalarsTable>();
             stream.Position += 8;
-            this.TieredLootRunLevelTables = stream.ReadSerializedData<TieredLootRunLevelTable>();
+            TieredLootRunLevelTables = stream.ReadSerializedData<TieredLootRunLevelTable>();
             stream.Position += 8;
-            this.TransmuteRecipesTables = stream.ReadSerializedData<TransmuteRecipesTable>();
+            TransmuteRecipesTables = stream.ReadSerializedData<TransmuteRecipesTable>();
             stream.Position += 8;
-            this.CurrencyConversionTables = stream.ReadSerializedData<CurrencyConversionTable>();
+            CurrencyConversionTables = stream.ReadSerializedData<CurrencyConversionTable>();
             stream.Position += 8;
 
             #region Запись дампа вещей
@@ -166,8 +157,7 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
                 writePath += file.Name;
                 writePath += ".txt";
                 int i = 0;
-                //Blizzless Project 2022 
-using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
+                using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
                 {
 
                     foreach (var I in Item)
@@ -302,26 +292,26 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.Hash = StringHashHelper.HashItemName(this.Name);
-                this.ParentType = stream.ReadValueS32();
-                this.GBID = stream.ReadValueS32();
-                this.I0 = stream.ReadValueS32();
-                this.LootLevelRange = stream.ReadValueS32();
-                this.ReqCrafterLevelForEnchant = stream.ReadValueS32();
-                this.MaxSockets = stream.ReadValueS32();
-                this.Usable = (ItemFlags)stream.ReadValueS32();
-                this.BodySlot1 = (eItemType)stream.ReadValueS32();
-                this.BodySlot2 = (eItemType)stream.ReadValueS32();
-                this.BodySlot3 = (eItemType)stream.ReadValueS32();
-                this.BodySlot4 = (eItemType)stream.ReadValueS32();
-                this.InheritedAffix0 = stream.ReadValueS32();
-                this.InheritedAffix1 = stream.ReadValueS32();
-                this.InheritedAffix2 = stream.ReadValueS32();
-                this.InheritedAffixFamily0 = stream.ReadValueS32();
-                this.Labels = new int[5];
+                Name = stream.ReadString(256, true);
+                Hash = StringHashHelper.HashItemName(Name);
+                ParentType = stream.ReadValueS32();
+                GBID = stream.ReadValueS32();
+                I0 = stream.ReadValueS32();
+                LootLevelRange = stream.ReadValueS32();
+                ReqCrafterLevelForEnchant = stream.ReadValueS32();
+                MaxSockets = stream.ReadValueS32();
+                Usable = (ItemFlags)stream.ReadValueS32();
+                BodySlot1 = (eItemType)stream.ReadValueS32();
+                BodySlot2 = (eItemType)stream.ReadValueS32();
+                BodySlot3 = (eItemType)stream.ReadValueS32();
+                BodySlot4 = (eItemType)stream.ReadValueS32();
+                InheritedAffix0 = stream.ReadValueS32();
+                InheritedAffix1 = stream.ReadValueS32();
+                InheritedAffix2 = stream.ReadValueS32();
+                InheritedAffixFamily0 = stream.ReadValueS32();
+                Labels = new int[5];
                 for (int i = 0; i < 5; i++)
-                    this.Labels[i] = stream.ReadValueS32();
+                    Labels[i] = stream.ReadValueS32();
             }
         }
         public class ItemTable : ISerializableData
@@ -432,139 +422,139 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true); //000                
-                this.Hash = StringHashHelper.HashItemName(this.Name); //256
+                Name = stream.ReadString(256, true); //000                
+                Hash = StringHashHelper.HashItemName(Name); //256
 
-                this.GBID = stream.ReadValueS32(); //256
-                this.PAD = stream.ReadValueS32(); //260
+                GBID = stream.ReadValueS32(); //256
+                PAD = stream.ReadValueS32(); //260
 
-                this.SNOActor = stream.ReadValueS32(); //264
-                this.ItemTypesGBID = stream.ReadValueS32(); //268
+                SNOActor = stream.ReadValueS32(); //264
+                ItemTypesGBID = stream.ReadValueS32(); //268
 
-                this.Flags = stream.ReadValueS32(); //272 - 8 + 16 = 24
-                this.DyeType = stream.ReadValueS32(); //276
+                Flags = stream.ReadValueS32(); //272 - 8 + 16 = 24
+                DyeType = stream.ReadValueS32(); //276
                 //this.NewI0 = stream.ReadValueS32();
-                this.ItemLevel = stream.ReadValueS32(); //280
-                this.ItemAct = (eItemAct)stream.ReadValueS32(); //284 - 28 + 16 = 44
+                ItemLevel = stream.ReadValueS32(); //280
+                ItemAct = (eItemAct)stream.ReadValueS32(); //284 - 28 + 16 = 44
 
-                this.AffixLevel = stream.ReadValueS32(); //288 - 48
-                this.BonusAffixes = stream.ReadValueS32(); //292 - 52
-                this.BonusMajorAffixes = stream.ReadValueS32(); //296 - 56
-                this.BonusMinorAffixes = stream.ReadValueS32(); //300 - 60
-                this.MaxSockets = stream.ReadValueS32(); //304 - 64
-                this.MaxStackSize = stream.ReadValueS32(); //308 - 68
-                this.Cost = stream.ReadValueS32(); //312 - 72
-                this.CostAlt = stream.ReadValueS32(); //316 - 76
-                this.IdentifyCost = stream.ReadValueS32(); //320 - 80
-                this.SellOverrideCost = stream.ReadValueS32(); //324 - 84
-                this.RemoveGemCost = stream.ReadValueS32(); //328 - 88
-                this.RequiredLevel = stream.ReadValueS32(); //332 - 92
-                this.CrafterRequiredLevel = stream.ReadValueS32(); //336 - 96
-                this.BaseDurability = stream.ReadValueS32(); //340 - 100
-                this.DurabilityVariance = stream.ReadValueS32(); //344 - 104
-                this.EnchantAffixCost = stream.ReadValueS32(); //348 - 108
-                this.EnchantAffixCostX1 = stream.ReadValueS32(); //352 - 112
-                this.TransmogUnlockCrafterLevel = stream.ReadValueS32(); //356 - 116
-                this.TransmogCost = stream.ReadValueS32(); //360 - 120
-                this.SNOBaseItem = stream.ReadValueS32(); //364 - 124
-                this.SNOSet = stream.ReadValueS32(); //368 - 128
-                this.SNOComponentTreasureClass = stream.ReadValueS32(); //372
-                this.SNOComponentTreasureClassMagic = stream.ReadValueS32(); //376
-                this.SNOComponentTreasureClassRare = stream.ReadValueS32(); //380
-                this.SNOComponentTreasureClassLegend = stream.ReadValueS32(); //384
-                this.SNORareNamePrefixStringList = stream.ReadValueS32(); //388
-                this.SNORareNameSuffixStringList = stream.ReadValueS32(); //392 - 152
-                this.StartEffect = stream.ReadValueS32(); //396
-                this.EndEffect = stream.ReadValueS32(); //400 
-                this.PortraitBkgrnd = stream.ReadValueS32(); //404
-                this.PortraitHPBar = stream.ReadValueS32(); //408
-                this.PortraitBanner = stream.ReadValueS32(); //412
-                this.PortraitFrame = stream.ReadValueS32(); //416
-                this.Labels = new int[5]; //420
+                AffixLevel = stream.ReadValueS32(); //288 - 48
+                BonusAffixes = stream.ReadValueS32(); //292 - 52
+                BonusMajorAffixes = stream.ReadValueS32(); //296 - 56
+                BonusMinorAffixes = stream.ReadValueS32(); //300 - 60
+                MaxSockets = stream.ReadValueS32(); //304 - 64
+                MaxStackSize = stream.ReadValueS32(); //308 - 68
+                Cost = stream.ReadValueS32(); //312 - 72
+                CostAlt = stream.ReadValueS32(); //316 - 76
+                IdentifyCost = stream.ReadValueS32(); //320 - 80
+                SellOverrideCost = stream.ReadValueS32(); //324 - 84
+                RemoveGemCost = stream.ReadValueS32(); //328 - 88
+                RequiredLevel = stream.ReadValueS32(); //332 - 92
+                CrafterRequiredLevel = stream.ReadValueS32(); //336 - 96
+                BaseDurability = stream.ReadValueS32(); //340 - 100
+                DurabilityVariance = stream.ReadValueS32(); //344 - 104
+                EnchantAffixCost = stream.ReadValueS32(); //348 - 108
+                EnchantAffixCostX1 = stream.ReadValueS32(); //352 - 112
+                TransmogUnlockCrafterLevel = stream.ReadValueS32(); //356 - 116
+                TransmogCost = stream.ReadValueS32(); //360 - 120
+                SNOBaseItem = stream.ReadValueS32(); //364 - 124
+                SNOSet = stream.ReadValueS32(); //368 - 128
+                SNOComponentTreasureClass = stream.ReadValueS32(); //372
+                SNOComponentTreasureClassMagic = stream.ReadValueS32(); //376
+                SNOComponentTreasureClassRare = stream.ReadValueS32(); //380
+                SNOComponentTreasureClassLegend = stream.ReadValueS32(); //384
+                SNORareNamePrefixStringList = stream.ReadValueS32(); //388
+                SNORareNameSuffixStringList = stream.ReadValueS32(); //392 - 152
+                StartEffect = stream.ReadValueS32(); //396
+                EndEffect = stream.ReadValueS32(); //400 
+                PortraitBkgrnd = stream.ReadValueS32(); //404
+                PortraitHPBar = stream.ReadValueS32(); //408
+                PortraitBanner = stream.ReadValueS32(); //412
+                PortraitFrame = stream.ReadValueS32(); //416
+                Labels = new int[5]; //420
                 for (int i = 0; i < 5; i++)
-                    this.Labels[i] = stream.ReadValueS32();
+                    Labels[i] = stream.ReadValueS32();
 
                 //stream.Position += 16;
 
-                this.Pad = stream.ReadValueS32(); //440 - 200
-                this.WeaponDamageMin = stream.ReadValueF32(); //444 - 204
-                this.WeaponDamageDelta = stream.ReadValueF32(); //448 - 208
-                this.DamageMinVariance = stream.ReadValueF32(); //452 - 212
-                this.DamageDeltaVariance = stream.ReadValueF32(); //456 - 216
-                this.AttacksPerSecond = stream.ReadValueF32(); //460 - 220
-                this.Armor = stream.ReadValueF32(); //464 - 224
-                this.ArmorDelta = stream.ReadValueF32(); //468 - 228
+                Pad = stream.ReadValueS32(); //440 - 200
+                WeaponDamageMin = stream.ReadValueF32(); //444 - 204
+                WeaponDamageDelta = stream.ReadValueF32(); //448 - 208
+                DamageMinVariance = stream.ReadValueF32(); //452 - 212
+                DamageDeltaVariance = stream.ReadValueF32(); //456 - 216
+                AttacksPerSecond = stream.ReadValueF32(); //460 - 220
+                Armor = stream.ReadValueF32(); //464 - 224
+                ArmorDelta = stream.ReadValueF32(); //468 - 228
 
-                this.SNOSkill0 = stream.ReadValueS32(); //472 - 232
-                this.SkillI0 = stream.ReadValueS32(); //476
-                this.SNOSkill1 = stream.ReadValueS32(); //480
-                this.SkillI1 = stream.ReadValueS32(); //484
-                this.SNOSkill2 = stream.ReadValueS32(); //488
-                this.SkillI2 = stream.ReadValueS32(); //492
-                this.SNOSkill3 = stream.ReadValueS32(); //496
-                this.SkillI3 = stream.ReadValueS32(); //500
+                SNOSkill0 = stream.ReadValueS32(); //472 - 232
+                SkillI0 = stream.ReadValueS32(); //476
+                SNOSkill1 = stream.ReadValueS32(); //480
+                SkillI1 = stream.ReadValueS32(); //484
+                SNOSkill2 = stream.ReadValueS32(); //488
+                SkillI2 = stream.ReadValueS32(); //492
+                SNOSkill3 = stream.ReadValueS32(); //496
+                SkillI3 = stream.ReadValueS32(); //500
 
-                this.Attribute = new AttributeSpecifier[16]; //504
+                Attribute = new AttributeSpecifier[16]; //504
                 for (int i = 0; i < 16; i++)
-                    this.Attribute[i] = new AttributeSpecifier(stream);
-                this.Quality = (ItemQuality)stream.ReadValueS32(); // 888 -- 888-608 = 284
+                    Attribute[i] = new AttributeSpecifier(stream);
+                Quality = (ItemQuality)stream.ReadValueS32(); // 888 -- 888-608 = 284
 
-                this.RecipeToGrant = new int[10]; //892
+                RecipeToGrant = new int[10]; //892
                 for (int i = 0; i < 10; i++)
-                    this.RecipeToGrant[i] = stream.ReadValueS32();
+                    RecipeToGrant[i] = stream.ReadValueS32();
 
-                this.TransmogsToGrant = new int[8]; //932
+                TransmogsToGrant = new int[8]; //932
                 for (int i = 0; i < 8; i++)
-                    this.TransmogsToGrant[i] = stream.ReadValueS32();
+                    TransmogsToGrant[i] = stream.ReadValueS32();
 
-                this.Massive0 = new int[9]; // 964
+                Massive0 = new int[9]; // 964
                 for (int i = 0; i < 9; i++)
-                    this.Massive0[i] = stream.ReadValueS32();
+                    Massive0[i] = stream.ReadValueS32();
 
-                this.LegendaryAffixFamily = new int[6]; //1000
+                LegendaryAffixFamily = new int[6]; //1000
                 for (int i = 0; i < 6; i++)
-                    this.LegendaryAffixFamily[i] = stream.ReadValueS32();
-                this.MaxAffixLevel = new int[6];
+                    LegendaryAffixFamily[i] = stream.ReadValueS32();
+                MaxAffixLevel = new int[6];
                 for (int i = 0; i < 6; i++)
-                    this.MaxAffixLevel[i] = stream.ReadValueS32(); //1456
-                this.I38 = new int[6]; //1024
+                    MaxAffixLevel[i] = stream.ReadValueS32(); //1456
+                I38 = new int[6]; //1024
                 for (int i = 0; i < 6; i++)
-                    this.I38[i] = stream.ReadValueS32();
+                    I38[i] = stream.ReadValueS32();
 
-                this.LegendaryFamily = stream.ReadValueS32(); //1072
-                this.GemT = (GemType)stream.ReadValueS32(); //1076
-                this.CraftingTier = stream.ReadValueS32(); //1080
-                this.CraftingQuality = (Alpha)stream.ReadValueS32(); //1084
-                this.snoActorPageOfFatePortal = stream.ReadValueS32(); //1088
-                this.snoWorldPageOfFate1 = stream.ReadValueS32(); //1092
-                this.snoWorldPageOfFate2 = stream.ReadValueS32(); //1096
-                this.snoLevelAreaPageOfFatePortal = stream.ReadValueS32(); //1100
-                this.EnchantAffixIngredientsCount = stream.ReadValueS32(); //1104
-                this.EnchantAffixIngredients = new RecipeIngredient[6]; //1108
+                LegendaryFamily = stream.ReadValueS32(); //1072
+                GemT = (GemType)stream.ReadValueS32(); //1076
+                CraftingTier = stream.ReadValueS32(); //1080
+                CraftingQuality = (Alpha)stream.ReadValueS32(); //1084
+                snoActorPageOfFatePortal = stream.ReadValueS32(); //1088
+                snoWorldPageOfFate1 = stream.ReadValueS32(); //1092
+                snoWorldPageOfFate2 = stream.ReadValueS32(); //1096
+                snoLevelAreaPageOfFatePortal = stream.ReadValueS32(); //1100
+                EnchantAffixIngredientsCount = stream.ReadValueS32(); //1104
+                EnchantAffixIngredients = new RecipeIngredient[6]; //1108
                 for (int i = 0; i < 6; i++)
-                    this.EnchantAffixIngredients[i] = new RecipeIngredient(stream);
-                this.EnchantAffixIngredientsCountX1 = stream.ReadValueS32(); //1156
-                this.EnchantAffixIngredientsX1 = new RecipeIngredient[6]; //1160
+                    EnchantAffixIngredients[i] = new RecipeIngredient(stream);
+                EnchantAffixIngredientsCountX1 = stream.ReadValueS32(); //1156
+                EnchantAffixIngredientsX1 = new RecipeIngredient[6]; //1160
                 for (int i = 0; i < 6; i++)
-                    this.EnchantAffixIngredientsX1[i] = new RecipeIngredient(stream);
-                this.LegendaryPowerItemReplacement = stream.ReadValueS32(); //1208
-                this.SeasonRequiredToDrop = stream.ReadValueS32(); //1212
+                    EnchantAffixIngredientsX1[i] = new RecipeIngredient(stream);
+                LegendaryPowerItemReplacement = stream.ReadValueS32(); //1208
+                SeasonRequiredToDrop = stream.ReadValueS32(); //1212
 
-                this.Attribute1 = new AttributeSpecifier[2]; //1216
+                Attribute1 = new AttributeSpecifier[2]; //1216
                 for (int i = 0; i < 2; i++)
-                    this.Attribute1[i] = new AttributeSpecifier(stream);
+                    Attribute1[i] = new AttributeSpecifier(stream);
 
-                this.JewelSecondaryEffectUnlockRank = stream.ReadValueS32(); //1264
-                this.JewelMaxRank = stream.ReadValueS32(); //1268
-                this.MainEffect = stream.ReadValueS32(); //1272
-                this.DateReleased = stream.ReadValueS32(); //1276
-                this.VacuumPickup = stream.ReadValueS32(); //1280
+                JewelSecondaryEffectUnlockRank = stream.ReadValueS32(); //1264
+                JewelMaxRank = stream.ReadValueS32(); //1268
+                MainEffect = stream.ReadValueS32(); //1272
+                DateReleased = stream.ReadValueS32(); //1276
+                VacuumPickup = stream.ReadValueS32(); //1280
 
-                this.CostAlt2 = stream.ReadValueS32(); //1284
-                this.DynamicCraftCostMagic = stream.ReadValueS32(); //1288
-                this.DynamicCraftCostRare = stream.ReadValueS32(); //1292
-                this.DynamicCraftAffixCount = stream.ReadValueS32(); //1296
-                this.SeasonCacheTreasureClass = stream.ReadValueS32(); //1300
+                CostAlt2 = stream.ReadValueS32(); //1284
+                DynamicCraftCostMagic = stream.ReadValueS32(); //1288
+                DynamicCraftCostRare = stream.ReadValueS32(); //1292
+                DynamicCraftAffixCount = stream.ReadValueS32(); //1296
+                SeasonCacheTreasureClass = stream.ReadValueS32(); //1300
                 if (SNOSet != -1)// & Name.Contains("Unique"))
                 { }
 
@@ -745,132 +735,132 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.DeltaXP = stream.ReadValueS64();
-                this.DeltaXPClassic = stream.ReadValueS32();
-                this.PlayerXPValue = stream.ReadValueS32();
+                DeltaXP = stream.ReadValueS64();
+                DeltaXPClassic = stream.ReadValueS32();
+                PlayerXPValue = stream.ReadValueS32();
 
-                this.DurabilityLossPct = stream.ReadValueF32();
-                this.LifePerVitality = stream.ReadValueF32();
+                DurabilityLossPct = stream.ReadValueF32();
+                LifePerVitality = stream.ReadValueF32();
 
-                this.QuestRewardTier1 = stream.ReadValueS32();
-                this.QuestRewardTier2 = stream.ReadValueS32();
-                this.QuestRewardTier3 = stream.ReadValueS32();
-                this.QuestRewardTier4 = stream.ReadValueS32();
-                this.QuestRewardTier5 = stream.ReadValueS32();
-                this.QuestRewardTier6 = stream.ReadValueS32();
-                this.QuestRewardTier7 = stream.ReadValueS32();
-                this.QuestRewardGoldTier1 = stream.ReadValueS32();
-                this.QuestRewardGoldTier2 = stream.ReadValueS32();
-                this.QuestRewardGoldTier3 = stream.ReadValueS32();
-                this.QuestRewardGoldTier4 = stream.ReadValueS32();
-                this.QuestRewardGoldTier5 = stream.ReadValueS32();
-                this.QuestRewardGoldTier6 = stream.ReadValueS32();
-                this.LoreRewardTier1 = stream.ReadValueS32();
-                this.LoreRewardTier2 = stream.ReadValueS32();
-                this.LoreRewardTier3 = stream.ReadValueS32(); //76
-                this.TimedDungeonBonusXP = stream.ReadValueS32(); //92
-                this.WaveFightBonusXP = stream.ReadValueS32(); //96
-                this.HordeBonusXP = stream.ReadValueS32(); //100
-                this.ZapperBonusXP = stream.ReadValueS32(); //104
-                this.GoblinHuntBonusXP = stream.ReadValueS32(); //108
-                this.TimedDungeonBonusGold = stream.ReadValueS32(); //112
-                this.WaveFightBonusGold = stream.ReadValueS32(); //116
-                this.HordeBonusGold = stream.ReadValueS32(); //120
-                this.ZapperBonusGold = stream.ReadValueS32(); //124
-                this.GoblinHuntBonusGold = stream.ReadValueS32(); //128
-                this.BountyKillUniqueXP = stream.ReadValueS32(); //132
-                this.BountyKillUniqueGold = stream.ReadValueS32(); //136
-                this.BountyKillBossXP = stream.ReadValueS32(); //140
-                this.BountyKillBossGold = stream.ReadValueS32(); //144
-                this.BountyCompleteEventXP = stream.ReadValueS32(); //148
-                this.BountyCompleteEventGold = stream.ReadValueS32(); //152
-                this.BountyClearDungeonXP = stream.ReadValueS32();
-                this.BountyClearDungeonGold = stream.ReadValueS32();
-                this.BountyCampsXP = stream.ReadValueS32();
-                this.BountyCampsGold = stream.ReadValueS32();
-                this.KillCounterReward = stream.ReadValueS32();
-                this.GenericSkillPoints = stream.ReadValueS32();
+                QuestRewardTier1 = stream.ReadValueS32();
+                QuestRewardTier2 = stream.ReadValueS32();
+                QuestRewardTier3 = stream.ReadValueS32();
+                QuestRewardTier4 = stream.ReadValueS32();
+                QuestRewardTier5 = stream.ReadValueS32();
+                QuestRewardTier6 = stream.ReadValueS32();
+                QuestRewardTier7 = stream.ReadValueS32();
+                QuestRewardGoldTier1 = stream.ReadValueS32();
+                QuestRewardGoldTier2 = stream.ReadValueS32();
+                QuestRewardGoldTier3 = stream.ReadValueS32();
+                QuestRewardGoldTier4 = stream.ReadValueS32();
+                QuestRewardGoldTier5 = stream.ReadValueS32();
+                QuestRewardGoldTier6 = stream.ReadValueS32();
+                LoreRewardTier1 = stream.ReadValueS32();
+                LoreRewardTier2 = stream.ReadValueS32();
+                LoreRewardTier3 = stream.ReadValueS32(); //76
+                TimedDungeonBonusXP = stream.ReadValueS32(); //92
+                WaveFightBonusXP = stream.ReadValueS32(); //96
+                HordeBonusXP = stream.ReadValueS32(); //100
+                ZapperBonusXP = stream.ReadValueS32(); //104
+                GoblinHuntBonusXP = stream.ReadValueS32(); //108
+                TimedDungeonBonusGold = stream.ReadValueS32(); //112
+                WaveFightBonusGold = stream.ReadValueS32(); //116
+                HordeBonusGold = stream.ReadValueS32(); //120
+                ZapperBonusGold = stream.ReadValueS32(); //124
+                GoblinHuntBonusGold = stream.ReadValueS32(); //128
+                BountyKillUniqueXP = stream.ReadValueS32(); //132
+                BountyKillUniqueGold = stream.ReadValueS32(); //136
+                BountyKillBossXP = stream.ReadValueS32(); //140
+                BountyKillBossGold = stream.ReadValueS32(); //144
+                BountyCompleteEventXP = stream.ReadValueS32(); //148
+                BountyCompleteEventGold = stream.ReadValueS32(); //152
+                BountyClearDungeonXP = stream.ReadValueS32();
+                BountyClearDungeonGold = stream.ReadValueS32();
+                BountyCampsXP = stream.ReadValueS32();
+                BountyCampsGold = stream.ReadValueS32();
+                KillCounterReward = stream.ReadValueS32();
+                GenericSkillPoints = stream.ReadValueS32();
 
-                this.CritMultiplier = stream.ReadValueF32();
-                this.DodgeMultiplier = stream.ReadValueF32();
-                this.LifeStealMultiplier = stream.ReadValueF32();
+                CritMultiplier = stream.ReadValueF32();
+                DodgeMultiplier = stream.ReadValueF32();
+                LifeStealMultiplier = stream.ReadValueF32();
 
-                this.DemonHunterStrength = stream.ReadValueS32();
-                this.DemonHunterDexterity = stream.ReadValueS32();
-                this.DemonHunterIntelligence = stream.ReadValueS32();
-                this.DemonHunterVitality = stream.ReadValueS32();
-                this.BarbarianStrength = stream.ReadValueS32();
-                this.BarbarianDexterity = stream.ReadValueS32();
-                this.BarbarianIntelligence = stream.ReadValueS32();
-                this.BarbarianVitality = stream.ReadValueS32();
-                this.WizardStrength = stream.ReadValueS32();
-                this.WizardDexterity = stream.ReadValueS32();
-                this.WizardIntelligence = stream.ReadValueS32();
-                this.WizardVitality = stream.ReadValueS32();
-                this.WitchDoctorStrength = stream.ReadValueS32();
-                this.WitchDoctorDexterity = stream.ReadValueS32();
-                this.WitchDoctorIntelligence = stream.ReadValueS32();
-                this.WitchDoctorVitality = stream.ReadValueS32();
-                this.MonkStrength = stream.ReadValueS32();
-                this.MonkDexterity = stream.ReadValueS32();
-                this.MonkIntelligence = stream.ReadValueS32();
-                this.MonkVitality = stream.ReadValueS32();
-                this.CrusaderStrength = stream.ReadValueS32();
-                this.CrusaderDexterity = stream.ReadValueS32();
-                this.CrusaderIntelligence = stream.ReadValueS32();
-                this.CrusaderVitality = stream.ReadValueS32();
-                this.NecromancerStrength = stream.ReadValueS32();
-                this.NecromancerDexterity = stream.ReadValueS32();
-                this.NecromancerIntelligence = stream.ReadValueS32();
-                this.NecromancerVitality = stream.ReadValueS32();
+                DemonHunterStrength = stream.ReadValueS32();
+                DemonHunterDexterity = stream.ReadValueS32();
+                DemonHunterIntelligence = stream.ReadValueS32();
+                DemonHunterVitality = stream.ReadValueS32();
+                BarbarianStrength = stream.ReadValueS32();
+                BarbarianDexterity = stream.ReadValueS32();
+                BarbarianIntelligence = stream.ReadValueS32();
+                BarbarianVitality = stream.ReadValueS32();
+                WizardStrength = stream.ReadValueS32();
+                WizardDexterity = stream.ReadValueS32();
+                WizardIntelligence = stream.ReadValueS32();
+                WizardVitality = stream.ReadValueS32();
+                WitchDoctorStrength = stream.ReadValueS32();
+                WitchDoctorDexterity = stream.ReadValueS32();
+                WitchDoctorIntelligence = stream.ReadValueS32();
+                WitchDoctorVitality = stream.ReadValueS32();
+                MonkStrength = stream.ReadValueS32();
+                MonkDexterity = stream.ReadValueS32();
+                MonkIntelligence = stream.ReadValueS32();
+                MonkVitality = stream.ReadValueS32();
+                CrusaderStrength = stream.ReadValueS32();
+                CrusaderDexterity = stream.ReadValueS32();
+                CrusaderIntelligence = stream.ReadValueS32();
+                CrusaderVitality = stream.ReadValueS32();
+                NecromancerStrength = stream.ReadValueS32();
+                NecromancerDexterity = stream.ReadValueS32();
+                NecromancerIntelligence = stream.ReadValueS32();
+                NecromancerVitality = stream.ReadValueS32();
 
-                this.TemplarStrength = stream.ReadValueS32();
-                this.TemplarDexterity = stream.ReadValueS32();
-                this.TemplarIntelligence = stream.ReadValueS32();
-                this.TemplarVitality = stream.ReadValueS32();
-                this.ScoundrelStrength = stream.ReadValueS32();
-                this.ScoundrelDexterity = stream.ReadValueS32();
-                this.ScoundrelIntelligence = stream.ReadValueS32();
-                this.ScoundrelVitality = stream.ReadValueS32();
-                this.EnchantressStrength = stream.ReadValueS32();
-                this.EnchantressDexterity = stream.ReadValueS32();
-                this.EnchantressIntelligence = stream.ReadValueS32();
-                this.EnchantressVitality = stream.ReadValueS32();
+                TemplarStrength = stream.ReadValueS32();
+                TemplarDexterity = stream.ReadValueS32();
+                TemplarIntelligence = stream.ReadValueS32();
+                TemplarVitality = stream.ReadValueS32();
+                ScoundrelStrength = stream.ReadValueS32();
+                ScoundrelDexterity = stream.ReadValueS32();
+                ScoundrelIntelligence = stream.ReadValueS32();
+                ScoundrelVitality = stream.ReadValueS32();
+                EnchantressStrength = stream.ReadValueS32();
+                EnchantressDexterity = stream.ReadValueS32();
+                EnchantressIntelligence = stream.ReadValueS32();
+                EnchantressVitality = stream.ReadValueS32();
 
-                this.TemplarDamageAbsorbPercent = stream.ReadValueF32();
-                this.ScoundrelDamageAbsorbPercent = stream.ReadValueF32();
-                this.EnchantressDamageAbsorbPercent = stream.ReadValueF32();
-                this.PVPXPToLevel = stream.ReadValueS64();
+                TemplarDamageAbsorbPercent = stream.ReadValueF32();
+                ScoundrelDamageAbsorbPercent = stream.ReadValueF32();
+                EnchantressDamageAbsorbPercent = stream.ReadValueF32();
+                PVPXPToLevel = stream.ReadValueS64();
 
-                this.PVPGoldWin = stream.ReadValueS32();
-                this.PVPGoldWinByRank = stream.ReadValueS32();
-                this.PVPXPWin = stream.ReadValueS32();
-                this.PVPNormalXPWin = stream.ReadValueS32();
-                this.PVPTokensWin = stream.ReadValueS32();
-                this.PVPAltXPWin = stream.ReadValueS32();
-                this.PVPGoldLoss = stream.ReadValueS32();
-                this.PVPGoldLossByRank = stream.ReadValueS32();
-                this.PVPXPLoss = stream.ReadValueS32();
-                this.PVPNormalXPLoss = stream.ReadValueS32();
+                PVPGoldWin = stream.ReadValueS32();
+                PVPGoldWinByRank = stream.ReadValueS32();
+                PVPXPWin = stream.ReadValueS32();
+                PVPNormalXPWin = stream.ReadValueS32();
+                PVPTokensWin = stream.ReadValueS32();
+                PVPAltXPWin = stream.ReadValueS32();
+                PVPGoldLoss = stream.ReadValueS32();
+                PVPGoldLossByRank = stream.ReadValueS32();
+                PVPXPLoss = stream.ReadValueS32();
+                PVPNormalXPLoss = stream.ReadValueS32();
 
-                this.PVPTokensLoss = stream.ReadValueS32();
-                this.PVPAltXPLoss = stream.ReadValueS32();
-                this.PVPGoldTie = stream.ReadValueS32();
-                this.PVPGoldTieByRank = stream.ReadValueS32();
-                this.PVPXPTie = stream.ReadValueS32();
-                this.PVPNormalXPTie = stream.ReadValueS32();
-                this.PVPTokensTie = stream.ReadValueS32();
-                this.PVPAltXPTie = stream.ReadValueS32();
-                this.GoldCostLevelScalar = stream.ReadValueF32();
+                PVPTokensLoss = stream.ReadValueS32();
+                PVPAltXPLoss = stream.ReadValueS32();
+                PVPGoldTie = stream.ReadValueS32();
+                PVPGoldTieByRank = stream.ReadValueS32();
+                PVPXPTie = stream.ReadValueS32();
+                PVPNormalXPTie = stream.ReadValueS32();
+                PVPTokensTie = stream.ReadValueS32();
+                PVPAltXPTie = stream.ReadValueS32();
+                GoldCostLevelScalar = stream.ReadValueF32();
 
-                this.SidekickPrimaryStatIdeal = stream.ReadValueS32();
-                this.SidekickVitalityIdeal = stream.ReadValueS32();
-                this.SidekickTotalArmorIdeal = stream.ReadValueS32();
-                this.SidekickTotalResistIdeal = stream.ReadValueS32();
-                this.SidekickTargetLifeOnHitIdeal = stream.ReadValueS32();
-                this.SidekickTargetDPSIdeal = stream.ReadValueS32();
+                SidekickPrimaryStatIdeal = stream.ReadValueS32();
+                SidekickVitalityIdeal = stream.ReadValueS32();
+                SidekickTotalArmorIdeal = stream.ReadValueS32();
+                SidekickTotalResistIdeal = stream.ReadValueS32();
+                SidekickTargetLifeOnHitIdeal = stream.ReadValueS32();
+                SidekickTargetDPSIdeal = stream.ReadValueS32();
 
-                this.GearXPScalar = stream.ReadValueF32();
+                GearXPScalar = stream.ReadValueF32();
 
             }
         }
@@ -914,40 +904,40 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.L0 = stream.ReadValueS64(); //584
+                L0 = stream.ReadValueS64(); //584
 
-                this.I1 = stream.ReadValueS32();
-                this.I2 = stream.ReadValueS32();
-                this.I3 = stream.ReadValueS32();
-                this.I4 = stream.ReadValueS32();
-                this.I5 = stream.ReadValueS32();
-                this.I6 = stream.ReadValueS32();
-                this.I7 = stream.ReadValueS32();
-                this.I8 = stream.ReadValueS32();
-                this.I9 = stream.ReadValueS32();
-                this.I10 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                I2 = stream.ReadValueS32();
+                I3 = stream.ReadValueS32();
+                I4 = stream.ReadValueS32();
+                I5 = stream.ReadValueS32();
+                I6 = stream.ReadValueS32();
+                I7 = stream.ReadValueS32();
+                I8 = stream.ReadValueS32();
+                I9 = stream.ReadValueS32();
+                I10 = stream.ReadValueS32();
 
-                this.I11 = stream.ReadValueS32();
-                this.I12 = stream.ReadValueS32();
-                this.I13 = stream.ReadValueS32();
-                this.I14 = stream.ReadValueS32();
-                this.I15 = stream.ReadValueS32();
-                this.I16 = stream.ReadValueS32();
-                this.I17 = stream.ReadValueS32();
-                this.I18 = stream.ReadValueS32();
-                this.I19 = stream.ReadValueS32();
-                this.I20 = stream.ReadValueS32();
+                I11 = stream.ReadValueS32();
+                I12 = stream.ReadValueS32();
+                I13 = stream.ReadValueS32();
+                I14 = stream.ReadValueS32();
+                I15 = stream.ReadValueS32();
+                I16 = stream.ReadValueS32();
+                I17 = stream.ReadValueS32();
+                I18 = stream.ReadValueS32();
+                I19 = stream.ReadValueS32();
+                I20 = stream.ReadValueS32();
 
-                this.I21 = stream.ReadValueS32();
-                this.I22 = stream.ReadValueS32();
-                this.I23 = stream.ReadValueS32();
-                this.I24 = stream.ReadValueS32();
-                this.I25 = stream.ReadValueS32();
-                this.I26 = stream.ReadValueS32();
-                this.I27 = stream.ReadValueS32();
-                this.I28 = stream.ReadValueS32();
-                this.I29 = stream.ReadValueS32();
-                this.I30 = stream.ReadValueS32();
+                I21 = stream.ReadValueS32();
+                I22 = stream.ReadValueS32();
+                I23 = stream.ReadValueS32();
+                I24 = stream.ReadValueS32();
+                I25 = stream.ReadValueS32();
+                I26 = stream.ReadValueS32();
+                I27 = stream.ReadValueS32();
+                I28 = stream.ReadValueS32();
+                I29 = stream.ReadValueS32();
+                I30 = stream.ReadValueS32();
             }
         }
         public class HelpCodesTable : ISerializableData //unused
@@ -959,9 +949,9 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.S0 = stream.ReadValueS32();
-                this.S1 = stream.ReadValueS32();
-                this.S2 = stream.ReadValueS64();
+                S0 = stream.ReadValueS32();
+                S1 = stream.ReadValueS32();
+                S2 = stream.ReadValueS64();
                 // this.S0 = stream.ReadString(256, true);
                 // this.S1 = stream.ReadString(256, true);
                 // this.S2 = stream.ReadString(128, true);
@@ -1032,66 +1022,66 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public int Pad { get; private set; }
             public void Read(MpqFileStream stream)
             {
-                this.LvlMin = stream.ReadValueS32();
-                this.Str = stream.ReadValueF32();
-                this.Dex = stream.ReadValueF32();
-                this.Int = stream.ReadValueF32();
-                this.Vit = stream.ReadValueF32();
-                this.HPMin = stream.ReadValueF32();
-                this.HPDelta = stream.ReadValueF32();
-                this.HPRegen = stream.ReadValueF32();
-                this.ResourceBase = stream.ReadValueF32();
-                this.ResourceRegen = stream.ReadValueF32();
-                this.Armor = stream.ReadValueF32();
-                this.Dmg = stream.ReadValueF32();
-                this.DmgDelta = stream.ReadValueF32();
-                this.DmgFire = stream.ReadValueF32();
-                this.DmgDeltaFire = stream.ReadValueF32();
-                this.DmgLightning = stream.ReadValueF32();
-                this.DmgDeltaLightning = stream.ReadValueF32();
-                this.DmgCold = stream.ReadValueF32();
-                this.DmgDeltaCold = stream.ReadValueF32();
-                this.DmgPoison = stream.ReadValueF32();
-                this.DmgDeltaPoison = stream.ReadValueF32();
-                this.DmgArcane = stream.ReadValueF32();
-                this.DmgDeltaArcane = stream.ReadValueF32();
-                this.DmgHoly = stream.ReadValueF32();
-                this.DmgDeltaHoly = stream.ReadValueF32();
-                this.DmgSiege = stream.ReadValueF32();
-                this.DmgDeltaSiege = stream.ReadValueF32();
-                this.HirelingHPMin = stream.ReadValueF32();
-                this.HirelingHPDelta = stream.ReadValueF32();
-                this.HirelingHPRegen = stream.ReadValueF32();
-                this.HirelingDmg = stream.ReadValueF32();
-                this.HirelingDmgRange = stream.ReadValueF32();
-                this.HirelingRetrainCost = stream.ReadValueF32();
-                this.GetHitDamage = stream.ReadValueF32();
-                this.GetHitScalar = stream.ReadValueF32();
-                this.GetHitMax = stream.ReadValueF32();
-                this.GetHitRecovery = stream.ReadValueF32();
-                this.WalkSpd = stream.ReadValueF32();
-                this.RunSpd = stream.ReadValueF32();
-                this.SprintSpd = stream.ReadValueF32();
-                this.StrafeSpd = stream.ReadValueF32();
-                this.AttSpd = stream.ReadValueF32();
-                this.ProjSpd = stream.ReadValueF32();
-                this.Exp = stream.ReadValueF32();
-                this.ResistPhysical = stream.ReadValueF32();
-                this.ResistFire = stream.ReadValueF32();
-                this.ResistLightning = stream.ReadValueF32();
-                this.ResistCold = stream.ReadValueF32();
-                this.ResistPoison = stream.ReadValueF32();
-                this.ResistArcane = stream.ReadValueF32();
-                this.ResistSiege = stream.ReadValueF32();
-                this.ResistChill = stream.ReadValueF32();
-                this.ResistStun = stream.ReadValueF32();
-                this.ConsoleHealthScalar = stream.ReadValueF32();
-                this.ConsoleDamageScalar = stream.ReadValueF32();
-                this.Monster1AffixWeight = stream.ReadValueF32();
-                this.Monster2AffixWeight = stream.ReadValueF32();
-                this.Monster3AffixWeight = stream.ReadValueF32();
-                this.Monster4AffixWeight = stream.ReadValueF32();
-                this.Pad = stream.ReadValueS32();
+                LvlMin = stream.ReadValueS32();
+                Str = stream.ReadValueF32();
+                Dex = stream.ReadValueF32();
+                Int = stream.ReadValueF32();
+                Vit = stream.ReadValueF32();
+                HPMin = stream.ReadValueF32();
+                HPDelta = stream.ReadValueF32();
+                HPRegen = stream.ReadValueF32();
+                ResourceBase = stream.ReadValueF32();
+                ResourceRegen = stream.ReadValueF32();
+                Armor = stream.ReadValueF32();
+                Dmg = stream.ReadValueF32();
+                DmgDelta = stream.ReadValueF32();
+                DmgFire = stream.ReadValueF32();
+                DmgDeltaFire = stream.ReadValueF32();
+                DmgLightning = stream.ReadValueF32();
+                DmgDeltaLightning = stream.ReadValueF32();
+                DmgCold = stream.ReadValueF32();
+                DmgDeltaCold = stream.ReadValueF32();
+                DmgPoison = stream.ReadValueF32();
+                DmgDeltaPoison = stream.ReadValueF32();
+                DmgArcane = stream.ReadValueF32();
+                DmgDeltaArcane = stream.ReadValueF32();
+                DmgHoly = stream.ReadValueF32();
+                DmgDeltaHoly = stream.ReadValueF32();
+                DmgSiege = stream.ReadValueF32();
+                DmgDeltaSiege = stream.ReadValueF32();
+                HirelingHPMin = stream.ReadValueF32();
+                HirelingHPDelta = stream.ReadValueF32();
+                HirelingHPRegen = stream.ReadValueF32();
+                HirelingDmg = stream.ReadValueF32();
+                HirelingDmgRange = stream.ReadValueF32();
+                HirelingRetrainCost = stream.ReadValueF32();
+                GetHitDamage = stream.ReadValueF32();
+                GetHitScalar = stream.ReadValueF32();
+                GetHitMax = stream.ReadValueF32();
+                GetHitRecovery = stream.ReadValueF32();
+                WalkSpd = stream.ReadValueF32();
+                RunSpd = stream.ReadValueF32();
+                SprintSpd = stream.ReadValueF32();
+                StrafeSpd = stream.ReadValueF32();
+                AttSpd = stream.ReadValueF32();
+                ProjSpd = stream.ReadValueF32();
+                Exp = stream.ReadValueF32();
+                ResistPhysical = stream.ReadValueF32();
+                ResistFire = stream.ReadValueF32();
+                ResistLightning = stream.ReadValueF32();
+                ResistCold = stream.ReadValueF32();
+                ResistPoison = stream.ReadValueF32();
+                ResistArcane = stream.ReadValueF32();
+                ResistSiege = stream.ReadValueF32();
+                ResistChill = stream.ReadValueF32();
+                ResistStun = stream.ReadValueF32();
+                ConsoleHealthScalar = stream.ReadValueF32();
+                ConsoleDamageScalar = stream.ReadValueF32();
+                Monster1AffixWeight = stream.ReadValueF32();
+                Monster2AffixWeight = stream.ReadValueF32();
+                Monster3AffixWeight = stream.ReadValueF32();
+                Monster4AffixWeight = stream.ReadValueF32();
+                Pad = stream.ReadValueS32();
             }
         }
         public class AffixTable : ISerializableData
@@ -1140,60 +1130,60 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public int AffixGroup { get; private set; }
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.Hash = StringHashHelper.HashItemName(this.Name);
-                this.I0 = stream.ReadValueS32();
-                this.AffixLevel = stream.ReadValueS32();
-                this.SupMask = stream.ReadValueS32();
-                this.Frequency = stream.ReadValueS32();
-                this.DemonHunterFrequency = stream.ReadValueS32();
-                this.BarbarianFrequency = stream.ReadValueS32();
-                this.WizardFrequency = stream.ReadValueS32();
-                this.WitchDoctorFrequency = stream.ReadValueS32();
-                this.MonkFrequency = stream.ReadValueS32();
-                this.CrafterRequiredLevel = stream.ReadValueS32();
-                this.NecromancerFrequency = stream.ReadValueS32();
-                this.HirelingNoneFrequency = stream.ReadValueS32();
-                this.TemplarFrequency = stream.ReadValueS32();
-                this.ScoundrelFrequency = stream.ReadValueS32();
-                this.EnchantressFrequency = stream.ReadValueS32();
-                this.AffixLevelMin = stream.ReadValueS32();
-                this.AffixLevelMax = stream.ReadValueS32();
-                this.Cost = stream.ReadValueS32();
-                this.IdentifyCost = stream.ReadValueS32();
-                this.OverrideLevelReq = stream.ReadValueS32();
-                this.CrafterRequiredLevel = stream.ReadValueS32();
-                this.ItemEffectType = (DamageAffixType)stream.ReadValueS32(); //340
-                this.ItemEffectLevel = stream.ReadValueS32();
-                this.ConvertsTo = stream.ReadValueS32();
-                this.LegendaryUprankAffix = stream.ReadValueS32();
-                this.SNORareNamePrefixStringList = stream.ReadValueS32();
-                this.SNORareNameSuffixStringList = stream.ReadValueS32();
-                this.AffixFamily0 = stream.ReadValueS32();
-                this.AffixFamily1 = stream.ReadValueS32();
-                this.PlayerClass = (Class)stream.ReadValueS32();  //372
-                this.ExclusionCategory = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                Hash = StringHashHelper.HashItemName(Name);
+                I0 = stream.ReadValueS32();
+                AffixLevel = stream.ReadValueS32();
+                SupMask = stream.ReadValueS32();
+                Frequency = stream.ReadValueS32();
+                DemonHunterFrequency = stream.ReadValueS32();
+                BarbarianFrequency = stream.ReadValueS32();
+                WizardFrequency = stream.ReadValueS32();
+                WitchDoctorFrequency = stream.ReadValueS32();
+                MonkFrequency = stream.ReadValueS32();
+                CrafterRequiredLevel = stream.ReadValueS32();
+                NecromancerFrequency = stream.ReadValueS32();
+                HirelingNoneFrequency = stream.ReadValueS32();
+                TemplarFrequency = stream.ReadValueS32();
+                ScoundrelFrequency = stream.ReadValueS32();
+                EnchantressFrequency = stream.ReadValueS32();
+                AffixLevelMin = stream.ReadValueS32();
+                AffixLevelMax = stream.ReadValueS32();
+                Cost = stream.ReadValueS32();
+                IdentifyCost = stream.ReadValueS32();
+                OverrideLevelReq = stream.ReadValueS32();
+                CrafterRequiredLevel = stream.ReadValueS32();
+                ItemEffectType = (DamageAffixType)stream.ReadValueS32(); //340
+                ItemEffectLevel = stream.ReadValueS32();
+                ConvertsTo = stream.ReadValueS32();
+                LegendaryUprankAffix = stream.ReadValueS32();
+                SNORareNamePrefixStringList = stream.ReadValueS32();
+                SNORareNameSuffixStringList = stream.ReadValueS32();
+                AffixFamily0 = stream.ReadValueS32();
+                AffixFamily1 = stream.ReadValueS32();
+                PlayerClass = (Class)stream.ReadValueS32();  //372
+                ExclusionCategory = stream.ReadValueS32();
 
-                this.ExcludedCategories = new int[6];
+                ExcludedCategories = new int[6];
                 for (int i = 0; i < 6; i++)
-                    this.ExcludedCategories[i] = stream.ReadValueS32();
-                this.ItemGroup = new int[24];
+                    ExcludedCategories[i] = stream.ReadValueS32();
+                ItemGroup = new int[24];
                 for (int i = 0; i < 24; i++)
-                    this.ItemGroup[i] = stream.ReadValueS32();
-                this.LegendaryAllowedTypes = new int[24];
+                    ItemGroup[i] = stream.ReadValueS32();
+                LegendaryAllowedTypes = new int[24];
                 for (int i = 0; i < 24; i++)
-                    this.LegendaryAllowedTypes[i] = stream.ReadValueS32();
+                    LegendaryAllowedTypes[i] = stream.ReadValueS32();
 
-                this.AllowedQualityLevels = stream.ReadValueS32();
-                this.AffixType = (AffixType)stream.ReadValueS32();  //600
-                this.AssociatedAffix = stream.ReadValueS32();
+                AllowedQualityLevels = stream.ReadValueS32();
+                AffixType = (AffixType)stream.ReadValueS32();  //600
+                AssociatedAffix = stream.ReadValueS32();
 
-                this.AttributeSpecifier = new AttributeSpecifier[4];
+                AttributeSpecifier = new AttributeSpecifier[4];
                 for (int i = 0; i < 4; i++)
-                    this.AttributeSpecifier[i] = new AttributeSpecifier(stream);
+                    AttributeSpecifier[i] = new AttributeSpecifier(stream);
                 //704
                 stream.Position += 72;
-                this.AffixGroup = stream.ReadValueS32();
+                AffixGroup = stream.ReadValueS32();
                 stream.Position += 4;
             }
         }
@@ -1273,70 +1263,70 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public void Read(MpqFileStream stream)
             {
                 //stream.Position += 4;
-                this.Name = stream.ReadString(256, true);
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.SNOMaleActor = stream.ReadValueS32();
-                this.SNOFemaleActor = stream.ReadValueS32();
-                this.SNOInventory = stream.ReadValueS32();
-                this.MaxTrainableSkills = stream.ReadValueS32();
-                this.SNOStartingLMBSkill = stream.ReadValueS32();
-                this.SNOStartingRMBSkill = stream.ReadValueS32();
-                this.SNOSKillKit0 = stream.ReadValueS32();
-                this.SNOSKillKit1 = stream.ReadValueS32();
-                this.SNOSKillKit2 = stream.ReadValueS32();
-                this.SNOSKillKit3 = stream.ReadValueS32();
-                this.PrimaryResource = (Resource)stream.ReadValueS32();
-                this.SecondaryResource = (Resource)stream.ReadValueS32();
-                this.CoreAttribute = (PrimaryAttribute)stream.ReadValueS32();
-                this.PlayerAwarenessRadius = stream.ReadValueF32();
-                this.IsRanged = stream.ReadValueS32(); //320
+                Name = stream.ReadString(256, true);
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                SNOMaleActor = stream.ReadValueS32();
+                SNOFemaleActor = stream.ReadValueS32();
+                SNOInventory = stream.ReadValueS32();
+                MaxTrainableSkills = stream.ReadValueS32();
+                SNOStartingLMBSkill = stream.ReadValueS32();
+                SNOStartingRMBSkill = stream.ReadValueS32();
+                SNOSKillKit0 = stream.ReadValueS32();
+                SNOSKillKit1 = stream.ReadValueS32();
+                SNOSKillKit2 = stream.ReadValueS32();
+                SNOSKillKit3 = stream.ReadValueS32();
+                PrimaryResource = (Resource)stream.ReadValueS32();
+                SecondaryResource = (Resource)stream.ReadValueS32();
+                CoreAttribute = (PrimaryAttribute)stream.ReadValueS32();
+                PlayerAwarenessRadius = stream.ReadValueF32();
+                IsRanged = stream.ReadValueS32(); //320
                 //HitpointsMax HitpointsFactorLevel
-                this.Strength = stream.ReadValueF32(); //336
-                this.Dexterity = stream.ReadValueF32(); //340
-                this.Intelligence = stream.ReadValueF32(); //352
-                this.Vitality = stream.ReadValueF32(); //356
-                this.HitpointsMax = stream.ReadValueF32(); //360
-                this.HitpointsFactorLevel = stream.ReadValueF32(); //364
-                this.HPRegen = stream.ReadValueF32(); //372
-                this.ClassDamageReductionPercent = stream.ReadValueF32(); //376
-                this.ClassDamageReductionPercentPVP = stream.ReadValueF32(); //380
-                this.PrimaryResourceBase = stream.ReadValueF32(); //408
-                this.PrimaryResourceFactorLevel = stream.ReadValueF32(); //484
-                this.PrimaryResourceRegen = stream.ReadValueF32(); //488
-                this.SecondaryResourceBase = stream.ReadValueF32(); //492
-                this.SecondaryResourceFactorLevel = stream.ReadValueF32(); //500
-                this.SecondaryResourceRegen = stream.ReadValueF32(); //536
-                this.Armor = stream.ReadValueF32(); //540
-                this.Dmg = stream.ReadValueF32(); //548
-                this.WalkingRate = stream.ReadValueF32(); //584
-                this.RunningRate = stream.ReadValueF32(); //588
-                this.SprintRate = stream.ReadValueF32(); //592
-                this.ProjRate = stream.ReadValueF32(); //596
-                this.CritDamageCap = stream.ReadValueF32(); //600
-                this.CritPercentBase = stream.ReadValueF32(); //604
-                this.CritPercentCap = stream.ReadValueF32(); //612
-                this.DodgeRatingBase = stream.ReadValueF32(); //616
-                this.GetHitMaxBase = stream.ReadValueF32(); //680
-                this.GetHitMaxPerLevel = stream.ReadValueF32(); //692
-                this.GetHitRecoveryBase = stream.ReadValueF32(); //696
-                this.GetHitRecoveryPerLevel = stream.ReadValueF32(); //700
-                this.ResistPhysical = stream.ReadValueF32(); //704
-                this.ResistFire = stream.ReadValueF32(); //720
-                this.ResistLightning = stream.ReadValueF32(); //724
-                this.ResistCold = stream.ReadValueF32(); //728
-                this.ResistPoison = stream.ReadValueF32(); //772
-                this.ResistArcane = stream.ReadValueF32();
-                this.ResistChill = stream.ReadValueF32();
-                this.ResistStun = stream.ReadValueF32();
-                this.KnockbackWeight = stream.ReadValueF32();
-                this.OOCHealthRegen = stream.ReadValueF32();
-                this.OOCManaRegen = stream.ReadValueF32();
-                this.PotionDilutionDuration = stream.ReadValueF32();
-                this.PotionDilutionScalar = stream.ReadValueF32();
-                this.DualWieldBothAttackChance = stream.ReadValueF32();
-                this.Freeze_Capacity = stream.ReadValueF32();
-                this.Thaw_Rate = stream.ReadValueF32();
+                Strength = stream.ReadValueF32(); //336
+                Dexterity = stream.ReadValueF32(); //340
+                Intelligence = stream.ReadValueF32(); //352
+                Vitality = stream.ReadValueF32(); //356
+                HitpointsMax = stream.ReadValueF32(); //360
+                HitpointsFactorLevel = stream.ReadValueF32(); //364
+                HPRegen = stream.ReadValueF32(); //372
+                ClassDamageReductionPercent = stream.ReadValueF32(); //376
+                ClassDamageReductionPercentPVP = stream.ReadValueF32(); //380
+                PrimaryResourceBase = stream.ReadValueF32(); //408
+                PrimaryResourceFactorLevel = stream.ReadValueF32(); //484
+                PrimaryResourceRegen = stream.ReadValueF32(); //488
+                SecondaryResourceBase = stream.ReadValueF32(); //492
+                SecondaryResourceFactorLevel = stream.ReadValueF32(); //500
+                SecondaryResourceRegen = stream.ReadValueF32(); //536
+                Armor = stream.ReadValueF32(); //540
+                Dmg = stream.ReadValueF32(); //548
+                WalkingRate = stream.ReadValueF32(); //584
+                RunningRate = stream.ReadValueF32(); //588
+                SprintRate = stream.ReadValueF32(); //592
+                ProjRate = stream.ReadValueF32(); //596
+                CritDamageCap = stream.ReadValueF32(); //600
+                CritPercentBase = stream.ReadValueF32(); //604
+                CritPercentCap = stream.ReadValueF32(); //612
+                DodgeRatingBase = stream.ReadValueF32(); //616
+                GetHitMaxBase = stream.ReadValueF32(); //680
+                GetHitMaxPerLevel = stream.ReadValueF32(); //692
+                GetHitRecoveryBase = stream.ReadValueF32(); //696
+                GetHitRecoveryPerLevel = stream.ReadValueF32(); //700
+                ResistPhysical = stream.ReadValueF32(); //704
+                ResistFire = stream.ReadValueF32(); //720
+                ResistLightning = stream.ReadValueF32(); //724
+                ResistCold = stream.ReadValueF32(); //728
+                ResistPoison = stream.ReadValueF32(); //772
+                ResistArcane = stream.ReadValueF32();
+                ResistChill = stream.ReadValueF32();
+                ResistStun = stream.ReadValueF32();
+                KnockbackWeight = stream.ReadValueF32();
+                OOCHealthRegen = stream.ReadValueF32();
+                OOCManaRegen = stream.ReadValueF32();
+                PotionDilutionDuration = stream.ReadValueF32();
+                PotionDilutionScalar = stream.ReadValueF32();
+                DualWieldBothAttackChance = stream.ReadValueF32();
+                Freeze_Capacity = stream.ReadValueF32();
+                Thaw_Rate = stream.ReadValueF32();
             }
 
             public enum Resource : int
@@ -1463,40 +1453,40 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public void Read(MpqFileStream stream)
             {
                 stream.Position += 4;
-                this.Name = stream.ReadString(256, true);
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.I2 = stream.ReadValueS32();
-                this.I3 = stream.ReadValueS32();
-                this.I4 = stream.ReadValueS32();
-                this.I5 = stream.ReadValueS32();
-                this.I6 = stream.ReadValueS32();
-                this.I7 = stream.ReadValueS32();
-                this.I8 = stream.ReadValueS32();
-                this.I9 = stream.ReadValueS32();
-                this.F0 = stream.ReadValueF32();
-                this.F1 = stream.ReadValueF32();
-                this.F2 = stream.ReadValueF32();
-                this.F3 = stream.ReadValueF32();
-                this.F4 = stream.ReadValueF32();
-                this.F5 = stream.ReadValueF32();
-                this.F6 = stream.ReadValueF32();
-                this.F7 = stream.ReadValueF32();
-                this.F8 = stream.ReadValueF32();
-                this.F9 = stream.ReadValueF32();
-                this.F10 = stream.ReadValueF32();
-                this.F11 = stream.ReadValueF32();
-                this.F12 = stream.ReadValueF32();
-                this.F13 = stream.ReadValueF32();
-                this.F14 = stream.ReadValueF32();
-                this.F15 = stream.ReadValueF32();
-                this.F16 = stream.ReadValueF32();
-                this.F17 = stream.ReadValueF32();
-                this.F18 = stream.ReadValueF32();
-                this.F19 = stream.ReadValueF32();
-                this.F20 = stream.ReadValueF32();
-                this.F21 = stream.ReadValueF32();
-                this.SNOPowerToBreakObjects = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                I2 = stream.ReadValueS32();
+                I3 = stream.ReadValueS32();
+                I4 = stream.ReadValueS32();
+                I5 = stream.ReadValueS32();
+                I6 = stream.ReadValueS32();
+                I7 = stream.ReadValueS32();
+                I8 = stream.ReadValueS32();
+                I9 = stream.ReadValueS32();
+                F0 = stream.ReadValueF32();
+                F1 = stream.ReadValueF32();
+                F2 = stream.ReadValueF32();
+                F3 = stream.ReadValueF32();
+                F4 = stream.ReadValueF32();
+                F5 = stream.ReadValueF32();
+                F6 = stream.ReadValueF32();
+                F7 = stream.ReadValueF32();
+                F8 = stream.ReadValueF32();
+                F9 = stream.ReadValueF32();
+                F10 = stream.ReadValueF32();
+                F11 = stream.ReadValueF32();
+                F12 = stream.ReadValueF32();
+                F13 = stream.ReadValueF32();
+                F14 = stream.ReadValueF32();
+                F15 = stream.ReadValueF32();
+                F16 = stream.ReadValueF32();
+                F17 = stream.ReadValueF32();
+                F18 = stream.ReadValueF32();
+                F19 = stream.ReadValueF32();
+                F20 = stream.ReadValueF32();
+                F21 = stream.ReadValueF32();
+                SNOPowerToBreakObjects = stream.ReadValueS32();
             }
         }
         public class LabelGBIDTable : ISerializableData
@@ -1511,11 +1501,11 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public void Read(MpqFileStream stream)
             {
                 //stream.Position += 4;
-                this.Name = stream.ReadString(256, true);
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.I2 = stream.ReadValueS32();
-                this.I3 = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                I2 = stream.ReadValueS32();
+                I3 = stream.ReadValueS32();
             }
         }
         public class LootDistributionTableEntry : ISerializableData //0 byte file
@@ -1592,29 +1582,29 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.I2 = stream.ReadValueS32();
-                this.I3 = stream.ReadValueS32();
-                this.I4 = stream.ReadValueS32();
-                this.I5 = stream.ReadValueS32();
-                this.I6 = stream.ReadValueS32();
-                this.I7 = stream.ReadValueS32();
-                this.I8 = stream.ReadValueS32();
-                this.I9 = stream.ReadValueS32();
-                this.F0 = stream.ReadValueF32();
-                this.F1 = stream.ReadValueF32();
-                this.F2 = stream.ReadValueF32();
-                this.F3 = stream.ReadValueF32();
-                this.F4 = stream.ReadValueF32();
-                this.F5 = stream.ReadValueF32();
-                this.F6 = stream.ReadValueF32();
-                this.F7 = stream.ReadValueF32();
-                this.F8 = stream.ReadValueF32();
-                this.F9 = stream.ReadValueF32();
-                this.F10 = stream.ReadValueF32();
-                this.I10 = stream.ReadValueS32();
-                this.I11 = stream.ReadValueS32();
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                I2 = stream.ReadValueS32();
+                I3 = stream.ReadValueS32();
+                I4 = stream.ReadValueS32();
+                I5 = stream.ReadValueS32();
+                I6 = stream.ReadValueS32();
+                I7 = stream.ReadValueS32();
+                I8 = stream.ReadValueS32();
+                I9 = stream.ReadValueS32();
+                F0 = stream.ReadValueF32();
+                F1 = stream.ReadValueF32();
+                F2 = stream.ReadValueF32();
+                F3 = stream.ReadValueF32();
+                F4 = stream.ReadValueF32();
+                F5 = stream.ReadValueF32();
+                F6 = stream.ReadValueF32();
+                F7 = stream.ReadValueF32();
+                F8 = stream.ReadValueF32();
+                F9 = stream.ReadValueF32();
+                F10 = stream.ReadValueF32();
+                I10 = stream.ReadValueS32();
+                I11 = stream.ReadValueS32();
             }
         }
         public class RareItemNamesTable : ISerializableData
@@ -1630,13 +1620,13 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.Type = (BalanceType)stream.ReadValueS32();
-                this.RelatedAffixOrItemType = stream.ReadValueS32();
-                this.AffixType = (AffixType)stream.ReadValueS32();
-                this.I2 = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                Type = (BalanceType)stream.ReadValueS32();
+                RelatedAffixOrItemType = stream.ReadValueS32();
+                AffixType = (AffixType)stream.ReadValueS32();
+                I2 = stream.ReadValueS32();
             }
         }
         public class MonsterAffixesTable : ISerializableData
@@ -1670,32 +1660,32 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public void Read(MpqFileStream stream)
             {
                 //584
-                this.Name = stream.ReadString(256, true);
-                this.Hash = StringHashHelper.HashItemName(this.Name);
-                this.I0 = stream.ReadValueS32(); //
-                this.I1 = stream.ReadValueS32();
-                this.I2 = stream.ReadValueS32();
-                this.I3 = stream.ReadValueS32();
-                this.I4 = stream.ReadValueS32();
-                this.MonsterAffix = (MonsterAffix)stream.ReadValueS32(); //
-                this.Resistance = (Resistance)stream.ReadValueS32();
-                this.AffixType = (AffixType)stream.ReadValueS32();
-                this.I5 = stream.ReadValueS32();
-                this.I6 = stream.ReadValueS32();
-                this.I7 = stream.ReadValueS32();
-                this.I8 = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                Hash = StringHashHelper.HashItemName(Name);
+                I0 = stream.ReadValueS32(); //
+                I1 = stream.ReadValueS32();
+                I2 = stream.ReadValueS32();
+                I3 = stream.ReadValueS32();
+                I4 = stream.ReadValueS32();
+                MonsterAffix = (MonsterAffix)stream.ReadValueS32(); //
+                Resistance = (Resistance)stream.ReadValueS32();
+                AffixType = (AffixType)stream.ReadValueS32();
+                I5 = stream.ReadValueS32();
+                I6 = stream.ReadValueS32();
+                I7 = stream.ReadValueS32();
+                I8 = stream.ReadValueS32();
 
-                this.Attributes = new AttributeSpecifier[10]; //888
+                Attributes = new AttributeSpecifier[10]; //888
                 for (int i = 0; i < 10; i++)
-                    this.Attributes[i] = new AttributeSpecifier(stream);
+                    Attributes[i] = new AttributeSpecifier(stream);
 
-                this.MinionAttributes = new AttributeSpecifier[10];
+                MinionAttributes = new AttributeSpecifier[10];
                 for (int i = 0; i < 10; i++)
-                    this.MinionAttributes[i] = new AttributeSpecifier(stream);
+                    MinionAttributes[i] = new AttributeSpecifier(stream);
                 stream.Position += 4;
-                this.SNOOnSpawnPowerMinion = stream.ReadValueS32(); //804 - 1372
-                this.SNOOnSpawnPowerChampion = stream.ReadValueS32();
-                this.SNOOnSpawnPowerRare = stream.ReadValueS32();
+                SNOOnSpawnPowerMinion = stream.ReadValueS32(); //804 - 1372
+                SNOOnSpawnPowerChampion = stream.ReadValueS32();
+                SNOOnSpawnPowerRare = stream.ReadValueS32();
 
                 BS = new byte[99];
                 for (int i = 0; i < BS.Length; i++)
@@ -1719,13 +1709,13 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.Hash = StringHashHelper.HashItemName(this.Name);
-                this.I0 = stream.ReadValueS32(); //
-                this.I1 = stream.ReadValueS32();
-                this.AffixType = (AffixType)stream.ReadValueS32();
-                this.S0 = stream.ReadString(128, true);
-                this.I2 = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                Hash = StringHashHelper.HashItemName(Name);
+                I0 = stream.ReadValueS32(); //
+                I1 = stream.ReadValueS32();
+                AffixType = (AffixType)stream.ReadValueS32();
+                S0 = stream.ReadString(128, true);
+                I2 = stream.ReadValueS32();
             }
 
         }
@@ -1743,18 +1733,18 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.Item = stream.ReadValueS32();
-                this.ItemType = stream.ReadValueS32();
-                this.Attribute = new AttributeSpecifier[3];
+                Name = stream.ReadString(256, true);
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                Item = stream.ReadValueS32();
+                ItemType = stream.ReadValueS32();
+                Attribute = new AttributeSpecifier[3];
                 for (int i = 0; i < 3; i++)
-                    this.Attribute[i] = new AttributeSpecifier(stream);
-                this.ReqAttribute = new AttributeSpecifier[2];
+                    Attribute[i] = new AttributeSpecifier(stream);
+                ReqAttribute = new AttributeSpecifier[2];
                 for (int i = 0; i < 2; i++)
-                    this.ReqAttribute[i] = new AttributeSpecifier(stream);
-                this.S0 = stream.ReadString(1024, true);
+                    ReqAttribute[i] = new AttributeSpecifier(stream);
+                S0 = stream.ReadString(1024, true);
             }
         }
         public class ItemDropTableEntry : ISerializableData //0 byte file
@@ -1768,10 +1758,10 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.I0 = new int[221];
+                Name = stream.ReadString(256, true);
+                I0 = new int[221];
                 for (int i = 0; i < 221; i++)
-                    this.I0[i] = stream.ReadValueS32();
+                    I0[i] = stream.ReadValueS32();
             }
         }
         public class ItemLevelModifier : ISerializableData //0 byte file
@@ -1848,34 +1838,34 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.I2 = stream.ReadValueS32();
-                this.I3 = stream.ReadValueS32();
-                this.I4 = stream.ReadValueS32();
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                I2 = stream.ReadValueS32();
+                I3 = stream.ReadValueS32();
+                I4 = stream.ReadValueS32();
 
-                this.I5 = stream.ReadValueS32();
-                this.I6 = stream.ReadValueS32();
-                this.I7 = stream.ReadValueS32();
-                this.I8 = stream.ReadValueS32();
-                this.I9 = stream.ReadValueS32();
+                I5 = stream.ReadValueS32();
+                I6 = stream.ReadValueS32();
+                I7 = stream.ReadValueS32();
+                I8 = stream.ReadValueS32();
+                I9 = stream.ReadValueS32();
 
-                this.F0 = stream.ReadValueF32();
-                this.F1 = stream.ReadValueF32();
-                this.F2 = stream.ReadValueF32();
-                this.F3 = stream.ReadValueF32();
-                this.F4 = stream.ReadValueF32();
+                F0 = stream.ReadValueF32();
+                F1 = stream.ReadValueF32();
+                F2 = stream.ReadValueF32();
+                F3 = stream.ReadValueF32();
+                F4 = stream.ReadValueF32();
 
-                this.F5 = stream.ReadValueF32();
-                this.F6 = stream.ReadValueF32();
-                this.F7 = stream.ReadValueF32();
-                this.F8 = stream.ReadValueF32();
-                this.F9 = stream.ReadValueF32();
+                F5 = stream.ReadValueF32();
+                F6 = stream.ReadValueF32();
+                F7 = stream.ReadValueF32();
+                F8 = stream.ReadValueF32();
+                F9 = stream.ReadValueF32();
 
-                this.F10 = stream.ReadValueF32();
+                F10 = stream.ReadValueF32();
 
-                this.I10 = stream.ReadValueS32();
-                this.I11 = stream.ReadValueS32();
+                I10 = stream.ReadValueS32();
+                I11 = stream.ReadValueS32();
             }
         }
         public class QualityClass : ISerializableData //0 byte file
@@ -1890,13 +1880,13 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public int I2 { get; private set; }
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.F0 = new float[22];
+                Name = stream.ReadString(256, true);
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                F0 = new float[22];
                 for (int i = 0; i < 22; i++)
-                    this.F0[i] = stream.ReadValueF32();
-                this.I2 = stream.ReadValueS32();
+                    F0[i] = stream.ReadValueF32();
+                I2 = stream.ReadValueS32();
             }
         }
         public class HandicapLevelTable : ISerializableData
@@ -1912,14 +1902,14 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public int I1 { get; private set; }
             public void Read(MpqFileStream stream)
             {
-                this.HPMod = stream.ReadValueF32();
-                this.DmgMod = stream.ReadValueF32();
-                this.F2 = stream.ReadValueF32();
-                this.XPMod = stream.ReadValueF32();
-                this.GoldMod = stream.ReadValueF32();
-                this.F5 = stream.ReadValueF32();
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
+                HPMod = stream.ReadValueF32();
+                DmgMod = stream.ReadValueF32();
+                F2 = stream.ReadValueF32();
+                XPMod = stream.ReadValueF32();
+                GoldMod = stream.ReadValueF32();
+                F5 = stream.ReadValueF32();
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
             }
         }
         public class ItemSalvageLevelTable : ISerializableData
@@ -1930,10 +1920,10 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public int TreasureClassSNO3 { get; private set; }
             public void Read(MpqFileStream stream)
             {
-                this.TreasureClassSNO0 = stream.ReadValueS32();
-                this.TreasureClassSNO1 = stream.ReadValueS32();
-                this.TreasureClassSNO2 = stream.ReadValueS32();
-                this.TreasureClassSNO3 = stream.ReadValueS32();
+                TreasureClassSNO0 = stream.ReadValueS32();
+                TreasureClassSNO1 = stream.ReadValueS32();
+                TreasureClassSNO2 = stream.ReadValueS32();
+                TreasureClassSNO3 = stream.ReadValueS32();
             }
         }
         public class HirelingTable : ISerializableData
@@ -1964,25 +1954,25 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public void Read(MpqFileStream stream)
             {
                 //
-                this.Name = stream.ReadString(256, true);
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.SNOActor = stream.ReadValueS32();
-                this.SNOProxy = stream.ReadValueS32();
-                this.SNOInventory = stream.ReadValueS32();
-                this.TreasureClassSNO = stream.ReadValueS32();
-                this.Attribute = (PrimaryAttribute)stream.ReadValueS32();
-                this.F0 = stream.ReadValueF32();
-                this.F1 = stream.ReadValueF32();
-                this.F2 = stream.ReadValueF32();
-                this.F3 = stream.ReadValueF32();
-                this.F4 = stream.ReadValueF32();
-                this.F5 = stream.ReadValueF32();
-                this.F6 = stream.ReadValueF32();
-                this.F7 = stream.ReadValueF32();
-                this.F8 = stream.ReadValueF32();
-                this.F9 = stream.ReadValueF32();
-                this.F10 = stream.ReadValueF32();
+                Name = stream.ReadString(256, true);
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                SNOActor = stream.ReadValueS32();
+                SNOProxy = stream.ReadValueS32();
+                SNOInventory = stream.ReadValueS32();
+                TreasureClassSNO = stream.ReadValueS32();
+                Attribute = (PrimaryAttribute)stream.ReadValueS32();
+                F0 = stream.ReadValueF32();
+                F1 = stream.ReadValueF32();
+                F2 = stream.ReadValueF32();
+                F3 = stream.ReadValueF32();
+                F4 = stream.ReadValueF32();
+                F5 = stream.ReadValueF32();
+                F6 = stream.ReadValueF32();
+                F7 = stream.ReadValueF32();
+                F8 = stream.ReadValueF32();
+                F9 = stream.ReadValueF32();
+                F10 = stream.ReadValueF32();
             }
 
         }
@@ -1998,11 +1988,11 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.Set = stream.ReadValueS32();
-                this.Count = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                Set = stream.ReadValueS32();
+                Count = stream.ReadValueS32();
                 Attribute = new AttributeSpecifier[8];
                 for (int i = 0; i < 8; i++)
                     Attribute[i] = new AttributeSpecifier(stream);
@@ -2087,33 +2077,33 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
+                Name = stream.ReadString(256, true);
 
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
 
-                this.F0 = stream.ReadValueF32();
-                this.Time0 = stream.ReadValueS32();
-                this.F1 = stream.ReadValueF32();
-                this.Time1 = stream.ReadValueS32();
-                this.F2 = stream.ReadValueF32();
-                this.Time2 = stream.ReadValueS32();
-                this.F3 = stream.ReadValueF32();
-                this.Time3 = stream.ReadValueS32();
-                this.F4 = stream.ReadValueF32();
-                this.Time4 = stream.ReadValueS32();
-                this.F5 = stream.ReadValueF32();
-                this.Time5 = stream.ReadValueS32();
-                this.F6 = stream.ReadValueF32();
-                this.Time6 = stream.ReadValueS32();
-                this.F7 = stream.ReadValueF32();
-                this.F8 = stream.ReadValueF32();
-                this.Time7 = stream.ReadValueS32();
-                this.F9 = stream.ReadValueF32();
-                this.F10 = stream.ReadValueF32();
-                this.F11 = stream.ReadValueF32();
-                this.F12 = stream.ReadValueF32();
-                this.I2 = stream.ReadValueS32();
+                F0 = stream.ReadValueF32();
+                Time0 = stream.ReadValueS32();
+                F1 = stream.ReadValueF32();
+                Time1 = stream.ReadValueS32();
+                F2 = stream.ReadValueF32();
+                Time2 = stream.ReadValueS32();
+                F3 = stream.ReadValueF32();
+                Time3 = stream.ReadValueS32();
+                F4 = stream.ReadValueF32();
+                Time4 = stream.ReadValueS32();
+                F5 = stream.ReadValueF32();
+                Time5 = stream.ReadValueS32();
+                F6 = stream.ReadValueF32();
+                Time6 = stream.ReadValueS32();
+                F7 = stream.ReadValueF32();
+                F8 = stream.ReadValueF32();
+                Time7 = stream.ReadValueS32();
+                F9 = stream.ReadValueF32();
+                F10 = stream.ReadValueF32();
+                F11 = stream.ReadValueF32();
+                F12 = stream.ReadValueF32();
+                I2 = stream.ReadValueS32();
             }
         }
         public class ItemTier : ISerializableData //0 byte file
@@ -2146,15 +2136,15 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Head = stream.ReadValueS32();
-                this.Torso = stream.ReadValueS32();
-                this.Feet = stream.ReadValueS32();
-                this.Hands = stream.ReadValueS32();
+                Head = stream.ReadValueS32();
+                Torso = stream.ReadValueS32();
+                Feet = stream.ReadValueS32();
+                Hands = stream.ReadValueS32();
 
-                this.Shoulders = stream.ReadValueS32();
-                this.Bracers = stream.ReadValueS32();
-                this.Belt = stream.ReadValueS32();
-                this.Necesssary = stream.ReadValueS32();
+                Shoulders = stream.ReadValueS32();
+                Bracers = stream.ReadValueS32();
+                Belt = stream.ReadValueS32();
+                Necesssary = stream.ReadValueS32();
             }
         }
         public class PowerFormulaTable : ISerializableData
@@ -2165,10 +2155,10 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.S0 = stream.ReadString(1024, true);
-                this.F0 = new float[76];
+                S0 = stream.ReadString(1024, true);
+                F0 = new float[76];
                 for (int i = 0; i < 76; i++)
-                    this.F0[i] = stream.ReadValueF32();
+                    F0[i] = stream.ReadValueF32();
             }
         }
         public class RecipeTable : ISerializableData
@@ -2188,19 +2178,19 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.Hash = StringHashHelper.HashItemName(this.Name);
-                this.GBID = stream.ReadValueS32();
-                this.PAD = stream.ReadValueS32();
-                this.SNORecipe = stream.ReadValueS32();
-                this.CrafterType = (RecipeType)stream.ReadValueS32();
-                this.Flags = stream.ReadValueS32();
-                this.Level = stream.ReadValueS32();
-                this.Gold = stream.ReadValueS32();
-                this.NumIngredients = stream.ReadValueS32();
-                this.Ingredients = new RecipeIngredient[6];
+                Name = stream.ReadString(256, true);
+                Hash = StringHashHelper.HashItemName(Name);
+                GBID = stream.ReadValueS32();
+                PAD = stream.ReadValueS32();
+                SNORecipe = stream.ReadValueS32();
+                CrafterType = (RecipeType)stream.ReadValueS32();
+                Flags = stream.ReadValueS32();
+                Level = stream.ReadValueS32();
+                Gold = stream.ReadValueS32();
+                NumIngredients = stream.ReadValueS32();
+                Ingredients = new RecipeIngredient[6];
                 for (int i = 0; i < 6; i++)
-                    this.Ingredients[i] = new RecipeIngredient(stream);
+                    Ingredients[i] = new RecipeIngredient(stream);
             }
         }
         public class ScriptedAchievementEventsTable : ISerializableData
@@ -2213,9 +2203,9 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.GBID = stream.ReadValueS32();
-                this.PAD = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                GBID = stream.ReadValueS32();
+                PAD = stream.ReadValueS32();
             }
         }
         public class LootRunQuestTierTable : ISerializableData
@@ -2226,12 +2216,12 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public LootRunQuestTierEntry[] LootRunQuestTierEntrys { get; private set; }
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.LootRunQuestTierEntrys = new LootRunQuestTierEntry[16];
+                Name = stream.ReadString(256, true);
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                LootRunQuestTierEntrys = new LootRunQuestTierEntry[16];
                 for (int i = 0; i < 16; i++)
-                    this.LootRunQuestTierEntrys[i] = new LootRunQuestTierEntry(stream);
+                    LootRunQuestTierEntrys[i] = new LootRunQuestTierEntry(stream);
             }
         }
         public class ParagonBonusesTable : ISerializableData
@@ -2247,22 +2237,22 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public string IconName { get; private set; }
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.Hash = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                Hash = stream.ReadValueS32();
                 if (Hash == 0)
                 { 
-                    Hash = StringHashHelper.HashItemName(this.Name);
+                    Hash = StringHashHelper.HashItemName(Name);
                 }
-                this.I1 = stream.ReadValueS32();
-                this.I2 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                I2 = stream.ReadValueS32();
                 stream.Position += 4;
                 AttributeSpecifiers = new AttributeSpecifier[4]; //856
                 for (int i = 0; i < 4; i++)
-                    this.AttributeSpecifiers[i] = new AttributeSpecifier(stream);
-                this.Category = stream.ReadValueS32(); //368 + 584 = 952
-                this.Index = stream.ReadValueS32();
-                this.HeroClass = (Class)stream.ReadValueS32();
-                this.IconName = stream.ReadString(256, true);
+                    AttributeSpecifiers[i] = new AttributeSpecifier(stream);
+                Category = stream.ReadValueS32(); //368 + 584 = 952
+                Index = stream.ReadValueS32();
+                HeroClass = (Class)stream.ReadValueS32();
+                IconName = stream.ReadString(256, true);
                 stream.Position += 4;
                 //640 + 584 = 1224
             }
@@ -2279,13 +2269,13 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.GBID = stream.ReadValueS32();
-                this.PAD = stream.ReadValueS32();
-                this.OldItemGBID = stream.ReadValueS32();
-                this.NewItemGBID = stream.ReadValueS32();
-                this.ConsoleIgnore = stream.ReadValueS32();
-                this.Pad = stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                GBID = stream.ReadValueS32();
+                PAD = stream.ReadValueS32();
+                OldItemGBID = stream.ReadValueS32();
+                NewItemGBID = stream.ReadValueS32();
+                ConsoleIgnore = stream.ReadValueS32();
+                Pad = stream.ReadValueS32();
             }
         }
         public class EnchantItemAffixUseCountCostScalarsTable : ISerializableData
@@ -2295,8 +2285,8 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.UseCount = stream.ReadValueS32();
-                this.CostMultiplier = stream.ReadValueF32();
+                UseCount = stream.ReadValueS32();
+                CostMultiplier = stream.ReadValueF32();
             }
         }
         public class TieredLootRunLevelTable : ISerializableData
@@ -2317,19 +2307,19 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.F0 = stream.ReadValueF32();
-                this.F1 = stream.ReadValueF32();
-                this.F2 = stream.ReadValueF32();
-                this.F3 = stream.ReadValueF32();
-                this.F4 = stream.ReadValueF32();
-                this.F5 = stream.ReadValueF32();
-                this.F6 = stream.ReadValueF32();
-                this.F7 = stream.ReadValueF32();
-                this.I0 = stream.ReadValueS32();
-                this.I1 = stream.ReadValueS32();
-                this.L0 = stream.ReadValueS64();
-                this.F8 = stream.ReadValueF32();
-                this.F9 = stream.ReadValueF32();
+                F0 = stream.ReadValueF32();
+                F1 = stream.ReadValueF32();
+                F2 = stream.ReadValueF32();
+                F3 = stream.ReadValueF32();
+                F4 = stream.ReadValueF32();
+                F5 = stream.ReadValueF32();
+                F6 = stream.ReadValueF32();
+                F7 = stream.ReadValueF32();
+                I0 = stream.ReadValueS32();
+                I1 = stream.ReadValueS32();
+                L0 = stream.ReadValueS64();
+                F8 = stream.ReadValueF32();
+                F9 = stream.ReadValueF32();
             }
         }
         public class TransmuteRecipesTable : ISerializableData
@@ -2345,16 +2335,16 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public void Read(MpqFileStream stream)
             {
-                this.Name = stream.ReadString(256, true);
-                this.GBID = stream.ReadValueS32();
-                this.PAD = stream.ReadValueS32();
-                this.TransmuteType = (TransmuteType)stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                GBID = stream.ReadValueS32();
+                PAD = stream.ReadValueS32();
+                TransmuteType = (TransmuteType)stream.ReadValueS32();
                 TransmuteRecipeIngredients = new TransmuteRecipeIngredient[8];
                 for (int i = 0; i < TransmuteRecipeIngredients.Length; i++)
                     TransmuteRecipeIngredients[i] = new TransmuteRecipeIngredient(stream);
-                this.IngredientsCount = stream.ReadValueS32();
-                this.Page = stream.ReadValueS32();
-                this.Hidden = stream.ReadValueS32();
+                IngredientsCount = stream.ReadValueS32();
+                Page = stream.ReadValueS32();
+                Hidden = stream.ReadValueS32();
                 //stream.Position += 8;
             }
         }
@@ -2372,16 +2362,16 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
             public void Read(MpqFileStream stream)
             {
 
-                this.Name = stream.ReadString(256, true);
-                this.GBID = stream.ReadValueS32();
-                this.PAD = stream.ReadValueS32();
-                this.CurrencyType = (CurrencyType)stream.ReadValueS32();
+                Name = stream.ReadString(256, true);
+                GBID = stream.ReadValueS32();
+                PAD = stream.ReadValueS32();
+                CurrencyType = (CurrencyType)stream.ReadValueS32();
                 LinkedItemsGBIDs = new int[5];
                 for (int i = 0; i < LinkedItemsGBIDs.Length; i++)
                     LinkedItemsGBIDs[i] = stream.ReadValueS32();
-                this.SortOrder = stream.ReadValueS32(); //872
-                this.Hidden = stream.ReadValueS32();
-                this.AutoPickup = stream.ReadValueS32();
+                SortOrder = stream.ReadValueS32(); //872
+                Hidden = stream.ReadValueS32();
+                AutoPickup = stream.ReadValueS32();
                 stream.Position += 4;
             }
         }
@@ -2558,8 +2548,8 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public RecipeIngredient(MpqFileStream stream)
             {
-                this.ItemsGBID = stream.ReadValueS32();
-                this.Count = stream.ReadValueS32();
+                ItemsGBID = stream.ReadValueS32();
+                Count = stream.ReadValueS32();
             }
         }
         public class TransmuteRecipeIngredient
@@ -2570,9 +2560,9 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public TransmuteRecipeIngredient(MpqFileStream stream)
             {
-                this.Type = stream.ReadValueS32();
-                this.TypeValue = stream.ReadValueS32();
-                this.Quantity = stream.ReadValueS32();
+                Type = stream.ReadValueS32();
+                TypeValue = stream.ReadValueS32();
+                Quantity = stream.ReadValueS32();
             }
         }
         public class LootRunQuestTierEntry
@@ -2584,10 +2574,10 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public LootRunQuestTierEntry(MpqFileStream stream)
             {
-                this.QuestSNO = stream.ReadValueS32();
-                this.F0 = stream.ReadValueF32();
-                this.GBID = stream.ReadValueS32();
-                this.ItemsGBID = stream.ReadValueS32();
+                QuestSNO = stream.ReadValueS32();
+                F0 = stream.ReadValueF32();
+                GBID = stream.ReadValueS32();
+                ItemsGBID = stream.ReadValueS32();
             }
         }
         public class AttributeSpecifier
@@ -2599,10 +2589,10 @@ using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding
 
             public AttributeSpecifier(MpqFileStream stream)
             {
-                this.AttributeId = stream.ReadValueS32();
-                this.SNOParam = stream.ReadValueS32();
+                AttributeId = stream.ReadValueS32();
+                SNOParam = stream.ReadValueS32();
                 stream.Position += 8;
-                this.Formula = stream.ReadSerializedInts();
+                Formula = stream.ReadSerializedInts();
             }
         }
     }

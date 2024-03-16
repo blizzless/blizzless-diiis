@@ -1,19 +1,11 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Discord;
+﻿using DiIiS_NA.Core.Discord;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.ClientSystem.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.ClientSystem
@@ -22,7 +14,7 @@ namespace DiIiS_NA.GameServer.ClientSystem
 	{
 		private new static readonly Logger Logger = LogManager.CreateLogger("GS"); // hide the Server.Logger so that tiny-logger can show the actual server as log source.
 
-		public static GSBackend GSBackend { get; set; }
+		public static GsBackend GSBackend { get; set; }
 
 		public static int MaintenanceTime = -1;
 		public Bot DiscordBot { get; set; }
@@ -43,8 +35,8 @@ namespace DiIiS_NA.GameServer.ClientSystem
 		{
 			int Port = 2001;
 			 
-			if (!Listen(Program.GAMESERVERIP, Port)) return;
-			Logger.Info("Game Server Started - {0}:{1}...", Program.GAMESERVERIP, Port);
+			if (!Listen(Program.GameServerIp, Port)) return;
+			Logger.Info("Game Server Started - {0}:{1}...", Program.GameServerIp, Port);
 		}
 	}
 }

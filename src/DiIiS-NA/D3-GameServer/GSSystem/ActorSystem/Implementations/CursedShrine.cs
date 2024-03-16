@@ -1,16 +1,9 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using System.Linq;
-//Blizzless Project 2022 
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -26,7 +19,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public CursedShrine(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 		}
 
 		private bool _collapsed = false;
@@ -42,7 +35,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					_collapsed = true;
 
 					World.Game.SideQuestGizmo = this;
-					World.Game.QuestManager.LaunchSideQuest(eventIds[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, eventIds.Count())], true);
+					World.Game.QuestManager.LaunchSideQuest(eventIds.PickRandom(), true);
 				}
 			}
 			catch { }
@@ -99,9 +92,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					}
 					break;
 			}
-			Attributes[GameAttribute.Gizmo_Has_Been_Operated] = true;
+			Attributes[GameAttributes.Gizmo_Has_Been_Operated] = true;
 			//this.Attributes[GameAttribute.Gizmo_Operator_ACDID] = unchecked((int)player.DynamicID);
-			Attributes[GameAttribute.Gizmo_State] = 1;
+			Attributes[GameAttributes.Gizmo_State] = 1;
 			Attributes.BroadcastChangedIfRevealed();
 
 			var rewardChests = GetActorsInRange<LootContainer>(20f).Where(c => c.rewardChestAvailable == false).ToList();

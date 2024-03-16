@@ -1,6 +1,5 @@
 ﻿
 
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads

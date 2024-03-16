@@ -1,16 +1,10 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
+using System.Diagnostics;
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
@@ -19,24 +13,39 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 	{
 		static readonly Logger Logger = LogManager.CreateLogger();
 
-		private static Dictionary<int, Type> _implementations = new Dictionary<int, Type>();
+		private static readonly Dictionary<int, Type> _implementations = new();
 
+		private static PowerScript TryActivate(int powerSno)
+		{
+			try
+			{
+				return (PowerScript)Activator.CreateInstance(_implementations[powerSno]);
+			}
+			catch(Exception ex)
+			{
+				Logger.FatalException(ex, $"Failed to activate power {powerSno}");
+				return null;
+			}
+		}
 		public static PowerScript CreateImplementationForPowerSNO(int powerSNO)
 		{
 			if (_implementations.ContainsKey(powerSNO))
 			{
-				PowerScript script = (PowerScript)Activator.CreateInstance(_implementations[powerSNO]);
-				script.PowerSNO = powerSNO;
-				return script;
+				PowerScript script = TryActivate(powerSNO);
+				if (script != null)
+				{
+					script.PowerSNO = powerSNO;
+					return script;
+				}
 			}
-			else
-			{
-				#if DEBUG
-				if (powerSNO != 30021 && powerSNO != 30022 && powerSNO != -1)
-					Logger.Info("Unimplemented power: {0}", powerSNO); //for hiding annoying messages
-				#endif
-				return null;
-			}
+			#if DEBUG
+			if (powerSNO != 30021 && powerSNO != 30022 && powerSNO != -1) //for hiding annoying messages
+				Logger.Info($"$[underline red]$Unimplemented power:$[/]$ $[underline]${powerSNO}$[/]$");
+			#else
+			if (powerSNO != 30021 && powerSNO != 30022 && powerSNO != -1) //for hiding annoying messages
+				Logger.Info($"$[underline red]$Unimplemented power:$[/]$ $[underline]${powerSNO}$[/]$");
+			#endif
+			return null;
 		}
 
 		public static bool HasImplementationForPowerSNO(int powerSNO)

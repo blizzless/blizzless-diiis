@@ -1,7 +1,4 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using bgs.protocol;
-//Blizzless Project 2022 
+﻿using bgs.protocol;
 using System;
 
 namespace DiIiS_NA.LoginServer.Base

@@ -1,32 +1,23 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
+using System.IO;
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
 	public static class ActorFactory
 	{
-		private static readonly Dictionary<ActorSno, Type> SNOHandlers = new Dictionary<ActorSno, Type>();
+		private static readonly Dictionary<ActorSno, Type> SNOHandlers;
 		private static Logger Logger = new Logger("ActorFactory");
 
 		static ActorFactory()
@@ -46,11 +37,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				OnCreate.Invoke(actor, spawn);
 		}
 
-		public static Actor Create(World world, ActorSno sno, TagMap tags)
+		public static Actor Create(World world, ActorSno sno, TagMap tags, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
 			if (!MPQStorage.Data.Assets[SNOGroup.Actor].ContainsKey((int)sno))
 			{
-				//Logger.Warn("Actor asset not found, Id: {0}", snoId);
+				var path = Path.GetFileName(filePath);
+				Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
 				return null;
 			}
 
@@ -88,7 +80,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				return null;
 
 			var actorAsset = MPQStorage.Data.Assets[SNOGroup.Actor][(int)sno];
-			var actorData = actorAsset.Data as DiIiS_NA.Core.MPQ.FileFormats.Actor;
+			var actorData = actorAsset.Data as DiIiS_NA.Core.MPQ.FileFormats.ActorData;
 			if (actorData == null)
 			{
 				Logger.Warn("Actor data not found, Id: {0}", sno);

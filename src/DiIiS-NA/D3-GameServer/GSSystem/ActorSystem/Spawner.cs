@@ -1,19 +1,11 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
@@ -53,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		/// Rewrite the quest handling event
 		/// </summary>
 		/// <param name="quest"></param>
-		protected override void quest_OnQuestProgress()
+		protected override void QuestProgress()
 		{
 			if (SNO == ActorSno._spawner_zolt_centerpiece) return;
 			//Spawn if this is spawner
@@ -104,7 +96,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			};
 
 			//this.World.Game.WorldGenerator.Actions.Enqueue(() =>
-			World.Game.WorldGenerator.LoadActor(ActorToSpawnSNO, location, World, ((DiIiS_NA.Core.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
+			World.Game.WorldGenerator.LoadActor(ActorToSpawnSNO, location, World, ((DiIiS_NA.Core.MPQ.FileFormats.ActorData)ActorToSpawnSNO.Target).TagMap);
 			//Mooege.Core.GS.Generators.WorldGenerator.loadActor(ActorToSpawnSNO, location, this.World, ((Mooege.Common.MPQ.FileFormats.Actor)ActorToSpawnSNO.Target).TagMap);
 		}
 

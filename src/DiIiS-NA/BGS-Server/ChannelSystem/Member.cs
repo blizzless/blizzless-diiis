@@ -1,11 +1,6 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using bgs.protocol.channel.v1;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
 
 namespace DiIiS_NA.LoginServer.ChannelSystem
@@ -59,29 +54,30 @@ namespace DiIiS_NA.LoginServer.ChannelSystem
 				{
 					var rank = this.Channel.Guild.GetRank(this.Identity.GameAccountId.Low);
 					var note = this.Channel.Guild.GetMemberNote(this.Identity.GameAccountId.Low);
-					builder.AddAttribute(bgs.protocol.Attribute.CreateBuilder().SetName("D3.GuildMember.Rank").SetValue(bgs.protocol.Variant.CreateBuilder().SetIntValue(rank)));
-					builder.AddAttribute(bgs.protocol.Attribute.CreateBuilder().SetName("D3.GuildMember.Note").SetValue(bgs.protocol.Variant.CreateBuilder().SetStringValue(note)));
-					builder.AddAttribute(bgs.protocol.Attribute.CreateBuilder().SetName("D3.GuildMember.AchievementPoints").SetValue(bgs.protocol.Variant.CreateBuilder().SetUintValue(this.GameAccount.AchievementPoints)));
+					builder.AddAttribute(bgs.protocol.Attribute.CreateBuilder().SetName("D3.GuildMember.Rank")
+						.SetValue(bgs.protocol.Variant.CreateBuilder().SetIntValue(rank)));
+					builder.AddAttribute(bgs.protocol.Attribute.CreateBuilder().SetName("D3.GuildMember.Note")
+						.SetValue(bgs.protocol.Variant.CreateBuilder().SetStringValue(note)));
+					builder.AddAttribute(bgs.protocol.Attribute.CreateBuilder()
+						.SetName("D3.GuildMember.AchievementPoints").SetValue(bgs.protocol.Variant.CreateBuilder()
+							.SetUintValue(this.GameAccount.AchievementPoints)));
 				}
 				else
 				{
-										if (this.Privileges != Privilege.None)
-											builder.SetPrivileges((ulong)this.Privileges); // We don't have to set this if it is the default (0)
+					if (this.Privileges != Privilege.None)
+						builder.SetPrivileges(
+							(ulong)this.Privileges); // We don't have to set this if it is the default (0)
 				}
+
 				return builder.Build();
 			}
 		}
 
-		public bgs.protocol.channel.v1.Member BnetMember
-		{
-			get
-			{
-				return bgs.protocol.channel.v1.Member.CreateBuilder()
-					.SetIdentity(this.Identity)
-					.SetState(this.BnetMemberState)
-					.Build();
-			}
-		}
+		public bgs.protocol.channel.v1.Member BnetMember =>
+			bgs.protocol.channel.v1.Member.CreateBuilder()
+				.SetIdentity(this.Identity)
+				.SetState(this.BnetMemberState)
+				.Build();
 
 		public Member(Channel channel, GameAccount account, Privilege privs, params Role[] roles)
 		{

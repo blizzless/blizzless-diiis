@@ -1,30 +1,22 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
+using FluentNHibernate.Utils;
 
 namespace DiIiS_NA.GameServer.CommandManager
 {
 	public class CommandGroup
 	{
-		private static readonly Logger Logger = LogManager.CreateLogger("CM");
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(CommandGroup));
 
-		public CommandGroupAttribute Attributes { get; private set; }
+		private CommandGroupAttribute Attributes { get; set; }
 
-		private readonly Dictionary<CommandAttribute, MethodInfo> _commands =
-			new Dictionary<CommandAttribute, MethodInfo>();
+		private readonly Dictionary<CommandAttribute, MethodInfo> _commands = new();
 
 		public void Register(CommandGroupAttribute attributes)
 		{
@@ -37,7 +29,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		{
 			foreach (var method in GetType().GetMethods())
 			{
-				object[] attributes = method.GetCustomAttributes(typeof(CommandAttribute), true);
+				var attributes = method.GetCustomAttributes(typeof(CommandAttribute), true);
 				if (attributes.Length == 0) continue;
 
 				var attribute = (CommandAttribute)attributes[0];
@@ -46,7 +38,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				if (!_commands.ContainsKey(attribute))
 					_commands.Add(attribute, method);
 				else
-					Logger.Warn("There exists an already registered command '{0}'.", attribute.Name);
+					Logger.Fatal($"$[red]$Command$[/]$ '$[underline white]${attribute.Name.SafeAnsi()}$[/]$' already exists.");
 			}
 		}
 
@@ -54,7 +46,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 		{
 			foreach (var method in GetType().GetMethods())
 			{
-				object[] attributes = method.GetCustomAttributes(typeof(DefaultCommand), true);
+				var attributes = method.GetCustomAttributes(typeof(DefaultCommand), true);
 				if (attributes.Length == 0) continue;
 				if (method.Name.ToLower() == "fallback") continue;
 
@@ -71,10 +63,15 @@ namespace DiIiS_NA.GameServer.CommandManager
 			// check if the user has enough privileges to access command group.
 			// check if the user has enough privileges to invoke the command.
 			if (invokerClient != null && Attributes.MinUserLevel > invokerClient.Account.UserLevel)
-				return "You don't have enough privileges to invoke that command.";
-
+#if DEBUG
+				return $"You don't have enough privileges to invoke that command (Min. level: {Attributes.MinUserLevel}).";
+#else
+				return "Unknown command.";
+#endif
+			if (invokerClient?.InGameClient?.Player == null && Attributes.InGameOnly)
+				return "You can only use this command in-game.";
 			string[] @params = null;
-			CommandAttribute target = null;
+			CommandAttribute target;
 
 			if (parameters == string.Empty)
 				target = GetDefaultSubcommand();
@@ -83,24 +80,40 @@ namespace DiIiS_NA.GameServer.CommandManager
 				@params = parameters.Split(' ');
 				target = GetSubcommand(@params[0]) ?? GetDefaultSubcommand();
 
-				if (target != GetDefaultSubcommand())
+				if (!Equals(target, GetDefaultSubcommand()))
 					@params = @params.Skip(1).ToArray();
 			}
 
 			// check if the user has enough privileges to invoke the command.
 			if (invokerClient != null && target.MinUserLevel > invokerClient.Account.UserLevel)
-				return "You don't have enough privileges to invoke that command.";
+#if DEBUG
+				return $"You don't have enough privileges to invoke that command (Min. level: {Attributes.MinUserLevel}).";
+#else
+				return "Unknown command.";
+#endif
+			if (invokerClient?.InGameClient?.Player == null && target.InGameOnly)
+				return "This command can only be invoked in-game.";
 
-			return (string)_commands[target].Invoke(this, new object[] { @params, invokerClient });
+			try
+			{
+				return (string)_commands[target].Invoke(this, new object[] { @params, invokerClient });
+			}
+			catch (CommandException commandException)
+			{
+				return commandException.Message;
+			}
+			catch (Exception ex)
+			{
+				Logger.ErrorException(ex, "Command Handling Error");
+				return "An error occurred while executing the command.";
+			}
 		}
 
 		public string GetHelp(string command)
 		{
-			foreach (var pair in _commands)
-			{
-				if (command != pair.Key.Name) continue;
-				return pair.Key.Help;
-			}
+			var commandData = _commands.FirstOrDefault(pair => command == pair.Key.Name);
+			if (commandData.Key?.Help is {} help && !string.IsNullOrWhiteSpace(help))
+				return help;
 
 			return string.Empty;
 		}
@@ -108,25 +121,16 @@ namespace DiIiS_NA.GameServer.CommandManager
 		[DefaultCommand]
 		public virtual string Fallback(string[] @params = null, BattleClient invokerClient = null)
 		{
-			var output = "Available subcommands: ";
-			foreach (var pair in _commands)
-			{
-				if (pair.Key.Name.Trim() == string.Empty) continue; // skip fallback command.
-				if (invokerClient != null && pair.Key.MinUserLevel > invokerClient.Account.UserLevel) continue;
-				output += pair.Key.Name + ", ";
-			}
+			var output = _commands
+				.Where(pair => pair.Key.Name.Trim() != string.Empty)
+				.Where(pair => (invokerClient == null && pair.Key.InGameOnly) || (invokerClient != null && pair.Key.MinUserLevel <= invokerClient.Account.UserLevel))
+				.Aggregate("Available subcommands: ", (current, pair) => current + (pair.Key.Name + ", "));
 
 			return output.Substring(0, output.Length - 2) + ".";
 		}
 
-		protected CommandAttribute GetDefaultSubcommand()
-		{
-			return _commands.Keys.First();
-		}
+		protected CommandAttribute GetDefaultSubcommand() => _commands.Keys.First();
 
-		protected CommandAttribute GetSubcommand(string name)
-		{
-			return _commands.Keys.FirstOrDefault(command => command.Name == name);
-		}
+		protected CommandAttribute GetSubcommand(string name) => _commands.Keys.FirstOrDefault(command => command.Name == name);
 	}
 }

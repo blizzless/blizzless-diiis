@@ -1,18 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations.Act_I
 {
@@ -30,8 +19,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations.A
 		{
 			var Leah = world.GetActorBySNO(ActorSno._leahritual);
 			
-			Leah.Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
-			Leah.Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
+			Leah.Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f;
+			Leah.Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 5f;
 			world.PowerManager.RunPower(Leah, 190230);
 			//130848
 			Leah.PlayEffectGroup(130848);

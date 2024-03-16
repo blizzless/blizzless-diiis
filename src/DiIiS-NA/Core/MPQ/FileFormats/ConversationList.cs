@@ -1,15 +1,8 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using CrystalMpq;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -23,8 +16,8 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public ConversationList() 
         {
-            if (this.ConversationListEntries == null) this.ConversationListEntries = new List<ConversationListEntry>();
-            if (this.AmbientConversationListEntries == null) this.AmbientConversationListEntries = new List<ConversationListEntry>();
+            if (ConversationListEntries == null) ConversationListEntries = new List<ConversationListEntry>();
+            if (AmbientConversationListEntries == null) AmbientConversationListEntries = new List<ConversationListEntry>();
         }
     }
 
@@ -35,11 +28,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         {
             get
             {
-                return (ConversationTypes)this.Flags;
+                return (ConversationTypes)Flags;
             }
             set
             {
-                this.Flags = (int)value;
+                Flags = (int)value;
             }
         }
 
@@ -92,22 +85,22 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         //*
         public ConversationListEntry(ConversationTypes type, int i0, int questId, int convId, int questStep, int act)
         {
-            this.SNOConversation = convId;
-            this.SpecialEventFlag = act;
-            this.Type = type;
-            this.SNOQuestCurrent = -1;
-            this.SNOQuestAssigned = -1;
-            this.SNOQuestComplete = -1;
-            this.SNOQuestRange = -1;
-            this.SNOLevelArea = -1;
-            this.SNOQuestActive = questId;
-            this.ConditionReqs = i0;
+            SNOConversation = convId;
+            SpecialEventFlag = act;
+            Type = type;
+            SNOQuestCurrent = -1;
+            SNOQuestAssigned = -1;
+            SNOQuestComplete = -1;
+            SNOQuestRange = -1;
+            SNOLevelArea = -1;
+            SNOQuestActive = questId;
+            ConditionReqs = i0;
             //this.I1 = -1;
-            this.CrafterType = -1;
-            this.StepUIDCurrent = questStep;
-            this.GbidItem = -1;
-            this.Label = "";
-            this.PlayerFlag = "";
+            CrafterType = -1;
+            StepUIDCurrent = questStep;
+            GbidItem = -1;
+            Label = "";
+            PlayerFlag = "";
         }
     }
 }

@@ -1,14 +1,8 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
@@ -20,13 +14,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		/// </summary>
 		public uint GlobalID
 		{
-			get
-			{
-				if (GlobalIDOverride > 0)
-					return GlobalIDOverride;
-				else
-					return _globalID;
-			}
+			get => GlobalIDOverride > 0 ? GlobalIDOverride : _globalID;
 			private set
 			{ }
 		}

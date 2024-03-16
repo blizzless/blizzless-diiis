@@ -1,40 +1,22 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -318,10 +300,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			for (int i = 0; i < 8; i++)
 			{
 				var targets = GetEnemiesInRadius(User.Position, ScriptFormula(18)).Actors;
-				Actor target = null;
-
-				if (targets.Count() > 0)
-					target = targets[Rand.Next(targets.Count())];
+				targets.TryPickRandom(out var target);
 
 				var position = target == null ? RandomDirection(User.Position, 1f, 15f) : target.Position;
 				_CreateArrowPool(ActorSno._demonhunter_rainofarrows_indigo_buff, position, ScriptFormula(16), 2f);
@@ -746,7 +725,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						WeaponDamage(GetEnemiesInRadius(mine.Position, ScriptFormula(29)), ScriptFormula(28), DamageType.Poison);
 					};
 				}
-				float speed = User.Attributes[GameAttribute.Running_Rate_Total] * 3f;
+				float speed = User.Attributes[GameAttributes.Running_Rate_Total] * 3f;
 				Vector3D destination = PowerMath.TranslateDirection2D(TargetPosition, User.Position, User.Position, ScriptFormula(7));//this needs to be the opposite direction of the facing direction// ScriptFormula(7);
 				ActorMover _mover;
 				//lets move backwards!
@@ -893,7 +872,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				Target.Attributes[GameAttribute.Weapon_Crit_Chance] += 0.1f;
+				Target.Attributes[GameAttributes.Weapon_Crit_Chance] += 0.1f;
 				Target.Attributes.BroadcastChangedIfRevealed();
 				return true;
 			}
@@ -901,7 +880,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 
-				Target.Attributes[GameAttribute.Weapon_Crit_Chance] -= 0.1f;
+				Target.Attributes[GameAttributes.Weapon_Crit_Chance] -= 0.1f;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -921,7 +900,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			EffectsPerSecond = 0.1f;
 			ticks = 0;
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-			User.Attributes[GameAttribute.Projectile_Speed] = User.Attributes[GameAttribute.Projectile_Speed] * ScriptFormula(22);
+			User.Attributes[GameAttributes.Projectile_Speed] = User.Attributes[GameAttributes.Projectile_Speed] * ScriptFormula(22);
 			User.Attributes.BroadcastChangedIfRevealed();
 		}
 
@@ -929,7 +908,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			if (_target != null)
 				_target.Destroy();
-			User.Attributes[GameAttribute.Projectile_Speed] = User.Attributes[GameAttribute.Projectile_Speed] / ScriptFormula(22);
+			User.Attributes[GameAttributes.Projectile_Speed] = User.Attributes[GameAttributes.Projectile_Speed] / ScriptFormula(22);
 			User.Attributes.BroadcastChangedIfRevealed();
 		}
 
@@ -1247,7 +1226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply())
 					return false;
-				User.Attributes[GameAttribute.Hitpoints_On_Hit] += LoH(User.Attributes[GameAttribute.Level]);
+				User.Attributes[GameAttributes.Hitpoints_On_Hit] += LoH(User.Attributes[GameAttributes.Level]);
 
 				if (Rune_A > 0)     //Night Bane
 				{
@@ -1262,11 +1241,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				}
 				if (Rune_B > 0)     //Shadow Glide
 				{
-					Target.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] += ScriptFormula(2);
+					Target.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] += ScriptFormula(2);
 				}
 				if (Rune_C > 0)     //Gloom
 				{
-					Target.Attributes[GameAttribute.Armor_Bonus_Percent] += ScriptFormula(4);
+					Target.Attributes[GameAttributes.Armor_Bonus_Percent] += ScriptFormula(4);
 				}
 
 				Target.Attributes.BroadcastChangedIfRevealed();
@@ -1276,15 +1255,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Remove()
 			{
 				base.Remove();
-				User.Attributes[GameAttribute.Hitpoints_On_Hit] -= LoH(User.Attributes[GameAttribute.Level]);
+				User.Attributes[GameAttributes.Hitpoints_On_Hit] -= LoH(User.Attributes[GameAttributes.Level]);
 
 				if (Rune_B > 0)
 				{
-					Target.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] -= ScriptFormula(2);
+					Target.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] -= ScriptFormula(2);
 				}
 				if (Rune_C > 0)
 				{
-					Target.Attributes[GameAttribute.Armor_Bonus_Percent] -= ScriptFormula(4);
+					Target.Attributes[GameAttributes.Armor_Bonus_Percent] -= ScriptFormula(4);
 				}
 
 				Target.Attributes.BroadcastChangedIfRevealed();
@@ -1301,7 +1280,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-			User.Attributes[GameAttribute.Skill_Charges, 75301] -= 1;
+			User.Attributes[GameAttributes.Skill_Charges, 75301] -= 1;
 			if (Rune_C > 0)
 			{
 				if (Target != null)
@@ -1423,11 +1402,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				else
 				{
 					Max = 4;
-					if (User.Attributes[GameAttribute.Skill_Charges, PowerSNO] == 5)
-						User.Attributes[GameAttribute.Skill_Charges, PowerSNO] = 4;
+					if (User.Attributes[GameAttributes.Skill_Charges, PowerSNO] == 5)
+						User.Attributes[GameAttributes.Skill_Charges, PowerSNO] = 4;
 				}
 
-				if (User.Attributes[GameAttribute.Skill_Charges, PowerSNO] < Max)
+				if (User.Attributes[GameAttributes.Skill_Charges, PowerSNO] < Max)
 				{
 					if(!CoolDownStarted)
 					{
@@ -1436,7 +1415,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						Task.Delay(6100).ContinueWith(delegate
 						{
 							CoolDownStarted = false;
-							User.Attributes[GameAttribute.Skill_Charges, PowerSNO] = (int)Math.Min(User.Attributes[GameAttribute.Skill_Charges, PowerSNO] + 1, Max);
+							User.Attributes[GameAttributes.Skill_Charges, PowerSNO] = (int)Math.Min(User.Attributes[GameAttributes.Skill_Charges, PowerSNO] + 1, Max);
 							//User.Attributes[GameAttribute.Next_Charge_Gained_time, 75301] = 0;
 							User.Attributes.BroadcastChangedIfRevealed();
 						});
@@ -1576,13 +1555,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply())
 					return false;
-				User.Attributes[GameAttribute.Has_Look_Override] = true;//0x04E733FD;
-				User.Attributes[GameAttribute.Stealthed] = true;
+				User.Attributes[GameAttributes.Has_Look_Override] = true;//0x04E733FD;
+				User.Attributes[GameAttributes.Stealthed] = true;
 				(User as Player).SpeedCheckDisabled = true;
 
 				if (Rune_E > 0)
 				{
-					User.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] += ScriptFormula(12);
+					User.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] += ScriptFormula(12);
 				}
 				return true;
 			}
@@ -1608,13 +1587,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 				//User.PlayEffectGroup(133698); //reappear
-				User.Attributes[GameAttribute.Stealthed] = false;
-				User.Attributes[GameAttribute.Has_Look_Override] = false;
+				User.Attributes[GameAttributes.Stealthed] = false;
+				User.Attributes[GameAttributes.Has_Look_Override] = false;
 				(User as Player).SpeedCheckDisabled = false;
 
 				if (Rune_E > 0)
 				{
-					User.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] -= ScriptFormula(12);
+					User.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] -= ScriptFormula(12);
 				}
 			}
 		}
@@ -1650,11 +1629,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				Target.Attributes[GameAttribute.Projectile_Speed] = Target.Attributes[GameAttribute.Projectile_Speed] * ScriptFormula(13);
+				Target.Attributes[GameAttributes.Projectile_Speed] = Target.Attributes[GameAttributes.Projectile_Speed] * ScriptFormula(13);
 				if (Rune_D <= 0)    //Drifting Shadow
-					Target.Attributes[GameAttribute.Movement_Bonus_Run_Speed] -= 0.25f;
+					Target.Attributes[GameAttributes.Movement_Bonus_Run_Speed] -= 0.25f;
 				if (Rune_B > 0)
-					Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] += (ScriptFormula(28) - 1f);
+					Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] += (ScriptFormula(28) - 1f);
 				Target.Attributes.BroadcastChangedIfRevealed();
 
 				return true;
@@ -1668,7 +1647,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				Vector3D targetPosition = RandomDirection(Target.Position, ScriptFormula(2));
 				var enemies = GetEnemiesInRadius(Target.Position, ScriptFormula(2)).Actors;
 				if (enemies.Count > 0)
-					targetPosition = enemies[FastRandom.Instance.Next(0, enemies.Count)].Position;
+					targetPosition = enemies.PickRandom().Position;
 				if (_damageTimer == null || _damageTimer.TimedOut)
 				{
 					_damageTimer = WaitSeconds(1f / 4f);
@@ -1718,11 +1697,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						var targets = GetEnemiesInRadius(Target.Position, ScriptFormula(2));
 						if (targets.Actors.Count > 0)
 						{
-							Vector3D nearby_position = targets.Actors[FastRandom.Instance.Next(0, targets.Actors.Count)].Position;
+							Vector3D nearbyPosition = targets.Actors.PickRandom().Position;
 							// TODO: check projectile actor
 							var rocket = new Projectile(this, ActorSno._dh_straferune_knives_knife, User.Position);
 							rocket.Position.Z += 6f;
-							rocket.Launch(nearby_position, ScriptFormula(10));
+							rocket.Launch(nearbyPosition, ScriptFormula(10));
 							rocket.OnCollision = (hit) =>
 							{
 								SpawnEffect(ActorSno._dh_strafe_sphereexplode, new Vector3D(hit.Position.X, hit.Position.Y, hit.Position.Z + 6f)); // impact effect (fix height)
@@ -1740,11 +1719,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 
-				Target.Attributes[GameAttribute.Projectile_Speed] = Target.Attributes[GameAttribute.Projectile_Speed] / ScriptFormula(13);
+				Target.Attributes[GameAttributes.Projectile_Speed] = Target.Attributes[GameAttributes.Projectile_Speed] / ScriptFormula(13);
 				if (Rune_D <= 0)        //Drifting Shadow				
-					Target.Attributes[GameAttribute.Movement_Bonus_Run_Speed] += 0.25f;
+					Target.Attributes[GameAttributes.Movement_Bonus_Run_Speed] += 0.25f;
 				if (Rune_B > 0)
-					Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= (ScriptFormula(28) - 1f);
+					Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= (ScriptFormula(28) - 1f);
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -1791,7 +1770,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply())
 					return false;
-				Target.Attributes[GameAttribute.Debuff_Duration_Reduction_Percent] += ScriptFormula(1);
+				Target.Attributes[GameAttributes.Debuff_Duration_Reduction_Percent] += ScriptFormula(1);
 				return true;
 			}
 
@@ -1829,7 +1808,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Remove()
 			{
 				base.Remove();
-				Target.Attributes[GameAttribute.Debuff_Duration_Reduction_Percent] -= ScriptFormula(1);
+				Target.Attributes[GameAttributes.Debuff_Duration_Reduction_Percent] -= ScriptFormula(1);
 			}
 		}
 	}
@@ -1862,7 +1841,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				GenerateSecondaryResource(25f);
 				if (User is Player)
-					(User as Player).AddHP(User.Attributes[GameAttribute.Hitpoints_Max_Total] * ScriptFormula(6));
+					(User as Player).AddHP(User.Attributes[GameAttributes.Hitpoints_Max_Total] * ScriptFormula(6));
 			}
 			else
 			{
@@ -1919,9 +1898,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply()) return false;
 
-				if (User.Attributes[GameAttribute.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Preparation] > 0)
+				if (User.Attributes[GameAttributes.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Preparation] > 0)
 				{
-					User.Attributes[GameAttribute.Resource_Max_Bonus, 6] += 15f;
+					User.Attributes[GameAttributes.Resource_Max_Bonus, 6] += 15f;
 					User.Attributes.BroadcastChangedIfRevealed();
 				}
 
@@ -1932,9 +1911,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 
-				if (User.Attributes[GameAttribute.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Preparation] > 0)
+				if (User.Attributes[GameAttributes.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Preparation] > 0)
 				{
-					User.Attributes[GameAttribute.Resource_Max_Bonus, 6] -= 15f;
+					User.Attributes[GameAttributes.Resource_Max_Bonus, 6] -= 15f;
 					User.Attributes.BroadcastChangedIfRevealed();
 				}
 			}
@@ -2241,14 +2220,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 			UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
 			//StartCooldown(EvalTag(PowerKeys.CooldownTime));
-			User.Attributes[GameAttribute.Skill_Charges, 129217] -= 1;
+			User.Attributes[GameAttributes.Skill_Charges, 129217] -= 1;
 			var old_turret = User.World.GetActorsBySNO(RuneSelect(ActorSno._dh_sentry, ActorSno._dh_sentry_tether, ActorSno._dh_sentry_addsduration, ActorSno._dh_sentry_addsmissiles, ActorSno._dh_sentry_addsheals, ActorSno._dh_sentry_addsshield));
 
 			//if (old_turret.Count > 0)
 			int CountByHero = 0;
 
 			foreach (var ot in old_turret)
-				if (ot.Attributes[GameAttribute.Known_By_Owner] == (User as Player).PlayerIndex)
+				if (ot.Attributes[GameAttributes.Known_By_Owner] == (User as Player).PlayerIndex)
 				{
 					CountByHero++;
 					if (CountByHero > 1)
@@ -2259,7 +2238,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			Turret.Timeout = WaitSeconds(ScriptFormula(0));
 			Turret.Scale = 1f;
 			Turret.Spawn();
-			Turret.Attributes[GameAttribute.Known_By_Owner] = (User as Player).PlayerIndex;
+			Turret.Attributes[GameAttributes.Known_By_Owner] = (User as Player).PlayerIndex;
 
 			if (Rune_A > 0)
 				User.AddRopeEffect(154660, Turret);
@@ -2302,7 +2281,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					foreach (Actor ally in Turret.GetActorsInRange(10f))
 					{
 						if (ally is Player)
-							(ally as Player).AddHP((ally.Attributes[GameAttribute.Hitpoints_Max_Total] * ScriptFormula(11)) / ScriptFormula(1));
+							(ally as Player).AddHP((ally.Attributes[GameAttributes.Hitpoints_Max_Total] * ScriptFormula(11)) / ScriptFormula(1));
 					}
 
 				if (Rune_E > 0)
@@ -2327,13 +2306,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply())
 					return false;
-				Target.Attributes[GameAttribute.Armor_Bonus_Percent] += ScriptFormula(10);
+				Target.Attributes[GameAttributes.Armor_Bonus_Percent] += ScriptFormula(10);
 				return true;
 			}
 			public override void Remove()
 			{
 				base.Remove();
-				Target.Attributes[GameAttribute.Armor_Bonus_Percent] -= ScriptFormula(10);
+				Target.Attributes[GameAttributes.Armor_Bonus_Percent] -= ScriptFormula(10);
 			}
 		}
 
@@ -2353,11 +2332,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				else
 				{
 					Max = 2;
-					if(User.Attributes[GameAttribute.Skill_Charges, PowerSNO] == 3)
-						User.Attributes[GameAttribute.Skill_Charges, PowerSNO] = 2;
+					if(User.Attributes[GameAttributes.Skill_Charges, PowerSNO] == 3)
+						User.Attributes[GameAttributes.Skill_Charges, PowerSNO] = 2;
 				}
 
-				if (User.Attributes[GameAttribute.Skill_Charges, PowerSNO] < Max)
+				if (User.Attributes[GameAttributes.Skill_Charges, PowerSNO] < Max)
 				{
 					if (!CoolDownStarted)
 					{
@@ -2366,7 +2345,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 						Task.Delay(8100).ContinueWith(delegate
 						{
 							CoolDownStarted = false;
-							User.Attributes[GameAttribute.Skill_Charges, PowerSNO] = (int)Math.Min(User.Attributes[GameAttribute.Skill_Charges, PowerSNO] + 1, Max);
+							User.Attributes[GameAttributes.Skill_Charges, PowerSNO] = (int)Math.Min(User.Attributes[GameAttributes.Skill_Charges, PowerSNO] + 1, Max);
 							User.Attributes.BroadcastChangedIfRevealed();
 						});
 					}
@@ -2431,10 +2410,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
 			if (Rune_E > 0)     //Ferret Companion
 			{
-				float radius = User.Attributes[GameAttribute.Gold_PickUp_Radius];
-				User.Attributes[GameAttribute.Gold_PickUp_Radius] = ScriptFormula(6);
+				float radius = User.Attributes[GameAttributes.Gold_PickUp_Radius];
+				User.Attributes[GameAttributes.Gold_PickUp_Radius] = ScriptFormula(6);
 				(User as Player).VacuumPickup();
-				User.Attributes[GameAttribute.Gold_PickUp_Radius] = radius;
+				User.Attributes[GameAttributes.Gold_PickUp_Radius] = radius;
 				yield break;
 			}
 
@@ -2470,8 +2449,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				Target.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] += 0.3f;
-				Target.Attributes[GameAttribute.Damage_Percent_All_From_Skills] += 0.3f;
+				Target.Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] += 0.3f;
+				Target.Attributes[GameAttributes.Damage_Percent_All_From_Skills] += 0.3f;
 				Target.Attributes.BroadcastChangedIfRevealed();
 				return true;
 			}
@@ -2479,8 +2458,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 
-				Target.Attributes[GameAttribute.Damage_Weapon_Percent_Bonus] -= 0.3f;
-				Target.Attributes[GameAttribute.Damage_Percent_All_From_Skills] -= 0.3f;
+				Target.Attributes[GameAttributes.Damage_Weapon_Percent_Bonus] -= 0.3f;
+				Target.Attributes[GameAttributes.Damage_Percent_All_From_Skills] -= 0.3f;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -2498,7 +2477,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 				Target.WalkSpeed *= 0.2f;
-				Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += 0.8f;
+				Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += 0.8f;
 				Target.Attributes.BroadcastChangedIfRevealed();
 				return true;
 			}
@@ -2506,7 +2485,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				base.Remove();
 				Target.WalkSpeed /= 0.2f;
-				Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.8f;
+				Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.8f;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
@@ -2535,7 +2514,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Init()
 			{
 				base.Init();
-				RegenValue = LifeRegen(User.Attributes[GameAttribute.Level]);
+				RegenValue = LifeRegen(User.Attributes[GameAttributes.Level]);
 			}
 			public override bool Apply()
 			{
@@ -2544,46 +2523,46 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (companion != null) return false;
 				if (User.World == null) return false;
 				var minionID = ActorSno._dh_companion;  //Raven
-				if (User.Attributes[GameAttribute.Rune_A, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
+				if (User.Attributes[GameAttributes.Rune_A, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
 					minionID = ActorSno._dh_companion_spider;  //Spider, slow on hit done in HitPayload
-				if (User.Attributes[GameAttribute.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
+				if (User.Attributes[GameAttributes.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
 					minionID = ActorSno._dh_companion_boar;  //Boar
-				if (User.Attributes[GameAttribute.Rune_C, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
+				if (User.Attributes[GameAttributes.Rune_C, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
 					minionID = ActorSno._dh_companion_runec;  //Wolf
-				if (User.Attributes[GameAttribute.Rune_D, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
+				if (User.Attributes[GameAttributes.Rune_D, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
 					minionID = ActorSno._dh_companion_runed;  //Bat
-				if (User.Attributes[GameAttribute.Rune_E, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
+				if (User.Attributes[GameAttributes.Rune_E, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)
 					minionID = ActorSno._dh_companion_runee;  //Ferret
 
 				companion = new CompanionMinion(World, this, minionID);
 				companion.Brain.DeActivate();
 				companion.Position = RandomDirection(User.Position, 3f, 8f); //Kind of hacky until we get proper collisiondetection
-				companion.Attributes[GameAttribute.Untargetable] = true;
+				companion.Attributes[GameAttributes.Untargetable] = true;
 				companion.EnterWorld(companion.Position);
 				//Logger.Debug("companion spawned");
 
 				(companion as Minion).Brain.Activate();
-				companion.Attributes[GameAttribute.Untargetable] = false;
+				companion.Attributes[GameAttributes.Untargetable] = false;
 				companion.Attributes.BroadcastChangedIfRevealed();
 
-				if (User.Attributes[GameAttribute.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Boar
+				if (User.Attributes[GameAttributes.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Boar
 				{
-					User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += RegenValue;
-					User.Attributes[GameAttribute.Resistance_Percent_All] += 0.2f;
+					User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += RegenValue;
+					User.Attributes[GameAttributes.Resistance_Percent_All] += 0.2f;
 				}
 
-				if (User.Attributes[GameAttribute.Rune_D, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Bat
+				if (User.Attributes[GameAttributes.Rune_D, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Bat
 				{
-					User.Attributes[GameAttribute.Resource_Regen_Per_Second, 5] += 1f;
+					User.Attributes[GameAttributes.Resource_Regen_Per_Second, 5] += 1f;
 				}
 
-				if (User.Attributes[GameAttribute.Rune_E, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Ferret
+				if (User.Attributes[GameAttributes.Rune_E, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Ferret
 				{
-					User.Attributes[GameAttribute.Gold_Find] += 0.1f;
-					User.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] += 0.1f;
+					User.Attributes[GameAttributes.Gold_Find] += 0.1f;
+					User.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] += 0.1f;
 				}
 
-				User.Attributes[GameAttribute.Free_Cast, SkillsSystem.Skills.DemonHunter.Discipline.Companion] = 1;
+				User.Attributes[GameAttributes.Free_Cast, SkillsSystem.Skills.DemonHunter.Discipline.Companion] = 1;
 				User.Attributes.BroadcastChangedIfRevealed();
 
 				return true;
@@ -2599,24 +2578,24 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 					companion = null;
 				}
 
-				if (User.Attributes[GameAttribute.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Boar
+				if (User.Attributes[GameAttributes.Rune_B, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Boar
 				{
-					User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] -= RegenValue;
-					User.Attributes[GameAttribute.Resistance_Percent_All] -= 0.2f;
+					User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] -= RegenValue;
+					User.Attributes[GameAttributes.Resistance_Percent_All] -= 0.2f;
 				}
 
-				if (User.Attributes[GameAttribute.Rune_D, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Bat
+				if (User.Attributes[GameAttributes.Rune_D, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Bat
 				{
-					User.Attributes[GameAttribute.Resource_Regen_Per_Second, 5] -= 1f;
+					User.Attributes[GameAttributes.Resource_Regen_Per_Second, 5] -= 1f;
 				}
 
-				if (User.Attributes[GameAttribute.Rune_E, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Ferret
+				if (User.Attributes[GameAttributes.Rune_E, SkillsSystem.Skills.DemonHunter.Discipline.Companion] > 0)  //Ferret
 				{
-					User.Attributes[GameAttribute.Gold_Find] -= 0.1f;
-					User.Attributes[GameAttribute.Movement_Scalar_Uncapped_Bonus] -= 0.1f;
+					User.Attributes[GameAttributes.Gold_Find] -= 0.1f;
+					User.Attributes[GameAttributes.Movement_Scalar_Uncapped_Bonus] -= 0.1f;
 				}
 
-				User.Attributes[GameAttribute.Free_Cast, SkillsSystem.Skills.DemonHunter.Discipline.Companion] = 0;
+				User.Attributes[GameAttributes.Free_Cast, SkillsSystem.Skills.DemonHunter.Discipline.Companion] = 0;
 				User.Attributes.BroadcastChangedIfRevealed();
 			}
 		}

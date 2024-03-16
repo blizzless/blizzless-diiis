@@ -1,24 +1,13 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Numerics;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using System.Runtime.CompilerServices;
-//Blizzless Project 2022 
 using System.Runtime.InteropServices;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Text.RegularExpressions;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.REST.Extensions

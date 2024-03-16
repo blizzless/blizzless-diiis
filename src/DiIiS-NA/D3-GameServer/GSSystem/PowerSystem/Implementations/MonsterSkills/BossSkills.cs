@@ -1,19 +1,11 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
@@ -28,7 +20,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			if (User.GetActorsInRange(80f).Count < 100)
 				for (int i = 0; i < 3; i++)
 				{
-					var monster = ActorFactory.Create(User.World, (ActorSno)(User as Monster).SNOSummons[0], new TagMap());
+					var monster = ActorFactory.Create(User.World, (ActorSno)(User as Monster).SnoSummons[0], new TagMap());
 					monster.Scale = 1.35f;
 					monster.EnterWorld(RandomDirection(Target.Position, 3, 10));
 					World.BuffManager.AddBuff(User, monster, new SummonedBuff());
@@ -70,7 +62,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Init()
 			{
 				Timeout = WaitSeconds(7f);
-				User.PlayAnimation(5, 9865);
+				User.PlayAnimation(5, AnimationSno.skeletonking_whirlwind_start);
 			}
 
 			//This needs to be added into whirlwind, because your walking speed does become slower once whirlwind is active.
@@ -78,7 +70,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			{
 				if (!base.Apply())
 					return false;
-				User.Attributes[GameAttribute.Running_Rate] = User.Attributes[GameAttribute.Running_Rate] * EvalTag(PowerKeys.WalkingSpeedMultiplier);
+				User.Attributes[GameAttributes.Running_Rate] = User.Attributes[GameAttributes.Running_Rate] * EvalTag(PowerKeys.WalkingSpeedMultiplier);
 				User.Attributes.BroadcastChangedIfRevealed();
 				/*
 				[009863] [Anim] SkeletonKing_Whirlwind_end
@@ -93,8 +85,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			public override void Remove()
 			{
 				base.Remove();
-				User.PlayActionAnimation(9863);
-				User.Attributes[GameAttribute.Running_Rate] = User.Attributes[GameAttribute.Running_Rate] / EvalTag(PowerKeys.WalkingSpeedMultiplier);
+				User.PlayActionAnimation(AnimationSno.skeletonking_whirlwind_end);
+				User.Attributes[GameAttributes.Running_Rate] = User.Attributes[GameAttributes.Running_Rate] / EvalTag(PowerKeys.WalkingSpeedMultiplier);
 				User.Attributes.BroadcastChangedIfRevealed();
 			}
 
@@ -105,7 +97,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (_AnimTimer == null || _AnimTimer.TimedOut)
 				{
 					_AnimTimer = WaitSeconds(4f);
-					User.PlayActionAnimation(81880);
+					User.PlayActionAnimation(AnimationSno.skeletonking_whirlwind_loop_fx);
 				}
 
 				if (_damageTimer == null || _damageTimer.TimedOut)
@@ -329,7 +321,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		public override IEnumerable<TickTimer> Main()
 		{
 			var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][136223].Data;
-			User.PlayActionAnimation(128843);
+			User.PlayActionAnimation(AnimationSno.diablo_ring_of_fire);
 			yield return WaitSeconds(0.5f);
 			//User.PlayEffectGroup(196518);
 			var Point = SpawnEffect(ActorSno._diablo_ringoffire_damagearea, TargetPosition, 0, WaitSeconds(1.5f));
@@ -356,7 +348,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 		{
 
 			var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[SNOGroup.Power][136226].Data;
-			User.PlayActionAnimation(128843);
+			User.PlayActionAnimation(AnimationSno.diablo_ring_of_fire);
 			//RandomDirection(User.Position, 5, 45)
 
 			if (Target != null)
@@ -382,10 +374,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 				if (!base.Apply())
 					return false;
 
-				if (Target.Attributes[GameAttribute.Root_Immune] == false)
+				if (Target.Attributes[GameAttributes.Root_Immune] == false)
 				{
-					eff.PlayActionAnimation(197689);
-					Target.Attributes[GameAttribute.IsRooted] = true;
+					eff.PlayActionAnimation(AnimationSno.a4dun_diablo_bone_prison_closing);
+					Target.Attributes[GameAttributes.IsRooted] = true;
 					Target.Attributes.BroadcastChangedIfRevealed();
 				}
 
@@ -393,9 +385,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			}
 			public override void Remove()
 			{
-				eff.PlayActionAnimation(197691);
+				eff.PlayActionAnimation(AnimationSno.a4dun_diablo_bone_prison_opening);
 				base.Remove();
-				Target.Attributes[GameAttribute.IsRooted] = false;
+				Target.Attributes[GameAttributes.IsRooted] = false;
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 		}

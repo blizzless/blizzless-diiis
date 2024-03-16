@@ -1,6 +1,4 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DiIiS_NA.Core.Extensions
 {

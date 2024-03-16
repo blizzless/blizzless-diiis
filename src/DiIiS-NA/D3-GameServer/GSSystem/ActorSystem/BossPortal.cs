@@ -1,36 +1,16 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
-////Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
-//Blizzless Project 2022 
+//using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Portal;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -60,9 +40,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			Field2 = 0x9;//16;
 
-			Attributes[GameAttribute.MinimapActive] = true;
-			Attributes[GameAttribute.Untargetable] = false;
-            var bossEncounter = ((ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter);
+			Attributes[GameAttributes.MinimapActive] = true;
+			Attributes[GameAttributes.Untargetable] = false;
+            var bossEncounter = ((ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.ActorData).TagMap[MarkerKeys.BossEncounter].Target as DiIiS_NA.Core.MPQ.FileFormats.BossEncounter);
 			DestWorld = bossEncounter.Worlds[0];
 			switch (DestWorld)
 			{
@@ -203,13 +183,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (actor == null)
 				return false;
 
-			actor.Attributes[GameAttribute.Team_Override] = (status ? -1 : 2);
-			actor.Attributes[GameAttribute.Untargetable] = !status;
-			actor.Attributes[GameAttribute.NPC_Is_Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable] = status;
-			actor.Attributes[GameAttribute.Operatable_Story_Gizmo] = status;
-			actor.Attributes[GameAttribute.Disabled] = !status;
-			actor.Attributes[GameAttribute.Immunity] = !status;
+			actor.Attributes[GameAttributes.Team_Override] = (status ? -1 : 2);
+			actor.Attributes[GameAttributes.Untargetable] = !status;
+			actor.Attributes[GameAttributes.NPC_Is_Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable] = status;
+			actor.Attributes[GameAttributes.Operatable_Story_Gizmo] = status;
+			actor.Attributes[GameAttributes.Disabled] = !status;
+			actor.Attributes[GameAttributes.Immunity] = !status;
 			actor.Attributes.BroadcastChangedIfRevealed();
 			return true;
 		}
@@ -249,7 +229,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			if (Encounter == 0) return;
 			//if (this.World.Game.CurrentEncounter.activated) return;
 
-			World.Game.CurrentEncounter.activated = true;
+			World.Game.CurrentEncounter.Activated = true;
 			World.Game.CurrentEncounter.SnoId = Encounter;
 
 			foreach (Player plr in World.Game.Players.Values)

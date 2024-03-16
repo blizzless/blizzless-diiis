@@ -1,20 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 {
@@ -35,8 +22,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			var encWorld = world.Game.GetWorld(WorldSno.trout_tristram_cainshouse_event);
 
 			var Maghda = encWorld.GetActorBySNO(ActorSno._maghda_nolaugh);
-			Maghda.Attributes[GameAttribute.Hitpoints_Max] = 9000000f;
-			Maghda.Attributes[GameAttribute.Hitpoints_Cur] = Maghda.Attributes[GameAttribute.Hitpoints_Max_Total];
+			Maghda.Attributes[GameAttributes.Hitpoints_Max] = 9000000f;
+			Maghda.Attributes[GameAttributes.Hitpoints_Cur] = Maghda.Attributes[GameAttributes.Hitpoints_Max_Total];
 
 			var Cultists = encWorld.GetActorsBySNO(ActorSno._triunesummoner_a_cainevent);
 			foreach (var Cult in Cultists)

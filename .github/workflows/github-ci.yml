@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  # Triggers the workflow on push or pull request events but only for the selected branches
+  push:
+    branches: [ test-stable, community ]
+  pull_request:
+    branches: [ test-stable, community ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.allow_failures }}
+    name: ${{ matrix.name }} / ${{ matrix.config }}
+    strategy:
+      matrix:
+        config: [Debug, Release]
+        include:
+        # for the matrix leg matching the os and version
+        - os: ubuntu-22.04
+          name: Ubuntu 22.04 (.Net 7.0)
+          toolchain: dotnet-sdk-7.0
+          allow_failures: true
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies (apt)
+        if: runner.os == 'Linux'
+        run: |
+          wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          rm packages-microsoft-prod.deb
+          sudo apt-get update && sudo apt-get install -y ${{ matrix.toolchain }}
+
+      - name: Build (dotnet)
+        run: |
+          dotnet restore src/Blizzless-D3.sln
+          dotnet msbuild src/Blizzless-D3.sln /t:Build /p:Configuration=${{ matrix.config }}

@@ -1,27 +1,14 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using bgs.protocol;
-//Blizzless Project 2022 
+﻿using bgs.protocol;
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.ChannelSystem;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using DateTime = System.DateTime;
 
 namespace DiIiS_NA.LoginServer.GuildSystem
@@ -498,7 +485,7 @@ namespace DiIiS_NA.LoginServer.GuildSystem
 				.SetTargetAccountId(account.Owner.BnetEntityId)
 				.Build();
 
-			account.LoggedInClient.MakeRPC((lid) =>
+			account.LoggedInClient.MakeRpc((lid) =>
 				bgs.protocol.notification.v1.NotificationListener.CreateStub(account.LoggedInClient).OnNotificationReceived(new HandlerController() { ListenerId = lid 
 				}, notificationBuilder, callback => { }));
 
@@ -519,7 +506,7 @@ namespace DiIiS_NA.LoginServer.GuildSystem
 					.SetTargetAccountId(account.Owner.BnetEntityId)
 					.Build();
 
-				account.LoggedInClient.MakeRPC((lid) =>
+				account.LoggedInClient.MakeRpc((lid) =>
 					bgs.protocol.notification.v1.NotificationListener.CreateStub(account.LoggedInClient).OnNotificationReceived(new HandlerController() { ListenerId = lid
 					}, chatNotificationBuilder, callback => { }));
 			}
@@ -552,7 +539,7 @@ namespace DiIiS_NA.LoginServer.GuildSystem
 
 			foreach (var member in this.Channel.Members)
 				//member.Key.MakeTargetedRPC(this.Channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member.Key).OnUpdateChannelState(new HandlerController() { ListenerId = lid }, notification, callback => { }));
-				member.Key.MakeTargetedRPC(this.Channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member.Key).OnJoin(new HandlerController() { ListenerId = lid }, altnotification, callback => { }));
+				member.Key.MakeTargetedRpc(this.Channel, (lid) => bgs.protocol.channel.v1.ChannelListener.CreateStub(member.Key).OnJoin(new HandlerController() { ListenerId = lid }, altnotification, callback => { }));
 		}
 
 		public void UpdateMemberAttributes(GameAccount member)
@@ -577,7 +564,7 @@ namespace DiIiS_NA.LoginServer.GuildSystem
 				.Build();
 
 			foreach (var mbr in this.Channel.Members)
-				mbr.Key.MakeTargetedRPC(this.Channel, (lid) =>
+				mbr.Key.MakeTargetedRpc(this.Channel, (lid) =>
 					bgs.protocol.channel.v1.ChannelListener.CreateStub(mbr.Key).OnUpdateMemberState(new HandlerController() { ListenerId = lid }, notification, callback => { }));
 		}
 

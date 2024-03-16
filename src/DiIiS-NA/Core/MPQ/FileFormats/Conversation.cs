@@ -1,16 +1,10 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using System.Text;
-//Blizzless Project 2022 
 using CrystalMpq;
-//Blizzless Project 2022 
 using Gibbed.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
+using Newtonsoft.Json;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
 {
@@ -39,31 +33,31 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         {
             MpqFileStream stream = file.Open();
 
-            this.Header = new Header(stream); //0
+            Header = new Header(stream); //0
             //+16
-            this.ConversationType = (ConversationTypes)stream.ReadValueS32(); //12
-            this.ConversationIcon = stream.ReadValueS32(); //16
-            this.snoConvPiggyback = stream.ReadValueS32(); //20
+            ConversationType = (ConversationTypes)stream.ReadValueS32(); //12
+            ConversationIcon = stream.ReadValueS32(); //16
+            snoConvPiggyback = stream.ReadValueS32(); //20
 
-            this.snoConvUnlocks = new int[3];
+            snoConvUnlocks = new int[3];
             for (int i = 0; i < snoConvUnlocks.Length; i++) //24
-                this.snoConvUnlocks[i] = stream.ReadValueS32();
+                snoConvUnlocks[i] = stream.ReadValueS32();
 
-            this.Flags = stream.ReadValueS32(); //36
-            this.SetPlayerFlags = stream.ReadString(128, true); //40
-            this.SNOPrimaryNpc = stream.ReadValueS32(); //168
-            this.SNOAltNpc1 = stream.ReadValueS32(); //172
-            this.SNOAltNpc2 = stream.ReadValueS32(); //176
-            this.SNOAltNpc3 = stream.ReadValueS32(); //180
-            this.SNOAltNpc4 = stream.ReadValueS32(); //184
-            this.LineUID = stream.ReadValueS32(); //188-192
+            Flags = stream.ReadValueS32(); //36
+            SetPlayerFlags = stream.ReadString(128, true); //40
+            SNOPrimaryNpc = stream.ReadValueS32(); //168
+            SNOAltNpc1 = stream.ReadValueS32(); //172
+            SNOAltNpc2 = stream.ReadValueS32(); //176
+            SNOAltNpc3 = stream.ReadValueS32(); //180
+            SNOAltNpc4 = stream.ReadValueS32(); //184
+            LineUID = stream.ReadValueS32(); //188-192
             stream.Position += 8;
             RootTreeNodes = stream.ReadSerializedData<ConversationTreeNode>(); // 200
             stream.Position = stream.Position;
             CompiiledScript = stream.ReadSerializedByteArray(); //216
             stream.Position = stream.Position;
-            this.SNOBossEncounter = stream.ReadValueS32(); //264
-            this.Pad = stream.ReadValueS32(); //268
+            SNOBossEncounter = stream.ReadValueS32(); //264
+            Pad = stream.ReadValueS32(); //268
             stream.Close();
         }
 
@@ -135,15 +129,15 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
             ClassFilter = stream.ReadValueS32();
             for (int i = 0; i < CompressedDisplayTimes.Length; i++) //40 //328
                 CompressedDisplayTimes[i] = new ConvLocalDisplayTimes(stream);
-            this.GBIDConvVarCheck = stream.ReadValueS32(); //1104
+            GBIDConvVarCheck = stream.ReadValueS32(); //1104
 
             ConvVarCheckOp = (TypeConv)stream.ReadValueS32();
-            this.ConvVarCheckVal = stream.ReadValueS32();
-            this.GBIDConvVarSet = stream.ReadValueS32();
+            ConvVarCheckVal = stream.ReadValueS32();
+            GBIDConvVarSet = stream.ReadValueS32();
             ConvVarSetOp = (Ref)stream.ReadValueS32(); //1408
-            this.ConvVarSetVal = stream.ReadValueS32();
-            this.BranchIndex = stream.ReadValueS32();
-            this.Weight = stream.ReadValueS32();
+            ConvVarSetVal = stream.ReadValueS32();
+            BranchIndex = stream.ReadValueS32();
+            Weight = stream.ReadValueS32();
             //strea3.Position += 4;       // these are unaccounted for...xml offsets just skips ahead
             stream.Position += (2 * 4);
             TrueNodes = stream.ReadSerializedData<ConversationTreeNode>();
@@ -196,14 +190,13 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
                 s.Append(' ', pad); s.AppendLine("}");
             }
         }
-
     }
 
     public class ConvLocalDisplayTimes
     {
         public int[] Languages = new int[14];
 
-        public ConvLocalDisplayTimes(CrystalMpq.MpqFileStream stream)
+        public ConvLocalDisplayTimes(MpqFileStream stream)
         {
             for (int i = 0; i < Languages.Length; i++)
                 Languages[i] = stream.ReadValueS32();

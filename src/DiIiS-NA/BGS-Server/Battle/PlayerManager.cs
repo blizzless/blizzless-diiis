@@ -1,25 +1,19 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.LoginServer.Battle
 {
 	public static class PlayerManager
 	{
-		public static readonly List<BattleClient> OnlinePlayers = new List<BattleClient>();
+		public static readonly List<BattleClient> OnlinePlayers = new();
 
 		public static void PlayerConnected(BattleClient client)
 		{
-			var already_logged = OnlinePlayers.Where(cli => cli.Account.Email == client.Account.Email);
-			foreach (var logged in already_logged)
+			var alreadyLoggedIn = OnlinePlayers.Where(cli => cli.Account.Email == client.Account.Email).ToArray();
+			foreach (var logged in alreadyLoggedIn)
 			{
 				OnlinePlayers.Remove(client);
 				logged.SocketConnection.DisconnectAsync();
@@ -28,12 +22,32 @@ namespace DiIiS_NA.LoginServer.Battle
 			OnlinePlayers.Add(client);
 		}
 
-		public static BattleClient GetClientbyCID(ulong cid)
+		public static BattleClient GetClientByEmail(string email) => OnlinePlayers.FirstOrDefault(cli => cli.Account.Email == email);
+		public static BattleClient GetClientByBattleTag(string battleTag) => OnlinePlayers.FirstOrDefault(cli => cli.Account.BattleTag == battleTag);
+
+		public static BattleClient GetClientByCid(ulong cid)
 		{
-			foreach (var bc in OnlinePlayers)
-				if (bc.CID == cid)
-					return bc;
-			return null;
+			return OnlinePlayers.FirstOrDefault(bc => bc.Cid == cid);
+		}
+
+		public static void SendWhisper(string message)
+		{
+			Broadcast(client =>
+			{
+				client.SendServerWhisper(message);
+			});
+		}
+		
+		public static void Broadcast(Action<BattleClient> action, Func<BattleClient, bool> predicate)
+		{
+			foreach (var client in OnlinePlayers.Where(predicate))
+				action(client);
+		}
+		
+		public static void Broadcast(Action<BattleClient> action)
+		{
+			foreach (var client in OnlinePlayers)
+				action(client);
 		}
 
 		public static void PlayerDisconnected(BattleClient client)

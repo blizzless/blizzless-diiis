@@ -1,17 +1,11 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.Core.Logging;
 
 namespace DiIiS_NA.REST.Http
 {
@@ -36,7 +30,8 @@ namespace DiIiS_NA.REST.Http
         Found = 302,
         BadRequest = 400,
         NotFound = 404,
-        InternalServerError = 500
+        InternalServerError = 500,
+        BadGateway = 502
     }
 
     public class HttpHelper
@@ -46,7 +41,6 @@ namespace DiIiS_NA.REST.Http
         {
             var sb = new StringBuilder();
 
-            //Blizzless Project 2022 
             using (var sw = new StringWriter(sb))
             {
                 sw.WriteLine($"HTTP/1.1 {(int)httpCode} {httpCode}");
@@ -57,11 +51,10 @@ namespace DiIiS_NA.REST.Http
             return Encoding.UTF8.GetBytes(sb.ToString());
         }
 
-        public static byte[] CreateResponse(HttpCode httpCode, string content, bool closeConnection = false)
+        public static byte[] CreateResponse(HttpCode httpCode, string content, bool closeConnection = false, string contentType = "application/json;charset=UTF-8")
         {
             var sb = new StringBuilder();
 
-            //Blizzless Project 2022 
             using (var sw = new StringWriter(sb))
             {
                 sw.WriteLine($"HTTP/1.1 {(int)httpCode} {httpCode}");
@@ -69,7 +62,7 @@ namespace DiIiS_NA.REST.Http
                 if (closeConnection)
                     sw.WriteLine("Connection: close");
 
-                sw.WriteLine("Content-Type: application/json;charset=UTF-8");
+                sw.WriteLine("Content-Type: " + contentType);
                 sw.WriteLine();
 
                 sw.WriteLine(content);
@@ -83,7 +76,6 @@ namespace DiIiS_NA.REST.Http
             var headerValues = new Dictionary<string, object>();
             var header = new HttpHeader();
 
-            //Blizzless Project 2022 
             using (var sr = new StreamReader(new MemoryStream(data, 0, length)))
             {
                 var info = sr.ReadLine().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -97,27 +89,34 @@ namespace DiIiS_NA.REST.Http
 
                 while (!sr.EndOfStream)
                 {
-                    info = sr.ReadLine().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (info.Length == 2)
-                        headerValues.Add(info[0].Replace("-", "").ToLower(), info[1]);
-                    else if (info.Length > 2)
+                    try
                     {
-                        var val = "";
+                        info = sr.ReadLine().Split(new string[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
 
-                        info.Skip(1);
+                        if (info.Length == 2)
+                            headerValues.Add(info[0].Replace("-", "").ToLower(), info[1]);
+                        else if (info.Length > 2)
+                        {
+                            var val = "";
 
-                        headerValues.Add(info[0].Replace("-", "").ToLower(), val);
+                            info.Skip(1);
+
+                            headerValues.Add(info[0].Replace("-", "").ToLower(), val);
+                        }
+                        else
+                        {
+                            // We are at content here.
+                            var content = sr.ReadLine();
+
+                            headerValues.Add("content", content);
+
+                            // There shouldn't be anything after the content!
+                            break;
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        // We are at content here.
-                        var content = sr.ReadLine();
-
-                        headerValues.Add("content", content);
-
-                        // There shouldn't be anything after the content!
-                        break;
+                        return null;
                     }
                 }
             }

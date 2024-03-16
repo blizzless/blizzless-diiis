@@ -1,23 +1,12 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -45,10 +34,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				Type = FloatingNumberMessage.FloatType.White
 			}, this);
 
-			Attributes[GameAttribute.Hitpoints_Cur] = Math.Max(Attributes[GameAttribute.Hitpoints_Cur] - damage, 0);
+			Attributes[GameAttributes.Hitpoints_Cur] = Math.Max(Attributes[GameAttributes.Hitpoints_Cur] - damage, 0);
 			Attributes.BroadcastChangedIfRevealed();
 
-			if (Attributes[GameAttribute.Hitpoints_Cur] == 0 && !SNO.IsUndestroyable())
+			if (Attributes[GameAttributes.Hitpoints_Cur] == 0 && !SNO.IsUndestroyable())
 				Die(source);
 		}
 
@@ -78,11 +67,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				}, this);
 
-			Attributes[GameAttribute.Deleted_On_Server] = true;
-			Attributes[GameAttribute.Could_Have_Ragdolled] = true;
-			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = 5f;
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = 5f;
+			Attributes[GameAttributes.Deleted_On_Server] = true;
+			Attributes[GameAttributes.Could_Have_Ragdolled] = true;
+			Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f;
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 5f;
 			Attributes.BroadcastChangedIfRevealed();
 
 			Task.Delay(1500).ContinueWith(delegate

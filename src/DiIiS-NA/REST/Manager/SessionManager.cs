@@ -1,10 +1,6 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.REST.Data.Forms;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.REST.Data.Forms;
 using DiIiS_NA.REST.Extensions;
-//Blizzless Project 2022 
 using System.Net;
-//Blizzless Project 2022 
 using System.Security.Cryptography.X509Certificates;
 
 namespace DiIiS_NA.REST.Manager
@@ -18,13 +14,13 @@ namespace DiIiS_NA.REST.Manager
 
         public bool Initialize()
         {
-            int _port = Config.Instance.PORT;
+            int _port = RestConfig.Instance.Port;
             if (_port < 0 || _port > 0xFFFF)
             {
                 _port = 8081;
             }
 
-            string configuredAddress = Config.Instance.IP;
+            string configuredAddress = RestConfig.Instance.IP;
             IPAddress address;
             if (!IPAddress.TryParse(configuredAddress, out address))
             {
@@ -32,7 +28,7 @@ namespace DiIiS_NA.REST.Manager
             }
             _externalAddress = new IPEndPoint(address, _port);
 
-            configuredAddress = Config.Instance.IP;
+            configuredAddress = RestConfig.Instance.IP;
             if (!IPAddress.TryParse(configuredAddress, out address))
             {
                 return false;

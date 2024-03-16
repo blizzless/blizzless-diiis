@@ -1,13 +1,7 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
+﻿using System.Collections.Generic;
 using CrystalMpq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using Gibbed.IO;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -22,11 +16,11 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public SkillKit(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream);
+            Header = new Header(stream);
             stream.Position += 12;
-            this.TraitEntries = stream.ReadSerializedData<TraitEntry>();
+            TraitEntries = stream.ReadSerializedData<TraitEntry>();
             stream.Position += 8;
-            this.ActiveSkillEntries = stream.ReadSerializedData<ActiveSkillEntry>();
+            ActiveSkillEntries = stream.ReadSerializedData<ActiveSkillEntry>();
 
             stream.Close();
         }
@@ -40,10 +34,10 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public int I0 { get; private set; }
         public void Read(MpqFileStream stream)
         {
-            this.SNOPower = stream.ReadValueS32();
-            this.Category = stream.ReadValueS32();
-            this.ReqLevel = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
+            SNOPower = stream.ReadValueS32();
+            Category = stream.ReadValueS32();
+            ReqLevel = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
         }
     }
 
@@ -64,18 +58,18 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
 
         public void Read(MpqFileStream stream)
         {
-            this.SNOPower = stream.ReadValueS32();
-            this.Category = (ActiveSkillCategory)stream.ReadValueS32();
-            this.SkillGroup = stream.ReadValueS32();
-            this.ReqLevel = stream.ReadValueS32();
-            this.RuneNone_ReqLevel = stream.ReadValueS32();
-            this.RuneA_ReqLevel = stream.ReadValueS32();
-            this.RuneB_ReqLevel = stream.ReadValueS32();
-            this.RuneC_ReqLevel = stream.ReadValueS32();
-            this.RuneD_ReqLevel = stream.ReadValueS32();
-            this.RuneE_ReqLevel = stream.ReadValueS32();
-            this.I0 = stream.ReadValueS32();
-            this.I1 = new int[5];
+            SNOPower = stream.ReadValueS32();
+            Category = (ActiveSkillCategory)stream.ReadValueS32();
+            SkillGroup = stream.ReadValueS32();
+            ReqLevel = stream.ReadValueS32();
+            RuneNone_ReqLevel = stream.ReadValueS32();
+            RuneA_ReqLevel = stream.ReadValueS32();
+            RuneB_ReqLevel = stream.ReadValueS32();
+            RuneC_ReqLevel = stream.ReadValueS32();
+            RuneD_ReqLevel = stream.ReadValueS32();
+            RuneE_ReqLevel = stream.ReadValueS32();
+            I0 = stream.ReadValueS32();
+            I1 = new int[5];
             for (int i = 0; i < I1.Length; i++)
                 I1[i] = stream.ReadValueS32();
         }

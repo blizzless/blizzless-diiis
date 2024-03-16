@@ -1,9 +1,5 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Diagnostics;
 
 namespace DiIiS_NA.Core.Logging
@@ -18,12 +14,12 @@ namespace DiIiS_NA.Core.Logging
 		/// <summary>
 		/// Available & configured log targets.
 		/// </summary>
-		internal readonly static List<LogTarget> Targets = new List<LogTarget>();
+		internal static readonly List<LogTarget> Targets = new();
 
 		/// <summary>
 		/// Available loggers.
 		/// </summary>
-		internal static readonly Dictionary<string, Logger> Loggers = new Dictionary<string, Logger>();
+		internal readonly static Dictionary<string, Logger> Loggers = new();
 
 		/// <summary>
 		/// Creates and returns a logger named with declaring type.
@@ -37,10 +33,7 @@ namespace DiIiS_NA.Core.Logging
 			if (name == null) // see if we got a name.
 				throw new Exception("Error getting full name for declaring type.");
 
-			if (!Loggers.ContainsKey(name))  // see if we already have instance for the given name.
-				Loggers.Add(name, new Logger(name)); // add it to dictionary of loggers.
-
-			return Loggers[name]; // return the newly created logger.
+			return CreateLogger(name); // return the newly created logger.
 		}
 
 		/// <summary>

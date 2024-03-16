@@ -1,13 +1,7 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using Google.ProtocolBuffers;
-//Blizzless Project 2022 
 using bgs.protocol;
-//Blizzless Project 2022 
 using bgs.protocol.account.v1;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
 
 
@@ -25,7 +19,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             GetAccountStateResponse.Builder builder = GetAccountStateResponse.CreateBuilder();
             var AccState = AccountState.CreateBuilder();
 
-            if (request.EntityId.Low == (controller as HandlerController).Client.Account.BnetEntityId.Low)
+            if (request.EntityId.Low == ((HandlerController) controller).Client.Account.BnetEntityId.Low)
             {
                 if (request.Options.FieldPrivacyInfo)
                 {
@@ -54,9 +48,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     level.SetCountry("RUS");
                     level.SetPreferredRegion(1);
                     level.SetFullName("Name LastName");
-                    level.SetBattleTag((controller as HandlerController).Client.Account.BattleTag);
+                    level.SetBattleTag(((HandlerController) controller).Client.Account.BattleTag);
                     level.SetAccountPaidAny(true);
-                    level.SetEmail((controller as HandlerController).Client.Account.Email).SetHeadlessAccount(false);
+                    level.SetEmail(((HandlerController) controller).Client.Account.Email).SetHeadlessAccount(false);
 
                     AccState.SetAccountLevelInfo(level);
 

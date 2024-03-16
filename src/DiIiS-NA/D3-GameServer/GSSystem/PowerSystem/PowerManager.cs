@@ -1,34 +1,14 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Movement;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
@@ -69,7 +49,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			{
 				user.PlayEffectGroup(249956);
 			}
-			if (user.Attributes[GameAttribute.Item_Power_Passive, 246116] == 1 && FastRandom.Instance.NextDouble() < 0.2)
+			if (user.Attributes[GameAttributes.Item_Power_Passive, 246116] == 1 && FastRandom.Instance.NextDouble() < 0.2)
 			{
 				user.PlayEffectGroup(246117);
 			}
@@ -85,26 +65,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 					return false;
 			}
 
-			if (user.Attributes[GameAttribute.Disabled] == true) return false;
+			if (user.Attributes[GameAttributes.Disabled] == true) return false;
 
 			if (user is Player && targetPosition != null)
 				CheckItemProcs(user as Player);
 
 			//break stun if possible
 			if (PowerTagHelper.FindTagMapWithKey(power.PowerSNO, PowerKeys.BreaksStun) != null)
-				if (user.Attributes[GameAttribute.Stunned] == true || user.Attributes[GameAttribute.Frozen] == true)
+				if (user.Attributes[GameAttributes.Stunned] == true || user.Attributes[GameAttributes.Frozen] == true)
 				{
 					float result;
 					if (ScriptFormulaEvaluator.Evaluate(power.PowerSNO, PowerKeys.BreaksStun, user.Attributes, PowerContext.Rand, out result) && result > 0)
 					{
 						user.World.BuffManager.RemoveBuffs(user, 101000);
-						user.Attributes[GameAttribute.Frozen] = false;
+						user.Attributes[GameAttributes.Frozen] = false;
 						user.Attributes.BroadcastChangedIfRevealed();
 					}
 				}
 			//break fear if possible
 			if (PowerTagHelper.FindTagMapWithKey(power.PowerSNO, PowerKeys.BreaksFear) != null)
-				if (user.Attributes[GameAttribute.Feared] == true)
+				if (user.Attributes[GameAttributes.Feared] == true)
 				{
 					float result;
 					if (ScriptFormulaEvaluator.Evaluate(power.PowerSNO, PowerKeys.BreaksFear, user.Attributes, PowerContext.Rand, out result) && result > 0)
@@ -112,7 +92,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				}
 			//break root if possible
 			if (PowerTagHelper.FindTagMapWithKey(power.PowerSNO, PowerKeys.BreaksRoot) != null)
-				if (user.Attributes[GameAttribute.IsRooted] == true)
+				if (user.Attributes[GameAttributes.IsRooted] == true)
 				{
 					float result;
 					if (ScriptFormulaEvaluator.Evaluate(power.PowerSNO, PowerKeys.BreaksRoot, user.Attributes, PowerContext.Rand, out result) && result > 0)
@@ -145,10 +125,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 			user.LastSecondCasts++;
 
-			if (user is Player && !(power is ChanneledSkill) && power.PowerSNO != 109344 && user.LastSecondCasts > user.Attributes[GameAttribute.Attacks_Per_Second_Total] + 1f)
+			if (user is Player && !(power is ChanneledSkill) && power.PowerSNO != 109344 && user.LastSecondCasts > user.Attributes[GameAttributes.Attacks_Per_Second_Total] + 1f)
 			{
 				//fix for ApS cheating
-				user.Attributes[GameAttribute.Attacks_Per_Second] -= 0.00000001f;
+				user.Attributes[GameAttributes.Attacks_Per_Second] -= 0.00000001f;
 				user.Attributes.BroadcastChangedIfRevealed();
 				cheatCounter++;
 				if (cheatCounter > 5)

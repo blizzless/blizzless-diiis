@@ -1,17 +1,8 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -52,14 +43,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public SetDungeon(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.MinimapActive] = true;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.MinimapActive] = true;
             Attributes.BroadcastChangedIfRevealed();
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
-            PlayAnimation(5, 447873);
+            this.PlayAnimation(5, AnimationSno.p4_setdung_portal_neph_rc_portalopen);
 
             foreach (var plr in World.Game.Players.Values)
             {
@@ -86,7 +77,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             if (!base.Reveal(player))
                 return false;
             
-            PlayAnimation(5, 449254);
+            this.PlayAnimation(5, AnimationSno.p4_setdung_portal_neph_rc_idle_shimmer);
             return true;
         }
 		/*
@@ -108,7 +99,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                     if (!PlrNear)
                     {
                         PlrNear = true;
-                        PlayAnimation(5, 449255);
+                        this.PlayAnimation(5, AnimationSno.p4_setdung_portal_neph_rc_idle_shimmertoopaque);
                     }
                 }
                 else
@@ -116,7 +107,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                     if (PlrNear)
                     {
                         PlrNear = false;
-                        PlayAnimation(5, 447868);
+                        this.PlayAnimation(5, AnimationSno.p4_setdung_portal_neph_rc_fadein);
                     }
                 }
 			}

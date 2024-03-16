@@ -1,23 +1,12 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using bgs.protocol;
-//Blizzless Project 2022 
 using bgs.protocol.authentication.v1;
-//Blizzless Project 2022 
 using bgs.protocol.challenge.v1;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Extensions;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Base;
-//Blizzless Project 2022 
 using DiIiS_NA.LoginServer.Battle;
-//Blizzless Project 2022 
 using Google.ProtocolBuffers;
 
 
@@ -53,7 +42,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             //Error 35 - Battle.net service - Disabled
             //Error 36 - Failed to load authentication module
             //Error 37 - Authentication service is receiving too many requests.
-            //Error 38 - To play you need to get BattleTag
+            //Error 38 - To play you need to get a BattleTag
             //Error 42 - You are connecting to the wrong server (Wrong sequence of actions)
             //Error 43 - You blocked your account from your mobile phone.
             //Error 44 - Unable to perform this action. The account is deprived of the function of voice communication.
@@ -98,28 +87,28 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                 }
             switch (request.Locale)
             {
-                case "deDE": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.deDE; break;
-                case "enGB": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.enGB; break;
-                case "enSG": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.enSG; break;
-                case "enUS": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.enUS; break;
-                case "esES": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.esES; break;
-                case "esMX": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.esMX; break;
-                case "frFR": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.frFR; break;
-                case "itIT": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.itIT; break;
-                case "koKR": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.koKR; break;
-                case "plPL": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.plPL; break;
-                case "ptBR": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.ptBR; break;
-                case "ptPT": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.ptPT; break;
-                case "ruRU": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.ruRU; break;
-                case "trTR": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.trTR; break;
-                case "zhCN": ((HandlerController)controller).Client.ClientLanguage = Battle.BattleClient.ClientLocale.zhCN; break;
+                case "deDE": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.DE_DE; break;
+                case "enGB": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.EN_GB; break;
+                case "enSG": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.EN_SG; break;
+                case "enUS": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.EN_US; break;
+                case "esES": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ES_ES; break;
+                case "esMX": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ES_MX; break;
+                case "frFR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.FR_FR; break;
+                case "itIT": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.IT_IT; break;
+                case "koKR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.KO_KR; break;
+                case "plPL": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.PL_PL; break;
+                case "ptBR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.PT_BR; break;
+                case "ptPT": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.PT_PT; break;
+                case "ruRU": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.RU_RU; break;
+                case "trTR": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.TR_TR; break;
+                case "zhCN": ((HandlerController)controller).Client.ClientLanguage = BattleClient.ClientLocale.ZH_CN; break;
             }
             done(NoData.CreateBuilder().Build());
-            Logger.Info("----------------------------------------------------------------");
             var builder = ChallengeExternalRequest.CreateBuilder();
             var complete = LogonResult.CreateBuilder();
             switch (request.Program.ToLower())
             {
+                //case "app":
                 case "d3":
                     //if (!request.HasCachedWebCredentials)
                     {
@@ -127,20 +116,19 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                         if (request.HasCachedWebCredentials)
                             VerifyWebCredentials(controller, VerifyWebCredentialsRequest.CreateBuilder().SetWebCredentials(request.CachedWebCredentials).Build(), callback => { });
                         builder.SetPayloadType("web_auth_url");
-                        if (REST.Config.Instance.Public)
+                        if (REST.RestConfig.Instance.Public)
                             builder.SetPayload(ByteString.CopyFromUtf8(
-                                $"http://{REST.Config.Instance.PublicIP}:{REST.Config.Instance.PORT}/battlenet/login"));
+                                $"http://{REST.RestConfig.Instance.PublicIP}:{REST.RestConfig.Instance.Port}/battlenet/login"));
                         else
                             builder.SetPayload(ByteString.CopyFromUtf8(
-                                $"http://{Program.RESTSERVERIP}:{REST.Config.Instance.PORT}/battlenet/login"));
+                                $"http://{Program.RestServerIp}:{REST.RestConfig.Instance.Port}/battlenet/login"));
 
-                        ((HandlerController)controller).Client.MakeRPC((lid) => ChallengeListener.CreateStub(((HandlerController)controller).Client).OnExternalChallenge(controller, builder.Build(), callback => { }));
+                        ((HandlerController)controller).Client.MakeRpc((lid) => ChallengeListener.CreateStub(((HandlerController)controller).Client).OnExternalChallenge(controller, builder.Build(), callback => { }));
                         #endregion
                     }
                     break;
                 default:
-                    Logger.Error("Authorization not implemented for Game: {0}", game);
-                    Logger.Info("----------------------------------------------------------------");
+                    Logger.Error("Authorization not implemented for Game: $[red]${0}$[/]$ ({1})", game, request.Program.ToLower());
                     break;
             }
 
@@ -170,66 +158,64 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
         {
             done(NoData.CreateBuilder().Build());
             #region Authentication complete
-            if (request.WebCredentials.ToStringUtf8().ToLower().Contains("eu-"))
+            // if (request.WebCredentials.ToStringUtf8().ToLower().Contains("eu-"))
+            // {
+            //     ((HandlerController)controller).Client.Account = AccountManager.GetAccountByPersistentID(1);
+            //
+            //     var comple = LogonResult.CreateBuilder()
+            //    .SetAccountId(((HandlerController)controller).Client.Account.BnetEntityId)
+            //    .SetEmail("TEST@MAIL.DU")
+            //    .SetBattleTag("Test#0000")
+            //    .SetSessionKey(ByteString.CopyFrom("7CB18EDA470F96A4DD70C70B9307CBBA2A4131043075648D8B2F55EE0E383132025D3CC3BA43406DC0740D776B1E5C366BD1123D16E6D6759075B475C28C4022".ToByteArray()))
+            //    .AddAvailableRegion(1)
+            //    .AddAvailableRegion(2)
+            //    .AddAvailableRegion(3)
+            //    .SetConnectedRegion(1)
+            //    .SetGeoipCountry("RU")
+            //    .SetRestrictedMode(false)
+            //    .SetErrorCode(0);
+            //     comple.AddGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId);
+            //     ((HandlerController)controller).Client.Account.GameAccount.LoggedInClient = ((HandlerController)controller).Client;
+            //     ((HandlerController)controller).Client.MakeRPC((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, comple.Build(), callback => { }));
+            //     ((HandlerController)controller).Client.Account.GameAccount.ProgramField.Value = "FEN";
+            //     PlayerManager.PlayerConnected(((HandlerController)controller).Client);
+            //     var ga1selected = GameAccountSelectedRequest.CreateBuilder().SetResult(0).SetGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId);
+            //     ((HandlerController)controller).Client.MakeRPC((lid) =>
+            //         AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnGameAccountSelected(new HandlerController() { ListenerId = lid }, ga1selected.Build(), callback => { }));
+            //     return;
+            // }
+
+            ((HandlerController)controller).Client.Account = AccountManager.GetAccountBySaltTicket(request.WebCredentials.ToStringUtf8());
+
+            if (((HandlerController)controller).Client.Account == null)
             {
-                ((HandlerController)controller).Client.Account = AccountManager.GetAccountByPersistentID(1);
-
-                var comple = LogonResult.CreateBuilder()
-               .SetAccountId(((HandlerController)controller).Client.Account.BnetEntityId)
-               .SetEmail("TEST@MAIL.DU")
-               .SetBattleTag("Test#0000")
-               .SetSessionKey(ByteString.CopyFrom("7CB18EDA470F96A4DD70C70B9307CBBA2A4131043075648D8B2F55EE0E383132025D3CC3BA43406DC0740D776B1E5C366BD1123D16E6D6759075B475C28C4022".ToByteArray()))
-               .AddAvailableRegion(1)
-               .AddAvailableRegion(2)
-               .AddAvailableRegion(3)
-               .SetConnectedRegion(1)
-               .SetGeoipCountry("RU")
-               .SetRestrictedMode(false)
-               .SetErrorCode(0);
-                comple.AddGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId);
-                ((HandlerController)controller).Client.Account.GameAccount.LoggedInClient = ((HandlerController)controller).Client;
-                ((HandlerController)controller).Client.MakeRPC((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, comple.Build(), callback => { }));
-                ((HandlerController)controller).Client.Account.GameAccount.ProgramField.Value = "FEN";
-                PlayerManager.PlayerConnected(((HandlerController)controller).Client);
-                var ga1selected = GameAccountSelectedRequest.CreateBuilder().SetResult(0).SetGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId);
-                ((HandlerController)controller).Client.MakeRPC((lid) =>
-                    AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnGameAccountSelected(new HandlerController() { ListenerId = lid }, ga1selected.Build(), callback => { }));
-
+                var complete = LogonResult.CreateBuilder().SetErrorCode(2);
+                ((HandlerController)controller).Client.MakeRpc((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, complete.Build(), callback => { }));
+                ((HandlerController)controller).Client.SocketConnection.CloseAsync();
+                ((HandlerController)controller).Client.Connect.CloseAsync();
             }
             else
             {
-                ((HandlerController)controller).Client.Account = AccountManager.GetAccountBySaltTicket(request.WebCredentials.ToStringUtf8());
+                Logger.Info(
+                    $"Client connected - {((HandlerController)controller).Client.Account.DBAccount.BattleTagName}#{((HandlerController)controller).Client.Account.HashCode}");
+                var complete = LogonResult.CreateBuilder()
+                    .SetAccountId(((HandlerController)controller).Client.Account.BnetEntityId)
+                    .SetEmail(((HandlerController)controller).Client.Account.Email)
+                    .SetBattleTag(((HandlerController)controller).Client.Account.BattleTag)
+                    .AddAvailableRegion(1)
+                    .SetConnectedRegion(1)
+                    .SetGeoipCountry("RU")
+                    .SetRestrictedMode(false)
+                    .SetErrorCode(0)
+                    .AddGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId); //D3
+                ((HandlerController)controller).Client.Account.GameAccount.LoggedInClient = ((HandlerController)controller).Client;
+                ((HandlerController)controller).Client.MakeRpc((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, complete.Build(), callback => { }));
 
-                if (((HandlerController)controller).Client.Account == null)
-                {
-                    var complete = LogonResult.CreateBuilder().SetErrorCode(2);
-                    ((HandlerController)controller).Client.MakeRPC((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, complete.Build(), callback => { }));
-                    ((HandlerController)controller).Client.SocketConnection.CloseAsync();
-                    ((HandlerController)controller).Client.Connect.CloseAsync();
-                }
-                else
-                {
-                    Logger.Info("Client connected - {0}#{1}", ((HandlerController)controller).Client.Account.DBAccount.BattleTagName, ((HandlerController)controller).Client.Account.HashCode);
-                    Logger.Info("----------------------------------------------------------------");
-                    var complete = LogonResult.CreateBuilder()
-                        .SetAccountId(((HandlerController)controller).Client.Account.BnetEntityId)
-                        .SetEmail(((HandlerController)controller).Client.Account.Email)
-                        .SetBattleTag(((HandlerController)controller).Client.Account.BattleTag)
-                        .AddAvailableRegion(1)
-                        .SetConnectedRegion(1)
-                        .SetGeoipCountry("RU")
-                        .SetRestrictedMode(false)
-                        .SetErrorCode(0);
-                    complete.AddGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId); //D3
-                    ((HandlerController)controller).Client.Account.GameAccount.LoggedInClient = ((HandlerController)controller).Client;
-                    ((HandlerController)controller).Client.MakeRPC((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, complete.Build(), callback => { }));
+                PlayerManager.PlayerConnected(((HandlerController)controller).Client);
 
-                    PlayerManager.PlayerConnected(((HandlerController)controller).Client);
-
-                    var gaselected = GameAccountSelectedRequest.CreateBuilder().SetResult(0).SetGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId);
-                    ((HandlerController)controller).Client.MakeRPC((lid) =>
-                        AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnGameAccountSelected(new HandlerController() { ListenerId = lid }, gaselected.Build(), callback => { }));
-                }
+                var selectedGameAccount = GameAccountSelectedRequest.CreateBuilder().SetResult(0).SetGameAccountId(((HandlerController)controller).Client.Account.GameAccount.BnetEntityId);
+                ((HandlerController)controller).Client.MakeRpc((lid) =>
+                    AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnGameAccountSelected(new HandlerController() { ListenerId = lid }, selectedGameAccount.Build(), callback => { }));
             }
             #endregion
         }

@@ -1,9 +1,6 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -23,8 +20,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             : base(world, sno, tags)
         {
             Field7 = 1;
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.NPC_Has_Interact_Options, 0] = false;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.NPC_Has_Interact_Options, 0] = false;
         }
         
 		public override bool Reveal(PlayerSystem.Player player)
@@ -59,7 +56,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                                         ActorSno._x1_westmarchfemale_deathmaidenkill
                                         ))
                                     {
-                                        if (man.CurrentScene.SceneSNO.Id == CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                        if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(AnimationSno.x1_westmhub_guard_wispkilled_transform_01);
                                     }
                                 }
                                 break;
@@ -85,7 +82,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                                         ActorSno._x1_westm_intro_human_female
                                         ))
                                     {
-                                        if (man.CurrentScene.SceneSNO.Id == CurrentScene.SceneSNO.Id) man.PlayActionAnimation(306544);
+                                        if (man.CurrentScene.SceneSNO.Id == this.CurrentScene.SceneSNO.Id) man.PlayActionAnimation(AnimationSno.x1_westmhub_guard_wispkilled_transform_01);
                                     }
                                     
                                     

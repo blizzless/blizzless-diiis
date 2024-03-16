@@ -9,6 +9,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using DiIiS_NA.Core.Discord.Services;
+using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.Storage;
@@ -224,10 +225,10 @@ namespace DiIiS_NA.Core.Discord
 					{
 						var message = await guild.GetTextChannel(channelId).GetMessageAsync(param.First().Value);
 						var reactedUsers = await (message as IUserMessage).GetReactionUsersAsync(Emote.Parse("<:wolfRNG:607868292979490816>"), 100).FlattenAsync();
-						var contestants = reactedUsers.Where(u => !u.IsBot).ToList();
-						if (contestants.Count() > 0)
+						var contestants = reactedUsers.Where(u => !u.IsBot).ToArray();
+
+						if (contestants.TryPickRandom(out var winner))
 						{
-							var winner = reactedUsers.Where(u => !u.IsBot).ToList()[DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.Next(0, reactedUsers.Count() - 1)];
 							winnerName = guild.GetUser(winner.Id).Nickname;
 							await winner.SendMessageAsync("Congratulations! You have won **7 days of D3 Reflection Premium**!.\nYour account has already had its Premium prolonged. Have a nice game!");
 							var acc = AccountManager.GetAccountByDiscordId(winner.Id);

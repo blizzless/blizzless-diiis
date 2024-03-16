@@ -1,18 +1,8 @@
-﻿//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
@@ -28,7 +18,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 			WalkSpeed *= 5;
 			DamageCoefficient = context.ScriptFormula(24) * 2f;
 			SetBrain(new MinionBrain(this));
-			Attributes[GameAttribute.Summoned_By_SNO] = context.PowerSNO;
+			Attributes[GameAttributes.Summoned_By_SNO] = context.PowerSNO;
 			//(Brain as MinionBrain).AddPresetPower(30005);
 			//(Brain as MinionBrain).AddPresetPower(30001);
 			(Brain as MinionBrain).AddPresetPower(30592);
@@ -37,20 +27,20 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions
 				(Brain as MinionBrain).AddPresetPower(121942); // Witchdoctor_Gargantuan_Cleave
 			if ((context.User as Player).SkillSet.HasPassive(208563)) //ZombieHandler (wd)
 			{
-				Attributes[GameAttribute.Hitpoints_Max] *= 1.2f;
-				Attributes[GameAttribute.Hitpoints_Cur] = Attributes[GameAttribute.Hitpoints_Max];
+				Attributes[GameAttributes.Hitpoints_Max] *= 1.2f;
+				Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max];
 			}
-			Attributes[GameAttribute.Attacks_Per_Second] = 1.0f;
+			Attributes[GameAttributes.Attacks_Per_Second] = 1.0f;
 
-			Attributes[GameAttribute.Damage_Weapon_Min, 0] = context.ScriptFormula(24) * context.User.Attributes[GameAttribute.Damage_Weapon_Min_Total, 0];
-			Attributes[GameAttribute.Damage_Weapon_Delta, 0] = context.ScriptFormula(24) * context.User.Attributes[GameAttribute.Damage_Weapon_Delta_Total, 0];
+			Attributes[GameAttributes.Damage_Weapon_Min, 0] = context.ScriptFormula(24) * context.User.Attributes[GameAttributes.Damage_Weapon_Min_Total, 0];
+			Attributes[GameAttributes.Damage_Weapon_Delta, 0] = context.ScriptFormula(24) * context.User.Attributes[GameAttributes.Damage_Weapon_Delta_Total, 0];
 
 			if ((context.User as Player).SkillSet.HasPassive(340909)) //MidnightFeast (wd)
 			{
-				Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 1.5f;
+				Attributes[GameAttributes.Damage_Weapon_Min, 0] *= 1.5f;
 			}
 
-			Attributes[GameAttribute.Pet_Type] = 0x8;
+			Attributes[GameAttributes.Pet_Type] = 0x8;
 			//Pet_Owner and Pet_Creator seems to be 0
 
 			if (Master != null)

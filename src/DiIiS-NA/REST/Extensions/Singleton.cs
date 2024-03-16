@@ -1,14 +1,8 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Reflection;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.REST.Extensions
@@ -29,7 +23,7 @@ namespace DiIiS_NA.REST.Extensions
                         if (instance == null)
                         {
                             ConstructorInfo constructorInfo = typeof(T).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
-                            instance = (T)constructorInfo.Invoke(new object[0]);
+                            instance = (T)constructorInfo.Invoke(Array.Empty<object>());
                         }
                     }
                 }

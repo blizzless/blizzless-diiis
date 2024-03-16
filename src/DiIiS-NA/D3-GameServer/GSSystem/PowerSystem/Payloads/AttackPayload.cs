@@ -1,23 +1,12 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
+using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 {
@@ -90,7 +79,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		public void Apply()
 		{
-			if (Targets == null) Targets = new TargetList();
+			Targets ??= new TargetList();
 			if (Target.World != null)
 			{
 				if (!Target.World.Game.Working) return;
@@ -102,20 +91,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			{
 				return;
 			}
-			if (Target is Player && DamageEntries.Count > 0)
-			{
-				Player player = (Player)Target;
-				foreach (Actor extra in Targets.ExtraActors)
-					if (extra is DesctructibleLootContainer)
-						extra.OnTargeted(player, null);
 
+			{
+				if (Target is Player player && DamageEntries.Count > 0)
+				{
+					foreach (Actor extra in Targets.ExtraActors)
+						if (extra is DesctructibleLootContainer)
+							extra.OnTargeted(player, null);
+
+				}
 			}
-            if (Context.User is Player && Context.Target is Monster && Context.Target.GBHandle.Type == 1)
-            {
-                (Context.User as Player).ExpBonusData.MonsterAttacked((Context.User as Player).InGameClient.Game.TickCounter);
-                ((Context.Target as Monster).Brain as AISystem.Brains.MonsterBrain).AttackedBy = Context.User;
-            }
-            
+			{
+				if (Context.User is Player player && Context.Target is Monster monster && monster.GBHandle.Type == 1)
+				{
+					player.ExpBonusData.MonsterAttacked(player.InGameClient.Game
+						.TickCounter);
+					((MonsterBrain)monster.Brain).AttackedBy = player;
+				}
+			}
+
 			foreach (Actor target in Targets.Actors)
 			{
 				if (target == null || target.World == null || target.World != null && target.World.PowerManager.IsDeletingActor(target))
@@ -143,7 +137,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		private bool _DoCriticalHit(Actor user, Actor target, float chcBonus = 0f)
 		{
-			if (target.Attributes[GameAttribute.Ignores_Critical_Hits]) return false;
+			if (target.Attributes[GameAttributes.Ignores_Critical_Hits]) return false;
 
 			//Monk -> Exploding Palm
 			if (Context.PowerSNO == 97328 && Context.Rune_E <= 0) return false;
@@ -151,7 +145,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			float additionalCritChance = chcBonus;
 
 			if (user is Player && (user as Player).SkillSet.HasPassive(338859)) //Single Out
-				if (target.GetMonstersInRange(20f).Where(m => m != target).Count() == 0)
+				if (target.GetMonstersInRange(20f).All(m => m == target))
 					additionalCritChance += 0.25f;
 
 			//Wizard -> Spectral Blade -> Ice Blades
@@ -169,7 +163,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				target.World.BuffManager.RemoveBuffs(target, SkillsSystem.Skills.Crusader.FaithGenerators.Punish);
 			}
 
-			var totalCritChance = user.Attributes[GameAttribute.Weapon_Crit_Chance] + user.Attributes[GameAttribute.Crit_Percent_Bonus_Capped] + user.Attributes[GameAttribute.Crit_Percent_Bonus_Uncapped] + user.Attributes[GameAttribute.Power_Crit_Percent_Bonus, Context.PowerSNO] + target.Attributes[GameAttribute.Bonus_Chance_To_Be_Crit_Hit] + additionalCritChance;
+			var totalCritChance = user.Attributes[GameAttributes.Weapon_Crit_Chance] + user.Attributes[GameAttributes.Crit_Percent_Bonus_Capped] + user.Attributes[GameAttributes.Crit_Percent_Bonus_Uncapped] + user.Attributes[GameAttributes.Power_Crit_Percent_Bonus, Context.PowerSNO] + target.Attributes[GameAttributes.Bonus_Chance_To_Be_Crit_Hit] + additionalCritChance;
 			if (totalCritChance > 0.85f) totalCritChance = 0.85f;
 			return PowerContext.Rand.NextDouble() < totalCritChance;
 		}

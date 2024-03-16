@@ -1,7 +1,7 @@
-﻿//Blizzless Project 2022 
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
+using DiIiS_NA.LoginServer;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.General
 {
@@ -11,14 +11,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.General
     {
         public override IEnumerable<TickTimer> Run()
         {
-            if (User is Player)
-            {
-                Player player = (Player)User;
-                player.AddPercentageHP(60);
-                AddBuff(player, player, new CooldownBuff(30211, TickTimer.WaitSeconds(player.World.Game, 30f)));
-            }
-
-            yield break;
+            if (User is not Player player) yield break;
+            player.AddPercentageHP(GameServerConfig.Instance.HealthPotionRestorePercentage);
+            AddBuff(player, player, new CooldownBuff(30211, TickTimer.WaitSeconds(player.World.Game, GameServerConfig.Instance.HealthPotionCooldown)));
         }
     }
 }

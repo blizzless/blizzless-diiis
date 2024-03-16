@@ -1,16 +1,9 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game
@@ -47,7 +40,7 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game
 
         public void Handle(GameClient client)
         {
-            Logger.Info("Client {0}, enter in game. Server loaded.", client.BnetClient.Account.BattleTag);
+            Logger.Info("Client $[underline]${0}$[/]$, joined game.", client.BnetClient.Account.Email);
         }
     }
 }

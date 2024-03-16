@@ -1,14 +1,9 @@
 ﻿
-//Blizzless Project 2022 
 using System.Linq;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -22,10 +17,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			: base(world, sno, tags)
 		{
 			this.playerIndex = playerIndex;
-			Attributes[GameAttribute.MinimapActive] = true;
-			Attributes[GameAttribute.Headstone_Player_ANN] = 1;
-			Attributes[GameAttribute.TeamID] = 1;
-			if (World.Game.PvP) Attributes[GameAttribute.Disabled] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
+			Attributes[GameAttributes.Headstone_Player_ANN] = 1;
+			Attributes[GameAttributes.TeamID] = 1;
+			if (World.Game.PvP) Attributes[GameAttributes.Disabled] = true;
 		}
 
 

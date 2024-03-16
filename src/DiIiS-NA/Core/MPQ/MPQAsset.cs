@@ -1,14 +1,8 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Globalization;
-//Blizzless Project 2022 
 using System.Threading;
-//Blizzless Project 2022 
 using CrystalMpq;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.Storage;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.Core.MPQ

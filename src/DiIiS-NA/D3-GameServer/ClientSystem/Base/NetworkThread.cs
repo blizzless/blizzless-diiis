@@ -1,12 +1,7 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Threading;
 
 namespace DiIiS_NA.GameServer.ClientSystem.Base
@@ -59,7 +54,7 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
         {
             try
             {
-                if (_newSockets.Count() == 0)
+                if (!_newSockets.Any())
                     return;
 
                 lock (_newSockets)

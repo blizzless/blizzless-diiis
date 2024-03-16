@@ -1,40 +1,23 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Minions;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
+using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
+using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 {
@@ -57,8 +40,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         public override void OnChannelOpen()
         {
             WaitForSpawn = true;
-            WaitSeconds = 0.75f / User.Attributes[GameAttribute.Attacks_Per_Second_Total];
-            EffectsPerSecond = 0.75f / User.Attributes[GameAttribute.Attacks_Per_Second_Total];
+            WaitSeconds = 0.75f / User.Attributes[GameAttributes.Attacks_Per_Second_Total];
+            EffectsPerSecond = 0.75f / User.Attributes[GameAttributes.Attacks_Per_Second_Total];
         }
 
         public override void OnChannelClose()
@@ -87,36 +70,36 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     EffectActor Explosion = SpawnEffect(defaultEff, TargetPosition, 0, WaitSeconds(0.4f));
 
                     Explosion.PlayEffect(Effect.PlayEffectGroup, RuneSelect(462185, 470458, 471513, 472538, 472598, 472762));
-                    var Targets = GetEnemiesInRadius(TargetPosition, 5f);
+                    var targets = GetEnemiesInRadius(TargetPosition, 5f);
 
-                    if (Targets.Actors.Count > 0)
+                    if (targets.Actors.Count > 0)
                         GeneratePrimaryResource(24f);
 
                     if (Rune_A > 0)
-                        foreach (var Target in Targets.Actors)
-                            if (RandomHelper.Next(0, 100) > 60)
-                                AddBuff(Target, new DebuffStunned(WaitSeconds(1f)));
+                        foreach (var target in targets.Actors)
+                            if (FastRandom.Instance.Chance(50))
+                                AddBuff(target, new DebuffStunned(WaitSeconds(1f)));
                     if (Rune_D == 1)
                     {
-                        WeaponDamage(Targets, 1.50f, DamageType.Cold);
+                        WeaponDamage(targets, 1.50f, DamageType.Cold);
                         EffectActor Explosion1 = SpawnEffect(defaultEff, TargetPosition, 0, WaitSeconds(2f));
                         Explosion1.PlayEffect(Effect.PlayEffectGroup, 471410);
-                        foreach (var Target in Targets.Actors)
-                            AddBuff(Target, new DebuffChilled(0.4f, WaitSeconds(0.5f)));
+                        foreach (var target in targets.Actors)
+                            AddBuff(target, new DebuffChilled(0.4f, WaitSeconds(0.5f)));
                     }
                     else if (Rune_C == 1)
                     {
-                        var Target = GetEnemiesInRadius(TargetPosition, 5f);
-                        if (Target.Actors.Count > 0)
-                            WeaponDamage(Target.Actors[0], 1.50f, DamageType.Physical);
-                        if (Target.Actors.Count > 1)
+                        var target = GetEnemiesInRadius(TargetPosition, 5f);
+                        if (target.Actors.Count > 0)
+                            WeaponDamage(target.Actors[0], 1.50f, DamageType.Physical);
+                        if (target.Actors.Count > 1)
                         {
                             for (int i = 0; i < 2; i++)
-                                if (Target.Actors.Count >= i)
+                                if (target.Actors.Count >= i)
                                 {
-                                    EffectActor ExplosionAdd = SpawnEffect(defaultEff, Target.Actors[i].Position, 0, WaitSeconds(0.4f));
+                                    EffectActor ExplosionAdd = SpawnEffect(defaultEff, target.Actors[i].Position, 0, WaitSeconds(0.4f));
                                     ExplosionAdd.PlayEffect(Effect.PlayEffectGroup, RuneSelect(462185, 470458, 471513, 472538, 472598, 472762));
-                                    WeaponDamage(Target.Actors[i], 1.50f, DamageType.Physical);
+                                    WeaponDamage(target.Actors[i], 1.50f, DamageType.Physical);
                                 }
                         }
                         else
@@ -129,33 +112,31 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     }
                     else if (Rune_E == 1)
                     {
-                        WeaponDamage(Targets, 1.00f, DamageType.Physical);
-                        foreach (var Target in Targets.Actors)
-                            (User as PlayerSystem.Player).AddPercentageHP(0.5f);
+                        WeaponDamage(targets, 1.00f, DamageType.Physical);
+                        foreach (var target in targets.Actors)
+                            ((Player)User).AddPercentageHP(0.5f);
                     }
                     else
-                        WeaponDamage(Targets, 1.50f, DamageType.Physical);
+                        WeaponDamage(targets, 1.50f, DamageType.Physical);
                 }
             }
             else
             {
-                Vector3D Range = new Vector3D();
-               
-                Range = TargetPosition - User.Position;
+                Vector3D range = TargetPosition - User.Position;
 
-                bool Regen = false;
+                bool regen = false;
 
                 foreach (var divider in rangeDividers)
                 {
-                    var explosion = SpawnEffect(ActorSno._p6_necro_bonespikes, new Vector3D(User.Position.X + Range.X / divider, User.Position.Y + Range.Y / divider, TargetPosition.Z), 0, WaitSeconds(0.4f));
+                    var explosion = SpawnEffect(ActorSno._p6_necro_bonespikes, new Vector3D(User.Position.X + range.X / divider, User.Position.Y + range.Y / divider, TargetPosition.Z), 0, WaitSeconds(0.4f));
                     explosion.PlayEffect(Effect.PlayEffectGroup, 471513);
                     var targets = GetEnemiesInRadius(explosion.Position, 5f);
                     if (targets.Actors.Count > 0)
-                        Regen = true;
+                        regen = true;
                     WeaponDamage(targets, 1.00f, DamageType.Physical);
                 }
 
-                if (Regen)
+                if (regen)
                     GeneratePrimaryResource(30f);
             }
             //yield return WaitSeconds(1f);
@@ -260,38 +241,40 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
     {
         public override IEnumerable<TickTimer> Main()
         {
-            var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
+            var powerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
 
             TargetPosition = PowerMath.TranslateDirection2D(User.Position, TargetPosition, User.Position, 7f);
-            DamageType DType = DamageType.Physical;
-            if (Rune_E > 0) DType = DamageType.Poison;
-            else if (Rune_C > 0) DType = DamageType.Cold;
+            DamageType damageType = DamageType.Physical;
+            if (Rune_E > 0) damageType = DamageType.Poison;
+            else if (Rune_C > 0) damageType = DamageType.Cold;
 
-            AttackPayload attack = new AttackPayload(this);
-            attack.Targets = GetEnemiesInRadius(TargetPosition, 7f);
-            attack.AddWeaponDamage(1.50f, DType);
+            AttackPayload attack = new(this)
+            {
+                Targets = GetEnemiesInRadius(TargetPosition, 7f)
+            };
+            attack.AddWeaponDamage(1.50f, damageType);
             attack.OnHit = hit =>
             {
                 GeneratePrimaryResource(12f);
-                if (Rune_B > 0)//Казнь
+                if (Rune_B > 0)//Execution
                 {
-                    if (hit.Target.Attributes[GameAttribute.Hitpoints_Cur] < (hit.Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 5))
-                        if (RandomHelper.Next(1, 100) >= 95)
+                    if (hit.Target.Attributes[GameAttributes.Hitpoints_Cur] < (hit.Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 5))
+                        if (FastRandom.Instance.Chance(95))
                             WeaponDamage(hit.Target, 99999f, DamageType.Physical);
                 }
-                else if (Rune_D > 0)//Парные
+                else if (Rune_D > 0)//Pare 
                 {
                     WeaponDamage(hit.Target, 1.50f, DamageType.Physical);
                 }
-                else if (Rune_E > 0)//Проклятая коса
+                else if (Rune_E > 0)//Cursed Scythe
                 {
                     if (RandomHelper.Next(1, 100) >= 85)
                     {
-                        //Рандомный дебаф.
+                        //Random debuff
                         AddBuff(Target, new DebuffChilled(0.75f, WaitSeconds(30f)));
                     }
                 }
-                else if (Rune_C > 0) //Морозная жатва
+                else if (Rune_C > 0) //Frost Harvest
                 {
                     
                     AddBuff(User, new FBuff());
@@ -300,9 +283,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     //AddBuff(User, new TBuff());
                     //*/
                 }
-                else if (Rune_A > 0) //Мрачная жатва
+                else if (Rune_A > 0) //Dark Harvest
                 {
-                    (User as PlayerSystem.Player).AddPercentageHP(1);
+                    ((Player) User).AddPercentageHP(1);
                 }
             };
             attack.Apply();
@@ -327,7 +310,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -339,14 +322,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -366,7 +349,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -378,14 +361,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -405,7 +388,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -417,14 +400,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -444,7 +427,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -456,14 +439,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -500,12 +483,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
         }
 
+        private bool _channelClosed;
         public override void OnChannelClose()
         {
-            if (_beamEnd != null)
-                _beamEnd.Destroy();
-            if (Effect != null)
-                Effect.Destroy();
+            if (_channelClosed)
+                return; 
+            _beamEnd?.Destroy();
+            Effect?.Destroy();
+            _channelClosed = true;
         }
 
         public override void OnChannelUpdated()
@@ -518,10 +503,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             var PowerData = (DiIiS_NA.Core.MPQ.FileFormats.Power)MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             AttackPayload attack = new AttackPayload(this);
             {
-                if (attack.Targets == null)
-                    attack.Targets = new TargetList();
-                if (attack.Targets.Actors == null)
-                    attack.Targets.Actors = new List<Actor>();
+                attack.Targets ??= new TargetList();
+                attack.Targets.Actors ??= new List<Actor>();
                 if (Target != null)
                     attack.Targets.Actors.Add(Target);
                 DamageType DType = DamageType.Physical;
@@ -534,37 +517,37 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     Effect.AddComplexEffect(RuneSelect(467461, 467557, 467500, 467643, 469460, 469275), _beamEnd);
                     //Effect.AddComplexEffect(baseEffectSkill, _beamEnd); 
                     AddBuff(hit.Target, new DebuffChilled(0.3f, WaitSeconds(0.5f)));
-                    (User as PlayerSystem.Player).AddPercentageHP(2);
+                    ((Player) User).AddPercentageHP(2);
                     if (Rune_C < 1)
                         GeneratePrimaryResource(15f);
 
                 };
 
-                if (Rune_E > 0)//Кровопийца
+                if (Rune_E > 0)//Bloodsucker
                 {
-                    //Присасываем сферы в радиусе 40
-                    (User as PlayerSystem.Player).VacuumPickupHealthOrb(40f);
+                    //we are looking for all actors in a radius of 40
+                    ((Player) User).VacuumPickupHealthOrb(40f);
                 }
-                else if (Rune_A > 0)//Подавление
+                else if (Rune_A > 0)//energy shift
                 {
-                    //Подморозка на 75% передвижения
+                    //75% slow on movement
                     AddBuff(Target, new DebuffChilled(0.75f, WaitSeconds(1f)));
                 }
-                else if (Rune_D > 0)//Энергетический сдвиг
+                else if (Rune_D > 0)//energy shift
                 {
-                    //10 стаков по 10% к усилению дамага.
+                    //10 stacks of 10% damage amplification
                     AddBuff(User, new BustBuff());
                 }
-                else if (Rune_B > 0)//Чистая эссенция
+                else if (Rune_B > 0)//Pure Essence
                 {
-                    //Если HP 100% - восстанавливаем больше эссенции.
-                    if (User.Attributes[GameAttribute.Hitpoints_Cur] == User.Attributes[GameAttribute.Hitpoints_Max_Total])
+                    //If HP is 100% - we restore more essence.
+                    if (User.Attributes[GameAttributes.Hitpoints_Cur] == User.Attributes[GameAttributes.Hitpoints_Max_Total])
                         GeneratePrimaryResource(5f);
                 }
-                else if (Rune_C > 0)//Похищение жизни
+                else if (Rune_C > 0)//Theft of life
                 {
-                    (User as PlayerSystem.Player).AddPercentageHP(4);
-                    //10 стаков по 10% к усилению дамага.
+                    ((Player) User).AddPercentageHP(4);
+                    //10 stacks of 10% damage amplification.
                 }
             }
             attack.Apply();
@@ -582,7 +565,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += 0.1f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += 0.1f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -594,14 +577,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += 0.1f;
+                    User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += 0.1f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= StackCount * 0.1f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= StackCount * 0.1f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -707,29 +690,29 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             else
             {
-                var Actor = ActorSno._p6_necro_bonespear01_ghostly;
+                var actor = ActorSno._p6_necro_bonespear01_ghostly;
                 if (Rune_C > 0)
-                    Actor = ActorSno._p6_necro_bonespear01_decay;
-                if (Rune_A > 0) //Кристализация
-                    Actor = ActorSno._p6_necro_bonespear01;//452802
-                if (Rune_D > 0) //Кровавое копье
+                    actor = ActorSno._p6_necro_bonespear01_decay;
+                if (Rune_A > 0) //Crystallization
+                    actor = ActorSno._p6_necro_bonespear01;//452802
+                if (Rune_D > 0) //Blood Spear
                 {
-                    Actor = ActorSno._p6_necro_bonespear01_blood;
-                    (User as PlayerSystem.Player).AddPercentageHP(-10);
+                    actor = ActorSno._p6_necro_bonespear01_blood;
+                    ((Player) User).AddPercentageHP(-10);
                 }
-                var projectile = new Projectile(this, Actor, User.Position);
+                var projectile = new Projectile(this, actor, User.Position);
                 projectile.Position.Z += 5f;  // fix height
-                float percentofmoredamage = 0;
-                DamageType NowDamage = DamageType.Physical;
+                float percentExtraDamage = 0;
+                DamageType damageType = DamageType.Physical;
 
                 projectile.OnCollision = (hit) =>
                 {
                     if (Rune_B > 0)
                     {
                         //var Targs = GetEnemiesInRadius(hit.Position, 15f);
-                        foreach (var Targ in GetEnemiesInRadius(hit.Position, 15f).Actors)
+                        foreach (var target in GetEnemiesInRadius(hit.Position, 15f).Actors)
                         {
-                            WeaponDamage(Targ, 5.0f, DamageType.Physical);
+                            WeaponDamage(target, 5.0f, DamageType.Physical);
                         }
 
                         hit.PlayEffect(Effect.PlayEffectGroup, 465209);
@@ -739,18 +722,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     {
                         if (Rune_C > 0)
                         {
-                            percentofmoredamage += 0.15f;
-                            NowDamage = DamageType.Poison;
+                            percentExtraDamage += 0.15f;
+                            damageType = DamageType.Poison;
                         }
                         if (Rune_A > 0)
                         {
-                            NowDamage = DamageType.Cold;
+                            damageType = DamageType.Cold;
                             AddBuff(hit, new SBuff());
                             AddBuff(User, new FBuff());
                         }
 
                         hit.PlayEffect(Effect.PlayEffectGroup, 456994);
-                        WeaponDamage(hit, Rune_D > 0 ? 6.5f : 5f + percentofmoredamage, NowDamage);
+                        WeaponDamage(hit, Rune_D > 0 ? 6.5f : 5f + percentExtraDamage, damageType);
                     }
 
                 };
@@ -782,34 +765,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 Timeout = WaitSeconds(3f);
             }
 
-            public override bool Apply()
-            {
-                if (!base.Apply())
-                    return false;
-
-                return true;
-            }
-
             public override void OnPayload(Payload payload)
             {
                 if (payload.Target == Target && payload is HitPayload)
                 {
 
                 }
-            }
-
-            public override bool Update()
-            {
-                if (base.Update())
-                    return true;
-
-                return false;
-            }
-
-            public override void Remove()
-            {
-                base.Remove();
-
             }
         }
 
@@ -825,7 +786,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -837,14 +798,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.03f;
+                    User.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -865,7 +826,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                 if (!base.Apply())
                     return false;
-                Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] -= 0.2f;
+                Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] -= 0.2f;
                 Target.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -882,7 +843,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                Target.Attributes[GameAttribute.Attacks_Per_Second_Percent] += 0.2f;
+                Target.Attributes[GameAttributes.Attacks_Per_Second_Percent] += 0.2f;
                 Target.Attributes.BroadcastChangedIfRevealed();
 
                 base.Remove();
@@ -945,20 +906,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             
             if (Rune_B > 0)
             {
-                Count = User.Attributes[GameAttribute.Resource_Cur, (int)(User as PlayerSystem.Player).Toon.HeroTable.PrimaryResource];
+                Count = User.Attributes[GameAttributes.Resource_Cur, (int)((Player) User).Toon.HeroTable.PrimaryResource];
                 UsePrimaryResource(Count);
             }
             else if (Rune_C > 0)
             {
-                (User as PlayerSystem.Player).AddPercentageHP(-10f);
+                ((Player)User).AddPercentageHP(-10f);
                 UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
             }
             else
                 UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
             
-             var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
+            var dataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             
-            var Mage = new SkeletalMage(
+            var mage = new SkeletalMage(
                 World,
                 this,
                 0,
@@ -971,26 +932,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     ActorSno._p6_necro_skeletonmage_f_archer
                 )
             );
-            Mage.Brain.DeActivate();
+            mage.Brain.DeActivate();
             
-            Mage.Scale = 1.2f;
-            Mage.Position = RandomDirection(TargetPosition, 3f, 8f);
-            Mage.Attributes[GameAttribute.Untargetable] = true;
-            Mage.EnterWorld(Mage.Position);
+            mage.Scale = 1.2f;
+            mage.Position = RandomDirection(TargetPosition, 3f, 8f);
+            mage.Attributes[GameAttributes.Untargetable] = true;
+            mage.EnterWorld(mage.Position);
             yield return WaitSeconds(0.05f);
 
-            (Mage as Minion).Brain.Activate();
-            Mage.PlayEffectGroup(RuneSelect(472276, 472596, 472614, 472718, 472781, 472803));
-            ((Mage as Minion).Brain as AISystem.Brains.MinionBrain).PresetPowers.Clear();
-            if (Rune_D > 0)//Заражение
-                AddBuff(Mage, new BustBuff7());
-            else if (Rune_E > 0)//Лучник морозный
-                ((Mage as Minion).Brain as AISystem.Brains.MinionBrain).AddPresetPower(30499);
+            mage.Brain.Activate();
+            mage.PlayEffectGroup(RuneSelect(472276, 472596, 472614, 472718, 472781, 472803));
+            ((MinionBrain)mage.Brain).PresetPowers.Clear();
+            if (Rune_D > 0)//Infection
+                AddBuff(mage, new BustBuff7());
+            else if (Rune_E > 0)//archer frosty
+                ((MinionBrain)mage.Brain).AddPresetPower(30499);
             else
-                ((Mage as Minion).Brain as AISystem.Brains.MinionBrain).AddPresetPower(466879);
+                ((MinionBrain)mage.Brain).AddPresetPower(466879);
 
-            Mage.Attributes[GameAttribute.Untargetable] = false;
-            Mage.Attributes.BroadcastChangedIfRevealed();
+            mage.Attributes[GameAttributes.Untargetable] = false;
+            mage.Attributes.BroadcastChangedIfRevealed();
             yield break;
         }
         [ImplementsPowerBuff(1)]
@@ -1236,48 +1197,48 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             float Dmg = 3.5f;
             DamageType DType = DamageType.Poison;
             User.PlayEffectGroup(RuneSelect(474458, 474459, 474460, 474461, 474462, 474463));
-            int BoomEffect = 474290;
+            int boomEffect = 474290;
             if (Rune_E > 0)
-                switch ((User as PlayerSystem.Player).SpecialComboIndex)
+                switch (((Player) User).SpecialComboIndex)
                 {
                     case 0:
-                        (User as PlayerSystem.Player).SpecialComboIndex++;
-                        BoomEffect = 474410;
+                        ((Player) User).SpecialComboIndex++;
+                        boomEffect = 474410;
                         break;
                     case 1:
                         Radius = 30f;
-                        (User as PlayerSystem.Player).SpecialComboIndex++;
-                        BoomEffect = 474432;
+                        ((Player) User).SpecialComboIndex++;
+                        boomEffect = 474432;
                         break;
                     case 2:
                         Radius = 35f;
-                        (User as PlayerSystem.Player).SpecialComboIndex = 0;
-                        BoomEffect = 474421;
+                        ((Player) User).SpecialComboIndex = 0;
+                        boomEffect = 474421;
                         break;
                 }
-            else (User as PlayerSystem.Player).SpecialComboIndex = 0;
+            else ((Player) User).SpecialComboIndex = 0;
             if (Rune_A > 0)
             {
                 Dmg = 2.25f;
-                BoomEffect = 466321;
+                boomEffect = 466321;
                 DType = DamageType.Physical;
             }
             else if (Rune_B > 0)
             {
                 Dmg = 4.75f;
-                BoomEffect = 466324;
+                boomEffect = 466324;
                 DType = DamageType.Physical;
             }
             else if (Rune_C > 0)
             {
-                (User as PlayerSystem.Player).AddPercentageHP(-10);
+                ((Player) User).AddPercentageHP(-10);
                 Dmg = 4.5f;
-                BoomEffect = 462662;
+                boomEffect = 462662;
                 DType = DamageType.Physical;
             }
             else if (Rune_D > 0)
             {
-                BoomEffect = 472863;
+                boomEffect = 472863;
                 DType = DamageType.Poison;
                 var Proxy = SpawnProxy(User.Position, new TickTimer(User.World.Game, 300));
                 Proxy.PlayEffectGroup(471115);
@@ -1286,14 +1247,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     AddBuff(act, new DebuffChilled(0.60f, WaitSeconds(1f)));
                 }
             }
-            User.PlayEffectGroup(BoomEffect);
-            AttackPayload attack = new AttackPayload(this);
-            attack.Targets = GetEnemiesInRadius(User.Position, Radius);
+            User.PlayEffectGroup(boomEffect);
+            AttackPayload attack = new AttackPayload(this)
+            {
+                Targets = GetEnemiesInRadius(User.Position, Radius)
+            };
             attack.AddWeaponDamage(Dmg, DType);
             attack.OnHit = hit =>
             {
                 if (Rune_A > 0)
-                    (User as PlayerSystem.Player).AddPercentageHP(1);
+                    ((Player) User).AddPercentageHP(1);
             };
 
             attack.Apply();
@@ -1305,7 +1268,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
     #region CorpseExlosion
 
     [ImplementsPowerSNO(SkillsSystem.Skills.Necromancer.ExtraSkills.CorpseExlosion)]
-    public class CorpseExlosion : Skill
+    public class CorpseExplosion : Skill
     {
         public override IEnumerable<TickTimer> Main()
         {
@@ -1313,7 +1276,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             //PowerDefinition_Fields
             //Мертвячинка) - if (player.SkillSet.HasPassive(208594)) 454066
             if (Rune_B > 0)
-                (User as PlayerSystem.Player).AddPercentageHP(-2);
+                ((Player) User).AddPercentageHP(-2);
             float Radius = 20f;
             float Damage = 10.5f;
             DamageType DType = DamageType.Physical;
@@ -1321,25 +1284,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             var Point = SpawnEffect(ActorSno._p6_necro_bonespikes, TargetPosition, 0, WaitSeconds(0.2f));
             Point.PlayEffect(Effect.PlayEffectGroup, RuneSelect(459954, 473926, 459954, 473907, 459954//D
                 , 473864));
-            var Actors = User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting]
+            var actors = User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting]
                 ? new List<uint> { User.World.SpawnMonster(ActorSno._p6_necro_corpse_flesh, TargetPosition).GlobalID }
                 : User.GetActorsInRange(TargetPosition, 11).Where(x => x.SNO == ActorSno._p6_necro_corpse_flesh).Select(x => x.GlobalID).Take(5).ToList();
             if (Rune_D > 0)
                 Radius = 25f;
-            else if (Rune_C > 0)//Ближнее действие
+            else if (Rune_C > 0)//licking action
             { Damage = 15.75f; DType = DamageType.Poison; }
             else if (Rune_A > 0)
                 DType = DamageType.Poison;
 
-            foreach (var actor in Actors)
+            foreach (var actor in actors)
             {
 
                 if (Rune_B > 0)
                 {
-                    var Bomb = World.GetActorByGlobalId(actor);
-                    var NearEnemy = Bomb.GetActorsInRange(20f).First();
-                    if (NearEnemy != null)
-                        Bomb.Teleport(NearEnemy.Position);
+                    var bomb = World.GetActorByGlobalId(actor);
+                    var nearestEnemy = bomb.GetActorsInRange(20f).First();
+                    if (nearestEnemy != null)
+                        bomb.Teleport(nearestEnemy.Position);
                     
                 }
                     
@@ -1354,8 +1317,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 Explosion.UpdateDelay = 0.1f;
                 Explosion.OnUpdate = () =>
                 {
-                    AttackPayload attack = new AttackPayload(this);
-                    attack.Targets = GetEnemiesInRadius(User.Position, Radius);
+                    AttackPayload attack = new AttackPayload(this)
+                    {
+                        Targets = GetEnemiesInRadius(User.Position, Radius)
+                    };
 
                     if (Rune_E > 0)
                         DType = DamageType.Cold;
@@ -1418,7 +1383,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         {
             User.TranslateFacing(TargetPosition);
             Actor Flesh = null;
-            if (User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] == true)
+            if (User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting] == true)
             {
                 Flesh = User;
             }
@@ -1429,7 +1394,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             var Explosion = SpawnEffect(ActorSno._p6_necro_corpseexplosion_projectile, Flesh.Position, 0, WaitSeconds(0.2f));
             Explosion.PlayEffect(Effect.PlayEffectGroup, 457183);
             var Proxy = SpawnProxy(Flesh.Position, new TickTimer(User.World.Game, 300));
-            if (User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] == false)
+            if (User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting] == false)
                 Flesh.Destroy();
             //1, 2, 3, 4
             if (Rune_E > 0 || Rune_A > 0)
@@ -1456,29 +1421,28 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             if (Rune_C > 0)
             {
-                var NewProxy = SpawnProxy(User.Position, new TickTimer(User.World.Game, 300));
-
-
+                var newProxy = SpawnProxy(User.Position, new TickTimer(User.World.Game, 300));
+                
                 foreach (var plr in User.World.Players.Values)
                 {
                     plr.InGameClient.SendMessage(new EffectGroupACDToACDMessage()
                     {
                         //A, D, E?
                         EffectSNOId = RuneSelect(468032, 468032, 468240, 467966, 468032, 474474),//468032,
-                        ActorID = NewProxy.DynamicID(plr),
+                        ActorID = newProxy.DynamicID(plr),
                         TargetID = Target.DynamicID(plr)
                     });
                     plr.InGameClient.SendMessage(new EffectGroupACDToACDMessage()
                     {
                         EffectSNOId = 474690,
                         ActorID = Target.DynamicID(plr),
-                        TargetID = NewProxy.DynamicID(plr)
+                        TargetID = newProxy.DynamicID(plr)
                     });
                 }
 
-                TickTimer Timeout1 = new SecondsTickTimer(Target.World.Game, 0.4f);
-                var Boom1 = Task<bool>.Factory.StartNew(() => WaitTo(Timeout1));
-                Boom1.ContinueWith(delegate
+                TickTimer timeout = new SecondsTickTimer(Target.World.Game, 0.4f);
+                var boom = Task<bool>.Factory.StartNew(() => WaitTo(timeout));
+                boom.ContinueWith(delegate
                 {
                     Target.PlayEffect(Effect.PlayEffectGroup, 456994);
                     WeaponDamage(Target, 5.25f, DType);
@@ -1561,14 +1525,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Bonus_Chance_To_Be_Crit_Hit] += 0.05f;
+                User.Attributes[GameAttributes.Bonus_Chance_To_Be_Crit_Hit] += 0.05f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Bonus_Chance_To_Be_Crit_Hit] -= 0.05f;
+                User.Attributes[GameAttributes.Bonus_Chance_To_Be_Crit_Hit] -= 0.05f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -1588,8 +1552,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.10f;
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= 0.06f;
+                User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.10f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= 0.06f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -1601,16 +1565,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.10f;
-                    User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= 0.06f;
+                    User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.10f;
+                    User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= 0.06f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += StackCount * 0.10f;
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += StackCount * 0.06f;
+                User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += StackCount * 0.10f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += StackCount * 0.06f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -1688,23 +1652,23 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 }
                 act.PlayEffectGroup(RuneSelect(467200, 462756, 467230, 470482, 470549, 470574));
                 act.Destroy();
-                User.Attributes[GameAttribute.Resource_Cur, (int)(User as PlayerSystem.Player).Toon.HeroTable.PrimaryResource] += 10f;
+                User.Attributes[GameAttributes.Resource_Cur, (int)((Player) User).Toon.HeroTable.PrimaryResource] += 10f;
 
                 if (Rune_A > 0)
-                    (User as PlayerSystem.Player).AddPercentageHP(3);
+                    ((Player) User).AddPercentageHP(3);
                 else if (Rune_E > 0)
-                    AddBuff(User, new SBuff()); //Сытность
+                    AddBuff(User, new SBuff()); //satiety
                 else if (Rune_C > 0)
-                    AddBuff(User, new TBuff()); //Ненасытность
-                else if (Rune_B > 0) //Бесчеловечность
+                    AddBuff(User, new TBuff()); //Gluttony
+                else if (Rune_B > 0) //Inhumanity
                     foreach (var minion in User.GetActorsInRange<Minion>(60f))
                     {
-                        if ((User as PlayerSystem.Player).FindFollowerIndex(minion.SNO) == 0)
+                        if (((Player) User).FindFollowerIndex(minion.SNO) == 0)
                             break;
                         else
                         {
                             minion.Destroy();
-                            User.Attributes[GameAttribute.Resource_Cur, (int)(User as PlayerSystem.Player).Toon.HeroTable.PrimaryResource] += 10f;
+                            User.Attributes[GameAttributes.Resource_Cur, (int)((Player) User).Toon.HeroTable.PrimaryResource] += 10f;
                         }
                     }
                 User.Attributes.BroadcastChangedIfRevealed();
@@ -1726,7 +1690,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.3f;
+                User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.3f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -1738,14 +1702,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.3f;
+                    User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.3f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] -= StackCount * 0.3f;
+                User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] -= StackCount * 0.3f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -1753,7 +1717,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
             }
         }
-        [ImplementsPowerBuff(1, true)] //Сытность
+        [ImplementsPowerBuff(1, true)] //satiety
         public class SBuff : PowerBuff
         {
             public override void Init()
@@ -1765,7 +1729,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.03f;
+                User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -1777,7 +1741,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.03f;
+                    User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 
@@ -1785,7 +1749,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_Max_Percent_Bonus_Multiplicative] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Hitpoints_Max_Percent_Bonus_Multiplicative] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -1805,7 +1769,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                (User as PlayerSystem.Player).DecreaseUseResourcePercent += 0.02f;
+                ((Player) User).DecreaseUseResourcePercent += 0.02f;
 
                 return true;
             }
@@ -1817,14 +1781,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 {
                     base.Stack(buff);
                     User.Attributes.BroadcastChangedIfRevealed();
-                    (User as PlayerSystem.Player).DecreaseUseResourcePercent += 0.02f;
+                    ((Player) User).DecreaseUseResourcePercent += 0.02f;
                 }
                 return true;
             }
             public override void Remove()
             {
                 User.Attributes.BroadcastChangedIfRevealed();
-                (User as PlayerSystem.Player).DecreaseUseResourcePercent -= StackCount * 0.02f;
+                ((Player) User).DecreaseUseResourcePercent -= StackCount * 0.02f;
                 base.Remove();
             }
             private void _AddAmp()
@@ -1843,21 +1807,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         #endregion
         public override IEnumerable<TickTimer> Main()
         {
-            var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
+            var skillData = MPQStorage.Data.Assets[SNOGroup.Power][PowerSNO].Data;
             //454066
             var Proxy = SpawnProxy(TargetPosition, new TickTimer(User.World.Game, 300));
             var Flesh = Proxy.GetActorsInRange<ActorSystem.Implementations.NecromancerFlesh>(20f);
             bool Resurrected = false;
 
             if (Rune_B > 0)
-                (User as PlayerSystem.Player).AddPercentageHP(-3);
+                ((Player) User).AddPercentageHP(-3);
 
             Proxy.PlayEffectGroup(RuneSelect(465009, 465021, 465016, 465027, 465011, 465026));
             foreach (var act in Flesh)
             {
-                if ((User as PlayerSystem.Player).Revived.Count < 10)
+                if (((Player) User).Revived.Count < 10)
                 {
-                    var Temp = User.World.SpawnMonster((ActorSno)act.Attributes[GameAttribute.Necromancer_Corpse_Source_Monster_SNO], act.Position);
+                    var Temp = User.World.SpawnMonster((ActorSno)act.Attributes[GameAttributes.Necromancer_Corpse_Source_Monster_SNO], act.Position);
                     var RevivedTemp = new Minion(User.World, Temp.SNO, User, Temp.Tags, false, true);
                     Temp.Destroy();
 
@@ -1867,20 +1831,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     if (Rune_D > 0)
                     {
                         RevivedTemp.LifeTime = TickTimer.WaitSeconds(User.World.Game, 10f);
-                        RevivedTemp.Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 1.25f;
+                        RevivedTemp.Attributes[GameAttributes.Damage_Weapon_Min, 0] *= 1.25f;
                         RevivedTemp.Attributes.BroadcastChangedIfRevealed();
                     }
                     if (Rune_B > 0)
                     {
-                        RevivedTemp.Attributes[GameAttribute.Damage_Weapon_Min, 0] *= 1.2f;
+                        RevivedTemp.Attributes[GameAttributes.Damage_Weapon_Min, 0] *= 1.2f;
                         RevivedTemp.Attributes.BroadcastChangedIfRevealed();
                     }
-                    (RevivedTemp as Minion).SetBrain(new AISystem.Brains.MinionBrain(RevivedTemp));
-                    (RevivedTemp as Minion).Brain.Activate();
+                    RevivedTemp.SetBrain(new AISystem.Brains.MinionBrain(RevivedTemp));
+                    RevivedTemp.Brain.Activate();
                     RevivedTemp.PlayEffectGroup(RuneSelect(464739, 464900, 464872, 464954, 464859, 464746));
-                    (User as PlayerSystem.Player).Revived.Add(RevivedTemp);
+                    ((Player) User).Revived.Add(RevivedTemp);
                     Resurrected = true;
-                    RevivedTemp.Attributes[GameAttribute.Team_Override] = 1;
+                    RevivedTemp.Attributes[GameAttributes.Team_Override] = 1;
                     RevivedTemp.Attributes.BroadcastChangedIfRevealed();
                 }
                 else
@@ -1889,9 +1853,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             if (Resurrected)
                 if (Rune_E > 0)
                 {
-                    var Enemys = Proxy.GetActorsInRange<Monster>(20f);
-                    foreach (var Enemy in Enemys)
-                        AddBuff(Enemy, new DebuffFeared(WaitSeconds(3f)));
+                    var enemies = Proxy.GetActorsInRange<Monster>(20f);
+                    foreach (var enemy in enemies)
+                        AddBuff(enemy, new DebuffFeared(WaitSeconds(3f)));
                 }
 
             yield break;
@@ -1899,7 +1863,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
     }
     #endregion
-    //TODO: Runes
+    //TODO: Rune_E and overall buff check
     #region CommandSkeleton
     [ImplementsPowerSNO(SkillsSystem.Skills.Necromancer.ExtraSkills.CommandSkeleton)]
     public class CommandSkeleton : Skill
@@ -2001,14 +1965,50 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             User.PlayEffect(Effect.PlayEffectGroup, 466026);
             if (Target != null)
             {
-                if (Rune_A > 0)
+                DamageType damageType = DamageType.Physical;
+                bool greaterDamage = false;
+                
+                /*
+                 * Enforcer: Reduces the active Essence cost to 25.
+                 * Frenzy: Commanded skeletons go into a frenzy, gaining 25% increased attack speed as long as they attacked the Commanded target (in addition to damage bonus).
+                 * Dark Mending: Skeletal minions will heal the Necromancer for 0.5% of total Life per hit while being Commanded (i.e. as long as the skill is activated).
+                 * Freezing Grasp: Damage type is changed to Cold, and the target of Command is frozen for 3 seconds.
+                 * Kill Command: Damage type changes to Poison, and Command activation will instead make each Skeleton explode, killing them and dealing 215% damage as Poison to enemies within 15 yards each. They will still rush to their target before exploding.
+                 */
+                bool enforcer = Rune_A > 0,
+                     frenzy = Rune_B > 0,
+                     darkMending = Rune_C > 0,
+                     freezingGrasp = Rune_D > 0,
+                     killCommand = Rune_E > 0;
+                
+                // Enforcer
+                if (enforcer)
+                {
+                    UsePrimaryResource(25);
+                }
+                else
+                {
                     UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
-                UsePrimaryResource(EvalTag(PowerKeys.ResourceCost));
+                    if (darkMending)
+                    {
+                        ((Player)User).AddPercentageHP(25f); // add per hit : TODO: Life per hit while being Commanded (i.e. as long as the skill is activated).
+                    }
+                    else if (freezingGrasp)
+                    {
+                        damageType = DamageType.Cold;
+                    }
+                    else if (killCommand)
+                    {
+                        damageType = DamageType.Poison;
+                        greaterDamage = true; // TODO: Implement Kill Command to Explode instead of attacking
+                    }
+                }
+                
 
-                foreach (var Skelet in (User as PlayerSystem.Player).NecroSkeletons)
+                foreach (var skeleton in ((Player)User).NecromancerSkeletons)
                 {
                     //User.PlayEffectGroup(474172);
-                    ActorMover mover = new ActorMover(Skelet);
+                    ActorMover mover = new ActorMover(skeleton);
                     mover.MoveArc(Target.Position, 6, -0.1f, new ACDTranslateArcMessage
                     {
                         //Field3 = 303110, // used for male barb leap, not needed?
@@ -2017,11 +2017,52 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Gravity = 0.6f,
                         PowerSNO = PowerSNO
                     });
-                    Skelet.Position = Target.Position;
-                    Skelet.PlayEffectGroup(474172);
+                    skeleton.Position = Target.Position;
+                    skeleton.SetVisible(true);
+                    skeleton.Hidden = false;
+                    skeleton.PlayEffectGroup(474172);
+                    
+                    // Commanded skeletons go into a frenzy, gaining 25% increased attack speed as long as they attacked the Commanded target (in addition to damage bonus).
+                    if (frenzy)
+                    {
+                        if (!skeleton.Attributes.FixedMap.Contains(FixedAttribute.AttackSpeed))
+                        {
+                            var originalAttackSpeed = skeleton.Attributes[GameAttributes.Attacks_Per_Second];
+                            skeleton.Attributes.FixedMap.Add(FixedAttribute.AttackSpeed, 
+                                attr => attr[GameAttributes.Attacks_Per_Second] = originalAttackSpeed * 1.25f,
+                                () => skeleton.Attributes[GameAttributes.Attacks_Per_Second] = originalAttackSpeed);
+                            skeleton.Attributes.BroadcastChangedIfRevealed();
+                        }
+                    }
+                    else
+                    {
+                        if (skeleton.Attributes.FixedMap.Contains(FixedAttribute.AttackSpeed))
+                        {
+                            skeleton.Attributes.FixedMap.Remove(FixedAttribute.AttackSpeed);
+                            skeleton.Attributes.BroadcastChangedIfRevealed();
+                        }
+                    }
+                    AttackPayload attack = new AttackPayload(this)
+                    {
+                        Target = Target
+                    };
+                    
+                    attack.AddWeaponDamage(greaterDamage ? 2.15f : 1.0f, damageType);
+                    attack.OnHit = hit =>
+                    {
+                        if (freezingGrasp)
+                        {
+                            if (!HasBuff<DebuffFrozen>(hit.Target))
+                            {
+                                hit.Target.PlayEffect(Effect.IcyEffect);
+                                AddBuff(hit.Target, new DebuffFrozen(WaitSeconds(3.0f)));
+                            }
+                        }
+                    };
+                    attack.Apply();
 
 
-                    WeaponDamage(Target, 0.50f, DamageType.Physical);
+                    // WeaponDamage(Target, 0.50f, DamageType.Physical);
                     //AddBuff(Target, new DebuffStunned(WaitSeconds(0.3f)));
                 }
             }
@@ -2061,7 +2102,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             //AddBuff(User, new TBuff());
             //AddBuff(User, new FrBuff());
             //*/
-            var Golem = (User as PlayerSystem.Player).ActiveGolem;
+            var Golem = ((Player) User).ActiveGolem;
             int countofFlesh = 5;
             float cooldown = 5f;
             if (Rune_D > 0)
@@ -2070,8 +2111,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             float targetDistance = PowerMath.Distance2D(TargetPosition, Golem.Position);
             if (Rune_E > 0)
             {
-                ((User as PlayerSystem.Player).ActiveGolem as Minion).Brain.DeActivate();
-                (User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(474026);
+                (((Player)this.User).ActiveGolem as Minion).Brain.DeActivate();
+                ((Player) User).ActiveGolem.PlayActionAnimation(AnimationSno.p6_icegolem_generic_cast);
                 var proxy = SpawnProxy(TargetPosition, WaitSeconds(3f));
                 proxy.PlayEffectGroup(474839);
 
@@ -2084,7 +2125,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 };
                 attack.Apply();
                 yield return WaitSeconds(1f);
-                ((User as PlayerSystem.Player).ActiveGolem as Minion).Brain.Activate();
+                (((Player) User).ActiveGolem as Minion).Brain.Activate();
             }
             else if (Rune_A > 0)
             {
@@ -2100,7 +2141,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 yield return WaitSeconds(targetDistance * 0.024f);
                 
                 //Индикация зоны
-                (User as PlayerSystem.Player).ActiveGolem.PlayActionAnimation(466348);
+                ((Player) User).ActiveGolem.PlayActionAnimation(AnimationSno.p6_bonegolem_active_01);
                 var proxy = SpawnProxy(TargetPosition, WaitSeconds(2f));
                 //Рывок
                 proxy.PlayEffectGroup(466735); //[466735] p6_necro_golem_bone_areaIndicator
@@ -2136,7 +2177,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             else if (Rune_B > 0)
             {
                 cooldown = 0f;
-                (User as PlayerSystem.Player).AddPercentageHP(25f);
+                ((Player) User).AddPercentageHP(25f);
 
                 if (User.World.CheckLocationForFlag(TargetPosition, DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
                 {
@@ -2211,7 +2252,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                         (Golem as Minion).Kill(this);
                         Golem.Destroy();
-                        (User as PlayerSystem.Player).ActiveGolem = null;
+                        ((Player) User).ActiveGolem = null;
 
 
                     });
@@ -2232,7 +2273,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Skill_Toggled_State, SkillsSystem.Skills.Necromancer.ExtraSkills.CommandGolem] = true;
+                User.Attributes[GameAttributes.Skill_Toggled_State, SkillsSystem.Skills.Necromancer.ExtraSkills.CommandGolem] = true;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2334,7 +2375,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += 0.3f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += 0.3f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2347,7 +2388,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 {
                     base.Stack(buff);
                     User.Attributes.BroadcastChangedIfRevealed();
-                    User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += 0.3f;
+                    User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += 0.3f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
@@ -2355,7 +2396,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             public override void Remove()
             {
                 User.Attributes.BroadcastChangedIfRevealed();
-                User.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= StackCount * 0.3f;
+                User.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= StackCount * 0.3f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -2541,13 +2582,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         public override IEnumerable<TickTimer> Main()
         {
             StartCooldown(EvalTag(PowerKeys.CooldownTime));
-            var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][460358].Data;
+            var skillData = MPQStorage.Data.Assets[SNOGroup.Power][460358].Data;
 
-            var EffectSNO = ActorSno._necro_aotd_a_emitter;
-            float Range = 15f;
-            float Damage = 120.0f;
-            var DType = DamageType.Physical;
-            float Time = 1.0f;
+            var effectSno = ActorSno._necro_aotd_a_emitter;
+            float range = 15f;
+            float damage = 120.0f;
+            var damageType = DamageType.Physical;
+            float time = 1.0f;
             //Морозная шняга
             /*
             [466460] [Actor] necro_AotD_B_north_emitter
@@ -2561,8 +2602,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             */
             if (Rune_B > 0)
             {
-                DType = DamageType.Cold;
-                Damage = 5.2f;
+                damageType = DamageType.Cold;
+                damage = 5.2f;
                 var Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, TargetPosition);
                 var E = SpawnEffect(ActorSno._necro_aotd_b_north_emitter, TargetPosition, Angle);
 
@@ -2570,9 +2611,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 E.OnUpdate = () =>
                 {
                     AttackPayload attack = new AttackPayload(this);
-                    attack.Targets = GetEnemiesInRadius(E.Position, Range);
+                    attack.Targets = GetEnemiesInRadius(E.Position, range);
 
-                    attack.AddWeaponDamage(Damage, DType);
+                    attack.AddWeaponDamage(damage, damageType);
                     attack.OnHit = hitPayload =>
                     {
 
@@ -2586,29 +2627,29 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                 if (Rune_C > 0)
                 {
-                    EffectSNO = ActorSno._necro_aotd_c_emitter;
-                    Range = 20f;
-                    Damage = 500.0f;
+                    effectSno = ActorSno._necro_aotd_c_emitter;
+                    range = 20f;
+                    damage = 500.0f;
                 }
                 else if (Rune_E > 0)
                 {
-                    (User as PlayerSystem.Player).AddPercentageHP(-20f);
-                    EffectSNO = ActorSno._necro_aotd_f_emitter;
-                    Time = 5.0f;
-                    Damage = 6.2f;
+                    ((Player) User).AddPercentageHP(-20f);
+                    effectSno = ActorSno._necro_aotd_f_emitter;
+                    time = 5.0f;
+                    damage = 6.2f;
                 }
-                var Point = SpawnEffect(EffectSNO, TargetPosition, 0, WaitSeconds(Time));
+                var Point = SpawnEffect(effectSno, TargetPosition, 0, WaitSeconds(time));
                 yield return WaitSeconds(0.7f);
 
-                if (Rune_A > 0) { Damage = 140.0f; DType = DamageType.Poison; }
-                foreach (var Tar in Point.GetMonstersInRange(Range))
+                if (Rune_A > 0) { damage = 140.0f; damageType = DamageType.Poison; }
+                foreach (var Tar in Point.GetMonstersInRange(range))
                 {
                     if (Rune_C > 0)
                     {
-                        int[] Effects = new int[] { 47400, 474402, 474435, 474437, 474453, 474455, 474464, 474466 };
+                        int[] Effects = new[] { 47400, 474402, 474435, 474437, 474453, 474455, 474464, 474466 };
                         Tar.PlayEffectGroup(Effects[RandomHelper.Next(0, 7)]);
                         yield return WaitSeconds(0.5f);
-                        WeaponDamage(Tar, Damage, DType);
+                        WeaponDamage(Tar, damage, damageType);
 
                     }
                     else if (Rune_E > 0)
@@ -2616,10 +2657,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Point.UpdateDelay = 0.2f;
                         Point.OnUpdate = () =>
                         {
-                            AttackPayload attack = new AttackPayload(this);
-                            attack.Targets = GetEnemiesInRadius(Point.Position, Range);
+                            AttackPayload attack = new AttackPayload(this)
+                            {
+                                Targets = GetEnemiesInRadius(Point.Position, range)
+                            };
 
-                            attack.AddWeaponDamage(Damage, DType);
+                            attack.AddWeaponDamage(damage, damageType);
                             attack.OnHit = hitPayload =>
                             {
                             };
@@ -2630,7 +2673,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     {
                         if (Rune_D > 0)
                             Knockback(Tar, 5f);
-                        WeaponDamage(Tar, Damage, DType);
+                        WeaponDamage(Tar, damage, damageType);
                     }
                 }
             }
@@ -2677,7 +2720,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] = true;
+                User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting] = true;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2693,7 +2736,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Necromancer_Corpse_Free_Casting] = false;
+                User.Attributes[GameAttributes.Necromancer_Corpse_Free_Casting] = false;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -2759,7 +2802,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Free_Cast_All] = true;
+                User.Attributes[GameAttributes.Free_Cast_All] = true;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2775,7 +2818,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Free_Cast_All] = false;
+                User.Attributes[GameAttributes.Free_Cast_All] = false;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -2795,7 +2838,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Hitpoints_On_Kill_Reduction_Percent] -= 0.2f;
+                User.Attributes[GameAttributes.Hitpoints_On_Kill_Reduction_Percent] -= 0.2f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -2811,7 +2854,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_On_Kill_Reduction_Percent] += 0.2f;
+                User.Attributes[GameAttributes.Hitpoints_On_Kill_Reduction_Percent] += 0.2f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -2957,8 +3000,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
                 Target.WalkSpeed *= (1f - PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += PercentageSlow;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= PercentageDamage;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += PercentageSlow;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 return true;
             }
@@ -2982,8 +3025,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             public override void Remove()
             {
                 Target.WalkSpeed /= (1f - PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += PercentageDamage;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3049,8 +3092,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
                 Target.WalkSpeed *= (1f - PercentageMax);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += PercentageMax;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= PercentageDamage;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += PercentageMax;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 return true;
             }
@@ -3066,7 +3109,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Target.WalkSpeed /= (1f - (PercentageMax - (0.05f * Count)));
                         Count++;
                         Target.WalkSpeed *= (1f - (PercentageMax - (0.05f * Count)));
-                        Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.05f;
+                        Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.05f;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Ticker = new SecondsTickTimer(User.World.Game, 1.0f);
                     }
@@ -3076,8 +3119,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             public override void Remove()
             {
                 Target.WalkSpeed /= (1f - PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += PercentageDamage;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3098,7 +3141,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] -= PercentageDamage;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] -= PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 return true;
             }
@@ -3121,7 +3164,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             public override void Remove()
             {
-                Target.Attributes[GameAttribute.Damage_Weapon_Percent_Total] += PercentageDamage;
+                Target.Attributes[GameAttributes.Damage_Weapon_Percent_Total] += PercentageDamage;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3153,7 +3196,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
                 Target.WalkSpeed /= (1f + PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= PercentageSlow;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 return true;
             }
@@ -3177,7 +3220,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             public override void Remove()
             {
                 Target.WalkSpeed /= (1f + PercentageSlow);
-                Target.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += PercentageSlow;
+                Target.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += PercentageSlow;
                 Target.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3197,13 +3240,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             if (Rune_D > 0) //Проклятая земля
             {
                 foreach (var alr in World.GetActorsBySNO(ActorSno._p6_necro_leech_e_proxyactor))
-                    if (alr.Attributes[GameAttribute.Summoner_ID] == (User as PlayerSystem.Player).PlayerIndex)
+                    if (alr.Attributes[GameAttributes.Summoner_ID] == ((Player) User).PlayerIndex)
                         alr.Destroy();
 
                 var proxy = SpawnEffect(ActorSno._p6_necro_leech_e_proxyactor, TargetPosition,
                 ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, TargetPosition),
                 WaitSeconds(30f));
-                proxy.Attributes[GameAttribute.Summoner_ID] = (User as PlayerSystem.Player).PlayerIndex;
+                proxy.Attributes[GameAttributes.Summoner_ID] = ((Player) User).PlayerIndex;
                 AddBuff(User, new Rune_DBuff(proxy));
             }
             else
@@ -3312,7 +3355,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
                 {
                     payload.Context.User.AddPercentHP(2);
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100)
                     {
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3355,7 +3398,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (!base.Apply())
                     return false;
-                User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += 751f;
+                User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += 751f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -3368,7 +3411,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += 751f;
+                    User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += 751f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
@@ -3376,7 +3419,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] -= StackCount * 751f;
+                User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] -= StackCount * 751f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -3457,7 +3500,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
                 if (Ticker.TimedOut)
                 {
-                    (User as PlayerSystem.Player).AddPercentageHP(Obj.GetMonstersInRange(20f).Count);
+                    ((Player) User).AddPercentageHP(Obj.GetMonstersInRange(20f).Count);
                     Ticker = new SecondsTickTimer(User.World.Game, 1.0f);
                 }
 
@@ -3604,9 +3647,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (payload.Target == Target && payload is HitPayload)
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 15)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 15)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3647,9 +3690,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 15)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 15)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Remove();
                         GeneratePrimaryResource(2);
@@ -3690,9 +3733,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 18)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 18)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Remove();
                     }
@@ -3731,9 +3774,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (payload.Target == Target && payload is HitPayload)
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 15)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 15)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Target.PlayEffectGroup(471144);
                         foreach (var monster in Target.GetMonstersInRange(10f))
@@ -3775,9 +3818,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             {
                 if (payload.Target == Target && payload is HitPayload)
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 100 * 15)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 100 * 15)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         Remove();
                     }
@@ -3819,9 +3862,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3862,9 +3905,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3905,9 +3948,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3948,9 +3991,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -3991,9 +4034,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -4034,9 +4077,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (payload.Target == Target && payload is HitPayload)
 
                 {
-                    if (Target.Attributes[GameAttribute.Hitpoints_Cur] <= Target.Attributes[GameAttribute.Hitpoints_Max_Total] / 10)
+                    if (Target.Attributes[GameAttributes.Hitpoints_Cur] <= Target.Attributes[GameAttributes.Hitpoints_Max_Total] / 10)
                     {
-                        Target.Attributes[GameAttribute.Hitpoints_Cur] = 0;
+                        Target.Attributes[GameAttributes.Hitpoints_Cur] = 0;
                         Target.Attributes.BroadcastChangedIfRevealed();
                         //WeaponDamage(Target, 0.50f, DamageType.Physical);
                         Remove();
@@ -4082,7 +4125,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             else
                 StartCooldown(EvalTag(PowerKeys.CooldownTime));
             if (Rune_D > 0)
-                (User as PlayerSystem.Player).AddPercentageHP(-20f);
+                ((Player) User).AddPercentageHP(-20f);
 
             int Count = 0;
             
@@ -4131,8 +4174,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += 0.03f;
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] += 0.03f;
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] += 0.03f;
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Ranged] += 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4145,16 +4188,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += 0.03f;
-                    User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] += 0.03f;
+                    User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] += 0.03f;
+                    User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Ranged] += 0.03f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] -= StackCount * 0.03f;
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Ranged] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] -= StackCount * 0.03f;
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Ranged] -= StackCount * 0.03f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -4175,7 +4218,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.God] = true;
+                User.Attributes[GameAttributes.God] = true;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4183,7 +4226,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 
             public override void Remove()
             {
-                User.Attributes[GameAttribute.God] = false;
+                User.Attributes[GameAttributes.God] = false;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -4204,7 +4247,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += 0.1f;
+                User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += 0.1f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4217,14 +4260,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] += 0.1f;
+                    User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] += 0.1f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Hitpoints_Regen_Per_Second_Bonus] -= StackCount * 0.1f;
+                User.Attributes[GameAttributes.Hitpoints_Regen_Per_Second_Bonus] -= StackCount * 0.1f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -4245,7 +4288,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.01f;
+                User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.01f;
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4258,14 +4301,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (stacked)
                 {
                     base.Stack(buff);
-                    User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] -= 0.01f;
+                    User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] -= 0.01f;
                     User.Attributes.BroadcastChangedIfRevealed();
                 }
                 return true;
             }
             public override void Remove()
             {
-                User.Attributes[GameAttribute.Movement_Scalar_Reduction_Percent] += StackCount * 0.01f;
+                User.Attributes[GameAttributes.Movement_Scalar_Reduction_Percent] += StackCount * 0.01f;
                 User.Attributes.BroadcastChangedIfRevealed();
                 base.Remove();
             }
@@ -4287,7 +4330,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += ScriptFormula(10);
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] += ScriptFormula(10);
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4331,7 +4374,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (!base.Apply())
                     return false;
 
-                User.Attributes[GameAttribute.Damage_Percent_Reduction_From_Melee] += ScriptFormula(10);
+                User.Attributes[GameAttributes.Damage_Percent_Reduction_From_Melee] += ScriptFormula(10);
                 User.Attributes.BroadcastChangedIfRevealed();
 
                 return true;
@@ -4450,7 +4493,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
             //[473022] [Actor] p6_necro_boneSpirit_D_projectile
             //[473023] [Actor] p6_necro_boneSpirit_E_projectile
             //[473024] [Actor] p6_necro_boneSpirit_F_projectile
-            User.Attributes[GameAttribute.Skill_Charges, PowerSNO] -= 1;
+            User.Attributes[GameAttributes.Skill_Charges, PowerSNO] -= 1;
             User.Attributes.BroadcastChangedIfRevealed();
             var projectile = new Projectile(
                 this,
@@ -4529,16 +4572,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                 if (base.Update())
                     return true;
 
-                if ((User as PlayerSystem.Player).SkillSet.HasSkillWithRune(464896, 2))
+                if (((Player) User).SkillSet.HasSkillWithRune(464896, 2))
                     Max = 4;
                 else
                 {
                     Max = 3;
-                    if (User.Attributes[GameAttribute.Skill_Charges, PowerSNO] == 4)
-                        User.Attributes[GameAttribute.Skill_Charges, PowerSNO] = 3;
+                    if (User.Attributes[GameAttributes.Skill_Charges, PowerSNO] == 4)
+                        User.Attributes[GameAttributes.Skill_Charges, PowerSNO] = 3;
                 }
 
-                if (User.Attributes[GameAttribute.Skill_Charges, PowerSNO] < Max)
+                if (User.Attributes[GameAttributes.Skill_Charges, PowerSNO] < Max)
                 {
                     if (!CoolDownStarted)
                     {
@@ -4547,7 +4590,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Task.Delay(15100).ContinueWith(delegate
                         {
                             CoolDownStarted = false;
-                            User.Attributes[GameAttribute.Skill_Charges, PowerSNO] = (int)Math.Min(User.Attributes[GameAttribute.Skill_Charges, PowerSNO] + 1, Max);
+                            User.Attributes[GameAttributes.Skill_Charges, PowerSNO] = (int)Math.Min(User.Attributes[GameAttributes.Skill_Charges, PowerSNO] + 1, Max);
                             User.Attributes.BroadcastChangedIfRevealed();
                         });
                     }
@@ -4610,9 +4653,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                         Field2 = unchecked((int)0xD8A4C675)
                     });
 
-                    (User as PlayerSystem.Player).InGameClient.SendMessage(new ACDTranslateSnappedMessage()
+                    ((Player) User).InGameClient.SendMessage(new ACDTranslateSnappedMessage()
                     {
-                        ActorId = (int)User.DynamicID(User as PlayerSystem.Player),
+                        ActorId = (int)User.DynamicID((Player) User),
                         Position = PointTP.Position,
                         Angle = ActorSystem.Movement.MovementHelpers.GetFacingAngle(User, PointTP),
                         Field3 = true,
@@ -4724,7 +4767,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
     }
     #endregion
 
-    //
+    // TODO: implementation of the power Simalacrum
     #region Simulacrum
     [ImplementsPowerSNO(SkillsSystem.Skills.Necromancer.ExtraSkills.Simulacrum)]
     public class Simulacrum : Skill

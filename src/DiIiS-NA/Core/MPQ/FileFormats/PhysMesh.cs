@@ -1,13 +1,7 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using Gibbed.IO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
-//Blizzless Project 2022 
 using System.Collections.Generic;
 
 namespace DiIiS_NA.Core.MPQ.FileFormats
@@ -26,13 +20,13 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         public PhysMesh(MpqFile file)
         {
             var stream = file.Open();
-            this.Header = new Header(stream); //0
+            Header = new Header(stream); //0
             //+16
-            this.I0 = stream.ReadValueS32(); //28
-            this.CollisionMeshCount = stream.ReadValueS32(); //32
-            this.CollisionMeshes = stream.ReadSerializedData<CollisionMesh>(); //36
+            I0 = stream.ReadValueS32(); //28
+            CollisionMeshCount = stream.ReadValueS32(); //32
+            CollisionMeshes = stream.ReadSerializedData<CollisionMesh>(); //36
             stream.Position += 12;
-            this.I1 = stream.ReadValueS32(); //26
+            I1 = stream.ReadValueS32(); //26
             stream.Close();
         }
     }
@@ -58,21 +52,21 @@ namespace DiIiS_NA.Core.MPQ.FileFormats
         {
             //64
             stream.Position += (4 * 6);
-            this.F0 = new Float3(stream); //88
-            this.F1 = new Float3(stream); //100
-            this.F2 = new Float3(stream); //112
-            this.DominoNodeCount = stream.ReadValueS32(); //124
-            this.VerticeCount = stream.ReadValueS32(); //128
-            this.DominoTriangleCount = stream.ReadValueS32(); //132
-            this.DominoEdgeCount = stream.ReadValueS32(); //136
+            F0 = new Float3(stream); //88
+            F1 = new Float3(stream); //100
+            F2 = new Float3(stream); //112
+            DominoNodeCount = stream.ReadValueS32(); //124
+            VerticeCount = stream.ReadValueS32(); //128
+            DominoTriangleCount = stream.ReadValueS32(); //132
+            DominoEdgeCount = stream.ReadValueS32(); //136
             stream.Position += 4;
-            this.Vertices = stream.ReadSerializedData<Float4>(); //96 - 160
-            this.DominoTriangles = stream.ReadSerializedData<MeshTriangle>(); //104 - 168
-            this.DominoNodes = stream.ReadSerializedData<MeshNode>(); //112 - 176
+            Vertices = stream.ReadSerializedData<Float4>(); //96 - 160
+            DominoTriangles = stream.ReadSerializedData<MeshTriangle>(); //104 - 168
+            DominoNodes = stream.ReadSerializedData<MeshNode>(); //112 - 176
 
             //stream.Position += 4 * 2;
-            this.I6 = stream.ReadValueS32(); //120 - 184
-            this.I7 = stream.ReadValueS32(); //124 - 188
+            I6 = stream.ReadValueS32(); //120 - 184
+            I7 = stream.ReadValueS32(); //124 - 188
             //176
         }
     }

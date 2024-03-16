@@ -1,33 +1,8 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.GameSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
-using DiIiS_NA.LoginServer.AccountsSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
@@ -50,7 +25,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			foreach (var actor in wave2Actors)
 			{
 				var monster = world.SpawnMonster(ActorSno._zombiecrawler_a, new Vector3D(actor.Position.X, actor.Position.Y, actor.Position.Z));
-				monster.Attributes[GameAttribute.God] = true;
+				monster.Attributes[GameAttributes.God] = true;
 				monster.Attributes.BroadcastChangedIfRevealed();
 				(monster as Monster).Brain.DeActivate();
 				monsters.Add(monster);
@@ -59,8 +34,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			{
 				foreach (var monster in monsters)
 				{
-					monster.Attributes[GameAttribute.Quest_Monster] = true;
-					monster.Attributes[GameAttribute.God] = false;
+					monster.Attributes[GameAttributes.Quest_Monster] = true;
+					monster.Attributes[GameAttributes.God] = false;
 					(monster as Monster).Brain.Activate();
 					monster.Attributes.BroadcastChangedIfRevealed();
 				}

@@ -1,10 +1,7 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Text;
+using DiIiS_NA.Core.Logging;
 
 namespace DiIiS_NA.Core.Helpers.Math
 {
@@ -12,7 +9,9 @@ namespace DiIiS_NA.Core.Helpers.Math
 	{
 		#region Static Fields
 
-		private static readonly FastRandom __seedRng = new FastRandom((int)Environment.TickCount);
+		private static readonly Logger Logger = LogManager.CreateLogger(nameof(FastRandom));
+		
+		private static readonly FastRandom _seedRng = new(Environment.TickCount);
 
 		public static readonly FastRandom Instance = new FastRandom();
 
@@ -32,7 +31,7 @@ namespace DiIiS_NA.Core.Helpers.Math
 
 		public FastRandom()
 		{
-			Reinitialise(__seedRng.NextInt());
+			Reinitialise(_seedRng.NextInt());
 		}
 
 		public FastRandom(int seed)
@@ -212,5 +211,12 @@ namespace DiIiS_NA.Core.Helpers.Math
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Chance returns true if a random number between 0 and 100 is lesser than the specified value.
+		/// </summary>
+		/// <param name="successPercentage"></param>
+		/// <returns></returns>
+		public bool Chance(float successPercentage) => Next(100) < successPercentage;
 	}
 }

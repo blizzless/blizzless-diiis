@@ -1,9 +1,5 @@
-﻿//Blizzless Project 2022
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
+﻿using System;
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.Core.Extensions
@@ -79,6 +75,11 @@ namespace DiIiS_NA.Core.Extensions
 			ArrayTraverse walker = new ArrayTraverse(array);
 			do action(array, walker.Position);
 			while (walker.Step());
+		}
+
+		public static int FindIndex<T>(this T[] source, Predicate<T> match)
+		{
+			return Array.FindIndex(source, match);
 		}
 	}
 

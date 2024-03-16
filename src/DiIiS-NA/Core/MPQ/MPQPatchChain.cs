@@ -1,25 +1,17 @@
-﻿//Blizzless Project 2022 
-using CrystalMpq;
-//Blizzless Project 2022 
+﻿using CrystalMpq;
 using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.IO;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text.RegularExpressions;
-//Blizzless Project 2022 
 using Wintellect.PowerCollections;
 
 namespace DiIiS_NA.Core.MPQ
 {
     public class MPQPatchChain
     {
-        protected static readonly Logger Logger = LogManager.CreateLogger("FS");
+        protected static readonly Logger Logger = LogManager.CreateLogger("MPQPatchChain");
 
         public bool Loaded { get; private set; }
         public List<string> BaseMPQFiles = new List<string>();
@@ -93,7 +85,7 @@ namespace DiIiS_NA.Core.MPQ
             {
                 foreach (var mpq in pair.Value)
                 {
-                    Logger.Trace("MPQ: {0}, added to the system.", System.IO.Path.GetFileName(mpq));
+                    Logger.Debug("MPQ: {0}, added to the system.", System.IO.Path.GetFileName(mpq));
                     this.FileSystem.Archives.Add(new MpqArchive(new FileStream(mpq, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), true));
                 }
             }

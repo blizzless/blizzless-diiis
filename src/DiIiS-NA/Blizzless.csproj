@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>DiIiS_NA</RootNamespace>
     <Company>DiIiS Team</Company>
     <Copyright>iEvE</Copyright>
@@ -68,30 +68,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="4.4.1" />
-    <PackageReference Include="Discord.Net" Version="3.8.0" />
-    <PackageReference Include="DotNetty.Buffers" Version="0.6.0" />
-    <PackageReference Include="DotNetty.Codecs" Version="0.6.0" />
-    <PackageReference Include="DotNetty.Codecs.Http" Version="0.6.0" />
-    <PackageReference Include="DotNetty.Common" Version="0.6.0" />
-    <PackageReference Include="DotNetty.Handlers" Version="0.6.0" />
-    <PackageReference Include="DotNetty.Transport" Version="0.6.0" />
+    <PackageReference Include="Discord.Net" Version="3.9.0" />
+    <PackageReference Include="DotNetty.Buffers" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Codecs" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Codecs.Http" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Common" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Handlers" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Transport" Version="0.7.5" />
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="ILCompile" Version="1.0.5" />
-    <PackageReference Include="log4net" Version="2.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.1" />
-    <PackageReference Include="Npgsql" Version="4.0.4" />
-    <PackageReference Include="Skater.exe" Version="7.5.0" />
-    <PackageReference Include="SoapCore" Version="0.9.9.1" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-    <PackageReference Include="System.ServiceModel.Web" Version="1.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />
+    <PackageReference Include="Npgsql" Version="7.0.1" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -131,6 +118,15 @@
 		<None Update="DiIiS_Battle.net.p12">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="D3-GameServer\MessageSystem\GameAttribute.List.cs">
+	    <DependentUpon>GameAttribute.cs</DependentUpon>
+	  </Compile>
+	  <Compile Update="D3-GameServer\CommandManager\InvalidParametersException.cs">
+	    <DependentUpon>CommandException.cs</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

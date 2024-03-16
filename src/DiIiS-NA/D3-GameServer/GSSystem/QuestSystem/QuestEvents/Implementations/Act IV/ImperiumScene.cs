@@ -1,21 +1,12 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
 using System.Text;
-//Blizzless Project 2022 
 using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
@@ -89,7 +80,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 					foreach (var plant in Plants)
 					{
 						var Demon = world.SpawnMonster(ActorSno._bigred_a, plant);
-						Demon.PlayAnimation(11, 159227, 1, 6);
+						Demon.PlayAnimation(11, AnimationSno.bigred_hole_spawn_02, 1, 6);
 						Demons.Add(Demon);
 					}
 					Task.Delay(3000).ContinueWith(delegate
@@ -100,9 +91,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 							Hope.SetVisible(true); Hope.Hidden = false; Hope.Reveal(plr);
 							Fate.SetVisible(true); Fate.Hidden = false; Fate.Reveal(plr);
 						}
-						Imperius.PlayActionAnimation(205702);
-						Fate.PlayActionAnimation(204712);
-						Hope.PlayActionAnimation(204712);
+						Imperius.PlayActionAnimation(AnimationSno.omninpc_male_imperius_tyreal_purpose_fall_to_knee);
+						Fate.PlayActionAnimation(AnimationSno.omninpc_male_fate_spawn_01);
+						Hope.PlayActionAnimation(AnimationSno.omninpc_male_fate_spawn_01);
 						//Fate.PlayAnimation(11, 204712, 1);
 						Task.Delay(3000).ContinueWith(delegate
 						{

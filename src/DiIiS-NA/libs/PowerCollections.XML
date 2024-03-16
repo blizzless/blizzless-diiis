@@ -35,8 +35,7 @@
         </member>
         <member name="M:Wintellect.PowerCollections.Pair`2.#ctor(System.Collections.Generic.KeyValuePair{`0,`1})">
             <summary>
-            Creates a new pair //Blizzless Project 2022 
-using elements from a KeyValuePair structure. The
+            Creates a new pair using elements from a KeyValuePair structure. The
             First element gets the Key, and the Second elements gets the Value.
             </summary>
             <param name="keyAndValue">The KeyValuePair to initialize the Pair with .</param>
@@ -45,8 +44,7 @@ using elements from a KeyValuePair structure. The
             <summary>
             Determines if this pair is equal to another object. The pair is equal to another object 
             if that object is a Pair, both element types are the same, and the first and second elements
-            both compare equal //Blizzless Project 2022 
-using object.Equals.
+            both compare equal using object.Equals.
             </summary>
             <param name="obj">Object to compare for equality.</param>
             <returns>True if the objects are equal. False if the objects are not equal.</returns>
@@ -54,8 +52,7 @@ using object.Equals.
         <member name="M:Wintellect.PowerCollections.Pair`2.Equals(Wintellect.PowerCollections.Pair{`0,`1})">
             <summary>
             Determines if this pair is equal to another pair. The pair is equal if  the first and second elements
-            both compare equal //Blizzless Project 2022 
-using IComparable&lt;T&gt;.Equals or object.Equals.
+            both compare equal using IComparable&lt;T&gt;.Equals or object.Equals.
             </summary>
             <param name="other">Pair to compare with for equality.</param>
             <returns>True if the pairs are equal. False if the pairs are not equal.</returns>
@@ -63,16 +60,14 @@ using IComparable&lt;T&gt;.Equals or object.Equals.
         <member name="M:Wintellect.PowerCollections.Pair`2.GetHashCode">
             <summary>
             Returns a hash code for the pair, suitable for use in a hash-table or other hashed collection.
-            Two pairs that compare equal (//Blizzless Project 2022 
-using Equals) will have the same hash code. The hash code for
+            Two pairs that compare equal (using Equals) will have the same hash code. The hash code for
             the pair is derived by combining the hash codes for each of the two elements of the pair.
             </summary>
             <returns>The hash code.</returns>
         </member>
         <member name="M:Wintellect.PowerCollections.Pair`2.CompareTo(Wintellect.PowerCollections.Pair{`0,`1})">
             <summary>
-            <para> Compares this pair to another pair of the some type. The pairs are compared by //Blizzless Project 2022 
-using
+            <para> Compares this pair to another pair of the some type. The pairs are compared by using
             the IComparable&lt;T&gt; or IComparable interface on TFirst and TSecond. The pairs
             are compared by their first elements first, if their first elements are equal, then they
             are compared by their second elements.</para>
@@ -89,8 +84,7 @@ using
         </member>
         <member name="M:Wintellect.PowerCollections.Pair`2.System#IComparable#CompareTo(System.Object)">
             <summary>
-            <para> Compares this pair to another pair of the some type. The pairs are compared by //Blizzless Project 2022 
-using
+            <para> Compares this pair to another pair of the some type. The pairs are compared by using
             the IComparable&lt;T&gt; or IComparable interface on TFirst and TSecond. The pairs
             are compared by their first elements first, if their first elements are equal, then they
             are compared by their second elements.</para>
@@ -119,8 +113,7 @@ using
         <member name="M:Wintellect.PowerCollections.Pair`2.op_Equality(Wintellect.PowerCollections.Pair{`0,`1},Wintellect.PowerCollections.Pair{`0,`1})">
             <summary>
             Determines if two pairs are equal. Two pairs are equal if  the first and second elements
-            both compare equal //Blizzless Project 2022 
-using IComparable&lt;T&gt;.Equals or object.Equals.
+            both compare equal using IComparable&lt;T&gt;.Equals or object.Equals.
             </summary>
             <param name="pair1">First pair to compare.</param>
             <param name="pair2">Second pair to compare.</param>
@@ -129,8 +122,7 @@ using IComparable&lt;T&gt;.Equals or object.Equals.
         <member name="M:Wintellect.PowerCollections.Pair`2.op_Inequality(Wintellect.PowerCollections.Pair{`0,`1},Wintellect.PowerCollections.Pair{`0,`1})">
             <summary>
             Determines if two pairs are not equal. Two pairs are equal if  the first and second elements
-            both compare equal //Blizzless Project 2022 
-using IComparable&lt;T&gt;.Equals or object.Equals.
+            both compare equal using IComparable&lt;T&gt;.Equals or object.Equals.
             </summary>
             <param name="pair1">First pair to compare.</param>
             <param name="pair2">Second pair to compare.</param>
@@ -258,8 +250,7 @@ using IComparable&lt;T&gt;.Equals or object.Equals.
             <summary>
             Determines if the collection contains a particular item. This default implementation
             iterates all of the items in the collection via GetEnumerator, testing each item
-            against <paramref name="item"/> //Blizzless Project 2022 
-using IComparable&lt;T&gt;.Equals or
+            against <paramref name="item"/> using IComparable&lt;T&gt;.Equals or
             Object.Equals.
             </summary>
             <remarks>You should strongly consider overriding this method to provide
@@ -271,8 +262,7 @@ using IComparable&lt;T&gt;.Equals or
         <member name="M:Wintellect.PowerCollections.CollectionBase`1.CopyTo(`0[],System.Int32)">
             <summary>
             Copies all the items in the collection into an array. Implemented by
-            //Blizzless Project 2022 
-using the enumerator returned from GetEnumerator to get all the items
+            using the enumerator returned from GetEnumerator to get all the items
             and copy them to the provided array.
             </summary>
             <param name="array">Array to copy to.</param>
@@ -366,8 +356,7 @@ using the enumerator returned from GetEnumerator to get all the items
         <member name="M:Wintellect.PowerCollections.CollectionBase`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
             <summary>
             Copies all the items in the collection into an array. Implemented by
-            //Blizzless Project 2022 
-using the enumerator returned from GetEnumerator to get all the items
+            using the enumerator returned from GetEnumerator to get all the items
             and copy them to the provided array.
             </summary>
             <param name="array">Array to copy to.</param>
@@ -445,8 +434,7 @@ using the enumerator returned from GetEnumerator to get all the items
             Adds a new key-value pair to the dictionary. 
             </summary>
             <remarks>The default implementation of this method
-            checks to see if the key already exists //Blizzless Project 2022 
-using 
+            checks to see if the key already exists using 
             ContainsKey, then calls the indexer setter if the key doesn't
             already exist. </remarks>
             <param name="key">Key to add.</param>
@@ -752,8 +740,7 @@ using
             <summary>
             Determines if the collection contains a particular item. This default implementation
             iterates all of the items in the collection via GetEnumerator, testing each item
-            against <paramref name="item"/> //Blizzless Project 2022 
-using IComparable&lt;T&gt;.Equals or
+            against <paramref name="item"/> using IComparable&lt;T&gt;.Equals or
             Object.Equals.
             </summary>
             <remarks>You should strongly consider overriding this method to provide
@@ -764,8 +751,7 @@ using IComparable&lt;T&gt;.Equals or
         <member name="M:Wintellect.PowerCollections.ReadOnlyCollectionBase`1.CopyTo(`0[],System.Int32)">
             <summary>
             Copies all the items in the collection into an array. Implemented by
-            //Blizzless Project 2022 
-using the enumerator returned from GetEnumerator to get all the items
+            using the enumerator returned from GetEnumerator to get all the items
             and copy them to the provided array.
             </summary>
             <param name="array">Array to copy to.</param>
@@ -788,8 +774,7 @@ using the enumerator returned from GetEnumerator to get all the items
         <member name="M:Wintellect.PowerCollections.ReadOnlyCollectionBase`1.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
             <summary>
             Copies all the items in the collection into an array. Implemented by
-            //Blizzless Project 2022 
-using the enumerator returned from GetEnumerator to get all the items
+            using the enumerator returned from GetEnumerator to get all the items
             and copy them to the provided array.
             </summary>
             <param name="array">Array to copy to.</param>
@@ -1200,10 +1185,8 @@ using the enumerator returned from GetEnumerator to get all the items
             <summary>
             Returns the IComparer&lt;T&gt; used to compare keys in this dictionary. 
             </summary>
-            <value>If the dictionary was created //Blizzless Project 2022 
-using a comparer, that comparer is returned. If the dictionary was
-            created //Blizzless Project 2022 
-using a comparison delegate, then a comparer equivalent to that delegate
+            <value>If the dictionary was created using a comparer, that comparer is returned. If the dictionary was
+            created using a comparison delegate, then a comparer equivalent to that delegate
             is returned. Otherwise
             the default comparer for TKey (Comparer&lt;TKey&gt;.Default) is returned.</value>
         </member>
@@ -2222,10 +2205,8 @@ using a comparison delegate, then a comparer equivalent to that delegate
             <summary>
             Returns the IComparer&lt;T&gt; used to compare items in this bag. 
             </summary>
-            <value>If the bag was created //Blizzless Project 2022 
-using a comparer, that comparer is returned. If the bag was
-            created //Blizzless Project 2022 
-using a comparison delegate, then a comparer equivalent to that delegate
+            <value>If the bag was created using a comparer, that comparer is returned. If the bag was
+            created using a comparison delegate, then a comparer equivalent to that delegate
             is returned. Otherwise
             the default comparer for T (Comparer&lt;T&gt;.Default) is returned.</value>
         </member>
@@ -2864,8 +2845,7 @@ using a comparison delegate, then a comparer equivalent to that delegate
             <summary>
             Determines if this triple is equal to another object. The triple is equal to another object 
             if that object is a Triple, all element types are the same, and the all three elements
-            compare equal //Blizzless Project 2022 
-using object.Equals.
+            compare equal using object.Equals.
             </summary>
             <param name="obj">Object to compare for equality.</param>
             <returns>True if the objects are equal. False if the objects are not equal.</returns>
@@ -2873,8 +2853,7 @@ using object.Equals.
         <member name="M:Wintellect.PowerCollections.Triple`3.Equals(Wintellect.PowerCollections.Triple{`0,`1,`2})">
             <summary>
             Determines if this triple is equal to another triple. Two triples are equal if the all three elements
-            compare equal //Blizzless Project 2022 
-using IComparable&lt;T&gt;.Equals or object.Equals.
+            compare equal using IComparable&lt;T&gt;.Equals or object.Equals.
             </summary>
             <param name="other">Triple to compare with for equality.</param>
             <returns>True if the triples are equal. False if the triples are not equal.</returns>
@@ -2882,16 +2861,14 @@ using IComparable&lt;T&gt;.Equals or object.Equals.
         <member name="M:Wintellect.PowerCollections.Triple`3.GetHashCode">
             <summary>
             Returns a hash code for the triple, suitable for use in a hash-table or other hashed collection.
-            Two triples that compare equal (//Blizzless Project 2022 
-using Equals) will have the same hash code. The hash code for
+            Two triples that compare equal (using Equals) will have the same hash code. The hash code for
             the triple is derived by combining the hash codes for each of the two elements of the triple.
             </summary>
             <returns>The hash code.</returns>
         </member>
         <member name="M:Wintellect.PowerCollections.Triple`3.CompareTo(Wintellect.PowerCollections.Triple{`0,`1,`2})">
             <summary>
-            <para> Compares this triple to another triple of the some type. The triples are compared by //Blizzless Project 2022 
-using
+            <para> Compares this triple to another triple of the some type. The triples are compared by using
             the IComparable&lt;T&gt; or IComparable interface on TFirst, TSecond, and TThird. The triples
             are compared by their first elements first, if their first elements are equal, then they
             are compared by their second elements. If their second elements are also equal, then they
@@ -2909,8 +2886,7 @@ using
         </member>
         <member name="M:Wintellect.PowerCollections.Triple`3.System#IComparable#CompareTo(System.Object)">
             <summary>
-            <para> Compares this triple to another triple of the some type. The triples are compared by //Blizzless Project 2022 
-using
+            <para> Compares this triple to another triple of the some type. The triples are compared by using
             the IComparable&lt;T&gt; or IComparable interface on TFirst, TSecond, and TThird. The triples
             are compared by their first elements first, if their first elements are equal, then they
             are compared by their second elements. If their second elements are also equal, then they
@@ -2940,8 +2916,7 @@ using
         <member name="M:Wintellect.PowerCollections.Triple`3.op_Equality(Wintellect.PowerCollections.Triple{`0,`1,`2},Wintellect.PowerCollections.Triple{`0,`1,`2})">
             <summary>
             Determines if two triples are equal. Two triples are equal if the all three elements
-            compare equal //Blizzless Project 2022 
-using IComparable&lt;T&gt;.Equals or object.Equals.
+            compare equal using IComparable&lt;T&gt;.Equals or object.Equals.
             </summary>
             <param name="pair1">First triple to compare.</param>
             <param name="pair2">Second triple to compare.</param>
@@ -2950,8 +2925,7 @@ using IComparable&lt;T&gt;.Equals or object.Equals.
         <member name="M:Wintellect.PowerCollections.Triple`3.op_Inequality(Wintellect.PowerCollections.Triple{`0,`1,`2},Wintellect.PowerCollections.Triple{`0,`1,`2})">
             <summary>
             Determines if two triples are not equal. Two triples are equal if the all three elements
-            compare equal //Blizzless Project 2022 
-using IComparable&lt;T&gt;.Equals or object.Equals.
+            compare equal using IComparable&lt;T&gt;.Equals or object.Equals.
             </summary>
             <param name="pair1">First triple to compare.</param>
             <param name="pair2">Second triple to compare.</param>
@@ -3151,8 +3125,7 @@ using IComparable&lt;T&gt;.Equals or object.Equals.
             <summary>
             Gets a count of the number of values associated with a key. The
             default implementation is slow; it enumerators all of the values
-            (//Blizzless Project 2022 
-using TryEnumerateValuesForKey) to count them. A derived class
+            (using TryEnumerateValuesForKey) to count them. A derived class
             may be able to supply a more efficient implementation.
             </summary>
             <param name="key">The key to count values for.</param>
@@ -3271,8 +3244,7 @@ using TryEnumerateValuesForKey) to count them. A derived class
             <summary>
             Constructor. Initializes this collection.
             </summary>
-            <param name="myDictionary">Dictionary we're //Blizzless Project 2022 
-using.</param>
+            <param name="myDictionary">Dictionary we're using.</param>
             <param name="key">The key we're looking at.</param>
         </member>
         <member name="M:Wintellect.PowerCollections.MultiDictionaryBase`2.ValuesForKeyCollection.Clear">
@@ -3524,16 +3496,14 @@ using.</param>
             <summary>
             Returns the IEqualityComparer&lt;T&gt; used to compare keys in this dictionary. 
             </summary>
-            <value>If the dictionary was created //Blizzless Project 2022 
-using a comparer, that comparer is returned. Otherwise
+            <value>If the dictionary was created using a comparer, that comparer is returned. Otherwise
             the default comparer for TKey (EqualityComparer&lt;TKey&gt;.Default) is returned.</value>
         </member>
         <member name="P:Wintellect.PowerCollections.MultiDictionary`2.ValueComparer">
             <summary>
             Returns the IEqualityComparer&lt;T&gt; used to compare values in this dictionary. 
             </summary>
-            <value>If the dictionary was created //Blizzless Project 2022 
-using a comparer, that comparer is returned. Otherwise
+            <value>If the dictionary was created using a comparer, that comparer is returned. Otherwise
             the default comparer for TValue (EqualityComparer&lt;TValue&gt;.Default) is returned.</value>
         </member>
         <member name="P:Wintellect.PowerCollections.MultiDictionary`2.Count">
@@ -4433,8 +4403,7 @@ using a comparer, that comparer is returned. Otherwise
             <summary>
             Returns the IEqualityComparer&lt;T&gt; used to compare items in this set. 
             </summary>
-            <value>If the set was created //Blizzless Project 2022 
-using a comparer, that comparer is returned. Otherwise
+            <value>If the set was created using a comparer, that comparer is returned. Otherwise
             the default comparer for T (EqualityComparer&lt;T&gt;.Default) is returned.</value>
         </member>
         <member name="P:Wintellect.PowerCollections.Set`1.Count">
@@ -4654,8 +4623,7 @@ using a comparer, that comparer is returned. Otherwise
             <summary>
             Gets a count of the number of values associated with a key. The
             default implementation is slow; it enumerators all of the values
-            (//Blizzless Project 2022 
-using TryEnumerateValuesForKey) to count them. A derived class
+            (using TryEnumerateValuesForKey) to count them. A derived class
             may be able to supply a more efficient implementation.
             </summary>
             <param name="key">The key to count values for.</param>
@@ -4751,8 +4719,7 @@ using TryEnumerateValuesForKey) to count them. A derived class
             <summary>
             Constructor. Initializes this collection.
             </summary>
-            <param name="myDictionary">Dictionary we're //Blizzless Project 2022 
-using.</param>
+            <param name="myDictionary">Dictionary we're using.</param>
             <param name="key">The key we're looking at.</param>
         </member>
         <member name="M:Wintellect.PowerCollections.ReadOnlyMultiDictionaryBase`2.ValuesForKeyCollection.NoValues">
@@ -5388,8 +5355,7 @@ using.</param>
             <param name="list">The list to search.</param>
             <param name="itemsToLookFor">The items to search for.</param>
             <param name="predicate">The BinaryPredicate used to compare items for "equality". </param>
-            <returns>The index of the first item "equal" to any of the items in the collection <paramref name="itemsToLookFor"/>, //Blizzless Project 2022 
-using 
+            <returns>The index of the first item "equal" to any of the items in the collection <paramref name="itemsToLookFor"/>, using 
             <paramref name="BinaryPredicate"/> as the test for equality. 
             -1 if no such item exists in the list.</returns>
         </member>
@@ -5425,8 +5391,7 @@ using
             <param name="list">The list to search.</param>
             <param name="itemsToLookFor">The items to search for.</param>
             <param name="predicate">The BinaryPredicate used to compare items for "equality". </param>
-            <returns>The index of the last item "equal" to any of the items in the collection <paramref name="itemsToLookFor"/>, //Blizzless Project 2022 
-using 
+            <returns>The index of the last item "equal" to any of the items in the collection <paramref name="itemsToLookFor"/>, using 
             <paramref name="BinaryPredicate"/> as the test for equality. 
             -1 if no such item exists in the list.</returns>
         </member>
@@ -5463,8 +5428,7 @@ using
             <param name="itemsToLookFor">A collection of items to search for.</param>
             <param name="predicate">The BinaryPredicate used to compare items for "equality". </param>
             <returns>An IEnumerable&lt;T&gt; that enumerates the indices of items "equal" to any of the items 
-            in the collection <paramref name="itemsToLookFor"/>, //Blizzless Project 2022 
-using 
+            in the collection <paramref name="itemsToLookFor"/>, using 
             <paramref name="BinaryPredicate"/> as the test for equality. </returns>
         </member>
         <member name="M:Wintellect.PowerCollections.Algorithms.SearchForSubsequence``1(System.Collections.Generic.IList{``0},System.Collections.Generic.IEnumerable{``0})">
@@ -6009,8 +5973,7 @@ using
             <summary>
             Finds the maximum value in a collection.
             </summary>
-            <remarks>Values in the collection are compared by //Blizzless Project 2022 
-using the IComparable&lt;T&gt;
+            <remarks>Values in the collection are compared by using the IComparable&lt;T&gt;
             interfaces implementation on the type T.</remarks>
             <typeparam name="T">The type of items in the collection.</typeparam>
             <param name="collection">The collection to search.</param>
@@ -6046,8 +6009,7 @@ using the IComparable&lt;T&gt;
             <summary>
             Finds the minimum value in a collection.
             </summary>
-            <remarks>Values in the collection are compared by //Blizzless Project 2022 
-using the IComparable&lt;T&gt;
+            <remarks>Values in the collection are compared by using the IComparable&lt;T&gt;
             interfaces implementation on the type T.</remarks>
             <typeparam name="T">The type of items in the collection.</typeparam>
             <param name="collection">The collection to search.</param>
@@ -6083,8 +6045,7 @@ using the IComparable&lt;T&gt;
             <summary>
             Finds the index of the maximum value in a list.
             </summary>
-            <remarks>Values in the list are compared by //Blizzless Project 2022 
-using the IComparable&lt;T&gt;
+            <remarks>Values in the list are compared by using the IComparable&lt;T&gt;
             interfaces implementation on the type T.</remarks>
             <typeparam name="T">The type of items in the list.</typeparam>
             <param name="list">The list to search.</param>
@@ -6120,8 +6081,7 @@ using the IComparable&lt;T&gt;
             <summary>
             Finds the index of the minimum value in a list.
             </summary>
-            <remarks>Values in the list are compared by //Blizzless Project 2022 
-using the IComparable&lt;T&gt;
+            <remarks>Values in the list are compared by using the IComparable&lt;T&gt;
             interfaces implementation on the type T.</remarks>
             <typeparam name="T">The type of items in the list.</typeparam>
             <param name="list">The list to search.</param>
@@ -6160,8 +6120,7 @@ using the IComparable&lt;T&gt;
             <summary>
             Creates a sorted version of a collection.
             </summary>
-            <remarks>Values are compared by //Blizzless Project 2022 
-using the IComparable&lt;T&gt;
+            <remarks>Values are compared by using the IComparable&lt;T&gt;
             interfaces implementation on the type T.</remarks>
             <param name="collection">The collection to sort.</param>
             <returns>An array containing the sorted version of the collection.</returns>
@@ -6191,8 +6150,7 @@ using the IComparable&lt;T&gt;
             </summary>
             <remarks><para>The Quicksort algorithms is used to sort the items. In virtually all cases,
             this takes time O(N log N), where N is the number of items in the list.</para>
-            <para>Values are compared by //Blizzless Project 2022 
-using the IComparable&lt;T&gt;
+            <para>Values are compared by using the IComparable&lt;T&gt;
             interfaces implementation on the type T.</para>
             <para>Although arrays cast to IList&lt;T&gt; are normally read-only, this method
             will work correctly and modify an array passed as <paramref name="list"/>.</para></remarks>
@@ -6228,8 +6186,7 @@ using the IComparable&lt;T&gt;
             Creates a sorted version of a collection. The sort is stable, which means that if items X and Y are equal,
             and X precedes Y in the unsorted collection, X will precede Y is the sorted collection.
             </summary>
-            <remarks>Values are compared by //Blizzless Project 2022 
-using the IComparable&lt;T&gt;
+            <remarks>Values are compared by using the IComparable&lt;T&gt;
             interfaces implementation on the type T.</remarks>
             <param name="collection">The collection to sort.</param>
             <returns>An array containing the sorted version of the collection.</returns>
@@ -6252,8 +6209,7 @@ using the IComparable&lt;T&gt;
             A supplied Comparison&lt;T&gt; delegate is used
             to compare the items in the collection.
             </summary>
-            <remarks>Values are compared by //Blizzless Project 2022 
-using the IComparable&lt;T&gt;
+            <remarks>Values are compared by using the IComparable&lt;T&gt;
             interfaces implementation on the type T.</remarks>
             <param name="collection">The collection to sort.</param>
             <param name="comparison">The comparison delegate used to compare items in the collection.</param>
@@ -6264,8 +6220,7 @@ using the IComparable&lt;T&gt;
             Sorts a list or array in place. The sort is stable, which means that if items X and Y are equal,
             and X precedes Y in the unsorted collection, X will precede Y is the sorted collection. 
             </summary>
-            <remarks><para>Values are compared by //Blizzless Project 2022 
-using the IComparable&lt;T&gt;
+            <remarks><para>Values are compared by using the IComparable&lt;T&gt;
             interfaces implementation on the type T.</para>
             <para>Although arrays cast to IList&lt;T&gt; are normally read-only, this method
             will work correctly and modify an array passed as <paramref name="list"/>.</para></remarks>
@@ -6398,8 +6353,7 @@ using the IComparable&lt;T&gt;
         </member>
         <member name="M:Wintellect.PowerCollections.Algorithms.LexicographicalCompare``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Comparison{``0})">
             <summary>
-            Performs a lexicographical comparison of two sequences of values, //Blizzless Project 2022 
-using a supplied comparison delegate. A lexicographical comparison compares corresponding
+            Performs a lexicographical comparison of two sequences of values, using a supplied comparison delegate. A lexicographical comparison compares corresponding
             pairs of elements from two sequences in order. If the first element of sequence1 is less than the first element of sequence2, 
             then the comparison ends and the first sequence is lexicographically less than the second. If the first elements of each sequence
             are equal, then the comparison proceeds to the second element of each sequence. If one sequence is shorter than the other,
@@ -6416,8 +6370,7 @@ using a supplied comparison delegate. A lexicographical comparison compares corr
         </member>
         <member name="M:Wintellect.PowerCollections.Algorithms.LexicographicalCompare``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
             <summary>
-            Performs a lexicographical comparison of two sequences of values, //Blizzless Project 2022 
-using a supplied comparer interface. A lexicographical comparison compares corresponding
+            Performs a lexicographical comparison of two sequences of values, using a supplied comparer interface. A lexicographical comparison compares corresponding
             pairs of elements from two sequences in order. If the first element of sequence1 is less than the first element of sequence2, 
             then the comparison ends and the first sequence is lexicographically less than the second. If the first elements of each sequence
             are equal, then the comparison proceeds to the second element of each sequence. If one sequence is shorter than the other,
@@ -7283,8 +7236,7 @@ using a supplied comparer interface. A lexicographical comparison compares corre
         </member>
         <member name="M:Wintellect.PowerCollections.Util.GetHashCode``1(``0,System.Collections.Generic.IEqualityComparer{``0})">
             <summary>
-            Gets the hash code for an object //Blizzless Project 2022 
-using a comparer. Correctly handles
+            Gets the hash code for an object using a comparer. Correctly handles
             null.
             </summary>
             <param name="item">Item to get hash code for. Can be null.</param>
@@ -7322,16 +7274,11 @@ using a comparer. Correctly handles
             of a list, and concatinations of two lists to be very fast. When a copy is made of part or all of a BigList,
             two lists shared storage for the parts of the lists that are the same. Only when one of the lists is changed is additional
             memory allocated to store the distinct parts of the lists.</para>
-            <para>Of course, there is a small price to pay for this extra flexibility. Although still quite efficient, //Blizzless Project 2022 
-using an 
-            index to get or change one element of a BigList, while still reasonably efficient, is significantly slower than //Blizzless Project 2022 
-using
-            a plain List. Because of this, if you want to process every element of a BigList, //Blizzless Project 2022 
-using a foreach loop is a lot
-            more efficient than //Blizzless Project 2022 
-using a for loop and indexing the list.</para>
-            <para>In general, use a List when the only operations you are //Blizzless Project 2022 
-using are Add (to the end), foreach,
+            <para>Of course, there is a small price to pay for this extra flexibility. Although still quite efficient, using an 
+            index to get or change one element of a BigList, while still reasonably efficient, is significantly slower than using
+            a plain List. Because of this, if you want to process every element of a BigList, using a foreach loop is a lot
+            more efficient than using a for loop and indexing the list.</para>
+            <para>In general, use a List when the only operations you are using are Add (to the end), foreach,
             or indexing, or you are very sure the list will always remain small (less than 100 items). For large (&gt;100 items) lists
             that do insertions, removals, copies, concatinations, or sub-ranges, BigList will be more efficient than List. 
             In almost all cases, BigList is more efficient and easier to use than LinkedList.</para>
@@ -7642,8 +7589,7 @@ using are Add (to the end), foreach,
             items are enumerated. 
             </summary>
             <remarks>Enumerating all of the items in the list take time O(N), where
-            N is the number of items being enumerated. //Blizzless Project 2022 
-using GetEnumerator() or foreach
+            N is the number of items being enumerated. using GetEnumerator() or foreach
             is much more efficient than accessing all items by index.</remarks>
             <param name="start">Index to start enumerating at.</param>
             <param name="maxItems">Max number of items to enumerate.</param>
@@ -7657,8 +7603,7 @@ using GetEnumerator() or foreach
             foreach statement is used to call this method implicitly.
             </summary>
             <remarks>Enumerating all of the items in the list take time O(N), where
-            N is the number of items in the list. //Blizzless Project 2022 
-using GetEnumerator() or foreach
+            N is the number of items in the list. using GetEnumerator() or foreach
             is much more efficient than accessing all items by index.</remarks>
             <returns>An IEnumerator&lt;T&gt; that enumerates all the
             items in the list.</returns>
@@ -7754,8 +7699,7 @@ using GetEnumerator() or foreach
             </summary>
             <remarks><para>The Quicksort algorithm is used to sort the items. In virtually all cases,
             this takes time O(N log N), where N is the number of items in the list.</para>
-            <para>Values are compared by //Blizzless Project 2022 
-using the IComparable or IComparable&lt;T&gt;
+            <para>Values are compared by using the IComparable or IComparable&lt;T&gt;
             interface implementation on the type T.</para></remarks>
             <exception cref="T:System.InvalidOperationException">The type T does not implement either the IComparable or
             IComparable&lt;T&gt; interfaces.</exception>
@@ -7830,8 +7774,7 @@ using the IComparable or IComparable&lt;T&gt;
             </summary>
             <remarks><para> Gettingor setting an item takes time O(log N), where N is the number of items
             in the list.</para>
-            <para>To process each of the items in the list, //Blizzless Project 2022 
-using GetEnumerator() or a foreach loop is more efficient
+            <para>To process each of the items in the list, using GetEnumerator() or a foreach loop is more efficient
             that accessing each of the elements by index.</para></remarks>
             <param name="index">The index of the item to get or set. The first item in the list
             has index 0, the last item has index Count-1.</param>
@@ -9080,10 +9023,8 @@ using GetEnumerator() or a foreach loop is more efficient
             <summary>
             Returns the IComparer&lt;T&gt; used to compare items in this set. 
             </summary>
-            <value>If the set was created //Blizzless Project 2022 
-using a comparer, that comparer is returned. If the set was
-            created //Blizzless Project 2022 
-using a comparison delegate, then a comparer equivalent to that delegate
+            <value>If the set was created using a comparer, that comparer is returned. If the set was
+            created using a comparison delegate, then a comparer equivalent to that delegate
             is returned. Otherwise
             the default comparer for T (Comparer&lt;T&gt;.Default) is returned.</value>
         </member>
@@ -9656,8 +9597,7 @@ using a comparison delegate, then a comparer equivalent to that delegate
         </member>
         <member name="M:Wintellect.PowerCollections.RedBlackTree`1.#ctor(System.Collections.Generic.IComparer{`0})">
             <summary>
-            Initialize a red-black tree, //Blizzless Project 2022 
-using the given interface instance to compare elements. Only
+            Initialize a red-black tree, using the given interface instance to compare elements. Only
             Compare is used on the IComparer interface.
             </summary>
             <param name="comparer">The IComparer&lt;T&gt; used to sort keys.</param>
@@ -10433,8 +10373,7 @@ using the given interface instance to compare elements. Only
             <summary>
             Returns the IEqualityComparer&lt;T&gt; used to compare items in this bag. 
             </summary>
-            <value>If the bag was created //Blizzless Project 2022 
-using a comparer, that comparer is returned. Otherwise
+            <value>If the bag was created using a comparer, that comparer is returned. Otherwise
             the default comparer for T (EqualityComparer&lt;T&gt;.Default) is returned.</value>
         </member>
         <member name="P:Wintellect.PowerCollections.Bag`1.Count">
@@ -11040,10 +10979,8 @@ using a comparer, that comparer is returned. Otherwise
             <summary>
             Returns the IComparer&lt;T&gt; used to compare keys in this dictionary. 
             </summary>
-            <value>If the dictionary was created //Blizzless Project 2022 
-using a comparer, that comparer is returned. If the dictionary was
-            created //Blizzless Project 2022 
-using a comparison delegate, then a comparer equivalent to that delegate
+            <value>If the dictionary was created using a comparer, that comparer is returned. If the dictionary was
+            created using a comparison delegate, then a comparer equivalent to that delegate
             is returned. Otherwise
             the default comparer for TKey (Comparer&lt;TKey&gt;.Default) is returned.</value>
         </member>
@@ -11051,10 +10988,8 @@ using a comparison delegate, then a comparer equivalent to that delegate
             <summary>
             Returns the IComparer&lt;T&gt; used to compare values in this dictionary. 
             </summary>
-            <value>If the dictionary was created //Blizzless Project 2022 
-using a comparer, that comparer is returned. If the dictionary was
-            created //Blizzless Project 2022 
-using a comparison delegate, then a comparer equivalent to that delegate
+            <value>If the dictionary was created using a comparer, that comparer is returned. If the dictionary was
+            created using a comparison delegate, then a comparer equivalent to that delegate
             is returned. Otherwise
             the default comparer for TValue (Comparer&lt;TValue&gt;.Default) is returned.</value>
         </member>

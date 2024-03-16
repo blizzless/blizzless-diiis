@@ -1,26 +1,10 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Collections.Generic;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -30,11 +14,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
         public NephalemStone(World world, ActorSno sno, TagMap tags)
             : base(world, sno, tags)
         {
-            Attributes[GameAttribute.TeamID] = 2;
-            Attributes[GameAttribute.MinimapActive] = true;
-            Attributes[GameAttribute.Untargetable] = false;
+            Attributes[GameAttributes.TeamID] = 2;
+            Attributes[GameAttributes.MinimapActive] = true;
+            Attributes[GameAttributes.Untargetable] = false;
             Attributes.BroadcastChangedIfRevealed();
-            Attributes[GameAttribute.MinimapIconOverride] = 221224;//327066;
+            Attributes[GameAttributes.MinimapIconOverride] = 221224;//327066;
         }
 
         public override void OnTargeted(Player player, TargetMessage message)
@@ -47,16 +31,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
             if (!base.Reveal(player))
                 return false;
 
-            if (Attributes[GameAttribute.Untargetable])
-            {
-                PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
-                SetIdleAnimation(AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
-            }
-            else
-            {
-                PlayAnimation(5, AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
-                SetIdleAnimation(AnimationSet.TagMapAnimDefault[AnimationSetKeys.IdleDefault]);
-            }
+            var animationTag = Attributes[GameAttributes.Untargetable] ? AnimationSetKeys.Open : AnimationSetKeys.IdleDefault;
+            var animation = (AnimationSno)AnimationSet.TagMapAnimDefault[animationTag];
+            PlayAnimation(5, animation);
+            SetIdleAnimation(animation);
             
             player.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Map.MapMarkerInfoMessage()
             {

@@ -1,31 +1,15 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.ClientSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Attribute;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Collections.Generic;
-//Blizzless Project 2022 
 using System.Linq;
-//Blizzless Project 2022 
-using System.Text;
-//Blizzless Project 2022 
-using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 {
@@ -90,7 +74,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 			foreach (var pair in _attributeValues)
 			{
 
-				var gameAttribute = GameAttribute.Attributes[pair.Key.Id];//GameAttribute.GetById(pair.Key.Id);
+				var gameAttribute = GameAttributes.Attributes[pair.Key.Id];//GameAttribute.GetById(pair.Key.Id);
 
 				if (serialized.Length > 0)
 					serialized += ";";
@@ -143,7 +127,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 
 					var keyData = pairParts[0].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 					var attributeId = int.Parse(keyData[0].Trim());
-					var gameAttribute = GameAttribute.Attributes[attributeId];// .GetById(attributeId);
+					var gameAttribute = GameAttributes.Attributes[attributeId];// .GetById(attributeId);
 
 					if (gameAttribute.ScriptFunc != null && !gameAttribute.ScriptedAndSettable)
 						continue;
@@ -289,13 +273,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 			//401,:0|0;
 			//400,:2007581535|6.86613E+33;
 			//* 
-			foreach (var attr in attributes.Where(a => GameAttribute.Attributes[a.Id].Id == 408).ToList())
+			foreach (var attr in attributes.Where(a => GameAttributes.Attributes[a.Id].Id == 408).ToList())
 				if (_parent is Item)
 					attributes.Remove(attr);
 			
 			var ids = attributes.GetEnumerator();
 
-			bool level = attributes.Contains(new KeyId() { Id = GameAttribute.Level.Id });
+			bool level = attributes.Contains(new KeyId() { Id = GameAttributes.Level.Id });
 			int count = attributes.Count;
 
 			if (count == 0)
@@ -318,7 +302,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 
 					msg.Attribute.KeyParam = keyid.Key;
 					// FIXME: need to rework NetAttributeKeyValue, and maybe rename GameAttribute to NetAttribute?
-					msg.Attribute.Attribute = GameAttribute.Attributes[id]; // FIXME
+					msg.Attribute.Attribute = GameAttributes.Attributes[id]; // FIXME
 					if (msg.Attribute.Attribute.IsInteger)
 						msg.Attribute.Int = value.Value;
 					else
@@ -345,7 +329,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 								{
 									if (level)
 									{
-										keyid = new KeyId { Id = GameAttribute.Level.Id };
+										keyid = new KeyId { Id = GameAttributes.Level.Id };
 										level = false;
 									}
 									else
@@ -359,7 +343,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 								}
 
 								var kv = msg.atKeyVals[i];
-								if (level && keyid.Id == GameAttribute.Level.Id)
+								if (level && keyid.Id == GameAttributes.Level.Id)
 								{
 									i--;
 									continue;
@@ -371,7 +355,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 								
 								
 								kv.KeyParam = keyid.Key;
-								kv.Attribute = GameAttribute.Attributes[id];
+								kv.Attribute = GameAttributes.Attributes[id];
 								if (kv.Attribute.IsInteger)
 									kv.Int = value.Value;
 								else
@@ -393,7 +377,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 							{
 								if (level)
 								{
-									keyid = new KeyId { Id = GameAttribute.Level.Id };
+									keyid = new KeyId { Id = GameAttributes.Level.Id };
 									level = false;
 								}
 								else
@@ -408,7 +392,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 							var kv = new NetAttributeKeyValue();
 							msg.atKeyVals[i] = kv;
 
-							if (level && keyid.Id == GameAttribute.Level.Id)
+							if (level && keyid.Id == GameAttributes.Level.Id)
 							{
 								i--;
 								continue;
@@ -419,7 +403,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 							var id = keyid.Id;
 
 							kv.KeyParam = keyid.Key;
-							kv.Attribute = GameAttribute.Attributes[id];
+							kv.Attribute = GameAttributes.Attributes[id];
 							if (kv.Attribute.IsInteger)
 								kv.Int = value.Value;
 							else
@@ -455,28 +439,28 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 			GameAttributeValue gaValue;
 			if (_attributeValues.TryGetValue(keyid, out gaValue))
 				return gaValue;
-			return attribute._DefaultValue;
+			return attribute.DefaultAttributeValue;
 		}
 
-		private void SetAttributeValue(GameAttribute attribute, int? key, GameAttributeValue value)
+		private void SetAttributeValue<T>(GameAttributeTyped<T> attribute, int? key, GameAttributeValue value)
 		{
 			// error if scripted attribute and is not settable
 			if (attribute.ScriptFunc != null && !attribute.ScriptedAndSettable)
 			{
 				var frame = new System.Diagnostics.StackFrame(2, true);
-				Logger.Error("illegal value assignment for GameAttribute.{0} attempted at {1}:{2}",
+				Logger.Error("illegal value assignment for GameAttributes.{0} attempted at {1}:{2}",
 					attribute.Name, frame.GetFileName(), frame.GetFileLineNumber());
 			}
 
 			if (attribute.EncodingType == GameAttributeEncoding.IntMinMax)
 			{
-				if (value.Value < attribute.Min.Value || value.Value > attribute.Max.Value)
-					throw new ArgumentOutOfRangeException("GameAttribute." + attribute.Name.Replace(' ', '_'), "Min: " + attribute.Min.Value + " Max: " + attribute.Max.Value + " Tried to set: " + value.Value);
+				if (value.Value < attribute.MinAttributeValue.Value || value.Value > attribute.MaxAttributeValue.Value)
+					throw new ArgumentOutOfRangeException("GameAttributes." + attribute.Name.Replace(' ', '_'), "Min: " + attribute.MinAttributeValue.Value + " Max: " + attribute.MaxAttributeValue.Value + " Tried to set: " + value.Value);
 			}
 			else if (attribute.EncodingType == GameAttributeEncoding.Float16)
 			{
 				if (value.ValueF < GameAttribute.Float16Min || value.ValueF > GameAttribute.Float16Max)
-					throw new ArgumentOutOfRangeException("GameAttribute." + attribute.Name.Replace(' ', '_'), "Min: " + GameAttribute.Float16Min + " Max " + GameAttribute.Float16Max + " Tried to set: " + value.ValueF);
+					throw new ArgumentOutOfRangeException("GameAttributes." + attribute.Name.Replace(' ', '_'), "Min: " + GameAttribute.Float16Min + " Max " + GameAttribute.Float16Max + " Tried to set: " + value.ValueF);
 			}
 
 			RawSetAttributeValue(attribute, key, value);
@@ -586,7 +570,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 		{
 			foreach (var pair in _attributeValues)
 			{
-				Logger.Debug("attribute {0}, {1} => {2}", GameAttribute.Attributes[pair.Key.Id].Name, pair.Key.Key, (GameAttribute.Attributes[pair.Key.Id] is GameAttributeF ? pair.Value.ValueF : pair.Value.Value));
+				Logger.Debug("attribute {0}, {1} => {2}", GameAttributes.Attributes[pair.Key.Id].Name, pair.Key.Key, (GameAttributes.Attributes[pair.Key.Id] is GameAttributeF ? pair.Value.ValueF : pair.Value.Value));
 			}
 		}
 

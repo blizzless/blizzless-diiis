@@ -1,21 +1,12 @@
-﻿//Blizzless Project 2022 
-using System;
-//Blizzless Project 2022 
-using System.Linq;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
-	//[ Info] [AttackPayload]: Игрок с индесом: 0 - задамажил: ID: 437089 Name: Barbarian_KKG_Follower_NPC, NumInWorld: 0
-	[HandledSNO(ActorSno._barbarian_kkg_follower_npc)] //Barbarian_KKG_Follower_NPC
+    //[ Info] [AttackPayload]: Игрок с индесом: 0 - задамажил: ID: 437089 Name: Barbarian_KKG_Follower_NPC, NumInWorld: 0
+    [HandledSNO(ActorSno._barbarian_kkg_follower_npc)] //Barbarian_KKG_Follower_NPC
 	public class Barbarian_KKG_Follower_NPC : NPC
 	{
 		private bool _collapsed = false;
@@ -52,13 +43,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 					if (!player.KanaiUnlocked)
 					{
 						_collapsed = true;
-						PlayActionAnimation(439753);
+						this.PlayActionAnimation(AnimationSno.barbarian_male_hth_kkgevent_point_01);
 
 						var Cube = World.GetActorBySNO(ActorSno._p4_ruins_frost_kanaicube_altar);
-						Cube.PlayActionAnimation(441642);
+						Cube.PlayActionAnimation(AnimationSno.p4_ruins_frost_kanaicube_altar_active);
 						//{[Actor] [Type: Gizmo] SNOId:437895 GlobalId: 1017303610 Position: x:331.9304 y:867.761 z:5.41071 Name: p4_Ruins_Frost_KanaiCube_Altar}
+						// TODO: check all players OR all players at current map
 						foreach (var plr in player.InGameClient.Game.Players.Values)
+						{
 							plr.GrantCriteria(74987252674266);
+							plr.KanaiUnlocked = true;
+						}
 					}
 				}
 			}

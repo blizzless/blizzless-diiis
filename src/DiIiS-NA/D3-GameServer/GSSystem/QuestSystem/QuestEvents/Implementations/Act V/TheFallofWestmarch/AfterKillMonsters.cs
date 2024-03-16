@@ -1,5 +1,4 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+﻿using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
@@ -17,7 +16,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents
 			var Lorath = world.ShowOnlyNumNPC(ActorSno._x1_npc_lorathnahr, 0) as ActorSystem.InteractiveNPC;
 
 			Tyrael.Conversations.Clear();
-			Tyrael.Attributes[GameAttribute.Conversation_Icon, 0] = 2;
+			Tyrael.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
 			Tyrael.Attributes.BroadcastChangedIfRevealed();
 
 			world.Game.QuestManager.Advance();

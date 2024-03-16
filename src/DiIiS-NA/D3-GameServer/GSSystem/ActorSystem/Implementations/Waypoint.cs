@@ -1,43 +1,23 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Helpers.Hash;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Helpers.Hash;
 using DiIiS_NA.Core.Helpers.Math;
-//Blizzless Project 2022 
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.SNO;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Act;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Animation;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Waypoint;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-//Blizzless Project 2022 
 using System;
-//Blizzless Project 2022 
 using System.Drawing;
-//Blizzless Project 2022 
 using System.Linq;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
@@ -54,7 +34,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			: base(world, sno, tags)
 		{
 			//this.Attributes[GameAttribute.MinimapIconOverride] = 129569;
-			Attributes[GameAttribute.MinimapActive] = true;
+			Attributes[GameAttributes.MinimapActive] = true;
 		}
 
 		public override void OnEnter(World world)
@@ -65,7 +45,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		private void ReadWaypointId()
 		{
 			bool isOpenWorld = World.Game.CurrentAct == 3000;
-			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][World.Game.CurrentActSNOid].Data).WayPointInfo.ToList();
+			var actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][World.Game.CurrentActSnoId].Data).WayPointInfo.ToList();
 			if (isOpenWorld)
 				actData = ((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70015].Data).WayPointInfo
 							.Union(((DiIiS_NA.Core.MPQ.FileFormats.Act)MPQStorage.Data.Assets[SNOGroup.Act][70016].Data).WayPointInfo)
@@ -138,13 +118,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			if (World.Game.QuestProgress.QuestTriggers.ContainsKey((int)SNO))
 			{
 				var trigger = World.Game.QuestProgress.QuestTriggers[(int)SNO];
-				if (trigger.triggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
+				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.InteractWithActor)
 				{
 					World.Game.QuestProgress.UpdateCounter((int)SNO);
-					if (trigger.count == World.Game.QuestProgress.QuestTriggers[(int)SNO * (-1)].counter)
+					if (trigger.Count == World.Game.QuestProgress.QuestTriggers[(int)SNO * (-1)].Counter)
 						try
 						{
-							trigger.questEvent.Execute(World); // launch a questEvent
+							trigger.QuestEvent.Execute(World); // launch a questEvent
 						}
 						catch (Exception e)
 						{
@@ -254,7 +234,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 				if (World.Game.OpenedWaypoints.Contains(WaypointId) || World.Game.CurrentAct == 3000) return;
 
-				Logger.Debug("(OnTargeted) Waypoint has been activated: {0}, levelArea: {1}", WaypointId, SNOLevelArea);
+				Logger.MethodTrace($"Waypoint has been activated: {WaypointId}, levelArea: {SNOLevelArea}");
 
 				World.BroadcastIfRevealed(plr => new WaypointActivatedMessage
 				{

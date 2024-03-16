@@ -1,8 +1,5 @@
-﻿//Blizzless Project 2022 
-using DiIiS_NA.Core.Logging;
-//Blizzless Project 2022 
+﻿using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
-//Blizzless Project 2022 
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem.Implementations
@@ -17,7 +14,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem.Implementations
 		public Book(MapSystem.World world, DiIiS_NA.Core.MPQ.FileFormats.GameBalance.ItemTable definition, int cork = -1, bool cork2 = false, int cork3 = -1)
 			: base(world, definition)
 		{
-			var actorData = ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.Actor;
+			var actorData = ActorSNO.Target as DiIiS_NA.Core.MPQ.FileFormats.ActorData;
 
 			if (actorData.TagMap.ContainsKey(ActorKeys.Lore))
 			{
