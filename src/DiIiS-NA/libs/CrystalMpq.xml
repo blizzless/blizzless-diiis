@@ -1,0 +1,580 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CrystalMpq</name>
+    </assembly>
+    <members>
+        <member name="T:CrystalMpq.MpqFileStream">
+            <summary>Exposes <see cref="T:System.IO.Stream"/> with the data contained in an <see cref="T:CrystalMpq.MpqFile"/>.</summary>
+        </member>
+        <member name="M:CrystalMpq.MpqFileStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.</summary>
+            <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between <paramref name="offset"/> and (<paramref name="offset"/> + <paramref name="count"/> - 1) replaced by the bytes read from the current source.</param>
+            <param name="offset">The zero-based byte offset in <paramref name="buffer"/> at which to begin storing the data read from the current stream.</param>
+            <param name="count">The maximum number of bytes to be read from the current stream.</param>
+            <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.</returns>
+        </member>
+        <member name="T:CrystalMpq.MpqFormat">
+            <summary>
+            This enumeraction gives information about the format of a given MPQ archive
+            </summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFormat.Original">
+            <summary>Original MPQ format.</summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFormat.BurningCrusade">
+            <summary>Extended MPQ format introduced with WoW - Brurning Crusade.</summary>
+            <remarks>These archives can exceed the file size of 2 Gb, and possesses additionnal attributes for the contained files.</remarks>
+        </member>
+        <member name="F:CrystalMpq.MpqFormat.CataclysmFirst">
+            <summary>Enhanced MPQ format introduced with WoW - Cataclysm.</summary>
+            <remarks>These archives can provide increased performance via the new hash table format.</remarks>
+        </member>
+        <member name="F:CrystalMpq.MpqFormat.CataclysmSecond">
+            <summary>Enhanced MPQ format introduced with WoW - Cataclysm.</summary>
+            <remarks>These archives build upon the previous format, providing more reliability and a potentially reduced file size.</remarks>
+        </member>
+        <member name="T:CrystalMpq.MpqFile">
+            <summary>This class represents a file stored in an <see cref="T:CrystalMpq.MpqArchive"/>.</summary>
+        </member>
+        <member name="M:CrystalMpq.MpqFile.Open">
+            <summary>Opens the file for reading.</summary>
+            <returns>Returns a Stream object which can be used to read data in the file.</returns>
+            <remarks>Files can only be opened once, so don't forget to close the stream after you've used it.</remarks>
+        </member>
+        <member name="M:CrystalMpq.MpqFile.Open(System.IO.Stream)">
+            <summary>Opens a patched file for reading.</summary>
+            <param name="baseStream">A base stream.</param>
+            <returns>Returns a Stream object which can be used to read data in the file.</returns>
+            <remarks>
+            This method should only be used for explicitly providing a base stream when the <see cref="T:CrystalMpq.MpqFile"/> is a patch.
+            Files can only be opened once, so don't forget to close the stream after you've used it.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">This instance of <see cref="T:CrystalMpq.MpqFile"/> is not a patch.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="baseStream"/> is <c>null</c>.</exception>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.Archive">
+            <summary>Gets the archive to whom this file belongs.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.Name">
+            <summary>Gets the name for this file, or null if the filename is not known.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.Offset">
+            <summary>Gets the offset of this file in the archive.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.Size">
+            <summary>Gets the size of this file.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.CompressedSize">
+            <summary>Gets the compressed size of this file.</summary>
+            <remarks>If the file is not compressed, CompressedSize will return the same value than Size.</remarks>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.Flags">
+            <summary>Gets the flags that apply to this file.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.IsEncrypted">
+            <summary>Gets a value indicating whether this file is encrypted.</summary>
+            <value><c>true</c> if this file is encrypted; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.IsCompressed">
+            <summary>Gets a value indicating whether this file is compressed.</summary>
+            <value><c>true</c> if this file is compressed; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.IsPatch">
+            <summary>Gets a value indicating whether this file is a patch.</summary>
+            <value><c>true</c> if this file is a patch; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.IsDeleted">
+            <summary>Gets a value indicating whether this file has been deleted.</summary>
+            <remarks>The deleted status indicates that the file has been deleted in the current mpq patch archive.</remarks>
+            <value><c>true</c> if this file has been deleted; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.BlockIndex">
+            <summary>Gets the index of the file in the block table.</summary>
+            <remarks>This property is for internal use only.</remarks>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.Seed">
+            <summary>Gets the seed associated with this file.</summary>
+            <remarks>The seed is a value that is used internally to decrypt some files.</remarks>
+            <value>The seed associated with this file.</value>
+        </member>
+        <member name="P:CrystalMpq.MpqFile.IsListed">
+            <summary>Gets a value indicating whether the file was found in the list file of the archive.</summary>
+            <remarks>This can only be true if the list file was parsed.</remarks>
+            <value><c>true</c> if this instance is listed; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:CrystalMpq.MpqArchive">
+            <summary>
+            This class is used to read MPQ archives.
+            It gives you access to all files contained in the archive.
+            </summary>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.#ctor(System.String)">
+            <summary>Initializes a new instance of the <see cref="T:CrystalMpq.MpqArchive"/> class.</summary>
+            <remarks>
+            The file is opened for read access and shares read access.
+            For safety, it is impossible to write to the file as long as it is open.
+            If you wish to allow write access to the file (at your own risk), please use one of the constructors taking a <see cref="T:System.IO.Stream"/>.
+            The listfile will be parsed if present in the archive.
+            </remarks>
+            <param name="filename">The MPQ archive's filename.</param>
+            <exception cref="T:System.IO.InvalidDataException">The specified file is not a valid MPQ archive, or the archive is corrupt.</exception>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.#ctor(System.String,System.Boolean)">
+            <summary>Initializes a new instance of the <see cref="T:CrystalMpq.MpqArchive"/> class.</summary>
+            <remarks>
+            The file is opened for read access and shares read access.
+            For safety, it is impossible to write to the file as long as it is open.
+            If you wish to allow write access to the file (at your own risk), please use one of the constructors taking a <see cref="T:System.IO.Stream"/>.
+            </remarks>
+            <param name="filename">The MPQ archive's filename.</param>
+            <param name="shouldParseListFile">Determines if the listfile will be parsed.</param>
+            <param name="nameCache">The <see cref="!:MpqNameCache"/> to use for caching filenames.</param>
+            <exception cref="T:System.IO.InvalidDataException">The specified file is not a valid MPQ archive, or the archive is corrupt.</exception>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.#ctor(System.IO.Stream)">
+            <summary>Initializes a new instance of the <see cref="T:CrystalMpq.MpqArchive"/> class.</summary>
+            <remarks>The listfile will be parsed if present.</remarks>
+            <param name="stream">A <see cref="T:System.IO.Stream"/> containing the MPQ archive.</param>
+            <exception cref="T:System.IO.InvalidDataException">The specified stream does not contain a valid MPQ archive, or the archive is corrupt.</exception>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.#ctor(System.IO.Stream,System.Boolean)">
+            <summary>Initializes a new instance of the <see cref="T:CrystalMpq.MpqArchive"/> class.</summary>
+            <param name="stream">A <see cref="T:System.IO.Stream"/> containing the MPQ archive.</param>
+            <param name="shouldParseListFile">Determines if the listfile will be parsed.</param>
+            <exception cref="T:System.IO.InvalidDataException">The specified stream does not contain a valid MPQ archive, or the archive is corrupt.</exception>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.ReadEncryptedUInt32Table(System.Byte[],System.Int64,System.Int64,System.Int64,System.UInt32,System.Byte[])">
+            <summary>Reads the encrypted <see cref="T:System.UInt32"/> table at the specified offset in the archive.</summary>
+            <remarks>
+            This method will place the bytes in their native order.
+            Reading must be done by pinning the buffer and accessing it as an <see cref="T:System.UInt32"/> buffer.
+            The only purpose of this method is to share code between the hash table and block table reading methods.
+            Because of its specific behavior, it should not be used anywhere else…
+            </remarks>
+            <param name="buffer">The destination buffer.</param>
+            <param name="tableLength">Length of the table in units of 16 bytes.</param>
+            <param name="tableOffset">The offset in the archive.</param>
+            <param name="dataLength">Length of the data to read.</param>
+            <param name="hash">The hash to use for decrypting the data.</param>
+            <param name="compressedReadBuffer">The compressed read buffer to use for holding temporary data.</param>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.ParseListFile">
+            <summary>Parses the listfile if it has not already been done.</summary>
+            <remarks>
+            Once the list file has been parsed, calls this function will just do nothing.
+            The list file will always be parsed by default, but you can override this behavior using an appropriate constructor.
+            Please note that parsing the list file can take some time, and is not required if you already know the filenames.
+            Also, this operation is irreversible. Once the filenames are present in memory, the only way to free the memory is to close the archive.
+            </remarks>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.TryFilename(System.String,System.Boolean)">
+            <summary>Associate the specified filename with files in the archive.</summary>
+            <remarks>
+            The filename will only be associated to matching files. If no file corresponds to the specified filename, nothing will happen.
+            This function may be useful when you don't have a listfile for a given MPQ archive or when you just want to find some hidden files.
+            </remarks>
+            <param name="filename">The filename to associate.</param>
+            <param name="listed">If set to <c>true</c>, the name was found in the listfile.</param>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.TryFilename(System.String)">
+            <summary>Associate the specified filename with files in the archive.</summary>
+            <remarks>
+            The filename will only be associated to matching files. If no file corresponds to the specified filename, nothing will happen.
+            This function may be useful when you don't have a listfile for a given MPQ archive or when you just want to find some hidden files.
+            </remarks>
+            <param name="filename">The filename you want to try</param>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.OpenFile(System.String)">
+            <summary>Opens a file with the specified filename.</summary>
+            <remarks>
+            This function will only open the first result found.
+            Modern MPQ archives should never contain more than one entry with the same filename.
+            This method is perfectly safe for modern games such as WoW, SII or D3.
+            </remarks>
+            <param name="filename">The filename of the file to open.</param>
+            <returns>An <see cref="T:CrystalMpq.MpqFileStream"/> instance.</returns>
+            <exception cref="T:System.IO.FileNotFoundException">No file with the specified name could be found in the archive.</exception>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.OpenFile(System.String,System.Int32)">
+            <summary>Opens a file with the specified filename and LCID.</summary>
+            <param name="filename">The filename of the file to open.</param>
+            <param name="lcid">The LCID of file to open.</param>
+            <returns>An <see cref="T:CrystalMpq.MpqFileStream"/> instance.</returns>
+            <exception cref="T:System.IO.FileNotFoundException">No file with the specified name could be found in the archive.</exception>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.FindFiles(System.String)">
+            <summary>Finds files with the specified filename.</summary>
+            <remarks>
+            This function will return all <see cref="T:CrystalMpq.MpqFile"/>s matching the given filename.
+            There might be more than one <see cref="T:CrystalMpq.MpqFile"/> returned because of the localization.
+            </remarks>
+            <param name="filename">The filename of the files to find.</param>
+            <returns>Returns an array of <see cref="T:CrystalMpq.MpqFile"/>, containing zero or more <see cref="T:CrystalMpq.MpqFile"/>.</returns>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.FindFile(System.String,System.Int32)">
+            <summary>Finds one file the specified filename and LCID.</summary>
+            <param name="filename">The filename of the file to find.</param>
+            <param name="lcid">The LCID of file to find.</param>
+            <returns>Returns an <see cref="T:CrystalMpq.MpqFile"/> object if file is found, or <c>null</c> otherwise.</returns>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.FindFile(System.String)">
+            <summary>Finds a file with the specified filename.</summary>
+            <remarks>This function will only return the first result found.</remarks>
+            <param name="filename">The filename of the file to find.</param>
+            <returns>Returns an <see cref="T:CrystalMpq.MpqFile"/> object if file is found, or <c>null</c> otherwise.</returns>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.SetPreferredCulture(System.Int32)">
+            <summary>Sets the preferred culture to use when searching files in the archive.</summary>
+            <remarks>It might happen that a given file exists for different culture in the same MPQ archive, but it is more likely that your MPQ archive is already localized itself…</remarks>
+            <param name="lcid">The LCID for the desired culture.</param>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.ResolveBaseFileInternal(CrystalMpq.MpqFile)">
+            <summary>Resolves the data corresponding to the base file of a given patch <see cref="T:CrystalMpq.MpqFile"/>.</summary>
+            <param name="file">The patch file.</param>
+            <returns>A <see cref="T:System.IO.Stream"/> containing the data for the base file if it was found; otherwise <c>null</c>.</returns>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.Read(System.Byte[],System.Int32,System.Int64,System.Int32)">
+            <summary>Reads a sequence of bytes from the inner stream and advances the position within the stream by the number of bytes read.</summary>
+            <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between <paramref name="index"/> and (<paramref name="index"/> + <paramref name="length"/> - 1) replaced by the bytes read from the current source.</param>
+            <param name="index">The zero-based byte offset in <paramref name="buffer"/> at which to begin storing the data read from the current stream.</param>
+            <param name="absoluteOffset">The position in the stream where reading should start.</param>
+            <param name="length">The maximum number of bytes to be read from the current stream.</param>
+            <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.</returns>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.GetUserDataStream">
+            <summary>Gets the user data stream.</summary>
+            <returns>A <see cref="T:System.IO.Stream"/> to be used for accessing user data.</returns>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.HasWeakSignature">
+            <summary>Gets a value that indicate whether the current archive has a weak siganture.</summary>
+            <remarks>Some archives may be signed, which allows us to check archive integrity.</remarks>
+            <value><see langword="true"/> if the current archive has a weak siganture; otherwise, <see langword="false"/>.</value>
+        </member>
+        <member name="E:CrystalMpq.MpqArchive.ResolveBaseFile">
+            <summary>Occurs when the base file for a given <see cref="T:CrystalMpq.MpqFile"/> should be resolved.</summary>
+            <remarks>
+            This event will be raised when opening an <see cref="T:CrystalMpq.MpqFile"/> which is a patch file.
+            Because patch files should be applied to a base file, it is needed to access to this file.
+            The application is responsible for providing a stream containing valid data for this to work.
+            </remarks>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.HasListFile">
+            <summary>Gets a value that indicate whether the current archive has a listfile.</summary>
+            <remarks>
+            Having a listfile is not required for an archive to be readable.
+            However, you need to know the filenames if you want to read the files.
+            </remarks>
+            <value><see langword="true"/> if the current archive has a listfile; otherwise, <see langword="false"/>.</value>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.BlockSize">
+            <summary>Gets the size of blocks in the archive.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.Files">
+            <summary>Gets a collection containing reference to all the files in the archive.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.UserDataOffset">
+            <summary>Gets the size of the MPQ archive.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.UserDataLength">
+            <summary>Gets the size of the MPQ archive.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.ArchiveDataOffset">
+            <summary>Gets the size of the MPQ archive.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.ArchiveDataLength">
+            <summary>Gets the size of the MPQ archive.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.Format">
+            <summary>Gets a flag indicating the format of the archive.</summary>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.HasUserData">
+            <summary>Gets a value indicating whether the current archive contains user data.</summary>
+            <value><see langword="true"/> if the current archive contains user data; otherwise, <see langword="false"/>.</value>
+        </member>
+        <member name="T:CrystalMpq.MpqArchive.MpqFileCollection">
+            <summary>Represents a collection of <see cref="T:CrystalMpq.MpqFile"/> in an <see cref="T:CrystalMpq.MpqArchive"/>.</summary>
+        </member>
+        <member name="M:CrystalMpq.MpqArchive.MpqFileCollection.GetEnumerator">
+            <summary>Gets an enumerator for the collection.</summary>
+            <returns>Returns an enumerator for the current collection.</returns>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.MpqFileCollection.Item(System.Int32)">
+            <summary>Gets a file from the collection.</summary>
+            <param name="index">Index of the desired <see cref="T:CrystalMpq.MpqFile"/> item.</param>
+            <returns>Returns the <see cref="T:CrystalMpq.MpqFile"/> at the specified index.</returns>
+        </member>
+        <member name="P:CrystalMpq.MpqArchive.MpqFileCollection.Count">
+            <summary>Gets the number of <see cref="T:CrystalMpq.MpqFile"/> items in the collection.</summary>
+        </member>
+        <member name="M:CrystalMpq.CommonMethods.GetSharedBuffer(System.Int32)">
+            <summary>Gets a buffer of at least <paramref name="minLength"/> bytes.</summary>
+            <remarks>
+            While actively using the buffer, you must <c>make sure</c> to not call any other method using the same shared buffer.
+            Also, no references to the buffer should be leaked after the method requesting the buffer has returned.
+            <c>Not following these rules carefully will likely lead to a crash.</c>
+            </remarks>
+            <param name="minLength">Minimum required length.</param>
+            <returns>A buffer of at least <paramref name="minLength"/> bytes.</returns>
+        </member>
+        <member name="P:CrystalMpq.CommonMethods.SharedMD5">
+            <summary>Gets a shared <see cref="T:System.Security.Cryptography.MD5"/> implementation.</summary>
+            <remarks>The shared <see cref="T:System.Security.Cryptography.MD5"/> object should be used with care, with the same rules as the shared buffer.</remarks>
+            <value>A <see cref="T:System.Security.Cryptography.MD5"/> object that can be used to compute a hash.</value>
+        </member>
+        <member name="P:CrystalMpq.CommonMethods.SharedSHA1">
+            <summary>Gets a shared <see cref="T:System.Security.Cryptography.SHA1"/> implementation.</summary>
+            <remarks>The shared <see cref="T:System.Security.Cryptography.SHA1"/> object should be used with care, with the same rules as the shared buffer.</remarks>
+            <value>A <see cref="T:System.Security.Cryptography.SHA1"/> object that can be used to compute a hash.</value>
+        </member>
+        <member name="T:CrystalMpq.MpqFileSystem">
+            <summary>Represents a file system composed of multiple MPQ archives.</summary>
+            <remarks>When searching a file, the first archives are always searched first.</remarks>
+        </member>
+        <member name="M:CrystalMpq.MpqFileSystem.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:CrystalMpq.MpqFileSystem"/> class.</summary>
+            <remarks>
+            MPQ patches have the possibility to delete files, making them unavailable in further versions.
+            This constructor will enforce the restriction and prevent you from getting access to deleted files.
+            The files marked as deleted are likely to go away after a major game update, so accessing them is not recommended.
+            If you really need to get access to those files, you can use the other constructor and access them as if they were never deleted.
+            </remarks>
+        </member>
+        <member name="M:CrystalMpq.MpqFileSystem.#ctor(System.Boolean)">
+            <summary>Initializes a new instance of the <see cref="T:CrystalMpq.MpqFileSystem"/> class.</summary>
+            <param name="shouldRetrieveDeletedFiles">if set to <see langword="true"/>, files deleted in a patch will be retrieved.</param>
+        </member>
+        <member name="P:CrystalMpq.MpqFileSystem.Archives">
+            <summary>Gets the collection of <see cref="T:CrystalMpq.MpqArchive"/>.</summary>
+            <remarks>Archives should be added to this collection for being searched.</remarks>
+            <value>The archive list.</value>
+        </member>
+        <member name="T:SevenZip.DataErrorException">
+            <summary>
+            The exception that is thrown when an error in input stream occurs during decoding.
+            </summary>
+        </member>
+        <member name="T:SevenZip.InvalidParamException">
+            <summary>
+            The exception that is thrown when the value of an argument is outside the allowable range.
+            </summary>
+        </member>
+        <member name="M:SevenZip.ICodeProgress.SetProgress(System.Int64,System.Int64)">
+            <summary>
+            Callback progress.
+            </summary>
+            <param name="inSize">
+            input size. -1 if unknown.
+            </param>
+            <param name="outSize">
+            output size. -1 if unknown.
+            </param>
+        </member>
+        <member name="M:SevenZip.ICoder.Code(System.IO.Stream,System.IO.Stream,System.Int64,System.Int64,SevenZip.ICodeProgress)">
+            <summary>
+            Codes streams.
+            </summary>
+            <param name="inStream">
+            input Stream.
+            </param>
+            <param name="outStream">
+            output Stream.
+            </param>
+            <param name="inSize">
+            input Size. -1 if unknown.
+            </param>
+            <param name="outSize">
+            output Size. -1 if unknown.
+            </param>
+            <param name="progress">
+            callback progress reference.
+            </param>
+            <exception cref="T:SevenZip.DataErrorException">
+            if input stream is not valid
+            </exception>
+        </member>
+        <member name="T:SevenZip.CoderPropID">
+            <summary>
+            Provides the fields that represent properties idenitifiers for compressing.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.DefaultProp">
+            <summary>
+            Specifies default property.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.DictionarySize">
+            <summary>
+            Specifies size of dictionary.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.UsedMemorySize">
+            <summary>
+            Specifies size of memory for PPM*.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.Order">
+            <summary>
+            Specifies order for PPM methods.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.BlockSize">
+            <summary>
+            Specifies Block Size.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.PosStateBits">
+            <summary>
+            Specifies number of postion state bits for LZMA (0 &lt;= x &lt;= 4).
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.LitContextBits">
+            <summary>
+            Specifies number of literal context bits for LZMA (0 &lt;= x &lt;= 8).
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.LitPosBits">
+            <summary>
+            Specifies number of literal position bits for LZMA (0 &lt;= x &lt;= 4).
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.NumFastBytes">
+            <summary>
+            Specifies number of fast bytes for LZ*.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.MatchFinder">
+            <summary>
+            Specifies match finder. LZMA: "BT2", "BT4" or "BT4B".
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.MatchFinderCycles">
+            <summary>
+            Specifies the number of match finder cyckes.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.NumPasses">
+            <summary>
+            Specifies number of passes.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.Algorithm">
+            <summary>
+            Specifies number of algorithm.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.NumThreads">
+            <summary>
+            Specifies the number of threads.
+            </summary>
+        </member>
+        <member name="F:SevenZip.CoderPropID.EndMarker">
+            <summary>
+            Specifies mode with end marker.
+            </summary>
+        </member>
+        <member name="T:CrystalMpq.BitBuffer">
+            <summary>Represents a bit buffer.</summary>
+            <remarks>
+            This structure is designed for internal use in CrystalMpq.
+            Incorrect usage of the structure will lead to bugs or even worse, memory leaks.
+            The structure shall always be initialized using this constructor.
+            Once created, there shall never be more than one living copy of the structure.
+            The structure shall always be passed as a reference parameter and never as a value parameter.
+            Once the structure have been used for its purposes, it shall be released using the <see cref="M:CrystalMpq.BitBuffer.Dispose"/> method.
+            After the structure has been disposed, the instance shall never be used again.
+            </remarks>
+        </member>
+        <member name="M:CrystalMpq.BitBuffer.#ctor(System.Byte[],System.Int32,System.Int32)">
+            <summary>Initializes a new instance of the <see cref="T:CrystalMpq.BitBuffer"/> struct.</summary>
+            <remarks>The structure shall always be initialized using this constructor.</remarks>
+            <param name="buffer">Array of bit containing the data</param>
+            <param name="index">Position of data in the array</param>
+            <param name="count">Size of data in the array</param>
+        </member>
+        <member name="M:CrystalMpq.MpqBlockEntry.OnNameDetected(System.String,System.Boolean,System.Boolean)">
+            <summary>Called internally when the name has been detected.</summary>
+            <param name="name">Detected filename.</param>
+            <param name="cache">If set to <c>true</c>, remember the filename.</param>
+            <param name="listed">If set to <c>true</c>, the name was detected from the listfile.</param>
+            <remarks>Right now, the method will only update the seed when needed.</remarks>
+        </member>
+        <member name="T:CrystalMpq.MpqFileFlags">
+            <summary>Flags which can be applied to files in a MPQ archive.</summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.DclCompressed">
+            <summary>The file is compressed using DCL compression only.</summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.MultiCompressed">
+            <summary>The file is compressed using Blizzard's multiple compression system.</summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.Compressed">
+            <summary>The file is compressed using either method.</summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.Encrypted">
+            <summary>The file is encrypted with a seed.</summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.PositionEncrypted">
+            <summary>The encryption seed is altered with the file offset.</summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.Patch">
+            <summary>The file is a patch.</summary>
+            <remarks>This should only be found whithin patch archives.</remarks>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.SingleBlock">
+            <summary>The file is stored as a single unit and not in multiple blocks.</summary>
+            <remarks>This was added with Burning Crusade.</remarks>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.Deleted">
+            <summary>The file was deleted in a patch.</summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.SectorCrc">
+            <summary>The file has a CRC for each sector.</summary>
+        </member>
+        <member name="F:CrystalMpq.MpqFileFlags.Exists">
+            <summary>The file exists. This flag should always be set for valid files.</summary>
+        </member>
+        <member name="T:CrystalMpq.MpqVersionNotSupportedException">
+            <summary>Exception thrown when the MPQ version is not recognized by the library.</summary>
+        </member>
+        <member name="M:CrystalMpq.MpqVersionNotSupportedException.#ctor(System.UInt16)">
+            <summary>Initializes a new instance of the <see cref="T:CrystalMpq.MpqVersionNotSupportedException"/> class.</summary>
+        </member>
+        <member name="T:CrystalMpq.ResolveStreamEventArgs">
+            <summary><see cref="T:CrystalMpq.ResolveStreamEventArgs"/> is used for applying a patch.</summary>
+            <remarks>It is the responsibility to provide a valid stream.</remarks>
+        </member>
+        <member name="M:CrystalMpq.ResolveStreamEventArgs.Dispose">
+            <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        </member>
+        <member name="M:CrystalMpq.ResolveStreamEventArgs.TransferStreamOwnership">
+            <summary>Transfers the stream ownership to the caller.</summary>
+            <remarks>
+            This method will return the value of <see cref="P:CrystalMpq.ResolveStreamEventArgs.Stream"/> and set the property to <c>null</c> afterwards.
+            After a call to this method, the caller becomes responsible for managing the stream.
+            </remarks>
+            <returns>The <see cref="T:System.IO.Stream"/> previously contained in this instance.</returns>
+        </member>
+        <member name="P:CrystalMpq.ResolveStreamEventArgs.Stream">
+            <summary>Gets or sets the stream containing the data for the base file.</summary>
+            <remarks>The instance of <see cref="T:CrystalMpq.ResolveStreamEventArgs"/> will take ownership of the stream.</remarks>
+            <value>The stream.</value>
+        </member>
+        <member name="T:CrystalMpq.SeedNotFoundException">
+            <summary>Thrown when the seed for a file is not known.</summary>
+            <remarks>The seed is needed for reading encrypted files.</remarks>
+        </member>
+        <member name="T:CrystalMpq.MpqCompressionNotSupportedException">
+            <summary>Thrown when a compression is not handled by the library.</summary>
+            <remarks>Known but unsupported compressions will be reported by their name.</remarks>
+        </member>
+        <member name="P:CrystalMpq.MpqCompressionNotSupportedException.CompressionMethodId">
+            <summary>Gets the id of the unsupported compression method.</summary>
+            <value>The compression method id.</value>
+        </member>
+        <member name="P:CrystalMpq.MpqCompressionNotSupportedException.CompressionMethodName">
+            <summary>Gets the name of the unsupported compression method.</summary>
+            <value>The name of the compression method.</value>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,132 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>DiIiS_NA</RootNamespace>
+    <Company>DiIiS Team</Company>
+    <Copyright>iEvE</Copyright>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
+    <StartupObject>DiIiS_NA.Program</StartupObject>
+    <DebugType>full</DebugType>
+    <Configurations>Debug;Release;github</Configurations>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<DebugSymbols>false</DebugSymbols>
+	
+	<!-- Native AOT settings -->
+	<RootAllApplicationAssemblies>true</RootAllApplicationAssemblies>
+	<IlcGenerateCompleteTypeMetadata>true</IlcGenerateCompleteTypeMetadata>
+	<IlcGenerateStackTraceData>true</IlcGenerateStackTraceData>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='github|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+	<ItemGroup>
+        <TrimmerRootAssembly Include="mscorlib" />
+        <TrimmerRootAssembly Include="System.Runtime" />
+        <TrimmerRootAssembly Include="System.Diagnostics.FileVersionInfo" />
+        <TrimmerRootAssembly Include="System.Threading.Thread" />
+    </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\DiIiSNet\BZNET.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CrystalMpq">
+      <HintPath>libs\CrystalMpq.dll</HintPath>
+    </Reference>
+    <Reference Include="Gibbed.IO">
+      <HintPath>libs\Gibbed.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.ProtocolBuffers">
+      <HintPath>libs\Google.ProtocolBuffers.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>libs\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Nini">
+      <HintPath>libs\Nini.dll</HintPath>
+    </Reference>
+    <Reference Include="PowerCollections">
+      <HintPath>libs\PowerCollections.dll</HintPath>
+    </Reference>
+    <Reference Include="WatsonTcp">
+      <HintPath>libs\WatsonTcp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="3.9.0" />
+    <PackageReference Include="DotNetty.Buffers" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Codecs" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Codecs.Http" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Common" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Handlers" Version="0.7.5" />
+    <PackageReference Include="DotNetty.Transport" Version="0.7.5" />
+    <PackageReference Include="FluentNHibernate" Version="3.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />
+    <PackageReference Include="Npgsql" Version="7.0.1" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<None Update="2c11c0ec90a821ecc3dac6b81db355b2a2ff9f15e1d4f9512f3a96380c980887.achu">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="bnetserver.p12">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="config.ini">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="database.Account.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="database.Worlds.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="DataBase\mpqdata.db">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="DataBase\MPQ\Core.mpq">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="DataBase\MPQ\Core1.mpq">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="DataBase\MPQ\Core2.mpq">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="DataBase\MPQ\Core3.mpq">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="DataBase\MPQ\Core4.mpq">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="DiIiS_Battle.net.p12">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="D3-GameServer\MessageSystem\GameAttribute.List.cs">
+	    <DependentUpon>GameAttribute.cs</DependentUpon>
+	  </Compile>
+	  <Compile Update="D3-GameServer\CommandManager\InvalidParametersException.cs">
+	    <DependentUpon>CommandException.cs</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+</Project>
