@@ -14,7 +14,7 @@ public class AnsiTarget : LogTarget
     private readonly Table _table;
     private static CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
     private static bool _shutdown = true;
-    
+
     public AnsiTarget(Logger.Level minLevel, Logger.Level maxLevel, bool includeTimeStamps, string timeStampFormat)
     {
         _shutdown = false;
@@ -44,7 +44,7 @@ public class AnsiTarget : LogTarget
                 {
                     currentConsoleSize = Console.WindowHeight * Console.WindowWidth;
                 }
-                catch {}
+                catch { }
                 if (lastCount != _table.Rows.Count || consoleSize != currentConsoleSize)
                 {
                     lastCount = _table.Rows.Count;
@@ -57,11 +57,11 @@ public class AnsiTarget : LogTarget
             _shutdown = true;
         });
     }
-    
+
     public static void StopIfRunning(bool clear = false)
     {
         CancellationTokenSource.Cancel();
-        while(!_shutdown)
+        while (!_shutdown)
             Thread.Sleep(100);
         Thread.Sleep(1000);
         if (clear)
@@ -70,7 +70,7 @@ public class AnsiTarget : LogTarget
             AnsiConsole.Cursor.SetPosition(0, 0);
         }
     }
-    
+
     /// <summary>
     /// Logging keywords to beautify the output.
     /// It's ugly, I know.
@@ -93,17 +93,17 @@ public class AnsiTarget : LogTarget
             .Replace("Blizzless", $"[{blizz}]Blizz[/][{less}]less[/]", StringComparison.CurrentCultureIgnoreCase)
             .Replace("Diablo III", $"[{diablo}]Diablo[/] [{d3}]III[/]", StringComparison.CurrentCultureIgnoreCase)
             .Replace(@"D3\.", $"[{diablo}]D[/][{d3}]3[/]", StringComparison.CurrentCultureIgnoreCase) //D3.*
-            
+
             .Replace("SQL", $"[{sql}]SQL[/]")
             .Replace("Discord", $"[{discord}]Discord[/]", StringComparison.CurrentCultureIgnoreCase)
-            
+
             .Replace("null", $"[{unkNull}]null[/]", StringComparison.CurrentCultureIgnoreCase)
             .Replace($"not [{unkNull}]null[/]", $"[{notNull}]is not null[/]", StringComparison.CurrentCultureIgnoreCase)
             .Replace($"is [{unkNull}]null[/]", $"[{@null}]is null[/]", StringComparison.CurrentCultureIgnoreCase);
     }
 
-    
-    private static Dictionary<string, string> _replacements = new () 
+
+    private static Dictionary<string, string> _replacements = new()
     {
         ["["] = "[[",
         ["]"] = "]]",
@@ -111,22 +111,19 @@ public class AnsiTarget : LogTarget
         ["$[["] = "[",
         ["]]$"] = "]"
     };
-    
+
     /// <summary>
     /// Performs a cleanup on the target.
-    /// All [ becomes [[, and ] becomes ]] (for ignoring ANSI codes)
-    /// To use a style, use $[..]$abc$[/]$.
-    /// Example:
-    /// Logger.Warn("This is a $[red]$red$[/]$ message");
-    /// instead of
-    /// Logger.Warn("This is a [red]red[/] message");
+    /// Returns a markup-escaped string so Spectre.Console will never throw.
     /// </summary>
-    /// <param name="x"></param>
-    /// <returns></returns>
     public static string Cleanup(string input)
     {
         if (string.IsNullOrEmpty(input)) return "";
-        return Beautify(_replacements.Aggregate(input, (current, replacement) => current.Replace(replacement.Key, replacement.Value)));
+        
+        var beautified = Beautify(input);
+        
+        var replaced = _replacements.Aggregate(beautified, (current, replacement) => current.Replace(replacement.Key, replacement.Value));
+        return Markup.Escape(replaced);
     }
     public override void LogMessage(Logger.Level level, string logger, string message)
     {
@@ -161,15 +158,23 @@ public class AnsiTarget : LogTarget
     {
         Style messageStyle = GetStyleByLevel(level);
         Style exStyle = exFormat ? new Style(foreground: Color.Red3_1) : new Style(foreground: Color.Green3_1);
-        var colTimestamp = new Markup(DateTime.Now.ToString(TimeStampFormat), messageStyle).Centered();
-        var colLevel = new Markup(level.ToString(), messageStyle).RightJustified();
-        var colMessage = new Markup(Cleanup(message), messageStyle).Centered();
-        var colLogger = new Markup(logger, new Style(messageStyle.Foreground, messageStyle.Background, messageStyle.Decoration
-        #if DEBUG
+
+        // Экранируем содержимое, чтобы Spectre.Console не упал из‑за незакрытых скобок
+        var safeTime = Markup.Escape(DateTime.Now.ToString(TimeStampFormat));
+        var safeLevel = Markup.Escape(level.ToString());
+        var safeMessage = Markup.Escape(Cleanup(message) ?? "");
+        var safeLogger = Markup.Escape(logger ?? "");
+        var safeExMessage = Markup.Escape(exMessage ?? "");
+
+        var colTimestamp = new Markup(safeTime, messageStyle).Centered();
+        var colLevel = new Markup(safeLevel, messageStyle).RightJustified();
+        var colMessage = new Markup(safeMessage, messageStyle).Centered();
+        var colLogger = new Markup(safeLogger, new Style(messageStyle.Foreground, messageStyle.Background, messageStyle.Decoration
+#if DEBUG
         //, link = ...
-        #endif
+#endif
         )).LeftJustified();
-        var colError = new Markup(isError ? exMessage : "", exStyle).RightJustified();
+        var colError = new Markup(isError ? safeExMessage : "", exStyle).RightJustified();
         if (IncludeTimeStamps) _table.AddRow(colTimestamp, colLevel, colMessage, colLogger, colError);
         else _table.AddRow(colLevel, colMessage, colLogger, colError);
     }
