@@ -60,7 +60,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
                 // Otherwise → it is indeed an expected asset that does not exist → log error.
                 var path = Path.GetFileName(filePath);
-                Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]{memberName}()$[/]$ - $[underline white]{memberName}() in {path}:{lineNumber}$[/]$");
+                Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
                 return null;
             }
             switch (sno)

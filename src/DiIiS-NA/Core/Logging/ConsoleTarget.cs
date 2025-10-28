@@ -27,18 +27,15 @@ namespace DiIiS_NA.Core.Logging
         {
             var timeStamp = IncludeTimeStamps ? "[[" + DateTime.Now.ToString(TimeStampFormat) + "]] " : "";
 
-            // Экранируем всё для Spectre.Console markup, чтобы избежать исключений при наличии ']' и других символов
-            string safeLogger = Markup.Escape(string.IsNullOrEmpty(logger) ? "" : logger);
-            string safeMessage = Markup.Escape(string.IsNullOrEmpty(message) ? "" : AnsiTarget.Cleanup(message));
-
             try
             {
-                AnsiConsole.MarkupLine($"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{safeLogger,20}]]: {safeMessage}[/]");
+                AnsiConsole.MarkupLine($"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{Cleanup(logger),20}]]: {Cleanup(message)}[/]");
             }
             catch (Exception ex)
             {
-                // Фоллбек: если markup по какой-то причине всё ещё падает, не ломаем сервер — пишем в стандартный вывод
-                Console.WriteLine($"{timeStamp}[{level}] [{logger}]: {message} - (Logging error: {ex.GetType().Name}: {ex.Message})");
+                // Фоллбек без форматирования
+                var safeTimeStamp = IncludeTimeStamps ? "[" + DateTime.Now.ToString(TimeStampFormat) + "] " : "";
+                Console.WriteLine($"{safeTimeStamp}[{level}] [{logger}]: {message} - (Logging error: {ex.Message})");
             }
         }
 
@@ -50,20 +47,17 @@ namespace DiIiS_NA.Core.Logging
         {
             var timeStamp = IncludeTimeStamps ? "[[" + DateTime.Now.ToString(TimeStampFormat) + "]] " : "";
 
-            string safeLogger = Markup.Escape(string.IsNullOrEmpty(logger) ? "" : logger);
-            string safeMessage = Markup.Escape(string.IsNullOrEmpty(message) ? "" : AnsiTarget.Cleanup(message));
-            string safeExMessage = Markup.Escape(exception?.Message ?? "");
-
             try
             {
                 AnsiConsole.MarkupLine(
-                    $"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{safeLogger,20}]]: {safeMessage}[/] - [underline red on white][[{Markup.Escape(exception.GetType().Name)}]][/] [red]{safeExMessage}[/]");
+                    $"{timeStamp}{SetColor(level, true)}[[{level.ToString(),8}]][/] {SetColor(level)}[[{Cleanup(logger),20}]]: {Cleanup(message)}[/] - [underline red on white][[{exception.GetType().Name}]][/][red] {Cleanup(exception.Message)}[/]");
                 AnsiConsole.WriteException(exception);
             }
             catch (Exception ex)
             {
                 // fallback to Console.WriteLine to avoid logging causing crashes
-                Console.WriteLine($"{timeStamp}[{level}] [{logger}]: {message} - [Exception] {exception} (Logging error: {ex.GetType().Name}: {ex.Message})");
+                var safeTimeStamp = IncludeTimeStamps ? "[" + DateTime.Now.ToString(TimeStampFormat) + "] " : "";
+                Console.WriteLine($"{safeTimeStamp}[{level}] [{logger}]: {message} - [Exception] {exception} (Logging error: {ex.Message})");
             }
         }
 
@@ -79,8 +73,30 @@ namespace DiIiS_NA.Core.Logging
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        string Cleanup(string x) => AnsiTarget.Beautify(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
+        //string Cleanup(string x) => AnsiTarget.Beautify(x.Replace("[", "[[").Replace("]", "]]").Replace("$[[/]]$", "[/]").Replace("$[[", "[").Replace("]]$", "]"));
+        string Cleanup(string x)
+        {
+            if (string.IsNullOrEmpty(x)) return "";
 
+            // Временные маркеры для защиты нашего кастомного форматирования
+            string protectedText = x
+                .Replace("$[/]$", "{{TEMP_END}}")
+                .Replace("$[", "{{TEMP_OPEN}}")
+                .Replace("]$", "{{TEMP_CLOSE}}");
+
+            // Экранируем все оставшиеся случайные скобки
+            string escaped = protectedText
+                .Replace("[", "[[")
+                .Replace("]", "]]");
+
+            // Восстанавливаем наше форматирование в правильную Spectre.Console разметку
+            string restored = escaped
+                .Replace("{{TEMP_OPEN}}", "[")
+                .Replace("{{TEMP_CLOSE}}", "]")
+                .Replace("{{TEMP_END}}", "[/]");
+
+            return AnsiTarget.Beautify(restored);
+        }
 
         /// <param name="level"></param>
         private static string SetColor(Logger.Level level, bool withBackground = false)
