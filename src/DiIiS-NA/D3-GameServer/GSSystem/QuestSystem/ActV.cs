@@ -20,14 +20,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 		public ActV(Game game) : base(game)
 		{
 			//*
-			var Quest1Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][251355].Data;
-			var Quest2Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][284683].Data;
-			var Quest3Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][285098].Data;
-			var Quest4Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][257120].Data;
-			var Quest5Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][263851].Data;
-			var Quest6Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][273790].Data;
-			var Quest7Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][269552].Data;
-			var Quest8Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][273408].Data;
+			var quest1Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][251355].Data;
+			var quest2Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][284683].Data;
+			var quest3Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][285098].Data;
+			var quest4Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][257120].Data;
+			var quest5Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][263851].Data;
+			var quest6Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][273790].Data;
+			var quest7Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][269552].Data;
+			var quest8Data = (DiIiS_NA.Core.MPQ.FileFormats.Quest)MPQStorage.Data.Assets[SNOGroup.Quest][273408].Data;
 
 		}
 		public static void AddQuestConversation(Actor actor, int conversation)
@@ -43,10 +43,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			}
 			else if (actor != null)
 			{
-				foreach (var N in actor.World.GetActorsBySNO(actor.SNO))
-					if (N is InteractiveNPC)
+				foreach (var actorInteractive in actor.World.GetActorsBySNO(actor.SNO))
+					if (actorInteractive is InteractiveNPC actorInteractiveNpc)
 					{
-						NPC = N as InteractiveNPC;
+						NPC = actorInteractiveNpc;
 						NPC.Conversations.Clear();
 						NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
 						NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;

@@ -15,21 +15,21 @@ using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
-	public class ActI : QuestRegistry
-	{
-		static readonly Logger Logger = LogManager.CreateLogger();
+    public class ActI : QuestRegistry
+    {
+        static readonly Logger Logger = LogManager.CreateLogger();
 
-		private uint LeahId = 0;
+        private uint LeahId = 0;
 
-		private uint LeahTempId = 0;
+        private uint LeahTempId = 0;
 
         public List<ActorSystem.Monster> Prisoners = new List<ActorSystem.Monster>() { };
 
         public EffectActor ProxyObject = null;
 
         public ActI(Game game) : base(game)
-		{
-		}
+        {
+        }
 
         public override void SetQuests()
         {
@@ -258,7 +258,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         }
                         else
                         {
-                            Logger.Warn($"Can't add leah follower: $[turquoise2]${Game.CurrentQuest} / {Game.CurrentStep}$[/]$");
+                            Logger.Warn($"Can't add $[lightseagreen]$Leah$[/]$ follower: {Game.CurrentQuest} / {Game.CurrentStep}");
                         }
 
                     });
@@ -279,7 +279,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
                         if (Game.CurrentQuest == 72095)
-                            if (Game.CurrentStep == 28 || Game.CurrentStep == 7 || Game.CurrentStep == -1)
+                            if (Game.CurrentStep is 28 or 7 or -1)
                                 ActiveArrow(world, ActorSno._trout_oldtristram_exit_gate);
 
                     });
@@ -417,12 +417,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Saveable = true,
                 NextStep = 23,
                 OnAdvance = () =>
-                { //go to church				
+                {
+                    //go to church				
                     var world = Game.GetWorld(WorldSno.trout_town);
                     ListenProximity(ActorSno._trdun_cath_cathedraldoorexterior, new Advance());
                     var leah = world.GetActorBySNO(ActorSno._leah);
                     if (leah != null)
+                    {
                         leah.Hidden = false;
+                        leah.SetVisible(true);
+                    }
                     SetActorVisible(world, ActorSno._tristram_mayor, false);
                     var cart = world.GetActorBySNO(ActorSno._trout_newtristram_blocking_cart, true);
                     if (cart != null)
@@ -490,6 +494,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //go with Cain
                     Game.CurrentEncounter.Activated = false;
+
                     StartConversation(Game.GetWorld(WorldSno.trdun_cain_intro), 72496);
                     ListenTeleport(19938, new Advance());
                 }
@@ -512,19 +517,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         StartConversation(tristramWorld, 72498);
                     });
                     //StartConversation(this.Game.GetWorld(71150), 72496);
-                    var leah = tristramWorld.GetActorBySNO(ActorSno._leah, true);
-                    if (leah == null)
+                    DestroyFollower(ActorSno._leah);
+
+                    var leah = tristramWorld.GetActorsBySNO(ActorSno._leah);
+                    if (!leah.Any())
                     {
-                        leah = tristramWorld.GetActorBySNO(ActorSno._leah, false);
-                        if (leah != null)
-                        {
-                            leah.Hidden = false;
-                            leah.SetVisible(true);
-                        }
-                        else
-                        {
-                            Logger.Warn($"Leah not found in world {tristramWorld.SNO.ToString()} - quest 72095/step 32");
-                        }
+                        Logger.Warn("$[lightseagreen]$Leah$[/]$ not found in world.");
+                    }
+                    foreach (var l in leah)
+                    {
+                        l.Hidden = false;
+                        l.SetVisible(true);
                     }
                     ListenConversation(198617, new Advance());
                 }
@@ -544,7 +547,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Shattered Crown
-            Game.QuestManager.Quests.Add(72221, new Quest { RewardXp = 900, RewardGold = 195, Completed = false, Saveable = true, NextQuest = 72061});
+            Game.QuestManager.Quests.Add(72221, new Quest { RewardXp = 900, RewardGold = 195, Completed = false, Saveable = true, NextQuest = 72061 });
 
             Game.QuestManager.Quests[72221].Steps.Add(-1, new QuestStep
             {
@@ -589,7 +592,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     Cain.Attributes.BroadcastChangedIfRevealed();
 
                     ListenConversation(198292, new Advance());
-                    
+
                 }
             }); //Поговорить с Хэдриком
 
@@ -624,7 +627,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             Smith.Attributes[GameAttributes.Damage_Weapon_Min, 0] = DamageMin * Game.DmgModifier;
                             Smith.Attributes[GameAttributes.Damage_Weapon_Delta, 0] = DamageDelta;
                         }
-                        
+
                     });
                     //*/
                     ListenInteract(ActorSno._trdun_blacksmith_cellardoor_breakable, 1, new CellarZombies()); // Октрыть дверь
@@ -771,7 +774,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Reign of Black King
-            Game.QuestManager.Quests.Add(72061, new Quest { RewardXp = 5625, RewardGold = 810, Completed = false, Saveable = true, NextQuest = 117779});
+            Game.QuestManager.Quests.Add(72061, new Quest { RewardXp = 5625, RewardGold = 810, Completed = false, Saveable = true, NextQuest = 117779 });
 
             Game.QuestManager.Quests[72061].Steps.Add(-1, new QuestStep
             {
@@ -832,7 +835,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 }
             });
 
-            
+
             Game.QuestManager.Quests[72061].Steps.Add(37, new QuestStep
             {
                 Completed = false,
@@ -841,7 +844,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //help Cormac(kill cultists)
                     var Kormak_Imprisoned = Game.GetWorld(WorldSno.a1trdun_level05_templar).GetActorBySNO(ActorSno._templarnpc_imprisoned);
-                    foreach (var act in Kormak_Imprisoned.GetActorsInRange(80)) 
+                    foreach (var act in Kormak_Imprisoned.GetActorsInRange(80))
                         if (act.SNO == ActorSno._triunecultist_a_templar)
                         {
                             Prisoners.Add(act as ActorSystem.Monster);
@@ -1041,7 +1044,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             var portal = world.GetPortals(player.Value);
                             portal.First().SetUsable(false);
                         }
-                        
+
                         Open(Game.GetWorld(WorldSno.a1trdun_king_level08), ActorSno._trdun_cath_gate_b_skeletonking);
                     });
                     //Open(this.Game.GetWorld(73261), 172645);
@@ -1138,7 +1141,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Tyrael Sword
-            Game.QuestManager.Quests.Add(117779, new Quest { RewardXp = 4125, RewardGold = 630, Completed = false, Saveable = true, NextQuest = 72738});
+            Game.QuestManager.Quests.Add(117779, new Quest { RewardXp = 4125, RewardGold = 630, Completed = false, Saveable = true, NextQuest = 72738 });
 
             Game.QuestManager.Quests[117779].Steps.Add(-1, new QuestStep
             {
@@ -1254,7 +1257,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Broken Blade
-            Game.QuestManager.Quests.Add(72738, new Quest { RewardXp = 6205, RewardGold = 1065, Completed = false, Saveable = true, NextQuest = 73236});
+            Game.QuestManager.Quests.Add(72738, new Quest { RewardXp = 6205, RewardGold = 1065, Completed = false, Saveable = true, NextQuest = 73236 });
 
             Game.QuestManager.Quests[72738].Steps.Add(-1, new QuestStep
             {
@@ -1592,7 +1595,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Doom of Vortham
-            Game.QuestManager.Quests.Add(73236, new Quest { RewardXp = 4950, RewardGold = 670, Completed = false, Saveable = true, NextQuest = 72546});
+            Game.QuestManager.Quests.Add(73236, new Quest { RewardXp = 4950, RewardGold = 670, Completed = false, Saveable = true, NextQuest = 72546 });
 
             Game.QuestManager.Quests[73236].Steps.Add(-1, new QuestStep
             {
@@ -1660,7 +1663,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Saveable = true,
                 NextStep = 16,
                 OnAdvance = () =>
-                {  
+                {
                     Game.AddOnLoadWorldAction(WorldSno.trout_townattack, () =>
                     {
                         if (Game.CurrentQuest == 73236 && Game.CurrentStep == 11)
@@ -1746,7 +1749,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 9,
                 OnAdvance = () =>
                 {  //go to Cain's house
-                     
+
                     if (!Game.Empty) StartConversation(Game.GetWorld(WorldSno.fields_cave_swordofjustice_level01), 130225);
                     ListenTeleport(130163, new StartSceneinHome());
                     //ListenTeleport(130163, new LaunchConversation(165125));
@@ -1764,7 +1767,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //ListenConversation(165125, new LaunchConversation(143386));
                     //ListenConversation(143386, new LaunchConversation(120382));
                     //ListenConversation(120382, new LaunchConversation(121703));
-                    ListenConversation(121703, new EndSceneinHome());  
+                    ListenConversation(121703, new EndSceneinHome());
                 }
             });
 
@@ -1780,7 +1783,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region To the Black Cult
-            Game.QuestManager.Quests.Add(72546, new Quest { RewardXp = 8275, RewardGold = 455, Completed = false, Saveable = true, NextQuest = 72801});
+            Game.QuestManager.Quests.Add(72546, new Quest { RewardXp = 8275, RewardGold = 455, Completed = false, Saveable = true, NextQuest = 72801 });
 
             Game.QuestManager.Quests[72546].Steps.Add(-1, new QuestStep
             {
@@ -1802,16 +1805,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     Game.AddOnLoadWorldAction(WorldSno.trout_townattack_chapelcellar_a, () =>
                     {
                         var world = Game.GetWorld(WorldSno.trout_townattack_chapelcellar_a);
-                        foreach (var Table in world.GetActorsBySNO(ActorSno._trout_townattack_cellar_altar)) {
+                        foreach (var Table in world.GetActorsBySNO(ActorSno._trout_townattack_cellar_altar))
+                        {
                             Table.SetUsable(false);
-                            Table.SetIdleAnimation((AnimationSno)Table.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]); 
+                            Table.SetIdleAnimation((AnimationSno)Table.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
                         }
                         foreach (var Maghda in world.GetActorsBySNO(ActorSno._maghda_a_tempprojection)) Maghda.Destroy();
                     });
                     var tristramWorld = Game.GetWorld(WorldSno.trout_town);
                     var Leah = tristramWorld.GetActorBySNO(ActorSno._leah);
                     var LeahAfterEvent = tristramWorld.SpawnMonster(ActorSno._leah_afterevent31_exit, Leah.Position);
-                    
+
                     //ListenProximity(4580, new LaunchConversation(93337)); //cork
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Conversations.Clear();
                     (LeahAfterEvent as ActorSystem.InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(93337));
@@ -2010,7 +2014,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Captived Angel
-            Game.QuestManager.Quests.Add(72801, new Quest { RewardXp = 10925, RewardGold = 1465, Completed = false, Saveable = true, NextQuest = 136656});
+            Game.QuestManager.Quests.Add(72801, new Quest { RewardXp = 10925, RewardGold = 1465, Completed = false, Saveable = true, NextQuest = 136656 });
 
             Game.QuestManager.Quests[72801].Steps.Add(-1, new QuestStep
             {
@@ -2204,7 +2208,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             });
             #endregion
             #region Return to New Tristram
-            Game.QuestManager.Quests.Add(136656, new Quest { RewardXp = 0, RewardGold = 0, Completed = false, Saveable = true, NextQuest = -1});
+            Game.QuestManager.Quests.Add(136656, new Quest { RewardXp = 0, RewardGold = 0, Completed = false, Saveable = true, NextQuest = -1 });
 
             Game.QuestManager.Quests[136656].Steps.Add(-1, new QuestStep
             {
@@ -2236,7 +2240,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 4,
                 OnAdvance = () =>
                 { //talk with caravan leader
-                    
+
                     ListenConversation(177564, new ChangeAct(100));
                 }
             });
@@ -2254,10 +2258,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
         }
 
         public static bool Break(MapSystem.World world, ActorSno sno)
-		{
-			var actor = world.GetActorBySNO(sno);
-			(actor as DesctructibleLootContainer).Die();
-			return true;
-		}
-	}
+        {
+            var actor = world.GetActorBySNO(sno);
+            if (actor is DesctructibleLootContainer loot)
+            {
+                loot.Die();
+                return true;
+            }
+
+            Logger.Warn($"Player tried to break {sno} but it's not a $[underline bold yellow]$Destructible Loot Container$[/]$.");
+
+            return false;
+        }
+    }
 }

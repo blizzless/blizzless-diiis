@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Spectre.Console;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 {
@@ -416,16 +417,25 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 					if (mn.Master is Player mstr)
 					{
-						if (mstr.SkillSet.HasPassive(209041) && mn is CorpseSpider or CorpseSpiderQueen)
-							mstr.World.BuffManager.AddBuff(mstr, mstr, new VisionQuestBuff());
+                        try
+                        {
+                            if (mstr.SkillSet.HasPassive(209041) && mn is CorpseSpider or CorpseSpiderQueen)
+                                mstr.World.BuffManager.AddBuff(mstr, mstr, new VisionQuestBuff());
 
-						if (mn.SNO == ActorSno._dh_companion_spider)
-							if (!Context.Target.World.BuffManager.HasBuff<Companion.SpiderWebbedDebuff>(Context.Target))
-								Context.Target.World.BuffManager.AddBuff(Context.Target, Context.Target, new Companion.SpiderWebbedDebuff());
+                            if (mn.SNO == ActorSno._dh_companion_spider)
+                                if (!Context.Target.World.BuffManager.HasBuff<Companion.SpiderWebbedDebuff>(
+                                        Context.Target))
+                                    Context.Target.World.BuffManager.AddBuff(Context.Target, Context.Target,
+                                        new Companion.SpiderWebbedDebuff());
 
-						if (Context.Target.World.BuffManager.HasBuff<Fragile.Rune_D_Buff>(Context.Target))
-							TotalDamage *= 1.15f;
-					}
+                            if (Context.Target.World.BuffManager.HasBuff<Fragile.Rune_D_Buff>(Context.Target))
+                                TotalDamage *= 1.15f;
+                        }
+                        catch (Exception ex)
+                        {
+							Logger.MethodTrace($"Error: $[red3_1]${ex.Message.EscapeMarkup()}$[/]$");
+                        }
+                    }
 					break;
 			}
 

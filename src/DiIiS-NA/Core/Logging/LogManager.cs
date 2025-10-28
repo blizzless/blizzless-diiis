@@ -49,6 +49,11 @@ namespace DiIiS_NA.Core.Logging
 			return Loggers[name]; // return the newly created logger.
 		}
 
+        public static Logger CreateLogger<T>()
+        {
+            return CreateLogger(typeof(T).Name);
+        }
+
 		/// <summary>
 		/// Attachs a new log target.
 		/// </summary>

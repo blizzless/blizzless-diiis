@@ -374,10 +374,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			}
 			else if (actor != null)
 			{
-				foreach (var N in actor.World.GetActorsBySNO(actor.SNO))
-					if (N is InteractiveNPC)
+				foreach (var n in actor.World.GetActorsBySNO(actor.SNO))
+					if (n is InteractiveNPC interactiveNpc)
 					{
-						NPC = N as InteractiveNPC;
+						NPC = interactiveNpc;
 						NPC.Conversations.Clear();
 						NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
 						NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
@@ -391,12 +391,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public static void RemoveConversations(Actor actor)
 		{
-			var NPC = actor as InteractiveNPC;
-			if (NPC != null)
+			if (actor is InteractiveNPC npc)
 			{
-				NPC.Conversations.Clear();
-				NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
-				NPC.Attributes.BroadcastChangedIfRevealed();
+				npc.Conversations.Clear();
+				npc.Attributes[GameAttributes.Conversation_Icon, 0] = 1;
+				npc.Attributes.BroadcastChangedIfRevealed();
 			}
 		}
 	}

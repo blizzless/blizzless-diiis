@@ -504,7 +504,10 @@ namespace DiIiS_NA.LoginServer.Battle
 			if (string.IsNullOrWhiteSpace(LoginServerConfig.Instance.Motd) || !LoginServerConfig.Instance.MotdEnabled)
 				return;
 			Logger.Debug($"Motd sent to {Account.BattleTag}.");
-			SendServerWhisper(LoginServerConfig.Instance.Motd);
+			SendServerWhisper(LoginServerConfig.Instance.Motd
+                .Replace("{act}", InGameClient.Game.GetCurrentActName(true))
+                .Replace("{quest}", InGameClient.Game.GetCurrentQuestName(true))
+            );
 		}
 
         public override void ChannelInactive(IChannelHandlerContext context)
@@ -515,7 +518,7 @@ namespace DiIiS_NA.LoginServer.Battle
 
 		private void DisconnectClient()
 		{
-			if (Account != null && Account.GameAccount != null) Account.GameAccount.LoggedInClient = null;
+			if (Account is { GameAccount: not null }) Account.GameAccount.LoggedInClient = null;
 			PlayerManager.PlayerDisconnected(this);
 		}
 	}
