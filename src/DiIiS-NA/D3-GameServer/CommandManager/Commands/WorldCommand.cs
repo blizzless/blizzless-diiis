@@ -9,6 +9,7 @@ namespace DiIiS_NA.GameServer.CommandManager;
 [CommandGroup("world", "World commands", Account.UserLevels.Tester, inGameOnly: true)]
 public class WorldCommand : CommandGroup
 {
+    private Logger _logger = Logger.
     [Command("info", "Current World Info", inGameOnly: true)]
     public string Info(string[] @params, BattleClient invokerClient)
     {
