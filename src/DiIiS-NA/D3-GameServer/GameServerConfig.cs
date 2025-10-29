@@ -280,6 +280,12 @@ namespace DiIiS_NA.GameServer
 			get => GetFloat(nameof(VitalityParagonMultiplier), 1f);
 			set => Set(nameof(VitalityParagonMultiplier), value);
 		}
+
+        public bool BypassBuggedQuests
+        {
+			get => GetBoolean(nameof(BypassBuggedQuests), false);
+			set => Set(nameof(BypassBuggedQuests), value);
+        }
 		
 		/// <summary>
 		/// Auto finishes nephalem rift when there's <see cref="NephalemRiftAutoFinishThreshold"></see> or less monsters left.

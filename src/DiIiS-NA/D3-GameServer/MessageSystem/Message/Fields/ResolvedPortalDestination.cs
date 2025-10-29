@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.MessageSystem.Message.Fields
 {
@@ -12,6 +14,12 @@ namespace DiIiS_NA.GameServer.MessageSystem.Message.Fields
         public int StartingPointActorTag;       // in the target world is (should be!) a starting point, that is tagged with this id
         public int /* sno */ DestLevelAreaSNO;
 
+        public static ResolvedPortalDestination Empty = new ResolvedPortalDestination()
+        {
+            WorldSNO = (int)WorldSno.__NONE,
+            DestLevelAreaSNO = 0,
+            StartingPointActorTag = -1
+        };
         public void Parse(GameBitBuffer buffer)
         {
             WorldSNO = buffer.ReadInt(32);

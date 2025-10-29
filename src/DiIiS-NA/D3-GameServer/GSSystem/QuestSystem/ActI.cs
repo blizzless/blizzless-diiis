@@ -1,4 +1,5 @@
-﻿using DiIiS_NA.Core.Logging;
+﻿
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
 using System.Collections.Generic;
@@ -559,7 +560,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
                         if (Game.CurrentQuest == 72221)
-                            if (Game.CurrentStep == -1 || Game.CurrentStep == 41)
+                            if (Game.CurrentStep is -1 or 41)
                             {
                                 /*
                                 //3533
@@ -609,23 +610,23 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //*
                     Game.AddOnLoadWorldAction(WorldSno.trout_oldtristram_cellar_f, () =>
                     {
-                        //ТОЧНО ПРЯЧЕМ КУЗНЕЦА
+                        Logger.MethodTrace("Hiding Hedric in cellar for quest 72221 step 43");
                         var questWorld = Game.GetWorld(WorldSno.trout_oldtristram_cellar_f);
                         var questActor = questWorld.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor);
                         questActor.Hidden = true;
                         questActor.SetVisible(false);
                         foreach (var plr in questWorld.Players.Values)
                             questActor.Unreveal(plr);
-                        //Добавляем
+                        // Add Hedric as follower 
                         AddFollower(questWorld, ActorSno._pt_blacksmith_nonvendor);
-                        //Даём мощ
-                        foreach (var Smith in questWorld.GetActorsBySNO(ActorSno._pt_blacksmith_nonvendor))
+                        // Giving power
+                        foreach (var smith in questWorld.GetActorsBySNO(ActorSno._pt_blacksmith_nonvendor))
                         {
                             var monsterLevels = (DiIiS_NA.Core.MPQ.FileFormats.GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.GameBalance][19760].Data;
-                            float DamageMin = monsterLevels.MonsterLevel[Game.MonsterLevel].Dmg * 0.5f;
-                            float DamageDelta = DamageMin * 0.3f;
-                            Smith.Attributes[GameAttributes.Damage_Weapon_Min, 0] = DamageMin * Game.DmgModifier;
-                            Smith.Attributes[GameAttributes.Damage_Weapon_Delta, 0] = DamageDelta;
+                            float damageMin = monsterLevels.MonsterLevel[Game.MonsterLevel].Dmg * 0.5f;
+                            float damageDelta = damageMin * 0.3f;
+                            smith.Attributes[GameAttributes.Damage_Weapon_Min, 0] = damageMin * Game.DmgModifier;
+                            smith.Attributes[GameAttributes.Damage_Weapon_Delta, 0] = damageDelta;
                         }
 
                     });

@@ -38,6 +38,8 @@ public readonly struct Separator
 {
     private readonly string _value;
 
+    public string Value => _value;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Separator"/> struct with the specified value.
     /// </summary>
@@ -105,6 +107,11 @@ public readonly struct Separator
     /// </summary>
     /// <returns>The separator string value.</returns>
     public override string ToString() => _value;
+
+    public static implicit operator Separator(string separator)
+    {
+        return new Separator(separator);
+    }
 }
 
 /// <summary>

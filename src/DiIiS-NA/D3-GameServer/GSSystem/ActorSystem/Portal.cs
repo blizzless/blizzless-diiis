@@ -153,8 +153,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					StartingPointActorTag = 145
 				};
 
-			#region Спуск на второй уровень в подземелье на кладбище
-			else if (World.SNO == WorldSno.trdun_crypt_skeletonkingcrown_00 && SNO == ActorSno._g_portal_archtall_blue) //Crypt A1 Q3
+            #region Descent to the second level of the underground cemetery
+            else if (World.SNO == WorldSno.trdun_crypt_skeletonkingcrown_00 && SNO == ActorSno._g_portal_archtall_blue) //Crypt A1 Q3
 			{
 				var Portal = world.GetActorBySNO(ActorSno._g_portal_archtall_blue);
 				if (Portal == null)
@@ -195,10 +195,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				
 
 			}
-			#endregion
+            #endregion
 
-			#region 2 Этаж собора
-			if (world.SNO == WorldSno.a1trdun_level04 && SNO == ActorSno._g_portal_archtall_orange)
+            #region 2 Floor of the cathedral
+            if (world.SNO == WorldSno.a1trdun_level04 && SNO == ActorSno._g_portal_archtall_orange)
 			{
 				var Portal = world.GetActorBySNO(ActorSno._g_portal_archtall_orange);
 				if (Portal == null)
@@ -220,9 +220,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					};
 				}
 			}
-			#endregion
-			#region 3 Этаж собора
-			if (world.SNO == WorldSno.a1trdun_level05_templar && SNO == ActorSno._g_portal_archtall_orange)
+            #endregion
+            #region 3 Floor of the cathedral
+            if (world.SNO == WorldSno.a1trdun_level05_templar && SNO == ActorSno._g_portal_archtall_orange)
 			{
 				var Portal = world.GetActorBySNO(ActorSno._g_portal_archtall_orange);
 				if (Portal == null)
@@ -245,9 +245,9 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				}
 
 			}
-			#endregion
-			#region 4 Этаж собора
-			if (world.SNO == WorldSno.a1trdun_level06 && SNO == ActorSno._g_portal_archtall_orange)
+            #endregion
+            #region 4 Floor of the cathedral
+            if (world.SNO == WorldSno.a1trdun_level06 && SNO == ActorSno._g_portal_archtall_orange)
 			{
 				Destination = new ResolvedPortalDestination
 				{
@@ -265,11 +265,11 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					StartingPointActorTag = 172
 				};
 			}
-			#endregion
+            #endregion
 
-			#region Первый этаж Агонии
-			//Вход
-			else if (world.SNO == WorldSno.trdun_leoric_level01 && SNO == ActorSno._g_portal_arch_orange)
+            #region The First Floor of Agony
+            //Entrance
+            else if (world.SNO == WorldSno.trdun_leoric_level01 && SNO == ActorSno._g_portal_arch_orange)
 			{
 				Destination = new ResolvedPortalDestination
 				{
@@ -308,10 +308,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 					MinimapIcon = ActorData.TagMap[ActorKeys.MinimapMarker].Id;
 				}
 			}
-			#endregion
-			#region Второй этаж Агонии
-			//Вход
-			else if (world.SNO == WorldSno.trdun_leoric_level02 && SNO == ActorSno._g_portal_arch_orange)
+            #endregion
+            #region The Second Floor of Agony
+            //Вход
+            else if (world.SNO == WorldSno.trdun_leoric_level02 && SNO == ActorSno._g_portal_arch_orange)
 			{
 				Destination = new ResolvedPortalDestination
 				{
@@ -331,7 +331,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				}
 			}
 			#endregion
-			#region Переправа в высокогорье
+			#region Crossing in the highlands
 			//Вход
 			else if (world.SNO == WorldSno.trout_highlands_dunexteriora && SNO == ActorSno._g_portal_archtall_orange && NumberInWorld == 1)
 			{
@@ -1059,66 +1059,83 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public ResolvedPortalDestination SmartExitGenerate()
 		{
 			Logger.Warn("Portal - {0} Smart Generation.", SNO);
-			int LevelArea = 0;
-			int BackPoint = -1;
+			int levelArea = 0;
+			int backpoint = -1;
 			if (World.SNO.IsDungeon())
 			{
+				Logger.Debug($"This is a $[red underline]$dungeon$[/]$. " +
+                             $"Resolving a $[red underline]$dungeon$[/]$ smart exit.");
 				if (World.SNO == World.Game.WorldOfPortalNephalem)
-				{
-					//Вход 1 этаж
-					if(CurrentScene.SceneSNO.Name.ToLower().Contains("entr"))
+                {
+                    //Entrance 1st floor
+                    if (CurrentScene.SceneSNO.Name.ToLower().Contains("entr", StringComparison.InvariantCultureIgnoreCase))
 						return new ResolvedPortalDestination
 						{
 							WorldSNO = (int)WorldSno.x1_tristram_adventure_mode_hub,
 							DestLevelAreaSNO = 332339,
 							StartingPointActorTag = 24
 						};
-					//Выход на второй этаж
-					else
-						return new ResolvedPortalDestination
-						{
-							WorldSNO = (int)World.Game.WorldOfPortalNephalemSec,
-							DestLevelAreaSNO = 288684,
-							StartingPointActorTag = 172
-						};
-				}
-				
-				return new ResolvedPortalDestination
-				{
-					WorldSNO = (int)World.Game.WorldOfPortalNephalem,
-					DestLevelAreaSNO = 288482,
-					StartingPointActorTag = 171
-				};
-				
-			}
-			else
-			{
-				if (!World.Game.Players.IsEmpty)
-				{
-                    var player = World.Game.Players.First().Value;
-                    LevelArea = player.CurrentScene.Specification.SNOLevelAreas.LastOrDefault(x => x != -1);
-
-					if (player.GetActorsInRange<StartingPoint>(20f).Count > 0)
-						BackPoint = (player.GetActorsInRange<StartingPoint>(20f).First() as StartingPoint).TargetId;
-
-					return new ResolvedPortalDestination
+                    //Access to the second floor
+                    return new ResolvedPortalDestination
                     {
-						WorldSNO = (int)player.World.SNO,
-						DestLevelAreaSNO = LevelArea,
-						StartingPointActorTag = BackPoint
-					};
-				}
-				else
-				{
-					return new ResolvedPortalDestination
-					{
-						WorldSNO = (int)WorldSno.__NONE,
-						DestLevelAreaSNO = LevelArea,
-						StartingPointActorTag = -1
-					};
-				}
-			}
-		}
+                        WorldSNO = (int)World.Game.WorldOfPortalNephalemSec,
+                        DestLevelAreaSNO = 288684,
+                        StartingPointActorTag = 172
+                    };
+                }
+
+                return new ResolvedPortalDestination
+                {
+                    WorldSNO = (int)World.Game.WorldOfPortalNephalem,
+                    DestLevelAreaSNO = 288482,
+                    StartingPointActorTag = 171
+                };
+            }
+
+            // not a dungeon
+            Logger.Debug($"This is $[red]$not a dungeon$[/]$. " +
+                         $"Resolving a $[mediumpurple3_1]$level$[/]$ smart exit.");
+            if (!World.Game.Players.IsEmpty)
+            {
+                var playerObj = World.Game.ConnectedPlayers.FirstOrDefault();
+                if (playerObj is not {} player)
+                {
+                    Logger.MethodTrace($"No connected players found. Returning empty level area");
+                    // empty: let's stop before SNO lookup
+                    return ResolvedPortalDestination.Empty;
+                }
+
+                var snoAreas = player.CurrentScene.Specification.SNOLevelAreas
+                    .Where(s=>s != -1)
+                    .ToArray();
+                // ReSharper disable once SimplifyLinqExpressionUseAll
+                if (snoAreas.Length == 0)
+                {
+					Logger.Error($"$[underline]$There isn't any level areas available.$[/]$ Returning empty level area.");
+					return ResolvedPortalDestination.Empty;
+                }
+
+                levelArea = snoAreas.Last();
+                if (player.GetActorsInRange<StartingPoint>(20f).Count > 0)
+                    backpoint = (player.GetActorsInRange<StartingPoint>(20f).First() as StartingPoint).TargetId;
+
+                return new ResolvedPortalDestination
+                {
+                    WorldSNO = (int)player.World.SNO,
+                    DestLevelAreaSNO = levelArea,
+                    StartingPointActorTag = backpoint
+                };
+            }
+
+			//fallback
+            return ResolvedPortalDestination.Empty;
+            //new ResolvedPortalDestination
+            //{
+            //	WorldSNO = (int)WorldSno.__NONE,
+            //	DestLevelAreaSNO = levelArea,
+            //	StartingPointActorTag = -1
+            //};
+        }
 		public override void EnterWorld(Vector3D position)
 		{
 			base.EnterWorld(position);

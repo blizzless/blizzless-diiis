@@ -1,70 +1,80 @@
 ﻿using System.Linq;
-using DiIiS_NA.Core.MPQ;
-using DiIiS_NA.Core.MPQ.FileFormats;
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-using DiIiS_NA.GameServer.Core.Types.SNO;
+using DiIiS_NA.Core.Logging;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem;
+using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
+using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.LoginServer.Battle;
+using DiIiS_NA.Utilities;
+using Spectre.Console;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("tp", "Transfers your character to another world.", inGameOnly: true)]
+[CommandGroup("teleport", "Teleports where you click.", Account.UserLevels.GM, inGameOnly: true)]
 public class TeleportCommand : CommandGroup
 {
-    [DefaultCommand(inGameOnly: true)]
-    public string Portal(string[] @params, BattleClient invokerClient)
+    private readonly Logger _logger = LogManager.CreateLogger<TeleportCommand>();
+    [DefaultCommand(Account.UserLevels.Tester, true)]
+    public string Teleport(string[] @params, BattleClient invokerClient)
     {
-        if (@params != null && @params.Any())
+        if (invokerClient?.InGameClient?.Player is not { } player)
+            return "You must be in-game to use this command.";
+        player.IsTeleportActive = !player.IsTeleportActive;
+        _logger.Trace(player.IsTeleportActive ? 
+            $"Player is now $[deepskyblue1]$teleporting$[/]$." :
+            "Player is $[red3_1 bold underline]$NOT$[/]$ $[deepskyblue1]$teleporting$[/]$ anymore.");
+        return player.IsTeleportActive
+            ? "You will now teleport where you click."
+            : "You will no longer teleport where you click.";
+    }
+
+    [Command("followers", "Teleport follower to you.", minUserLevel: Account.UserLevels.Tester)]
+    public string TeleportFollowers(string[] @params, BattleClient invokerClient)
+    {
+        if (invokerClient?.InGameClient?.Player is not { } player)
+            return "You must be in-game to use this command.";
+
+        var gameClient = invokerClient.InGameClient!;
+        if (gameClient == null) return "You must be in-game to use this command.";
+        var world = player.World;
+        var followers = player.GetFollowers();
+        int following = 0;
+        foreach (var follower in followers)
         {
-            int.TryParse(@params[0], out var worldId);
-
-            if (worldId == 0)
-                return "Invalid arguments. Type 'help tp' to get help.";
-
-            if (!MPQStorage.Data.Assets[SNOGroup.Worlds].ContainsKey(worldId))
-                return "There exist no world with SNOId: " + worldId;
-
-            var world = invokerClient.InGameClient.Game.GetWorld((WorldSno)worldId);
-
-            if (world == null)
-                return "Can't teleport you to world with snoId " + worldId;
-
-            invokerClient.InGameClient.Player.ChangeWorld(world, world.StartingPoints.First().Position);
-
-            var proximity = new System.Drawing.RectangleF(invokerClient.InGameClient.Player.Position.X - 1f,
-                invokerClient.InGameClient.Player.Position.Y - 1f, 2f, 2f);
-            var scenes =
-                invokerClient.InGameClient.Player.World.QuadTree.Query<GSSystem.MapSystem.Scene>(proximity);
-            if (scenes.Count == 0) return ""; // cork (is it real?)
-
-            var scene = scenes[0]; // Parent scene /fasbat
-
-            if (scenes.Count == 2) // What if it's a subscene?
-                if (scenes[1].ParentChunkID != 0xFFFFFFFF)
-                    scene = scenes[1];
-
-            var levelArea = scene.Specification.SNOLevelAreas[0];
-
-            //handling quest triggers
-            if (invokerClient.InGameClient.Player.World.Game.SideQuestProgress.GlobalQuestTriggers
-                .ContainsKey(levelArea)) //EnterLevelArea
+            var sno = player.Followers[follower];
+            if (world.GetActorByDynamicId(follower, out var actor))
             {
-                var trigger =
-                    invokerClient.InGameClient.Player.World.Game.SideQuestProgress.GlobalQuestTriggers[levelArea];
-                if (trigger.TriggerType == QuestStepObjectiveType.EnterLevelArea)
-                    try
-                    {
-                        trigger.QuestEvent.Execute(invokerClient.InGameClient.Player.World); // launch a questEvent
-                    }
-                    catch
-                    {
-                    }
+                if (actor.World != world)
+                {
+                    _logger.Trace(
+                        $"Actor {sno.GetName().Markup().Color(Color.OrangeRed1)} " +
+                        $"is being teleported ".Markup().Color(Color.DarkOliveGreen1) +
+                        $"to player " +
+                        $"from $[red3_1 underline]$another world$[/]$ " +
+                        $"from {actor.World.SNO.GetName().Markup().Color(Color.Plum1)} to {world.SNO.GetName().Markup().Color(Color.Pink1)}");
+                    actor.ChangeWorld(world, player.Position);
+                    following++;
+                }
+                else
+                {
+                    _logger.Trace($"Actor {sno.GetName().Markup().Color(Color.OrangeRed1)} " +
+                                  $"is being teleported ".Markup().Color(Color.DarkOliveGreen1) +
+                                  $"to player " +
+                                  $"from $[purple_1 underline]$the same world$[/]$ " +
+                                  $"({world.SNO.GetName().Markup().Color(Color.Plum1)}");
+                    actor.Teleport(player.Position);
+                    following++;
+                }
             }
-
-            foreach (var bounty in invokerClient.InGameClient.Player.World.Game.QuestManager.Bounties)
-                bounty.CheckLevelArea(levelArea);
-            return $"Teleported to: {MPQStorage.Data.Assets[SNOGroup.Worlds][worldId].Name} [id: {worldId}]";
+            else
+            {
+                _logger.Warn($"The follower {sno.GetName().Markup().Color(Color.Red)} doesn't exist.");
+            }
         }
 
-        return "Invalid arguments. Type 'help tp' to get help.";
+        return $"Your " +
+               $"{following.Markup().Color(Color.LightGoldenrod2_2)}/" +
+               $"{followers.Length.Markup().Color(Color.Gold1)} " +
+               $"follower(s) have been teleported to you.";
     }
 }

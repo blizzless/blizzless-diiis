@@ -8,7 +8,7 @@ namespace DiIiS_NA.GameServer.CommandManager;
 [CommandGroup("invulnerable", "Makes you invulnerable", Account.UserLevels.GM, inGameOnly: true)]
 public class InvulnerableCommand : CommandGroup
 {
-    [DefaultCommand]
+    [DefaultCommand(Account.UserLevels.Tester, true)]
     public string Invulnerable(string[] @params, BattleClient invokerClient)
     {
         var player = invokerClient.InGameClient.Player;

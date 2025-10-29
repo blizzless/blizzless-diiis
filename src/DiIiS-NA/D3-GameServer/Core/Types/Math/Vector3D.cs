@@ -6,6 +6,7 @@ using Gibbed.IO;
 using DiIiS_NA.Core.Storage;
 using System;
 using System.Numerics;
+using bgs.protocol.game_utilities.v1;
 using DiIiS_NA.Core.Helpers.Math;
 
 namespace DiIiS_NA.GameServer.Core.Types.Math
@@ -165,6 +166,12 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 		}
 
 		public override string ToString() => $"X:{X:F4}, Y:{Y:F4} Z:{Z:F4}";
+		private string KeyColor(string x) => $"$[springgreen3]${x}$[/]$";
+		private string ValueColor(float x, int precision = 3) => $"$[lightseagreen]${x.ToString($"F{precision}")}$[/]$";
+
+        public string ToMarkupString(int precision = 3) => $"{KeyColor("X")}: {ValueColor(X, precision)}, " +
+                                             $"{KeyColor("Y")}: {ValueColor(Y, precision)}, " +
+                                             $"{KeyColor("Z")}: {ValueColor(Z, precision)}";
 
 		public bool IsNear(Vector3D other, float distance) => DistanceSquared(ref other) < distance;
 	}

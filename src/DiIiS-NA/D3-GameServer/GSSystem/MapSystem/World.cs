@@ -30,6 +30,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using DiIiS_NA.LoginServer.Toons;
+using DiIiS_NA.Utilities;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
 using Circle = DiIiS_NA.GameServer.Core.Types.Misc.Circle;
 using Environment = DiIiS_NA.Core.MPQ.FileFormats.Environment;
@@ -1153,30 +1154,46 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			QuadTree.Remove(scene); // remove from quad-tree too.
 		}
 
-		/// <summary>
-		/// Returns the scene with given dynamicId.
-		/// </summary>
-		/// <param name="dynamicID">The dynamicId of the scene.</param>
-		/// <returns></returns>
-		public Scene GetScene(uint dynamicID)
-		{
-			Scenes.TryGetValue(dynamicID, out var scene);
-			return scene;
-		}
-
-        internal object GetActorByDynamicId(uint actor)
+        /// <summary>
+        /// Returns the scene with given dynamicId.
+        /// </summary>
+        /// <param name="dynamicId">The dynamicId of the scene.</param>
+        /// <returns></returns>
+        public Scene GetScene(uint dynamicId)
         {
-            throw new NotImplementedException();
+            Scenes.TryGetValue(dynamicId, out var scene);
+            return scene;
+        }
+        
+        /// <summary>
+        /// Returns the scene with given dynamicId.
+        /// </summary>
+        /// <param name="dynamicId">The dynamicId of the scene.</param>
+        /// <returns></returns>
+        public bool TryGetScene(uint dynamicId, out Scene scene)
+        {
+            return Scenes.TryGetValue(dynamicId, out scene);
+        }
+
+        internal bool GetActorByDynamicId(uint actorId, out Actor actor)
+        {
+            actor = null;
+			var result = Actors.TryGetValue(actorId, out actor);
+            if (!result)
+            {
+				Logger.Warn($"No actor with {"dynamic ID".Markup().Color(Spectre.Console.Color.OrangeRed1)} ({actorId.Markup().Bold().Color(Spectre.Console.Color.DeepPink2)})");
+            }
+            return result;
         }
 
         /// <summary>
         /// Returns true if world contains a scene with given dynamicId.
         /// </summary>
-        /// <param name="dynamicID">The dynamicId of the scene.</param>
+        /// <param name="dynamicId">The dynamicId of the scene.</param>
         /// <returns><see cref="bool"/></returns>
-        public bool HasScene(uint dynamicID)
+        public bool HasScene(uint dynamicId)
 		{
-			return Scenes.ContainsKey(dynamicID);
+			return Scenes.ContainsKey(dynamicId);
 		}
 
 		/// <summary>

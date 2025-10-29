@@ -213,6 +213,17 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     private Hireling _activeHireling = null;
     private Hireling _questHireling = null;
 
+    public uint[] GetFollowers()
+    {
+        List<uint> followers = new();   
+        foreach (var follower in Followers)
+        {
+            if (follower is {} f)
+                followers.Add(f.Key);
+        }
+
+        return followers.ToArray();
+    }
     public Hireling ActiveHireling
     {
         get => _activeHireling;
@@ -4874,6 +4885,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     #region generic properties
 
     public int ClassSno => Toon.Gender == 0 ? Toon.HeroTable.SNOMaleActor : Toon.HeroTable.SNOFemaleActor;
+    public bool IsTeleportActive { get; set; }
 
     public int AdditionalLootItems
     {
@@ -4920,6 +4932,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             return townAreas.Contains(scene.Specification.SNOLevelAreas[0]);
         }
     }
+
 
     #endregion
 

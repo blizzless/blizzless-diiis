@@ -9,7 +9,7 @@ namespace DiIiS_NA.GameServer.CommandManager;
     Account.UserLevels.Tester, inGameOnly: true)]
 public class PowerfulCommand : CommandGroup
 {
-    [DefaultCommand(inGameOnly: true)]
+    [DefaultCommand(Account.UserLevels.Tester, true)]
     public string Powerful(string[] @params, BattleClient invokerClient)
     {
         var player = invokerClient.InGameClient.Player;

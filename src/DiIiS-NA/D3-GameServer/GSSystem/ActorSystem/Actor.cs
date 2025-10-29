@@ -1317,6 +1317,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void Move(Vector3D point, float facingAngle)
 		{
+            if (this is Player { IsTeleportActive: true })
+            {
+                Logger.MethodTrace($"$[deepskyblue3]$Player$[/]$ is $[underline]$teleporting$[/]$ to {point.ToMarkupString(4)}, facing angle is {facingAngle:F2}.");
+
+                Teleport(point);
+                SetFacingRotation(facingAngle);
+                return;
+            }
 			CurrentDestination = point;
 			if (point == Position) return;
 			SetFacingRotation(facingAngle);
