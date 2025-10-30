@@ -969,8 +969,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 					if (portal.Destination.DestLevelAreaSNO == levelArea)
                     {
                         bool alreadyAdded = false;
-                        foreach (var pt in portals)
-                            if (pt.Position == actor.Position) alreadyAdded = true;
+                        foreach (var pt in portals.Where(pt => pt.Position == actor.Position)) 
+                            alreadyAdded = true;
                         if (!alreadyAdded)
                             portals.Add(portal);
                     }
