@@ -1387,10 +1387,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			var proximityCircle = new Circle(position.X, position.Y, radius);
 			var actors = QuadTree.Query<Actor>(proximityCircle);
-			foreach (var actor in actors)
-				if (actor.Attributes[GameAttributes.Disabled] == false && actor.Attributes[GameAttributes.Gizmo_Has_Been_Operated] == false && actor.SNO == actorSno) return actor;
-			return null;
-		}
+            return actors.FirstOrDefault(actor => !actor.Attributes[GameAttributes.Disabled] && !actor.Attributes[GameAttributes.Gizmo_Has_Been_Operated] && actor.SNO == actorSno);
+        }
 
 		/// <summary>
 		/// Returns WayPoint with given id.
@@ -1489,15 +1487,12 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				}
 
 				if (s.Subscenes.Count > 0)
-				{
-					foreach (var subScene in s.Subscenes)
-					{
-						if (subScene.Bounds.Contains(location.X, location.Y))
-						{
-							scene = subScene;
-						}
-					}
-				}
+                {
+                    foreach (var subScene in s.Subscenes.Where(subScene => subScene.Bounds.Contains(location.X, location.Y)))
+                    {
+                        scene = subScene;
+                    }
+                }
 
 				int x = (int)((location.X - scene.Bounds.Left) / 2.5f);
 				int y = (int)((location.Y - scene.Bounds.Top) / 2.5f);
