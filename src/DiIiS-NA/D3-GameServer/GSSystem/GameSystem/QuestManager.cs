@@ -164,6 +164,10 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A5].Take(4));
 		}
 
+        public QuestRegistry.QuestStep GetCurrentQuest()
+        {
+            return Quests[Game.CurrentQuest].Steps[Game.CurrentStep];
+        }
 		/// <summary>
 		/// Advances a quest by a step
 		/// </summary>

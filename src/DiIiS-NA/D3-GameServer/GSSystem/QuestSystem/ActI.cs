@@ -703,6 +703,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 37,
                 OnAdvance = () =>
                 { //go to graveyard
+                    if (GameServerConfig.Instance.BypassBuggedQuests)
+                    {
+                        Advance();
+                        return;
+                    }
                     ListenProximity(ActorSno._cemetary_gate_trout_wilderness_no_lock, new Advance());
                 }
             });
@@ -721,6 +726,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     if (world.GetActorsBySNO(ActorSno._cemetary_gate_trout_wilderness_no_lock).Where(d => d.Visible).FirstOrDefault() != null)
                         Open(world, ActorSno._cemetary_gate_trout_wilderness_no_lock);
                     ListenInteract(ActorSno._a1dun_crypts_leoric_crown_holder, 1, new Advance());
+                    if (GameServerConfig.Instance.BypassBuggedQuests)
+                    {
+                        Advance();
+                        return;
+                    }
                     //199642 - holder
                 }
             });
@@ -739,6 +749,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         world.SpawnMonster(ActorSno._ghost_a_unique_chancellor, world.GetActorBySNO(ActorSno._ghost_a_unique_chancellor_spawner).Position);// or 156381
                     });
                     ListenKill(ActorSno._ghost_a_unique_chancellor, 1, new Advance());
+                    if (GameServerConfig.Instance.BypassBuggedQuests)
+                    {
+                        Advance();
+                        return;
+                    }
                 }
             });
 
@@ -750,6 +765,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //get Leoric crown
                     ListenInteract(ActorSno._a1dun_crypts_leoric_crown_holder_crowntreasureclass, 1, new Advance());
+                    if (GameServerConfig.Instance.BypassBuggedQuests)
+                    {
+                        Advance();
+                        return;
+                    }
                 }
             });
 

@@ -10,12 +10,15 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.Utilities;
+using Spectre.Console;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
 	public class QuestRegistry
 	{
-		public Game Game { get; private set; }
+		private readonly Logger _logger = LogManager.CreateLogger<QuestRegistry>();
+        public Game Game { get; private set; }
 
 		protected QuestEvent script = null;
 
@@ -273,7 +276,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public bool HasFollower(ActorSno sno)
 		{
-			return Game.Players.Values.First().Followers.Any(x => x.Value == sno);
+			var player = Game.ConnectedPlayers.FirstOrDefault();
+            if (player == null) return false;
+                
+            return player.Followers?.Any(x => x.Value == sno) ?? false;
 		}
 
 		public void AddFollower(World world, ActorSno sno)
@@ -340,12 +346,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			return true;
 		}
 
-		public void Advance(int questId)
-		{
-			if (Game.Players.Count > 0)
-				Game.QuestManager.Advance();
-		}
-	}
+        public void Advance()
+        {
+            if (Game.ConnectedPlayers.Any())
+            {
+
+                _logger.Info($"Advancing to quest step {Game.QuestManager.GetCurrentQuest().NextStep.Markup().Bold().Underline().Color(Color.DarkOliveGreen3_1)}");
+                Game.QuestManager.Advance();
+            }
+        }
+    }
 
 	public abstract class QuestEvent
 	{
@@ -363,26 +373,24 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public static void AddQuestConversation(Actor actor, int conversation)
 		{
-			var NPC = actor as InteractiveNPC;
-			if (NPC != null)
+			if (actor is InteractiveNPC npc)
 			{
-				NPC.Conversations.Clear();
-				NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-				NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
-				NPC.Attributes.BroadcastChangedIfRevealed();
-				NPC.ForceConversationSNO = conversation;
+				npc.Conversations.Clear();
+				npc.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
+				npc.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
+				npc.Attributes.BroadcastChangedIfRevealed();
+				npc.ForceConversationSNO = conversation;
 			}
 			else if (actor != null)
 			{
 				foreach (var n in actor.World.GetActorsBySNO(actor.SNO))
 					if (n is InteractiveNPC interactiveNpc)
 					{
-						NPC = interactiveNpc;
-						NPC.Conversations.Clear();
-						NPC.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
-						NPC.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
-						NPC.Attributes.BroadcastChangedIfRevealed();
-						NPC.ForceConversationSNO = conversation;
+						interactiveNpc.Conversations.Clear();
+						interactiveNpc.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(conversation));
+						interactiveNpc.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
+						interactiveNpc.Attributes.BroadcastChangedIfRevealed();
+						interactiveNpc.ForceConversationSNO = conversation;
 					}
 			}
 		}

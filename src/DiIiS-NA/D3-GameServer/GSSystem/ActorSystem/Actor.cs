@@ -27,7 +27,9 @@ using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.MPQ.FileFormats;
 using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
 using DiIiS_NA.LoginServer.Battle;
+using DiIiS_NA.Utilities;
 using Circle = DiIiS_NA.GameServer.Core.Types.Misc.Circle;
+using Color = Spectre.Console.Color;
 using Player = DiIiS_NA.GameServer.GSSystem.PlayerSystem.Player;
 using Scene = DiIiS_NA.GameServer.GSSystem.MapSystem.Scene;
 using World = DiIiS_NA.GameServer.GSSystem.MapSystem.World;
@@ -1317,14 +1319,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public void Move(Vector3D point, float facingAngle)
 		{
-            if (this is Player { IsTeleportActive: true })
-            {
-                Logger.MethodTrace($"$[deepskyblue3]$Player$[/]$ is $[underline]$teleporting$[/]$ to {point.ToMarkupString(4)}, facing angle is {facingAngle:F2}.");
-
-                Teleport(point);
-                SetFacingRotation(facingAngle);
-                return;
-            }
 			CurrentDestination = point;
 			if (point == Position) return;
 			SetFacingRotation(facingAngle);
@@ -1339,7 +1333,25 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				aniTag = AnimationSet.GetAnimationTag(DiIiS_NA.Core.MPQ.FileFormats.AnimationTags.Run);
 			else
 				aniTag = -1;
-			World?.BroadcastIfRevealed(plr => new ACDTranslateNormalMessage
+
+            if (this is Player { IsTeleportActive: true })
+            {
+                Teleport(point);
+                SetFacingRotation(facingAngle);
+                World?.BroadcastIfRevealed(plr => new ACDTranslateNormalMessage
+                {
+                    ActorId = DynamicID(plr),
+                    Position = point,
+                    Angle = facingAngle,
+                    SnapFacing = false,
+                    MovementSpeed = 100,
+                    MoveFlags = 0,
+                    AnimationTag = aniTag
+                }, this);
+                return;
+            }
+
+            World?.BroadcastIfRevealed(plr => new ACDTranslateNormalMessage
 			{
 				ActorId = DynamicID(plr),
 				Position = point,

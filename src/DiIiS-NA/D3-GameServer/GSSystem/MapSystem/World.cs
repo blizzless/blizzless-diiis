@@ -960,21 +960,20 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			return Actors.Values.FirstOrDefault(x => x.SNO == sno && (!onlyVisible || (onlyVisible && x.Visible && !x.Hidden)));
 		}
-		public List<Portal> GetPortalsByLevelArea(int la)
+		public List<Portal> GetPortalsByLevelArea(int levelArea)
 		{
 			List<Portal> portals = new List<Portal>();
 			foreach (var actor in Actors.Values)
 			{
-				if (actor is Portal)
-					if ((actor as Portal).Destination != null)
-						if ((actor as Portal).Destination.DestLevelAreaSNO == la)
-						{
-							bool alreadyAdded = false;
-							foreach (var pt in portals)
-								if (pt.Position == actor.Position) alreadyAdded = true;
-							if (!alreadyAdded)
-								portals.Add(actor as Portal);
-						}
+				if (actor is Portal { Destination: not null } portal)
+					if (portal.Destination.DestLevelAreaSNO == levelArea)
+                    {
+                        bool alreadyAdded = false;
+                        foreach (var pt in portals)
+                            if (pt.Position == actor.Position) alreadyAdded = true;
+                        if (!alreadyAdded)
+                            portals.Add(portal);
+                    }
 			}
 			return portals;
 		}
