@@ -262,9 +262,17 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		/// </summary>
 		/// <param name="snoQuest">snoID of the quest to advance</param>                               
 		public void Advance()
-		{
-			Logger.QuestLog($"Advancing from {Game.CurrentQuest.Markup().Bold()} step {Game.CurrentStep.Markup().Bold()}");
-			Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Completed = true;
+        {
+            Logger.QuestLog($"Advancing from {Game.GetActQuest(true)} to quest step {Game.QuestManager.GetCurrentQuest().NextStep.Markup().Bold().Underline().Color(Color.DarkOliveGreen3_1)}");
+            if (GameServerConfig.Instance.LogQuestAdvance)
+            {
+                Mapping maps = new Mapping();
+                maps.Map("quest", Game.GetCurrentQuestName(true, currentQuest: Game.CurrentQuest));
+                maps.Map("act", Game.GetCurrentActName(true, currentAct: Game.CurrentAct));
+                maps.Map("step", GetCurrentQuest().NextStep);
+                Game.BroadcastMessage(maps.GetString(GameServerConfig.Instance.LogQuestAdvanceFormat));
+            }
+            Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Completed = true;
 			Game.CurrentStep = Quests[Game.CurrentQuest].Steps[Game.CurrentStep].NextStep;
 			Game.QuestProgress.QuestTriggers.Clear();
 			ClearQuestMarker();

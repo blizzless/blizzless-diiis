@@ -7,6 +7,7 @@ using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
 using DiIiS_NA.GameServer.Core.Types.Math;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations;
 using System.Linq;
+using Antlr.Runtime.Misc;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations.Act_I;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
@@ -30,6 +31,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
         public ActI(Game game) : base(game)
         {
+        }
+
+        private void AdvanceBugged(Action? prefix = null)
+        {
+            if (!GameServerConfig.Instance.BypassBuggedQuests) return;
+            prefix?.Invoke();
+            Advance();
         }
 
         public override void SetQuests()
@@ -704,11 +712,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //go to graveyard
                     ListenProximity(ActorSno._cemetary_gate_trout_wilderness_no_lock, new Advance());
-                    if (GameServerConfig.Instance.BypassBuggedQuests)
-                    {
-                        Advance();
-                        return;
-                    }
+                    AdvanceBugged();
                 }
             });
 
@@ -726,13 +730,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     if (world.GetActorsBySNO(ActorSno._cemetary_gate_trout_wilderness_no_lock).Where(d => d.Visible).FirstOrDefault() != null)
                         Open(world, ActorSno._cemetary_gate_trout_wilderness_no_lock);
                     ListenInteract(ActorSno._a1dun_crypts_leoric_crown_holder, 1, new Advance());
-                    if (GameServerConfig.Instance.BypassBuggedQuests)
+                    AdvanceBugged(() =>
                     {
-                        if (Game.Players.Count == 0) UnlockTeleport(6);
+                        UnlockTeleport(6);
                         Open(world, ActorSno._cemetary_gate_trout_wilderness_no_lock);
-                        Advance();
-                        return;
-                    }
+                    });
                     //199642 - holder
                 }
             });
@@ -751,11 +753,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         world.SpawnMonster(ActorSno._ghost_a_unique_chancellor, world.GetActorBySNO(ActorSno._ghost_a_unique_chancellor_spawner).Position);// or 156381
                     });
                     ListenKill(ActorSno._ghost_a_unique_chancellor, 1, new Advance());
-                    if (GameServerConfig.Instance.BypassBuggedQuests)
-                    {
-                        Advance();
-                        return;
-                    }
+                    AdvanceBugged();
                 }
             });
 
@@ -767,11 +765,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //get Leoric crown
                     ListenInteract(ActorSno._a1dun_crypts_leoric_crown_holder_crowntreasureclass, 1, new Advance());
-                    if (GameServerConfig.Instance.BypassBuggedQuests)
-                    {
-                        Advance();
-                        return;
-                    }
+                    AdvanceBugged();
                 }
             });
 
@@ -783,6 +777,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //go to Tristram (by town portal) and talk to Hedric
                     ListenConversation(196041, new Advance());
+                    AdvanceBugged();
                 }
             });
 

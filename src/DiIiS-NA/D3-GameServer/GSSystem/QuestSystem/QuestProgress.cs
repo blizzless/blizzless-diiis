@@ -350,8 +350,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
         {
             if (Game.ConnectedPlayers.Any())
             {
-
-                _logger.Info($"Advancing to quest step {Game.QuestManager.GetCurrentQuest().NextStep.Markup().Bold().Underline().Color(Color.DarkOliveGreen3_1)}");
                 Game.QuestManager.Advance();
             }
         }

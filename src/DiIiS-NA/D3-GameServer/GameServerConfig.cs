@@ -286,11 +286,23 @@ namespace DiIiS_NA.GameServer
 			get => GetBoolean(nameof(BypassBuggedQuests), false);
 			set => Set(nameof(BypassBuggedQuests), value);
         }
-		
-		/// <summary>
-		/// Auto finishes nephalem rift when there's <see cref="NephalemRiftAutoFinishThreshold"></see> or less monsters left.
-		/// </summary>
-		public bool NephalemRiftAutoFinish
+
+        public bool LogQuestAdvance
+        {
+            get => GetBoolean(nameof(LogQuestAdvance), false);
+            set => Set(nameof(LogQuestAdvance), value);
+        }
+
+        public string LogQuestAdvanceFormat
+        {
+            get => GetString(nameof(LogQuestAdvanceFormat), "Advancing to Act {act} Quest {quest} Step {step}");
+            set => Set(nameof(LogQuestAdvanceFormat), value.Trim());
+        }
+        
+        /// <summary>
+         /// Auto finishes nephalem rift when there's <see cref="NephalemRiftAutoFinishThreshold"></see> or less monsters left.
+         /// </summary>
+        public bool NephalemRiftAutoFinish
 		{
 			get => GetBoolean(nameof(NephalemRiftAutoFinish), false);
 			set => Set(nameof(NephalemRiftAutoFinish), value);
