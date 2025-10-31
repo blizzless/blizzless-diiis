@@ -9,6 +9,7 @@ namespace DiIiS_NA.GameServer.CommandManager;
     Account.UserLevels.GM, inGameOnly: true)]
 public class LevelUpCommand : CommandGroup
 {
+    private const int MaxLevelUpCommand = 3;
     [DefaultCommand(inGameOnly: true)]
     public string LevelUp(string[] @params, BattleClient invokerClient)
     {
@@ -22,8 +23,8 @@ public class LevelUpCommand : CommandGroup
         var amount = 1;
 
         if (@params != null)
-            if (!int.TryParse(@params[0], out amount) || amount < 1)
-                return "Invalid amount of levels.";
+            if (!int.TryParse(@params[0], out amount) || amount < 1 || amount > MaxLevelUpCommand)
+                return $"Invalid amount of levels to upgrade. Must be between 1-{MaxLevelUpCommand}";
 
         for (var i = 0; i < amount; i++)
             if (player.Level >= 70)
