@@ -1780,9 +1780,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 
             //handling quest triggers
-            if (QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
+            if (QuestProgress.QuestTriggers.TryGetValue(levelArea, out var trigger)) //EnterLevelArea
             {
-                var trigger = QuestProgress.QuestTriggers[levelArea];
                 if (trigger.TriggerType == QuestStepObjectiveType.EnterLevelArea)
                 {
                     try
