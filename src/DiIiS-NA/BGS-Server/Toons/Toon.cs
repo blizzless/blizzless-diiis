@@ -1142,7 +1142,7 @@ namespace DiIiS_NA.LoginServer.Toons
 		private static readonly Core.MPQ.FileFormats.GameBalance HeroData =
 			(Core.MPQ.FileFormats.GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][19740].Data;
 
-		public Toon(DBToon dbToon, GameDBSession DBSession = null)
+		public Toon(DBToon dbToon, GameDBSession dbSession = null)
 			: base(dbToon.Id)
 		{
 			D3EntityID = D3.OnlineService.EntityId.CreateBuilder().SetIdHigh((ulong)EntityIdHelper.HighIdType.ToonId)
@@ -1153,7 +1153,7 @@ namespace DiIiS_NA.LoginServer.Toons
 			_toonClass = dbToon.Class;
 
 			DBToon = dbToon;
-			this.DBSession = DBSession;
+			DBSession = dbSession;
 			IsHardcore = dbToon.isHardcore;
 			IsSeasoned = dbToon.isSeasoned;
 			HeroTable = HeroData.Heros.Find(item => item.Name == Class.ToString());
