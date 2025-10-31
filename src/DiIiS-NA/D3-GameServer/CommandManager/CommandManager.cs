@@ -6,6 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.Utilities;
+using Discord;
+using Color = Spectre.Console.Color;
 
 namespace DiIiS_NA.GameServer.CommandManager
 {
@@ -30,18 +33,23 @@ namespace DiIiS_NA.GameServer.CommandManager
                 if (groupAttribute.Name == null) continue;
 				if (groupAttribute.Name.Contains(" "))
 				{
-					Logger.Warn($"Command group name '{groupAttribute.Name}' contains spaces (which is $[red]$not$[/]$ allowed). $[red]$Command group will be ignored.$[/]$");
+					Logger.Warn($"Command group name '{groupAttribute.Name}' contains spaces (which is {"not allowed".Markup().Bold().Color(Color.Red)})." + "Command group will be ignored.".Markup().Color(Spectre.Console.Color.Red3_1));
 					continue;
 				}
 
 				if (CommandsConfig.Instance.DisabledGroupsData.Contains(groupAttribute.Name))
 				{
-					Logger.Warn($"Command group name '{groupAttribute.Name}' is disabled.");
+					Logger.Warn($"Command group name '{groupAttribute.Name.Markup().Color(Color.Red3_1)}' is disabled.");
 					continue;
 				}
 				if (CommandGroups.ContainsKey(groupAttribute))
-					Logger.Warn($"There exists an already registered command group named '{groupAttribute.Name}'.");
+					Logger.Warn($"There exists an already registered command group named '{groupAttribute.Name.Markup().Color(Color.Red)}'.");
 
+                if (groupAttribute.Disabled)
+                {
+                    Logger.Warn($"The command {groupAttribute.Name.Markup().Color(Color.Red)} is " + "disabled".Markup().Bold().Underline().Color(Spectre.Console.Color.Red));
+                    continue;
+                }
 				var commandGroup = (CommandGroup)Activator.CreateInstance(type);
 				if (commandGroup != null)
 				{
