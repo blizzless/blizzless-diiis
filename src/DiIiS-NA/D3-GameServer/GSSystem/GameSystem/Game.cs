@@ -1310,8 +1310,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
         public void ChangeAct(int act)
         {
-            foreach (var plr in Players.Values)
-                plr.InGameClient.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
+            foreach (var plr in Players.Keys)
+                plr.SendMessage(new SimpleMessage(Opcodes.LoadingWarping));
             SetAct(act);
             CurrentQuest = QuestsOrder[0];
             CurrentStep = -1;
@@ -1759,8 +1759,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
             if (scenes.Count == 2) // What if it's a subscene?
             {
-                if (scenes[1].ParentChunkID != 0xFFFFFFFF)
-                    scene = scenes[1];
+                if (scenes[1].ParentChunkID == 0xFFFFFFFF)
+                    scene = scenes[0];
+                else
+                    scene = scenes[1]; // Use subscene if available
             }
 
             var levelArea = scene.Specification.SNOLevelAreas[0];
@@ -1839,11 +1841,11 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                                     }
 
 
-                                //Скелеты
+                                //Skeletons
                                 var skeletons = encWorld.GetActorsBySNO(ActorSno._skeleton_cain);
-                                //Камни
+                                //Stones
                                 //var Rocks = encWorld.GetActorsBySNO(176);
-                                //Берем позицию для леорика, а самого на мороз
+                                //We take a position for the theorist, and he himself in the cold
                                 Vector3D fakeLeoricPosition = new Vector3D(0f, 0f, 0f);
                                 foreach (var fake in encWorld.GetActorsBySNO(ActorSno._skeletonking_ghost))
                                 {
@@ -1854,19 +1856,20 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                                 //Берем каина
                                 var firstPoint = new Vector3D(120.92718f, 121.26151f, 0.099973306f);
                                 var secondPoint = new Vector3D(120.73298f, 160.61829f, 0.31863004f);
-                                var sceletonPoint = new Vector3D(120.11514f, 140.77332f, 0.31863004f);
+                                var skeletonPoint = new Vector3D(120.11514f, 140.77332f, 0.31863004f);
 
-                                var firstfacingAngle =
+                                var firstFacingAngle =
                                     ActorSystem.Movement.MovementHelpers.GetFacingAngle(cainRun, firstPoint);
-                                var secondfacingAngle =
+                                var secondFacingAngle =
                                     ActorSystem.Movement.MovementHelpers.GetFacingAngle(firstPoint, secondPoint);
-                                var thirdfacingAngle =
+                                var thirdFacingAngle =
                                     ActorSystem.Movement.MovementHelpers.GetFacingAngle(secondPoint,
                                         fakeLeoricPosition);
-                                //Подготовления завершены - НАЧИНАЕМ ТЕАТР=)
+                                //Preparations are complete - LET THE THEATRE BEGIN =)
                                 Task.Delay(3000).ContinueWith(delegate
                                 {
-                                    cainRun.Move(firstPoint, firstfacingAngle);
+                                    if (cainRun != null)
+                                        cainRun.Move(firstPoint, firstFacingAngle);
                                     foreach (var plr in Players.Values)
                                         plr.Conversations
                                             .StartConversation(
@@ -1875,19 +1878,21 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                                     {
                                         foreach (var skeleton in skeletons)
                                         {
-                                            skeleton.Move(sceletonPoint,
+                                            skeleton.Move(skeletonPoint,
                                                 ActorSystem.Movement.MovementHelpers.GetFacingAngle(skeleton,
-                                                    sceletonPoint));
+                                                    skeletonPoint));
                                         }
 
-                                        cainRun.Move(secondPoint, secondfacingAngle);
+                                        if (cainRun != null)
+                                            cainRun.Move(secondPoint, secondFacingAngle);
 
                                         Task.Delay(7000).ContinueWith(delegate
                                         {
                                             //foreach (var rock in Rocks)
                                             //{
                                             //{[1013103213, {[Actor] [Type: Gizmo] SNOId:78439 GlobalId: 1013103213 Position: x:119.54008 y:140.65799 z:-4.535186 Name: Test_CainIntro_greybox_bridge_trOut_TempWorking}]}
-                                            //Обрушиваем мостик //EffectGroup "CainIntro_shake", 81546
+                                            //We are demolishing the bridge
+                                            //EffectGroup "CainIntro_shake", 81546
                                             var bridge = encWorld.GetActorBySNO(ActorSno
                                                 ._test_cainintro_greybox_bridge_trout_tempworking);
                                             bridge.PlayAnimation(5,
@@ -1896,28 +1901,29 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                                             //}
                                             foreach (var skeleton in skeletons)
                                             {
-                                                //Убиваем скелетов
+                                                //Kill the skeletons
                                                 skeleton.Destroy();
                                             }
                                         });
                                         Task.Delay(5000).ContinueWith(delegate
                                         {
-                                            cainRun.Move(secondPoint, thirdfacingAngle);
+                                            if (cainRun != null)
+                                                cainRun.Move(secondPoint, thirdFacingAngle);
 
-                                            //(Должен быть диалог Король скилет.)
+                                            //(There should be a dialogue between King Skeleton.)
                                             var leoric = encWorld.SpawnMonster(ActorSno._skeletonking_ghost,
                                                 fakeLeoricPosition);
                                             leoric.PlayActionAnimation(AnimationSno.skeletonking_ghost_spawn);
                                             Task.Delay(1000).ContinueWith(delegate
                                             {
                                                 foreach (var plr in Players.Values)
-                                                    plr.Conversations.StartConversation(17692); //Фраза Леорика
+                                                    plr.Conversations.StartConversation(17692); //Leoric's phrase
                                                 Task.Delay(14000).ContinueWith(delegate
                                                 {
-                                                    //Leoric.PlayActionAnimation(9854); //Леорик призывает скелетов
+                                                    //Leoric.PlayActionAnimation(9854); //Leoric summons skeletons
 
                                                     leoric.PlayActionAnimation(AnimationSno
-                                                        .skeletonking_ghost_despawn); //Себаса
+                                                        .skeletonking_ghost_despawn);
                                                     Task.Delay(1000).ContinueWith(delegate
                                                     {
                                                         foreach (var plr in Players.Values)
@@ -1932,9 +1938,12 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                                                                 { });
                                                         }
 
-                                                        cainQuest.SetVisible(true);
-                                                        cainRun.SetVisible(false);
+                                                        if (cainQuest != null)
+                                                            cainQuest!.SetVisible(true);
+                                                        if (cainRun != null)
+                                                            cainRun!.SetVisible(false);
 
+                                                        // Destroy Leoric
                                                         foreach (var fake in encWorld.GetActorsBySNO(
                                                                      ActorSno._skeletonking_ghost))
                                                         {
