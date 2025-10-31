@@ -1,41 +1,43 @@
-﻿using DiIiS_NA.GameServer.MessageSystem;
-using GameBalance = DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
+﻿using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.Core.Logging;
+using DiIiS_NA.Core.MPQ;
+using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.Core.Storage;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
+using DiIiS_NA.GameServer.ClientSystem;
+using DiIiS_NA.GameServer.Core.Types.Math;
+using DiIiS_NA.GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.Core.Types.TagMap;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
+using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
+using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
+using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+using DiIiS_NA.GameServer.GSSystem.QuestSystem;
+using DiIiS_NA.GameServer.GSSystem.TickerSystem;
+using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Act;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Player;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Team;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
+using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using DiIiS_NA.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Drawing;
-using DiIiS_NA.Core.Logging;
-using DiIiS_NA.Core.MPQ;
-using DiIiS_NA.Core.Storage;
-using DiIiS_NA.Core.Helpers.Hash;
-using DiIiS_NA.GameServer.ClientSystem;
-using DiIiS_NA.GameServer.GSSystem.TickerSystem;
-using DiIiS_NA.GameServer.GSSystem.QuestSystem;
-using DiIiS_NA.GameServer.Core.Types.Math;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
-using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Act;
-using DiIiS_NA.GameServer.Core.Types.SNO;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Player;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Team;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
-using DiIiS_NA.GameServer.Core.Types.TagMap;
-using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
-using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
-using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
-using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using DiIiS_NA.Core.MPQ.FileFormats;
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
-using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
+using GameBalance = DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
 using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
 using Scene = DiIiS_NA.GameServer.GSSystem.MapSystem.Scene;
 using World = DiIiS_NA.GameServer.GSSystem.MapSystem.World;
@@ -1470,6 +1472,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
             if (Difficulty < 0) Difficulty = 0;
             if (Difficulty > 19) Difficulty = 19;
             diff++;
+            if (diff > 19) diff = 19;
+            Logger.Info($"Set difficulty to {Difficulty.Markup().Color(Spectre.Console.Color.Green3_1)}");
+
             if (diff > 0)
             {
                 var handicapLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][256027].Data;
@@ -1490,26 +1495,39 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
         public void UnlockTeleport(int waypointId)
         {
-            OpenedWaypoints.Add(waypointId);
+            if (!OpenedWaypoints.Contains(waypointId))
+            {
+                Logger.Info($"Waypoint {waypointId.Markup().Bold().Underline().Color(Spectre.Console.Color.Yellow)} is {"now unlocked".Markup().Bold().Color(Spectre.Console.Color.Green3_1)}");
+                OpenedWaypoints.Add(waypointId);
+            }
+            else Logger.Info($"Waypoint {waypointId.Markup().Bold().Underline().Color(Spectre.Console.Color.Yellow)} is {"already unlocked".Markup().Bold().Color(Spectre.Console.Color.Red3_1)}");
         }
 
         public Actor GetHearthPortal()
         {
-            return StartingWorld.Actors.Values.Where(x => x.SNO == ActorSno._hearthportal).First();
+            var heartPortal = StartingWorld.Actors?.Values?.Where(x => x.SNO == ActorSno._hearthportal)
+                .FirstOrDefault();
+            if (heartPortal == null)
+            {
+                Logger.Warn($"No {"Hearth Portal".Markup().Bold().Underline().Color(Spectre.Console.Color.Red3)} found.");
+            }
+            return heartPortal;
         }
 
         private void OnPause(GameClient client, PauseGameMessage message)
         {
             if (Players.Count == 1)
             {
+                Player player = Players.First().Value;
+                var key = Players.First().Key;
                 Logger.Trace("Game state is paused: {0}", message.Field0);
-                Players.First().Value.Attributes[GameAttributes.Disabled] = message.Field0;
-                Players.First().Value.Attributes[GameAttributes.Immobolize] = message.Field0;
+                player.Attributes[GameAttributes.Disabled] = message.Field0;
+                player.Attributes[GameAttributes.Immobolize] = message.Field0;
                 //this.Players.First().Value.Attributes[GameAttribute.Stunned] = message.Field0;
-                Players.First().Value.Attributes.BroadcastChangedIfRevealed();
+                player.Attributes.BroadcastChangedIfRevealed();
                 //this.Players.First().Key.TickingEnabled = !message.Field0;
                 Paused = message.Field0;
-                Players.First().Key.SendMessage(new FreezeGameMessage
+                key.SendMessage(new FreezeGameMessage
                 {
                     Field0 = message.Field0
                 });

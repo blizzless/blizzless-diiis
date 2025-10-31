@@ -703,12 +703,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 37,
                 OnAdvance = () =>
                 { //go to graveyard
+                    ListenProximity(ActorSno._cemetary_gate_trout_wilderness_no_lock, new Advance());
                     if (GameServerConfig.Instance.BypassBuggedQuests)
                     {
                         Advance();
                         return;
                     }
-                    ListenProximity(ActorSno._cemetary_gate_trout_wilderness_no_lock, new Advance());
                 }
             });
 
@@ -728,6 +728,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     ListenInteract(ActorSno._a1dun_crypts_leoric_crown_holder, 1, new Advance());
                     if (GameServerConfig.Instance.BypassBuggedQuests)
                     {
+                        if (Game.Players.Count == 0) UnlockTeleport(6);
+                        Open(world, ActorSno._cemetary_gate_trout_wilderness_no_lock);
                         Advance();
                         return;
                     }

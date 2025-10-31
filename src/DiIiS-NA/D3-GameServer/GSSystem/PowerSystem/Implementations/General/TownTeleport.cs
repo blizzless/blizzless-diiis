@@ -23,43 +23,65 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
 			var proximity = new RectangleF(User.Position.X - 1f, User.Position.Y - 1f, 2f, 2f);
 			var scenes = World.QuadTree.Query<Scene>(proximity);
 			var scene = scenes[0]; // Parent scene /fasbat
-			int levelArea = scene.Specification.SNOLevelAreas[0];
-			((HearthPortal)World.Game.GetHearthPortal()).ReturnWorld = World.SNO;
-			((HearthPortal)World.Game.GetHearthPortal()).ReturnPosition = User.Position;
+			var levelArea = scene.Specification.SNOLevelAreas[0];
+            if (World.Game.GetHearthPortal() is HearthPortal heartPortal)
+            {
+                heartPortal.ReturnWorld = World.SNO;
+                heartPortal.ReturnPosition = User.Position;
+            }
 
-			Vector3D exCheckpoint = User.CheckPointPosition;
+            Vector3D exCheckpoint = User.CheckPointPosition;
 
-			((Player)User).InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.SimpleMessage(MessageSystem.Opcodes.LoadingWarping));
+			if (User is Player plr1)
+			    plr1.InGameClient.SendMessage(new MessageSystem.Message.Definitions.Base.SimpleMessage(MessageSystem.Opcodes.LoadingWarping));
 			if (world != User.World)
 				User.ChangeWorld(world, World.Game.GetHearthPortal().Position);
 			else
 				User.Teleport(World.Game.GetHearthPortal().Position);
 
 			User.CheckPointPosition = exCheckpoint;
-			((HearthPortal)World.Game.GetHearthPortal()).Owner = (User as Player);
-			World.Game.GetHearthPortal().SetVisible(true);
 
-			((Player)User).InGameClient.SendMessage(new HearthPortalInfoMessage
+            if (World.Game.GetHearthPortal() is HearthPortal heartPortal2)
+            {
+				if (User is Player plr2)
+                    heartPortal2.Owner = plr2;
+            }
+
+            World.Game.GetHearthPortal().SetVisible(true);
+
+            if (User is Player plr3)
+            {
+                plr3.InGameClient.SendMessage(new HearthPortalInfoMessage
+                {
+                    snoLevelArea = levelArea,
+                    snoUnknown = -1,
+                    Field1 = -1,
+                });
+            }
+
+            var townProximity = new RectangleF(User.Position.X - 1f, User.Position.Y - 1f, 2f, 2f);
+            var townScenes = User.World.QuadTree.Query<Scene>(townProximity);
+            var townScene = townScenes[0]; // Parent scene /fasbat
+
+            // If there are multiple scenes, find the most appropriate one
+            if (townScenes.Count > 1)
+            {
+                // Look for the deepest subscene (one with a parent that is also in our query results)
+                for (int i = 1; i < townScenes.Count; i++)
+                {
+                    if (townScenes[i].ParentChunkID != 0xFFFFFFFF)
+                    {
+                        // This is a subscene, use it
+                        townScene = townScenes[i];
+                        break;
+                    }
+                }
+            }
+
+            var townLevelArea = townScene.Specification.SNOLevelAreas[0];
+			if (User.World.Game.QuestProgress.QuestTriggers.TryGetValue(townLevelArea, out var questTriggerLevelArea)) //EnterLevelArea
 			{
-				snoLevelArea = levelArea,
-				snoUnknown = -1,
-				Field1 = -1,
-			});
-
-			var town_proximity = new RectangleF(User.Position.X - 1f, User.Position.Y - 1f, 2f, 2f);
-			var town_scenes = User.World.QuadTree.Query<Scene>(town_proximity);
-			var town_scene = town_scenes[0]; // Parent scene /fasbat
-
-			if (town_scenes.Count == 2) // What if it's a subscene?
-			{
-				if (town_scenes[1].ParentChunkID != 0xFFFFFFFF)
-					town_scene = town_scenes[1];
-			}
-
-			var town_levelArea = town_scene.Specification.SNOLevelAreas[0];
-			if (User.World.Game.QuestProgress.QuestTriggers.ContainsKey(town_levelArea)) //EnterLevelArea
-			{
-				var trigger = User.World.Game.QuestProgress.QuestTriggers[town_levelArea];
+				var trigger = User.World.Game.QuestProgress.QuestTriggers[townLevelArea];
 				if (trigger.TriggerType == DiIiS_NA.Core.MPQ.FileFormats.QuestStepObjectiveType.EnterLevelArea)
 				{
 					try
