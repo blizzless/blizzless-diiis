@@ -81,13 +81,14 @@ namespace DiIiS_NA.GameServer.CommandManager
 				break;
 			}
 
-			if (found == false)
+			if (!found)
 			{
 				Logger.Warn("Unknown command.");
 				return;
 			}
 
-			Logger.Success(output != string.Empty ? "\n-----------------------------------------------------\n" + output + "\n-----------------------------------------------------\n" : "Command executed successfully.");
+            var separator = new string('-', 53);
+			Logger.Success(output != string.Empty ? $"\n{separator}\n" + output + $"\n{separator}\n" : "Command executed successfully.");
 		}
 
 
