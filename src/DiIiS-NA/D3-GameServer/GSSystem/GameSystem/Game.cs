@@ -1942,7 +1942,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                                                         foreach (var fake in encWorld.GetActorsBySNO(
                                                                      ActorSno._skeletonking_ghost))
                                                         {
-                                                            Logger.Warn();
+                                                            Logger.Warn($"Destroying fake leoric");
                                                             fakeLeoricPosition = fake.Position;
                                                             fake.Destroy();
                                                         }
