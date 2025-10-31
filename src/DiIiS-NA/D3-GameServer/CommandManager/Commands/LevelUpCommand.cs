@@ -10,6 +10,7 @@ namespace DiIiS_NA.GameServer.CommandManager;
 public class LevelUpCommand : CommandGroup
 {
     private const int MaxLevelUpCommand = 3;
+    private const int ParagonLevel = 70;
     [DefaultCommand(inGameOnly: true)]
     public string LevelUp(string[] @params, BattleClient invokerClient)
     {
@@ -27,7 +28,7 @@ public class LevelUpCommand : CommandGroup
                 return $"Invalid amount of levels to upgrade. Must be between 1-{MaxLevelUpCommand}";
 
         for (var i = 0; i < amount; i++)
-            if (player.Level >= 70)
+            if (player.Level >= ParagonLevel)
             {
                 player.UpdateExp((int)player.Attributes[GameAttributes.Alt_Experience_Next_Lo]);
                 player.PlayEffect(Effect.ParagonLevelUp, null, false);
@@ -41,6 +42,6 @@ public class LevelUpCommand : CommandGroup
             }
 
         player.Toon.GameAccount.NotifyUpdate();
-        return player.Level >= 70 ? $"New paragon level: {player.ParagonLevel}" : $"New level: {player.Toon.Level}";
+        return player.Level >= ParagonLevel ? $"New paragon level: {player.ParagonLevel}" : $"New level: {player.Toon.Level}";
     }
 }
