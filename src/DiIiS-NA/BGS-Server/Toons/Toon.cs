@@ -1277,6 +1277,24 @@ namespace DiIiS_NA.LoginServer.Toons
 		Unknown
 	}
 
+    public static class ToonClasses
+    {
+        public static string GetToonClassName(this ToonClass toonClass)
+        {
+			return toonClass switch
+            {
+                ToonClass.Barbarian => "Barbarian",
+				ToonClass.Crusader => "Crusader",
+				ToonClass.DemonHunter => "Demon Hunter",
+				ToonClass.Monk => "Monk",
+				ToonClass.WitchDoctor => "Witch Doctor",
+				ToonClass.Wizard => "Wizard",
+				ToonClass.Necromancer => "Necromancer",
+				_ => "Unknown",
+            }
+        }
+    }
+
 	[Flags]
 	public enum ToonFlags : uint
 	{
