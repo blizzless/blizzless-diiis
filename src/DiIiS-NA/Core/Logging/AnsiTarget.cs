@@ -226,6 +226,7 @@ public class AnsiTarget : LogTarget
             Logger.Level.MethodTrace => new Style(Color.DarkOliveGreen1_1),//
             Logger.Level.Trace => new Style(Color.BlueViolet),//
             Logger.Level.Info => new Style(Color.White),
+            Logger.Level.QuestLog => new Style(Color.DarkSeaGreen2),
             Logger.Level.Success => new Style(Color.Green3_1),
             Logger.Level.Warn => new Style(Color.Yellow),//
             Logger.Level.Error => new Style(Color.IndianRed1),//

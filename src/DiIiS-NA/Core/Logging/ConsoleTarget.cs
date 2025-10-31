@@ -59,29 +59,21 @@ namespace DiIiS_NA.Core.Logging
 
 		/// <param name="level"></param>
 		private static string SetColor(Logger.Level level, bool withBackground = false)
-		{
-			string postfix = withBackground ? " on grey19" : "";
-			switch (level)
-			{
-				case Logger.Level.PacketDump:
-					return $"[grey30{postfix}]";
-				case Logger.Level.Debug:
-					return $"[grey39{postfix}]";
-				case Logger.Level.Trace:
-					return $"[purple{postfix}]";
-				case Logger.Level.Info:
-					return $"[white{postfix}]";
-				case Logger.Level.Success:
-					return $"[green3_1{postfix}]";
-				case Logger.Level.Warn:
-					return $"[darkorange3_1{postfix}]";
-				case Logger.Level.Error:
-					return $"[indianred1{postfix}]";
-				case Logger.Level.Fatal:
-					return $"[red3{postfix}]";
-				default:
-					return $"[navajowhite3{postfix}]";
-			}
-		}
+        {
+            string postfix = withBackground ? " on grey19" : "";
+            return level switch
+            {
+                Logger.Level.PacketDump => $"[grey30{postfix}]",
+                Logger.Level.Debug => $"[grey39{postfix}]",
+                Logger.Level.Trace => $"[purple{postfix}]",
+                Logger.Level.Info => $"[white{postfix}]",
+                Logger.Level.QuestLog => $"[darkseagreen2{postfix}]",
+                Logger.Level.Success => $"[green3_1{postfix}]",
+                Logger.Level.Warn => $"[darkorange3_1{postfix}]",
+                Logger.Level.Error => $"[indianred1{postfix}]",
+                Logger.Level.Fatal => $"[red3{postfix}]",
+                _ => $"[grey54{postfix}]"
+            };
+        }
 	}
 }

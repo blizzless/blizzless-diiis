@@ -606,7 +606,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
         /// <returns>Current Act + Optional ID + Quest Name + Optional ID</returns>
         public string GetActQuest(bool showId)
         {
-            return $"{GetCurrentActName(showId)} - {GetCurrentQuestName(showId)}";
+            return $"{GetCurrentActName(showId)} - {GetCurrentQuestName(showId)} - step {CurrentStep}";
         }
 
         /// <summary>
@@ -1882,8 +1882,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                                                     skeletonPoint));
                                         }
 
-                                        if (cainRun != null)
-                                            cainRun.Move(secondPoint, secondFacingAngle);
+                                        cainRun?.Move(secondPoint, secondFacingAngle);
 
                                         Task.Delay(7000).ContinueWith(delegate
                                         {
@@ -1906,8 +1905,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                                         });
                                         Task.Delay(5000).ContinueWith(delegate
                                         {
-                                            if (cainRun != null)
-                                                cainRun.Move(secondPoint, thirdFacingAngle);
+                                            cainRun?.Move(secondPoint, thirdFacingAngle);
 
                                             //(There should be a dialogue between King Skeleton.)
                                             var leoric = encWorld.SpawnMonster(ActorSno._skeletonking_ghost,
@@ -1937,15 +1935,14 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                                                                 { });
                                                         }
 
-                                                        if (cainQuest != null)
-                                                            cainQuest!.SetVisible(true);
-                                                        if (cainRun != null)
-                                                            cainRun!.SetVisible(false);
+                                                        cainQuest?.SetVisible(true);
+                                                        cainRun?.SetVisible(false);
 
                                                         // Destroy Leoric
                                                         foreach (var fake in encWorld.GetActorsBySNO(
                                                                      ActorSno._skeletonking_ghost))
                                                         {
+                                                            Logger.Warn();
                                                             fakeLeoricPosition = fake.Position;
                                                             fake.Destroy();
                                                         }

@@ -21,6 +21,8 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Map;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Quest;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using DiIiS_NA.Utilities;
+using Spectre.Console;
 using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
 
 namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
@@ -44,7 +46,94 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 
 		public int CurrentAct => Game.CurrentAct;
 
-		public delegate void QuestProgressDelegate();
+        public string GetCurrentAct()
+        {
+            return CurrentAct switch
+            {
+                0 => "Act I",
+                100 => "Act II",
+                200 => "Act III",
+                300 => "Act IV",
+                400 => "Act V",
+                3000 => "Open World",
+                _ => "Unknown Act"
+            };
+        }
+
+        /// <summary>
+        /// Displays the current quest name, optionally with its ID
+        ///
+        /// - 11 Act I
+        /// - 10 Act II
+        /// - 8 Act III
+        /// - 4 Act IV
+        /// - 8 Act V
+        /// - 3 Open World
+        /// </summary>
+        /// <param name="showId">Optionally show its Id</param>
+        /// <param name="currentQuest">If not set, <see cref="CurrentQuest"/> will be used</param>
+        /// <returns>The Human-Readable quest name</returns>
+        public string GetCurrentQuestName(int currentQuest, bool showId = false)
+        {
+            string append = "";
+            if (showId) append = $" ({currentQuest})";
+            var quest = currentQuest switch
+            {
+                // ACT 1
+                87700 => $"The Fallen Star",
+                72095 => $"The Legacy of Cain",
+                72221 => $"Shattered Crown",
+                72061 => $"Reign of the Black King",
+                117779 => $"Tyrael Sword",
+                72738 => $"The Broken Blade",
+                73236 => $"The Doom in Wortham",
+                72546 => $"To the Black Cult",
+                72801 => $"The Imprisoned Angel",
+                136656 => $"Return to New Tristram",
+                // ACT 2
+                80322 => $"Shadows in the Desert",
+                93396 => $"Road to Alcarnus",
+                74128 => $"City on Blood",
+                57331 => $"Audience with Emperor",
+                78264 => $"Unexpected Help (Rescue Adria)",
+                78266 => $"Horadric traitor",
+                57335 => $"Blood and Sand",
+                57337 => $"Black Soulstone",
+                121792 => $"Rush in Caldeum",
+                57339 => $"Lord of Lies",
+                // ACT 3
+                93595 => $"The Siege of Bastion's Keep",
+                93600 => $"Raise of the Catapults",
+                93697 => $"Bastion Breach",
+                203595 => $"Stone Shake",
+                101756 => $"Machines of War",
+                101750 => $"Assault Beast",
+                101758 => $"Heart of Sin",
+                // ACT 4
+                112498 => $"Fall of Heavens",
+                113910 => $"The Light of Hope",
+                114208 => $"To the Spire",
+                114901 => $"The Prime Evil",
+                // ACT 5
+                251355 => $"The Fall of Westmarch",
+                284683 => $"Souls of the Dead",
+                285098 => $"The Harbinger",
+                257120 => $"The Witch",
+                263851 => $"The Pandemonium Gate",
+                273790 => $"The Battlefields of Eternity",
+                269552 => $"Breaching the Fortress",
+                273408 => $"Angel of Death",
+                // Open World
+                312429 => $"Open World Quest",
+                382695 => $"Nephalem Portal",
+                337492 => $"Tiered Rift",
+                _ => currentQuest.ToString()
+            };
+
+            return quest + append;
+        }
+
+        public delegate void QuestProgressDelegate();
 		public event QuestProgressDelegate OnQuestProgress = delegate { };
 
 		/// <summary>
@@ -174,6 +263,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 		/// <param name="snoQuest">snoID of the quest to advance</param>                               
 		public void Advance()
 		{
+			Logger.QuestLog($"Advancing from {Game.CurrentQuest.Markup().Bold()} step {Game.CurrentStep.Markup().Bold()}");
 			Quests[Game.CurrentQuest].Steps[Game.CurrentStep].Completed = true;
 			Game.CurrentStep = Quests[Game.CurrentQuest].Steps[Game.CurrentStep].NextStep;
 			Game.QuestProgress.QuestTriggers.Clear();
@@ -196,8 +286,6 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 				if (!Game.Empty)
 				{
 					SaveQuestProgress(true);
-					Logger.Trace(
-						$"$[white]$(Advance)$[/]$ Game {Game.GameId} Advanced to quest $[underline white]${Game.CurrentQuest}$[/]$, completed $[underline white]${Quests[Game.CurrentQuest].Completed}$[/]$");
 					Game.BroadcastPlayers((client, player) =>
 					{
 						if (Game.CurrentQuest == 312429) return; // open world quest
@@ -265,10 +353,12 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 					Logger.WarnException(e, "Advance() exception caught:");
 				}
 
-				//Пока только для одного квеста
-				//	if (this.Game.CurrentQuest != 72221)
-				//		if (this.Game.CurrentStep != -1)
-				Advance();
+                Logger.QuestLog(
+                    $"{"(Advance)".Markup().Color(Spectre.Console.Color.White)} Game {Game.GameId.Markup().Bold()} Advanced to quest {Game.GetActQuest(true).Markup().Bold().Color(Color.Aquamarine1_1)}");
+                //Only for one quest so far
+                //	if (this.Game.CurrentQuest != 72221)
+                //		if (this.Game.CurrentStep != -1)
+                Advance();
 			}
 
 			if (!Game.Empty)

@@ -9,12 +9,15 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 	{
 		public struct DRLGLayout
 		{
-			public int enterPositionX;
+            // ReSharper disable InconsistentNaming
+            public int enterPositionX;
 			public int enterPositionY;
 			public int exitPositionX;
 			public int exitPositionY;
 			public List<List<int>> map;
-		};
+
+            // ReSharper enable InconsistentNaming
+        };
 
 		public static readonly Dictionary<WorldSno, List<DRLGLayout>> Templates = new Dictionary<WorldSno, List<DRLGLayout>>
 		{

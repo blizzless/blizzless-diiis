@@ -50,10 +50,14 @@ namespace DiIiS_NA.Core.Logging
 			/// Informational messages.
 			/// </summary>
 			Info,
-			/// <summary>
-			/// Success messages.
-			/// </summary>
-			Success,
+            /// <summary>
+            /// Quest Information messages.
+            /// </summary>
+            QuestLog,
+            /// <summary>
+            /// Success messages.
+            /// </summary>
+            Success,
 			/// <summary>
 			/// Warning messages.
 			/// </summary>
@@ -126,13 +130,21 @@ namespace DiIiS_NA.Core.Logging
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
 		public void Info(string message, params object[] args) => Log(Level.Info, message, args);
-		
-		/// <param name="message">The log message.</param>
-		public void Success(string message) => Log(Level.Success, message, null);
+
+
+        /// <param name="message">The log message.</param>
+        public void QuestLog(string message) => Log(Level.Warn, message, null);
+
+        /// <param name="message">The log message.</param>
+        /// <param name="args">Additional arguments.</param>
+        public void QuestLog(string message, params object[] args) => Log(Level.QuestLog, message, args);
+
+        /// <param name="message">The log message.</param>
+        public void Success(string message) => Log(Level.Success, message, null);
 
 		/// <param name="message">The log message.</param>
 		/// <param name="args">Additional arguments.</param>
-		public void Success(string message, params object[] args) => Log(Level.Success, message, args);
+		public void Success(string message, params object[] args) => Log(Level.QuestLog, message, args);
 
 		/// <param name="message">The log message.</param>
 		public void Warn(string message) => Log(Level.Warn, message, null);
