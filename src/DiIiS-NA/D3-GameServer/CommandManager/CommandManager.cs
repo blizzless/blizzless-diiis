@@ -23,8 +23,11 @@ namespace DiIiS_NA.GameServer.CommandManager
 				if (!type.IsSubclassOf(typeof(CommandGroup))) continue;
 				var attributes = (CommandGroupAttribute[])type.GetCustomAttributes(typeof(CommandGroupAttribute), true);
 				if (attributes.Length == 0) continue;
-				var groupAttribute = attributes[0];
-				if (groupAttribute.Name == null) continue;
+				var groupAttribute = attributes.First(s=>s.GetType() == typeof(CommandGroupAttribute));
+                var obsoleteAttribute = attributes.FirstOrDefault(s => s.GetType() == typeof(ObsoleteAttribute));
+                if (groupAttribute.Disabled || obsoleteAttribute != null)
+					continue;
+                if (groupAttribute.Name == null) continue;
 				if (groupAttribute.Name.Contains(" "))
 				{
 					Logger.Warn($"Command group name '{groupAttribute.Name}' contains spaces (which is $[red]$not$[/]$ allowed). $[red]$Command group will be ignored.$[/]$");

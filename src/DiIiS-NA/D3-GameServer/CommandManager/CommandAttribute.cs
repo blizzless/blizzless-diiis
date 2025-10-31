@@ -30,13 +30,16 @@ namespace DiIiS_NA.GameServer.CommandManager
 		/// </summary>
 		public bool InGameOnly { get; }
 
-		public CommandGroupAttribute(string name, string help, Account.UserLevels minUserLevel = Account.UserLevels.Admin, bool inGameOnly = false)
+		public bool Disabled { get; }
+
+		public CommandGroupAttribute(string name, string help, Account.UserLevels minUserLevel = Account.UserLevels.Admin, bool inGameOnly = false, bool disabled = false)
 		{
 			Name = name.ToLower();
 			Help = help;
 			MinUserLevel = minUserLevel;
 			InGameOnly = inGameOnly;
-		}
+            Disabled = disabled;
+        }
 	}
 
 	[AttributeUsage(AttributeTargets.Method)]

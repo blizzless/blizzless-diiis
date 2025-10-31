@@ -19,7 +19,8 @@ namespace DiIiS_NA.GameServer.CommandManager
 		private readonly Dictionary<CommandAttribute, MethodInfo> _commands = new();
 
 		public void Register(CommandGroupAttribute attributes)
-		{
+        {
+            if (attributes.Disabled) return;
 			Attributes = attributes;
 			RegisterDefaultCommand();
 			RegisterCommands();

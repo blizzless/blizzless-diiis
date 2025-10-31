@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
@@ -10,7 +11,8 @@ using Spectre.Console;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("teleport", "Teleports where you click.", Account.UserLevels.GM, inGameOnly: true)]
+[CommandGroup("teleport", "Teleports where you click.", Account.UserLevels.GM, inGameOnly: true, disabled: true)]
+[Obsolete("Does not work properly.")]
 public class TeleportCommand : CommandGroup
 {
     private readonly Logger _logger = LogManager.CreateLogger<TeleportCommand>();
