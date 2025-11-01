@@ -1,20 +1,21 @@
 ﻿
+using Antlr.Runtime.Misc;
 using DiIiS_NA.Core.Logging;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.Core.Types.Math;
+using DiIiS_NA.GameServer.Core.Types.TagMap;
+using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.GameServer.GSSystem.GameSystem;
-using System.Collections.Generic;
-using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
-using DiIiS_NA.GameServer.Core.Types.Math;
-using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations;
-using System.Linq;
-using Antlr.Runtime.Misc;
-using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations.Act_I;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
-using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
-using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents;
+using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations;
+using DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations.Act_I;
+using DiIiS_NA.GameServer.MessageSystem;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.Utilities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -1090,8 +1091,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
                         if (!world.Players.Any()) return;
                         var player = world.Players.First();
-                        var portal = world.GetPortals(player.Value);
-                        portal.First().SetUsable(false);
+                        var portals = world.GetPortals(player.Value, 100f);
+                        foreach (var portal in portals)
+                        {
+                            Logger.MethodTrace($"Found portal with SNO {portal.SNO.GetName()}, closing.");
+                            portal.SetUsable(false);
+                        }
                     });
 
                     ListenKill(ActorSno._skeletonking, 1, new Advance());
@@ -1111,9 +1116,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
                         Open(world, ActorSno._trdun_crypt_skeleton_king_throne_parts);
                         if (!world.Players.Any()) return;
+                        
                         var player = world.Players.First();
-                        var portal = world.GetPortals(player.Value);
-                        portal.First().SetUsable(true);
+                        var portals = world.GetPortals(player.Value, 100f);
+                        foreach (var portal in portals)
+                        {
+                            Logger.MethodTrace($"Found portal with SNO {portal.SNO.GetName()}, opening.");
+                            portal.SetUsable(true);
+                        }
                     });
                     ListenTeleport(117411, new Advance());
                 }
