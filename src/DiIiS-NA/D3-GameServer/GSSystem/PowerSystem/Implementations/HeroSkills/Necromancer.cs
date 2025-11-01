@@ -2021,7 +2021,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                     skeleton.SetVisible(true);
                     skeleton.Hidden = false;
                     skeleton.PlayEffectGroup(474172);
-                    
+
+                    AttackPayload attack = new AttackPayload(this)
+                    {
+                        Target = Target
+                    };
+
                     // Commanded skeletons go into a frenzy, gaining 25% increased attack speed as long as they attacked the Commanded target (in addition to damage bonus).
                     if (frenzy)
                     {
@@ -2030,7 +2035,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                             var originalAttackSpeed = skeleton.Attributes[GameAttributes.Attacks_Per_Second];
                             skeleton.Attributes.FixedMap.Add(FixedAttribute.AttackSpeed, 
                                 attr => attr[GameAttributes.Attacks_Per_Second] = originalAttackSpeed * 1.25f,
-                                () => skeleton.Attributes[GameAttributes.Attacks_Per_Second] = originalAttackSpeed);
+                                (act) =>
+                                {
+                                    skeleton.Attributes[GameAttributes.Attacks_Per_Second] = originalAttackSpeed;
+                                });
+                            attack.AddWeaponDamage(greaterDamage ? 3.15f : 1.0f, damageType);
                             skeleton.Attributes.BroadcastChangedIfRevealed();
                         }
                     }
@@ -2041,13 +2050,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
                             skeleton.Attributes.FixedMap.Remove(FixedAttribute.AttackSpeed);
                             skeleton.Attributes.BroadcastChangedIfRevealed();
                         }
+                        attack.AddWeaponDamage(greaterDamage ? 2.15f : 1.0f, damageType);
                     }
-                    AttackPayload attack = new AttackPayload(this)
-                    {
-                        Target = Target
-                    };
                     
-                    attack.AddWeaponDamage(greaterDamage ? 2.15f : 1.0f, damageType);
                     attack.OnHit = hit =>
                     {
                         if (freezingGrasp)
