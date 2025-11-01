@@ -1049,7 +1049,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         {
                             if (portal.World.SNO == WorldSno.a1trdun_king_level08)
                             {
-                                Open
+                                // TODO: Close portal
                             }
                         }
                         portal.First().SetUsable(false);

@@ -261,16 +261,20 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			if (actor == null)
 				throw new ArgumentNullException(nameof(actor));
-			if (radius <= 0)
-				throw new ArgumentOutOfRangeException(nameof(radius), "Radius must be greater than zero.");
+			switch (radius)
+            {
+                case <= 0:
+                    throw new ArgumentOutOfRangeException(nameof(radius), "Radius must be greater than zero.");
+                case { } r:
+                    Logger.MethodTrace(
+                        $"All portals near {(actor.SNO + actor.GetType().Name).Markup().Underline()}) within {r.Markup().Underline()} radius");
+                    break;
+                default:
+                    Logger.MethodTrace($"All portals near {actor.SNO.Markup().Underline()} ({actor.GetType().Name.Markup().Underline()})");
+                    break;
+            }
 
-			if (radius is { } r)
-				Logger.MethodTrace(
-					$"All portals near $[underline]${actor.SNO} ({actor.GetType().Name})$[/]$ within $[underline]${r}$[/]$ radius");
-			else
-				Logger.MethodTrace($"All portals near $[underline]${actor.SNO} ({actor.GetType().Name})$[/]$");
-
-			return Portals
+            return Portals
 				.Where(portal =>
 				{
 					if (radius is not { } r) return true;
