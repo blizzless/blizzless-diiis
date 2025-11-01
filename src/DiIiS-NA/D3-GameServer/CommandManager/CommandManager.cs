@@ -82,7 +82,7 @@ namespace DiIiS_NA.GameServer.CommandManager
 				return;
 			}
 
-			foreach (var pair in CommandGroups.Where(pair => pair.Key.Name == command))
+			foreach (var pair in CommandGroups.Where(pair => pair.Key.Name.CompareWith(command) || (pair.Key.Shortcut?.Equals(command, StringComparison.InvariantCultureIgnoreCase) ?? false)))
 			{
 				output = pair.Value.Handle(parameters);
 				found = true;
@@ -151,16 +151,28 @@ namespace DiIiS_NA.GameServer.CommandManager
 			command = string.Empty;
 			parameters = string.Empty;
 
-			if (line == string.Empty)
+			// Validate input is not empty
+			if (line.Length == 0)
 				return false;
 
-			if (line[0] != CommandsConfig.Instance.CommandPrefix) // if line does not start with command-prefix
+			// Validate line starts with command prefix
+			if (line[0] != CommandsConfig.Instance.CommandPrefix)
 				return false;
 
-			line = line[1..]; // advance to actual command.
-			command = line.Split(' ')[0].ToLower(); // get command
-			parameters = String.Empty;
-			if (line.Contains(' ')) parameters = line[(line.IndexOf(' ') + 1)..].Trim(); // get parameters if any.
+			// Extract the command (first word after prefix, converted to lowercase)
+			line = line[1..]; // Remove prefix
+			var spaceIndex = line.IndexOf(' ');
+			var hasParameters = spaceIndex >= 0;
+
+			command = hasParameters 
+				? line[..spaceIndex].ToLower() 
+				: line.ToLower();
+
+			// Extract parameters (everything after the first space)
+			if (hasParameters)
+			{
+				parameters = line[(spaceIndex + 1)..].Trim();
+			}
 
 			return true;
 		}
@@ -174,10 +186,14 @@ namespace DiIiS_NA.GameServer.CommandManager
 				output = 
 					invokerClient != null 
 						? CommandGroups.Where(pair => pair.Key.MinUserLevel > invokerClient?.Account.UserLevel)
-							.Aggregate(output, (current, pair) => current + ($"{CommandsConfig.Instance.CommandPrefix}{pair.Key.Name}: {pair.Key.Help}\n\n")) 
+							.Aggregate(output, (current, pair) => current + $"{CommandsConfig.Instance.CommandPrefix.Markup().Color(Color.Yellow3_1)}" +
+                                                                  $"{pair.Key.Name.Markup().Color(Color.Yellow4_1)} " +
+                                                                  $"{pair.Key.Help.Markup().Color(Color.DarkSeaGreen2_1)}\n\n") 
 						: CommandGroups
 							.Where(s=>!s.Key.InGameOnly)
-							.Aggregate(output, (current, pair) => current + (($"$[underline green]${CommandsConfig.Instance.CommandPrefix}{pair.Key.Name}$[/]$: $[white]${pair.Key.Help}$[/]$\n")));
+							.Aggregate(output, (current, pair) => current + $"{CommandsConfig.Instance.CommandPrefix.Markup().Color(Color.Yellow3_1)}" +
+                                                                  $"{pair.Key.Name.Markup().Color(Color.Yellow4_1)} " +
+                                                                  $"{pair.Key.Help.Markup().Color(Color.DarkSeaGreen2_1)}\n");
 
 				return output + $"Type '{CommandsConfig.Instance.CommandPrefix}help <command>' to get help about a specific command.";
 			}
@@ -199,8 +215,11 @@ namespace DiIiS_NA.GameServer.CommandManager
 				var group = @params[0];
 				var command = @params.Length > 1 ? @params[1] : string.Empty;
 
-				foreach (var pair in CommandGroups.Where(pair => group == pair.Key.Name && ((invokerClient == null && !pair.Key.InGameOnly) || (invokerClient != null && pair.Key.MinUserLevel <= invokerClient.Account.UserLevel))))
-				{
+				foreach (var pair in CommandGroups.Where(pair => group == pair.Key.Name || (group == pair.Key.Shortcut && ((invokerClient == null && !pair.Key.InGameOnly) || (invokerClient != null && pair.Key.MinUserLevel <= invokerClient.Account.UserLevel)))))
+                {
+                    if (!string.IsNullOrWhiteSpace(pair.Key.Shortcut))
+                        command = pair.Key.Name;
+
 					if (command == string.Empty)
 						return pair.Key.Help;
 

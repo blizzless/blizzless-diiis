@@ -204,8 +204,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public static BuffManager _PvPBuffManager = new();
 
 		public BuffManager BuffManager => IsPvP ? _PvPBuffManager : _buffManager;
+        public Player? FirstPlayer => Players.FirstOrDefault().Value;
 
-		/// <summary>
+        /// <summary>
 		/// Creates a new world for the given game with given snoId.
 		/// </summary>
 		/// <param name="game">The parent game.</param>

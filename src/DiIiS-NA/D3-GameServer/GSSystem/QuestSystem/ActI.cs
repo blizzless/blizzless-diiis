@@ -14,6 +14,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.PowerSystem;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
+using DiIiS_NA.Utilities;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -1022,7 +1023,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     {
                         Game.GetWorld(WorldSno.a1trdun_king_level08).GetActorBySNO(ActorSno._trdun_skeletonking_bridge_active, true).Hidden = true;
                     });
-                    UnlockTeleport(4);
+                    UnlockTeleport(4); // TODO: May be related to 
                     ListenTeleport(19789, new Advance());
                     //if (!this.Game.Empty) this.Game.GetWorld(73261).GetActorBySNO(461, true).Hidden = true;
                 }
@@ -1037,9 +1038,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 { //kill skeletons
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
+                        var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
                         script = new SpawnSkeletons();
                         script.Execute(Game.GetWorld(WorldSno.a1trdun_king_level08));
 
+                        var portals = world.GetPortals(Game.GetMainPlayer());
+                        Logger.QuestLog($"Closing all doors in {WorldSno.a1trdun_king_level08.GetName()}");
+
+                        foreach (var portal in portals)
+                        {
+                            if (portal.World.SNO == WorldSno.a1trdun_king_level08)
+                            {
+                                Open
+                            }
+                        }
+                        portal.First().SetUsable(false);
                     });
 
                     ListenKill(ActorSno._skeletonking_shield_skeleton, 4, new Advance());
@@ -1056,10 +1069,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
                         var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
-                        if (world.Players.Any())
+                        if (world.Players.Any() && world.FirstPlayer is {} firstPlayer)
                         {
-                            var player = world.Players.First();
-                            var portal = world.GetPortals(player.Value);
+                            var portal = world.GetPortals(firstPlayer);
                             portal.First().SetUsable(false);
                         }
 

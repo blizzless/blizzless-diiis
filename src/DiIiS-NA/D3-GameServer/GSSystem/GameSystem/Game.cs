@@ -68,6 +68,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
         /// </summary>
         public ConcurrentDictionary<GameClient, Player> Players { get; private set; }
 
+        public Player GetMainPlayer() => Players.FirstOrDefault().Value;
+
         public ImmutableArray<Player> ConnectedPlayers => Players
             .Where(s => s.Value != null && s.Key.Connection.IsOpen() && !s.Key.IsLoggingOut)
             .Select(s => s.Value).ToImmutableArray();
@@ -2035,7 +2037,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
         public void AddOnLoadWorldAction(WorldSno worldSno, Action action)
         {
-            Logger.Trace("AddOnLoadWorldAction: {0}", worldSno);
+            Logger.MethodTrace($"World {worldSno.GetName()}");
             if (Players.Values.Any(p => p.World?.SNO == worldSno))
             {
                 action.Invoke();
@@ -2046,6 +2048,22 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
                     OnLoadWorldActions.Add(worldSno, new List<Action>());
 
                 OnLoadWorldActions[worldSno].Add(action);
+            }
+        }
+        public void AddOnLoadWorldAction(WorldSno worldSno, Action<World> action)
+        {
+            Logger.MethodTrace($"World {worldSno.GetName()}");
+            var world = GetMainPlayer().World;
+            if (Players.Values.Any(p => p.World?.SNO == worldSno) && world.SNO == worldSno)
+            {
+                action.Invoke(world);
+            }
+            else
+            {
+                if (!OnLoadWorldActions.ContainsKey(worldSno))
+                    OnLoadWorldActions.Add(worldSno, new List<Action>());
+
+                OnLoadWorldActions[worldSno].Add(() => action(world));
             }
         }
 

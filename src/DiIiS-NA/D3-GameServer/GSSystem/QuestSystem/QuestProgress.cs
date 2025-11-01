@@ -172,18 +172,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             }
         }
 
-		//opening gates or door(for getting pass)
-		protected bool Open(World world, ActorSno sno)
-		{
-			var doors = world.GetAllDoors(sno);
-			if (!doors.Any()) return false;
-			foreach (var door in doors)
-				door.Open();
+        //opening gates or door(for getting pass)
+        protected bool Open(World world, ActorSno sno)
+        {
+            var doors = world.GetAllDoors(sno);
+            if (!doors.Any()) return false;
+            foreach (var door in doors)
+                door.Open();
             return true;
-		}
-		
-		//opening all doors
-		protected bool OpenAll(World world)
+        }
+
+        //opening all doors
+        protected bool OpenAll(World world)
 		{
 			var doors = world.GetAllDoors();
 			if (!doors.Any()) return false;

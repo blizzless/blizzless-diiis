@@ -36,11 +36,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 				var attribute = (CommandAttribute)attributes[0];
 				if (attribute is DefaultCommand) continue;
 
-				if (!_commands.ContainsKey(attribute))
-					_commands.Add(attribute, method);
-				else
-					Logger.Fatal($"$[red]$Command$[/]$ '$[underline white]${attribute.Name.SafeAnsi()}$[/]$' already exists.");
-			}
+				if (!_commands.TryAdd(attribute, method))
+                    Logger.Fatal($"$[red]$Command$[/]$ '$[underline white]${attribute.Name.SafeAnsi()}$[/]$' already exists.");
+            }
 		}
 
 		private void RegisterDefaultCommand()
@@ -121,14 +119,15 @@ namespace DiIiS_NA.GameServer.CommandManager
 
 		[DefaultCommand]
 		public virtual string Fallback(string[] @params = null, BattleClient invokerClient = null)
-		{
-			var output = _commands
+        {
+            var output = _commands
 				.Where(pair => pair.Key.Name.Trim() != string.Empty)
 				.Where(pair => (invokerClient == null && pair.Key.InGameOnly) || (invokerClient != null && pair.Key.MinUserLevel <= invokerClient.Account.UserLevel))
 				.Aggregate("Available subcommands: ", (current, pair) => current + (pair.Key.Name + ", "));
 
-			return output.Substring(0, output.Length - 2) + ".";
-		}
+            if (output != null) return string.Concat(output.Substring(0, output.Length - 2), ".");
+            return "No available subcommands.";
+        }
 
 		protected CommandAttribute GetDefaultSubcommand() => _commands.Keys.First();
 
