@@ -5,13 +5,18 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("invulnerable", "Makes you invulnerable", Account.UserLevels.GM, inGameOnly: true)]
+[CommandGroup("invulnerable", "Makes you invulnerable", Account.UserLevels.Tester, inGameOnly: true)]
 public class InvulnerableCommand : CommandGroup
 {
     [DefaultCommand(Account.UserLevels.Tester, true)]
     public string Invulnerable(string[] @params, BattleClient invokerClient)
     {
         var player = invokerClient.InGameClient.Player;
+
+        if (player.Attributes.FixedMap.Contains(FixedAttribute.Dev))
+        {
+            return "You cannot change invulnerability while in DEV mode.";
+        }
 
         if (player.Attributes.FixedMap.Contains(FixedAttribute.Invulnerable))
         {

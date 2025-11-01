@@ -13,8 +13,16 @@ public class PowerfulCommand : CommandGroup
     public string Powerful(string[] @params, BattleClient invokerClient)
     {
         var player = invokerClient.InGameClient.Player;
+
+        if (player.Attributes.FixedMap.Contains(FixedAttribute.Dev))
+        {
+            return "You cannot change powerfulness while in DEV mode.";
+        }
+
         if (player.Attributes.FixedMap.Contains(FixedAttribute.Powerful))
         {
+            // Revert to normal damage values by removing the Damage override to float.MaxValue.
+
             player.Attributes.FixedMap.Remove(FixedAttribute.Powerful);
             player.Attributes.BroadcastChangedIfRevealed();
             return "You are no longer powerful.";

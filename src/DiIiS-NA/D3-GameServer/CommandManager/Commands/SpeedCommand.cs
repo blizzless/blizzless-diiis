@@ -1,47 +1,65 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using D3.Account;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.LoginServer.Battle;
+using NHibernate.Criterion;
+using Account = DiIiS_NA.LoginServer.AccountsSystem.Account;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("speed", "Modify speed walk of you character.\nUsage: !speed <value>\nReset: !speed", inGameOnly: true)]
+[CommandGroup("speed", $"Modify speed walk of you character.\nUsage: !speed <value>\nReset: !speed\nMax Speed: !speed 2", Account.UserLevels.Tester, inGameOnly: true)]
 public class SpeedCommand : CommandGroup
 {
-    [DefaultCommand(inGameOnly: true)]
+    private const float MinSpeedValue = 0;
+    private const float NormalSpeedValue = 0.36f;
+    private const float MaxSpeedValue = 2;
+    
+    [DefaultCommand(Account.UserLevels.Tester, inGameOnly: true)]
     public string ModifySpeed(string[] @params, BattleClient invokerClient)
     {
+        if (invokerClient.InGameClient?.Player is not { } player)
+            return "You are not in game.";
+
         if (@params == null)
-            return
-                "Change the movement speed. Min 0 (Base), Max 2.\n You can use decimal values like 1.3 for example.";
-        float speedValue;
+            return $"Change the movement speed. Min {MinSpeedValue} (Base), Max {MaxSpeedValue}.\nYou can use decimal values like 1.3 for example.";
 
-        const float maxSpeed = 2;
-        const float baseSpeed = 0.36f;
+        if (player.Attributes.FixedMap.Contains(FixedAttribute.Dev))
+            return "You cannot change speed while in DEV mode.";
 
+        // Determine the speed value to apply
+        float speedValue = NormalSpeedValue; // Default to normal speed
+        
         if (@params.Any())
         {
-            if (!float.TryParse(@params[0], out speedValue) || speedValue is < 0 or > maxSpeed)
-                return "Invalid speed value. Must be a number between 0 and 2.";
-        }
-        else
-        {
-            speedValue = 0;
+            string command = @params[0];
+            
+            if (!command.CompareWith("reset"))
+            {
+                // Try to parse as float
+                // `speedValue < MinSpeedValue` because it's checked later.
+                if (!float.TryParse(command, out speedValue) || speedValue < MinSpeedValue || speedValue > MaxSpeedValue)
+                    return $"Invalid speed value. Must be a number between {MinSpeedValue} and {MaxSpeedValue}.";
+            }
         }
 
         var playerSpeed = invokerClient.InGameClient.Player.Attributes;
 
+        // Remove the existing Speed fixed attribute if present
         if (playerSpeed.FixedMap.Contains(FixedAttribute.Speed))
             playerSpeed.FixedMap.Remove(FixedAttribute.Speed);
 
-        if (speedValue <= baseSpeed) // Base Run Speed [Necrosummon]
+        // Apply the speed value
+        if (speedValue.IsWithinTolerance(NormalSpeedValue) || speedValue.IsZero())
         {
-            playerSpeed[GameAttributes.Running_Rate] = baseSpeed;
+            playerSpeed[GameAttributes.Running_Rate] = NormalSpeedValue;
             playerSpeed.BroadcastChangedIfRevealed();
-            return $"Speed reset to Base Speed ({baseSpeed:0.000}).";
+            return $"Speed reset to Base Speed ({NormalSpeedValue:0.000}).";
         }
+        
         playerSpeed.FixedMap.Add(FixedAttribute.Speed, attr => attr[GameAttributes.Running_Rate] = speedValue);
         playerSpeed.BroadcastChangedIfRevealed();
-        return $"Speed changed to {speedValue}";
+        return $"Speed changed to {speedValue:0.000}";
     }
 }

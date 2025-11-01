@@ -1043,16 +1043,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         script.Execute(Game.GetWorld(WorldSno.a1trdun_king_level08));
 
                         var portals = world.GetPortals(Game.GetMainPlayer());
-                        Logger.QuestLog($"Closing all doors in {WorldSno.a1trdun_king_level08.GetName()}");
+                        Logger.QuestLog($"Closing all portals in {WorldSno.a1trdun_king_level08.GetName()}");
 
-                        foreach (var portal in portals)
+                        foreach (var portal in portals.Where(portal => portal.World.SNO == WorldSno.a1trdun_king_level08))
                         {
-                            if (portal.World.SNO == WorldSno.a1trdun_king_level08)
-                            {
-                                // TODO: Close portal
-                            }
+                            portal.SetUsable(false);
                         }
-                        portal.First().SetUsable(false);
                     });
 
                     ListenKill(ActorSno._skeletonking_shield_skeleton, 4, new Advance());

@@ -11,17 +11,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
         Speed,
         Powerful,
         Resourceful,
-        AttackSpeed
+        AttackSpeed,
+        Dev
     }
 
     public class FixedMap
     {
         private static readonly Logger _logger = LogManager.CreateLogger(nameof(FixedMap));
         private readonly Dictionary<FixedAttribute, Action<GameAttributeMap>> _attributeMap = new();
-        private readonly Dictionary<FixedAttribute, Action> _removedAttributeMap = new();
+        // ReSharper disable once CollectionNeverQueried.Local
+        private readonly Dictionary<FixedAttribute, Action<GameAttributeMap>> _removedAttributeMap = new();
 
         public void Add(FixedAttribute name, Action<GameAttributeMap> action,
-            Action removedAction = null)
+            Action<GameAttributeMap> removedAction = null)
         {
             _attributeMap.Add(name, action);
             if (removedAction != null)
@@ -41,11 +43,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
         public void Remove(FixedAttribute name)
         {
             _attributeMap.Remove(name);
-            if (_removedAttributeMap.ContainsKey(name))
-            {
-                _removedAttributeMap[name]();
-                _removedAttributeMap.Remove(name);
-            }
+            _removedAttributeMap.Remove(name);
         }
 
         public void Clear() => _attributeMap.Clear();
