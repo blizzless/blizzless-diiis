@@ -1058,11 +1058,31 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 			}
 		}
 
-		/// <summary>
-		/// Unreveals an actor from a player.
-		/// </summary>
-		/// <returns>true if the actor was unrevealed or false if the actor wasn't already revealed.</returns>
-		public override bool Unreveal(Player player)
+        /// <summary>
+        /// Unreveals an actor from various players.
+        /// </summary>
+        /// <returns>true if all actors was unrevealed or false if there's any actor that wasn't already revealed.</returns>
+        public bool Unreveal(IEnumerable<Player> players)
+        {
+            bool[] unrevealed = players.Select(Unreveal).ToArray();
+            return unrevealed.All(u => u);
+        }
+
+        /// <summary>
+        /// Unreveals an actor from various players.
+        /// </summary>
+        /// <returns>true if all actors was unrevealed or false if there's any actor that wasn't already revealed.</returns>
+        public bool Unreveal(params Player[] players)
+        {
+            bool[] unrevealed = players.Select(Unreveal).ToArray();
+            return unrevealed.All(u => u);
+        }
+
+        /// <summary>
+        /// Unreveals an actor from a player.
+        /// </summary>
+        /// <returns>true if the actor was unrevealed or false if the actor wasn't already revealed.</returns>
+        public override bool Unreveal(Player player)
 		{
 			lock (player.RevealedObjects)
 			{

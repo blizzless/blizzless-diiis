@@ -138,6 +138,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		public static bool PvPMapLoaded = false;
 
+        public Player[] GetPlayers() => Players.Values.ToArray();
+
 		public Scene GetSceneBySnoId(int SnoID)
 		{
 			Scene scene = null;

@@ -77,8 +77,24 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		}
 
+        /// <summary>
+        /// Advance to the next quest step, bypassing bugged quests if the config option is enabled.
+        /// </summary>
+        /// <param name="preAdvance">Executes before advancing to the next quest</param>
+        /// <param name="postAdvance">Executes after advancing to the next quest</param>
+        protected void AdvanceBugged(Action? preAdvance = null, Action? postAdvance = null)
+        {
+            if (!GameServerConfig.Instance.BypassBuggedQuests) return;
+            var questManager = Game.QuestManager;
+            _logger.Warn($"Bypassing {"bugged".Markup().Bold()} quest ({questManager.GetCurrentQuestName().Markup().Color(Color.Red3)} step {Game.CurrentStep.Markup().Color(Color.Red3)}. " +
+                         $"Going to quest {questManager.GetCurrentQuestName(Game.QuestManager.NextStep, true).Markup().Bold().Color(Color.LightCyan1)} " +
+                         $"step {questManager.NextStep.Markup().Bold().Color(Color.LightCyan1)}...");
+            preAdvance?.Invoke();
+            Advance();
+			postAdvance?.Invoke();
+        }
 
-		protected void SetRiftTimer(float duration, World world, QuestEvent qevent, int idSno = 0)
+        protected void SetRiftTimer(float duration, World world, QuestEvent qevent, int idSno = 0)
 		{
 			Game.QuestManager.LaunchRiftQuestTimer(duration, new Action<int>((q) => { qevent.Execute(world); }), idSno);
 		}

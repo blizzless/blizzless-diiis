@@ -1,4 +1,5 @@
 ﻿
+using System;
 using Antlr.Runtime.Misc;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
@@ -16,6 +17,8 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.Utilities;
 using System.Collections.Generic;
 using System.Linq;
+using DiIiS_NA.GameServer.GSSystem.AISystem;
+using Spectre.Console;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 {
@@ -23,9 +26,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
     {
         static readonly Logger Logger = LogManager.CreateLogger();
 
-        private uint LeahId = 0;
+        private uint _leahId = 0;
 
-        private uint LeahTempId = 0;
+        private uint _leahTempId = 0;
 
         public List<ActorSystem.Monster> Prisoners = new List<ActorSystem.Monster>() { };
 
@@ -33,13 +36,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
         public ActI(Game game) : base(game)
         {
-        }
-
-        private void AdvanceBugged(Action? prefix = null)
-        {
-            if (!GameServerConfig.Instance.BypassBuggedQuests) return;
-            prefix?.Invoke();
-            Advance();
         }
 
         public override void SetQuests()
@@ -89,8 +85,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     var world = Game.GetWorld(WorldSno.trout_town);
                     script = new SurviveTheWaves();
                     script.Execute(world);
-                    var Leah = world.GetActorBySNO(ActorSno._leah, true);
-                    if (Leah != null) Leah.Hidden = true;
+                    var leah = world.GetActorBySNO(ActorSno._leah, true);
+                    if (leah != null) leah.Hidden = true;
                     ListenKill(ActorSno._zombieskinny_a, 6, new SecondWave());
                     ListenKill(ActorSno._zombiecrawler_a, 7, new Advance());
 
@@ -116,7 +112,10 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         if (world.GetActorBySNO(ActorSno._trout_newtristram_blocking_cart, true) != null)
                             world.GetActorBySNO(ActorSno._trout_newtristram_blocking_cart, true).Hidden = true;
                     }
-                    catch { }
+                    catch(Exception ex)
+                    {
+                        Logger.WarnException(ex, $"Bug on quest 75");
+                    }
                     UnlockTeleport(0);
                     if (world.GetActorsBySNO(ActorSno._trout_newtristram_gate_town).FirstOrDefault(d => d.Visible) != null)
                         Open(world, ActorSno._trout_newtristram_gate_town);
@@ -179,12 +178,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     var world = Game.GetWorld(WorldSno.trout_town);
                     Break(world, ActorSno._trout_wagon_barricade);
 
-                    foreach (var sp in world.GetActorsBySNO(ActorSno._spawner_zombieskinny_a_immediate))
+                    foreach (var sp in world.GetActorsBySNO(ActorSno._spawner_zombieskinny_a_immediate).Where(sp => sp.CurrentScene.SceneSNO.Id == 33348).OfType<Spawner>())
                     {
-                        if (sp.CurrentScene.SceneSNO.Id == 33348)
-                            if (sp is ActorSystem.Spawner)
-                                //(sp as ActorSystem.Spawner).Spawn();
-                                world.SpawnMonster(ActorSno._zombieskinny_a, sp.Position);
+                        world.SpawnMonster(ActorSno._zombieskinny_a, sp.Position);
                     }
 
                     ActivateQuestMonsters(world, ActorSno._zombiefemale_a_tristramquest_unique);
@@ -586,7 +582,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     });
                     //ListenConversation(198691, new Advance());
                 }
-            }); //Указать цель
+            }); //Specify the purpose
 
             Game.QuestManager.Quests[72221].Steps.Add(41, new QuestStep
             {
@@ -605,7 +601,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     ListenConversation(198292, new Advance());
 
                 }
-            }); //Поговорить с Хэдриком
+            }); //Talk to Hedric
 
             Game.QuestManager.Quests[72221].Steps.Add(43, new QuestStep
             {
@@ -620,16 +616,20 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //*
                     Game.AddOnLoadWorldAction(WorldSno.trout_oldtristram_cellar_f, () =>
                     {
-                        Logger.MethodTrace("Hiding Hedric in cellar for quest 72221 step 43");
+                        var name = "Hedric".Markup().Bold().Color(Color.DarkSeaGreen1_1);
+                        var quest = 72221.Markup().Bold().Color(Color.Cyan1);
+                        var step = 43.Markup().Bold().Color(Color.Cyan1).Dim();
+                        Logger.MethodTrace($"Hiding {name} in cellar for quest {quest} step {step}");
+
                         var questWorld = Game.GetWorld(WorldSno.trout_oldtristram_cellar_f);
                         var questActor = questWorld.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor);
                         questActor.Hidden = true;
                         questActor.SetVisible(false);
-                        foreach (var plr in questWorld.Players.Values)
-                            questActor.Unreveal(plr);
+                        questActor.Unreveal(questWorld.GetPlayers());
+
                         // Add Hedric as follower 
                         AddFollower(questWorld, ActorSno._pt_blacksmith_nonvendor);
-                        // Giving power
+                        // Giving power to Hedric
                         foreach (var smith in questWorld.GetActorsBySNO(ActorSno._pt_blacksmith_nonvendor))
                         {
                             var monsterLevels = (DiIiS_NA.Core.MPQ.FileFormats.GameBalance)DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.GameBalance][19760].Data;
@@ -641,11 +641,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
                     });
                     //*/
-                    ListenInteract(ActorSno._trdun_blacksmith_cellardoor_breakable, 1, new CellarZombies()); // Октрыть дверь
+                    ListenInteract(ActorSno._trdun_blacksmith_cellardoor_breakable, 1, new CellarZombies()); // Open the door
                     ListenConversation(131339, new LaunchConversation(131774));
-                    ListenKill(ActorSno._zombieskinny_a_leahinn, 14, new Advance()); // Убить всех 
+                    ListenKill(ActorSno._zombieskinny_a_leahinn, 14, new Advance()); // Kill everyone
                 }
-            }); //Событие в подвале
+            }); //Event in the basement
 
             Game.QuestManager.Quests[72221].Steps.Add(51, new QuestStep
             {
@@ -669,12 +669,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //talk to Hedric
                     var world = Game.GetWorld(WorldSno.trout_oldtristram_cellar_f);
-                    var Hedric = world.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor, true);
-                    if (Hedric != null)
+                    var hedric = world.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor, true);
+                    if (hedric != null)
                     {
-                        Vector3D PositionToSpawn = Hedric.Position;
+                        Vector3D positionToSpawn = hedric.Position;
                         DestroyFollower(ActorSno._pt_blacksmith_nonvendor);
-                        world.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor).Teleport(PositionToSpawn);
+                        world.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor).Teleport(positionToSpawn);
                     }
                     world.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor).Hidden = false;
                     world.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor).SetVisible(true);
@@ -863,14 +863,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 40,
                 OnAdvance = () =>
                 { //help Cormac(kill cultists)
-                    var Kormak_Imprisoned = Game.GetWorld(WorldSno.a1trdun_level05_templar).GetActorBySNO(ActorSno._templarnpc_imprisoned);
-                    foreach (var act in Kormak_Imprisoned.GetActorsInRange(80))
-                        if (act.SNO == ActorSno._triunecultist_a_templar)
+                    var kormakImprisoned = Game.GetWorld(WorldSno.a1trdun_level05_templar).GetActorBySNO(ActorSno._templarnpc_imprisoned);
+                    foreach (var act in kormakImprisoned.GetActorsInRange(80).Where(act => act.SNO == ActorSno._triunecultist_a_templar))
+                    {
+                        if (act is Monster monster)
                         {
-                            Prisoners.Add(act as ActorSystem.Monster);
-                            (act as ActorSystem.Monster).Brain.DeActivate();
-                            act.SetFacingRotation(ActorSystem.Movement.MovementHelpers.GetFacingAngle(act, Kormak_Imprisoned));
+                            Prisoners.Add(monster);
+                            monster.Brain.DeActivate();
                         }
+                        act.SetFacingRotation(ActorSystem.Movement.MovementHelpers.GetFacingAngle(act, kormakImprisoned));
+                    }
 
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_level05_templar, () =>
                     {
@@ -878,8 +880,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         {
                             foreach (var act in Prisoners)
                             {       //act.AddRopeEffect(182614, Kormak_Imprisoned); //[111529] triuneSummoner_Summon_rope
-                                Kormak_Imprisoned.AddRopeEffect(182614, act); //[111529] triuneSummoner_Summon_rope
-                                act.SetFacingRotation(ActorSystem.Movement.MovementHelpers.GetFacingAngle(act, Kormak_Imprisoned));
+                                kormakImprisoned.AddRopeEffect(182614, act); //[111529] triuneSummoner_Summon_rope
+                                act.SetFacingRotation(ActorSystem.Movement.MovementHelpers.GetFacingAngle(act, kormakImprisoned));
                                 act.PlayActionAnimation(AnimationSno.triunecultist_emote_outraisedhands);
                                 act.SetIdleAnimation(AnimationSno.triunecultist_emote_outraisedhands);
                             }
@@ -906,8 +908,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             var world = Game.GetWorld(WorldSno.a1trdun_level05_templar);
                             foreach (var act in Prisoners)
                                 act.Brain.Activate();
-                            if (ProxyObject != null)
-                                ProxyObject.Destroy();
+                            ProxyObject?.Destroy();
                             AddFollower(world, ActorSno._templarnpc_imprisoned);
                             StartConversation(world, 104782);
                         }
@@ -959,13 +960,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             DestroyFollower(ActorSno._templarnpc_imprisoned);
                             //AddFollower(this.Game.GetWorld(105406), 104813);
                         }
-                        foreach (var Wall in world.GetActorsBySNO(ActorSno._trdun_cath_bonewall_a_door))
+                        foreach (var wall in world.GetActorsBySNO(ActorSno._trdun_cath_bonewall_a_door))
                         {
-                            Wall.PlayAnimation(11, AnimationSno.trdun_cath_bonewall_a_death);
-                            Wall.Attributes[GameAttributes.Deleted_On_Server] = true;
-                            Wall.Attributes[GameAttributes.Could_Have_Ragdolled] = true;
-                            Wall.Attributes.BroadcastChangedIfRevealed();
-                            Wall.Destroy();
+                            wall.PlayAnimation(11, AnimationSno.trdun_cath_bonewall_a_death);
+                            wall.Attributes[GameAttributes.Deleted_On_Server] = true;
+                            wall.Attributes[GameAttributes.Could_Have_Ragdolled] = true;
+                            wall.Attributes.BroadcastChangedIfRevealed();
+                            wall.Destroy();
                         }
 
                     });
@@ -997,7 +998,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     {
                         if (Game.CurrentQuest == 72061 && Game.CurrentStep == 44)
                         {
-                            //DestroyFollower(104813);
+                            // Karmak should be destroyed at this point?
+                            //DestroyFollower(ActorSno._templarnpc_imprisoned);
                         }
                     });
                     ListenTeleport(19787, new Advance());
@@ -1306,7 +1308,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 {
                     var world = Game.GetWorld(WorldSno.trout_town);
                     var leah = world.GetActorBySNO(ActorSno._leah, true);
-                    LeahTempId = leah.GlobalID;
+                    _leahTempId = leah.GlobalID;
                     leah.Hidden = true;
                     StartConversation(world, 198713);
                 }
@@ -1599,7 +1601,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     ListenInteract(ActorSno._trdun_cave_swordofjustice_shard, 1, new LaunchConversation(198925));
                     ListenConversation(198925, new LaunchConversation(133487));
                     ListenConversation(133487, new Advance());
-                    world.GetActorByGlobalId(LeahTempId).Hidden = false;
+                    world.GetActorByGlobalId(_leahTempId).Hidden = false;
                 }
             });
 

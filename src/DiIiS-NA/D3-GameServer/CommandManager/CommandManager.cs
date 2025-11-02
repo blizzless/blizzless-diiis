@@ -35,11 +35,9 @@ namespace DiIiS_NA.GameServer.CommandManager
 				
 				var groupAttribute = attributes.First(s=>s.GetType() == typeof(CommandGroupAttribute));
                 var obsoleteAttribute = obsoleteAttributes.FirstOrDefault();
-                if (obsoleteAttribute is {} obsolete)
-                    Logger.Warn(
-                        $"{groupAttribute.Name.WithCommandPrefix().Markup().Bold().Color(Color.Yellow3_1)} is {"disabled".Markup().Color(Color.Red3_1)}" +
-                        $" as it is marked as {"[Obsolete]".Markup().Color(Color.BlueViolet)}" +
-                        (!string.IsNullOrWhiteSpace(obsolete.Message) ? " Message:".Markup().Bold().ToString() + obsolete.Message.Markup().Bold().Underline().Color(Color.IndianRed) : ""));
+                if (obsoleteAttribute is { } obsolete)
+                    continue;
+
                 if (groupAttribute.Name == null) continue;
 				if (groupAttribute.Name.Contains(" "))
 				{

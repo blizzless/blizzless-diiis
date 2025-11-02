@@ -73,64 +73,9 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
         /// <param name="showId">Optionally show its Id</param>
         /// <param name="currentQuest">If not set, <see cref="CurrentQuest"/> will be used</param>
         /// <returns>The Human-Readable quest name</returns>
-        public string GetCurrentQuestName(int currentQuest, bool showId = false)
+        public string GetCurrentQuestName(int? currentQuest = null, bool showId = false)
         {
-            string append = "";
-            if (showId) append = $" ({currentQuest})";
-            var quest = currentQuest switch
-            {
-                // ACT 1
-                87700 => $"The Fallen Star",
-                72095 => $"The Legacy of Cain",
-                72221 => $"Shattered Crown",
-                72061 => $"Reign of the Black King",
-                117779 => $"Tyrael Sword",
-                72738 => $"The Broken Blade",
-                73236 => $"The Doom in Wortham",
-                72546 => $"To the Black Cult",
-                72801 => $"The Imprisoned Angel",
-                136656 => $"Return to New Tristram",
-                // ACT 2
-                80322 => $"Shadows in the Desert",
-                93396 => $"Road to Alcarnus",
-                74128 => $"City on Blood",
-                57331 => $"Audience with Emperor",
-                78264 => $"Unexpected Help (Rescue Adria)",
-                78266 => $"Horadric traitor",
-                57335 => $"Blood and Sand",
-                57337 => $"Black Soulstone",
-                121792 => $"Rush in Caldeum",
-                57339 => $"Lord of Lies",
-                // ACT 3
-                93595 => $"The Siege of Bastion's Keep",
-                93600 => $"Raise of the Catapults",
-                93697 => $"Bastion Breach",
-                203595 => $"Stone Shake",
-                101756 => $"Machines of War",
-                101750 => $"Assault Beast",
-                101758 => $"Heart of Sin",
-                // ACT 4
-                112498 => $"Fall of Heavens",
-                113910 => $"The Light of Hope",
-                114208 => $"To the Spire",
-                114901 => $"The Prime Evil",
-                // ACT 5
-                251355 => $"The Fall of Westmarch",
-                284683 => $"Souls of the Dead",
-                285098 => $"The Harbinger",
-                257120 => $"The Witch",
-                263851 => $"The Pandemonium Gate",
-                273790 => $"The Battlefields of Eternity",
-                269552 => $"Breaching the Fortress",
-                273408 => $"Angel of Death",
-                // Open World
-                312429 => $"Open World Quest",
-                382695 => $"Nephalem Portal",
-                337492 => $"Tiered Rift",
-                _ => currentQuest.ToString()
-            };
-
-            return quest + append;
+            return Game.GetCurrentQuestName(showId, currentQuest);
         }
 
         public delegate void QuestProgressDelegate();
@@ -253,6 +198,9 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.GameSystem
 			Bounties.AddRange(actToKillUniqueBounties[BountyData.ActT.A5].Take(4));
 		}
 
+        public int CurrentQuest => Game.CurrentQuest;
+        public int CurrentStep => Game.CurrentStep;
+        public int NextStep => GetCurrentQuest().NextStep;
         public QuestRegistry.QuestStep GetCurrentQuest()
         {
             return Quests[Game.CurrentQuest].Steps[Game.CurrentStep];

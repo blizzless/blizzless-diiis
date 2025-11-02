@@ -370,3 +370,7 @@ FodyWeavers.xsd
 db/data/pgdata/
 db/pgadmin/*
 !db/pgadmin/pgpass
+
+# Obsidian
+.obsidian/
+.smart-env/
