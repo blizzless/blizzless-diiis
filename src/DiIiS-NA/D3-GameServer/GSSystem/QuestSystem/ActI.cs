@@ -928,6 +928,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         if (Game.CurrentQuest == 72061 && Game.CurrentStep == 42)
                         {
                             var world = Game.GetWorld(WorldSno.a1trdun_level05_templar);
+                            
                             DestroyFollower(ActorSno._templarnpc_imprisoned);
                             AddFollower(world, ActorSno._templarnpc_imprisoned);
                             StartConversation(world, 168278);
@@ -937,6 +938,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             });
                         }
                     });
+
                     ListenKill(ActorSno._adventurer_d_templarintrounique, 1, new LaunchConversation(104676));
                     ListenConversation(104676, new JondarDeath());
                 }

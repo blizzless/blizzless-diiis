@@ -134,7 +134,7 @@ public static class StringExtensions
 
         public override string ToString()
         {
-            return _value.WithMarkup(_markup.ToString(Separator.Space));
+            return _value.WithMarkup(_markup.ToString(Separator.Space).EscapeMarkup());
         }
     }
 }

@@ -12,9 +12,9 @@ namespace DiIiS_NA.GameServer.CommandManager;
 [CommandGroup("speed", $"Modify speed walk of you character.\nUsage: !speed <value>\nReset: !speed\nMax Speed: !speed 2", Account.UserLevels.Tester, inGameOnly: true)]
 public class SpeedCommand : CommandGroup
 {
-    private const float MinSpeedValue = 0;
-    private const float NormalSpeedValue = 0.36f;
-    private const float MaxSpeedValue = 2;
+    public const float MinSpeedValue = 0;
+    public const float NormalSpeedValue = 0.36f;
+    public const float MaxSpeedValue = 2;
     
     [DefaultCommand(Account.UserLevels.Tester, inGameOnly: true)]
     public string ModifySpeed(string[] @params, BattleClient invokerClient)

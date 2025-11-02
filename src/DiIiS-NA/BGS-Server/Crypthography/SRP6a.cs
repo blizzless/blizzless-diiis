@@ -31,7 +31,7 @@ namespace DiIiS_NA.LoginServer.Crypthography
 		// article: http://en.wikipedia.org/wiki/Secure_Remote_Password_protocol
 		// contains code from tomrus88 (https://github.com/tomrus88/d3proto/blob/master/Core/SRP.cs
 
-		private static readonly SHA256Managed H = new SHA256Managed(); // H() One-way hash function.
+    	private static readonly SHA256Managed H = new SHA256Managed(); // H() One-way hash function.
 
 		/// <summary>
 		/// Account used within SRP6-a authentication.
