@@ -92,14 +92,16 @@ public enum WorldSno: int
 }
 ```
 
+More info: [[Diablo Random Level Generation (DRLG Emu)]]
+
 ## Key Files Overview
 
-| File | Purpose |
-|------|---------|
-| **SNOHandle.cs** | Core SNO class with encoding/decoding methods |
-| **SNOGroup.cs** | Enumeration of all SNO categories |
-| **WorldSno.cs** | Enumeration of all world/map SNOs |
+| File                       | Purpose                                       |
+| -------------------------- | --------------------------------------------- |
+| **SNOHandle.cs**           | Core SNO class with encoding/decoding methods |
+| **SNOGroup.cs**            | Enumeration of all SNO categories             |
+| **WorldSno.cs**            | Enumeration of all world/map SNOs             |
 | **HandledSNOAttribute.cs** | Attribute to mark which SNOs an actor handles |
-| **SNODataMessage.cs** | Message protocol for transmitting SNO data |
+| **SNODataMessage.cs**      | Message protocol for transmitting SNO data    |
 
 The SNO system is essentially the game's asset database key system—every game element (world, actor, animation, etc.) has a unique SNO identifier!
