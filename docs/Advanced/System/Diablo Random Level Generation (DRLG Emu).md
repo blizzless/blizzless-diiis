@@ -3,7 +3,6 @@
 The **map generator** in the D3 project is called the **DRLG (Diablo Random Level Generation) System**. It's a procedural level layout generation system specifically designed for dungeon/environment generation in the Diablo III game server.
 
 ## Files That Compose the Map Generator
-
 The map generator primarily consists of the following structure:
 
 ### Main File:
@@ -12,7 +11,6 @@ The map generator primarily consists of the following structure:
 This is a static class within the `DiIiS_NA.GameServer.GSSystem.GeneratorsSystem` namespace that contains all the map generator logic.
 
 ## Key Components
-
 Core components of the DRLG Emu include:
 
 ### 1. **DRLGLayout Class**
@@ -33,7 +31,7 @@ Maps are composed of:
 
 ### 3. **Organization**
 The `DRLGTemplate.cs` file contains multiple dictionary entries organized by:
-- **Act regions** _(World SNO identifiers)_
+- **Act regions** _(World [[SNO (Data Asset Reference)]] identifiers)_
 - **Dungeon names** _(e.g., "Sewers of Caldeum", "Chamber of the Lost Idol", "Ancient Cave")_
 - **Multiple layout variations** for each dungeon to _provide variety_
 
