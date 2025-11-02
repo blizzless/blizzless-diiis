@@ -616,17 +616,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //*
                     Game.AddOnLoadWorldAction(WorldSno.trout_oldtristram_cellar_f, () =>
                     {
-                        var name = "Hedric".Markup().Bold().Color(Color.DarkSeaGreen1_1);
-                        var quest = 72221.Markup().Bold().Color(Color.Cyan1);
-                        var step = 43.Markup().Bold().Color(Color.Cyan1).Dim();
-                        Logger.MethodTrace($"Hiding {name} in cellar for quest {quest} step {step}");
-
+                        Logger.MethodTrace("Hiding Hedric in cellar for quest 72221 step 43");
                         var questWorld = Game.GetWorld(WorldSno.trout_oldtristram_cellar_f);
                         var questActor = questWorld.GetActorBySNO(ActorSno._pt_blacksmith_nonvendor);
                         questActor.Hidden = true;
                         questActor.SetVisible(false);
-                        questActor.Unreveal(questWorld.GetPlayers());
-
+                        foreach (var plr in questWorld.Players.Values)
+                            questActor.Unreveal(plr);
                         // Add Hedric as follower 
                         AddFollower(questWorld, ActorSno._pt_blacksmith_nonvendor);
                         // Giving power to Hedric
@@ -641,9 +637,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
                     });
                     //*/
-                    ListenInteract(ActorSno._trdun_blacksmith_cellardoor_breakable, 1, new CellarZombies()); // Open the door
+                    ListenInteract(ActorSno._trdun_blacksmith_cellardoor_breakable, 1, new CellarZombies()); // Октрыть дверь
                     ListenConversation(131339, new LaunchConversation(131774));
-                    ListenKill(ActorSno._zombieskinny_a_leahinn, 14, new Advance()); // Kill everyone
+                    ListenKill(ActorSno._zombieskinny_a_leahinn, 14, new Advance()); // Убить всех 
                 }
             }); //Event in the basement
 
