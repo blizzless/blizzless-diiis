@@ -117,10 +117,10 @@ namespace DiIiS_NA.LoginServer.Crypthography
 		}
 
 		
-		public bool Verify(byte[] A_bytes, byte[] M_client, byte[] seed)
+		public bool Verify(byte[] aBytes, byte[] mClient, byte[] seed)
 		{
-			var A = A_bytes.ToBigInteger(); // client's public ephemeral
-			var u = H.ComputeHash(Array.Empty<byte>().Concat(A_bytes).Concat(B.ToArray(128)).ToArray()).ToBigInteger(); // Random scrambling parameter - u = H(A, B)
+			var A = aBytes.ToBigInteger(); // client's public ephemeral
+			var u = H.ComputeHash(Array.Empty<byte>().Concat(aBytes).Concat(B.ToArray(128)).ToArray()).ToBigInteger(); // Random scrambling parameter - u = H(A, B)
 
 			var S_s = BigInteger.ModPow(BigInteger.Multiply(A, BigInteger.ModPow(this.Account.PasswordVerifier.ToBigInteger(), u, N)), b, N); // calculate server session key - S = (Av^u) ^ b	 
 			this.SessionKey = Calc_K(S_s.ToArray(128)); //  K = H(S) - Shared, strong session key.
@@ -129,33 +129,33 @@ namespace DiIiS_NA.LoginServer.Crypthography
 			var hashgxorhashN = Hash_g_and_N_and_xor_them().ToBigInteger(); // H(N) ^ H(g)
 			var hashedIdentitySalt = H.ComputeHash(Encoding.ASCII.GetBytes(this.IdentitySalt)); // H(I)
 
-			var M = H.ComputeHash(Array.Empty<byte>() // verify client M_client - H(H(N) ^ H(g), H(I), s, A, B, K_c)
+			var M = H.ComputeHash(Array.Empty<byte>() // verify client mClient - H(H(N) ^ H(g), H(I), s, A, B, K_c)
 				.Concat(hashgxorhashN.ToArray(32))
 				.Concat(hashedIdentitySalt)
 				.Concat(this.Account.Salt.ToArray())
-				.Concat(A_bytes)
+				.Concat(aBytes)
 				.Concat(B.ToArray(128))
 				.Concat(K_s)
 				.ToArray());
 
-			// We can basically move m_server, secondproof and logonproof calculation behind the M.CompareTo(M_client) check, but as we have an option DisablePasswordChecks 
+			// We can basically move m_server, secondproof and logonproof calculation behind the M.CompareTo(mClient) check, but as we have an option DisablePasswordChecks 
 			// which allows authentication without the correct password, they should be also calculated for wrong-passsword auths. /raist.
 
 			// calculate server proof of session key
-			var M_server = H.ComputeHash(Array.Empty<byte>() // M_server = H(A, M_client, K)
-				.Concat(A_bytes)
-				.Concat(M_client)
+			var mServer = H.ComputeHash(Array.Empty<byte>() // M_server = H(A, mClient, K)
+				.Concat(aBytes)
+				.Concat(mClient)
 				.Concat(K_s)
 				.ToArray());
 
 			// cook logon proof message.
 			LogonProof = Array.Empty<byte>()
 				.Concat(new byte[] { 3 }) // command = 3 - server sends proof of session key to client
-				.Concat(M_server) // server's proof of session key
+				.Concat(mServer) // server's proof of session key
 				.Concat(B.ToArray(128)) // second proof
 				.ToArray();
 
-			if (M.CompareTo(M_client)) // successful authentication session.
+			if (M.CompareTo(mClient)) // successful authentication session.
 				return true;
 			else // authentication failed because of invalid credentals.
 				return false;
@@ -172,27 +172,27 @@ namespace DiIiS_NA.LoginServer.Crypthography
 		//  Interleave SHA256 Key
 		private byte[] Calc_K(byte[] S)
 		{
-			var K = new byte[64];
+			var k = new byte[64];
 
-			var half_S = new byte[64];
-
-			for (int i = 0; i < 64; ++i)
-				half_S[i] = S[i * 2];
-
-			var p1 = H.ComputeHash(half_S);
-
-			for (int i = 0; i < 32; ++i)
-				K[i * 2] = p1[i];
+			var halfS = new byte[64];
 
 			for (int i = 0; i < 64; ++i)
-				half_S[i] = S[i * 2 + 1];
+				halfS[i] = S[i * 2];
 
-			var p2 = H.ComputeHash(half_S);
+			var p1 = H.ComputeHash(halfS);
 
 			for (int i = 0; i < 32; ++i)
-				K[i * 2 + 1] = p2[i];
+				k[i * 2] = p1[i];
 
-			return K;
+			for (int i = 0; i < 64; ++i)
+				halfS[i] = S[i * 2 + 1];
+
+			var p2 = H.ComputeHash(halfS);
+
+			for (int i = 0; i < 32; ++i)
+				k[i * 2 + 1] = p2[i];
+
+			return k;
 		}
 
 		/// <summary>
@@ -201,13 +201,13 @@ namespace DiIiS_NA.LoginServer.Crypthography
 		/// <returns>byte[]</returns>
 		private byte[] Hash_g_and_N_and_xor_them()
 		{
-			var hash_N = H.ComputeHash(N.ToArray());
-			var hash_g = H.ComputeHash(g.ToArray());
+			var hashN = H.ComputeHash(N.ToArray());
+			var hashG = H.ComputeHash(g.ToArray());
 
 			for (var i = 0; i < 32; ++i)
-				hash_N[i] ^= hash_g[i];
+				hashN[i] ^= hashG[i];
 
-			return hash_N;
+			return hashN;
 		}
 
 		/// <summary>
