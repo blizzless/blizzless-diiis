@@ -23,13 +23,17 @@ public class RechargeCommand : CommandGroup
         if (invokerClient?.InGameClient?.Player == null)
             return "You can only invoke this command while in-game.";
 
+        var player = invokerClient.InGameClient.Player;
+
         if (@params.Length != 1 || !int.TryParse(@params[0], out var charges))
-            return "Usage: !recharge <positive amount>";
+        {
+            player.Attributes[GameAttributes.Corpse_Resurrection_Charges] = 3;
+            return "Resurrection charges reset to 3.\nUsage: !recharge <positive amount>";
+        }
 
         if (charges is < MinResurrectionCharges or > MaxResurrectionCharges)
             return $"Resurrection charges must be between {MinResurrectionCharges} and {MaxResurrectionCharges}, you specified {charges}.";
 
-        var player = invokerClient.InGameClient.Player;
         player.Attributes[GameAttributes.Corpse_Resurrection_Charges] = charges;
         return $"Successfully set your resurrection charges to {charges}.";
     }
