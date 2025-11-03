@@ -40,7 +40,8 @@ public class RechargeCommand : CommandGroup
         if (invokerClient?.InGameClient?.Player == null)
             return "You can only invoke this command while in-game.";
         if (@params.Length != 2)
-            return $"Usage: !recharge to <player name> <amount>.\nUse !onlines to get the online players.\nAmount must be ranged from {MinResurrectionCharges} to {MaxResurrectionCharges}"
+            return
+                $"Usage: !recharge to <player name> <amount>.\nUse !onlines to get the online players.\nAmount must be ranged from {MinResurrectionCharges} to {MaxResurrectionCharges}";
         if (string.IsNullOrWhiteSpace(@params[0]))
             return "You must specify a player name.";
         if (!int.TryParse(@params[1], out var charges))
