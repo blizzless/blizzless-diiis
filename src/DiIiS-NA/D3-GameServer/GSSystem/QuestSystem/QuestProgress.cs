@@ -188,14 +188,54 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
             }
         }
 
-        //opening gates or door(for getting pass)
-        protected bool Open(World world, ActorSno sno)
+        private bool OpenDoors(World world, ActorSno actorSno)
         {
-            var doors = world.GetAllDoors(sno);
+            var doors = world.GetAllDoors(actorSno);
             if (!doors.Any()) return false;
             foreach (var door in doors)
+            {
+				door.SetUsable(true);
+				door.SetVisible(true);
                 door.Open();
+            }
+
             return true;
+        }
+        private bool BreakGizmos(World world, ActorSno actorSno)
+        {
+            var gizmos = world.GetAllGizmos(actorSno);
+            if (!gizmos.Any()) return false;
+            foreach (var gizmo in gizmos)
+            {
+				gizmo.SetUsable(true);
+				gizmo.SetVisible(true);
+                gizmo.Destroy();
+            }
+
+            return true;
+        }
+
+        private bool OpenPortals(World world, ActorSno actorSno)
+        {
+            var portals = world.GetAllPortals(actorSno);
+            if (!portals.Any()) return false;
+            foreach (var portal in portals)
+            {
+                portal.SetUsable(true);
+                portal.SetVisible(true);
+            }
+            return true;
+        }
+
+		/// <summary>
+		/// Opens door or portal by a SNO Id
+		/// </summary>
+		/// <param name="world">In-game world</param>
+		/// <param name="sno">The SNO of the door or portal</param>
+		/// <returns>True whether a door was opened or a portal was set to usable and visible.</returns>
+        protected bool Open(World world, ActorSno sno)
+        {
+            return OpenDoors(world, sno) || BreakGizmos(world, sno) || OpenPortals(world, sno);
         }
 
         //opening all doors
@@ -315,6 +355,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 			if (Game.Players.Count > 0)
 				Game.Players.Values.First().DestroyFollower(sno);
 		}
+
+        public void ReconstructFollower(World world, ActorSno sno)
+        {
+			DestroyFollower(sno);
+			AddFollower(world, sno);
+        }
 
 		protected void PlayCutscene(Int32 cutsceneId)
 		{

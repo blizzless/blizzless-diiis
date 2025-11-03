@@ -143,7 +143,7 @@ namespace DiIiS_NA.LoginServer.Battle
 			Services = new Dictionary<uint, uint>();
 			MappedObjects = new ConcurrentDictionary<ulong, ulong>();
 			if (SocketConnection.Active)
-				Logger.Trace($"Client - {socketChannel.RemoteAddress.Markup().Dim()} -" + " successfully encrypted the connection".Markup().Color(Color.DarkOliveGreen1));
+				Logger.Trace($"Client - {socketChannel.RemoteAddress} - successfully encrypted the connection");
 		}
 
 		protected override void ChannelRead0(IChannelHandlerContext ctx, BNetPacket msg)

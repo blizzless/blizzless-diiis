@@ -1562,6 +1562,23 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
             return openedDoors.ToImmutableArray();
         }
+
+        public bool OpenDoor(ActorSno actorSno)
+        {
+            var door = GetAllDoors(actorSno).FirstOrDefault();
+            if (door == null) return false;
+            door.Open();
+            return true;
+        }
+
+        public bool TryOpenDoor(ActorSno actorSno, out Door door)
+        {
+            door = GetAllDoors(actorSno).FirstOrDefault();
+            if (door == null) return false;
+            door.Open();
+            return true;
+        }
+
         public ImmutableArray<Portal> GetAllPortals() =>
             Actors.Select(a => a.Value).Where(a => a is Portal).Cast<Portal>().ToImmutableArray();
         public ImmutableArray<Portal> GetAllPortals(ActorSno sno) =>
@@ -1580,5 +1597,8 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
             return openedPortals.ToImmutableArray();
         }
+
+        public ImmutableArray<Gizmo> GetAllGizmos(ActorSno sno) =>
+            Actors.Select(a => a.Value).Where(a => a is Gizmo && a.SNO == sno).Cast<Gizmo>().ToImmutableArray();
     }
 }

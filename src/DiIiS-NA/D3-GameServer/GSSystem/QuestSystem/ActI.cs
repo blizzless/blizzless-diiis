@@ -997,9 +997,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             // Karmak should be destroyed at this point?
                             //DestroyFollower(ActorSno._templarnpc_imprisoned);
                         }
-
-                        var world = Game.GetWorld(WorldSno.a1trdun_level05_templar);
-                        ActiveArrow(world, ActorSno._trdun_cath_gate_d, destworld: WorldSno.a1trdun_level06);
                     });
                     ListenTeleport(19787, new Advance());
                 }
@@ -1023,11 +1020,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 58,
                 OnAdvance = () =>
                 { //enter crypt
-                    Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
-                    {
-                        Game.GetWorld(WorldSno.a1trdun_king_level08)
-                            .GetActorBySNO(ActorSno._trdun_skeletonking_bridge_active, true).Hidden = true;
-                    });
                     UnlockTeleport(4); // TODO: May be related to 
                     ListenTeleport(19789, new Advance());
                     //if (!this.Game.Empty) this.Game.GetWorld(73261).GetActorBySNO(461, true).Hidden = true;
@@ -1046,17 +1038,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
                         script = new SpawnSkeletons();
                         script.Execute(Game.GetWorld(WorldSno.a1trdun_king_level08));
-
-                        var portals = world.GetPortals(Game.GetMainPlayer());
-                        Logger.QuestLog($"Closing all portals in {WorldSno.a1trdun_king_level08.GetName()}");
-
-                        foreach (var portal in portals.Where(portal => portal.World.SNO == WorldSno.a1trdun_king_level08))
-                        {
-                            portal.SetUsable(true);
-                        }
                     });
 
-                    ListenKill(ActorSno._skeletonking_shield_skeleton, 4, new Advance());
+                    ListenKill(ActorSno._skeletonking_shield_skeleton, 1, new Advance());
                 }
             });
 
@@ -1206,14 +1190,14 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     var world = Game.GetWorld(WorldSno.trout_town);
                     ListenTeleport(19952, new Advance());
                     ListenProximity(ActorSno._woodfencee_fields_trout, new Advance()); //if going through graveyard
-                    var Gate = world.GetActorBySNO(ActorSno._cemetary_gate_trout_wilderness_no_lock);
-                    Gate.Field2 = 16;
-                    Gate.PlayAnimation(5, (AnimationSno)Gate.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
+                    var gate = world.GetActorBySNO(ActorSno._cemetary_gate_trout_wilderness_no_lock);
+                    gate.Field2 = 16;
+                    gate.PlayAnimation(5, (AnimationSno)gate.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Opening]);
                     world.BroadcastIfRevealed(plr => new MessageSystem.Message.Definitions.ACD.ACDCollFlagsMessage
                     {
-                        ActorID = Gate.DynamicID(plr),
+                        ActorID = gate.DynamicID(plr),
                         CollFlags = 0
-                    }, Gate);
+                    }, gate);
 
                 }
             });
@@ -1335,10 +1319,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //follow Scoundrel NPC
                     var world = Game.GetWorld(WorldSno.trout_town);
-                    DestroyFollower(ActorSno._leah);
-                    AddFollower(world, ActorSno._leah);
+                    ReconstructFollower(world, ActorSno._leah);
                     AddFollower(world, ActorSno._scoundrelnpc);
-                    //Open(this.Game.GetWorld(71150), 170913);
+                    //Open(this.Game.GetWorld(71150), 170913); - why commented?
                     StartConversation(world, 167656);
                     ListenConversation(167656, new Advance());
                 }
@@ -1352,9 +1335,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //talk with bandits
                     var world = Game.GetWorld(WorldSno.trout_town);
-                    DestroyFollower(ActorSno._leah);
-                    AddFollower(world, ActorSno._leah);
-                    try { (world.FindActorAt(ActorSno._trout_tristramfield_field_gate, new Vector3D { X = 1523.13f, Y = 857.71f, Z = 39.26f }, 5.0f) as Door).Open(); } catch { }
+                    ReconstructFollower(world, ActorSno._leah);
+                    //try { (world.FindActorAt(ActorSno._trout_tristramfield_field_gate, new Vector3D { X = 1523.13f, Y = 857.71f, Z = 39.26f }, 5.0f) as Door).Open(); } catch { }
                     StartConversation(world, 167677);
                     ListenConversation(167677, new Advance());
                 }
@@ -1368,8 +1350,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //kill the bandits
                     var world = Game.GetWorld(WorldSno.trout_town);
-                    DestroyFollower(ActorSno._leah);
-                    AddFollower(world, ActorSno._leah);
+                    ReconstructFollower(world, ActorSno._leah);
+                    var gateSno = ActorSno._trout_tristramfield_field_gate;
+                    if (!Open(world, gateSno))
+                    {
+                        Logger.Warn($"Could not open Tristam's Field Gate - {gateSno.GetName()} ({(int)gateSno})");
+                    }
                     world.SpawnMonster(ActorSno._graverobber_c_nigel, new Vector3D { X = 1471.473f, Y = 747.4875f, Z = 40.1f });
                     ListenKill(ActorSno._graverobber_c_nigel, 1, new Advance());
                 }
@@ -1382,8 +1368,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 112,
                 OnAdvance = () =>
                 { //talk with Scoundrel
-                    DestroyFollower(ActorSno._leah);
-                    AddFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
+                    ReconstructFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
                     ListenProximity(ActorSno._scoundrelnpc, new LaunchConversation(111899));
                     ListenConversation(111899, new Advance());
                 }
