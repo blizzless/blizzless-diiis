@@ -2,6 +2,7 @@ using DiIiS_NA.LoginServer.Battle;
 using System.Linq;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.LoginServer.AccountsSystem;
+using DiIiS_NA.Utilities;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
@@ -68,8 +69,9 @@ public class DoorsCommand : CommandGroup
     [DefaultCommand(inGameOnly: true)]
     public string DefaultCommand(string[] @params, BattleClient invokerClient)
     {
-        return "!doors all - Activate all doors. This is useful for testing purposes.\n" +
-               "!doors near [distance:50] - Activate all nearby doors in the vicinity. This is useful for testing purposes.\n" +
-               "!doors info [distance:50] - Retrieve all world doors in proximity, sorted in descending order.";
+        return StrBuilder.From("!doors all - Activate all doors. This is useful for testing purposes.")
+            .Append("!doors near [distance:50] - Activate all nearby doors in the vicinity. This is useful for testing purposes.")
+            .Append("!doors info [distance:50] - Retrieve all world doors in proximity, sorted in descending order.")
+            .ToString(Separator.NewLine);
     }
 }

@@ -997,6 +997,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             // Karmak should be destroyed at this point?
                             //DestroyFollower(ActorSno._templarnpc_imprisoned);
                         }
+
+                        var world = Game.GetWorld(WorldSno.a1trdun_level05_templar);
+                        ActiveArrow(world, ActorSno._trdun_cath_gate_d, destworld: WorldSno.a1trdun_level06);
                     });
                     ListenTeleport(19787, new Advance());
                 }
@@ -1022,7 +1025,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 { //enter crypt
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
-                        Game.GetWorld(WorldSno.a1trdun_king_level08).GetActorBySNO(ActorSno._trdun_skeletonking_bridge_active, true).Hidden = true;
+                        Game.GetWorld(WorldSno.a1trdun_king_level08)
+                            .GetActorBySNO(ActorSno._trdun_skeletonking_bridge_active, true).Hidden = true;
                     });
                     UnlockTeleport(4); // TODO: May be related to 
                     ListenTeleport(19789, new Advance());
@@ -1048,7 +1052,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
                         foreach (var portal in portals.Where(portal => portal.World.SNO == WorldSno.a1trdun_king_level08))
                         {
-                            portal.SetUsable(false);
+                            portal.SetUsable(true);
                         }
                     });
 
@@ -1069,7 +1073,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         if (world.Players.Any() && world.FirstPlayer is {} firstPlayer)
                         {
                             var portal = world.GetPortals(firstPlayer);
-                            portal.First().SetUsable(false);
+                            portal.First().SetUsable(true);
                         }
 
                         Open(Game.GetWorld(WorldSno.a1trdun_king_level08), ActorSno._trdun_cath_gate_b_skeletonking);
@@ -1091,11 +1095,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
                         if (!world.Players.Any()) return;
                         var player = world.Players.First();
-                        var portals = world.GetPortals(player.Value, 100f);
+                        var portals = world.GetPortals(player.Value, 1000f);
                         foreach (var portal in portals)
                         {
                             Logger.MethodTrace($"Found portal with SNO {portal.SNO.GetName()}, closing.");
-                            portal.SetUsable(false);
+                            portal.SetUsable(true);
                         }
                     });
 

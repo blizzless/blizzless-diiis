@@ -54,6 +54,25 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
         OpenWorld = 3000
     }
 
+    public static class PlayerQueryExtension
+    {
+        public static Dictionary<GameClient, Player> GetPlayersInGame(this ConcurrentDictionary<GameClient, Player> players)
+        {
+            return players.Where(s => s.Value.Name != null)
+                .OrderBy(s => s.Value.Name)
+                .DistinctBy(s => s.Value.Name)
+                .ToDictionary(s => s.Key, s => s.Value);
+        }
+        public static Player? GetPlayerByName(this ConcurrentDictionary<GameClient, Player> players, string name, bool invariantCasing = true)
+        {
+            var val = players.Where(s => s.Value.Name != null)
+                .OrderBy(s => s.Value.Name)
+                .DistinctBy(s => s.Value.Name)
+                .FirstOrDefault(s=>s.Value.Name.Equals(name, invariantCasing ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture))
+                .Value;
+            return val;
+        }
+    }
     public class Game : IMessageConsumer
     {
         private static readonly Logger Logger = LogManager.CreateLogger();

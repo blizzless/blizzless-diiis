@@ -1545,22 +1545,40 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			return $"[World] SNOId: {WorldSNO.Id} GlobalId: {GlobalID} Name: {WorldSNO.Name}";
 		}
 
-		public ImmutableArray<Door> GetAllDoors() =>
-			Actors.Select(a => a.Value).Where(a => a is Door).Cast<Door>().ToImmutableArray();
-		public ImmutableArray<Door> GetAllDoors(ActorSno sno) =>
-			Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno).Cast<Door>().ToImmutableArray();
-		public ImmutableArray<Door> OpenAllDoors()
-		{
-			List<Door> openedDoors = new();
-			var doors = GetAllDoors();
-			
-			foreach (var door in doors)
-			{
-				openedDoors.Add(door);
-				door.Open();
-			}
+        public ImmutableArray<Door> GetAllDoors() =>
+            Actors.Select(a => a.Value).Where(a => a is Door).Cast<Door>().ToImmutableArray();
+        public ImmutableArray<Door> GetAllDoors(ActorSno sno) =>
+            Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno).Cast<Door>().ToImmutableArray();
+        public ImmutableArray<Door> OpenAllDoors()
+        {
+            List<Door> openedDoors = new();
+            var doors = GetAllDoors();
 
-			return openedDoors.ToImmutableArray();
-		}
-	}
+            foreach (var door in doors)
+            {
+                openedDoors.Add(door);
+                door.Open();
+            }
+
+            return openedDoors.ToImmutableArray();
+        }
+        public ImmutableArray<Portal> GetAllPortals() =>
+            Actors.Select(a => a.Value).Where(a => a is Portal).Cast<Portal>().ToImmutableArray();
+        public ImmutableArray<Portal> GetAllPortals(ActorSno sno) =>
+            Actors.Select(a => a.Value).Where(a => a is Portal && a.SNO == sno).Cast<Portal>().ToImmutableArray();
+        public ImmutableArray<Portal> OpenAllPortals()
+        {
+            List<Portal> openedPortals = new();
+            var portals = GetAllPortals();
+
+            foreach (var portal in portals)
+            {
+                openedPortals.Add(portal);
+                portal.SetUsable(true);
+				portal.SetVisible(true);
+            }
+
+            return openedPortals.ToImmutableArray();
+        }
+    }
 }

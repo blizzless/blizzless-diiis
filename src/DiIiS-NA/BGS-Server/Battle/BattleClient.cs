@@ -19,6 +19,8 @@ using System.Linq;
 using System.Net.Security;
 using System.Threading.Tasks;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
+using DiIiS_NA.Utilities;
+using Spectre.Console;
 
 namespace DiIiS_NA.LoginServer.Battle
 {
@@ -86,9 +88,10 @@ namespace DiIiS_NA.LoginServer.Battle
 
 		
 		public void SendServerWhisper(string text)
-		{
-			if (text.Trim() == string.Empty) return;
-
+        {
+            text = text.Trim();
+            if (string.IsNullOrWhiteSpace(text)) return;
+            Logger.MethodTrace($"Sending whisper with length of {text.Length} to player.");
 			var notification = bgs.protocol.notification.v1.Notification.CreateBuilder()
 				.SetTargetId(Account.GameAccount.BnetEntityId)
 				.SetType("WHISPER")
@@ -105,8 +108,11 @@ namespace DiIiS_NA.LoginServer.Battle
 		}
 
 		public void SendServerMessage(string text)
-		{
-			InGameClient.SendMessage(new BroadcastTextMessage()
+        {
+            text = text.Trim();
+            if (string.IsNullOrWhiteSpace(text)) return;
+            Logger.MethodTrace($"Sending message with length of {text.Length} to player.");
+            InGameClient.SendMessage(new BroadcastTextMessage()
 			{
 				Field0 = text
 			});
@@ -117,11 +123,14 @@ namespace DiIiS_NA.LoginServer.Battle
 			List<Channel> channels = Channels.Values.ToList();
 			foreach (var channel in channels)
 			{
-				try
-				{
-					channel.RemoveMember(this, Channel.RemoveReason.Left);
-				}
-				catch { }
+                try
+                {
+                    channel.RemoveMember(this, Channel.RemoveReason.Left);
+                }
+                catch(Exception ex)
+                {
+					Logger.Trace($"{"Error".Markup().Color(Color.White).Background(Color.IndianRed1_1)} trying to remove {"channel".Markup().Color(Color.CadetBlue_1)} from {"member".Markup().Color(Color.BlueViolet)}");
+                }
 			}
 			Channels.Clear();
 		}
@@ -134,7 +143,7 @@ namespace DiIiS_NA.LoginServer.Battle
 			Services = new Dictionary<uint, uint>();
 			MappedObjects = new ConcurrentDictionary<ulong, ulong>();
 			if (SocketConnection.Active)
-				Logger.Trace("Client - $[green]$ {0} $[/]$ - successfully encrypted the connection", socketChannel.RemoteAddress);
+				Logger.Trace($"Client - {socketChannel.RemoteAddress.Markup().Dim()} -" + " successfully encrypted the connection".Markup().Color(Color.DarkOliveGreen1));
 		}
 
 		protected override void ChannelRead0(IChannelHandlerContext ctx, BNetPacket msg)

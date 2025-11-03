@@ -18,10 +18,9 @@ namespace DiIiS_NA.GameServer.CommandManager;
     Account.UserLevels.GM,
 #endif
     inGameOnly: true)]
-[Obsolete("Does not work properly.")]
 public class DebugCommand : CommandGroup
 {
-    private readonly Logger _logger = LogManager.CreateLogger<TeleportCommand>();
+    private readonly Logger _logger = LogManager.CreateLogger<DebugCommand>();
 
     [DefaultCommand(Account.UserLevels.GM, true)]
     public string Debug(string[] @params, BattleClient invokerClient)

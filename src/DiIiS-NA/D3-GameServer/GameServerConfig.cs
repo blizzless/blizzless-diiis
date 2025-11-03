@@ -298,7 +298,12 @@ namespace DiIiS_NA.GameServer
             get => GetString(nameof(LogQuestAdvanceFormat), "Advancing to Act {act} Quest {quest} Step {step}");
             set => Set(nameof(LogQuestAdvanceFormat), value.Trim());
         }
-        
+
+        public bool DebugMoreArrowsInQuests
+        {
+			get => GetBoolean(nameof(DebugMoreArrowsInQuests), false);
+			set => Set(nameof(DebugMoreArrowsInQuests), value);
+        }
         /// <summary>
          /// Auto finishes nephalem rift when there's <see cref="NephalemRiftAutoFinishThreshold"></see> or less monsters left.
          /// </summary>

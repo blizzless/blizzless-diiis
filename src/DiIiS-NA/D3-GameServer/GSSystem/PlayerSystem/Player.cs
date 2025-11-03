@@ -6142,4 +6142,23 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         return openedDoors.ToImmutableArray();
     }
+    public ImmutableArray<Portal> GetNearPortals(float distance = 50f)
+    {
+        var portals = World.GetPortals(this, distance);
+        List<Portal> doorList = portals.Where(door => door.Position.IsNear(Position, distance)).ToList();
+        return doorList.ToImmutableArray();
+    }
+
+    public ImmutableArray<Portal> OpenNearPortals(float distance = 50f)
+    {
+        List<Portal> openedPortals = new();
+        foreach (var portal in GetNearPortals(distance))
+        {
+            openedPortals.Add(portal);
+            portal.SetUsable(true);
+            portal.SetVisible(true);
+        }
+
+        return openedPortals.ToImmutableArray();
+    }
 }
