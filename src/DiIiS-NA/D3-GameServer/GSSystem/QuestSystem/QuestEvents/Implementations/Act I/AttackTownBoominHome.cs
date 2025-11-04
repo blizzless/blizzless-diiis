@@ -17,15 +17,21 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations.A
 
 		public override void Execute(MapSystem.World world)
 		{
-			var Leah = world.GetActorBySNO(ActorSno._leahritual);
+			var leah = world.GetActorBySNO(ActorSno._leahritual);
 			
-			Leah.Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f;
-			Leah.Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 5f;
-			world.PowerManager.RunPower(Leah, 190230);
+			leah.Attributes[GameAttributes.Damage_Weapon_Min, 0] = 5f;
+			leah.Attributes[GameAttributes.Damage_Weapon_Delta, 0] = 5f;
+			world.PowerManager.RunPower(leah, 190230);
 			//130848
-			Leah.PlayEffectGroup(130848);
-			var Summoners = world.GetActorsBySNO(ActorSno._triunesummoner_a_cainevent);
+			leah.PlayEffectGroup(130848);
+			var summoners = world.GetActorsBySno(ActorSno._triunesummoner_a_cainevent);
 
+            foreach (var cultist in summoners)
+            {
+                cultist.Attributes[GameAttributes.Hitpoints_Max] *= (float)0.1; // 10% HP
+                cultist.Attributes[GameAttributes.Hitpoints_Cur] =
+                    cultist.Attributes[GameAttributes.Hitpoints_Max];
+            }
 
 			StartConversation(world, 165428);
 			//165428

@@ -18,6 +18,7 @@ using DiIiS_NA.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.GameServer.GSSystem.AISystem;
+using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using Spectre.Console;
 
 namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
@@ -1382,8 +1383,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //lead Scoundrel to waypoint
                     var world = Game.GetWorld(WorldSno.trout_town);
-                    DestroyFollower(ActorSno._leah);
-                    AddFollower(world, ActorSno._leah);
+                    ReconstructFollower(world, ActorSno._leah);
                     try { (world.FindActorAt(ActorSno._trout_tristramfield_field_gate, new Vector3D { X = 1444.1f, Y = 786.64f, Z = 39.7f }, 4.0f) as Door).Open(); } catch { }
                     SetActorOperable(world, ActorSno._keybox_trout_tristramfield_02, false);
                     SetActorOperable(world, ActorSno._keybox_trout_tristramfield, false);
@@ -1398,9 +1398,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                                 plr.GrantAchievement(74987243307147);
                             }
                             if (Game.Players.Count > 1)
-                                plr.InGameClient.SendMessage(new HirelingNoSwapMessage() { NewClass = 2 }); //Призвать нельзя!
+                                plr.InGameClient.SendMessage(new HirelingNoSwapMessage() { NewClass = 2 }); //You can't call them!
                             else
-                                plr.InGameClient.SendMessage(new HirelingSwapMessage() { NewClass = 2 }); //Возможность призвать
+                                plr.InGameClient.SendMessage(new HirelingSwapMessage() { NewClass = 2 }); //The ability to call upon
                         }
                 }
             });
@@ -1513,7 +1513,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //60395 - trdun_cave_nephalem_03
 
                     ListenProximity(ActorSno._a1dun_caves_ropebridge_b_destructable, new DrownedTemple1());
-                    ListenKill(ActorSno._skeleton_b, 14, new LaunchConversation(108256));
+                    ListenKill(ActorSno._skeleton_b, 4, new LaunchConversation(108256));
                     ListenConversation(108256, new DrownedTemple2());//new Advance());
 
                 }
@@ -1651,9 +1651,9 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 59,
                 OnAdvance = () =>
                 {  //go to Vortem square
-                    var AttackedTown = Game.GetWorld(WorldSno.trout_townattack);
-                    var Maghda = AttackedTown.GetActorBySNO(ActorSno._maghda_a_tempprojection);
-                    AttackedTown.Leave(Maghda);
+                    var attackedTown = Game.GetWorld(WorldSno.trout_townattack);
+                    var magdha = attackedTown.GetActorBySNO(ActorSno._maghda_a_tempprojection);
+                    attackedTown.Leave(magdha);
 
                     ListenProximity(ActorSno._townattack_cultist, new Advance());
                 }
@@ -1666,16 +1666,18 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 11,
                 OnAdvance = () =>
                 {  //kill all cultists
-                    int Count = 0;
-                    foreach (var cultist in Game.GetWorld(WorldSno.trout_townattack).GetActorsBySNO(ActorSno._townattackcultistmelee))
-                        if (cultist.CurrentScene.SceneSNO.Id == 76000)
-                        {
-                            cultist.Attributes[GameAttributes.Quest_Monster] = true;
-                            cultist.Attributes.BroadcastChangedIfRevealed();
-                            Count++;
-                        }
+                    int cultistsCount = 0;
+                    const int currentSceneSnoId = 76000;
+                    var world = Game.GetWorld(WorldSno.trout_townattack);
+                    foreach (var cultist in world.GetActorsBySNO(ActorSno._townattackcultistmelee)
+                                 .WhereSceneId(currentSceneSnoId))
+                    {
+                        cultist.Attributes[GameAttributes.Quest_Monster] = true;
+                        cultist.Attributes.BroadcastChangedIfRevealed();
+                        cultistsCount++;
+                    }
 
-                    ListenKill(ActorSno._townattackcultistmelee, Count, new AttackTownKilled());
+                    ListenKill(ActorSno._townattackcultistmelee, cultistsCount, new AttackTownKilled());
                     ListenConversation(194933, new LaunchConversation(194942));
                     ListenConversation(194942, new Advance());
 
@@ -1830,24 +1832,38 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     Game.AddOnLoadWorldAction(WorldSno.trout_townattack_chapelcellar_a, () =>
                     {
                         var world = Game.GetWorld(WorldSno.trout_townattack_chapelcellar_a);
-                        foreach (var Table in world.GetActorsBySNO(ActorSno._trout_townattack_cellar_altar))
+
+                        foreach (var table in world.GetActorsBySNO(ActorSno._trout_townattack_cellar_altar))
                         {
-                            Table.SetUsable(false);
-                            Table.SetIdleAnimation((AnimationSno)Table.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open]);
+                            table.SetUsable(false);
+                            var anim = (AnimationSno) table.AnimationSet.TagMapAnimDefault[AnimationSetKeys.Open];
+                            table.SetIdleAnimation(anim);
                         }
-                        foreach (var Maghda in world.GetActorsBySNO(ActorSno._maghda_a_tempprojection)) Maghda.Destroy();
+
+                        // destroys all projections of Maghda in the attacked town
+                        foreach (var maghda in world.GetActorsBySNO(ActorSno._maghda_a_tempprojection))
+                            maghda.Destroy();
                     });
                     var tristramWorld = Game.GetWorld(WorldSno.trout_town);
-                    var Leah = tristramWorld.GetActorBySNO(ActorSno._leah);
-                    var LeahAfterEvent = tristramWorld.SpawnMonster(ActorSno._leah_afterevent31_exit, Leah.Position);
-
+                    var leah = tristramWorld.GetActorBySNO(ActorSno._leah);
+                    var leahAfterEvent = tristramWorld.SpawnMonster(ActorSno._leah_afterevent31_exit, leah.Position);
+                    //var darkCultists = tristramWorld.GetActorsBySno(ActorSno._triunesummoner_a_cainevent, true);
                     //ListenProximity(4580, new LaunchConversation(93337)); //cork
-                    (LeahAfterEvent as ActorSystem.InteractiveNPC).Conversations.Clear();
-                    (LeahAfterEvent as ActorSystem.InteractiveNPC).Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(93337));
-                    (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes[GameAttributes.Conversation_Icon, 0] = 2;
-                    (LeahAfterEvent as ActorSystem.InteractiveNPC).Attributes.BroadcastChangedIfRevealed();
-                    ListenConversation(93337, new Advance());
-                    Game.CurrentEncounter.Activated = false;
+                    if (leahAfterEvent is InteractiveNPC npc)
+                    {
+                        npc.Conversations.Clear();
+                        npc.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(93337));
+                        npc.Attributes[GameAttributes.Conversation_Icon, 0] = 2;
+                        npc.Attributes.BroadcastChangedIfRevealed();
+                        ListenConversation(93337, new Advance());
+                        Game.CurrentEncounter.Activated = false;
+                    }
+                    else
+                    {
+
+                        Game.CurrentEncounter.Activated = false;
+                        AdvanceBugged();
+                    }
                 }
             });
 

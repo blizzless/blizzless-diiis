@@ -967,7 +967,11 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		{
 			return Actors.Values.FirstOrDefault(x => x.SNO == sno && (!onlyVisible || (onlyVisible && x.Visible && !x.Hidden)));
 		}
-		public List<Portal> GetPortalsByLevelArea(int levelArea)
+        public ImmutableArray<Actor> GetActorsBySno(ActorSno sno, bool onlyVisible = false)
+        {
+            return Actors.Values.Where(x => x.SNO == sno && (!onlyVisible || (x.Visible && !x.Hidden))).ToImmutableArray();
+        }
+        public List<Portal> GetPortalsByLevelArea(int levelArea)
 		{
 			List<Portal> portals = new List<Portal>();
 			foreach (var actor in Actors.Values)
@@ -993,6 +997,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
         {
 			return Actors.Values.Where(x => sno.Contains(x.SNO)).ToList();
         }
+
+        public static Func<Actor, bool> WhereSceneId(int id) => s => s.CurrentScene.SceneSNO.Id == id;
+
 		/// <summary>
 		/// Returns true if any actors exist under a well defined group
 		/// </summary>

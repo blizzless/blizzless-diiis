@@ -7,6 +7,7 @@ using System.Reflection;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.MPQ.FileFormats.Types;
+using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.Core.Types.TagMap
@@ -72,7 +73,6 @@ namespace DiIiS_NA.GameServer.Core.Types.TagMap
 				_tagMapEntries[key.ID] = entry;
 		}
 
-
 		public void Read(MpqFileStream stream)
 		{
 			TagMapSize = stream.ReadValueS32();
@@ -89,59 +89,23 @@ namespace DiIiS_NA.GameServer.Core.Types.TagMap
 
 		public int this[TagKeyInt key]
 		{
-			get
-			{
-				return key.GetValue(_tagMapEntries[key.ID]);
-			}
-			set
-			{
-				_tagMapEntries[key.ID].Int = value;
-			}
-		}
+			get => key.GetValue(_tagMapEntries[key.ID]);
+            set => _tagMapEntries[key.ID].Int = value;
+        }
 
-		public float this[TagKeyFloat key]
-		{
-			get
-			{
-				return key.GetValue(_tagMapEntries[key.ID]);
-			}
-		}
+		public float this[TagKeyFloat key] => key.GetValue(_tagMapEntries[key.ID]);
 
-		public ScriptFormula this[TagKeyScript key]
-		{
-			get
-			{
-				return key.GetValue(_tagMapEntries[key.ID]);
-			}
-		}
+        public ScriptFormula this[TagKeyScript key] => key.GetValue(_tagMapEntries[key.ID]);
 
-		public SNOHandle this[TagKeySNO key]
-		{
-			get
-			{
-				return key.GetValue(_tagMapEntries[key.ID]);
-			}
-		}
+        public SNOHandle this[TagKeySNO key] => key.GetValue(_tagMapEntries[key.ID]);
 
-		public GizmoGroup this[TagKeyGizmoGroup key]
-		{
-			get
-			{
-				return key.GetValue(_tagMapEntries[key.ID]);
-			}
-		}
+        public GizmoGroup this[TagKeyGizmoGroup key] => key.GetValue(_tagMapEntries[key.ID]);
 
 
-		//[Obsolete("Use TagKeys instead. If it is missing create it")]
-		public TagMapEntry this[int key]
-		{
-			get
-			{
-				return _tagMapEntries[key];
-			}
-		}
+        //[Obsolete("Use TagKeys instead. If it is missing create it")]
+		public TagMapEntry this[int key] => _tagMapEntries[key];
 
-		#endregion
+        #endregion
 
 		#region enumurators
 
