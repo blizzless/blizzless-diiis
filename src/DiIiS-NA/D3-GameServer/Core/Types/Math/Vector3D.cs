@@ -105,6 +105,7 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 		/// </summary>
 		/// <param name="point">the second <see cref="Vector3" /></param>
 		/// <returns>the distance squared between the vectors</returns>
+		[Obsolete("Use Distance(Vector3D) instead - ref removed.")]
 		public float DistanceSquared(ref Vector3D point) // todo: remove ref
 		{
 			float x = point.X - X, 
@@ -114,7 +115,28 @@ namespace DiIiS_NA.GameServer.Core.Types.Math
 			return ((x * x) + (y * y)) + (z * z);
 		}
 
-		public static bool operator ==(Vector3D a, Vector3D b) => a?.Equals(b) ?? ReferenceEquals(null, b);
+        /// <summary>
+        /// Distance from this vector to another.
+        /// </summary>
+        /// <param name="point">the second <see cref="Vector3D" /></param>
+        /// <returns>the distance between the vectors</returns>
+        public float Distance(Vector3D point)
+        {
+            float x = point.X - X;
+            float y = point.Y - Y;
+            float z = point.Z - Z;
+            return (float)System.Math.Sqrt(x * x + y * y + z * z);
+        }
+
+        /// <summary>
+        /// If this vector is within radius of another point.
+        /// </summary>
+        /// <param name="point">the second <see cref="Vector3D"/></param>
+        /// <param name="radius">the radius of the second point</param>
+        /// <returns>whether second <see cref="Vector3D"/> is within <param name="radius"/></returns>
+        public bool Around(Vector3D point, float radius) => Distance(point) <= radius;
+
+        public static bool operator ==(Vector3D a, Vector3D b) => a?.Equals(b) ?? ReferenceEquals(null, b);
 
 		public static bool operator !=(Vector3D a, Vector3D b) => !(a == b);
 

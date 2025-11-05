@@ -1554,6 +1554,18 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
         public ImmutableArray<Door> GetAllDoors() =>
             Actors.Select(a => a.Value).Where(a => a is Door).Cast<Door>().ToImmutableArray();
+
+        public IEnumerable<Door> GetDoors(Vector3D distanceFrom) =>
+            Actors.Select(a => a.Value).Where(a => a is Door).Cast<Door>().OrderBy(s=>s.Position.Distance(distanceFrom));
+
+        public IEnumerable<Door> GetDoors(ActorSno sno, Vector3D distanceFrom) =>
+            Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno).Cast<Door>().OrderBy(s => s.Position.Distance(distanceFrom));
+
+        public IEnumerable<Door> GetDoors(Vector3D distanceFrom, float radius) =>
+            Actors.Select(a => a.Value).Where(a => a is Door && a.Position.Around(distanceFrom, radius)).Cast<Door>().OrderBy(s => s.Position.Distance(distanceFrom));
+
+        public IEnumerable<Door> GetDoors(ActorSno sno, Vector3D distanceFrom, float radius) =>
+            Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno && a.Position.Around(distanceFrom, radius)).Cast<Door>().OrderBy(s => s.Position.Distance(distanceFrom));
         public ImmutableArray<Door> GetAllDoors(ActorSno sno) =>
             Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno).Cast<Door>().ToImmutableArray();
         public ImmutableArray<Door> OpenAllDoors()

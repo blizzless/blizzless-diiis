@@ -15,7 +15,11 @@ public static class EnumExtensions
     {
         return Enum.GetName(typeof(T), value) ?? "__NONE";
     }
-
+    public static string GetNameWithValue<T>(this T value) where T : Enum
+    {
+        var numericValue = Convert.ToInt32((Enum)value);
+        return $"{value.GetName()} ({numericValue})";
+    }
     /// <summary>
     /// Translates enum value to its name as string with <param name="markup">Spectre.Console Markup string</param>
     /// </summary>
