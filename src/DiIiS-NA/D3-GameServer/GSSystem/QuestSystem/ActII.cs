@@ -107,7 +107,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     catch (Exception ex)
                     {
 						Logger.ErrorException(ex, $"Error whilst getting door {exitGate.GetNameWithValue()} at town {currentTown.GetNameWithValue()}");
-                        AdvanceBugged();
+                            AdvanceBugged();
                     }
                     //ListenProximity(85843, new LaunchConversation(169197));
                     ListenConversation(169197, new Advance());
@@ -705,20 +705,20 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     if (world.GetActorBySNO(ActorSno._adria) != null)
                         RemoveConversations(world.GetActorBySNO(ActorSno._adria));
 
-                    var Adria = world.ShowOnlyNumNPC(ActorSno._adria, 0);
-                    var Portal = world.GetActorBySNO(ActorSno._adria_town_portal);
-                    var AltPortal = world.SpawnMonster(ActorSno._adria_town_portal, Portal.Position);
+                    var adria = world.ShowOnlyNumNPC(ActorSno._adria, 0);
+                    var portal = world.GetActorBySNO(ActorSno._adria_town_portal);
+                    var altPortal = world.SpawnMonster(ActorSno._adria_town_portal, portal.Position);
 
 
-                    Adria.Move(Portal.Position, ActorSystem.Movement.MovementHelpers.GetFacingAngle(Adria, Portal)); //Only Talk Adria
-                    Portal.SetVisible(true);
-                    Portal.Hidden = false;
+                    adria.Move(portal.Position, ActorSystem.Movement.MovementHelpers.GetFacingAngle(adria, portal)); //Only Talk Adria
+                    portal.SetVisible(true);
+                    portal.Hidden = false;
 
                     System.Threading.Tasks.Task.Delay(3000).ContinueWith(delegate
                     {
                         world.ShowOnlyNumNPC(ActorSno._adria, -1); //Only Talk Adria
-                        Portal.Destroy();
-                        AltPortal.Destroy();
+                        portal.Destroy();
+                        altPortal.Destroy();
                     });
 
                     AddQuestConversation(Game.GetWorld(WorldSno.caout_refugeecamp).GetActorBySNO(ActorSno._adria), 58139);

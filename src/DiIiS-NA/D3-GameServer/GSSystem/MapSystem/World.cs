@@ -568,24 +568,24 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		#region Display only a specific NPC iteration
 		[Obsolete("It seems very odd the functionality: You need to get the number right of SNO's visible in world in order to use it?" +
                   "Use ShowOnlyNpc(Actor, Number) instead.")]
-        public Actor[] ShowOnlyNumNPC(ActorSno sno, int number)
+        public Actor ShowOnlyNumNPC(ActorSno sno, int number)
         {
-            List<Actor> actors = new();
-			foreach (var actor in GetActorsBySNO(sno))
-			{
-				var isVisible = actor.NumberInWorld == number;
+            Actor Setted = null;
+            foreach (var actor in GetActorsBySNO(sno))
+            {
+                var isVisible = actor.NumberInWorld == number;
                 if (isVisible)
-                    actors.Add(actor);
+                    Setted = actor;
 
-				actor.Hidden = !isVisible;
-				actor.SetVisible(isVisible);
-				foreach (var plr in Players.Values)
+                actor.Hidden = !isVisible;
+                actor.SetVisible(isVisible);
+                foreach (var plr in Players.Values)
                 {
                     if (isVisible) actor.Reveal(plr); else actor.Unreveal(plr);
-				}
+                }
             }
-			return actors.ToArray();
-		}
+            return Setted;
+        }
 
         public void ApplyVisibility(Actor actor, bool visibility)
         {
