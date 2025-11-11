@@ -565,15 +565,17 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
 		#endregion
 
-		#region Отображение только конкретной итерации NPC
-		public Actor ShowOnlyNumNPC(ActorSno SNO, int Num)
-		{
-			Actor Setted = null;
-			foreach (var actor in GetActorsBySNO(SNO))
+		#region Display only a specific NPC iteration
+		[Obsolete("It seems very odd the functionality: You need to get the number right of SNO's visible in world in order to use it?" +
+                  "Use ShowOnlyNpc(Actor, Number) instead.")]
+        public Actor[] ShowOnlyNumNPC(ActorSno sno, int number)
+        {
+            List<Actor> actors = new();
+			foreach (var actor in GetActorsBySNO(sno))
 			{
-				var isVisible = actor.NumberInWorld == Num;
-				if (isVisible)
-					Setted = actor;
+				var isVisible = actor.NumberInWorld == number;
+                if (isVisible)
+                    actors.Add(actor);
 
 				actor.Hidden = !isVisible;
 				actor.SetVisible(isVisible);
@@ -582,8 +584,51 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
                     if (isVisible) actor.Reveal(plr); else actor.Unreveal(plr);
 				}
             }
-			return Setted;
+			return actors.ToArray();
 		}
+
+        public void ApplyVisibility(Actor actor, bool visibility)
+        {
+            actor.Hidden = !visibility;
+            actor.SetVisible(visibility);
+            foreach (var plr in Players.Values.ToArray())
+            {
+                if (visibility) actor.Reveal(plr);
+                else actor.Unreveal(plr);
+            }
+        }
+
+        public ImmutableArray<Actor> ShowOnlyNpc(ActorSno sno, int? number = null, Vector3D? nearTo = null, float radius = float.MaxValue)
+        {
+            List<Actor> actors = new();
+
+			if (nearTo is {} point)
+            {
+                int take = 0;
+                foreach (var actor in GetActorsBySno(sno).OrderBy(s=>s.Position.Around(point, radius)))
+                {
+                    actors.Add(actor);
+					ApplyVisibility(actor, true);
+                    take++;
+                    if (number != null && take != number) break;
+                }
+
+                return actors.ToImmutableArray();
+            }
+            else
+            {
+                int take = 0;
+                foreach (var actor in GetActorsBySno(sno))
+                {
+                    actors.Add(actor);
+                    ApplyVisibility(actor, true);
+                    take++;
+                    if (number != null && take != number) break;
+                }
+
+                return actors.ToImmutableArray();
+            }
+        }
 
         #endregion
 

@@ -20,12 +20,12 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			var Quest = DiIiS_NA.Core.MPQ.MPQStorage.Data.Assets[Core.Types.SNO.SNOGroup.Quest][121792];
             System.Threading.Tasks.Task.Run(() => 
 			{
-				while ((world.Game.QuestProgress as ActII).refugees < 8)//plr.HaveFollower(201583))
+				while ((world.Game.QuestProgress as ActII).Refugees < 8)//plr.HaveFollower(201583))
 					if (plr.HaveFollower(ActorSno._caldeumpoor_male_f_ambient))
 					{
 
 						plr.DestroyFollower(ActorSno._caldeumpoor_male_f_ambient);
-						(world.Game.QuestProgress as ActII).refugees++;
+						(world.Game.QuestProgress as ActII).Refugees++;
 
 						foreach (var player in world.Game.Players.Values)
 							player.InGameClient.SendMessage(new QuestCounterMessage()
@@ -34,8 +34,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 								snoLevelArea = -1,
 								StepID = 21,
 								TaskIndex = 2,
-								Counter = (world.Game.QuestProgress as ActII).refugees,
-								Checked = ((world.Game.QuestProgress as ActII).refugees >= 8) ? 1 : 0,
+								Counter = (world.Game.QuestProgress as ActII).Refugees,
+								Checked = ((world.Game.QuestProgress as ActII).Refugees >= 8) ? 1 : 0,
 							});
 					}
 				bool Active = false;

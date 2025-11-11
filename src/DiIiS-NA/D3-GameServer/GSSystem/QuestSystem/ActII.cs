@@ -23,7 +23,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 	{
 		static readonly Logger Logger = LogManager.CreateLogger();
 
-		public int refugees = 0; //temp
+		public int Refugees = 0; //temp
 
 		public ActII(Game game) : base(game)
 		{
@@ -92,18 +92,22 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     {
                         World world = Game.GetWorld(currentTown);
                         var closestDoor = world.GetDoors(exitGate,
-                            new Vector3D(x: 2905.62f, y: 1568.82f, z: 250.75f), 10f).FirstOrDefault();
+                            new Vector3D(x: 2905.62f, y: 1568.82f, z: 250.75f), 20f).FirstOrDefault();
                         if (closestDoor is { } door)
                         {
                             door.SetUsable(true);
                             door.Open();
                         }
                         else
-                            Logger.Warn($"Could not find door at position with a radius of 10f.");
+                        {
+                            Logger.Warn($"Could not find door at position with a radius of 20f.");
+                            AdvanceBugged();
+                        }
                     }
                     catch (Exception ex)
                     {
 						Logger.ErrorException(ex, $"Error whilst getting door {exitGate.GetNameWithValue()} at town {currentTown.GetNameWithValue()}");
+                        AdvanceBugged();
                     }
                     //ListenProximity(85843, new LaunchConversation(169197));
                     ListenConversation(169197, new Advance());
@@ -162,12 +166,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 91,
 				OnAdvance = () => { //talk with Steel Wolf's leader
                     var world = Game.GetWorld(WorldSno.caout_town);
-                    DestroyFollower(ActorSno._enchantressnpc);
-                    AddFollower(world, ActorSno._enchantressnpc);
+                    ReconstructFollower(world, ActorSno._enchantressnpc);
                     //ListenProximity(164195, new LaunchConversation(164197));
-                    var Leader = (world.GetActorBySNO(ActorSno._caldeumguard_cleaver_a_jarulf) as InteractiveNPC);
-                    Leader.Conversations.Clear();
-                    Leader.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(164197));
+                    var leader = (world.GetActorBySNO(ActorSno._caldeumguard_cleaver_a_jarulf) as InteractiveNPC);
+                    if (leader == null)
+                        AdvanceBugged();
+                    else
+                    {
+                        leader.Conversations.Clear();
+                        leader.Conversations.Add(new ActorSystem.Interactions.ConversationInteraction(164197));
+                    }
+
                     ListenConversation(164197, new Advance());
                 }
 			});
@@ -182,8 +191,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     var world = Game.GetWorld(WorldSno.caout_town);
                     DestroyFollower(ActorSno._enchantressnpc);
                     AddFollower(world, ActorSno._enchantressnpc);
-                    var Leader = (world.GetActorBySNO(ActorSno._caldeumguard_cleaver_a_jarulf) as InteractiveNPC);
-                    Leader.Conversations.Clear();
+                    var leader = (world.GetActorBySNO(ActorSno._caldeumguard_cleaver_a_jarulf) as InteractiveNPC);
+                    leader?.Conversations.Clear();
                     ListenProximity(ActorSno._caldeumtortured_poor_male_a_ritualvictim, new CompleteObjective(0));
                     ListenProximity(ActorSno._caldeumtortured_poor_male_a, new CompleteObjective(1));
                 }
@@ -195,8 +204,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = false,
 				NextStep = 117,
 				OnAdvance = () => { //go to Canyon Bridge
-                    DestroyFollower(ActorSno._enchantressnpc);
-                    AddFollower(Game.GetWorld(WorldSno.caout_town), ActorSno._enchantressnpc);
+                    ReconstructFollower(Game.GetWorld(WorldSno.caout_town), ActorSno._enchantressnpc);
                     ListenProximity(ActorSno._caout_mine_rope_short, new Advance());
                 }
 			});
@@ -207,8 +215,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = false,
 				NextStep = 10,
 				OnAdvance = () => { //talk with enchantress
-                    DestroyFollower(ActorSno._enchantressnpc);
-                    AddFollower(Game.GetWorld(WorldSno.caout_town), ActorSno._enchantressnpc);
+                    ReconstructFollower(Game.GetWorld(WorldSno.caout_town), ActorSno._enchantressnpc);
                     ListenProximity(ActorSno._enchantressnpc, new LaunchConversation(86196));
                     ListenConversation(86196, new Advance());
                 }
