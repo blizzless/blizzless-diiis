@@ -566,16 +566,14 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		#endregion
 
 		#region Display only a specific NPC iteration
-		[Obsolete("It seems very odd the functionality: You need to get the number right of SNO's visible in world in order to use it?" +
-                  "Use ShowOnlyNpc(Actor, Number) instead.")]
         public Actor ShowOnlyNumNPC(ActorSno sno, int number)
         {
-            Actor Setted = null;
+            Actor chosenActor = null;
             foreach (var actor in GetActorsBySNO(sno))
             {
                 var isVisible = actor.NumberInWorld == number;
                 if (isVisible)
-                    Setted = actor;
+                    chosenActor = actor;
 
                 actor.Hidden = !isVisible;
                 actor.SetVisible(isVisible);
@@ -584,7 +582,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
                     if (isVisible) actor.Reveal(plr); else actor.Unreveal(plr);
                 }
             }
-            return Setted;
+            return chosenActor;
         }
 
         public void ApplyVisibility(Actor actor, bool visibility)
@@ -1611,6 +1609,9 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 
         public IEnumerable<Door> GetDoors(ActorSno sno, Vector3D distanceFrom, float radius) =>
             Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno && a.Position.Around(distanceFrom, radius)).Cast<Door>().OrderBy(s => s.Position.Distance(distanceFrom));
+
+        public IEnumerable<Door> GetDoors(ActorSno sno, Vector3D distanceFrom, float radius, int limit) =>
+            Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno && a.Position.Around(distanceFrom, radius)).Take(limit).Cast<Door>().OrderBy(s => s.Position.Distance(distanceFrom));
         public ImmutableArray<Door> GetAllDoors(ActorSno sno) =>
             Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno).Cast<Door>().ToImmutableArray();
         public ImmutableArray<Door> OpenAllDoors()
@@ -1627,18 +1628,43 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
             return openedDoors.ToImmutableArray();
         }
 
-        public bool OpenDoor(ActorSno actorSno)
+        public bool OpenDoors(ActorSno actorSno)
         {
-            var door = GetAllDoors(actorSno).FirstOrDefault();
-            if (door == null) return false;
-            door.Open();
-            return true;
+            bool anyDoorOpened = false;
+            foreach (var door in GetAllDoors(actorSno))
+            {
+                if (door == null) return false;
+
+                door.SetUsable(true);
+                door.Open();
+                anyDoorOpened = true;
+            }
+
+            return anyDoorOpened;
         }
 
         public bool TryOpenDoor(ActorSno actorSno, out Door door)
         {
             door = GetAllDoors(actorSno).FirstOrDefault();
-            if (door == null) return false;
+            if (door == null)
+            {
+                Logger.Warn($"Door {actorSno.GetNameWithValue()} has not been found in world.");
+                return false;
+            }
+            door.SetUsable(true);
+            door.Open();
+            return true;
+        }
+
+        public bool TryOpenDoor(ActorSno actorSno, Vector3D point, float radius, out Door door)
+        {
+            door = GetAllDoors(actorSno).OrderBy(s=>s.Position.Around(point, radius)).FirstOrDefault();
+            if (door == null)
+            {
+                Logger.Warn($"Door {actorSno.GetNameWithValue()} has not been found in world, in {point} (radius {radius}).");
+                return false;
+            }
+            door.SetUsable(true);
             door.Open();
             return true;
         }

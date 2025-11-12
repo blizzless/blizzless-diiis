@@ -92,7 +92,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     {
                         World world = Game.GetWorld(currentTown);
                         var closestDoor = world.GetDoors(exitGate,
-                            new Vector3D(x: 2905.62f, y: 1568.82f, z: 250.75f), 20f).FirstOrDefault();
+                            new Vector3D(x: 2905.62f, y: 1568.82f, z: 250.75f), 20f, 1).FirstOrDefault();
                         if (closestDoor is { } door)
                         {
                             door.SetUsable(true);
