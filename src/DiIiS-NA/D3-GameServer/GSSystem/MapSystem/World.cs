@@ -1595,54 +1595,148 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			return $"[World] SNOId: {WorldSNO.Id} GlobalId: {GlobalID} Name: {WorldSNO.Name}";
 		}
 
+        /// <summary>
+        /// Gets all doors filtered by optional SNO, position radius, and limit.
+        /// </summary>
+        /// <param name="sno">Optional SNO filter.</param>
+        /// <param name="distanceFrom">Optional position to sort by distance.</param>
+        /// <param name="radius">Optional radius filter around distanceFrom.</param>
+        /// <param name="limit">Optional limit on number of results.</param>
+        /// <returns>Enumerable of doors matching criteria, ordered by distance if distanceFrom provided.</returns>
+        private IEnumerable<Door> GetDoorsFiltered(ActorSno? sno = null, Vector3D distanceFrom = null, float radius = float.MaxValue, int? limit = null)
+        {
+            var doors = Actors.Values
+                .Where(a => a is Door && (sno == null || a.SNO == sno))
+                .Cast<Door>();
+
+            if (distanceFrom != null)
+            {
+                doors = doors.Where(a => a.Position.Around(distanceFrom, radius))
+                    .OrderBy(s => s.Position.Distance(distanceFrom));
+            }
+
+            if (limit.HasValue)
+            {
+                doors = doors.Take(limit.Value);
+            }
+
+            return doors;
+        }
+
+        /// <summary>
+        /// Gets all portals filtered by optional SNO.
+        /// </summary>
+        /// <param name="sno">Optional SNO filter.</param>
+        /// <returns>Immutable array of portals matching criteria.</returns>
+        private ImmutableArray<Portal> GetPortalsFiltered(ActorSno? sno = null)
+        {
+            return Actors.Values
+                .Where(a => a is Portal && (sno == null || a.SNO == sno))
+                .Cast<Portal>()
+                .ToImmutableArray();
+        }
+
+        /// <summary>
+        /// Gets all doors in the world.
+        /// </summary>
+        /// <returns>Immutable array of all doors.</returns>
         public ImmutableArray<Door> GetAllDoors() =>
-            Actors.Select(a => a.Value).Where(a => a is Door).Cast<Door>().ToImmutableArray();
+            GetDoorsFiltered().ToImmutableArray();
 
+        /// <summary>
+        /// Gets all doors ordered by distance from a specified point.
+        /// </summary>
+        /// <param name="distanceFrom">Position to measure distance from.</param>
+        /// <returns>Enumerable of doors ordered by ascending distance.</returns>
         public IEnumerable<Door> GetDoors(Vector3D distanceFrom) =>
-            Actors.Select(a => a.Value).Where(a => a is Door).Cast<Door>().OrderBy(s=>s.Position.Distance(distanceFrom));
+            GetDoorsFiltered(distanceFrom: distanceFrom);
 
+        /// <summary>
+        /// Gets all doors of a specific SNO ordered by distance from a specified point.
+        /// </summary>
+        /// <param name="sno">SNO of doors to retrieve.</param>
+        /// <param name="distanceFrom">Position to measure distance from.</param>
+        /// <returns>Enumerable of doors matching SNO, ordered by ascending distance.</returns>
         public IEnumerable<Door> GetDoors(ActorSno sno, Vector3D distanceFrom) =>
-            Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno).Cast<Door>().OrderBy(s => s.Position.Distance(distanceFrom));
+            GetDoorsFiltered(sno: sno, distanceFrom: distanceFrom);
 
+        /// <summary>
+        /// Gets all doors within a specified radius, ordered by distance.
+        /// </summary>
+        /// <param name="distanceFrom">Center position of radius.</param>
+        /// <param name="radius">Radius around the center position.</param>
+        /// <returns>Enumerable of doors within radius, ordered by ascending distance.</returns>
         public IEnumerable<Door> GetDoors(Vector3D distanceFrom, float radius) =>
-            Actors.Select(a => a.Value).Where(a => a is Door && a.Position.Around(distanceFrom, radius)).Cast<Door>().OrderBy(s => s.Position.Distance(distanceFrom));
+            GetDoorsFiltered(distanceFrom: distanceFrom, radius: radius);
 
+        /// <summary>
+        /// Gets all doors of a specific SNO within a specified radius, ordered by distance.
+        /// </summary>
+        /// <param name="sno">SNO of doors to retrieve.</param>
+        /// <param name="distanceFrom">Center position of radius.</param>
+        /// <param name="radius">Radius around the center position.</param>
+        /// <returns>Enumerable of doors matching SNO within radius, ordered by ascending distance.</returns>
         public IEnumerable<Door> GetDoors(ActorSno sno, Vector3D distanceFrom, float radius) =>
-            Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno && a.Position.Around(distanceFrom, radius)).Cast<Door>().OrderBy(s => s.Position.Distance(distanceFrom));
+            GetDoorsFiltered(sno: sno, distanceFrom: distanceFrom, radius: radius);
 
+        /// <summary>
+        /// Gets up to a specified limit of doors matching SNO criteria within a radius, ordered by distance.
+        /// </summary>
+        /// <param name="sno">SNO of doors to retrieve.</param>
+        /// <param name="distanceFrom">Center position of radius.</param>
+        /// <param name="radius">Radius around the center position.</param>
+        /// <param name="limit">Maximum number of doors to return.</param>
+        /// <returns>Enumerable of doors matching criteria (up to limit), ordered by ascending distance.</returns>
         public IEnumerable<Door> GetDoors(ActorSno sno, Vector3D distanceFrom, float radius, int limit) =>
-            Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno && a.Position.Around(distanceFrom, radius)).Take(limit).Cast<Door>().OrderBy(s => s.Position.Distance(distanceFrom));
+            GetDoorsFiltered(sno: sno, distanceFrom: distanceFrom, radius: radius, limit: limit);
+
+        /// <summary>
+        /// Gets all doors of a specific SNO.
+        /// </summary>
+        /// <param name="sno">SNO of doors to retrieve.</param>
+        /// <returns>Immutable array of all doors matching SNO.</returns>
         public ImmutableArray<Door> GetAllDoors(ActorSno sno) =>
-            Actors.Select(a => a.Value).Where(a => a is Door && a.SNO == sno).Cast<Door>().ToImmutableArray();
+            GetDoorsFiltered(sno: sno).ToImmutableArray();
+
+        /// <summary>
+        /// Opens all doors in the world and returns them.
+        /// </summary>
+        /// <returns>Immutable array of opened doors.</returns>
         public ImmutableArray<Door> OpenAllDoors()
         {
-            List<Door> openedDoors = new();
             var doors = GetAllDoors();
+            foreach (var door in doors)
+            {
+                door.Open();
+            }
+            return doors;
+        }
+
+        /// <summary>
+        /// Attempts to open all doors matching a specific SNO.
+        /// </summary>
+        /// <param name="actorSno">SNO of doors to open.</param>
+        /// <returns>True if at least one door was opened, false if no doors found.</returns>
+        public bool OpenDoors(ActorSno actorSno)
+        {
+            var doors = GetAllDoors(actorSno);
+            if (doors.Length == 0)
+                return false;
 
             foreach (var door in doors)
             {
-                openedDoors.Add(door);
-                door.Open();
-            }
-
-            return openedDoors.ToImmutableArray();
-        }
-
-        public bool OpenDoors(ActorSno actorSno)
-        {
-            bool anyDoorOpened = false;
-            foreach (var door in GetAllDoors(actorSno))
-            {
-                if (door == null) return false;
-
                 door.SetUsable(true);
                 door.Open();
-                anyDoorOpened = true;
             }
-
-            return anyDoorOpened;
+            return true;
         }
 
+        /// <summary>
+        /// Attempts to open the first door matching a specific SNO.
+        /// </summary>
+        /// <param name="actorSno">SNO of door to open.</param>
+        /// <param name="door">Output parameter containing the opened door, or null if not found.</param>
+        /// <returns>True if a door was found and opened, false otherwise.</returns>
         public bool TryOpenDoor(ActorSno actorSno, out Door door)
         {
             door = GetAllDoors(actorSno).FirstOrDefault();
@@ -1656,9 +1750,17 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
             return true;
         }
 
+        /// <summary>
+        /// Attempts to open the nearest door matching a specific SNO within a radius.
+        /// </summary>
+        /// <param name="actorSno">SNO of door to open.</param>
+        /// <param name="point">Center position for radius search.</param>
+        /// <param name="radius">Search radius around the center point.</param>
+        /// <param name="door">Output parameter containing the opened door, or null if not found.</param>
+        /// <returns>True if a door was found and opened within radius, false otherwise.</returns>
         public bool TryOpenDoor(ActorSno actorSno, Vector3D point, float radius, out Door door)
         {
-            door = GetAllDoors(actorSno).OrderBy(s=>s.Position.Around(point, radius)).FirstOrDefault();
+            door = GetDoors(actorSno, point, radius).FirstOrDefault();
             if (door == null)
             {
                 Logger.Warn($"Door {actorSno.GetNameWithValue()} has not been found in world, in {point} (radius {radius}).");
@@ -1669,25 +1771,41 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
             return true;
         }
 
+        /// <summary>
+        /// Gets all portals in the world.
+        /// </summary>
+        /// <returns>Immutable array of all portals.</returns>
         public ImmutableArray<Portal> GetAllPortals() =>
-            Actors.Select(a => a.Value).Where(a => a is Portal).Cast<Portal>().ToImmutableArray();
+            GetPortalsFiltered();
+
+        /// <summary>
+        /// Gets all portals of a specific SNO.
+        /// </summary>
+        /// <param name="sno">SNO of portals to retrieve.</param>
+        /// <returns>Immutable array of all portals matching SNO.</returns>
         public ImmutableArray<Portal> GetAllPortals(ActorSno sno) =>
-            Actors.Select(a => a.Value).Where(a => a is Portal && a.SNO == sno).Cast<Portal>().ToImmutableArray();
+            GetPortalsFiltered(sno: sno);
+
+        /// <summary>
+        /// Opens all portals in the world and returns them.
+        /// </summary>
+        /// <returns>Immutable array of opened portals.</returns>
         public ImmutableArray<Portal> OpenAllPortals()
         {
-            List<Portal> openedPortals = new();
             var portals = GetAllPortals();
-
             foreach (var portal in portals)
             {
-                openedPortals.Add(portal);
                 portal.SetUsable(true);
-				portal.SetVisible(true);
+                portal.SetVisible(true);
             }
-
-            return openedPortals.ToImmutableArray();
+            return portals;
         }
 
+        /// <summary>
+        /// Gets all gizmos of a specific SNO.
+        /// </summary>
+        /// <param name="sno">SNO of gizmos to retrieve.</param>
+        /// <returns>Immutable array of all gizmos matching SNO.</returns>
         public ImmutableArray<Gizmo> GetAllGizmos(ActorSno sno) =>
             Actors.Select(a => a.Value).Where(a => a is Gizmo && a.SNO == sno).Cast<Gizmo>().ToImmutableArray();
     }
