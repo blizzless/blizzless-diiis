@@ -1526,7 +1526,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 
 		public static void DisableEveryone(MapSystem.World world, bool disabled)
 		{
-			foreach (var actor in world.Actors.Values.Where(a => a is Monster || a is Player || a is Minion || a is Hireling))
+			foreach (var actor in world.Actors.Values.Where(a => a is Monster or Player or Minion or Hireling))
 			{
 				actor.Disable = disabled;
 			}

@@ -585,7 +585,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Monsters
 		public Corpulent(World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
-			(Brain as MonsterBrain).AddPresetPower(30178); //Explode
+			if (Brain is MonsterBrain brain)
+			    brain.AddPresetPower(30178); //Explode
 		}
 	}
 	[HandledSNO(ActorSno._lamprey_a)]

@@ -21,6 +21,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 			Attributes[GameAttributes.Operatable] = true;
 			Attributes[GameAttributes.Disabled] = false;
 			Attributes[GameAttributes.TeamID] = 10;
+			// FIX: impossible to be killed
+            Attributes[GameAttributes.Hitpoints_Cur] /= 10;
+            Attributes[GameAttributes.Hitpoints_Max] /= 10;
+            Attributes[GameAttributes.Hitpoints_Factor_Level] = 0;
 			WalkSpeed = 0.1f;
 			//Logger.Debug("Jondar, tagSNO: {0}", tags[MarkerKeys.OnActorSpawnedScript].Id);
 		}
