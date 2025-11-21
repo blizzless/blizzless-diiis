@@ -49,52 +49,114 @@ Each version of the client includes changes to structures, opcodes and attribute
 The currently supported version of the client: **2.7.4.84161**
 
 ## Server Deploying
-### Prepare Database
-#### Manual
-1. Install [PostgreSQL 9.5.25](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads).
-2. Create databases in PostgreSQL: `diiis` and `worlds`.
-3. Change you account and password in `database.Account.config` and `database.Worlds.conifg`.
-4. Restore `worlds.backup` to `worlds` database.
 
-#### Or using docker
-1. [Install docker](https://docs.docker.com/get-docker/)
-2. Run `docker-compose up` from root folder (here).
+### Option 1: Docker (Recommended)
 
-### Compile and run
-1. Install [.NET 7 SDK and runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) (just runtime, not asp.net or desktop)
-2. Go to the repo directory and compile the project using this command:
+The easiest way to run the server is using Docker. This method handles all dependencies automatically.
+
+#### Using Pre-built Docker Images
+
+Pull and run the latest image from GitHub Container Registry:
+
+```bash
+# Pull the latest image
+docker pull ghcr.io/blizzless/blizzless-diiis:latest
+
+# Run with docker-compose (recommended)
+docker-compose up -d
+```
+
+The server will be available on:
+- Battle.net: `127.0.0.1:1119`
+- Game Server: `127.0.0.1:1345`
+- REST API: `127.0.0.1:83`
+
+#### Building Docker Image Locally
+
+If you want to build the image yourself:
+
+```bash
+# Clone the repository
+git clone https://github.com/blizzless/blizzless-diiis.git
+cd blizzless-diiis
+
+# Build and run with docker-compose
+docker-compose up -d --build
+```
+
+#### Docker Architecture Support
+
+The Docker images support both **x86_64 (Intel/AMD)** and **ARM64 (Apple Silicon)** architectures.
+
+### Option 2: Manual Installation
+
+#### Prepare Database
+
+**Using Docker (Recommended):**
+1. [Install Docker](https://docs.docker.com/get-docker/)
+2. Run `docker-compose up -d db` to start only the PostgreSQL database
+
+**Manual Setup:**
+1. Install [PostgreSQL 16+](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
+2. Create database: `diablo`
+3. Update credentials in `database.Account.config` and `database.Worlds.config`
+4. Import schema: The database will be initialized automatically from `db/initdb/dump.sql`
+
+#### Compile and Run
+
+1. Install [.NET 10.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+2. Go to the repo directory and compile the project:
 ```shell
 dotnet publish ./src/DiIiS-NA/Blizzless.csproj --configuration Release --output ./publish
 ```
 3. __Skip this stage for local game__ Copy the [config.mods.json](https://github.com/blizzless/blizzless-diiis/blob/community/configs/config.mods.json) file to the folder, and modify however you want. A file will be generated automatically from the `config.ini` for now.
-4. Update your `config.ini` file on the published folder with your network's IP records (`BindIP` and `PublicIP`)
+4. Update your `config.ini` file in the publish folder with your network's IP records (`BindIP` and `PublicIP`)
 5. Go to the publish folder, launch Blizzless executable, wait until server start - it creates a hierarchy.
 6. Create user account(s) using console: `!account add Login Password Tag`
- - Example:
-  - `!account add username@ YourPassword YourBattleTag`
- - Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag`
-  - `!account add username@ YourPassword YourBattleTag owner`
- - Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag` with rank `owner`
 
-### Example:
+### Managing User Accounts
 
-> !account add username@ YourPassword YourBattleTag
+Whether using Docker or manual installation, you can create accounts via the server console:
 
-Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag`
+**For Docker:**
+```bash
+# Access the server console
+docker exec -it diiis-na-server ./Blizzless
 
-> !account add username@ YourPassword YourBattleTag owner
+# Then use account commands inside the console
+!account add username@ YourPassword YourBattleTag
+!account add username@ YourPassword YourBattleTag owner
+```
 
-Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag` with rank `owner`
+**Account Command Examples:**
 
-### Example:
+- `!account add username@ YourPassword YourBattleTag`  
+  Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag`
 
-> !account add username@ YourPassword YourBattleTag
+- `!account add username@ YourPassword YourBattleTag owner`  
+  Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag` with rank `owner`
 
-Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag`
+### Docker Management Commands
 
-> !account add username@ YourPassword YourBattleTag owner
+```bash
+# Start the server
+docker-compose up -d
 
-Creates an account with Login `username@`, password `YourPassword` and BattleTag `YourBattleTag` with rank `owner`
+# Stop the server
+docker-compose down
+
+# View server logs
+docker logs diiis-na-server -f
+
+# View database logs
+docker logs diiis-na-db -f
+
+# Restart the server
+docker-compose restart diiis-na-server
+
+# Rebuild and restart after code changes
+docker-compose up -d --build
+```
 
 ## Prepare Client
 
@@ -192,11 +254,21 @@ General improvements: visual fixes (weapon display) and overall gameplay polish.
 
 # System requirements
 
+## Hardware
+
 |            | **Entry-level**              | **Mid-range**                | **High-end**                 |
 | ---------- | ---------------------------- | ---------------------------- | ---------------------------- |
 | **CPU**    | Intel Core i5 or AMD Ryzen 5 | Intel Core i7 or AMD Ryzen 7 | Intel Core i9 or AMD Ryzen 9 |
 | **Memory** | 4 GB RAM                     | 16 GB RAM                    | 64 GB RAM                    |
 | **Disk**   | 500 MB                       | 1 GB                         | 1 GB                         |
+
+## Software
+
+- **Docker**: Docker 20.10+ and Docker Compose 2.0+ (for containerized deployment)
+- **.NET**: .NET 10.0 SDK (for manual compilation)
+- **Database**: PostgreSQL 16+ (or use Docker image)
+- **OS**: Linux, macOS, Windows (with Docker Desktop)
+- **Architectures**: x86_64 (Intel/AMD) and ARM64 (Apple Silicon, ARM servers)
 
 # Screenshots
 
