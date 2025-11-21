@@ -1,5 +1,6 @@
 # Use the official .NET SDK image to build the application
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
+ARG TARGETARCH
 WORKDIR /app
 
 # Copy the project file and restore dependencies
@@ -9,10 +10,14 @@ RUN dotnet restore "src/DiIiS-NA/Blizzless.csproj"
 # Copy the rest of the project files and build the application
 COPY ["src/", "src/"]
 WORKDIR "/app/src/DiIiS-NA"
-RUN dotnet publish "Blizzless.csproj" -c Release --runtime linux-x64 --self-contained true -o /app/publish
+RUN dotnet publish "Blizzless.csproj" \
+-c Release \
+--runtime linux-musl-${TARGETARCH} \
+--self-contained true \
+-o /app/publish
 
 # Use the official .NET runtime image to run the application
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS runtime
 WORKDIR /app
 
 # Copy the published application from the build stage
