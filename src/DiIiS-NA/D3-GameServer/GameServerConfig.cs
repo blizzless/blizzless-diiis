@@ -8,6 +8,11 @@ namespace DiIiS_NA.GameServer
 {
 	public sealed class GameServerConfig : DiIiS_NA.Core.Config.Config
 	{
+        public bool IsLocalDev
+        {
+			get => GetBoolean(nameof(IsLocalDev), false);
+			set => Set(nameof(IsLocalDev), value);
+        }
 		public bool Enabled
 		{
 			get => GetBoolean(nameof(Enabled), true);

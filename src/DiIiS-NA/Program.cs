@@ -33,6 +33,7 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using DiIiS_NA.Core.Extensions;
+using DiIiS_NA.GameServer;
 using Spectre.Console;
 using Environment = System.Environment;
 
@@ -80,10 +81,30 @@ namespace DiIiS_NA
             RightTextRule($"[deepskyblue3]{TypeBuild}[/]", "steelblue1_1");
             RightTextRule($"Diablo III [red]RoS 2.7.4.84161[/] - {Url("https://github.com/blizzless/blizzless-diiis")}",
                 "red");
-            AnsiConsole.MarkupLine("");
-            AnsiConsole.MarkupLine("");
+            if (GameServerConfig.Instance.IsLocalDev)
+            {
+                AnsiConsole.MarkupLine("");
+                CloseAgents();
+            }
+
         }
-        
+
+        /// <summary>
+        /// Closes the currently running process and releases any associated resources.
+        /// Using TASKKILL to ensure all child processes are also closed.
+        /// </summary>
+        static void CloseProcess(string processBinary)
+        {
+            Process taskkill = Process.Start(new ProcessStartInfo("TASKKILL.exe", $"/IM {processBinary}.exe /F"));
+            taskkill?.WaitForExit();
+        }
+        /// <summary>
+        /// Closes all agents of battle.net before starting.
+        /// </summary>
+        static void CloseAgents()
+        {
+            //CloseProcess("Agent.exe");
+        }
         static async Task StartAsync(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
@@ -120,12 +141,21 @@ namespace DiIiS_NA
                         // get CPU time
                         using var proc = Process.GetCurrentProcess();
                         var cpuTime = proc.TotalProcessorTime;
-                        var text =
-                            $"{name} | " +
-                            $"{PlayerManager.OnlinePlayers.Count} onlines in {PlayerManager.OnlinePlayers.Count(s => s.InGameClient?.Player?.World != null)} worlds | " +
-                            $"Memory: {totalMemory:0.000} GB | " +
-                            $"CPU Time: {cpuTime.ToSmallText()} | " +
-                            $"Uptime: {uptime.ToSmallText()}";
+                        var onlineCount = PlayerManager.OnlinePlayers.Count;
+                        var inGameCount = PlayerManager.OnlinePlayers.Count(s => s.InGameClient?.Player?.World != null);
+                        var memoryGb = (double)((double)Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024 / 1024);
+                        
+                        var statusParts = new[]
+                        {
+                            name,
+                            $"{onlineCount} onlines in {inGameCount} worlds",
+                            $"Memory: {memoryGb:0.000} GB",
+                            $"CPU Time: {cpuTime.ToSmallText()}",
+                            $"Uptime: {uptime.ToSmallText()}"
+                        };
+                        
+                        var text = string.Join(" | ", statusParts);
+
                         if (SetTitle(text))
                             await Task.Delay(1000);
                         else
