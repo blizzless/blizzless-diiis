@@ -24,7 +24,7 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
 		public event ConnectionEventHandler OnDisconnect;
 		public event ConnectionDataEventHandler DataReceived;
 
-		protected static readonly Logger Logger = LogManager.CreateLogger("S");
+		protected static readonly Logger Logger = LogManager.CreateLogger();
 		private static bool _disposed = false;
 
 		public virtual void Run() { }
@@ -43,7 +43,7 @@ namespace DiIiS_NA.GameServer.ClientSystem.Base
 			Acceptor = new AsyncAcceptor();
 			if (!Acceptor.Start(bindIP, port))
 			{
-				Logger.Fatal("Listen failed to Start AsyncAcceptor on {0}", bindIP);
+				Logger.Fatal("Listen failed to Start AsyncAcceptor on {0}:{1}", bindIP, port);
 				return false;
 			}
 

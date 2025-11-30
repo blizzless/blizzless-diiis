@@ -115,30 +115,30 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 			if (Item.IsAccessory(item.ItemType) && affixesCount <= 1) affixesCount = 2;
 
-			bool IsUnique = item.ItemDefinition.Name.Contains("Unique_");
+			bool isUnique = item.ItemDefinition.Name.Contains("Unique_");
 
 			
-			if (IsUnique && !isCrafting) affixesCount = item.ItemDefinition.BonusAffixes + item.ItemDefinition.BonusMajorAffixes + item.ItemDefinition.BonusMinorAffixes;
+			if (isUnique && !isCrafting) affixesCount = item.ItemDefinition.BonusAffixes + item.ItemDefinition.BonusMajorAffixes + item.ItemDefinition.BonusMinorAffixes;
 
 			if (item.ItemDefinition.Name.ToLower().Contains("p71_ethereal"))
 			{
 				affixesCount = 8;
-				IsUnique = true; 
+				isUnique = true; 
 			}
 
 
 			if (item.GBHandle.GBID == -4139386) affixesCount = 6; //referral ring
-			if (IsUnique)
+			if (isUnique)
 				affixesCount += 3;
 
-			Class ItemPlayerClass = Class.None;
-			if (item.ItemType.Usable.HasFlag(ItemFlags.Barbarian)) ItemPlayerClass = Class.Barbarian;
-			if (item.ItemType.Usable.HasFlag(ItemFlags.Crusader)) ItemPlayerClass = Class.Crusader;
-			if (item.ItemType.Usable.HasFlag(ItemFlags.Necromancer)) ItemPlayerClass = Class.Necromancer;
-			if (item.ItemType.Usable.HasFlag(ItemFlags.DemonHunter)) ItemPlayerClass = Class.DemonHunter;
-			if (item.ItemType.Usable.HasFlag(ItemFlags.Wizard)) ItemPlayerClass = Class.Wizard;
-			if (item.ItemType.Usable.HasFlag(ItemFlags.WitchDoctor)) ItemPlayerClass = Class.Witchdoctor;
-			if (item.ItemType.Usable.HasFlag(ItemFlags.Monk)) ItemPlayerClass = Class.Monk;
+			Class itemPlayerClass = Class.None;
+			if (item.ItemType.Usable.HasFlag(ItemFlags.Barbarian)) itemPlayerClass = Class.Barbarian;
+			if (item.ItemType.Usable.HasFlag(ItemFlags.Crusader)) itemPlayerClass = Class.Crusader;
+			if (item.ItemType.Usable.HasFlag(ItemFlags.Necromancer)) itemPlayerClass = Class.Necromancer;
+			if (item.ItemType.Usable.HasFlag(ItemFlags.DemonHunter)) itemPlayerClass = Class.DemonHunter;
+			if (item.ItemType.Usable.HasFlag(ItemFlags.Wizard)) itemPlayerClass = Class.Wizard;
+			if (item.ItemType.Usable.HasFlag(ItemFlags.WitchDoctor)) itemPlayerClass = Class.Witchdoctor;
+			if (item.ItemType.Usable.HasFlag(ItemFlags.Monk)) itemPlayerClass = Class.Monk;
 
 
 			List<int> itemTypes = ItemGroup.HierarchyToHashList(item.ItemType);
@@ -162,14 +162,14 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			IEnumerable<AffixTable> filteredList = null;
 
 			filteredList = AllAffix.Where(a =>
-				(a.PlayerClass == ItemPlayerClass || a.PlayerClass == Class.None) &&//(a.PlayerClass == ItemPlayerClass || a.PlayerClass == Class.None) &&
+				(a.PlayerClass == itemPlayerClass || a.PlayerClass == Class.None) &&//(a.PlayerClass == ItemPlayerClass || a.PlayerClass == Class.None) &&
 				itemTypes.ContainsAtLeastOne(a.ItemGroup) &&
 				(a.AffixLevelMax >= levelToFind) &&
 				(a.OverrideLevelReq <= item.ItemDefinition.RequiredLevel)
 				//!a.Name.Contains("1xx_Inferior")
 				);
 
-			if (IsUnique)
+			if (isUnique)
 			{
 				var restrictedFamily = item.ItemDefinition.LegendaryAffixFamily.Where(af => af != -1).ToHashSet();
 				filteredList = filteredList
@@ -298,7 +298,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 					//Logger.Debug("Affix  " + def.Hash + ", final score is" + affix.Score);
 					item.AffixList.Add(affix);
 
-					if (affixesCount > 0 && !IsUnique && !item.ItemDefinition.Name.Contains("StaffOfCow"))
+					if (affixesCount > 0 && !isUnique && !item.ItemDefinition.Name.Contains("StaffOfCow"))
 					{
 						item.RareItemName = GenerateItemName();
 					}
@@ -306,7 +306,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				n++;
 			}
 
-			if (IsUnique)
+			if (isUnique)
 			{
 				for (int i = 0; i < 6; i++)
 				{

@@ -61,7 +61,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				return;
 			}
 
-			int cost = item.ItemDefinition.Cost;
+			int cost = item.ItemDefinition.CostAlt;
 			//Check shards here
 			if (currentShards < cost)
 				return;

@@ -97,9 +97,9 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 						var paramsBuilder = D3.OnlineService.GameCreateParams.CreateBuilder(gameCreateParams);
 						var Mode = D3.OnlineService.CampaignOrAdventureModeCreateParams.CreateBuilder(gameCreateParams.CampaignOrAdventureMode);
 
-						lock (((HandlerController) controller).Client.Account.GameAccount.CurrentToon.DBToon)
+						lock (((HandlerController) controller).Client.Account.GameAccount.CurrentToon.DbToon)
 						{
-							DBToon toonByClient = (((HandlerController) controller).Client).Account.GameAccount.CurrentToon.DBToon;
+							DBToon toonByClient = (((HandlerController) controller).Client).Account.GameAccount.CurrentToon.DbToon;
 							if(toonByClient.CurrentAct == 400)
 								toonByClient.CurrentAct = gameCreateParams.CampaignOrAdventureMode.Act;
 							if (!clear_quests)
@@ -152,7 +152,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 					{
 						var gameCreateParamsBuilder = D3.OnlineService.GameCreateParams.CreateBuilder();
 						var toon = (((HandlerController) controller).Client).Account.GameAccount.CurrentToon;
-						var dbToon = (((HandlerController) controller).Client).Account.GameAccount.CurrentToon.DBToon;
+						var dbToon = (((HandlerController) controller).Client).Account.GameAccount.CurrentToon.DbToon;
 						gameCreateParamsBuilder.SetGameType(1);
 						gameCreateParamsBuilder.SetCreationFlags(0);
 						gameCreateParamsBuilder.SetCampaignOrAdventureMode(D3.OnlineService.CampaignOrAdventureModeCreateParams.CreateBuilder()
@@ -160,7 +160,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
 							.SetAct(dbToon.CurrentAct)
 							.SetSnoQuest(dbToon.CurrentQuestId)
 							.SetQuestStepId(dbToon.CurrentQuestStepId)
-							.SetResumeFromSaveHeroId(toon.D3EntityID)
+							.SetResumeFromSaveHeroId(toon.D3EntityId)
 							.SetDeprecatedOpenToFriends(true)
 							.SetDeprecatedOpenToFriendsMessage("TestGame")
 							);

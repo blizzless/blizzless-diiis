@@ -94,7 +94,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 
 			if (haveDrop)
 			{
-				var dropRates = World.Game.IsHardcore ? LootManager.GetSeasonalDropRates((int)Quality, Program.MaxLevel) : LootManager.GetDropRates((int)Quality, Program.MaxLevel);
+				var dropRates = World.Game.IsHardcore ? LootManager.GetSeasonalDropRates((int)Quality, Program.MAX_LEVEL) : LootManager.GetDropRates((int)Quality, Program.MAX_LEVEL);
 				foreach (var rate in dropRates)
 					foreach (var plr in GetPlayersInRange(30))
 					{

@@ -35,10 +35,13 @@ namespace DiIiS_NA.Core.Storage.AccountDataBase
 				if (_config == null)
 				{
 					_config = new Configuration();
-					_config = _config.Configure(Path.Combine(FileHelpers.AssemblyRoot, "database.Account.config"));
+#if DEBUG
+                    _config = _config.Configure(File.Exists(Path.Combine(FileHelpers.AssemblyRoot, "database.Account.Debug.config")) ? Path.Combine(FileHelpers.AssemblyRoot, "database.Account.Debug.config") : Path.Combine(FileHelpers.AssemblyRoot, "database.Account.config"));
+#else
+                    _config = _config.Configure(Path.Combine(FileHelpers.AssemblyRoot, "database.Account.config"));
+#endif
 
-
-					var replacedProperties = new Dictionary<string, string>();
+                    var replacedProperties = new Dictionary<string, string>();
 					foreach (var prop in _config.Properties)
 					{
 						var newvalue = prop.Value;

@@ -31,27 +31,18 @@ using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.Hirelings;
 using DiIiS_NA.GameServer.GSSystem.GeneratorsSystem;
 using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.D3_GameServer;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.GameSystem;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
 using Monster = DiIiS_NA.GameServer.GSSystem.ActorSystem.Monster;
 using Scene = DiIiS_NA.GameServer.GSSystem.MapSystem.Scene;
 using World = DiIiS_NA.GameServer.GSSystem.MapSystem.World;
+using System.Runtime.CompilerServices;
 
 namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 {
-	public enum ActEnum
-	{
-		Act1 = 0,
-		Act2 = 100,
-		Act3 = 200,
-		Act4 = 300,
-		Act5 = 400,
-		OpenWorld = 3000
-	}
-
 	public class Game : IMessageConsumer
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger();
@@ -65,6 +56,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Dictionary that maps gameclient's to players.
 		/// </summary>
 		public ConcurrentDictionary<GameClient, Player> Players { get; private set; }
+
+		public Player FirstPlayer() => Players.Values.First();
 
 		public ImmutableArray<Player> ConnectedPlayers => Players
 			.Where(s => s.Value != null && s.Key.Connection.IsOpen() && !s.Key.IsLoggingOut)
@@ -145,8 +138,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			public int AcceptedPlayers;
 		};
 
-		public readonly Dictionary<WorldSno, List<Action>> OnLoadWorldActions = new();
-		public readonly Dictionary<int, List<Action>> OnLoadSceneActions = new();
+		public readonly Dictionary<WorldSno, List<System.Action>> OnLoadWorldActions = new();
+		public readonly Dictionary<int, List<System.Action>> OnLoadSceneActions = new();
 
 		public BossEncounter CurrentEncounter = new() { SnoId = -1, Activated = false, AcceptedPlayers = 0 };
 
@@ -190,9 +183,10 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// Current quest SNOid.
 		/// </summary>
 		public int CurrentQuest = -1;
-
 		public int CurrentSideQuest = -1;
 
+		public bool IsCurrentOpenWorld => CurrentQuest == 312429;
+		
 		/// <summary>
 		/// Current quest step SNOid.
 		/// </summary>
@@ -667,7 +661,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 		/// <param name="joinedPlayer">The new player.</param>
 		public void Enter(Player joinedPlayer)
 		{
-			if (IsHardcore && !joinedPlayer.Toon.DBToon.isHardcore)
+			if (IsHardcore && !joinedPlayer.Toon.DbToon.isHardcore)
 			{
 				return;
 			}
@@ -1276,18 +1270,28 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 		public void SetDifficulty(int diff)
 		{
-			Difficulty = diff;
-			if (Difficulty < 0) Difficulty = 0;
-			if (Difficulty > 19) Difficulty = 19;
+			Difficulty = Math.Clamp(diff, 0, 19);
 			diff++;
 			if (diff > 0)
 			{
 				var handicapLevels = (GameBalance)MPQStorage.Data.Assets[SNOGroup.GameBalance][256027].Data;
-				HpModifier = handicapLevels.HandicapLevelTables[diff].HPMod;
-				DmgModifier = handicapLevels.HandicapLevelTables[diff].DmgMod;
-				XpModifier = (1f + handicapLevels.HandicapLevelTables[diff].XPMod);
-				GoldModifier = (1f + handicapLevels.HandicapLevelTables[diff].GoldMod);
+				HpModifier = handicapLevels.HandicapLevelTables[diff].HPMod * GameModsConfig.Instance.Rate.HealthByDifficulty[Difficulty] 
+				                                                            * GameModsConfig.Instance.Monster.HealthMultiplier;
+				DmgModifier = handicapLevels.HandicapLevelTables[diff].DmgMod 
+				              * GameModsConfig.Instance.Rate.GetDamageByDifficulty(diff)
+				              * GameModsConfig.Instance.Monster.DamageMultiplier;
+				XpModifier = (1f + handicapLevels.HandicapLevelTables[diff].XPMod) * GameModsConfig.Instance.Rate.Experience;
+				GoldModifier = (1f + handicapLevels.HandicapLevelTables[diff].GoldMod * GameModsConfig.Instance.Rate.Gold);
 			}
+			else
+			{
+				HpModifier = GameModsConfig.Instance.Rate.HealthByDifficulty[diff] * GameModsConfig.Instance.Monster.HealthMultiplier;
+				DmgModifier = GameModsConfig.Instance.Rate.GetDamageByDifficulty(diff) * GameModsConfig.Instance.Monster.DamageMultiplier;
+				XpModifier = 1f + GameModsConfig.Instance.Rate.Experience;
+				GoldModifier = (1f * GameModsConfig.Instance.Rate.Gold);
+			}
+			
+			Logger.Info($"$[italic]$Updated Game #$[underline]${GameId}$[/]$ difficulty to {diff}.$[/]$");
 
 			foreach (var wld in _worlds)
 			foreach (var monster in wld.Value.Monsters)
@@ -1336,13 +1340,13 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 			target.InGameClient.SendMessage(new NewPlayerMessage
 			{
 				PlayerIndex = joinedPlayer.PlayerIndex,
-				NewToonId = (long)joinedPlayer.Toon.D3EntityID.IdLow,
+				NewToonId = (long)joinedPlayer.Toon.D3EntityId.IdLow,
 				GameAccountId = new GameAccountHandle()
 					{ ID = (uint)joinedPlayer.Toon.GameAccount.BnetEntityId.Low, Program = 0x00004433, Region = 1 },
 				ToonName = joinedPlayer.Toon.Name,
 				Team = 0x00000002,
 				Class = joinedPlayer.ClassSno,
-				snoActorPortrait = joinedPlayer.Toon.DBToon.Cosmetic4,
+				snoActorPortrait = joinedPlayer.Toon.DbToon.Cosmetic4,
 				Level = joinedPlayer.Toon.Level,
 				AltLevel = (ushort)joinedPlayer.Toon.ParagonLevel,
 				HighestHeroSoloRiftLevel = 0,
@@ -1570,9 +1574,8 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 
 
 			//handling quest triggers
-			if (QuestProgress.QuestTriggers.ContainsKey(levelArea)) //EnterLevelArea
+			if (QuestProgress.QuestTriggers.TryGetValue(levelArea, out var trigger)) //EnterLevelArea
 			{
-				var trigger = QuestProgress.QuestTriggers[levelArea];
 				if (trigger.TriggerType == QuestStepObjectiveType.EnterLevelArea)
 				{
 					try
@@ -1645,7 +1648,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 								//Берем каина
 								var firstPoint = new Vector3D(120.92718f, 121.26151f, 0.099973306f);
 								var secondPoint = new Vector3D(120.73298f, 160.61829f, 0.31863004f);
-								var sceletonPoint = new Vector3D(120.11514f, 140.77332f, 0.31863004f);
+								var sketonPosition = new Vector3D(120.11514f, 140.77332f, 0.31863004f);
 
 								var firstfacingAngle =
 									ActorSystem.Movement.MovementHelpers.GetFacingAngle(cainRun, firstPoint);
@@ -1666,9 +1669,9 @@ namespace DiIiS_NA.GameServer.GSSystem.GameSystem
 									{
 										foreach (var skeleton in skeletons)
 										{
-											skeleton.Move(sceletonPoint,
+											skeleton.Move(sketonPosition,
 												ActorSystem.Movement.MovementHelpers.GetFacingAngle(skeleton,
-													sceletonPoint));
+													sketonPosition));
 										}
 
 										cainRun.Move(secondPoint, secondfacingAngle);

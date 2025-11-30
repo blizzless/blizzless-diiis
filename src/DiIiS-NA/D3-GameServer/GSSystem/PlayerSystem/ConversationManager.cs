@@ -65,7 +65,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 		// If there is no matching childnode, there must be one with -1 which only combines all class specific into one
 		private int GetDuration()
 		{
-			var node = currentLineNode.ChildNodes.FirstOrDefault(a => a.ClassFilter == player.Toon.VoiceClassID);
+			var node = currentLineNode.ChildNodes.FirstOrDefault(a => a.ClassFilter == player.Toon.VoiceClassId);
 			node ??= currentLineNode.ChildNodes.FirstOrDefault(a => a.ClassFilter == -1);
 
 			if (node == null)
@@ -74,7 +74,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			}
 
 			return node.CompressedDisplayTimes[(int)manager.ClientLanguage]
-				.Languages[player.Toon.VoiceClassID * 2 + (player.Toon.Gender == 0 ? 0 : 1)];
+				.Languages[player.Toon.VoiceClassId * 2 + (player.Toon.Gender == 0 ? 0 : 1)];
 		}
 
 		// This returns the dynamicID of other conversation partners. The client uses its position to identify where you can hear the conversation.
@@ -573,10 +573,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 					LineID = currentLineNode.LineID,
 					Speaker = currentLineNode.LineSpeaker,
 					LineGender = -1,
-					AudioClass = (GameBalance.Class)player.Toon.VoiceClassID,
+					AudioClass = (GameBalance.Class)player.Toon.VoiceClassId,
 					Gender = (player.Toon.Gender == 0) ? VoiceGender.Male : VoiceGender.Female,
 					TextClass = currentLineNode.LineSpeaker == Speaker.Player
-						? (GameBalance.Class)player.Toon.VoiceClassID
+						? (GameBalance.Class)player.Toon.VoiceClassId
 						: GameBalance.Class.None,
 					SNOSpeakerActor = (int)GetSpeaker(currentLineNode.LineSpeaker).SNO,
 					LineFlags = 0x00000000,

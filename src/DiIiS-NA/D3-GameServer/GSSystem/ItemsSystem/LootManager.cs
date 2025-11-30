@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DiIiS_NA.D3_GameServer;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 {
@@ -613,16 +614,16 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			switch (MonsterQuality)
 			{
 				case 0: //Normal
-					return new List<float> { 0.18f * GameServerConfig.Instance.RateChangeDrop };
+					return new List<float> { 0.18f * GameModsConfig.Instance.Rate.ChangeDrop };
 				case 1: //Champion
-					return new List<float> { 1f, 1f, 1f, 1f, 0.75f * GameServerConfig.Instance.RateChangeDrop };
+					return new List<float> { 1f, 1f, 1f, 1f, 0.75f * GameModsConfig.Instance.Rate.ChangeDrop };
 				case 2: //Rare (Elite)
 				case 4: //Unique
 					return new List<float> { 1f, 1f, 1f, 1f, 1f };
 				case 7: //Boss
-					return new List<float> { 1f, 1f, 1f, 1f, 1f, 0.75f * GameServerConfig.Instance.RateChangeDrop, 0.4f * GameServerConfig.Instance.RateChangeDrop };
+					return new List<float> { 1f, 1f, 1f, 1f, 1f, 0.75f * GameModsConfig.Instance.Rate.ChangeDrop, 0.4f * GameModsConfig.Instance.Rate.ChangeDrop };
 				default:
-					return new List<float> { 0.12f * GameServerConfig.Instance.RateChangeDrop };
+					return new List<float> { 0.12f * GameModsConfig.Instance.Rate.ChangeDrop };
 			}
 		}
 

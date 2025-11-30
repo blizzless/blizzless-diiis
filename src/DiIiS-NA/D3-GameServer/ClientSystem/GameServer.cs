@@ -33,10 +33,10 @@ namespace DiIiS_NA.GameServer.ClientSystem
 
 		public override void Run()
 		{
-			int Port = 2001;
+			int port = 2001;
 			 
-			if (!Listen(Program.GameServerIp, Port)) return;
-			Logger.Info("Game Server Started - {0}:{1}...", Program.GameServerIp, Port);
+			if (!Listen(Program.GameServerIp, port)) return;
+			Logger.Info("Game Server Started - {0}:{1}...", Program.GameServerIp, port);
 		}
 	}
 }

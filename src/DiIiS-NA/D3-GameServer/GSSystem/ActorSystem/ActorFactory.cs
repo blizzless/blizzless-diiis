@@ -28,7 +28,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 				.Where(x => x.Attribute != null)
 				.SelectMany(x => x.Attribute.SNOIds.Select(a => new { x.Type, Sno = a }))
 				.ToDictionary(x => x.Sno, x => x.Type);
-        }
+		}
 
 		public static void LazyCreate(World world, ActorSno sno, TagMap tags, Vector3D spawn, Action<Actor, Vector3D> OnCreate)
 		{
@@ -39,14 +39,31 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public static Actor Create(World world, ActorSno sno, TagMap tags, [CallerMemberName] string memberName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
-			if (!MPQStorage.Data.Assets[SNOGroup.Actor].ContainsKey((int)sno))
-			{
-				var path = Path.GetFileName(filePath);
-				Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
-				return null;
-			}
+            if (sno == ActorSno.__NONE)
+            {
+                // SNOSpawn == 0/none → never generates an Actor.
+                Logger.Debug($"[ActorFactory] Ignorando ActorSno.__NONE");
+                return null;
+            }
 
-			switch (sno)
+            if (!MPQStorage.Data.Assets[SNOGroup.Actor].ContainsKey((int)sno))
+            {
+                string snoName = sno.ToString().ToLower();
+
+                // If the name itself indicates that it is a spawner/marker/symbol → it is not an error, just ignore it.
+                if (snoName.Contains("spawn") || snoName.Contains("spawner") ||
+                    snoName.Contains("symbol") || snoName.Contains("marker"))
+                {
+                    Logger.Debug($"[ActorFactory] Ignorando actor lógico {sno} (sem asset renderizável no MPQ)");
+                    return null;
+                }
+
+                // Otherwise → it is indeed an expected asset that does not exist → log error.
+                var path = Path.GetFileName(filePath);
+                Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]{memberName}()$[/]$ - $[underline white]{memberName}() in {path}:{lineNumber}$[/]$");
+                return null;
+            }
+            switch (sno)
 			{
 				case ActorSno._woodwraith_a_01:
 				case ActorSno._woodwraith_a_02:

@@ -31,7 +31,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             get;
             private set; //needed in Future, set this to true if Item affixes or item attributes have changed.
         }
-        
+
         public override ActorType ActorType => ActorType.Item;
 
         public Actor Owner { get; set; } // Only set when the _actor_ has the item in its inventory. /fasbat
@@ -43,10 +43,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         public bool Unidentified
         {
             get => Attributes[GameAttributes.Unidentified];
-            set 
-            { 
+            set
+            {
                 Attributes[GameAttributes.Unidentified] = value;
-                if (DBInventory is {} dbInventory) dbInventory.Unidentified = value;
+                if (DBInventory is { } dbInventory) dbInventory.Unidentified = value;
             }
         }
 
@@ -832,14 +832,88 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public override void OnTargeted(Player player, TargetMessage message)
         {
+
             player.Inventory.RefreshInventoryToClient();
             var playerAcc = player.InGameClient.BnetClient.Account.GameAccount;
             switch (SNO)
             {
-                case ActorSno._tieredlootrunkey_0:
+                case ActorSno._tieredlootrunkey_0: //Greater Rift Key
                     playerAcc.BigPortalKey++;
                     Destroy();
                     break;
+                case ActorSno._crafting_assortedparts_05: //Reusable Parts
+                    playerAcc.CraftItem1++;
+                    Destroy();
+                    break;
+
+                case ActorSno._crafting_magic_05: //Arcanes Dust
+                    playerAcc.CraftItem2++;
+                    Destroy();
+                    break;
+
+                case ActorSno._crafting_rare_05: //Veiled Crystal
+                    playerAcc.CraftItem3++;
+                    Destroy();
+                    break;
+
+                case ActorSno._crafting_looted_reagent_05: //Death's Breath GBID? 2087837753
+                    playerAcc.CraftItem4++;
+                    Destroy();
+                    break;
+
+                case ActorSno._crafting_legendary_05: //Forgotten Soul
+                    playerAcc.CraftItem5++;
+                    Destroy();
+                    break;
+
+                case ActorSno._craftingreagent_legendary_set_borns_x1: //Khanduran Rune Bounty itens Act I.
+                    playerAcc.HoradricA1Res++;
+                    Destroy();
+                    break;
+
+                case ActorSno._craftingreagent_legendary_set_cains_x1: //Caldeum Nightshade Bounty itens Act II.
+                    playerAcc.HoradricA2Res++;
+                    Destroy();
+                    break;
+
+                case ActorSno._craftingreagent_legendary_set_demon_x1: //Arreat War Tapestry Bounty itens Act III.
+                    playerAcc.HoradricA3Res++;
+                    Destroy();
+                    break;
+
+                case ActorSno._craftingreagent_legendary_set_hallowed_x1: //Corrupted Angel Flesh Bounty itens Act IV.
+                    playerAcc.HoradricA4Res++;
+                    Destroy();
+                    break;
+
+                case ActorSno._craftingreagent_legendary_set_captaincrimsons_x1: //Westmarch Holy Water Bounty itens Act V.
+                    playerAcc.HoradricA5Res++;
+                    Destroy();
+                    break;
+
+                case ActorSno._demonorgan_skeletonking_x1: //Leorik Regret.
+                    playerAcc.LeorikKey++;
+                    Destroy();
+                    break;
+
+                case ActorSno._demonorgan_ghom_x1: //Vial of Putridness.
+                    playerAcc.VialofPutridness++;
+                    Destroy();
+                    break;
+
+                case ActorSno._demonorgan_siegebreaker_x1: //Idol of Terror.
+                    playerAcc.IdolofTerror++;
+                    Destroy();
+                    break;
+
+                case ActorSno._demonorgan_diablo_x1: //Heart of Fright.
+                    playerAcc.HeartofFright++;
+                    Destroy();
+                    break;
+                //case ActorSno._currency_platinum_flippy: //Platinum coin
+                //    playerAcc.Platinum++;
+                //    Destroy();
+                //    break;
                 default:
                     player.Inventory.PickUp(this);
                     break;
@@ -902,7 +976,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
             player.InGameClient.SendMessage(
                 new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull)
-                    { Data = Moneys.Build().ToByteArray() });
+                { Data = Moneys.Build().ToByteArray() });
         }
 
         public virtual void OnRequestUse(Player player, Item target, int actionId, WorldPlace worldPlace)
@@ -1195,7 +1269,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
                 player.InGameClient.SendMessage(
                     new MessageSystem.Message.Definitions.Base.GenericBlobMessage(Opcodes.CurrencyDataFull)
-                        { Data = moneys.Build().ToByteArray() });
+                    { Data = moneys.Build().ToByteArray() });
 
                 player.Inventory.DestroyInventoryItem(this);
                 return;
@@ -1353,7 +1427,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             player.Attributes[GameAttributes.Buff_Icon_Count0, powerId] = activated ? 0 : 1;
             player.Attributes.BroadcastChangedIfRevealed();
             player.Inventory.SendVisualInventory(player);
-            var dbToon = player.Toon.DBToon;
+            var dbToon = player.Toon.DbToon;
             dbToon.WingsActive = player.CurrentWingsPowerId;
             player.World.Game.GameDbSession.SessionUpdate(dbToon);
             return;

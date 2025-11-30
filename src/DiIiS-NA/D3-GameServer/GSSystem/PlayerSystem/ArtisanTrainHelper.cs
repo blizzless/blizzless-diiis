@@ -10,24 +10,34 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem
     {
         private const int maxLevel = 12;
         private static readonly ArtisanType[] canBeTrained = new[] { ArtisanType.Blacksmith, ArtisanType.Jeweler, ArtisanType.Mystic };
+
         private static readonly Dictionary<ArtisanType, string> recipeTemplates = new()
         {
             [ArtisanType.Blacksmith] = "BlackSmith_Train_Level{0}",
             [ArtisanType.Jeweler] = "Jeweler_Train_Level{0}",
             [ArtisanType.Mystic] = "Mystic_Train_Level{0}"
         };
+
         private static readonly Dictionary<ArtisanType, long[]> achievements = new()
         {
             [ArtisanType.Blacksmith] = new[] { 74987243307767, 74987243307768, 74987243307769, 74987251817289 },
             [ArtisanType.Jeweler] = new[] { 74987243307781, 74987243307782, 74987243307783, 74987257153995 },
             [ArtisanType.Mystic] = new[] { 74987253584575, 74987256660015, 74987248802163, 74987251397159 }
         };
+
         private static readonly Dictionary<ArtisanType, long> criteriaForLevel10 = new()
         {
             [ArtisanType.Blacksmith] = 74987249071497,
             [ArtisanType.Jeweler] = 74987245845978,
             [ArtisanType.Mystic] = 74987259424359
         };
+
+        // To'do it's necessary to get the correct Animation for Lvl 11 and 12.
+        // For now I'm just using the Lvl 10 Animation.
+        // fixme no animation level 11
+        // 0x00011600,
+        // fixme no animation level 12
+        // 0x00011610,
         private static readonly int[] animationTags = new[] {
             0x00011500,
             0x00011510,
@@ -38,12 +48,15 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem
             0x00011560,
             0x00011570,
             0x00011580,
-            0x00011590,
-            // fixme no animation
-            0x00011600,
-            // fixme no animation
-            0x00011610,
+            0x00011590
         };
+
+        // To'do it's necessary to get the correct Animation for Lvl 11 and 12.
+        // For now I'm just using the Lvl 10 Animation.
+        // fixme no animation level 11
+        // 0x00011310,
+        // fixme no animation level 12
+        // 0x00011320
         private static readonly int[] idleAnimationTags = new[] {
             0x00011210,
             0x00011220,
@@ -54,22 +67,20 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem
             0x00011270,
             0x00011280,
             0x00011290,
-            0x00011300,
-            // fixme no animation
-            0x00011310,
-            // fixme no animation
-            0x00011320
+            0x00011300
         };
 
-
         private readonly ArtisanType artisanType;
+
         internal ArtisanTrainHelper(DBCraft dBCraft, ArtisanType type)
         {
             if (!canBeTrained.Contains(type))
                 throw new ArgumentException("Unsupported artisan type", nameof(type));
+
             DbRef = dBCraft ?? throw new ArgumentNullException(nameof(dBCraft));
             artisanType = type;
         }
+
         internal DBCraft DbRef { get; }
 
         internal string TrainRecipeName => string.Format(recipeTemplates[artisanType], Math.Min(DbRef.Level, maxLevel - 1));
@@ -85,8 +96,27 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem
 
         internal ulong? Criteria => DbRef.Level == 10 ? (ulong)criteriaForLevel10[artisanType] : null;
 
-        internal int AnimationTag => animationTags[DbRef.Level - 1];
-        internal int IdleAnimationTag => idleAnimationTags[DbRef.Level - 1];
+        internal int AnimationTag
+        {
+            get
+            {
+                if (DbRef.Level >= 10)
+                    return animationTags[9]; // Force to use the LVL 10 Animation.
+
+                return animationTags[DbRef.Level - 1];
+            }
+        }
+
+        internal int IdleAnimationTag
+        {
+            get
+            {
+                if (DbRef.Level >= 10)
+                    return idleAnimationTags[9]; // Force to use the LVL 10 Idle Animation.
+
+                return idleAnimationTags[DbRef.Level - 1];
+            }
+        }
 
         internal int Type => Array.IndexOf(canBeTrained, artisanType);
     }

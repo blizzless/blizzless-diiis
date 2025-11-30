@@ -73,6 +73,12 @@
 			get => GetString(nameof(TimeStampFormat), "dd/MM/yyyy HH:mm:ss");
 			set => Set(nameof(TimeStampFormat), value);
 		}
+		
+		public bool MaximizeWhenEnabled
+		{
+			get => GetBoolean(nameof(MaximizeWhenEnabled), false);
+			set => Set(nameof(MaximizeWhenEnabled), value);
+		}
 
 		public LogTargetConfig(string loggerName) : base(loggerName) { }
 	}

@@ -37,7 +37,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 			{
 				ByteStringPresenceField<D3.OnlineService.EntityId> val = null;
 				if (GameAccount.CurrentToon != null)
-					val = new ByteStringPresenceField<D3.OnlineService.EntityId>(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Account, 1, 0, GameAccount.CurrentToon.D3EntityID);
+					val = new ByteStringPresenceField<D3.OnlineService.EntityId>(FieldKeyHelper.Program.D3, FieldKeyHelper.OriginatingClass.Account, 1, 0, GameAccount.CurrentToon.D3EntityId);
 				else
 				{
 					var Fake = D3.OnlineService.EntityId.CreateBuilder().SetIdHigh(0).SetIdLow(0);

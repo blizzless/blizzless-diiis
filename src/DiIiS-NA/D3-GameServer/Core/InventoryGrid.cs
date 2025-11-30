@@ -281,7 +281,7 @@ namespace DiIiS_NA.GameServer.Core
 				if (EquipmentSlot == 15)
 					ownerPlayer.Inventory.SaveItemToDB(ownerPlayer.Toon.GameAccount.DBGameAccount, null, EquipmentSlotId.Stash, item);
 				else
-					ownerPlayer.Inventory.SaveItemToDB(ownerPlayer.Toon.GameAccount.DBGameAccount, ownerPlayer.Toon.DBToon, EquipmentSlotId.Inventory, item);
+					ownerPlayer.Inventory.SaveItemToDB(ownerPlayer.Toon.GameAccount.DBGameAccount, ownerPlayer.Toon.DbToon, EquipmentSlotId.Inventory, item);
 			}
 		}
 

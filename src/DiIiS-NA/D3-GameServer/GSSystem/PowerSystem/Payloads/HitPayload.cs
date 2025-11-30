@@ -376,7 +376,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						
 						if (Target is Monster monster) 
 						{
-							TotalDamage *= 1 + plr.Attributes[GameAttributes.Damage_Percent_Bonus_Vs_Monster_Type, monster.MonsterType];
+							TotalDamage *= 1 + plr.Attributes[GameAttributes.Damage_Percent_Bonus_Vs_Monster_Type, monster.MonsterTypeValue];
 
 							if (monster.Quality > 0) 
 								TotalDamage *= 1 + plr.Attributes[GameAttributes.Damage_Percent_Bonus_Vs_Elites];

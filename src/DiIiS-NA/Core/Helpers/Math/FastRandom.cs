@@ -219,4 +219,12 @@ namespace DiIiS_NA.Core.Helpers.Math
 		/// <returns></returns>
 		public bool Chance(float successPercentage) => Next(100) < successPercentage;
 	}
+
+	public static class NumberExtensions
+	{
+        public static float ToFloat(this double value, int decimals = 4) => (float)System.Math.Round(value, decimals);
+        public static float ToFloat(this float value, int decimals = 4) => (float)System.Math.Round(value, decimals);
+		public static double ToDouble(this float value, int decimals = 4) => (double)System.Math.Round(value, decimals);
+		public static double ToDouble(this double value, int decimals = 4) => (double)System.Math.Round(value, decimals);
+    }
 }

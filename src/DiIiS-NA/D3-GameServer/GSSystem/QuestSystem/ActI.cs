@@ -244,16 +244,23 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     //AddFollower(this.Game.GetWorld(71150), 4580);
                     Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
                     {
-                        // TODO: CHeck for possible removing outer adding
-                        Game.AddOnLoadWorldAction(WorldSno.trout_town, () =>
+                        if (Game.CurrentQuest == 72095 && Game.CurrentStep is -1 or 7)
                         {
-                            if (Game.CurrentQuest == 72095)
-                                if (Game.CurrentStep == -1 || Game.CurrentStep == 7)
-                                {
-                                    AddFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
-                                }
-                        });
-                        
+                            // var world = Game.GetWorld(WorldSno.trout_town);
+                            // Logger.QuestStep("Adding leah follower");
+                            // // teleport leah
+                            // var actor = world.GetActorBySNO(ActorSno._leah);
+                            // if (actor != null)
+                            // {
+                            //     actor.Teleport(Game.FirstPlayer().Position.Around(2f));
+                            // }
+                            AddUniqueFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
+                        }
+                        else
+                        {
+                            Logger.QuestStep($"Can't add leah follower: {Game.CurrentQuest} / {Game.CurrentStep}");
+                        }
+
                     });
                 }
             });
@@ -265,6 +272,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 49,
                 OnAdvance = () =>
                 { //go to gates
+                    AddUniqueFollower(Game.GetWorld(WorldSno.trout_town), ActorSno._leah);
                     var world = Game.GetWorld(WorldSno.trout_town);
                     StartConversation(world, 166678);
                     ListenProximity(ActorSno._trout_oldtristram_exit_gate, new Advance());
@@ -409,12 +417,16 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 Saveable = true,
                 NextStep = 23,
                 OnAdvance = () =>
-                { //go to church				
+                {
+                    //go to church				
                     var world = Game.GetWorld(WorldSno.trout_town);
                     ListenProximity(ActorSno._trdun_cath_cathedraldoorexterior, new Advance());
                     var leah = world.GetActorBySNO(ActorSno._leah);
                     if (leah != null)
+                    {
                         leah.Hidden = false;
+                        leah.SetVisible(true);
+                    }
                     SetActorVisible(world, ActorSno._tristram_mayor, false);
                     var cart = world.GetActorBySNO(ActorSno._trout_newtristram_blocking_cart, true);
                     if (cart != null)
@@ -482,6 +494,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //go with Cain
                     Game.CurrentEncounter.Activated = false;
+                    
                     StartConversation(Game.GetWorld(WorldSno.trdun_cain_intro), 72496);
                     ListenTeleport(19938, new Advance());
                 }
@@ -504,19 +517,17 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         StartConversation(tristramWorld, 72498);
                     });
                     //StartConversation(this.Game.GetWorld(71150), 72496);
-                    var leah = tristramWorld.GetActorBySNO(ActorSno._leah, true);
-                    if (leah == null)
+                    DestroyFollower(ActorSno._leah);
+
+                    var leah = tristramWorld.GetActorsBySNO(ActorSno._leah);
+                    if (!leah.Any())
                     {
-                        leah = tristramWorld.GetActorBySNO(ActorSno._leah, false);
-                        if (leah != null)
-                        {
-                            leah.Hidden = false;
-                            leah.SetVisible(true);
-                        }
-                        else
-                        {
-                            Logger.Warn($"Leah not found in world {tristramWorld.SNO.ToString()} - quest 72095/step 32");
-                        }
+                        Logger.Warn("Leah not found in world.");
+                    }
+                    foreach (var l in leah)
+                    {
+                        l.Hidden = false;
+                        l.SetVisible(true);
                     }
                     ListenConversation(198617, new Advance());
                 }

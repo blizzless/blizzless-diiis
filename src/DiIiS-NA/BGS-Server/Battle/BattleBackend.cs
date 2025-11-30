@@ -73,9 +73,11 @@ namespace DiIiS_NA.LoginServer.Battle
 			switch (message[0])
 			{
 				case "rngsr":
+					Logger.Info("test");
 					if (GameServers.ContainsKey(ipPort)) GameServers.Remove(ipPort);
 					string rgsIp = args[0];
 					int rgsPort = int.Parse(args[1].Trim());
+					Logger.Info("Range IP {0}:{1}", rgsIp, rgsPort);
 					GameServers.Add(ipPort, new ServerDescriptor { GameIp = rgsIp, GamePort = rgsPort });
 					Logger.Info("Game server was registered for Blizzless {0}:{1}.", rgsIp, rgsPort);
 					break;

@@ -52,7 +52,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				World.SpawnRandomEquip(player, player,
 					FastRandom.Instance.Next(100) < chance ? LootManager.Epic : LootManager.Rare, player.Level);
 
-				var toon = player.Toon.DBToon;
+				var toon = player.Toon.DbToon;
 				toon.ChestsOpened++;
 				World.Game.GameDbSession.SessionUpdate(toon);
 			}

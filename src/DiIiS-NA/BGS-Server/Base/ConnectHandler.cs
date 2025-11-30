@@ -250,6 +250,8 @@ namespace DiIiS_NA.LoginServer.Base
     }
     internal class WebSocketServerProtocolHandshakeHandler : ChannelHandlerAdapter
     {
+        
+        static readonly Logger _logger = LogManager.CreateLogger();
         private readonly string websocketPath;
 
         private readonly string subprotocols;
@@ -290,12 +292,16 @@ namespace DiIiS_NA.LoginServer.Base
             {
                 if (!object.Equals(req.Method, HttpMethod.Get))
                 {
-                    SendHttpResponse(ctx, req, new DefaultFullHttpResponse(HttpVersion.Http11, HttpResponseStatus.Forbidden));
+                    SendHttpResponse(ctx, req,
+                        new DefaultFullHttpResponse(HttpVersion.Http11, HttpResponseStatus.Forbidden));
                     return;
                 }
+
                 //v1.rpc.battle.net
                 //
-                WebSocketServerHandshakerFactory webSocketServerHandshakerFactory = new WebSocketServerHandshakerFactory(GetWebSocketLocation(ctx.Channel.Pipeline, req, websocketPath), subprotocols, allowExtensions, maxFramePayloadSize, allowMaskMismatch);
+                WebSocketServerHandshakerFactory webSocketServerHandshakerFactory =
+                    new WebSocketServerHandshakerFactory(GetWebSocketLocation(ctx.Channel.Pipeline, req, websocketPath),
+                        subprotocols, allowExtensions, maxFramePayloadSize, allowMaskMismatch);
                 WebSocketServerHandshaker handshaker = webSocketServerHandshakerFactory.NewHandshaker(req);
                 if (handshaker == null)
                 {
@@ -303,7 +309,7 @@ namespace DiIiS_NA.LoginServer.Base
                     return;
                 }
 
-                handshaker.HandshakeAsync(ctx.Channel, req).ContinueWith(delegate (Task t)
+                handshaker.HandshakeAsync(ctx.Channel, req).ContinueWith(delegate(Task t)
                 {
                     if (t.Status != TaskStatus.RanToCompletion)
                     {
@@ -311,11 +317,16 @@ namespace DiIiS_NA.LoginServer.Base
                     }
                     else
                     {
-                        ctx.FireUserEventTriggered(new HandshakeHandler.HandshakeComplete(req.Uri, req.Headers, handshaker.SelectedSubprotocol));
+                        ctx.FireUserEventTriggered(new HandshakeHandler.HandshakeComplete(req.Uri, req.Headers,
+                            handshaker.SelectedSubprotocol));
                     }
                 }, TaskContinuationOptions.ExecuteSynchronously);
                 HandshakeHandler.SetHandshaker(ctx.Channel, handshaker);
                 ctx.Channel.Pipeline.Replace(this, "WS403Responder", HandshakeHandler.ForbiddenHttpRequestResponder());
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException(ex, "Handshake failure");
             }
             finally
             {
@@ -344,19 +355,12 @@ namespace DiIiS_NA.LoginServer.Base
 
         private static string GetWebSocketLocation(IChannelPipeline cp, IHttpRequest req, string path)
         {
-            string str = "ws";
-            if (cp.Get<TlsHandler>() != null)
-            {
-                str = "wss";
-            }
+            string protocol = cp.Get<TlsHandler>() != null ? "wss" : "ws";
 
-            string str2 = null;
-            if (req.Headers.TryGet(HttpHeaderNames.Host, out ICharSequence value))
-            {
-                str2 = value.ToString();
-            }
+            // Ignore the Host header and default to a placeholder or IP address
+            string host = "192.168.1.100"; // Replace with your desired default host, e.g., the server's IP or DNS.
 
-            return str + "://" + str2 + path;
+            return $"{protocol}://{host}{path}";
         }
     }
 }

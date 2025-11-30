@@ -16,6 +16,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Net.Security;
 using System.Threading.Tasks;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Text;
@@ -501,10 +503,41 @@ namespace DiIiS_NA.LoginServer.Battle
 		}
 		public void SendMotd()
 		{
-			if (string.IsNullOrWhiteSpace(LoginServerConfig.Instance.Motd) || !LoginServerConfig.Instance.MotdEnabled)
-				return;
-			Logger.Debug($"Motd sent to {Account.BattleTag}.");
-			SendServerWhisper(LoginServerConfig.Instance.Motd);
+			if (LoginServerConfig.Instance.MotdEnabled)
+			{
+				if (LoginServerConfig.Instance.MotdEnabledRemote)
+				{
+					if (string.IsNullOrWhiteSpace(LoginServerConfig.Instance.MotdRemoteUrl))
+					{
+						Logger.Warn("No Motd remote URL defined, falling back to normal motd.");
+					}
+					else
+					{
+						var url = LoginServerConfig.Instance.MotdRemoteUrl.Trim();
+						HttpClient client = new();
+						var post = client.PostAsJsonAsync(url, new
+						{
+							GameAccountId = InGameClient.Player?.Toon?.GameAccountId ?? 0,
+							ToonName = InGameClient.Player?.Toon?.Name ?? string.Empty,
+							WorldGlobalId = InGameClient.Player?.World?.GlobalID ?? 0
+						}).Result;
+						if (post.IsSuccessStatusCode)
+						{
+							var text = post.Content.ReadAsStringAsync().Result;
+							SendServerWhisper(text);
+							Logger.Info("Remote Motd sent successfully.");
+							return;
+						}
+
+						Logger.Warn("Could not POST to $[red]$" + url + "$[/]$. Please ensure the URL is correct. Falling back to normal MotD if available.");
+					}
+				}
+				if (!string.IsNullOrWhiteSpace(LoginServerConfig.Instance.Motd))
+				{
+					Logger.Debug($"Motd sent to {Account.BattleTag}.");
+					SendServerWhisper(LoginServerConfig.Instance.Motd);
+				}
+			}
 		}
 
         public override void ChannelInactive(IChannelHandlerContext context)

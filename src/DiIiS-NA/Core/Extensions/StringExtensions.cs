@@ -44,15 +44,15 @@ namespace DiIiS_NA.Core.Extensions
 				byteArray[indexBA++] = (byte)item;
 			}
 
-			System.IO.MemoryStream ms = new System.IO.MemoryStream(byteArray);
-			System.IO.Compression.GZipStream sr = new System.IO.Compression.GZipStream(ms,
+			System.IO.MemoryStream ms = new(byteArray);
+			System.IO.Compression.GZipStream sr = new(ms,
 				System.IO.Compression.CompressionMode.Decompress);
 
 			byteArray = new byte[byteArray.Length];
 
 			int rByte = sr.Read(byteArray, 0, byteArray.Length);
 
-			System.Text.StringBuilder sB = new System.Text.StringBuilder(rByte);
+			System.Text.StringBuilder sB = new(rByte);
 			for (int i = 0; i < rByte; i++)
 			{
 				sB.Append((char)byteArray[i]);

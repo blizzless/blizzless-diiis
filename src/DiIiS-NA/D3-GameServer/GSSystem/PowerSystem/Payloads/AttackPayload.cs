@@ -16,7 +16,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 
 		// list of targets to try and hit with this payload, must be set before calling Apply()
 		public TargetList Targets;
-		public float chcBonus = 0f;
+		public float ChcBonus = 0f;
 
 		// list of each amount and type of damage the attack will contain
 		public class DamageEntry
@@ -115,7 +115,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				if (target == null || target.World == null || target.World != null && target.World.PowerManager.IsDeletingActor(target))
 					continue;
 
-				var payload = new HitPayload(this, _DoCriticalHit(Context.User, target, chcBonus)
+				var payload = new HitPayload(this, _DoCriticalHit(Context.User, target, ChcBonus)
 					, target);
 				payload.AutomaticHitEffects = AutomaticHitEffects;
 				payload.OnDeath = OnDeath;

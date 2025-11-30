@@ -11,6 +11,7 @@
     <StartupObject>DiIiS_NA.Program</StartupObject>
     <DebugType>full</DebugType>
     <Configurations>Debug;Release;github</Configurations>
+    <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -117,6 +118,9 @@
 		</None>
 		<None Update="DiIiS_Battle.net.p12">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="config.mods.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 

@@ -47,7 +47,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem
 
 		public virtual void Update(int tickCounter)
 		{
-			if (State == BrainState.Dead || Body == null || Body.World == null || State == BrainState.Off)
+			if (State == BrainState.Dead || Body?.World == null || State == BrainState.Off)
 				return;
 
 			Think(tickCounter); // let the brain think.

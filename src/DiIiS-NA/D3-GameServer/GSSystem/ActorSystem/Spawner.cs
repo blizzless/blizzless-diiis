@@ -7,6 +7,7 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.GSSystem.MapSystem;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
+using System;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 {
@@ -48,9 +49,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		protected override void QuestProgress()
 		{
 			if (SNO == ActorSno._spawner_zolt_centerpiece) return;
-			//Spawn if this is spawner
-			try
-			{
+
+            ActorToSpawnSNO = new SNOHandle(SNOGroup.Actor, (int)SNO);
+
+            //Spawn if this is spawner
+            try
+            {
 				if (World.Game.QuestManager.IsInQuestRange(_questRange) && !triggered)
 				{
 					Spawn();
@@ -74,7 +78,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		{
 			
 			triggered = true;
-			if (ActorToSpawnSNO == null)
+            if (ActorToSpawnSNO == null)
 			{
 				Logger.Trace("Triggered spawner with no ActorToSpawnSNO found.");
 				//Try revealing this

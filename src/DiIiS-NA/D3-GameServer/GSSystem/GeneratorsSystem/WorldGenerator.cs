@@ -2295,7 +2295,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 						}
 					}
 
-				if (gizmoLocations.Count > 0 && world.Game.MonsterLevel >= Program.MaxLevel && FastRandom.Instance.Next(100) < 30)
+				if (gizmoLocations.Count > 0 && world.Game.MonsterLevel >= Program.MAX_LEVEL && FastRandom.Instance.Next(100) < 30)
 				{
 					var handleChest = new SNOHandle(96993); //leg chest
 					if (handleChest == null) continue;

@@ -18,6 +18,7 @@ using DiIiS_NA.GameServer.Core.Types.TagMap;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.LoginServer.Toons;
 using DiIiS_NA.Core.Helpers.Math;
+using DiIiS_NA.D3_GameServer;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
@@ -1358,8 +1359,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		private static void RandomSetUnidentified(Item item) => item.Unidentified = 
 			FastRandom.Instance.Chance(item.Name.Contains("unique", StringComparison.InvariantCultureIgnoreCase) 
 			|| item.ItemDefinition.Quality is ItemTable.ItemQuality.Legendary or ItemTable.ItemQuality.Special or ItemTable.ItemQuality.Set 
-			? GameServerConfig.Instance.ChanceHighQualityUnidentified 
-			: GameServerConfig.Instance.ChanceNormalUnidentified);
+			? GameModsConfig.Instance.Items.UnidentifiedDropChances.HighQuality 
+			: GameModsConfig.Instance.Items.UnidentifiedDropChances.NormalQuality);
 
 		// Allows cooking a custom item.
 		public static Item Cook(Player player, string name)

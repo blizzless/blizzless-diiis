@@ -24,6 +24,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using DiIiS_NA.D3_GameServer;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
 
 namespace DiIiS_NA.GameServer.GSSystem.MapSystem
@@ -245,10 +246,10 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 						{
 							var path = Path.GetFileName(filePath);
 							Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
-							continue;	
+							continue;
 						}
 						var actor = ActorFactory.Create(World, (ActorSno)marker.SNOHandle.Id, marker.TagMap); // try to create it.
-																										 //Logger.Debug("not-lazy spawned {0}", actor.GetType().Name);
+																											  //Logger.Debug("not-lazy spawned {0}", actor.GetType().Name);
 						if (actor == null) continue;
 						if (World.SNO == WorldSno.a3_battlefields_02 && SceneSNO.Id == 145392 && actor is StartingPoint) continue; //arreat crater hack
 						if (World.SNO == WorldSno.x1_westm_intro && SceneSNO.Id == 311310 && actor is StartingPoint) continue; //A5 start location hack
@@ -266,22 +267,22 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 						{
 							//Logger.Warn("load Encounter marker {0} in {1} ({2})", marker.Name, markerSetData.FileName, marker.SNOHandle.Id);
 							var encounter = marker.SNOHandle.Target as Encounter;
-							var actorsno = RandomHelper.RandomItem(encounter.Spawnoptions, x => x.Probability);
-							/*foreach (var option in encounter.Spawnoptions)
-							{
-								Logger.Trace("Encounter option {0} - {1} - {2} - {3}", option.SNOSpawn, option.Probability, option.I1, option.I2);
-							}*/ //only for debugging purposes
-							if ((ActorSno)actorsno.SNOSpawn == ActorSno.__NONE)
-							{
-								var path = Path.GetFileName(filePath);
-								Logger.Trace($"$[underline red on white]$Actor asset not found$[/]$, Method: $[olive]${memberName}()$[/]$ - $[underline white]${memberName}() in {path}:{lineNumber}$[/]$");
-								continue;	
-							}
-							
-							var actor2 = ActorFactory.Create(World, (ActorSno)actorsno.SNOSpawn, marker.TagMap); // try to create it.
-							if (actor2 == null) continue;
 
-							var position2 = marker.PRTransform.Vector3D + Position; // calculate the position for the actor.
+							var selected = RandomHelper.RandomItem(encounter.Spawnoptions, x => x.Probability);
+
+                            // Ignores invalid/non-existent spawns.
+                            if ((ActorSno)selected.SNOSpawn == ActorSno.__NONE) continue;
+
+                            if (!MPQStorage.Data.Assets[SNOGroup.Actor].ContainsKey(selected.SNOSpawn))
+                            {
+                                Logger.Debug($"[Encounter] Ignorando SNO {selected.SNOSpawn} (sem asset)");
+                                continue;
+                            }
+
+                            var actor2 = ActorFactory.Create(World, (ActorSno)selected.SNOSpawn, marker.TagMap);
+                            if (actor2 == null) continue;
+
+                            var position2 = marker.PRTransform.Vector3D + Position; // calculate the position for the actor.
 							actor2.RotationW = marker.PRTransform.Quaternion.W;
 							actor2.RotationAxis = marker.PRTransform.Quaternion.Vector3D;
 							actor2.AdjustPosition = false;
@@ -398,7 +399,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				if (player.EventWeatherEnabled)
 					//message.SceneSpec.SNOWeather = 50549; //Halloween
 					message.SceneSpec.SNOWeather = 75198; //New Year
-				
+
 				player.InGameClient.SendMessage(message);// reveal the scene itself.
 				player.InGameClient.SendMessage(MapRevealMessage(player));
 
@@ -527,10 +528,10 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 		public MapRevealSceneMessage MapRevealMessage(Player plr)
 		{
 			if (SceneSNO.Id is 1904 or 33342 or 33343 or 33347 or 33348 or 33349 or 414798 or 161516 or 161510 or 185542
-			    or 161507 or 161513 or 185545 or 172892 or 172880 or 172868 or 172888 or 172876 or 172863 or 172884
-			    or 172872 or 172908 or 183555 or 183556 or 183557 or 183502 or 183505 or 183557 or 183519 or 183545
-			    or 183553 or 315706 or 311307 or 311295 or 313849 or 311316 or 313845 or 315710 or 311310 or 311298
-			    or 313853 or 311313 or 311301 or 313857
+				or 161507 or 161513 or 185545 or 172892 or 172880 or 172868 or 172888 or 172876 or 172863 or 172884
+				or 172872 or 172908 or 183555 or 183556 or 183557 or 183502 or 183505 or 183557 or 183519 or 183545
+				or 183553 or 315706 or 311307 or 311295 or 313849 or 311316 or 313845 or 315710 or 311310 or 311298
+				or 313853 or 311313 or 311301 or 313857
 			   )
 			{
 				return new MapRevealSceneMessage
@@ -549,7 +550,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 				SceneSNO = SceneSNO.Id,
 				Transform = Transform,
 				WorldID = World.GlobalID,
-				MiniMapVisibility = GameServerConfig.Instance.ForceMinimapVisibility
+				MiniMapVisibility = GameModsConfig.Instance.Minimap.ForceVisibility
 			};
 		}
 

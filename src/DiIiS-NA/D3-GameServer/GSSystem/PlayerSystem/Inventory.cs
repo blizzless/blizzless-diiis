@@ -1,28 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.Helpers.Math;
-using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ;
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
+using DiIiS_NA.GameServer.ClientSystem;
+using DiIiS_NA.GameServer.Core;
 using DiIiS_NA.GameServer.Core.Types.SNO;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations;
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
+using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
+using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 using DiIiS_NA.GameServer.MessageSystem;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Inventory;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.ACD;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Artisan;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
-using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
-using DiIiS_NA.GameServer.Core;
-using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
-using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
-using DiIiS_NA.GameServer.ClientSystem;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Base;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Effect;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Inventory;
+using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Misc;
+using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
+using DiIiS_NA.LoginServer.AccountsSystem;
+using Discord;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using static DiIiS_NA.Core.MPQ.FileFormats.GameBalance;
-using DiIiS_NA.Core.Extensions;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 {
@@ -98,21 +102,29 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			return _buybackGrid;
 		}
 
-		public bool HaveEnough(int GBid, int count)
+		public bool HaveEnough(int gBid, int count, Player? player = null)
 		{
-			return (_inventoryGrid.TotalItemCount(GBid) + _stashGrid.TotalItemCount(GBid)) >= count;
+            // 2087837753 = Death's Breath -> AKA: CraftItem4 _crafting_looted_reagent_05.
+            if (player != null && gBid == 2087837753)
+            {
+                var playerAcc = player.InGameClient.BnetClient.Account.GameAccount;
+                return playerAcc.CraftItem4 > count;
+            }
+
+            return (_inventoryGrid.TotalItemCount(gBid) + _stashGrid.TotalItemCount(gBid)) >= count;
 		}
 
-		public void GrabSomeItems(int GBid, int count)
+		public void GrabSomeItems(int gBid, int count)
 		{
-			if (_inventoryGrid.HaveEnough(GBid, count))
-				_inventoryGrid.GrabSomeItems(GBid, count);
+
+            if (_inventoryGrid.HaveEnough(gBid, count))
+				_inventoryGrid.GrabSomeItems(gBid, count);
 			else
 			{
-				int inBag = _inventoryGrid.TotalItemCount(GBid);
-				_inventoryGrid.GrabSomeItems(GBid, inBag);
+				int inBag = _inventoryGrid.TotalItemCount(gBid);
+				_inventoryGrid.GrabSomeItems(gBid, inBag);
 				count -= inBag;
-				_stashGrid.GrabSomeItems(GBid, count);
+				_stashGrid.GrabSomeItems(gBid, count);
 			}
 		}
 
@@ -582,7 +594,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 											ChangeItemLocationDB(old_x, old_y + 1, addedItem);
 											destGrid.PlaceItem(addedItem, old_y + 1, old_x);
 										}
-									};
+									}
+									;
 								}
 								else
 								{
@@ -1043,7 +1056,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			item.Owner = _owner;
 
 			InventoryGrid targetGrid = (msg.InvLoc.EquipmentSlot == (int)EquipmentSlotId.Stash) ? _stashGrid : _inventoryGrid;
-			SaveItemToDB(_owner.Toon.GameAccount.DBGameAccount, _owner.Toon.DBToon, EquipmentSlotId.Inventory, item);
+			SaveItemToDB(_owner.Toon.GameAccount.DBGameAccount, _owner.Toon.DbToon, EquipmentSlotId.Inventory, item);
 			ChangeItemLocationDB(msg.InvLoc.Column, msg.InvLoc.Row, item);
 			item.UpdateStackCount(amount);
 			targetGrid.PlaceItem(item, msg.InvLoc.Row, msg.InvLoc.Column);
@@ -1198,12 +1211,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				(a.OverrideLevelReq <= Item.ItemDefinition.RequiredLevel)
 				);
 
-			if (!ReloadAffix.Definition.Name.Contains("Secondary")) filteredList = filteredList.Where( a => !a.Name.Contains("Secondary") );
+			if (!ReloadAffix.Definition.Name.Contains("Secondary")) filteredList = filteredList.Where(a => !a.Name.Contains("Secondary"));
 			if (!ReloadAffix.Definition.Name.Contains("Experience")) filteredList = filteredList.Where(a => !a.Name.Contains("Experience"));
 			if (!ReloadAffix.Definition.Name.Contains("Archon")) filteredList = filteredList.Where(a => !a.Name.Contains("Archon"));
 			// FIXME: always true?
 			if (ReloadAffix.Definition.Hash == ReloadAffix.Definition.Hash) filteredList = filteredList.Where(a => a.Hash != ReloadAffix.Definition.Hash);
-			if (Item.GBHandle.GBID == -4139386) filteredList = filteredList.Where( a => !a.Name.Contains("Str") && !a.Name.Contains("Dex") && !a.Name.Contains("Int") && !a.Name.Contains("Vit" ));
+			if (Item.GBHandle.GBID == -4139386) filteredList = filteredList.Where(a => !a.Name.Contains("Str") && !a.Name.Contains("Dex") && !a.Name.Contains("Int") && !a.Name.Contains("Vit"));
 
 			Dictionary<int, AffixTable> bestDefinitions = new Dictionary<int, AffixTable>();
 
@@ -1260,7 +1273,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 							if (ReloadAffix.Definition.Name.Contains("Bracer"))
 								result = (float)FastRandom.Instance.Next(1, 3);
 						}
-						
+
 						if (GameAttributes.Attributes[effect.AttributeId] is GameAttributeF)
 						{
 							var attr = GameAttributes.Attributes[effect.AttributeId] as GameAttributeF;
@@ -1286,7 +1299,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			foreach (var def in selectedGroups)
 			{
-				if (def != null) 
+				if (def != null)
 				{
 					List<float> Scores = new List<float>();
 					foreach (var effect in def.AttributeSpecifier)
@@ -1300,7 +1313,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 							if (Item.RandomGenerator == null)
 								Item.RandomGenerator = new ItemRandomHelper(Item.Attributes[GameAttributes.Seed]);
-							
+
 							if (FormulaScript.Evaluate(effect.Formula.ToArray(), Item.RandomGenerator, out result, out minValue, out maxValue))
 							{
 								if (effect.AttributeId == 369) continue; //Durability_Max
@@ -1364,13 +1377,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 						Field1 = (Item.Unidentified ? 0x00000002 : 0x00000001),
 						aAffixGBIDs = affixGbis,
 					});
-					
+
 					//*/
 				}
 			}
 			#endregion
 			_owner.GrantCriteria(74987255495718);
-			
+
 		}
 		private void OnTrySalvageAllMessage(TrySalvageAllMessage msg)
 		{
@@ -1379,7 +1392,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			int count_reward = 0;
 			switch (msg.SalvageType)
 			{
-				
+
 				// Simple items
 				case 0:
 					foreach (var item in GetBackPackItems())
@@ -1549,7 +1562,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				return;
 			Logger.Warn("Identifying items not implemented yet");
 		}
-		
+
 		private void OnInventoryUseIdentifyItemMessage(InventoryUseIdentifyItemMessage msg)
 		{
 			var item = GetItemByDynId(_owner, msg.ItemID);
@@ -1557,14 +1570,15 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				return;
 
 			int idDuration = 60;
-			_owner.StartCasting(idDuration, new Action(() => {
+			_owner.StartCasting(idDuration, new Action(() =>
+			{
 				item.Identify();
 			}));
 		}
 		//*
 		private void OnTrySalvageMessage(TrySalvageMessage msg)
 		{
-			
+
 			var item = GetItemByDynId(_owner, msg.ActorID);
 			if (item == null)
 				return;
@@ -1633,8 +1647,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			_inventoryGrid.RemoveItem(item);
 			item.Unreveal(_owner);
-			
-			
+
+
 			bool haveBrimstone = false;
 			Item brimstone = null;
 			if (item.Attributes[GameAttributes.Item_Quality_Level] > 8 || FastRandom.Instance.Next(1, 1000) == 1)
@@ -1656,9 +1670,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				gbidOriginalItem = item.GBHandle.GBID,
 				IQLOriginalItem = Math.Min(item.Attributes[GameAttributes.Item_Quality_Level], 9),
 				MaterialsResults = haveBrimstone ? 2 : 1,
-				gbidNewItems = new int[] { reward.GBHandle.GBID, haveBrimstone ? brimstone.GBHandle.GBID : -1, -1, -1 }, 
+				gbidNewItems = new int[] { reward.GBHandle.GBID, haveBrimstone ? brimstone.GBHandle.GBID : -1, -1, -1 },
 				MaterialsCounts = new int[] { count_reward, haveBrimstone ? 1 : 0, 0, 0 }
-				
+
 			});
 
 			UpdateCurrencies();
@@ -1707,13 +1721,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (GetGoldAmount() < recipeDefinition.Gold) return;
 			bool haveEnoughIngredients = true;
 
-			foreach (var ingr in recipeDefinition.Ingredients) 
+			foreach (var ingr in recipeDefinition.Ingredients)
 			{
 				if (ingr.ItemsGBID == -1 || ingr.ItemsGBID == 0) continue;
 				switch (ingr.ItemsGBID)
 				{
 					case -363607620: // Common parts.
-						if(_owner.Toon.GameAccount.CraftItem1 < ingr.Count)
+						if (_owner.Toon.GameAccount.CraftItem1 < ingr.Count)
 							haveEnoughIngredients = false;
 						break;
 					case -1585802162: // Wizard Dust.
@@ -1754,7 +1768,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 									_stashGrid.RemoveItem(item);
 									item.Unreveal(item.Owner as Player);
 								}
-								else if(item.Attributes[GameAttributes.ItemStackQuantityLo] > ingr.Count)
+								else if (item.Attributes[GameAttributes.ItemStackQuantityLo] > ingr.Count)
 								{
 									item.Attributes[GameAttributes.ItemStackQuantityLo] -= ingr.Count;
 									item.Attributes.BroadcastChangedIfRevealed();
@@ -1773,13 +1787,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				switch (ingr.ItemsGBID)
 				{
 					case -363607620: // Common parts.
-							_owner.Toon.GameAccount.CraftItem1 -= ingr.Count;
+						_owner.Toon.GameAccount.CraftItem1 -= ingr.Count;
 						break;
 					case -1585802162: // Wizard Dust.
-							_owner.Toon.GameAccount.CraftItem2 -= ingr.Count;
+						_owner.Toon.GameAccount.CraftItem2 -= ingr.Count;
 						break;
 					case -605947593: // Blurred Crystal.
-							_owner.Toon.GameAccount.CraftItem3 -= ingr.Count;
+						_owner.Toon.GameAccount.CraftItem3 -= ingr.Count;
 						break;
 				}
 			}
@@ -1800,7 +1814,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 				}
 				//else
 				if (!(recipeDefinition.Name.StartsWith("T12_") || recipeDefinition.Name.StartsWith("T11_")))
-					reward.Attributes[GameAttributes.Item_Quality_Level] = Math.Min(recipe.ItemSpecifierData.AdditionalRandomAffixes + 2 , 9);
+					reward.Attributes[GameAttributes.Item_Quality_Level] = Math.Min(recipe.ItemSpecifierData.AdditionalRandomAffixes + 2, 9);
 				if (reward.Attributes[GameAttributes.Item_Quality_Level] < 9)
 				{
 					AffixGenerator.Generate(reward, recipe.ItemSpecifierData.AdditionalRandomAffixes, true);
@@ -1925,7 +1939,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (reward.Attributes[GameAttributes.ItemStackQuantityLo] > 0)
 				_inventoryGrid.AddItem(reward);
 			client.SendMessage(new CraftingResultsMessage { annItem = reward.GlobalID, GBIDItem = recipe.ItemSpecifierData.ItemGBId, IQL = reward.Attributes[GameAttributes.Item_Quality_Level] });
-			
+
 
 			UpdateCurrencies();
 		}
@@ -2228,7 +2242,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			return _equipment.GetOffHand();
 		}
 
-		
+
 
 		public void AddGoldAmount(int amount, bool immediately = true)
 		{
@@ -2318,7 +2332,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 
 			D3.Items.CurrencyData craft7Data = D3.Items.CurrencyData.CreateBuilder().SetId(20).SetCount(playerAcc.BigPortalKey).Build();      // KeyStone Greater Rift.
 
-			D3.Items.CurrencyData[] consumables = {goldData, bloodShardData, platinumData, craft1Data, craft2Data, craft3Data, craft4Data, craft5Data, craft7Data, horadric1Data, horadric2Data, horadric3Data, horadric4Data, horadric5Data, craft8Data, craft9Data, craft10Data, craft11Data};
+			D3.Items.CurrencyData[] consumables = {
+				goldData, bloodShardData, platinumData, craft1Data,
+				craft2Data, craft3Data, craft4Data, craft5Data, craft7Data,
+				horadric1Data, horadric2Data, horadric3Data, horadric4Data,
+				horadric5Data, craft8Data, craft9Data, craft10Data, craft11Data
+			};
 
 			foreach (var consumable in consumables)
 			{
@@ -2404,7 +2423,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			_owner.SetAttributesByParagon();
 			CheckWeapons();
 			_owner.Attributes.BroadcastChangedIfRevealed();
-			Task.Delay(3000).ContinueWith((t) => {
+			Task.Delay(3000).ContinueWith((t) =>
+			{
 				try
 				{
 					_owner.CheckBonusSets();
@@ -2421,7 +2441,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			_inventoryGold.Owner = _owner;
 			_inventoryGold.SetInventoryLocation((int)EquipmentSlotId.Gold, 0, 0);
 			_inventoryGold.Attributes.SendChangedMessage(_owner.InGameClient);
-			
+
 			//this.inventoryPotion = ItemGenerator.CreateItem(this._owner, ItemGenerator.GetItemDefinition(DiIiS_NA.Core.Helpers.Hash.StringHashHelper.HashItemName("HealthPotionBottomless")));
 			//this.inventoryPotion.Owner = _owner;
 			//this.inventoryPotion.SetInventoryLocation((int)EquipmentSlotId.Inventory, 0, 0);
@@ -2579,7 +2599,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem
 			if (slotId == 15)
 				item.DBInventory.DBToon = null;
 			else
-				item.DBInventory.DBToon = (_owner as Player).Toon.DBToon;
+				item.DBInventory.DBToon = (_owner as Player).Toon.DbToon;
 
 			item.Owner.World.Game.GameDbSession.SessionUpdate(item.DBInventory);
 			//Logger.Debug("ChangeItemSlotDB success, item dbid: {0}", item.DBInventory.Id);

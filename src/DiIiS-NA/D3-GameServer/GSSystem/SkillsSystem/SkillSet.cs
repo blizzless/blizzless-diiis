@@ -26,7 +26,7 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 			ToonClass = toonClass;
 			Player = player;
 			// var dbToon = player.Toon.DBToon;
-			var dbActiveSkills = player.Toon.DBActiveSkills;
+			var dbActiveSkills = player.Toon.DbActiveSkills;
 			ActiveSkills = new ActiveSkillSavedData[6]
 			{
 				new()
@@ -82,7 +82,7 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 		public void UpdateSkills(int hotBarIndex, int SNOSkill, int SNORune, Toon toon)
 		{
 			Logger.MethodTrace(string.Format("Update index {0} skill {1} rune {2}", hotBarIndex, SNOSkill, SNORune));
-			var dbActiveSkills = Player.Toon.DBActiveSkills;
+			var dbActiveSkills = Player.Toon.DbActiveSkills;
 			switch (hotBarIndex)
 			{
 				case 0:
@@ -127,7 +127,7 @@ namespace DiIiS_NA.GameServer.GSSystem.SkillsSystem
 		public void UpdatePassiveSkills(Toon toon)
 		{
 			Logger.Debug("Update passive to {0} {1} {2} {3}", PassiveSkills[0], PassiveSkills[1], PassiveSkills[2], PassiveSkills[3]);
-			var dbActiveSkills = Player.Toon.DBActiveSkills;
+			var dbActiveSkills = Player.Toon.DbActiveSkills;
 			dbActiveSkills.Passive0 = PassiveSkills[0];
 			dbActiveSkills.Passive1 = PassiveSkills[1];
 			dbActiveSkills.Passive2 = PassiveSkills[2];
