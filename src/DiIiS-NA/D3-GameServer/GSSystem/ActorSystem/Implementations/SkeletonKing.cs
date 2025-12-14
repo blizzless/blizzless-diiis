@@ -31,8 +31,8 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations
                 Logger.Trace("Applying $[red bold]$Skeleton King (Leoric)$[/]$ balance adjustments $[blue]$(Balance > SkeletonKingBalanceEnabled)$[/]$.");
                 Attributes[GameAttributes.Hitpoints_Cur] /= BalanceConfig.Instance.SkeletonKingHealthDivider;
                 Attributes[GameAttributes.Hitpoints_Max] /= BalanceConfig.Instance.SkeletonKingHealthDivider;
-                Attributes[GameAttributes.DamageCap_Percent] = BalanceConfig.Instance.SkeletonKingDamageCapPercentage;
-                Attributes[GameAttributes.Crit_Damage_Cap] = BalanceConfig.Instance.SkeletonKingDamageCapPercentage;
+                Attributes[GameAttributes.DamageCap_Percent] /= BalanceConfig.Instance.SkeletonKingDamageCapPercentage;
+                Attributes[GameAttributes.Crit_Damage_Cap] /= BalanceConfig.Instance.SkeletonKingDamageCapPercentage;
             }
         }
 
