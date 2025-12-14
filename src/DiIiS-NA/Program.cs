@@ -81,12 +81,24 @@ namespace DiIiS_NA
             RightTextRule($"[deepskyblue3]{TypeBuild}[/]", "steelblue1_1");
             RightTextRule($"Diablo III [red]RoS 2.7.4.84161[/] - {Url("https://github.com/blizzless/blizzless-diiis")}",
                 "red");
+
+            // closes all agents from Battle.NET and preventing a gamefile change in local development.
             if (GameServerConfig.Instance.IsLocalDev)
             {
-                AnsiConsole.MarkupLine("");
                 CloseAgents();
             }
 
+        }
+
+        /// <summary>
+        /// Closes all agents of battle.net before starting.
+        /// </summary>
+        static void CloseAgents()
+        {
+            AnsiConsole.MarkupLine($"[yellow bold underline](Local Dev)[/] [yellow]Closing [/][blue bold]Battle[/].[blue]NET[/] processes:");
+
+            CloseProcess("Battle.net.exe");
+            CloseProcess("Agent.exe");
         }
 
         /// <summary>
@@ -95,16 +107,12 @@ namespace DiIiS_NA
         /// </summary>
         static void CloseProcess(string processBinary)
         {
-            Process taskkill = Process.Start(new ProcessStartInfo("TASKKILL.exe", $"/IM {processBinary}.exe /F"));
+            if (!processBinary.ToLower().EndsWith(".exe")) processBinary += ".exe";
+            AnsiConsole.MarkupLine($" -> [yellow bold underline](Local Dev)[/] [yellow]Closing [/][blue bold]Battle[/].[blue]NET[/] [yellow]process[/] [yellow italic](if opened)[/][yellow]:[/] [orange1]{processBinary}[/][yellow]...[/]");
+            Process taskkill = Process.Start(new ProcessStartInfo("TASKKILL.exe", $"/IM {processBinary} /F") { RedirectStandardOutput = false, RedirectStandardError = false, UseShellExecute = true});
             taskkill?.WaitForExit();
         }
-        /// <summary>
-        /// Closes all agents of battle.net before starting.
-        /// </summary>
-        static void CloseAgents()
-        {
-            //CloseProcess("Agent.exe");
-        }
+
         static async Task StartAsync(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;

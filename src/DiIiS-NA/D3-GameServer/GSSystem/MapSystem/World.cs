@@ -31,6 +31,7 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.World;
 using DiIiS_NA.GameServer.MessageSystem.Message.Fields;
 using DiIiS_NA.LoginServer.Toons;
 using DiIiS_NA.Utilities;
+using NHibernate.Cfg.XmlHbmBinding;
 using Actor = DiIiS_NA.GameServer.GSSystem.ActorSystem.Actor;
 using Circle = DiIiS_NA.GameServer.Core.Types.Misc.Circle;
 using Environment = DiIiS_NA.Core.MPQ.FileFormats.Environment;
@@ -249,17 +250,23 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			}
 		}
 
-		#region update & tick logic
+        #region update & tick logic
 
-		/// <summary>
-		/// Retrieve all portals located within a specified <param name="radius"/> of the given <param name="actor"/>.
-		/// </summary>
-		/// <param name="actor">The actor located near the portals</param>
-		/// <param name="radius">The radius of the portals to be returned is to be specified.</param>
-		/// <returns>Order all existing portals in the world by ascending distance from a specified <param name="actor"></param>.</returns>
-		/// <exception cref="ArgumentNullException">If <param name="actor"></param> is null.</exception>
-		/// <exception cref="ArgumentOutOfRangeException">If <param name="radius"></param> is not null but lesser than 0.</exception>
-		public ImmutableArray<Portal> GetPortals(Actor actor, float? radius = null)
+        public ImmutableArray<Portal> GetPortals(ActorSno actor)
+        {
+            var portals = this.GetPortalsBySNO(actor);
+            return portals.ToImmutableArray();
+        }
+
+        /// <summary>
+        /// Retrieve all portals located within a specified <param name="radius"/> of the given <param name="actor"/>.
+        /// </summary>
+        /// <param name="actor">The actor located near the portals</param>
+        /// <param name="radius">The radius of the portals to be returned is to be specified.</param>
+        /// <returns>Order all existing portals in the world by ascending distance from a specified <param name="actor"></param>.</returns>
+        /// <exception cref="ArgumentNullException">If <param name="actor"></param> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">If <param name="radius"></param> is not null but lesser than 0.</exception>
+        public ImmutableArray<Portal> GetPortals(Actor actor, float? radius = null)
 		{
 			if (actor == null)
 				throw new ArgumentNullException(nameof(actor));
@@ -269,26 +276,29 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
                     throw new ArgumentOutOfRangeException(nameof(radius), "Radius must be greater than zero.");
                 case { } r:
                     Logger.MethodTrace(
-                        $"All portals near {(actor.SNO + actor.GetType().Name).Markup().Underline()}) within {r.Markup().Underline()} radius");
+                        $"All portals near {(actor + actor.GetType().Name).Markup().Underline()}) within {r.Markup().Underline()} radius");
                     break;
                 default:
                     Logger.MethodTrace($"All portals near {actor.SNO.Markup().Underline()} ({actor.GetType().Name.Markup().Underline()})");
                     break;
             }
 
-            return Portals
+            return Actors
+                .Where(portal => portal is Portal)
 				.Where(portal =>
 				{
 					if (radius is not { } r) return true;
 					var position = actor.Position;
-					var distance = portal.Position.DistanceSquared(ref position);
+					var distance = portal.Value.Position.Distance(position);
 					return distance <= radius.Value;
 				})
 				.OrderBy(s =>
 				{
 					var position = actor.Position;
-					return s.Position.DistanceSquared(ref position);
+					return s.Value.Position.Distance(position);
 				})
+                .Select(s=>s.Value)
+                .Cast<Portal>()
 				.ToImmutableArray();
 		}
 
@@ -1031,14 +1041,18 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 			}
 			return portals;
 		}
-		/// <summary>
-		/// Returns all actors matching one of SNOs
-		/// </summary>
-		/// <param name="sno"></param>
-		/// <returns></returns>
-		public List<Actor> GetActorsBySNO(params ActorSno[] sno)
+        /// <summary>
+        /// Returns all actors matching one of SNOs
+        /// </summary>
+        /// <param name="sno"></param>
+        /// <returns></returns>
+        public List<Actor> GetActorsBySNO(params ActorSno[] sno)
         {
-			return Actors.Values.Where(x => sno.Contains(x.SNO)).ToList();
+            return Actors.Values.Where(x => sno.Contains(x.SNO)).ToList();
+        }
+        public List<Portal> GetPortalsBySNO(params ActorSno[] sno)
+        {
+            return Actors.Values.Where(x => sno.Contains(x.SNO) && x is Portal).Cast<Portal>().ToList();
         }
 
         public static Func<Actor, bool> WhereSceneId(int id) => s => s.CurrentScene.SceneSNO.Id == id;
@@ -1659,6 +1673,13 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
         /// <returns>Enumerable of doors matching SNO, ordered by ascending distance.</returns>
         public IEnumerable<Door> GetDoors(ActorSno sno, Vector3D distanceFrom) =>
             GetDoorsFiltered(sno: sno, distanceFrom: distanceFrom);
+        /// <summary>
+        /// Gets all doors of a specific SNO.
+        /// </summary>
+        /// <param name="sno">SNO of doors to retrieve.</param>
+        /// <returns>Enumerable of doors matching SNO, ordered by ascending distance.</returns>
+        public IEnumerable<Door> GetDoors(ActorSno sno) =>
+            GetDoorsFiltered(sno: sno);
 
         /// <summary>
         /// Gets all doors within a specified radius, ordered by distance.

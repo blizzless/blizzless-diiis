@@ -1039,6 +1039,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
                         script = new SpawnSkeletons();
                         script.Execute(Game.GetWorld(WorldSno.a1trdun_king_level08));
+                        var doors = world.GetDoors(ActorSno._trdun_cath_gate_b_skeletonking);
+                        foreach (var door in doors)
+                        {
+                            door.SetUsable(true);
+                            door.Open();
+                        }
+
                     });
 
                     ListenKill(ActorSno._skeletonking_shield_skeleton, 1, new Advance());
@@ -1058,7 +1065,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                         if (world.Players.Any() && world.FirstPlayer is {} firstPlayer)
                         {
                             var portal = world.GetPortals(firstPlayer);
-                            portal.First().SetUsable(true);
+                            portal.First().SetUsable(false);
                         }
 
                         Open(Game.GetWorld(WorldSno.a1trdun_king_level08), ActorSno._trdun_cath_gate_b_skeletonking);
@@ -1078,17 +1085,15 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
                     {
                         var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
+                        var portal = world.GetPortals(ActorSno._g_portal_rectangle_blue);
+                        portal.FirstOrDefault()?.SetUsable(false);
+                        var portal2 = world.GetPortals(ActorSno._trdun_crypt_skeleton_king_throne_parts);
+                        portal2.FirstOrDefault()?.SetUsable(false);
                         if (!world.Players.Any()) return;
                         var player = world.Players.First();
-                        var portals = world.GetPortals(player.Value, 1000f);
-                        foreach (var portal in portals)
-                        {
-                            Logger.MethodTrace($"Found portal with SNO {portal.SNO.GetName()}, closing.");
-                            portal.SetUsable(true);
-                        }
                     });
 
-                    ListenKill(ActorSno._skeletonking, 1, new Advance());
+                    ListenKill(ActorSno._skeletonking, 1, new AdvanceThenOpenPortal(new[] { ActorSno._g_portal_rectangle_blue, ActorSno._trdun_crypt_skeleton_king_throne_parts }));
                 }
             });
 
@@ -1100,20 +1105,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //go to fallen star room
                     Game.CurrentEncounter.Activated = false;
-                    Game.AddOnLoadWorldAction(WorldSno.a1trdun_king_level08, () =>
-                    {
-                        var world = Game.GetWorld(WorldSno.a1trdun_king_level08);
-                        Open(world, ActorSno._trdun_crypt_skeleton_king_throne_parts);
-                        if (!world.Players.Any()) return;
-                        
-                        var player = world.Players.First();
-                        var portals = world.GetPortals(player.Value, 100f);
-                        foreach (var portal in portals)
-                        {
-                            Logger.MethodTrace($"Found portal with SNO {portal.SNO.GetName()}, opening.");
-                            portal.SetUsable(true);
-                        }
-                    });
                     ListenTeleport(117411, new Advance());
                 }
             });

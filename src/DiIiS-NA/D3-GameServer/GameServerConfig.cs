@@ -345,8 +345,8 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(ForceMinimapVisibility), value);
 		}
 
-		#endregion
-		public static GameServerConfig Instance { get; } = new();
+        #endregion
+        public static GameServerConfig Instance { get; } = new();
 
 		private GameServerConfig() : base("Game-Server")
 		{
