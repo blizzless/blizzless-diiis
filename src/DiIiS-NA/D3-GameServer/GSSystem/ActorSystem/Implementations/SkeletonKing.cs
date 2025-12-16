@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations
 {
 
-    [HandledSNO(ActorSno._skeletonking)]
+    //[HandledSNO(ActorSno._skeletonking)]
     public class SkeletonKing : Monster
     {
         private readonly static Logger Logger = LogManager.CreateLogger(nameof(SkeletonKing));
@@ -29,10 +29,10 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations
             if (BalanceConfig.Instance.SkeletonKingBalanceEnabled)
             {
                 Logger.Trace("Applying $[red bold]$Skeleton King (Leoric)$[/]$ balance adjustments $[blue]$(Balance > SkeletonKingBalanceEnabled)$[/]$.");
-                Attributes[GameAttributes.Hitpoints_Cur] /= BalanceConfig.Instance.SkeletonKingHealthDivider;
-                Attributes[GameAttributes.Hitpoints_Max] /= BalanceConfig.Instance.SkeletonKingHealthDivider;
-                Attributes[GameAttributes.DamageCap_Percent] /= BalanceConfig.Instance.SkeletonKingDamageCapPercentage;
-                Attributes[GameAttributes.Crit_Damage_Cap] /= BalanceConfig.Instance.SkeletonKingDamageCapPercentage;
+                Attributes[GameAttributes.Hitpoints_Cur] /= BalanceConfig.Instance.SkeletonKingHealthMultiplier;
+                Attributes[GameAttributes.Hitpoints_Max] /= BalanceConfig.Instance.SkeletonKingHealthMultiplier;
+                Attributes[GameAttributes.DamageCap_Percent] /= BalanceConfig.Instance.SkeletonKingDamageMultiplier;
+                Attributes[GameAttributes.Crit_Damage_Cap] /= BalanceConfig.Instance.SkeletonKingDamageMultiplier;
             }
         }
 

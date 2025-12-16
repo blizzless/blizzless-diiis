@@ -17,25 +17,41 @@ namespace DiIiS_NA.GameServer
         /// <summary>
         /// How much to divide Skeleton King's damage by.
         /// </summary>
-        public float SkeletonKingDamageCapPercentage
+        public float SkeletonKingDamageMultiplier
         {
-            get => GetFloat(nameof(SkeletonKingDamageCapPercentage), 1f);
-            set => Set(nameof(SkeletonKingDamageCapPercentage), value);
+            get => GetFloat(nameof(SkeletonKingDamageMultiplier), 1f);
+            set => Set(nameof(SkeletonKingDamageMultiplier), value);
         }
 
         /// <summary>
         /// How much to divide Skeleton King's health by.
         /// </summary>
-        public float SkeletonKingHealthDivider
+        public float SkeletonKingHealthMultiplier
         {
-            get => GetFloat(nameof(SkeletonKingHealthDivider), 1f);
-            set => Set(nameof(SkeletonKingHealthDivider), value);
+            get => GetFloat(nameof(SkeletonKingHealthMultiplier), 1f);
+            set => Set(nameof(SkeletonKingHealthMultiplier), value);
+        }
+        public float SkeletonKingWalkSpeed
+        {
+            get => GetFloat(nameof(SkeletonKingWalkSpeed), 1.0f);
+            set => Set(nameof(SkeletonKingWalkSpeed), value);
         }
 
+        public float NormalBossHealthMultiplier
+        {
+            get => GetFloat(nameof(NormalBossHealthMultiplier), 1.0f);
+            set => Set(nameof(NormalBossHealthMultiplier), value);
+        }
+        public float NormalBossDamageMultiplier
+        {
+            get => GetFloat(nameof(NormalBossDamageMultiplier), 1.0f);
+            set => Set(nameof(NormalBossDamageMultiplier), value);
+        }
 
         public static BalanceConfig Instance { get; } = new();
 
-		private BalanceConfig() : base("Balance")
+
+        private BalanceConfig() : base("Balance")
 		{
 		}
 	}

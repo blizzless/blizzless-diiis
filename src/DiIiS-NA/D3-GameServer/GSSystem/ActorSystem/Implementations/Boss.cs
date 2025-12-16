@@ -4,6 +4,7 @@ using DiIiS_NA.GameServer.GSSystem.AISystem.Brains;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.MPQ.FileFormats;
+using DiIiS_NA.Utilities;
 
 namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 {
@@ -68,18 +69,34 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 		public Boss(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
+			Logger.Trace($"Spawning $[red bold]$Boss$[/]$ monster: $[yellow]${sno.GetName()}$[/]$ in world $[yellow]${world.SNO.GetName()}$[/]$ at position {Position}.");
 			if (sno == ActorSno._zoltunkulle && world.SNO == WorldSno.a2dun_zolt_lobby) SetVisible(false);
 			Attributes[GameAttributes.MinimapActive] = true;
 			//this.Attributes[GameAttribute.Immune_To_Charm] = true;
 			Attributes[GameAttributes.using_Bossbar] = true;
 			Attributes[GameAttributes.InBossEncounter] = true;
-			Attributes[GameAttributes.Hitpoints_Max] *= GameServerConfig.Instance.BossHealthMultiplier;
-			Attributes[GameAttributes.Damage_Weapon_Min, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
-			Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= GameServerConfig.Instance.BossDamageMultiplier;
-			Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
-			Attributes[GameAttributes.TeamID] = 10;
 
-			WalkSpeed *= 0.5f;
+			if (BalanceConfig.Instance.SkeletonKingBalanceEnabled && sno == ActorSno._skeletonking)
+			{
+				Logger.Trace("Applying $[red bold]$Skeleton King (Leoric)$[/]$ balance adjustments $[blue underline]$(Balance > SkeletonKingBalanceEnabled)$[/]$.");
+				Attributes[GameAttributes.Hitpoints_Max] *= BalanceConfig.Instance.SkeletonKingHealthMultiplier;
+				Attributes[GameAttributes.Damage_Weapon_Min] *= BalanceConfig.Instance.SkeletonKingDamageMultiplier;
+				Attributes[GameAttributes.Damage_Weapon_Max] *= BalanceConfig.Instance.SkeletonKingDamageMultiplier;
+                Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+				if (BalanceConfig.Instance.SkeletonKingWalkSpeed > 0)
+					WalkSpeed = BalanceConfig.Instance.SkeletonKingWalkSpeed;
+				else WalkSpeed *= 0.5f;
+            }
+            else
+			{
+				Attributes[GameAttributes.Hitpoints_Max] *= BalanceConfig.Instance.NormalBossHealthMultiplier;
+				Attributes[GameAttributes.Damage_Weapon_Min, 0] *= BalanceConfig.Instance.NormalBossDamageMultiplier;
+				Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= BalanceConfig.Instance.NormalBossDamageMultiplier;
+				Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
+
+                WalkSpeed *= 0.5f;
+            }
+			Attributes[GameAttributes.TeamID] = 10;
 			if (Brain is MonsterBrain monsterBrain)
 			{
 				switch (sno)
@@ -173,13 +190,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						monsterBrain.AddPresetPower(211292); //slime spawn
 						break;
 					default:
-						Logger.Warn($"Unhandled boss type {sno}");
+						Logger.Warn($"$[orange4_1]$Unhandled boss type:$[/]$ {sno.GetName()}");
 						break;
 				}
 			}
 			else
 			{
-				Logger.Error($"Boss $[underline red]${GetType().Name}$[/]$ ({sno}) has no monster brain!");
+				Logger.Error($"Boss $[underline red]${sno.GetName()}$[/]$ has no monster brain!");
 			}
 		}
 
