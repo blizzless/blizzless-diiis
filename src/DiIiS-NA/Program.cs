@@ -36,6 +36,7 @@ using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.GameServer;
 using Spectre.Console;
 using Environment = System.Environment;
+using Humanizer;
 
 namespace DiIiS_NA
 {
@@ -158,14 +159,15 @@ namespace DiIiS_NA
                             name,
                             $"{onlineCount} onlines in {inGameCount} worlds",
                             $"Memory: {memoryGb:0.000} GB",
-                            $"CPU Time: {cpuTime.ToSmallText()}",
-                            $"Uptime: {uptime.ToSmallText()}"
+                            $"CPU Time: {cpuTime.Humanize(7)}",
+                            $"Uptime: {uptime.Humanize(7)}",
+                            $"Wasted CPU Time: {(uptime - cpuTime).Humanize(7)}"
                         };
                         
                         var text = string.Join(" | ", statusParts);
 
                         if (SetTitle(text))
-                            await Task.Delay(1000);
+                            await Task.Delay(150);
                         else
                         {
                             Logger.Info(text);
@@ -227,6 +229,16 @@ namespace DiIiS_NA
 
             //*/
             StartWatchdog();
+
+            if (GameServerConfig.Instance.ForceMinimapVisibility)
+            {
+                Logger.Warn("$[mediumpurple]$Game-Server > ForceMinimapVisibility$[/]$: Forcing minimap visibility for all players.");
+            }
+
+            if (GameServerConfig.Instance.UnlockAllWaypoints)
+            {
+                Logger.Warn("$[mediumpurple]$Game-Server > UnlockAllWaypoints$[/]$: All waypoints will be unlocked.");
+            }
 
             AccountManager.PreLoadAccounts();
             GameAccountManager.PreLoadGameAccounts();

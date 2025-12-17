@@ -15,6 +15,10 @@ public static class EnumExtensions
     {
         return Enum.GetName(typeof(T), value) ?? "__NONE";
     }
+    public static string FormatWithType<T>(this T value) where T : Enum
+    {
+        return $"$[darkolivegreen3_1]${typeof(T).Name}$[/]$.$[skyblue1]${Enum.GetName(typeof(T), value) ?? "__NONE"}$[/]$";
+    }
     public static string GetNameWithValue<T>(this T value) where T : Enum
     {
         var numericValue = Convert.ToInt32((Enum)value);

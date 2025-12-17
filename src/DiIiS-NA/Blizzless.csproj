@@ -76,6 +76,7 @@
     <PackageReference Include="DotNetty.Handlers" Version="0.7.5" />
     <PackageReference Include="DotNetty.Transport" Version="0.7.5" />
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
+    <PackageReference Include="Humanizer" Version="3.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />
     <PackageReference Include="Npgsql" Version="7.0.1" />

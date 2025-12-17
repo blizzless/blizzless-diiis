@@ -26,7 +26,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations
             : base(world, sno, tags)
         {
             // Skeleton king adjustments based on server config for balance
-            if (BalanceConfig.Instance.SkeletonKingBalanceEnabled)
+            if (BalanceConfig.Instance.BalanceEnabled)
             {
                 Logger.Trace("Applying $[red bold]$Skeleton King (Leoric)$[/]$ balance adjustments $[blue]$(Balance > SkeletonKingBalanceEnabled)$[/]$.");
                 Attributes[GameAttributes.Hitpoints_Cur] /= BalanceConfig.Instance.SkeletonKingHealthMultiplier;

@@ -22,7 +22,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			{
 				foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
 				{
-					GameBalance data = asset.Data as GameBalance;
+                    GameBalance data = asset.Data as GameBalance;
 					if (data != null && data.Type == BalanceType.AffixList)
 					{
 						foreach (var affixDefinition in data.Affixes)

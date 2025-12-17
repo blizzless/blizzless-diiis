@@ -29,7 +29,7 @@ namespace DiIiS_NA.GameServer.GSSystem.GeneratorsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
 			{
-				GameBalance data = asset.Data as GameBalance;
+                GameBalance data = asset.Data as GameBalance;
 				if (data != null && data.Type == BalanceType.MonsterAffixes)
 				{
 					foreach (var affixDef in data.MonsterAffixes)

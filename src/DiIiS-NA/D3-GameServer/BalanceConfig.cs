@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.GameServer
 {
-	public sealed class BalanceConfig : DiIiS_NA.Core.Config.Config
+
+    public sealed class BalanceConfig : DiIiS_NA.Core.Config.Config
 	{
-        public bool SkeletonKingBalanceEnabled
+        public bool BalanceEnabled
         {
-            get => GetBoolean(nameof(SkeletonKingBalanceEnabled), true);
-            set => Set(nameof(SkeletonKingBalanceEnabled), value);
+            get => GetBoolean(nameof(BalanceEnabled), true);
+            set => Set(nameof(BalanceEnabled), value);
         }
 
         /// <summary>
@@ -23,9 +24,6 @@ namespace DiIiS_NA.GameServer
             set => Set(nameof(SkeletonKingDamageMultiplier), value);
         }
 
-        /// <summary>
-        /// How much to divide Skeleton King's health by.
-        /// </summary>
         public float SkeletonKingHealthMultiplier
         {
             get => GetFloat(nameof(SkeletonKingHealthMultiplier), 1f);
@@ -35,6 +33,23 @@ namespace DiIiS_NA.GameServer
         {
             get => GetFloat(nameof(SkeletonKingWalkSpeed), 1.0f);
             set => Set(nameof(SkeletonKingWalkSpeed), value);
+        }
+
+        public float MaghdaHealthMultiplier
+        {
+            get => GetFloat(nameof(MaghdaHealthMultiplier), 1.0f);
+            set => Set(nameof(MaghdaHealthMultiplier), value);
+        }
+
+        public float MaghdaDamageMultiplier
+        {
+            get => GetFloat(nameof(MaghdaDamageMultiplier), 1.0f);
+            set => Set(nameof(MaghdaDamageMultiplier), value);
+        }
+        public float MaghdaWalkSpeed
+        {
+            get => GetFloat(nameof(MaghdaWalkSpeed), 1.0f);
+            set => Set(nameof(MaghdaWalkSpeed), value);
         }
 
         public float NormalBossHealthMultiplier

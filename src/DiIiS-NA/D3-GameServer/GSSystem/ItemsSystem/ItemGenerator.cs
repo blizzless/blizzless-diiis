@@ -162,7 +162,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//Logger.Info("LoadItems()");
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
 			{
-				GameBalance data = asset.Data as GameBalance;
+                GameBalance data = asset.Data as GameBalance;
 				if (data != null && data.Type == BalanceType.Items)
 				{
 					foreach (var itemDefinition in data.Item)
@@ -352,7 +352,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 			//Logger.Info("LoadRecipes()");
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
 			{
-				GameBalance data = asset.Data as GameBalance;
+                GameBalance data = asset.Data as GameBalance;
 				if (data != null && data.Type == BalanceType.Recipes)
 				{
 					foreach (var recipeDefinition in data.Recipes)
@@ -392,7 +392,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
 			{
-				GameBalance data = asset.Data as GameBalance;
+                GameBalance data = asset.Data as GameBalance;
 				if (data != null && data.Type == BalanceType.SocketedEffects)
 				{
 					foreach (var gemBonusDefinition in data.SocketedEffects)
@@ -408,7 +408,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
 			{
-				GameBalance data = asset.Data as GameBalance;
+                GameBalance data = asset.Data as GameBalance;
 				if (data != null && data.Type == BalanceType.ParagonBonuses)
 				{
 					foreach (var paragonBonusDefinition in data.ParagonBonusesTables)
@@ -423,7 +423,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
 			{
-				GameBalance data = asset.Data as GameBalance;
+                GameBalance data = asset.Data as GameBalance;
 				if (data != null && data.Type == BalanceType.SetItemBonuses)
 				{
 					foreach (var itemSetBonusDefinition in data.SetItemBonus)
@@ -619,7 +619,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		{
 			foreach (var asset in MPQStorage.Data.Assets[SNOGroup.GameBalance].Values)
 			{
-				GameBalance data = asset.Data as GameBalance;
+                GameBalance data = asset.Data as GameBalance;
 				/*if (data != null && data.Type == BalanceType.AffixList)
 				{
 					foreach (var affixDefinition in data.Affixes)

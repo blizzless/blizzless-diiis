@@ -65,7 +65,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 	public sealed class Boss : Monster
 	{
 		private static readonly Logger Logger = LogManager.CreateLogger(nameof(Boss));
-
+		
 		public Boss(MapSystem.World world, ActorSno sno, TagMap tags)
 			: base(world, sno, tags)
 		{
@@ -76,22 +76,27 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 			Attributes[GameAttributes.using_Bossbar] = true;
 			Attributes[GameAttributes.InBossEncounter] = true;
 
-			if (BalanceConfig.Instance.SkeletonKingBalanceEnabled && sno == ActorSno._skeletonking)
+			if (BalanceConfig.Instance.BalanceEnabled)
 			{
-				Logger.Trace("Applying $[red bold]$Skeleton King (Leoric)$[/]$ balance adjustments $[blue underline]$(Balance > SkeletonKingBalanceEnabled)$[/]$.");
-				Attributes[GameAttributes.Hitpoints_Max] *= BalanceConfig.Instance.SkeletonKingHealthMultiplier;
-				Attributes[GameAttributes.Damage_Weapon_Min] *= BalanceConfig.Instance.SkeletonKingDamageMultiplier;
-				Attributes[GameAttributes.Damage_Weapon_Max] *= BalanceConfig.Instance.SkeletonKingDamageMultiplier;
+				GameBalanceConfig balance = new GameBalanceConfig(sno);
+                Logger.Info($"Applying {sno.FormatWithType()} balance adjustments " +
+					$"$[skyblue1 underline]$(BalanceEnabled)$[/]$.");
+                Attributes[GameAttributes.Hitpoints_Max] *= balance.HitpointMultiplier;
+                Attributes[GameAttributes.Damage_Weapon_Min] *= balance.DamageMultiplier;
+                Attributes[GameAttributes.Damage_Weapon_Delta] *= balance.DamageMultiplier;
+                Attributes[GameAttributes.Damage_Weapon_Max] *= balance.DamageMultiplier;
                 Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
-				if (BalanceConfig.Instance.SkeletonKingWalkSpeed > 0)
-					WalkSpeed = BalanceConfig.Instance.SkeletonKingWalkSpeed;
-				else WalkSpeed *= 0.5f;
+                if (balance.WalkSpeed >= 0)
+                    WalkSpeed = balance.WalkSpeed;
+                else WalkSpeed *= 0.5f;
             }
             else
 			{
+				Logger.Warn($"Using old boss balance for $[orange4_1]${sno.GetName()}$[/]$.");
 				Attributes[GameAttributes.Hitpoints_Max] *= BalanceConfig.Instance.NormalBossHealthMultiplier;
 				Attributes[GameAttributes.Damage_Weapon_Min, 0] *= BalanceConfig.Instance.NormalBossDamageMultiplier;
 				Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= BalanceConfig.Instance.NormalBossDamageMultiplier;
+				Attributes[GameAttributes.Damage_Weapon_Max, 0] *= BalanceConfig.Instance.NormalBossDamageMultiplier;
 				Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
 
                 WalkSpeed *= 0.5f;
