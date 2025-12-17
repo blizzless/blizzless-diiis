@@ -1,10 +1,12 @@
-﻿using DiIiS_NA.Core.Logging;
+﻿using DiIiS_NA.Core.Extensions;
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.Core.Storage;
 using DiIiS_NA.Core.Storage.AccountDataBase.Entities;
 using DiIiS_NA.GameServer.AchievementSystem;
 using DiIiS_NA.GameServer.GSSystem.ItemsSystem;
 using DiIiS_NA.LoginServer.AccountsSystem;
 using DiIiS_NA.LoginServer.GamesSystem;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +34,18 @@ namespace DiIiS_NA.LoginServer.Battle
 		public BattleBackend(string battleHost, int port)
 		{
 			GameServerSocket = new WatsonTcpServer(battleHost, port, ReceiverClientConnected, ReceiverClientDisconnected, ReceiverMessageReceived, false);
-			System.Threading.Thread.Sleep(3000);
+			AnsiConsole.Status()
+				.Spinner(Spinner.Known.Dots)
+				.SpinnerStyle(Style.Parse("green"))
+				.Start("Starting BattleBackend server (3)...", ctx =>
+                {
+					ctx.Status("Initializing BattleBackend server (3)...");
+                    System.Threading.Thread.Sleep(1000);
+                    ctx.Status("Initializing BattleBackend server (2)...");
+                    System.Threading.Thread.Sleep(1000);
+                    ctx.Status("Initializing BattleBackend server (1)...");
+                    System.Threading.Thread.Sleep(1000);
+                });
 		}
 
 		private bool ReceiverClientConnected(string ipPort)
@@ -148,7 +161,7 @@ namespace DiIiS_NA.LoginServer.Battle
 					ulong ckmcAccId = ulong.Parse(args[0].Trim());
 					int ckmcActorId = int.Parse(args[1].Trim());
 					int ckmcType = int.Parse(args[2].Trim());
-					bool ckmcIsHardcore = (args[3].Trim() == "True" ? true : false);
+					bool ckmcIsHardcore = (args[3].Is());
 					System.Threading.Tasks.Task.Delay(1).ContinueWith((a) => {
 						foreach (var ckmcInvokerClient in PlayerManager.OnlinePlayers.Where(c => c.Account.GameAccount.PersistentID == ckmcAccId))
 							AchievementManager.CheckKillMonsterCriteria(ckmcInvokerClient, ckmcActorId, ckmcType, ckmcIsHardcore);

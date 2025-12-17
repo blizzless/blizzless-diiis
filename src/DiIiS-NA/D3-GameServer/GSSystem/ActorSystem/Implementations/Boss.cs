@@ -84,7 +84,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
                 Attributes[GameAttributes.Hitpoints_Max] *= balance.HitpointMultiplier;
                 Attributes[GameAttributes.Damage_Weapon_Min] *= balance.DamageMultiplier;
                 Attributes[GameAttributes.Damage_Weapon_Delta] *= balance.DamageMultiplier;
-                Attributes[GameAttributes.Damage_Weapon_Max] *= balance.DamageMultiplier;
                 Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
                 if (balance.WalkSpeed >= 0)
                     WalkSpeed = balance.WalkSpeed;
@@ -96,7 +95,6 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 				Attributes[GameAttributes.Hitpoints_Max] *= BalanceConfig.Instance.NormalBossHealthMultiplier;
 				Attributes[GameAttributes.Damage_Weapon_Min, 0] *= BalanceConfig.Instance.NormalBossDamageMultiplier;
 				Attributes[GameAttributes.Damage_Weapon_Delta, 0] *= BalanceConfig.Instance.NormalBossDamageMultiplier;
-				Attributes[GameAttributes.Damage_Weapon_Max, 0] *= BalanceConfig.Instance.NormalBossDamageMultiplier;
 				Attributes[GameAttributes.Hitpoints_Cur] = Attributes[GameAttributes.Hitpoints_Max_Total];
 
                 WalkSpeed *= 0.5f;
@@ -189,7 +187,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						monsterBrain.AddPresetPower(131744); //summon berserker
 						//(Brain as MonsterBrain).AddPresetPower(131745); //mothDust
 						monsterBrain.AddPresetPower(131749); //teleport
-						break;
+                        monsterBrain.AddPresetPower(136223); //Diablo_RingOfFire
+                        break;
 					case ActorSno._gluttony: //Gluttony
 						monsterBrain.AddPresetPower(93676); //gas cloud
 						monsterBrain.AddPresetPower(211292); //slime spawn

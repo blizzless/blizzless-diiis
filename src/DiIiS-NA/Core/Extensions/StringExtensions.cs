@@ -6,6 +6,8 @@ namespace DiIiS_NA.Core.Extensions
 {
 	public static class StringExtensions
 	{
+		public static bool Is(this string input)
+			 => input.Trim().Equals("true", StringComparison.InvariantCultureIgnoreCase);
 		public static string ZipCompress(this string value)
 		{
 			byte[] byteArray = new byte[value.Length];

@@ -19,6 +19,7 @@ using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.LoginServer.Toons;
 using DiIiS_NA.Core.Helpers.Math;
 using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
+using Spectre.Console;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 {
@@ -53,35 +54,43 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
 		static ItemGenerator()
 		{
-			Player.GeneratePLB();
-			Logger.Info("Loading $[underline]$Recipes$[/]$...");
-			Logger.Info("Loading $[underline]$Items$[/]$...");
-			LoadRecipes();
-			LoadItems();
-			Logger.Info("Loading $[underline]$Paragons$[/]$...");
-			LoadParagonBonuses();
-			//LoadAffixes(); //just for checking values
-			//LoadPowers();
-			//LoadQuests();
-			Logger.Info("Loading $[underline]$Tutorials$[/]$...");
-			Tutorials = MPQStorage.Data.Assets[SNOGroup.Tutorial].Keys.OrderBy(i => i).ToList();
-			Logger.Info("Loading $[underline]$Bonuses$[/]$...");
-			LoadItemSetBonuses();
-			LoadGemBonuses();
-			Logger.Info("Loading $[underline]$Handlers$[/]$...");
-			LoadHandlers();
-			Logger.Info("Loading $[underline]$Lore$[/]$...");
-			LoadLore();
-			Logger.Info("Loading $[underline]$Bounties$[/]$...");
-			LoadBounties();
-			//LoadConversations();
-			//if (Net.GS.Config.Instance.Enabled)
+			AnsiConsole.Status()
+				
+				.Start("Loading...", ctx =>
+				{
+					ctx.Spinner(Spinner.Known.Dots10);
+					Player.GeneratePLB();
+					ctx.Status("Loading recipes...");
+                    LoadRecipes();
+					ctx.Status("Loading items...");
+					LoadItems();
+                    ctx.Status("Loading paragon's bonuses...");
+                    LoadParagonBonuses();
+                    //LoadAffixes(); //just for checking values
+                    //LoadPowers();
+                    //LoadQuests();
 
-			Logger.Info("Loading $[underline]$Worlds$[/]$...");
-			Scene.PreCacheMarkers();
+                    ctx.Status("Loading tutorials...");
+                    Tutorials = MPQStorage.Data.Assets[SNOGroup.Tutorial].Keys.OrderBy(i => i).ToList();
 
-			SetAllowedTypes();
-			System.Threading.Thread.CurrentThread.Name = "ItemGenerator";
+                    ctx.Status("Loading bonuses/gem bonuses...");
+                    LoadItemSetBonuses();
+					LoadGemBonuses();
+                    ctx.Status("Loading handlers...");
+                    LoadHandlers();
+                    ctx.Status("Loading lores...");
+                    LoadLore();
+                    ctx.Status("Loading bounties...");
+                    LoadBounties();
+                    //LoadConversations();
+                    //if (Net.GS.Config.Instance.Enabled)
+
+                    ctx.Status("Loading worlds...");
+                    Scene.PreCacheMarkers();
+
+					SetAllowedTypes();
+					System.Threading.Thread.CurrentThread.Name = "ItemGenerator";
+				});
 		}
 
 		#region loading generator

@@ -159,7 +159,7 @@ namespace DiIiS_NA
                             name,
                             $"{onlineCount} onlines in {inGameCount} worlds",
                             $"Memory: {memoryGb:0.000} GB",
-                            $"CPU Time: {cpuTime.Humanize(7)}",
+                            //$"CPU Time: {cpuTime.Humanize(7)}",
                             $"Uptime: {uptime.Humanize(7)}",
                             $"Wasted CPU Time: {(uptime - cpuTime).Humanize(7)}"
                         };
