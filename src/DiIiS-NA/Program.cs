@@ -324,10 +324,35 @@ namespace DiIiS_NA
                 {
                     Logger.Info(
                         $"Server is shutting down in 1 minute, $[blue]${PlayerManager.OnlinePlayers.Count} players$[/]$ are still online.");
-                    PlayerManager.SendWhisper("Server is shutting down in 1 minute.");
-                    await Task.Delay(TimeSpan.FromMinutes(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 1 minute with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(30));
+                    PlayerManager.SendWhisper($"Server is shutting down in 30 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(20));
+                    PlayerManager.SendWhisper($"Server is shutting down in 10 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 9 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 8 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 7 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 6 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 5 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 4 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 3 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 2 seconds with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    PlayerManager.SendWhisper($"Server is shutting down in 1 second with {PlayerManager.OnlinePlayers.Count} players still online.");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
                 }
-
+                else
+                {
+                    Logger.Info($"No players online, shutting down now.");
+                }
                 Shutdown();
             }
             catch (Exception e)
