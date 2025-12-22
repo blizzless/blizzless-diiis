@@ -62,7 +62,24 @@ namespace DiIiS_NA.GameServer
             get => GetFloat(nameof(NormalBossDamageMultiplier), 1.0f);
             set => Set(nameof(NormalBossDamageMultiplier), value);
         }
+        public float FixedCooldownSeconds
+        {
+            get => GetFloat(nameof(FixedCooldownSeconds), -1);
+            set => Set(nameof(FixedCooldownSeconds), value);
+        }
 
+        public float NecroArmyOfTheDeadDamageMultiplier
+        {
+            get => GetFloat(nameof(NecroArmyOfTheDeadDamageMultiplier), 1);
+            set => Set(nameof(NecroArmyOfTheDeadDamageMultiplier), value);
+        }
+
+        public float WaitTime(float time)
+        {
+            if (FixedCooldownSeconds >= 0)
+                return FixedCooldownSeconds;
+            return time;
+        }
         public static BalanceConfig Instance { get; } = new();
 
 

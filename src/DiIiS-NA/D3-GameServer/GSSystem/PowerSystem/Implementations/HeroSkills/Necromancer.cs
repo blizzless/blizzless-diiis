@@ -2586,12 +2586,19 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         #endregion
         public override IEnumerable<TickTimer> Main()
         {
-            StartCooldown(EvalTag(PowerKeys.CooldownTime));
+            if (BalanceConfig.Instance.FixedCooldownSeconds >= 0)
+            {
+                StartCooldown(BalanceConfig.Instance.FixedCooldownSeconds);
+            }
+            else
+            {
+                StartCooldown(EvalTag(PowerKeys.CooldownTime)); // original implementation
+            }
             var skillData = MPQStorage.Data.Assets[SNOGroup.Power][460358].Data;
 
             var effectSno = ActorSno._necro_aotd_a_emitter;
             float range = 15f;
-            float damage = 120.0f;
+            float damage = 120.0f * BalanceConfig.Instance.NecroArmyOfTheDeadDamageMultiplier;
             var damageType = DamageType.Physical;
             float time = 1.0f;
             //Морозная шняга
@@ -2699,7 +2706,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations
         #endregion
         public override IEnumerable<TickTimer> Main()
         {
-            StartCooldown(EvalTag(PowerKeys.CooldownTime));
+            StartCooldown(EvalTag(PowerKeys.CooldownTime)); // original implementation
+
             var DataOfSkill = MPQStorage.Data.Assets[SNOGroup.Power][465839].Data;
 
             AddBuff(User, new ZBuff());

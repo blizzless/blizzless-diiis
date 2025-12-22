@@ -926,6 +926,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = true,
 				NextStep = 56,
 				OnAdvance = () => { //kill Deceiveds
+					AdvanceBugged();
                     Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
                     {
                         var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00);
@@ -944,6 +945,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = true,
 				NextStep = 58,
 				OnAdvance = () => { //break talking barrel
+                    AdvanceBugged();
                     Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
                     {
                         SetActorOperable(Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00), ActorSno._spawner_leor_iron_maiden_jewelerquest, true);
@@ -958,6 +960,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = true,
 				NextStep = 60,
 				OnAdvance = () => { //talk with jeweler
+                    AdvanceBugged();
                     Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
                     {
                         var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00);
@@ -974,6 +977,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = true,
 				NextStep = 62,
 				OnAdvance = () => { //find crucible
+                    AdvanceBugged();
                     Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
                     {
                         if (Game.CurrentQuest == 57335 && Game.CurrentStep == 60)
@@ -991,6 +995,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = true,
 				NextStep = 64,
 				OnAdvance = () => { //kill Gevin
+                    AdvanceBugged();
                     var world = Game.GetWorld(WorldSno.a2dun_aqd_oasis_level00);
                     Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
                     {
@@ -1021,6 +1026,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = true,
 				NextStep = 44,
 				OnAdvance = () => { //get crucible
+                    AdvanceBugged();
                     Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
                     {
                         if (Game.CurrentQuest == 57335 && Game.CurrentStep == 64)
@@ -1039,6 +1045,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				Saveable = true,
 				NextStep = 24,
 				OnAdvance = () => { //enter the ancient passage
+                    AdvanceBugged();
                     Game.AddOnLoadWorldAction(WorldSno.a2dun_aqd_oasis_level00, () =>
                     {
                         if (Game.CurrentQuest == 57335 && Game.CurrentStep == 44)
@@ -1069,6 +1076,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 				NextStep = 8,
 				Objectives = new List<Objective> { Objective.Default(), Objective.Default() },
 				OnAdvance = () => { //find blood in 2 caves
+                    AdvanceBugged();
                     if (Game.Empty) UnlockTeleport(7);
                     DestroyFollower(ActorSno._intro_jeweler);
                     ListenInteract(ActorSno._a2dun_zolt_blood_container, 1, new CompleteObjective(0));

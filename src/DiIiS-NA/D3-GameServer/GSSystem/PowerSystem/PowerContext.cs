@@ -42,8 +42,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		}
 
 		public TickTimer WaitSeconds(float seconds)
-		{
-			return new SecondsTickTimer(World.Game, seconds);
+        {
+            seconds = BalanceConfig.Instance.WaitTime(seconds);
+            return new SecondsTickTimer(World.Game, seconds);
 		}
 
 		public TickTimer WaitTicks(int ticks)
@@ -67,7 +68,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 		public void StartCooldown(float seconds)
 		{
-			seconds -= User.Attributes[GameAttributes.Power_Cooldown_Reduction, PowerSNO];
+            seconds -= User.Attributes[GameAttributes.Power_Cooldown_Reduction, PowerSNO];
 			seconds *= (1f - User.Attributes[GameAttributes.Power_Cooldown_Reduction_Percent_All]);
 			StartCooldown(WaitSeconds(seconds));
 		}

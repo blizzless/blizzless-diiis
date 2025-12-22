@@ -37,6 +37,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
 					Game.GetWorld(WorldSno.a3dun_hub_adria_tower_intro).GetActorBySNO(ActorSno._tyrael_act3, true).NotifyConversation(1);
 					ListenInteract(ActorSno._tyrael_act3, 1, new LaunchConversation(204905));
 					ListenConversation(204905, new Advance());
+					AdvanceBugged();
 				})
 			});
 
