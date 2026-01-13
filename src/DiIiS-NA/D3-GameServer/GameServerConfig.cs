@@ -188,9 +188,18 @@ namespace DiIiS_NA.GameServer
 		}
 		
 		/// <summary>
-		///	How much a health potion heals in percentage
+		/// Is the health potion a consumable or via cooldown
 		/// </summary>
-		public float HealthPotionRestorePercentage
+		public bool HealthPotionConsumable
+		{
+			get => GetBoolean(nameof(HealthPotionConsumable), true);
+			set => Set(nameof(HealthPotionConsumable), value);
+		}
+
+        /// <summary>
+        ///	How much a health potion heals in percentage
+        /// </summary>
+        public float HealthPotionRestorePercentage
 		{
 			get => GetFloat(nameof(HealthPotionRestorePercentage), 60f);
 			set => Set(nameof(HealthPotionRestorePercentage), value);

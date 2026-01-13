@@ -13,7 +13,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Implementations.General
         {
             if (User is not Player player) yield break;
             player.AddPercentageHP(GameServerConfig.Instance.HealthPotionRestorePercentage);
-            AddBuff(player, player, new CooldownBuff(30211, TickTimer.WaitSeconds(player.World.Game, GameServerConfig.Instance.HealthPotionCooldown)));
+            if (!GameServerConfig.Instance.HealthPotionConsumable)
+            {
+                AddBuff(player, player, new CooldownBuff(30211, TickTimer.WaitSeconds(player.World.Game, GameServerConfig.Instance.HealthPotionCooldown)));
+            }
         }
     }
 }

@@ -914,15 +914,17 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
                 player.World.PowerManager.RunPower(player, 30211);
 
-                /* Potions are no longer consumable
-                if (this.Attributes[GameAttribute.ItemStackQuantityLo] <= 1)
-                    player.Inventory.DestroyInventoryItem(this); // No more potions!
-                else
+                if (GameServerConfig.Instance.HealthPotionConsumable)
                 {
-                    this.UpdateStackCount(--this.Attributes[GameAttribute.ItemStackQuantityLo]); // Just remove one
-                    this.Attributes.SendChangedMessage(player.InGameClient);
+                    if (this.Attributes[GameAttributes.ItemStackQuantityLo] <= 1)
+                        player.Inventory.DestroyInventoryItem(this); // No more potions!
+                    else
+                    {
+                        this.UpdateStackCount(--this.Attributes[GameAttributes.ItemStackQuantityLo]); // Just remove one
+                        this.Attributes.SendChangedMessage(player.InGameClient);
+                    }
                 }
-                */
+
 
                 return;
             }
