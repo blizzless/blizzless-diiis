@@ -70,13 +70,19 @@ namespace DiIiS_NA.GameServer
 #endif
 			set => Set(nameof(AfkDisconnect), value);
 		}
-		
-		#region Game Mods
 
-		/// <summary>
-		/// Rate of experience gain.
-		/// </summary>
-		public float RateExp
+        public float MonsterThinkTick
+		{
+			get => GetFloat(nameof(MonsterThinkTick), 1);
+			set => Set(nameof(MonsterThinkTick), value);
+		}
+
+        #region Game Mods
+
+        /// <summary>
+        /// Rate of experience gain.
+        /// </summary>
+        public float RateExp
 		{
 			get => GetFloat(nameof(RateExp), 1);
 			set => Set(nameof(RateExp), value);
@@ -357,7 +363,7 @@ namespace DiIiS_NA.GameServer
         #endregion
         public static GameServerConfig Instance { get; } = new();
 
-		private GameServerConfig() : base("Game-Server")
+        private GameServerConfig() : base("Game-Server")
 		{
 		}
 	}

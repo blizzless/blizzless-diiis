@@ -109,7 +109,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations
 						//(Brain as MonsterBrain).AddPresetPower(136189); //[136189] Diablo_ClawRip
 						monsterBrain.AddPresetPower(136223); //Diablo_RingOfFire
 						monsterBrain.AddPresetPower(136226); //Diablo_HellSpikes
-						;
+						monsterBrain.AddPresetPower(136219);
+						monsterBrain.AddPresetPower(214831);
 
 						/*
 							[199476] Diablo_StompAndStun
