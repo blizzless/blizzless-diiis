@@ -31,7 +31,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             get;
             private set; //needed in Future, set this to true if Item affixes or item attributes have changed.
         }
-        
+
         public override ActorType ActorType => ActorType.Item;
 
         public Actor Owner { get; set; } // Only set when the _actor_ has the item in its inventory. /fasbat
@@ -43,10 +43,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
         public bool Unidentified
         {
             get => Attributes[GameAttributes.Unidentified];
-            set 
-            { 
+            set
+            {
                 Attributes[GameAttributes.Unidentified] = value;
-                if (DBInventory is {} dbInventory) dbInventory.Unidentified = value;
+                if (DBInventory is { } dbInventory) dbInventory.Unidentified = value;
             }
         }
 
@@ -240,7 +240,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
             if (ItemDefinition.Name.ToLower().Contains("norm_season")) Attributes[GameAttributes.Item_Quality_Level] = 9;
 
-            if (ItemDefinition.Name.ToLower().StartsWith("p71_ethereal"))
+            if (ItemDefinition.Name.ToLower().StartsWith("p71_ethereal")) // hack for p71 ethereal items?
             {
                 Attributes[GameAttributes.Item_Quality_Level] = 9;
                 Attributes[GameAttributes.Attacks_Per_Second_Item] += 1.1f;
@@ -317,11 +317,12 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             //*/
 
 
-#if DEBUG
-#else
-			//if (Attributes[GameAttribute.Item_Quality_Level] > 6)
-			//	this.Unidentified = true;
-#endif
+            //if (Attributes[GameAttribute.Item_Quality_Level] > 6)
+            bool identified = true;
+            identified = Attributes[GameAttributes.Item_Quality_Level] > 6 && FastRandom.Instance.Chance(GameServerConfig.Instance.ChanceHighQualityUnidentified);
+            identified = identified || (Attributes[GameAttributes.Item_Quality_Level] <= 6 && FastRandom.Instance.Chance(GameServerConfig.Instance.ChanceNormalUnidentified))
+			if (!identified)
+                Unidentified = true;
             if (Attributes[GameAttributes.Item_Quality_Level] == 9) Attributes[GameAttributes.MinimapActive] = true;
 
             if (IsArmor(ItemType) || IsWeapon(ItemType) || IsOffhand(ItemType) ||
