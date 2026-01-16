@@ -248,7 +248,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
         private bool IsValidCombatTarget(Actor actor)
         {
-            if (actor.Dead || actor == Body)
+            if (actor.Dead || actor == Body || actor.Hidden)
                 return false;
 
             // Player targets
@@ -363,6 +363,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
         private void ApplyPowerCooldown(int powerSNO, PowerScript power, float cooldownTime = 0f)
         {
             // Determine cooldown based on power type
+            if (GameServerConfig.Instance.DisableMonsterPowerCooldowns)
+                return;
             if (power is SummoningSkill)
             {
                 cooldownTime = Body is Boss ? SUMMONING_COOLDOWN_BOSS : SUMMONING_COOLDOWN_NORMAL;

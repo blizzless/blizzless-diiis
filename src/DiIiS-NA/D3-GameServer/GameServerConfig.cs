@@ -77,6 +77,12 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(MonsterThinkTick), value);
 		}
 
+        public bool DisableMonsterPowerCooldowns
+        {
+            get => GetBoolean(nameof(DisableMonsterPowerCooldowns), false);
+            set => Set(nameof(DisableMonsterPowerCooldowns), value);
+        }
+
         #region Game Mods
 
         /// <summary>
