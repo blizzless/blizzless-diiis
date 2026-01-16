@@ -320,8 +320,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
             //if (Attributes[GameAttribute.Item_Quality_Level] > 6)
             bool identified = true;
             identified = Attributes[GameAttributes.Item_Quality_Level] > 6 && FastRandom.Instance.Chance(GameServerConfig.Instance.ChanceHighQualityUnidentified);
-            identified = identified || (Attributes[GameAttributes.Item_Quality_Level] <= 6 && FastRandom.Instance.Chance(GameServerConfig.Instance.ChanceNormalUnidentified))
-			if (!identified)
+            identified = identified || (Attributes[GameAttributes.Item_Quality_Level] <= 6 && FastRandom.Instance.Chance(GameServerConfig.Instance.ChanceNormalUnidentified));
+            if (!identified)
                 Unidentified = true;
             if (Attributes[GameAttributes.Item_Quality_Level] == 9) Attributes[GameAttributes.MinimapActive] = true;
 
@@ -678,130 +678,80 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         #region Is*
 
-        public static bool IsHealthGlobe(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "HealthGlyph");
-        }
+        public static bool IsHealthGlobe(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "HealthGlyph");
 
-        public static bool IsGold(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Gold");
-        }
+        public static bool IsGold(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Gold");
 
-        public static bool IsBloodShard(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Collectible_DevilsHand");
-        }
+        public static bool IsBloodShard(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Collectible_DevilsHand");
 
-        public static bool IsPotion(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Potion");
-        }
+        public static bool IsPotion(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Potion");
 
-        public static bool IsMetaItem(ItemTypeTable itemType)
-        {
-            return itemType.Name.StartsWith("Generic");
-        }
+        public static bool IsMetaItem(ItemTypeTable itemType) => 
+            itemType.Name.StartsWith("Generic");
 
-        public static bool IsRecipe(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "CraftingPlan");
-        }
+        public static bool IsRecipe(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "CraftingPlan");
 
-        public static bool IsTreasureBag(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "TreasureBag");
-        }
+        public static bool IsTreasureBag(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "TreasureBag");
 
-        public static bool IsAccessory(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Jewelry");
-        }
+        public static bool IsAccessory(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Jewelry");
 
-        public static bool IsJournalOrScroll(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Scroll") || ItemGroup.IsSubType(itemType, "Book");
-        }
+        public static bool IsJournalOrScroll(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Scroll") || ItemGroup.IsSubType(itemType, "Book");
 
-        public static bool IsDye(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Dye");
-        }
+        public static bool IsDye(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Dye");
 
-        public static bool IsGem(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Gem");
-        }
+        public static bool IsGem(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Gem");
 
-        public static bool IsWeapon(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Weapon");
-        }
+        public static bool IsWeapon(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Weapon");
 
-        public static bool IsArmor(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Armor");
-        }
+        public static bool IsArmor(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Armor");
 
-        public static bool IsChestArmor(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "ChestArmor");
-        }
+        public static bool IsChestArmor(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "ChestArmor");
 
-        public static bool IsOffhand(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Offhand");
-        }
+        public static bool IsOffhand(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Offhand");
 
-        public static bool IsShard(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Jewel");
-        }
+        public static bool IsShard(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Jewel");
 
-        public static bool IsBelt(ItemTypeTable itemType)
-        {
-            return itemType.Name.Contains("Belt");
-        }
+        public static bool IsBelt(ItemTypeTable itemType) => 
+            itemType.Name.Contains("Belt");
 
-        public static bool IsHelm(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "Helm");
-        }
+        public static bool IsHelm(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "Helm");
 
-        public static bool IsAmulet(ItemTypeTable itemType)
-        {
-            return itemType.Name.Contains("Amulet");
-        }
+        public static bool IsAmulet(ItemTypeTable itemType) => 
+            itemType.Name.Contains("Amulet");
 
-        public static bool IsHandXbow(ItemTypeTable itemType)
-        {
-            return itemType.Name.Contains("HandXbow");
-        }
+        public static bool IsHandXbow(ItemTypeTable itemType) => 
+            itemType.Name.Contains("HandXbow");
 
-        public static bool IsShield(ItemTypeTable itemType)
-        {
-            return itemType.Name.Contains("Shield");
-        }
+        public static bool IsShield(ItemTypeTable itemType) => 
+            itemType.Name.Contains("Shield");
 
-        public static bool IsRing(ItemTypeTable itemType)
-        {
-            return itemType.Name.Contains("Ring");
-        }
+        public static bool IsRing(ItemTypeTable itemType) => 
+            itemType.Name.Contains("Ring");
 
-        public static bool IsQuiver(ItemTypeTable itemType)
-        {
-            return itemType.Name.Contains("Quiver");
-        }
+        public static bool IsQuiver(ItemTypeTable itemType) => 
+            itemType.Name.Contains("Quiver");
 
-        public static bool IsBow(ItemTypeTable itemType)
-        {
-            return ItemGroup.IsSubType(itemType, "GenericBowWeapon");
-        }
+        public static bool IsBow(ItemTypeTable itemType) => 
+            ItemGroup.IsSubType(itemType, "GenericBowWeapon");
 
-        public static bool Is2H(ItemTypeTable itemType)
-        {
-            return ItemGroup.Is2H(itemType);
-        }
+        public static bool Is2H(ItemTypeTable itemType) => 
+            ItemGroup.Is2H(itemType);
 
         #endregion
 
@@ -1420,7 +1370,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 
         public override void OnPlayerApproaching(Player player)
         {
-            if (PowerMath.Distance2D(player.Position, Position) < 3f && !ZPositionCorrected)
+            if (PowerMath.Distance2D(player.Position, Position) < GameServerConfig.Instance.DistanceOnPlayerApproaching && !ZPositionCorrected)
             {
                 foreach (var gplayer in player.World.Game.Players.Values)
                     if (gplayer.GroundItems.ContainsKey(GlobalID) && gplayer != player)

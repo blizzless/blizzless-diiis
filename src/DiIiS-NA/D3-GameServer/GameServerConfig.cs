@@ -83,6 +83,12 @@ namespace DiIiS_NA.GameServer
             set => Set(nameof(DisableMonsterPowerCooldowns), value);
         }
 
+        public float DistanceOnPlayerApproaching
+        {
+            get => GetFloat(nameof(DistanceOnPlayerApproaching), 3f);
+            set => Set(nameof(DistanceOnPlayerApproaching), value);
+        }
+
         #region Game Mods
 
         /// <summary>
@@ -368,7 +374,7 @@ namespace DiIiS_NA.GameServer
 
         #endregion
         public static GameServerConfig Instance { get; } = new();
-
+        
         private GameServerConfig() : base("Game-Server")
 		{
 		}
