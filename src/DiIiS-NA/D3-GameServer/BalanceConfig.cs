@@ -62,6 +62,7 @@ namespace DiIiS_NA.GameServer
             get => GetFloat(nameof(NormalBossDamageMultiplier), 1.0f);
             set => Set(nameof(NormalBossDamageMultiplier), value);
         }
+
         public float FixedCooldownSeconds
         {
             get => GetFloat(nameof(FixedCooldownSeconds), -1);
