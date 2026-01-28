@@ -806,7 +806,7 @@ namespace DiIiS_NA.LoginServer.Toons
 				else
 				{
 					var dbQuests = DBSessions.SessionQueryWhere<DBQuestHistory>(dbi => dbi.DBToon.Id == PersistentID);
-#if DEBUG
+//#if DEBUG
 					digest
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(87700))
@@ -893,23 +893,23 @@ namespace DiIiS_NA.LoginServer.Toons
 						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0)
 							.SetSnoQuest(273408))
 						;
-#else
-										foreach (var inv in _dbQuests)
-										{
-											// load quests
-											var quest = D3.Hero.QuestHistoryEntry.CreateBuilder()
-													.SetSnoQuest(inv.QuestId);
-													//deprecated //.SetDifficulty(inv.Difficulty);
-												if (inv.isCompleted != true)
-													quest.SetHighestPlayedQuestStep(inv.QuestStep);
-											digest.AddQuestHistory(quest);
-										}
-					digest
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(80322))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(93595))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(112498))
-						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(251355));
-#endif
+//#else
+//										foreach (var inv in _dbQuests)
+//										{
+//											// load quests
+//											var quest = D3.Hero.QuestHistoryEntry.CreateBuilder()
+//													.SetSnoQuest(inv.QuestId);
+//													//deprecated //.SetDifficulty(inv.Difficulty);
+//												if (inv.isCompleted != true)
+//													quest.SetHighestPlayedQuestStep(inv.QuestStep);
+//											digest.AddQuestHistory(quest);
+//										}
+//					digest
+//						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(80322))
+//						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(93595))
+//						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(112498))
+//						.AddQuestHistory(D3.Hero.QuestHistoryEntry.CreateBuilder().SetDifficultyDeprecated(0).SetSnoQuest(251355));
+//#endif
 				}
 
 				return digest.Build();
