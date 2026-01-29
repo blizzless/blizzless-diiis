@@ -413,7 +413,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             lh.Position = host.Position;
                             break;
                         }
-                        this.Game.GetWorld(62751).SpawnMonster(203030, lh.Position);
+                        //this.Game.GetWorld(62751).SpawnMonster(203030, lh.Position);
 
                         ListenConversation(198588, new Advance());
                 }
