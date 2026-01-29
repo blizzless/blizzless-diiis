@@ -57,24 +57,31 @@ public class DebugCommand : CommandGroup
             return "Debug mode deactivated.";
         }
 
-        player.Attributes.FixedMap.Add(FixedAttribute.Dev, (attributes) =>
+        // powerful
+        player.Attributes.FixedMap.Add(FixedAttribute.Powerful, (attributes) =>
         {
-            // powerful - should be reset when not fixed anymore.
             attributes[GameAttributes.Damage_Delta, 0] = float.MaxValue;
             attributes[GameAttributes.Damage_Min, 0] = float.MaxValue;
             attributes[GameAttributes.Damage_Weapon_Delta, 0] = float.MaxValue;
             attributes[GameAttributes.Damage_Weapon_Min, 0] = float.MaxValue;
+        });
 
-            // invulnerable
+        // invulnerable
+        player.Attributes.FixedMap.Add(FixedAttribute.Invulnerable, (attributes) =>
+        {
             attributes[GameAttributes.Invulnerable] = true;
-
-            // max speed
-            attributes[GameAttributes.Running_Rate] = SpeedCommand.MaxSpeedValue;
-        }, removedAction: (attributes) =>
+        }, attributes => // on deactivate
         {
             attributes[GameAttributes.Invulnerable] = false;
+        });
+        player.Attributes.FixedMap.Add(FixedAttribute.Speed, attributes =>
+        {
+            attributes[GameAttributes.Running_Rate] = SpeedCommand.MaxSpeedValue;
+        }, attributes => // on deactivate
+        {
             attributes[GameAttributes.Running_Rate] = SpeedCommand.NormalSpeedValue;
         });
+
         player.Attributes.BroadcastChangedIfRevealed();
 
         return $"You are now invulnerable, powerful and with max speed ({SpeedCommand.MaxSpeedValue}).";

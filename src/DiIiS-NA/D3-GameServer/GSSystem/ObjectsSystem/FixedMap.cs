@@ -43,8 +43,15 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
 
         public void Remove(FixedAttribute name)
         {
-            _attributeMap.Remove(name);
-            _removedAttributeMap.Remove(name);
+            try 
+            { 
+                _attributeMap.Remove(name);
+                _removedAttributeMap.Remove(name);
+            }
+            catch (Exception ex)
+            {
+                _logger.WarnException(ex, $"Cannot remove {name} fixed attribute.");
+            }
         }
 
         public void Clear() => _attributeMap.Clear();
