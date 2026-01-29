@@ -67,6 +67,7 @@ public class DebugCommand : CommandGroup
 
             // invulnerable
             attributes[GameAttributes.Invulnerable] = true;
+
             // max speed
             attributes[GameAttributes.Running_Rate] = SpeedCommand.MaxSpeedValue;
         }, removedAction: (attributes) =>
@@ -76,6 +77,6 @@ public class DebugCommand : CommandGroup
         });
         player.Attributes.BroadcastChangedIfRevealed();
 
-        return $"You are now invulnerable, powerful and max speed ({SpeedCommand.MaxSpeedValue}).";
+        return $"You are now invulnerable, powerful and with max speed ({SpeedCommand.MaxSpeedValue}).";
     }
 }
