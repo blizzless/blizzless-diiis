@@ -5,7 +5,7 @@ using DiIiS_NA.LoginServer.Battle;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("conversation", "Starts a conversation. \n Usage: conversation snoConversation", inGameOnly: true)]
+[CommandGroup("conversation", "Starts a conversation. \n Usage: conversation <snoConversation>", inGameOnly: true)]
 public class ConversationCommand : CommandGroup
 {
     [DefaultCommand(inGameOnly: true)]
