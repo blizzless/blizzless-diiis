@@ -31,6 +31,7 @@ namespace DiIiS_NA.D3_GameServer.CommandManager.Commands
                 {
                     fixedMap.Remove(FixedAttribute.Betrayal);
                     attributes[GameAttributes.Team_Override] = -1;
+                    attributes.BroadcastIfRevealed();
                 }
             }
 
