@@ -19,11 +19,11 @@ public class ActorsCommand : CommandGroup
             .OrderBy(a =>
             {
                 var position = player.Position;
-                return a.Value.Position.DistanceSquared(ref position);
+                return a.Value.Position.Distance(position);
             }).Select(a =>
             {
                 var position = player.Position;
-                var distance = a.Value.Position.DistanceSquared(ref position);
+                var distance = a.Value.Position.Distance(position);
                 return $"[{a.Value.GetType().Name}] - {a.Value.SNO}\n" +
                        $" > Distance: {distance}\n" +
                        $" > SnoId: {(int)a.Value.SNO}";
@@ -39,18 +39,18 @@ public class ActorsCommand : CommandGroup
             .OrderBy(a =>
             {
                 var position = player.Position;
-                return a.Value.Position.DistanceSquared(ref position);
+                return a.Value.Position.Distance(position);
             }).Select(a =>
             {
                 var position = player.Position;
-                var distance = a.Value.Position.DistanceSquared(ref position);
+                var distance = a.Value.Position.Distance(position);
                 return $"[{a.Value.GetType().Name}] - {a.Value.SNO}\n" +
                        $" > Distance: {distance}\n" +
                        $" > SnoId: {(int)a.Value.SNO}";
             }));
     }
     
-    [Command("all-usable", "Sets all actors operable in world sorted by distance to you.e (not the wisest invention).", Account.UserLevels.Tester, inGameOnly: true)]
+    [Command("all-usable", "Sets all actors operable/visible in world sorted by distance to you. (not the wisest invention).", Account.UserLevels.Tester, inGameOnly: true)]
     public string Usable(string[] @params, BattleClient invokerClient)
     {
         var player = invokerClient.InGameClient.Player;

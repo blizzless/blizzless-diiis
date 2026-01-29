@@ -60,32 +60,32 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 				{
 					ctx.Spinner(Spinner.Known.Dots10);
 					Player.GeneratePLB();
-					ctx.Status("Loading recipes...");
+					ctx.Status("[purple]Loading[/] recipes...");
                     LoadRecipes();
-					ctx.Status("Loading items...");
+					ctx.Status("[purple]Loading[/] items...");
 					LoadItems();
-                    ctx.Status("Loading paragon's bonuses...");
+                    ctx.Status("[purple]Loading[/] paragon's bonuses...");
                     LoadParagonBonuses();
                     //LoadAffixes(); //just for checking values
                     //LoadPowers();
                     //LoadQuests();
 
-                    ctx.Status("Loading tutorials...");
+                    ctx.Status("[purple]Loading[/] tutorials...");
                     Tutorials = MPQStorage.Data.Assets[SNOGroup.Tutorial].Keys.OrderBy(i => i).ToList();
 
-                    ctx.Status("Loading bonuses/gem bonuses...");
+                    ctx.Status("[purple]Loading[/] bonuses/gem bonuses...");
                     LoadItemSetBonuses();
 					LoadGemBonuses();
-                    ctx.Status("Loading handlers...");
+                    ctx.Status("[purple]Loading[/] handlers...");
                     LoadHandlers();
-                    ctx.Status("Loading lores...");
+                    ctx.Status("[purple]Loading[/] lores...");
                     LoadLore();
-                    ctx.Status("Loading bounties...");
+                    ctx.Status("[purple]Loading[/] bounties...");
                     LoadBounties();
                     //LoadConversations();
                     //if (Net.GS.Config.Instance.Enabled)
 
-                    ctx.Status("Loading worlds...");
+                    ctx.Status("[purple]Loading[/] worlds...");
                     Scene.PreCacheMarkers();
 
 					SetAllowedTypes();

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace DiIiS_NA.D3_GameServer.CommandManager.Commands
 {
     [CommandGroup("betrayal", "Gives player ability to attack other players. \n Usage: !betrayal", inGameOnly: true)]
-    internal class BetrayalCommand
+    internal class BetrayalCommand : CommandGroup
     {
         [DefaultCommand(inGameOnly: true)]
         public string Betrayal(string[] @params, BattleClient invokerClient)

@@ -47,6 +47,13 @@ namespace DiIiS_NA
         Test,
         Release
     }
+
+    public enum DevelopmentBuildEnum
+    {
+        Development,
+        Release
+    }
+
     class Program
     {
         private static readonly Logger Logger = LogManager.CreateLogger("BZ.Net");
@@ -67,21 +74,19 @@ namespace DiIiS_NA
         public static string RestServerIp = RestConfig.Instance.IP;
         public static string PublicGameServerIp = DiIiS_NA.GameServer.NATConfig.Instance.PublicIP;
 
-        public static int Build => 30;
-        public static int Stage => 2;
+        public static int Build => 31;
+        public static int Stage => 1;
         public static TypeBuildEnum TypeBuild => TypeBuildEnum.Beta;
+        public static DevelopmentBuildEnum DevelopmentBuild => DevelopmentBuildEnum.Development;
         private static bool DiabloCoreEnabled = DiIiS_NA.GameServer.GameServerConfig.Instance.CoreActive;
 
         static void WriteBanner()
         {
+            var figlet = new FigletText("Blizzless").Color(DevelopmentBuild == DevelopmentBuildEnum.Development ? Color.Aquamarine1_1 : Color.Red3_1);
+            AnsiConsole.Write(figlet);
             void RightTextRule(string text, string ruleStyle) => AnsiConsole.Write(new Rule(text).RuleStyle(ruleStyle));
             string Url(string url) => $"[link={url}]{url}[/]";
-            RightTextRule("[dodgerblue1]Blizz[/][deepskyblue2]less[/]", "steelblue1");
-            RightTextRule($"[dodgerblue3]Build [/][deepskyblue3]{Build}[/]", "steelblue1_1");
-            RightTextRule($"[dodgerblue3]Stage [/][deepskyblue3]{Stage}[/]", "steelblue1_1");
-            RightTextRule($"[deepskyblue3]{TypeBuild}[/]", "steelblue1_1");
-            RightTextRule($"Diablo III [red]RoS 2.7.4.84161[/] - {Url("https://github.com/blizzless/blizzless-diiis")}",
-                "red");
+            RightTextRule($"[dodgerblue1]Blizz[/][deepskyblue2]less[/] Build {Build} Stage {Stage} {TypeBuild.ToString()} {DevelopmentBuild.ToString()}", "steelblue1");
 
             // closes all agents from Battle.NET and preventing a gamefile change in local development.
             if (GameServerConfig.Instance.IsLocalDev)

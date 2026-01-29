@@ -1,5 +1,6 @@
 ﻿using CrystalMpq;
 using DiIiS_NA.Core.Logging;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,18 +25,22 @@ namespace DiIiS_NA.Core.MPQ
         {
             this.Loaded = false;
             this.RequiredVersion = requiredVersion;
-
-            foreach (var file in baseFiles)
-            {
-                var mpqFile = MPQStorage.GetMPQFile(file);
-                if (mpqFile == null)
+            AnsiConsole.Status()
+                .Start("Processing MPQs...", ctx =>
                 {
-                    Logger.Error("Cannot find base MPQ file: {0}.", file);
-                    return;
-                }
-                this.BaseMPQFiles.Add(mpqFile);
-                Logger.Trace("Added MPQ storage: {0}.", file);
-            }
+                    foreach (var file in baseFiles)
+                    {
+                        var mpqFile = MPQStorage.GetMPQFile(file);
+                        if (mpqFile == null)
+                        {
+                            AnsiConsole.MarkupLine($"MPQ File not found [red]{file}[/]");
+                            return;
+                        }
+                        BaseMPQFiles.Add(mpqFile);
+                        ctx.Status($"Added MPQ storage {file}");
+                    }
+                });
+            
 
             this.PatchPattern = patchPattern;
             this.ConstructChain();
