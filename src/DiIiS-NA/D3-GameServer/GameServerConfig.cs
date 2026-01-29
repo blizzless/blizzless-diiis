@@ -89,6 +89,12 @@ namespace DiIiS_NA.GameServer
             set => Set(nameof(DistanceOnPlayerApproaching), value);
         }
 
+		public bool BetrayalCommand
+		{
+			get => GetBoolean(nameof(BetrayalCommand), true);
+			set => Set(nameof(BetrayalCommand), value);
+		}
+
         #region Game Mods
 
         /// <summary>

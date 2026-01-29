@@ -39,10 +39,6 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem
             0x00011570,
             0x00011580,
             0x00011590,
-            // fixme no animation
-            0x00011600,
-            // fixme no animation
-            0x00011610,
         };
         private static readonly int[] idleAnimationTags = new[] {
             0x00011210,
@@ -54,11 +50,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem
             0x00011270,
             0x00011280,
             0x00011290,
-            0x00011300,
-            // fixme no animation
-            0x00011310,
-            // fixme no animation
-            0x00011320
+            0x00011300
         };
 
 
@@ -85,8 +77,27 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem
 
         internal ulong? Criteria => DbRef.Level == 10 ? (ulong)criteriaForLevel10[artisanType] : null;
 
-        internal int AnimationTag => animationTags[DbRef.Level - 1];
-        internal int IdleAnimationTag => idleAnimationTags[DbRef.Level - 1];
+        internal int AnimationTag
+        {
+            get
+            {
+                if (DbRef.Level >= 10)
+                    return animationTags[9]; // Force to use the LVL 10 Animation.
+
+                return animationTags[DbRef.Level - 1];
+            }
+        }
+
+        internal int IdleAnimationTag
+        {
+            get
+            {
+                if (DbRef.Level >= 10)
+                    return idleAnimationTags[9]; // Force to use the LVL 10 Idle Animation.
+
+                return idleAnimationTags[DbRef.Level - 1];
+            }
+        }
 
         internal int Type => Array.IndexOf(canBeTrained, artisanType);
     }

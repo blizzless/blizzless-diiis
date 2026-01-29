@@ -56,10 +56,12 @@ using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Pet;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Game;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Hireling;
 using DiIiS_NA.Core.Helpers.Hash;
+using DiIiS_NA.D3_GameServer;
 using DiIiS_NA.GameServer.MessageSystem.Message.Definitions.Encounter;
 using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 using DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans;
 using DiIiS_NA.D3_GameServer.GSSystem.PlayerSystem;
+using DiIiS_NA.LoginServer;
 using NHibernate.Util;
 
 namespace DiIiS_NA.GameServer.GSSystem.PlayerSystem;
@@ -106,7 +108,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     public List<Actor> NecromancerSkeletons = new() { };
     public bool ActiveSkeletons = false;
-    
+
     public Actor ActiveGolem = null;
     public bool EnableGolem = false;
 
@@ -2157,7 +2159,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
                 break;
 
-            #endregion
+                #endregion
         }
     }
 
@@ -2639,7 +2641,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         Logger.WarnException(ex, "OnLoadWorldActions");
                     }
                 }
-                
+
                 World.Game.OnLoadWorldActions[World.SNO].Clear();
             }
         }
@@ -2647,7 +2649,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         if (World.Game.OnLoadSceneActions.ContainsKey(CurrentScene.SceneSNO.Id))
         {
             Logger.MethodTrace($"OnLoadSceneActions: {CurrentScene.SceneSNO.Id}");
-            
+
             Logger.MethodTrace(World.SNO.ToString());
             lock (World.Game.OnLoadSceneActions[CurrentScene.SceneSNO.Id])
             {
@@ -2931,31 +2933,51 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             return;
 
         var recipeDefinition = ItemGenerator.GetRecipeDefinition(trainHelper.TrainRecipeName);
+
+        // 1) Validade the Gold.
         if (Inventory.GetGoldAmount() < recipeDefinition.Gold)
             return;
 
-        var requiredIngridients = recipeDefinition.Ingredients.Where(x => x.ItemsGBID > 0);
-        // FIXME: Inventory.HaveEnough doesn't work for some craft consumables
-        var haveEnoughIngredients = requiredIngridients.All(x => Inventory.HaveEnough(x.ItemsGBID, x.Count));
-        if (!haveEnoughIngredients)
-            return;
+        // 2) Extract only valid ingredients (actual items).
+        var requiredIngredients = recipeDefinition.Ingredients
+            .Where(x => x.ItemsGBID > 0 && x.Count > 0)
+            .ToList();
 
+        // 3) If the recipe requires items, validate whether they exist in the Inventory.
+        if (requiredIngredients.Any())
+        {
+
+            var haveEnoughIngredients = requiredIngredients
+                .All(x => Inventory.HaveEnough(x.ItemsGBID, x.Count, this));
+
+            if (!haveEnoughIngredients)
+                return;
+
+            var playerAcc = this.InGameClient.BnetClient.Account.GameAccount;
+
+            // We already know that Artisan training is just consume Death's breath.
+            playerAcc.CraftItem4--;
+
+        }
+
+        // 4) Always discount Gold (all recipes have a gold cost).
         Inventory.RemoveGoldAmount(recipeDefinition.Gold);
-        foreach (var ingr in requiredIngridients)
-            // FIXME: Inventory.GrabSomeItems doesn't work for some craft consumables
-            Inventory.GrabSomeItems(ingr.ItemsGBID, ingr.Count);
 
+        // 5) Advance the artisan's level.
         trainHelper.DbRef.Level++;
         World.Game.GameDbSession.SessionUpdate(trainHelper.DbRef);
 
+        // 6) Related achievements & criteria.
         if (trainHelper.Achievement is not null)
             GrantAchievement(trainHelper.Achievement.Value);
+
         if (trainHelper.Criteria is not null)
             GrantCriteria(trainHelper.Criteria.Value);
 
         if (_artisanTrainHelpers.All(x => x.Value.HasMaxLevel))
             GrantCriteria(74987249993545);
 
+        // 7) Notify the Client.
         client.SendMessage(new CrafterLevelUpMessage
         {
             Type = trainHelper.Type,
@@ -2965,9 +2987,6 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         });
 
         LoadCrafterData();
-
-
-        /**/
     }
 
     public void UnlockTransmog(int transmogGBID)
@@ -3001,9 +3020,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
     private bool DisconnectIdle()
     {
-        if (!GameServerConfig.Instance.AfkDisconnect || InGameClient.Game.TickCounter - LastMovementTick <= 54000) 
+        if (!GameServerConfig.Instance.AfkDisconnect || InGameClient.Game.TickCounter - LastMovementTick <= 54000)
             return false;
-        
+
         Logger.Warn($"Player $[underline white]${Name}$[/]$ disconnected for being AFK.");
         Opcodes.CloseGameMessage.SendTo(InGameClient);
         return true;
@@ -3013,7 +3032,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     {
         if (BetweenWorlds) return;
         if (DisconnectIdle()) return;
-        
+
         // Check the gold
         if (InGameClient.Game.TickCounter % 120 == 0 && World != null && GoldCollectedTempCount > 0)
         {
@@ -3208,7 +3227,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         });
                         World.Leave(skeleton);
                     }
-                    catch{}
+                    catch { }
                 }
 
                 NecromancerSkeletons.Clear();
@@ -3615,8 +3634,11 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         System.Threading.Tasks.Task.Delay(3).Wait();
         RevealActorsToPlayer();
+
         if (!_motdSent && LoginServer.LoginServerConfig.Instance.MotdEnabled)
+        {
             InGameClient.BnetClient.SendMotd();
+        }
         //
     }
 
@@ -4002,8 +4024,8 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             var baseStrength = 0.0f;
             var multiplier = ParagonLevel > 0 ? GameServerConfig.Instance.StrengthParagonMultiplier : GameServerConfig.Instance.StrengthMultiplier;
             baseStrength = Toon.HeroTable.CoreAttribute == GameBalance.PrimaryAttribute.Strength
-                ? Toon.HeroTable.Strength + (Level - 1) * 3
-                : Toon.HeroTable.Strength + (Level - 1);
+            ? Toon.HeroTable.Strength + (Level - 1) * 3
+            : Toon.HeroTable.Strength + (Level - 1);
 
             return baseStrength * multiplier;
         }
@@ -4087,7 +4109,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             HotBarButtons = SkillSet.HotBarSkills,
             HotBarButton = new HotbarButtonData
             {
-                SNOSkill = -1, RuneType = -1, ItemGBId =
+                SNOSkill = -1,
+                RuneType = -1,
+                ItemGBId =
                     StringHashHelper.HashItemName(
                         "HealthPotionBottomless") //2142362846//this.Toon.DBActiveSkills.PotionGBID
                 ,
@@ -4329,8 +4353,14 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             //returns empty data
             var emptyHireling = new HirelingInfo
             {
-                HirelingIndex = type, GbidName = 0x0000, Dead = false, Skill1SNOId = -1, Skill2SNOId = -1,
-                Skill3SNOId = -1, Skill4SNOId = -1, annItems = -1
+                HirelingIndex = type,
+                GbidName = 0x0000,
+                Dead = false,
+                Skill1SNOId = -1,
+                Skill2SNOId = -1,
+                Skill3SNOId = -1,
+                Skill4SNOId = -1,
+                annItems = -1
             };
             return emptyHireling;
         }
@@ -4381,7 +4411,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     public void LearnRecipe(ArtisanType? artisan, int recipe)
     {
         Logger.Trace("Learning recipe #{0}, Artisan type: {1}", recipe, artisan);
-        
+
         /*var query = this.World.Game.GameDBSession.SessionQuerySingle<DBCraft>(
             dbi =>
             dbi.DBGameAccount.Id == this.Toon.GameAccount.PersistentID &&
@@ -4488,18 +4518,18 @@ public class Player : Actor, IMessageConsumer, IUpdateable
 
         if (BlacksmithUnlocked || InGameClient.Game.CurrentAct == 3000)
             InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataBlacksmithInitialMessage)
-                { Data = blacksmith.ToByteArray() });
+            { Data = blacksmith.ToByteArray() });
 
         if (JewelerUnlocked || InGameClient.Game.CurrentAct == 3000)
             InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataJewelerInitialMessage)
-                { Data = jeweler.ToByteArray() });
+            { Data = jeweler.ToByteArray() });
 
         if (MysticUnlocked || InGameClient.Game.CurrentAct == 3000)
         {
             InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataMysticInitialMessage)
-                { Data = mystic.ToByteArray() });
+            { Data = mystic.ToByteArray() });
             InGameClient.SendMessage(new GenericBlobMessage(Opcodes.CraftingDataTransmogInitialMessage)
-                { Data = transmog.ToByteArray() });
+            { Data = transmog.ToByteArray() });
         }
     }
 
@@ -4598,7 +4628,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
     private readonly Dictionary<ulong, uint> _achievementCounters = new();
 
     public int DodgesInARow { get; set; } = 0;
-    public int BlocksInARow { get; set; }= 0;
+    public int BlocksInARow { get; set; } = 0;
 
     public void GrantAchievement(ulong id)
     {
@@ -4933,7 +4963,6 @@ public class Player : Actor, IMessageConsumer, IUpdateable
         }
     }
 
-
     #endregion
 
     #region experience handling
@@ -5105,13 +5134,15 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             if (World.Game.IsHardcore && Attributes[GameAttributes.Level] >= 70)
                 addedExp *= 5;
 
-            if (Attributes[GameAttributes.Alt_Level] >= 515)
-            {
-                var XPcap = 91.262575239831f * Math.Pow(Attributes[GameAttributes.Alt_Level], 3) -
-                            44301.083380565047f * Math.Pow(Attributes[GameAttributes.Alt_Level], 2) +
-                            3829010.395566940308f * Attributes[GameAttributes.Alt_Level] + 322795582.543823242188f;
-                addedExp = (int)((float)(ParagonLevelBorders[Attributes[GameAttributes.Alt_Level]] / XPcap) * addedExp);
-            }
+            // To'do verify this formula.
+            // Remove this if to remove paragon level cap.
+            //if (Attributes[GameAttributes.Alt_Level] >= 515)
+            //{
+            //    var XPcap = 91.262575239831f * Math.Pow(Attributes[GameAttributes.Alt_Level], 3) -
+            //                44301.083380565047f * Math.Pow(Attributes[GameAttributes.Alt_Level], 2) +
+            //                3829010.395566940308f * Attributes[GameAttributes.Alt_Level] + 322795582.543823242188f;
+            //    addedExp = (int)((float)(ParagonLevelBorders[Attributes[GameAttributes.Alt_Level]] / XPcap) * addedExp);
+            //}
 
             if (Attributes[GameAttributes.Rest_Experience_Lo] > 0)
             {
@@ -5576,9 +5607,9 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                             });
 
                             plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameChatTextMessage)
-                                { Message = "Messages:LR_BossSpawned" });
+                            { Message = "Messages:LR_BossSpawned" });
                             plr.InGameClient.SendMessage(new DisplayGameTextMessage(Opcodes.DisplayGameTextMessage)
-                                { Message = "Messages:LR_BossSpawned" });
+                            { Message = "Messages:LR_BossSpawned" });
                         }
 
                         StartConversation(World, 366542);
@@ -5678,40 +5709,40 @@ public class Player : Actor, IMessageConsumer, IUpdateable
             case 0:
                 return;
             case > 0:
-            {
-                if (Attributes[GameAttributes.Hitpoints_Cur] < Attributes[GameAttributes.Hitpoints_Max_Total])
                 {
-                    if (Toon.Class == ToonClass.Barbarian)
-                        if (SkillSet.HasPassive(205217))
-                            quantity += 0.01f * Attributes[GameAttributes.Health_Globe_Bonus_Health];
-
-                    if (guidingLight) //Monk -> Guiding Light
+                    if (Attributes[GameAttributes.Hitpoints_Cur] < Attributes[GameAttributes.Hitpoints_Max_Total])
                     {
-                        var missingHP =
-                            (Attributes[GameAttributes.Hitpoints_Max_Total] - Attributes[GameAttributes.Hitpoints_Cur]) /
-                            Attributes[GameAttributes.Hitpoints_Max_Total];
-                        if (missingHP > 0.05f)
-                            if (!World.BuffManager.HasBuff<GuidingLightBuff>(this))
-                                World.BuffManager.AddBuff(this, this,
-                                    new GuidingLightBuff(Math.Min(missingHP, 0.3f),
-                                        TickTimer.WaitSeconds(World.Game, 10.0f)));
+                        if (Toon.Class == ToonClass.Barbarian)
+                            if (SkillSet.HasPassive(205217))
+                                quantity += 0.01f * Attributes[GameAttributes.Health_Globe_Bonus_Health];
+
+                        if (guidingLight) //Monk -> Guiding Light
+                        {
+                            var missingHP =
+                                (Attributes[GameAttributes.Hitpoints_Max_Total] - Attributes[GameAttributes.Hitpoints_Cur]) /
+                                Attributes[GameAttributes.Hitpoints_Max_Total];
+                            if (missingHP > 0.05f)
+                                if (!World.BuffManager.HasBuff<GuidingLightBuff>(this))
+                                    World.BuffManager.AddBuff(this, this,
+                                        new GuidingLightBuff(Math.Min(missingHP, 0.3f),
+                                            TickTimer.WaitSeconds(World.Game, 10.0f)));
+                        }
+
+                        Attributes[GameAttributes.Hitpoints_Cur] = Math.Min(
+                            Attributes[GameAttributes.Hitpoints_Cur] + quantity,
+                            Attributes[GameAttributes.Hitpoints_Max_Total]);
+
+                        Attributes.BroadcastChangedIfRevealed();
+                        InGameClient.SendMessage(new FloatingNumberMessage
+                        {
+                            ActorID = DynamicID(this),
+                            Number = quantity,
+                            Type = FloatingNumberMessage.FloatType.Green
+                        });
                     }
 
-                    Attributes[GameAttributes.Hitpoints_Cur] = Math.Min(
-                        Attributes[GameAttributes.Hitpoints_Cur] + quantity,
-                        Attributes[GameAttributes.Hitpoints_Max_Total]);
-
-                    Attributes.BroadcastChangedIfRevealed();
-                    InGameClient.SendMessage(new FloatingNumberMessage
-                    {
-                        ActorID = DynamicID(this),
-                        Number = quantity,
-                        Type = FloatingNumberMessage.FloatType.Green
-                    });
+                    break;
                 }
-
-                break;
-            }
             default:
                 Attributes[GameAttributes.Hitpoints_Cur] = Math.Max(
                     Attributes[GameAttributes.Hitpoints_Cur] + quantity,

@@ -1,4 +1,5 @@
-﻿using DiIiS_NA.GameServer.CommandManager;
+﻿using DiIiS_NA.GameServer;
+using DiIiS_NA.GameServer.CommandManager;
 using DiIiS_NA.GameServer.GSSystem.ObjectsSystem;
 using DiIiS_NA.GameServer.MessageSystem;
 using DiIiS_NA.LoginServer.Battle;
@@ -16,6 +17,11 @@ namespace DiIiS_NA.D3_GameServer.CommandManager.Commands
         [DefaultCommand(inGameOnly: true)]
         public string Betrayal(string[] @params, BattleClient invokerClient)
         {
+            if (!GameServerConfig.Instance.BetrayalCommand)
+            {
+                return "Betrayal command disabled.";
+            }
+
             foreach (var player in invokerClient.InGameClient.Game.Players)
             {
                 var attributes = player.Value.Attributes;
