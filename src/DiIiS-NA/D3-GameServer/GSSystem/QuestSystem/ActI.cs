@@ -369,13 +369,13 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 NextStep = 45,
                 OnAdvance = () =>
                 { //kill Daltin (156801)
+                    DestroyFollower(ActorSno._leah);
                     ActorSystem.Actor CapitanDaltyn = null;
                     Vector3D[] Zombies = new Vector3D[4];
                     Zombies[0] = new Vector3D(50.00065f, 125.4087f, 0.1000305f);
                     Zombies[1] = new Vector3D(54.88688f, 62.24541f, 0.1000305f);
                     Zombies[2] = new Vector3D(86.45869f, 77.09571f, 0.1000305f);
                     Zombies[3] = new Vector3D(102.117f, 97.59058f, 0.1000305f);
-
 
 
                     Game.AddOnLoadWorldAction(WorldSno.trout_adriascellar, () =>
@@ -411,11 +411,11 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                             lh.Hidden = false;
                             lh.Teleport(host.Position);
                             lh.Position = host.Position;
+                            break;
                         }
-                        //this.Game.GetWorld(62751).SpawnMonster(203030, lh.Position);
-                    }
-                    DestroyFollower(ActorSno._leah);
-                    ListenConversation(198588, new Advance());
+                        this.Game.GetWorld(62751).SpawnMonster(203030, lh.Position);
+
+                        ListenConversation(198588, new Advance());
                 }
             });
 
@@ -516,6 +516,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                 OnAdvance = () =>
                 { //talk to Leah in New Tristram
                     var tristramWorld = Game.GetWorld(WorldSno.trout_town);
+
                     Game.AddOnLoadWorldAction(WorldSno.trdun_cain_intro, () =>
                     {
                         Open(Game.GetWorld(WorldSno.trdun_cain_intro), ActorSno._trdun_cath_bookcaseshelf_door_reverse);
@@ -530,7 +531,7 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem
                     var leah = tristramWorld.GetActorsBySNO(ActorSno._leah);
                     if (!leah.Any())
                     {
-                        Logger.Warn("$[lightseagreen]$Leah$[/]$ not found in world.");
+                        Logger.Warn("Actor $[lightseagreen]$Leah$[/]$ not found in world.");
                     }
                     foreach (var l in leah)
                     {

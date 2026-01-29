@@ -422,14 +422,25 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
                 .Select(p => p.Key)
                 .ToList();
 
-            // Prefer non-melee attacks
-            if (availablePowers.Where(p => p != MELEE_ATTACK_SNO).TryPickRandom(out var selectedPower))
-                return selectedPower;
-
-            // Fall back to melee
-            if (availablePowers.Contains(MELEE_ATTACK_SNO))
-                return MELEE_ATTACK_SNO;
-
+            // No power, let's use Chance to decide preference over non-melee attacks
+            if (FastRandom.Instance.Chance(50))
+            {
+                // Prefer non-melee attacks
+                if (availablePowers.Where(p => p != MELEE_ATTACK_SNO).TryPickRandom(out var selectedPower))
+                    return selectedPower;
+                else
+                {
+                    // Fall back to melee
+                    if (availablePowers.Contains(MELEE_ATTACK_SNO))
+                        return MELEE_ATTACK_SNO;
+                }
+            }
+            else
+            {
+                // Melee default
+                if (availablePowers.Contains(MELEE_ATTACK_SNO))
+                    return MELEE_ATTACK_SNO;
+            }
             return -1;
         }
 
@@ -488,7 +499,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
             CurrentAction = new PowerAction(Body, skillSNO, target);
             ApplyPowerCooldown(skillSNO, power);
 
-            Logger.Trace($"{GetType().Name} {nameof(FastAttack)} on {target.ActorType}");
+            //Logger.Trace($"{GetType().Name} {nameof(FastAttack)} on {target.ActorType}");
         }
     }
 }

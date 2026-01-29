@@ -12,7 +12,8 @@ namespace DiIiS_NA.GameServer.GSSystem.ObjectsSystem
         Powerful,
         Resourceful,
         AttackSpeed,
-        Dev
+        Dev,
+        Betrayal
     }
 
     public class FixedMap
