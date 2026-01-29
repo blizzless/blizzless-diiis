@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DiIiS_NA.D3_GameServer.CommandManager.Commands
 {
-    [CommandGroup("betrayal", "Sets team override of everyone to 1 \n Usage: !betrayal", inGameOnly: true)]
+    [CommandGroup("betrayal", "Gives player ability to attack other players. \n Usage: !betrayal", inGameOnly: true)]
     internal class BetrayalCommand
     {
         [DefaultCommand(inGameOnly: true)]
