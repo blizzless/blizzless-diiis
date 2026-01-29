@@ -27,14 +27,16 @@ public class RechargeCommand : CommandGroup
 
         if (@params.Length != 1 || !int.TryParse(@params[0], out var charges))
         {
-            player.Attributes[GameAttributes.Corpse_Resurrection_Charges] = 3;
-            return "Resurrection charges reset to 3.\nUsage: !recharge <positive amount>";
+            player.Attributes[GameAttributes.Corpse_Resurrection_Charges] = GameServerConfig.Instance.ResurrectionCharges;
+            player.Attributes.BroadcastIfRevealed();
+            return $"Resurrection charges reset to {GameServerConfig.Instance.ResurrectionCharges}.\nUsage: !recharge <positive amount>";
         }
 
         if (charges is < MinResurrectionCharges or > MaxResurrectionCharges)
             return $"Resurrection charges must be between {MinResurrectionCharges} and {MaxResurrectionCharges}, you specified {charges}.";
 
         player.Attributes[GameAttributes.Corpse_Resurrection_Charges] = charges;
+        player.Attributes.BroadcastIfRevealed();
         return $"Successfully set your resurrection charges to {charges}.";
     }
 
@@ -69,6 +71,7 @@ public class RechargeCommand : CommandGroup
         }
 
         player.Attributes[GameAttributes.Corpse_Resurrection_Charges] = charges;
+        player.Attributes.BroadcastIfRevealed();
 
         return $"Successfully set {player.Name}'s resurrection charges to {charges}.";
     }

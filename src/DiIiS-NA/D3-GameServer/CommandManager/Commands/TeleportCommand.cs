@@ -75,8 +75,8 @@ public class TeleportCommand : CommandGroup
         }
 
         return $"Your " +
-               $"{following.Markup().Color(Color.LightGoldenrod2_2)}/" +
-               $"{followers.Length.Markup().Color(Color.Gold1)} " +
+               $"{following}/" +
+               $"{followers.Length} " +
                $"follower(s) have been teleported to you.";
     }
 }

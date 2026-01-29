@@ -182,10 +182,10 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 				{
 					return DBAccount.UserLevel switch
 					{
-						>= UserLevels.Owner => " {icon:bnet} {c_epic}" + bTag + "{/c}",
-						>= UserLevels.GM => " {icon:bnet} {c_legendary}" + bTag + "{/c}",
-						>= UserLevels.Tester => " {icon:bnet} {c_rare}" + bTag + "{/c}",
-						_ => " {icon:bnet} " + bTag
+						>= UserLevels.Owner => "{c_epic}" + bTag + "{/c}",
+						>= UserLevels.GM => " {c_legendary}" + bTag + "{/c}",
+						>= UserLevels.Tester => "{c_rare}" + bTag + "{/c}",
+						_ => bTag
 					};
 				}
 				
