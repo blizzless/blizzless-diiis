@@ -95,6 +95,13 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(BetrayalCommand), value);
 		}
 
+        public int IdentifyInSeconds 
+		{ 
+			get => GetInt(nameof(IdentifyInSeconds), 5);
+            set => Set(nameof(IdentifyInSeconds), value);
+        }
+
+
         #region Game Mods
 
         /// <summary>
@@ -380,7 +387,6 @@ namespace DiIiS_NA.GameServer
 
         #endregion
         public static GameServerConfig Instance { get; } = new();
-        
         private GameServerConfig() : base("Game-Server")
 		{
 		}

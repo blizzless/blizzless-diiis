@@ -50,7 +50,7 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem.Implementations.ScriptObjects
 
 		public override void OnTargeted(Player player, TargetMessage message)
 		{
-			int idDuration = 60;
+			int idDuration = 60 * GameServerConfig.Instance.IdentifyInSeconds;
 			player.StartCasting(idDuration, new Action(() => {
 				foreach (var itm in player.Inventory.GetBackPackItems().Where(i => i.Unidentified))
 					itm.Identify();
