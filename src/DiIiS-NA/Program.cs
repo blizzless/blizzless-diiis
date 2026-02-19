@@ -108,7 +108,7 @@ namespace DiIiS_NA
         }
 
         /// <summary>
-        /// Closes the currently running process and releases any associated resources.
+        /// Closes the cur  rently running process and releases any associated resources.
         /// Using TASKKILL to ensure all child processes are also closed.
         /// </summary>
         static void CloseProcess(string processBinary)
@@ -166,7 +166,7 @@ namespace DiIiS_NA
                             $"Memory: {memoryGb:0.000} GB",
                             //$"CPU Time: {cpuTime.Humanize(7)}",
                             $"Uptime: {uptime.Humanize(7)}",
-                            $"Wasted CPU Time: {(uptime - cpuTime).Humanize(7)}"
+                            $"Used CPU Time: {(uptime - cpuTime).Humanize(7)}"
                         };
                         
                         var text = string.Join(" | ", statusParts);
