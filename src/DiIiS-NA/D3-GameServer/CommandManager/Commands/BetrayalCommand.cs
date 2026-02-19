@@ -31,12 +31,17 @@ namespace DiIiS_NA.D3_GameServer.CommandManager.Commands
                     fixedMap.Add(FixedAttribute.Betrayal, (attributes) =>
                     {
                         attributes[GameAttributes.Team_Override] = 1;
+                    },
+                    attributes => // on removal
+                    {
+                        attributes[GameAttributes.Team_Override] = -1;
                     });
+
+                    attributes.BroadcastIfRevealed();
                 }
                 else
                 {
                     fixedMap.Remove(FixedAttribute.Betrayal);
-                    attributes[GameAttributes.Team_Override] = -1;
                     attributes.BroadcastIfRevealed();
                 }
             }
