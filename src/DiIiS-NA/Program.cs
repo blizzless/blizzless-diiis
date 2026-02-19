@@ -139,8 +139,8 @@ namespace DiIiS_NA
             if (!DiabloCoreEnabled)
                 Logger.Warn("Diablo III Core is $[red]$disabled$[/]$.");
 #endif
-            
-#pragma warning disable CS4014
+
+#pragma warning disable CS4014 // disabling warning regarding the fire-and-forget nature of this
             Task.Run(async () =>
 #pragma warning restore CS4014
             {
