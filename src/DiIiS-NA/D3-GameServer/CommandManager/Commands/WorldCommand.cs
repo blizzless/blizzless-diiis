@@ -43,8 +43,7 @@ public class WorldCommand : CommandGroup
                    $"{world.GetAllDoors().Length} door(s)\n" +
                    $"{act} at quest '{questName}' and side-quest {world.Game.CurrentSideQuest}\n" +
                    $"{world.Actors.Count(s => s.Value is Door)} door(s)\n" +
-                   $"{(world.Game.ActiveNephalemPortal ? "Nephalem portal is ACTIVE\n" : "")}" +
-                   $"{world.Game.ActiveNephalemProgress} nephalem progress";
+                   $"{(world.Game.ActiveNephalemPortal ? "Nephalem portal is ACTIVE\n" + $"{world.Game.ActiveNephalemProgress} nephalem progress" : "")}";
         }
         catch (Exception ex)
         {
