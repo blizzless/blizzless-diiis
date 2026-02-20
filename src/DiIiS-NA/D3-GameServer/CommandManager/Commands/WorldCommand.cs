@@ -12,7 +12,7 @@ using NHibernate.Mapping;
 
 namespace DiIiS_NA.GameServer.CommandManager;
 
-[CommandGroup("world", "World commands", Account.UserLevels.Tester, inGameOnly: true)]
+[CommandGroup("world", "World commands\nUsage: !world <command>", Account.UserLevels.Tester, inGameOnly: true)]
 public class WorldCommand : CommandGroup
 {
     private Logger _logger = LogManager.CreateLogger<WorldCommand>();
@@ -35,14 +35,16 @@ public class WorldCommand : CommandGroup
             questName = "Quest: " + questManager.Game.GetCurrentQuestName() + "\n";
         try
         {
+            var openedDoors = world.Actors.Count(s => s.Value is Door { isOpened: true });
+            var closedDoors = world.Actors.Count(s => s.Value is Door { isOpened: false });
             return $"[{world.SNO.ToString()}] - {world.SNO}\n{world.Players.Count} players\n" +
                    $"{world.Monsters.Count(s => !s.Dead)} of {world.Monsters.Count} monsters alive\n" +
                    $"~ {world.Monsters.Average(s => s.Attributes[GameAttributes.Level]):F1} avg. monsters level\n" +
                    $"~ {world.Monsters.Average(s => s.Attributes[GameAttributes.Hitpoints_Max]):F1} avg. monsters HP\n" +
                    $"{world.Portals.Count} portal(s)\n" +
-                   $"{world.GetAllDoors().Length} door(s)\n" +
+                   $"{openedDoors + closedDoors} door(s) - {openedDoors} open and {closedDoors} closed\n" +
                    $"{act} at quest '{questName}' and side-quest {world.Game.CurrentSideQuest}\n" +
-                   $"{world.Actors.Count(s => s.Value is Door)} door(s)\n" +
+                   $"{} door(s) opened\n" +
                    $"{(world.Game.ActiveNephalemPortal ? "Nephalem portal is ACTIVE\n" + $"{world.Game.ActiveNephalemProgress} nephalem progress" : "")}";
         }
         catch (Exception ex)
@@ -52,7 +54,7 @@ public class WorldCommand : CommandGroup
         }
     }
 
-    [Command("quest", "Current world quest information", inGameOnly: true)]
+    [Command("quest", "Current world quest information\nUsage: !world quest", inGameOnly: true)]
     public string Quest(string[] @params, BattleClient invokerClient)
     {
         if (invokerClient?.InGameClient?.Player is not { } player)
