@@ -37,15 +37,18 @@ public class WorldCommand : CommandGroup
         {
             var openedDoors = world.Actors.Count(s => s.Value is Door { isOpened: true });
             var closedDoors = world.Actors.Count(s => s.Value is Door { isOpened: false });
-            return $"[{world.SNO.ToString()}] - {world.SNO}\n{world.Players.Count} players\n" +
-                   $"{world.Monsters.Count(s => !s.Dead)} of {world.Monsters.Count} monsters alive\n" +
-                   $"~ {world.Monsters.Average(s => s.Attributes[GameAttributes.Level]):F1} avg. monsters level\n" +
-                   $"~ {world.Monsters.Average(s => s.Attributes[GameAttributes.Hitpoints_Max]):F1} avg. monsters HP\n" +
-                   $"{world.Portals.Count} portal(s)\n" +
-                   $"{openedDoors + closedDoors} door(s) - {openedDoors} open and {closedDoors} closed\n" +
-                   $"{act} at quest '{questName}' and side-quest {world.Game.CurrentSideQuest}\n" +
-                   $"{} door(s) opened\n" +
-                   $"{(world.Game.ActiveNephalemPortal ? "Nephalem portal is ACTIVE\n" + $"{world.Game.ActiveNephalemProgress} nephalem progress" : "")}";
+            StrBuilder builder = new StrBuilder()
+                .Append($"[{world.SNO.ToString()}] - {world.SNO}")
+                .Append($"{world.Players.Count} players")
+                .Append($"{world.Monsters.Count(s => !s.Dead)} of {world.Monsters.Count} monsters alive")
+                .Append($"~ {world.Monsters.Average(s => s.Attributes[GameAttributes.Level]):F1} avg. monsters level")
+                .Append($"~ {world.Monsters.Average(s => s.Attributes[GameAttributes.Hitpoints_Max]):F1} avg. monsters HP")
+                .Append($"{world.Portals.Count} portal(s)")
+                .Append($"{openedDoors + closedDoors} door(s) - {openedDoors} open and {closedDoors} closed")
+                .Append($"{act} at quest '{questName}' and side-quest {world.Game.CurrentSideQuest}")
+                .AppendIf(world.Game.ActiveNephalemPortal, "Nephalem portal is ACTIVE")
+                .AppendIf(world.Game.ActiveNephalemPortal, $"{world.Game.ActiveNephalemProgress} nephalem progress");
+            return builder.ToString("\n");
         }
         catch (Exception ex)
         {

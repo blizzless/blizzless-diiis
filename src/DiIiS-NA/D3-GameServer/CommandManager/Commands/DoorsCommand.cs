@@ -62,14 +62,15 @@ public class DoorsCommand : CommandGroup
         return $"{doors.Length} doors in a distance of {distance:0.0000} doors: \n{string.Join("\n", doors.Select(s=>
         {
             var position = player.Position;
-            return s.Position.DistanceSquared(ref position) + " distance - [" + (int)s.SNO + "] " + s.SNO;;
+            return s.Position.Distance(position) + " distance - [" + (int)s.SNO + "] " + s.SNO;;
         }))}";
     }
     
     [DefaultCommand(inGameOnly: true)]
     public string DefaultCommand(string[] @params, BattleClient invokerClient)
     {
-        return StrBuilder.From("!doors all - Activate all doors. This is useful for testing purposes.")
+        return StrBuilder.From("!doors all - Open all doors. This is useful for testing purposes.")
+            .Append("!doors all - Opens all doors.")
             .Append("!doors near [distance:50] - Activate all nearby doors in the vicinity. This is useful for testing purposes.")
             .Append("!doors info [distance:50] - Retrieve all world doors in proximity, sorted in descending order.")
             .ToString(Separator.NewLine);
