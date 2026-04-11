@@ -196,6 +196,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			// reflect / thorns-style chains causing a StackOverflow.
 			if (new System.Diagnostics.StackTrace().FrameCount > 35)
 			{
+				Logger.Warn("AttackPayload.Apply aborted: stack depth >35 (power {0}, user {1}). Likely reflect/thorns loop.",
+					Context?.PowerSNO ?? -1,
+					Context?.User?.SNO.ToString() ?? "<null>");
 				return;
 			}
 
@@ -220,6 +223,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					((MonsterBrain)monster.Brain).AttackedBy = player;
 				}
 			}
+
+			Logger.Trace("AttackPayload.Apply: power {0} from {1} → {2} target(s)",
+				Context?.PowerSNO ?? -1,
+				Context?.User?.SNO.ToString() ?? "<null>",
+				Targets.Actors.Count);
 
 			// Per-target: roll crit, build HitPayload, apply on-hit buffs,
 			// fire optional OnHit callback, apply the hit.

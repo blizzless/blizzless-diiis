@@ -780,6 +780,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			// Invulnerable / immune → draw "Immune" float and bail.
 			if ((Target.Attributes[GameAttributes.Invulnerable] || Target.Attributes[GameAttributes.Immunity]) && Target.World != null)
 			{
+				Logger.Trace("HitPayload.Apply: target {0} is Invulnerable/Immune — damage {1:F1} ignored (power {2})",
+					Target.SNO, TotalDamage, Context?.PowerSNO ?? -1);
 				if (Target is not Minion)
 					Target.World.BroadcastIfRevealed(plr => new FloatingNumberMessage()
 					{
@@ -806,6 +808,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					// Dodge float + achievement tracking.
 					if (IsDodged)
 					{
+						Logger.Trace("Player {0} dodged hit from power {1} (dodges-in-a-row: {2})",
+							plr.Toon?.Name ?? "<unknown>", Context?.PowerSNO ?? -1, plr.DodgesInARow + 1);
 						playerActor.World.BroadcastIfRevealed(plr2 => new FloatingNumberMessage()
 						{
 							ActorID = Target.DynamicID(plr2),
@@ -835,8 +839,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					// Block_Amount_Min and Block_Amount_Max.
 					if (FastRandom.Instance.NextDouble() < playerActor.Attributes[GameAttributes.Block_Chance_Capped_Total])
 					{
+						float preBlock = TotalDamage;
 						TotalDamage -= (float)FastRandom.Instance.NextDouble((double)playerActor.Attributes[GameAttributes.Block_Amount_Total_Min], (double)playerActor.Attributes[GameAttributes.Block_Amount_Total_Max]);
 						if (TotalDamage < 0f) TotalDamage = 0f;
+						Logger.Trace("Player {0} blocked {1:F1} → {2:F1} (power {3})",
+							plr.Toon?.Name ?? "<unknown>", preBlock - TotalDamage, TotalDamage, Context?.PowerSNO ?? -1);
 						playerActor.World.BroadcastIfRevealed(plr3 => new FloatingNumberMessage()
 						{
 							ActorID = Target.DynamicID(plr3),
@@ -972,6 +979,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			// If HP hit zero, spawn the death payload.
 			if (newHp <= 0f)
 			{
+				Logger.Debug("Lethal hit: {0} killed {1} with power {2} ({3:F1} dmg, crit: {4})",
+					Context?.User?.SNO.ToString() ?? "<null>",
+					Target.SNO,
+					Context?.PowerSNO ?? -1,
+					TotalDamage,
+					IsCriticalHit);
+
 				var deathPayload = new DeathPayload(Context, DominantDamageType, Target, Target.HasLoot)
 					{
 						AutomaticHitEffects = AutomaticHitEffects
@@ -985,8 +999,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 						if (OnDeath != null && AutomaticHitEffects)
 							OnDeath(deathPayload);
 					}
-					catch { }
+					catch (Exception ex)
+					{
+						Logger.WarnException(ex, "HitPayload.OnDeath callback threw for power {0} on target {1}",
+							Context?.PowerSNO ?? -1, Target.SNO);
+					}
 					deathPayload.Apply();
+				}
+				else
+				{
+					Logger.Trace("DeathPayload not Successful — {0} saved from death (power {1})",
+						Target.SNO, Context?.PowerSNO ?? -1);
 				}
 			}
 			else if (AutomaticHitEffects && Target.World != null && Target is not Player)

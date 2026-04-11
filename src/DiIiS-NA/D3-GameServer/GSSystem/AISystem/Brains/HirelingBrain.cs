@@ -83,6 +83,13 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			if (body is Leah)
 				PresetPowers.Add(99902); //Scoundrel_ranged_Projectile
 
+			Logger.Info("HirelingBrain spawned: {0} for player {1} with {2} power(s)",
+				body?.SNO.ToString() ?? "<null>",
+				master?.Toon?.Name ?? "<unknown>",
+				PresetPowers.Count);
+			if (PresetPowers.Count == 0)
+				Logger.Warn("HirelingBrain {0}: no power SNOs assigned — hireling will be a no-op in combat",
+					body?.SNO.ToString() ?? "<null>");
 		}
 
 		/// <summary>

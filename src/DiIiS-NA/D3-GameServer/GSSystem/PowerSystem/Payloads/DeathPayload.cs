@@ -139,6 +139,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 					playerTarget.Attributes[GameAttributes.Tiered_Loot_Run_Death_Count]++;
 				if (playerTarget.SkillSet.HasPassive(218501) && playerTarget.World.BuffManager.GetFirstBuff<SpiritVesselCooldownBuff>(playerTarget) == null) //SpiritWessel (wd)
 				{
+					Logger.Info("Spirit Vessel (WD) saved player {0} from death", playerTarget.Toon?.Name ?? "<unknown>");
 					playerTarget.Attributes[GameAttributes.Hitpoints_Cur] = playerTarget.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.15f;
 					playerTarget.Attributes.BroadcastChangedIfRevealed();
 					playerTarget.World.BuffManager.AddBuff(playerTarget, playerTarget, new ActorGhostedBuff());
@@ -147,6 +148,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				}
 				if (playerTarget.SkillSet.HasPassive(156484) && playerTarget.World.BuffManager.GetFirstBuff<NearDeathExperienceCooldownBuff>(playerTarget) == null) //NearDeathExperience (monk)
 				{
+					Logger.Info("Near Death Experience (Monk) saved player {0} from death", playerTarget.Toon?.Name ?? "<unknown>");
 					playerTarget.Attributes[GameAttributes.Hitpoints_Cur] = playerTarget.Attributes[GameAttributes.Hitpoints_Max_Total] * 0.35f;
 					playerTarget.Attributes[GameAttributes.Resource_Cur, 3] = playerTarget.Attributes[GameAttributes.Resource_Max_Total, 3] * 0.35f;
 					playerTarget.Attributes.BroadcastChangedIfRevealed();
@@ -268,6 +270,14 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				DoPlayerDeath();
 				return;
 			}
+
+			// Boss death → escalate to Info so the server log shows it clearly.
+			if (Target is Boss)
+				Logger.Info("Boss killed: {0} at {1} (power {2}, killer {3})",
+					Target.SNO, positionOfDeath, Context?.PowerSNO ?? -1,
+					Context?.User?.SNO.ToString() ?? "<null>");
+			else
+				Logger.Trace("Monster killed: {0} (power {1})", Target.SNO, Context?.PowerSNO ?? -1);
 
 			if (Context?.User is Player plr) //Hitpoints_On_Kill
 				if (plr.Attributes[GameAttributes.Hitpoints_On_Kill] > 0)
@@ -1322,6 +1332,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 		{
 			//death implementation
 			Player player = (Player)Target;
+			Logger.Info("Player {0} died (class: {1}, killer: {2}, power: {3}, hardcore: {4})",
+				player.Toon?.Name ?? "<unknown>",
+				player.Toon?.Class.ToString() ?? "<unknown>",
+				Context?.User?.SNO.ToString() ?? "<null>",
+				Context?.PowerSNO ?? -1,
+				player.World.Game.IsHardcore);
 			if (Math.Abs(player.Attributes[GameAttributes.Item_Power_Passive, 248629] - 1) < Globals.FLOAT_TOLERANCE)
 				player.PlayEffectGroup(248680);
 			player.StopCasting();

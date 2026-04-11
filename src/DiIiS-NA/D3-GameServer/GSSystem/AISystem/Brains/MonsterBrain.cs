@@ -306,6 +306,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
             // tick) or if the previous flee action completed / was cancelled.
             if (!_feared || CurrentAction == null)
             {
+                if (!_feared)
+                    Logger.Trace("{0} began fleeing (feared)", Body.SNO);
                 CancelCurrentAction();
                 _feared = true;
                 CurrentAction = new MoveToPointWithPathfindAction(
@@ -372,11 +374,15 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
         /// </summary>
         private void UpdateTarget()
         {
+            var prevTarget = _target;
+
             // Scripted priority — boss phase logic uses this to lock onto a
             // specific player regardless of positioning.
             if (PriorityTarget != null && !PriorityTarget.Dead)
             {
                 _target = PriorityTarget;
+                if (prevTarget != _target)
+                    Logger.Trace("{0} UpdateTarget → priority target {1}", Body.SNO, _target.SNO);
                 return;
             }
 
@@ -387,12 +393,18 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
             {
                 PriorityTarget = AttackedBy;
                 _target = AttackedBy;
+                if (prevTarget != _target)
+                    Logger.Trace("{0} UpdateTarget → retaliation target {1}", Body.SNO, _target.SNO);
                 return;
             }
 
             // Fallback: nearest valid actor.
             var nearbyTargets = FindValidTargets();
             _target = nearbyTargets.FirstOrDefault();
+            if (prevTarget != _target && _target != null)
+                Logger.Trace("{0} UpdateTarget → nearest target {1}", Body.SNO, _target.SNO);
+            else if (prevTarget != null && _target == null)
+                Logger.Trace("{0} lost target (prev: {1})", Body.SNO, prevTarget.SNO);
         }
 
         /// <summary>

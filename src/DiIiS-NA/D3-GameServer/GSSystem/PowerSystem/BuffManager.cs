@@ -1,3 +1,4 @@
+using DiIiS_NA.Core.Logging;
 using DiIiS_NA.GameServer.GSSystem.ActorSystem;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 	/// </summary>
 	public class BuffManager
 	{
+		private static readonly Logger Logger = LogManager.CreateLogger();
+
 		/// <summary>Active buffs keyed by the actor they are attached to.</summary>
 		private Dictionary<Actor, List<Buff>> _buffs = new Dictionary<Actor, List<Buff>>();
 
@@ -68,7 +71,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		public bool AddBuff(Actor user, Actor target, Buff buff)
 		{
 			if (user.World == null || target.World == null) return false;
-			if (target.Dead) return false;
+			if (target.Dead)
+			{
+				Logger.Trace("AddBuff rejected: target {0} is dead (buff {1})",
+					target.SNO, buff?.GetType().Name ?? "<null>");
+				return false;
+			}
 
 			buff.User = user;
 			buff.Target = target;
@@ -242,7 +250,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 						{
 							buffs[i].OnPayload(payload);
 						}
-						catch { }
+						catch (Exception ex)
+						{
+							// Swallow and log — one broken buff can't take down the attack pipeline.
+							Logger.WarnException(ex, "Buff {0}.OnPayload threw on target {1}",
+								buffs[i].GetType().Name, target?.SNO.ToString() ?? "<null>");
+						}
 				}
 			}
 		}
@@ -285,6 +298,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				}
 				else
 				{
+					Logger.Trace("Buff {0}.Apply returned false on target {1} — rolled back",
+						buff.GetType().Name, buff.Target?.SNO.ToString() ?? "<null>");
 					_buffs[buff.Target].Remove(buff);
 					return false;
 				}
@@ -300,6 +315,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				}
 				else
 				{
+					Logger.Trace("Buff {0}.Apply returned false on first-time target {1} — rolled back",
+						buff.GetType().Name, buff.Target?.SNO.ToString() ?? "<null>");
 					_buffs.Remove(buff.Target);
 					return false;
 				}

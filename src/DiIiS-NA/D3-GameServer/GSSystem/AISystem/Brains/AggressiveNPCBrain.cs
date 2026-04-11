@@ -59,6 +59,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					}
 				}
 			}
+
+			Logger.Trace("AggressiveNPCBrain spawned: {0} with {1} power(s)",
+				body?.SNO.ToString() ?? "<null>", PresetPowers.Count);
 		}
 
 		/// <summary>

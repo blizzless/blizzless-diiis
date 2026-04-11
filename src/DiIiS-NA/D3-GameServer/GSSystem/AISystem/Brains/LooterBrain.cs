@@ -77,6 +77,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 		{
 			LootLegendaries = lootsLegs;
 			PresetPowers = new Dictionary<int, Cooldown>();
+			Logger.Trace("LooterBrain spawned: {0} (lootsLegs: {1})",
+				body?.SNO.ToString() ?? "<null>", lootsLegs);
 
 			// Build list of powers defined in monster mpq data. Retained
 			// for parity with the other minion brains; not consulted.
@@ -121,6 +123,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					Type = FloatingAmountMessage.FloatType.Gold,
 				});
 
+				Logger.Trace("LooterBrain picked up {0} gold for {1}",
+					item.Attributes[GameAttributes.ItemStackQuantityLo],
+					((Body as Minion).Master as Player)?.Toon?.Name ?? "<unknown>");
 				((Body as Minion).Master as Player).Inventory.PickUpGold(item);
 				((Body as Minion).Master as Player).GroundItems.Remove(item.GlobalID);
 				item.Destroy();
@@ -132,6 +137,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				List<Item> legendaries = Body.GetObjectsInRange<Item>(5f).Where(m => ((Body as Minion).Master as Player).GroundItems.ContainsKey(m.GlobalID) && (m as Item).ItemDefinition.Name.Contains("Unique_")).ToList();
 				foreach (var item in legendaries)
 				{
+					Logger.Debug("LooterBrain auto-picked legendary {0} for {1}",
+						item.ItemDefinition.Name,
+						((Body as Minion).Master as Player)?.Toon?.Name ?? "<unknown>");
 					((Body as Minion).Master as Player).Inventory.PickUp(item);
 				}
 			}

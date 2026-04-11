@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Humanizer.In;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DiIiS_NA.GameServer
 {
@@ -70,17 +73,26 @@ namespace DiIiS_NA.GameServer
 #endif
 			set => Set(nameof(AfkDisconnect), value);
 		}
-		public float SweepMonstersTiles
+
+        /// <summary>
+        /// How many tiles away should monsters start chasing players. Default is 40, which is the same as the default for the AggressiveNPCBrain.
+        /// </summary>
+        public float SweepMonstersTiles
 		{
 			get => GetFloat(nameof(SweepMonstersTiles), 40f);
 			set => Set(nameof(SweepMonstersTiles), value);
         }
 
+		/// <summary>
+		/// Default monster think tick per second (defaults to 1 per second to save CPU time)
+		/// 0.5 twice per second, 1 once per second, 2 every two seconds, etc.
+		/// </summary>
         public float MonsterThinkTick
 		{
 			get => GetFloat(nameof(MonsterThinkTick), 1);
 			set => Set(nameof(MonsterThinkTick), value);
 		}
+
 
         public bool DisableMonsterPowerCooldowns
         {
@@ -331,29 +343,45 @@ namespace DiIiS_NA.GameServer
 			set => Set(nameof(VitalityParagonMultiplier), value);
 		}
 
+        /// <summary>
+        /// Automatically passes bugged quests that can't be completed due to missing quest items or other reasons. Only applies to quests that are not in OpenWorld.
+        /// </summary>
         public bool BypassBuggedQuests
         {
 			get => GetBoolean(nameof(BypassBuggedQuests), false);
 			set => Set(nameof(BypassBuggedQuests), value);
         }
 
+        /// <summary>
+        /// Logs in chat if there's a quest advance, with the format defined in <see cref="LogQuestAdvanceFormat"></see>.
+        /// </summary>
         public bool LogQuestAdvance
         {
             get => GetBoolean(nameof(LogQuestAdvance), false);
             set => Set(nameof(LogQuestAdvance), value);
         }
 
+		/// <summary>
+		/// Gets or sets the format string used for logging quest advancement events.
+		/// </summary>
+		/// <remarks>The format string can include placeholders such as {act}, {quest}, and {step}, which will be
+		/// replaced with the corresponding values when logging quest progress. The default format is "Advancing to Act {act}
+		/// Quest {quest} Step {step}".</remarks>
         public string LogQuestAdvanceFormat
         {
             get => GetString(nameof(LogQuestAdvanceFormat), "Advancing to Act {act} Quest {quest} Step {step}");
             set => Set(nameof(LogQuestAdvanceFormat), value.Trim());
         }
 
+        /// <summary>
+        /// Not used yet, but if enabled, it would show more arrows on the minimap for quests that require you to go to a specific location. This is useful for quests that have a very small arrow or no arrow at all, like the "Find the Wailing Host" quest in Act 2.
+        /// </summary>
         public bool DebugMoreArrowsInQuests
         {
 			get => GetBoolean(nameof(DebugMoreArrowsInQuests), false);
 			set => Set(nameof(DebugMoreArrowsInQuests), value);
         }
+
         /// <summary>
          /// Auto finishes nephalem rift when there's <see cref="NephalemRiftAutoFinishThreshold"></see> or less monsters left.
          /// </summary>
@@ -371,20 +399,23 @@ namespace DiIiS_NA.GameServer
 			get => GetInt(nameof(NephalemRiftAutoFinishThreshold), 2);
 			set => Set(nameof(NephalemRiftAutoFinishThreshold), value);
 		}
-		
-		/// <summary>
-		/// Nephalem Rifts chance of spawning a orb.
-		/// </summary>
-		public float NephalemRiftOrbsChance
+
+        /// <summary>
+        /// Nephalem Rifts chance of spawning a orb.
+        /// If greater than zero, it will spawn a progress orb on the map when a monster is killed in a Nephalem Rift, with the chance defined by this setting. This is useful for testing and debugging, as it allows you to see how many progress orbs are spawned and how much progress they give. It also makes it easier to test the Nephalem Rift mechanics without having to kill a large number of monsters.
+		/// X% chance to spawn an orb on monster kill in Nephalem Rifts. Default is 0 (disabled).
+        /// </summary>
+        public float NephalemRiftOrbsChance
 		{
 			get => GetFloat(nameof(NephalemRiftOrbsChance), 0f);
 			set => Set(nameof(NephalemRiftOrbsChance), value);
 		}
 
-		/// <summary>
-		/// Forces the game to reveal all the map.
-		/// </summary>
-		public bool ForceMinimapVisibility
+        /// <summary>
+        /// Forces the game to reveal all the map.
+        /// For quests that require you to go to a specific location, it would show an arrow on the minimap pointing to the location, even if it's in a different area. This is useful for quests that have a very small arrow or no arrow at all, like the "Find the Wailing Host" quest in Act 2. It also reveals the location of all monsters and interactable objects on the minimap, which is useful for testing and debugging.
+        /// </summary>
+        public bool ForceMinimapVisibility
 		{
 			get => GetBoolean(nameof(ForceMinimapVisibility), false);
 			set => Set(nameof(ForceMinimapVisibility), value);

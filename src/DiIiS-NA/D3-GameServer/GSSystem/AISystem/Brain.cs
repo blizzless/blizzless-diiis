@@ -126,6 +126,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem
 				CurrentAction.Cancel(0);
 				CurrentAction = null;
 			}
+			Logger.Trace("Brain.Kill: {0} ({1}) → Dead", Body?.SNO.ToString() ?? "<null>", GetType().Name);
 			State = BrainState.Dead;
 		}
 
@@ -139,7 +140,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem
 			// Only re-activate if the brain is actually off — don't thrash
 			// Dead brains back into Idle.
 			if (State == BrainState.Off)
+			{
+				Logger.Trace("Brain.Activate: {0} ({1}) Off → Idle", Body?.SNO.ToString() ?? "<null>", GetType().Name);
 				State = BrainState.Idle;
+			}
 		}
 
 		/// <summary>
@@ -150,6 +154,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem
 		public void DeActivate()
 		{
 			CurrentAction = null;
+			Logger.Trace("Brain.DeActivate: {0} ({1}) → Off", Body?.SNO.ToString() ?? "<null>", GetType().Name);
 			State = BrainState.Off;
 		}
 

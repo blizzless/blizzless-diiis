@@ -127,10 +127,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			if (power.PowerSNO == 168344 || power.PowerSNO == 167648) //teleport
 			{
 				if (!user.World.CheckLocationForFlag(PowerMath.TranslateDirection2D(user.Position, targetPosition, user.Position, Math.Min(PowerMath.Distance2D(user.Position, targetPosition), 35f)), DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
+				{
+					Logger.Trace("Teleport power {0} rejected: target position {1} is not walkable", power.PowerSNO, targetPosition);
 					return false;
+				}
 			}
 
-			if (user.Attributes[GameAttributes.Disabled] == true) return false;
+			if (user.Attributes[GameAttributes.Disabled] == true)
+			{
+				Logger.Trace("RunPower rejected: user {0} is Disabled (power {1})", user.SNO, power.PowerSNO);
+				return false;
+			}
 
 			if (user is Player && targetPosition != null)
 				CheckItemProcs(user as Player);
@@ -206,7 +213,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				cheatCounter++;
 				if (cheatCounter > 5)
 				{
-					//Logger.Warn("Player {0}, skill {1} - possible attack speed cheat!", (power.User as Player).Toon.Name, power.PowerSNO);
+					Logger.Warn("Possible attack-speed cheat: player {0}, skill {1}, casts/sec {2:F2} (APS limit {3:F2})",
+						(power.User as Player)?.Toon?.Name ?? "<unknown>",
+						power.PowerSNO,
+						user.LastSecondCasts,
+						user.Attributes[GameAttributes.Attacks_Per_Second_Total]);
 					cheatCounter = 0;
 				}
 
@@ -290,15 +301,20 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 							return false;
 						}
 					}
-					catch
+					catch (Exception ex)
 					{
+						Logger.WarnException(ex, "Power script threw — removing from queue (power {0}, user {1})",
+							script.Script?.PowerSNO ?? -1,
+							script.Script?.User?.SNO.ToString() ?? "<null>");
 						return true;
 					}
 
 				});
 			}
-			catch
-			{ }
+			catch (Exception ex)
+			{
+				Logger.ErrorException(ex, "PowerManager._UpdateExecutingScripts: unexpected exception, tick swallowed");
+			}
 		}
 
 		/// <summary>
@@ -376,7 +392,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			{
 				_deletingActors.Add(actor, new SecondsTickTimer(actor.World.Game, 10f));
 			}
-			catch (ArgumentException) { }
+			catch (ArgumentException)
+			{
+				// Actor already queued for deletion — harmless race.
+				Logger.Trace("AddDeletingActor: {0} already queued for deletion", actor?.SNO.ToString() ?? "<null>");
+			}
 		}
 
 		/// <summary>
@@ -399,7 +419,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 		{
 			try
 			{
-				_channeledSkills.RemoveAll(impl =>
+				int channelsCancelled = _channeledSkills.RemoveAll(impl =>
 				{
 					if (impl.User == user && impl.IsChannelOpen)
 					{
@@ -409,9 +429,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 					return false;
 				});
 
-				_executingScripts.RemoveAll((script) => script.Script.User == user);
+				int scriptsCancelled = _executingScripts.RemoveAll((script) => script.Script.User == user);
+
+				if (channelsCancelled > 0 || scriptsCancelled > 0)
+					Logger.Debug("CancelAllPowers for {0}: {1} channels, {2} scripts",
+						user?.SNO.ToString() ?? "<null>", channelsCancelled, scriptsCancelled);
 			}
-			catch { }
+			catch (Exception ex)
+			{
+				Logger.WarnException(ex, "CancelAllPowers threw for user {0}", user?.SNO.ToString() ?? "<null>");
+			}
 		}
 	}
 }

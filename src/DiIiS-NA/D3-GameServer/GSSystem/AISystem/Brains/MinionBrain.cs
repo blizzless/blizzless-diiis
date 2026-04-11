@@ -80,6 +80,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			: base(body)
 		{
 			PresetPowers = new Dictionary<int, Cooldown>();
+			Logger.Trace("MinionBrain spawned for {0}", body?.SNO.ToString() ?? "<null>");
 
 			// Build the list of powers defined in the monster MPQ data.
 			if (body.ActorData.MonsterSNO > 0)
