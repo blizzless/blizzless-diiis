@@ -67,8 +67,6 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 				});
 			});
 			
-			
-
 			var spawner = world.GetActorBySNO(ActorSno._trdun_rescuecainskelspawner);
 			while (spawner != null)
 			{

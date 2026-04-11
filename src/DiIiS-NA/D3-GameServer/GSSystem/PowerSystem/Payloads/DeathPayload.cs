@@ -766,7 +766,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			}
 
 			//Nephalem Rift
-			if ((Target.CurrentScene.Specification.SNOLevelAreas[0] is 332339 or 288482) &&
+			// 332339 = Tristram hub (town), 288482 = X1_LR_Level_01 (primary rift level area),
+			// 288684 = X1_LR_Level_02 (secondary rift level area used when the rift world is not the one holding the portal).
+			// Without 288684, monsters in secondary rift worlds never contribute to progress and the rift
+			// becomes impossible to complete once the player crosses into them.
+			if ((Target.CurrentScene.Specification.SNOLevelAreas[0] is 332339 or 288482 or 288684) &&
 			    Target.World.Game.ActiveNephalemTimer && Target.World.Game.ActiveNephalemKilledMobs == false)
 			{
 				Target.World.Game.ActiveNephalemProgress +=
