@@ -70,7 +70,8 @@ namespace DiIiS_NA.GameServer.GSSystem.QuestSystem.QuestEvents.Implementations
 			var spawner = world.GetActorBySNO(ActorSno._trdun_rescuecainskelspawner);
 			while (spawner != null)
 			{
-				var monster = FastRandom.Instance.Next(10) % 2 == 0 ? ActorSno._skeletonking_shield_skeleton : ActorSno._skeletonking_skeleton;
+				var monster = FastRandom.Instance.Chance(50) ? ActorSno._skeletonking_shield_skeleton : ActorSno._skeletonking_skeleton;
+				Logger.Debug($"Spawning monster $[blue]${monster}$[/]$ at position $[green]${spawner.Position}$[/]$");
 				world.SpawnMonster(monster, spawner.Position);
 				spawner.Destroy();
 				spawner = world.GetActorBySNO(ActorSno._trdun_rescuecainskelspawner);
