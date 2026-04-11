@@ -24,6 +24,8 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 			var blocked = GameAccountManager.GetAccountByPersistentID(request.TargetId.Low);
 			var blocker = client.Account;
 
+			Logger.Info("Block: {0} blocked {1}", blocker?.Email, blocked?.Owner?.Email);
+
 			if (!blocker.IgnoreIds.Contains(blocked.Owner.PersistentID))
 				blocker.IgnoreIds.Add(blocked.Owner.PersistentID);
 			AddIgnoreToDB(blocker, blocked.Owner);
@@ -47,6 +49,7 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 			var blocked = AccountManager.GetAccountByPersistentID(request.TargetId.Low);
 			var blocker = client.Account;
 
+			Logger.Info("Unblock: {0} unblocked {1}", blocker?.Email, blocked?.Email);
 
 			if (blocker.IgnoreIds.Contains(blocked.PersistentID))
 				blocker.IgnoreIds.Remove(blocked.PersistentID);

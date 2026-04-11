@@ -81,7 +81,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
             if (request.Program.ToLower() == "d3")
                 if (request.ApplicationVersion != VersionRetail & request.ApplicationVersion != VersionPTR)
                 {
-                    //Logger.Error("Connecting the wrong client version!");
+                    Logger.Warn("Login rejected: wrong client version for game {0} (got {1})", game, version);
                     var ercomplete = LogonResult.CreateBuilder().SetErrorCode(28);
                     //((HandlerController)controller).Client.MakeRPC((lid) => AuthenticationListener.CreateStub(((HandlerController)controller).Client).OnLogonComplete(controller, ercomplete.Build(), callback => { }));
                 }
@@ -132,6 +132,7 @@ namespace DiIiS_NA.LoginServer.ServicesSystem.Services
                     break;
             }
 
+            Logger.Info("Logon OK: game {0}, version {1}", game, version);
         }
 
         public override void ModuleMessage(IRpcController controller, ModuleMessageRequest request, Action<NoData> done)

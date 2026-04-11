@@ -20,6 +20,7 @@ namespace DiIiS_NA.D3_GameServer.GSSystem.ActorSystem.Implementations.Artisans
 
 		public override void OnCraft(Player player)
 		{
+			Logger.Trace("Artisan {0} opened by {1}", SNO, player?.Toon?.Name);
 			player.InGameClient.SendMessage(new ANNDataMessage(Opcodes.OpenArtisanWindowMessage) { ActorID = DynamicID(player) });
 		}
 

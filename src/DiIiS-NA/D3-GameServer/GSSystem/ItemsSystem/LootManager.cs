@@ -1,10 +1,12 @@
-﻿using System;
+﻿using DiIiS_NA.Core.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 {
 	public static class LootManager
 	{
+		private static readonly Logger Logger = LogManager.CreateLogger();
 
 		static LootManager()
 		{
@@ -37,6 +39,13 @@ namespace DiIiS_NA.GameServer.GSSystem.ItemsSystem
 		public static int GetLootQuality(int MonsterQuality, int difficulty)
 		{
 			float roll = (float)DiIiS_NA.Core.Helpers.Math.FastRandom.Instance.NextDouble();
+			int result = GetLootQualityCore(MonsterQuality, difficulty, roll);
+			Logger.Trace("LootQuality roll: monsterQuality={0}, difficulty={1}, roll={2:F3} → {3}", MonsterQuality, difficulty, roll, result);
+			return result;
+		}
+
+		private static int GetLootQualityCore(int MonsterQuality, int difficulty, float roll)
+		{
 			switch (MonsterQuality)
 			{
 				case 0: //Normal

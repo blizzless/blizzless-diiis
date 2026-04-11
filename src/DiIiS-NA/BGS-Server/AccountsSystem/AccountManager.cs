@@ -59,7 +59,7 @@ namespace DiIiS_NA.LoginServer.AccountsSystem
 
 			//GenerateReferralCode(email);
 
-			Logger.Warn("Created account {0}", email);
+			Logger.Info("Created account {0}", email);
 			return GetAccountByEmail(email);
 		}
 		public static bool BindDiscordAccount(string email, ulong discordId, string discordTag)

@@ -54,8 +54,12 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 			if (invitee == null) return;
 
 			if (OnGoingInvitations.Values.Any(oldInvite => (oldInvite.InviteeIdentity.AccountId == invitation.InviteeIdentity.AccountId) && (oldInvite.InviterIdentity.AccountId == invitation.InviterIdentity.AccountId)))
+			{
+				Logger.Trace("Duplicate invite suppressed: inviter {0}, invitee {1}", invitation.InviterIdentity.AccountId.Low, invitation.InviteeIdentity.AccountId.Low);
 				return;
+			}
 
+			Logger.Info("Friend invite: {0} → {1} (id {2})", client.Account?.Email, invitee.Email, invitation.Id);
 			OnGoingInvitations.Add(invitation.Id, invitation); // track ongoing invitations so we can tranport it forth and back.
 
 			if (invitee.IsOnline)
@@ -79,6 +83,8 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 
 			var inviter = AccountManager.GetAccountByPersistentID(invitation.InviterIdentity.AccountId.Low);
 			var invitee = AccountManager.GetAccountByPersistentID(invitation.InviteeIdentity.AccountId.Low);
+
+			Logger.Trace("Friend invite ignored: inviter {0}, invitee {1}", inviter?.Email, invitee?.Email);
 
 
 			var declinedNotification = bgs.protocol.friends.v1.InvitationNotification.CreateBuilder()
@@ -108,6 +114,8 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 
 			var inviter = AccountManager.GetAccountByPersistentID(invitation.InviterIdentity.AccountId.Low);
 			var invitee = AccountManager.GetAccountByPersistentID(invitation.InviteeIdentity.AccountId.Low);
+
+			Logger.Info("Friend accepted: {0} + {1}", inviter?.Email, invitee?.Email);
 			var inviteeAsFriend = bgs.protocol.friends.v1.Friend.CreateBuilder()
 				.SetAccountId(invitation.InviteeIdentity.AccountId)
 				.AddRole(2)
@@ -170,6 +178,8 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 			var inviter = AccountManager.GetAccountByPersistentID(invitation.InviterIdentity.AccountId.Low);
 			var invitee = AccountManager.GetAccountByPersistentID(invitation.InviteeIdentity.AccountId.Low);
 
+			Logger.Info("Friend declined: {0} ← {1}", inviter?.Email, invitee?.Email);
+
 			var declinedNotification = bgs.protocol.friends.v1.InvitationNotification.CreateBuilder()
 				.SetInvitation(invitation)
 				.SetReason((uint)InvitationRemoveReason.Declined).Build();
@@ -193,6 +203,8 @@ namespace DiIiS_NA.LoginServer.FriendsSystem
 		{
 			var removee = AccountManager.GetAccountByPersistentID(request.TargetId.Low);
 			var remover = client.Account;
+
+			Logger.Info("Friend removed: {0} unfriended {1}", remover?.Email, removee?.Email);
 
 			var removeeAsFriend = bgs.protocol.friends.v1.Friend.CreateBuilder()
 				.SetAccountId(removee.BnetEntityId)

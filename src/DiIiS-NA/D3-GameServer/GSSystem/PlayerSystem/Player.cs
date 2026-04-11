@@ -3227,7 +3227,7 @@ public class Player : Actor, IMessageConsumer, IUpdateable
                         });
                         World.Leave(skeleton);
                     }
-                    catch { }
+                    catch (Exception ex) { Logger.TraceException(ex, "Player.cs line 3230 swallowed"); }
                 }
 
                 NecromancerSkeletons.Clear();

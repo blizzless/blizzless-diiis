@@ -287,7 +287,7 @@ namespace DiIiS_NA.GameServer.GSSystem.MapSystem
 							actor2.AdjustPosition = false;
 							actor2.EnterWorld(position2);
 						}
-						catch { }
+						catch (Exception ex) { Logger.WarnException(ex, "Scene marker actor spawn failed: scene={0}, marker sno={1}", SceneSNO?.Id, marker?.SNOHandle?.Id); }
 
 						break;
 
