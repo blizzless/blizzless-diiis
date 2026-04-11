@@ -59,7 +59,19 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 
 		public bool Disable = false;
 
-		public bool Spawner = false;
+		public bool ShouldStopTickAction => IsFrozen ||
+				IsStunned ||
+				IsBlind ||
+				IsWebbed ||
+				Disable;
+
+		public bool IsStunned => Attributes[GameAttributes.Stunned];
+		public bool IsFrozen => Attributes[GameAttributes.Frozen];
+		public bool IsBlind => Attributes[GameAttributes.Blind];
+		public bool IsWebbed => Attributes[GameAttributes.Webbed];
+
+
+        public bool Spawner = false;
 
 		/// <summary>
 		/// The actor type.
@@ -216,8 +228,10 @@ namespace DiIiS_NA.GameServer.GSSystem.ActorSystem
 		public int OriginalLevelArea = -1;
 		
 		public int? MarkerSetIndex { get; private set; }
+		public bool IsFeared => Attributes[GameAttributes.Feared];
+		
 
-		private int _snoTriggeredConversation = -1;
+        private int _snoTriggeredConversation = -1;
 
 		/// <summary>
 		/// Creates a new actor.

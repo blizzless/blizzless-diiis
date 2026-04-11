@@ -30,15 +30,90 @@ using DiIiS_NA.D3_GameServer.Core.Types.SNO;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 {
+	/// <summary>
+	/// Third / final stage of the damage pipeline. Spawned by
+	/// <see cref="HitPayload.Apply"/> when a hit reduces an actor's HP to
+	/// zero. Handles absolutely everything that happens on death:
+	///
+	/// <list type="bullet">
+	///   <item><description><b>Save-from-death passives</b> — Spirit
+	///     Vessel (WD), Near Death Experience (Monk). If either fires,
+	///     the constructor short-circuits and <see cref="Successful"/>
+	///     stays false.</description></item>
+	///   <item><description><b>Player-specific death</b> — delegated to
+	///     <see cref="DoPlayerDeath"/>: animates, spawns the headstone,
+	///     schedules respawn, degrades gear durability.</description></item>
+	///   <item><description><b>Monster / minion cleanup</b> — kills the
+	///     brain, cancels powers, removes buffs, queues the actor for
+	///     deferred deletion (~10s).</description></item>
+	///   <item><description><b>Death animation + gore effect</b> — picks
+	///     a specific animation by the power's
+	///     <c>SpecialDeathType</c> tag or falls back to the element's
+	///     default (<see cref="FindBestDeathAnimationSNO"/>).</description></item>
+	///   <item><description><b>XP distribution</b> — splits XP across
+	///     every player in 100-tile range, scaled by level-diff,
+	///     <c>Experience_Bonus_Percent</c>, difficulty, and the
+	///     <c>RateExp</c> config knob.</description></item>
+	///   <item><description><b>Loot rolls</b> — gold, crafting mats,
+	///     gems, potions, random equip (using
+	///     <see cref="GeneratorsSystem.LootManager"/> rates), legendary
+	///     drops, bounty / quest triggers.</description></item>
+	///   <item><description><b>On-kill passives / procs</b> — Grave
+	///     Injustice (WD), Fervor (Crusader), Leech runes, Circle of
+	///     Life, Dominance, Rampage, Hitpoints_On_Kill.</description></item>
+	///   <item><description><b>World state</b> — Nephalem Rift progress,
+	///     rift boss orb spawns, bounty kill tracking, Gardens-of-Hope
+	///     hell-portal spawning, conversation triggers.</description></item>
+	///   <item><description><b>Boss achievements</b> — big switch at the
+	///     end awarding the per-boss/per-difficulty achievements.</description></item>
+	/// </list>
+	///
+	/// <para>This is the hottest file in the combat pipeline for
+	/// gameplay tuning: XP rate, drop rate, and rift progress all live
+	/// here. Most of the values route through
+	/// <see cref="GameServerConfig.Instance"/> knobs (<c>RateExp</c>,
+	/// <c>RateDrop</c>, <c>NephalemRiftProgressMultiplier</c>,
+	/// <c>NephalemRiftOrbsChance</c>, etc.) — see Battle.md for the
+	/// full list.</para>
+	/// </summary>
 	public class DeathPayload : Payload
 	{
 		static readonly Logger Logger = LogManager.CreateLogger();
-		public DamageType DeathDamageType;
-		public bool LootAndExp; //HACK: As we currently just give out random exp and loot, this is in to prevent giving this out for mobs that shouldn't give it.
 
+		/// <summary>Element of the killing blow — drives the gore / death animation selection.</summary>
+		public DamageType DeathDamageType;
+
+		/// <summary>
+		/// If false, no XP or loot will be granted. Cleared on: minion
+		/// deaths, champion deaths while at least one pack member is still
+		/// alive, and mobs that shouldn't drop (explicitly passed by the
+		/// caller). HACK: currently XP and loot are bundled into a single
+		/// flag.
+		/// </summary>
+		public bool LootAndExp;
+
+		/// <summary>
+		/// Set to true once the constructor finishes without aborting.
+		/// <see cref="HitPayload.Apply"/> will only call
+		/// <see cref="Apply"/> if this is true — which is how the
+		/// Spirit Vessel / Near Death Experience save-from-death passives
+		/// prevent the death from happening at all.
+		/// </summary>
 		public bool Successful = false;
+
+		/// <summary>
+		/// Inherited from the originating <see cref="HitPayload"/>. When
+		/// false, death VFX / gore effects are suppressed (mirrors the
+		/// same flag on the attack payload).
+		/// </summary>
 		public bool AutomaticHitEffects = true;
 
+		/// <summary>
+		/// Early-out validator and cheat-death hook. Runs before
+		/// <see cref="Apply"/> and decides whether the death is actually
+		/// going to happen (<see cref="Successful"/> = true) or whether
+		/// the target is being saved by a passive.
+		/// </summary>
 		public DeathPayload(PowerContext context, DamageType deathDamageType, Actor target, bool grantsLootAndExp = true)
 			: base(context, target)
 		{
@@ -95,8 +170,53 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			Successful = true;
 		}
 
+		/// <summary>
+		/// Main death dispatcher. Called from
+		/// <see cref="HitPayload.Apply"/> when a hit brought the target's
+		/// HP to zero and the death wasn't cancelled by a save-from-death
+		/// passive. Handles:
+		/// <list type="bullet">
+		///   <item><description>Clearing the <c>Quest_Monster</c> flag.</description></item>
+		///   <item><description>Stack-depth guard (>35 frames) to prevent
+		///     reflect / on-kill loops from overflowing the stack.</description></item>
+		///   <item><description>Player-vs-non-player branching (players
+		///     go through <see cref="DoPlayerDeath"/>; monsters / minions
+		///     follow the rest of the method).</description></item>
+		///   <item><description>Minion / pet owner cleanup
+		///     (Necromancer skeletons, Witch Doctor pets) — sends
+		///     <c>PetDetachMessage</c> to the master and removes the pet
+		///     from the master's tracked list.</description></item>
+		///   <item><description>Brain shutdown — <c>brain.Kill()</c>
+		///     stops Think/Perform and cancels powers.</description></item>
+		///   <item><description>Quest / scripted trigger firing by
+		///     <c>SNO</c> (bosses, named mobs).</description></item>
+		///   <item><description>XP distribution — splits XP across every
+		///     player in 100-tile range using level-diff curve,
+		///     <c>Experience_Bonus_Percent</c>, difficulty scalar, and
+		///     the <c>RateExp</c> config knob.</description></item>
+		///   <item><description>Loot roll — gold, crafting mats, gems,
+		///     potions, random equip using
+		///     <see cref="GeneratorsSystem.LootManager"/> rates scaled by
+		///     the <c>RateDrop</c> config knob.</description></item>
+		///   <item><description>Nephalem Rift progress + boss-orb spawn
+		///     rolls (<c>NephalemRiftProgressMultiplier</c> /
+		///     <c>NephalemRiftOrbsChance</c>).</description></item>
+		///   <item><description>On-kill passive procs — Grave Injustice,
+		///     Fervor, Circle of Life, Dominance, Rampage,
+		///     <c>Hitpoints_On_Kill</c>.</description></item>
+		///   <item><description>Big per-boss achievement grant switch at
+		///     the end.</description></item>
+		/// </list>
+		///
+		/// <para>This is the hottest spot in the server for gameplay
+		/// tuning: every XP / loot / progression knob runs through here.
+		/// Do not add expensive logic to this method without profiling —
+		/// it's called for every monster death in the world.</para>
+		/// </summary>
 		public void Apply()
 		{
+			// Remember the position before the target is destroyed —
+			// loot drops and gore effects all get placed here.
 			var positionOfDeath = Target.Position;
 			if (!Target.World.Game.Working) return;
 
@@ -106,6 +226,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				Target.Attributes.BroadcastChangedIfRevealed();
 			}
 
+			// Stack-depth guard. Without this, reflect / thorns /
+			// on-kill-kills-again chains (e.g. a proc that kills a mob
+			// which procs a kill that procs another kill...) can pile
+			// up enough recursive frames to overflow the tick thread.
 			if (new System.Diagnostics.StackTrace().FrameCount > 35) // some arbitrary limit
 			{
 				Logger.Error("StackOverflowException prevented!: {0}", System.Environment.StackTrace);
@@ -1161,6 +1285,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				}
 		}
 
+		/// <summary>
+		/// Fires a conversation line on every player in the world. Used
+		/// by the boss-kill switch at the end of <see cref="Apply"/> to
+		/// trigger scripted post-kill dialogue (e.g. companions
+		/// commenting on a boss death).
+		/// </summary>
 		public bool StartConversation(MapSystem.World world, Int32 conversationId)
 		{
 			foreach (var plr in world.Players)
@@ -1168,6 +1298,26 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			return true;
 		}
 
+		/// <summary>
+		/// Handles player-specific death cleanup, delegated to from
+		/// <see cref="Apply"/> when <see cref="Payload.Target"/> is a
+		/// <see cref="Player"/>. Responsibilities:
+		/// <list type="bullet">
+		///   <item><description>Stops any in-flight casts and removes
+		///     every buff except cooldowns (keeps skill cooldowns
+		///     ticking while dead).</description></item>
+		///   <item><description>Broadcasts the client-side victim /
+		///     death animations and queues the revive timer.</description></item>
+		///   <item><description>Spawns a <c>Headstone</c> at the death
+		///     position for other players to resurrect from.</description></item>
+		///   <item><description>Degrades equipped-gear durability by
+		///     10% (the D3 death penalty).</description></item>
+		///   <item><description>For Hardcore: flags the toon dead in the
+		///     DB and schedules checkpoint respawn.</description></item>
+		///   <item><description>For PvP: checks if the whole team is
+		///     wiped and starts the next round if so.</description></item>
+		/// </list>
+		/// </summary>
 		private void DoPlayerDeath()
 		{
 			//death implementation
@@ -1231,6 +1381,21 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 			//}
 		}
 
+		/// <summary>
+		/// Picks the death animation SNO for the dying actor, in order
+		/// of preference:
+		/// <list type="number">
+		///   <item><description>Power-tagged special death (e.g.
+		///     Disintegrate → disintegration animation) — rolled against
+		///     <c>SpecialDeathChance</c>.</description></item>
+		///   <item><description>Element-based death animation
+		///     (<see cref="DeathDamageType"/>.<c>DeathAnimationTag</c>) —
+		///     e.g. fire gets the burning-death ani.</description></item>
+		///   <item><description>Default death animation.</description></item>
+		///   <item><description><see cref="AnimationSno._NONE"/> if the
+		///     actor has no animations at all.</description></item>
+		/// </list>
+		/// </summary>
 		private AnimationSno FindBestDeathAnimationSNO()
 		{
 			if (Context == null)
@@ -1266,6 +1431,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
             return GetSNOFromTag(AnimationSetKeys.DeathDefault);
         }
 
+		/// <summary>
+		/// Resolves a <see cref="TagKeyInt"/> to the concrete animation
+		/// SNO on the target actor's animation set, or
+		/// <see cref="AnimationSno._NONE"/> if the actor lacks that tag.
+		/// </summary>
 		private AnimationSno GetSNOFromTag(TagKeyInt tag)
 		{
 			if (Target.AnimationSet != null && Target.AnimationSet.TagMapAnimDefault.ContainsKey(tag))
@@ -1274,6 +1444,13 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem.Payloads
 				return AnimationSno._NONE;
 		}
 
+		/// <summary>
+		/// Maps a power's <c>SpecialDeathType</c> int tag (read from the
+		/// MPQ tagmap via <see cref="PowerContext.EvalTag"/>) to the
+		/// corresponding <see cref="AnimationSetKeys"/> death key. Used
+		/// for power-specific death animations like Disintegrate's
+		/// particle-puff or Wizard's Frost Nova pulverise.
+		/// </summary>
 		private static TagKeyInt GetTagForSpecialDeath(int specialDeathType) =>
 			specialDeathType switch
 			{

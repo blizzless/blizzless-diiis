@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.Core.Logging;
@@ -13,36 +13,81 @@ using DiIiS_NA.GameServer.GSSystem.PlayerSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 {
+	/// <summary>
+	/// Per-world orchestrator for power execution.
+	///
+	/// <para>Every world has its own <c>PowerManager</c> that:</para>
+	/// <list type="bullet">
+	///   <item><description>Runs queued power scripts each tick,
+	///     advancing their coroutine-style state machines.</description></item>
+	///   <item><description>Tracks currently-channeled skills so a
+	///     re-cast of the same channel re-uses the existing instance
+	///     instead of spawning a duplicate.</description></item>
+	///   <item><description>Delays actor deletion by ~10s after death so
+	///     ongoing visual / buff effects don't leak.</description></item>
+	///   <item><description>Applies break-CC-on-cast, item-proc checks,
+	///     and the Attacks-Per-Second cheat detection.</description></item>
+	/// </list>
+	///
+	/// <para>The main entry point for firing a power is
+	/// <see cref="RunPower(Actor, PowerScript, Actor, Vector3D, TargetMessage)"/>
+	/// (or its SNO overload). Powers are written as C# iterator methods
+	/// that <c>yield return</c> <see cref="TickTimer"/>s between
+	/// sub-actions; the manager advances them here in
+	/// <see cref="_UpdateExecutingScripts"/>.</para>
+	/// </summary>
 	public class PowerManager
 	{
 		static readonly Logger Logger = LogManager.CreateLogger();
 
-		// list of all actively channeled skills
+		/// <summary>All actively-channeled skills in this world.</summary>
 		private List<ChanneledSkill> _channeledSkills = new List<ChanneledSkill>();
 
-		// list of all executing power scripts
+		/// <summary>
+		/// One entry in the coroutine execution queue. <c>PowerEnumerator</c>
+		/// is the iterator returned by <c>PowerScript.Run()</c>; each
+		/// yielded <see cref="TickTimer"/> gates the next step.
+		/// </summary>
 		private class ExecutingScript
 		{
+			/// <summary>The in-flight power coroutine.</summary>
 			public IEnumerator<TickTimer> PowerEnumerator;
+
+			/// <summary>The originating power script (for cancellation).</summary>
 			public PowerScript Script;
 		}
+
+		/// <summary>All in-flight power scripts being ticked.</summary>
 		private List<ExecutingScript> _executingScripts = new List<ExecutingScript>();
 
-		// list of actors that were killed and are waiting to be deleted
-		// rather ugly hack needed because deleting actors immediatly when they have visual buff effects
-		// applied causes the effects to stay around forever.
+		/// <summary>
+		/// Actors that have been killed and are pending deletion. Rather
+		/// ugly hack needed because deleting actors immediately when they
+		/// still have visual buff effects applied causes the effects to
+		/// stay around forever on the client.
+		/// </summary>
 		private Dictionary<Actor, TickTimer> _deletingActors = new Dictionary<Actor, TickTimer>();
 
+		/// <summary>Creates an empty power manager for a world.</summary>
 		public PowerManager()
 		{
 		}
 
+		/// <summary>
+		/// Per-tick update. Advances pending actor deletions and every
+		/// executing power script's coroutine.
+		/// </summary>
 		public void Update()
 		{
 			_UpdateDeletingActors();
 			_UpdateExecutingScripts();
 		}
 
+		/// <summary>
+		/// Fires visual-only on-cast item procs for legendary / set effects
+		/// that want to show a flourish when the player casts anything.
+		/// Currently just handles two hard-coded item power SNOs.
+		/// </summary>
 		private void CheckItemProcs(Player user)
 		{
 			if (user.SkillSet.HasItemPassiveProc(248776))
@@ -55,10 +100,30 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			}
 		}
 
+		/// <summary>Rolling counter used by the APS cheat detector.</summary>
 		private int cheatCounter = 0;
 
+		/// <summary>
+		/// Starts executing a power script with the given target context.
+		/// Handles:
+		/// <list type="bullet">
+		///   <item><description>Teleport walkability check (powers 168344 / 167648).</description></item>
+		///   <item><description>Disabled-actor gate.</description></item>
+		///   <item><description>Item-proc fires for players.</description></item>
+		///   <item><description>Break-CC attempts (Stun / Fear / Root) if
+		///     the power's tagmap opts in.</description></item>
+		///   <item><description>Channeled-skill deduplication
+		///     (re-uses existing open channels).</description></item>
+		///   <item><description>Facing translation for non-channeled casts.</description></item>
+		///   <item><description>Per-second cast-count vs. APS cheat
+		///     detection for players.</description></item>
+		/// </list>
+		/// </summary>
+		/// <returns><c>true</c> if the power started executing.</returns>
 		public bool RunPower(Actor user, PowerScript power, Actor target = null, Vector3D targetPosition = null, TargetMessage targetMessage = null)
 		{
+			// Teleport walkability check — powers 168344/167648 are the
+			// two player teleport implementations.
 			if (power.PowerSNO == 168344 || power.PowerSNO == 167648) //teleport
 			{
 				if (!user.World.CheckLocationForFlag(PowerMath.TranslateDirection2D(user.Position, targetPosition, user.Position, Math.Min(PowerMath.Distance2D(user.Position, targetPosition), 35f)), DiIiS_NA.Core.MPQ.FileFormats.Scene.NavCellFlags.AllowWalk))
@@ -70,7 +135,8 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			if (user is Player && targetPosition != null)
 				CheckItemProcs(user as Player);
 
-			//break stun if possible
+			// Break stun if possible — powers opting in via PowerKeys.BreaksStun
+			// roll their break-chance formula and remove Stun (power SNO 101000) on success.
 			if (PowerTagHelper.FindTagMapWithKey(power.PowerSNO, PowerKeys.BreaksStun) != null)
 				if (user.Attributes[GameAttributes.Stunned] == true || user.Attributes[GameAttributes.Frozen] == true)
 				{
@@ -82,7 +148,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 						user.Attributes.BroadcastChangedIfRevealed();
 					}
 				}
-			//break fear if possible
+			// Break fear if possible (power SNO 101002 is the fear buff).
 			if (PowerTagHelper.FindTagMapWithKey(power.PowerSNO, PowerKeys.BreaksFear) != null)
 				if (user.Attributes[GameAttributes.Feared] == true)
 				{
@@ -90,7 +156,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 					if (ScriptFormulaEvaluator.Evaluate(power.PowerSNO, PowerKeys.BreaksFear, user.Attributes, PowerContext.Rand, out result) && result > 0)
 						user.World.BuffManager.RemoveBuffs(user, 101002);
 				}
-			//break root if possible
+			// Break root if possible (power SNO 101003 is the root buff).
 			if (PowerTagHelper.FindTagMapWithKey(power.PowerSNO, PowerKeys.BreaksRoot) != null)
 				if (user.Attributes[GameAttributes.IsRooted] == true)
 				{
@@ -98,7 +164,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 					if (ScriptFormulaEvaluator.Evaluate(power.PowerSNO, PowerKeys.BreaksRoot, user.Attributes, PowerContext.Rand, out result) && result > 0)
 						user.World.BuffManager.RemoveBuffs(user, 101003);
 				}
-			// replace power with existing channel instance if one exists
+			// Replace the power with the existing channel instance if one
+			// already exists — this is what makes held channels continue
+			// instead of restarting from scratch each input tick.
 			if (power is ChanneledSkill)
 			{
 				var existingChannel = _FindChannelingSkill(user, power.PowerSNO);
@@ -106,17 +174,18 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				{
 					power = existingChannel;
 				}
-				else  // new channeled skill, add it to the list
+				else  // New channeled skill — add it to the tracking list.
 				{
 					_channeledSkills.Add((ChanneledSkill)power);
 				}
 			}
 			else
 			{
+				// Instant cast: face the target immediately.
 				user.TranslateFacing(targetPosition, true);
 			}
 
-			// copy in context params
+			// Copy in context params for the power's coroutine to read.
 			power.User = user;
 			power.Target = target;
 			power.World = user.World;
@@ -125,6 +194,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 
 			user.LastSecondCasts++;
 
+			// APS cheat detector: if a player casts more than APS+1 times
+			// in the current second window, subtract a hair of APS. Not a
+			// ban, just a tiny slow-down to make cheaters' speedhacks
+			// gradually regress.
 			if (user is Player && !(power is ChanneledSkill) && power.PowerSNO != 109344 && user.LastSecondCasts > user.Attributes[GameAttributes.Attacks_Per_Second_Total] + 1f)
 			{
 				//fix for ApS cheating
@@ -143,11 +216,17 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			return true;
 		}
 
+		/// <summary>
+		/// SNO-based overload. Resolves a target actor from
+		/// <paramref name="targetId"/> (falling back to the player's
+		/// revealed-objects map if necessary) and runs the matching
+		/// power implementation.
+		/// </summary>
 		public bool RunPower(Actor user, int powerSNO, uint targetId = uint.MaxValue, Vector3D targetPosition = null, TargetMessage targetMessage = null)
 		{
 			Actor target;
 			if (powerSNO == -1) return false;
-			
+
 			if (targetId == uint.MaxValue)
 			{
 				target = null;
@@ -155,6 +234,9 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			else
 			{
 				target = user.World.GetActorByGlobalId(targetId);
+				// Players may target objects via their client-side
+				// revealed-objects map — re-resolve through that if the
+				// direct lookup fails.
 				if (user is Player)
 					foreach (var obj in (user as Player).RevealedObjects)
 						if (obj.Value == targetId)
@@ -168,7 +250,7 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 				targetPosition = target.Position;
 			}
 
-			// find and run a power implementation
+			// Find and run a power implementation matching the SNO.
 			var implementation = PowerLoader.CreateImplementationForPowerSNO(powerSNO);
 			if (implementation != null)
 			{
@@ -180,9 +262,16 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			}
 		}
 
+		/// <summary>
+		/// Advances every running power coroutine. Scripts whose current
+		/// <see cref="TickTimer"/> has expired call <c>MoveNext()</c>; if
+		/// the coroutine finishes or yields <c>StopExecution</c>, it's
+		/// removed from the execution list. All exceptions are swallowed
+		/// so a single broken power can't crash the world tick.
+		/// </summary>
 		private void _UpdateExecutingScripts()
 		{
-			// process all powers, removing from the list the ones that expire
+			// Process all powers, removing from the list the ones that expire.
 			try
 			{
 				_executingScripts.RemoveAll(script =>
@@ -212,6 +301,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			{ }
 		}
 
+		/// <summary>
+		/// Cancels an in-progress channeled skill. Called when the player
+		/// releases the skill button.
+		/// </summary>
 		public void CancelChanneledSkill(Actor user, int powerSNO)
 		{
 			var channeledSkill = _FindChannelingSkill(user, powerSNO);
@@ -226,6 +319,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			}
 		}
 
+		/// <summary>
+		/// Finds an open channel for <paramref name="user"/> on the given
+		/// power SNO, or <c>null</c> if none.
+		/// </summary>
 		private ChanneledSkill _FindChannelingSkill(Actor user, int powerSNO)
 		{
 			return _channeledSkills.FirstOrDefault(impl => impl.User == user &&
@@ -233,6 +330,12 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 														   impl.IsChannelOpen);
 		}
 
+		/// <summary>
+		/// Kicks off a script's coroutine. If it yields
+		/// <see cref="PowerScript.StopExecution"/> on the first step, the
+		/// script is considered instant and is not added to the execution
+		/// list.
+		/// </summary>
 		private void _StartScript(PowerScript script)
 		{
 			var powerEnum = script.Run().GetEnumerator();
@@ -246,6 +349,10 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			}
 		}
 
+		/// <summary>
+		/// Processes the deferred-deletion queue. When the 10-second grace
+		/// timer on a dying actor expires, the actor is finally destroyed.
+		/// </summary>
 		private void _UpdateDeletingActors()
 		{
 			foreach (var key in _deletingActors.Keys.ToArray())
@@ -258,6 +365,11 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			}
 		}
 
+		/// <summary>
+		/// Marks an actor for deferred deletion ~10s from now. Used by the
+		/// death pipeline to keep corpses around long enough for death
+		/// visuals / buffs to run out.
+		/// </summary>
 		public void AddDeletingActor(Actor actor)
 		{
 			try
@@ -267,11 +379,22 @@ namespace DiIiS_NA.GameServer.GSSystem.PowerSystem
 			catch (ArgumentException) { }
 		}
 
+		/// <summary>
+		/// Returns <c>true</c> if the actor is queued for deferred
+		/// deletion. Used by <see cref="Payloads.AttackPayload.Apply"/> to
+		/// skip targets that are already "dead" from the engine's point of
+		/// view.
+		/// </summary>
 		public bool IsDeletingActor(Actor actor)
 		{
 			return _deletingActors.ContainsKey(actor);
 		}
 
+		/// <summary>
+		/// Forcibly cancels every channel and running script belonging to
+		/// <paramref name="user"/>. Used on death, disconnect, teleport
+		/// between areas, etc.
+		/// </summary>
 		public void CancelAllPowers(Actor user)
 		{
 			try

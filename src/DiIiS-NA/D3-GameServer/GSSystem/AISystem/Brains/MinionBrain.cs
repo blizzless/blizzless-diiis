@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.Core.Extensions;
@@ -20,28 +20,68 @@ using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 {
+	/// <summary>
+	/// AI controller for player-summoned combat minions (Necromancer
+	/// skeletons, Barbarian ancients, Witch Doctor fetishes / gargantuan,
+	/// DH companion, etc.).
+	///
+	/// <para>Behaves like a leashed <c>MonsterBrain</c>:</para>
+	/// <list type="bullet">
+	///   <item><description>Attacks the nearest monster within 40 tiles of
+	///     the master, preferring elites (Champion / Rare / RareMinion).</description></item>
+	///   <item><description>Stays within a loose 3–8 tile ring around the
+	///     master when no targets are nearby.</description></item>
+	///   <item><description>Shares the same CC / fear / knockback gating
+	///     as MonsterBrain.</description></item>
+	///   <item><description>Applies the minion's
+	///     <see cref="Minion.CooldownReduction"/> to its cast timers so
+	///     pet-CDR stats actually work.</description></item>
+	/// </list>
+	///
+	/// <para>In PvP the target list switches from monsters to opposing
+	/// players (team-filtered in organised PvP, free-for-all otherwise).</para>
+	/// </summary>
 	public class MinionBrain : Brain
 	{
-		// list of power SNOs that are defined for the monster
+		/// <summary>
+		/// All powers this minion can use, keyed by power SNO. Filled in
+		/// from the underlying Monster MPQ data at construction.
+		/// </summary>
 		public Dictionary<int, Cooldown> PresetPowers { get; private set; }
 
+		/// <summary>Initial per-minion stagger timer so packs don't cast in unison.</summary>
 		private TickTimer _powerDelay;
+
+		/// <summary>Sticky flag: true while fleeing from a fear effect.</summary>
 		private bool Feared = false;
+
+		/// <summary>Cached target chosen inside <see cref="Think(int)"/>.</summary>
 		private Actor _target { get; set; }
+
+		/// <summary>One-shot warning flag to avoid log spam for powerless minions.</summary>
 		private bool _warnedNoPowers;
 
+		/// <summary>Per-power cooldown tracker. <see cref="CooldownTimer"/> null = ready.</summary>
 		public struct Cooldown
 		{
+			/// <summary>Active timer; <c>null</c> when ready to cast.</summary>
 			public TickTimer CooldownTimer;
+
+			/// <summary>Base cooldown duration in seconds.</summary>
 			public float CooldownTime;
 		}
 
+		/// <summary>
+		/// Creates a minion brain and loads the preset powers from the
+		/// underlying monster data. Every declared skill starts with a flat
+		/// 1 s cooldown baseline.
+		/// </summary>
 		public MinionBrain(Actor body)
 			: base(body)
 		{
 			PresetPowers = new Dictionary<int, Cooldown>();
 
-			// build list of powers defined in monster mpq data
+			// Build the list of powers defined in the monster MPQ data.
 			if (body.ActorData.MonsterSNO > 0)
 			{
 				var monsterData = (DiIiS_NA.Core.MPQ.FileFormats.Monster)MPQStorage.Data.Assets[SNOGroup.Monster][body.ActorData.MonsterSNO].Data;
@@ -55,15 +95,24 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			}
 		}
 
+		/// <summary>
+		/// Main AI tick for a minion. See class remarks for the decision
+		/// flow; mirrors <see cref="MonsterBrain.Think(int)"/> with the
+		/// addition of master-leashing and PvP targeting.
+		/// </summary>
 		public override void Think(int tickCounter)
 		{
 			// this needed? /mdz
 			//if (this.Body is NPC) return;
+
+			// Without a master there is nothing to guard / follow, so skip.
 			if ((Body as Minion).Master == null) return;
 
 			if (Body.World.Game.Paused) return;
 
-			// check if in disabled state, if so cancel any action then do nothing
+			// CC gate — identical to MonsterBrain. Cancel any running action
+			// and bail; timers reset so the minion doesn't instantly cast
+			// when the CC ends.
 			if (Body.Attributes[GameAttributes.Frozen] ||
 				Body.Attributes[GameAttributes.Stunned] ||
 				Body.Attributes[GameAttributes.Blind] ||
@@ -81,6 +130,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				return;
 			}
 
+			// Fear handling — run to a random point 3–8 tiles away and
+			// stop thinking until the fear expires.
 			if (Body.Attributes[GameAttributes.Feared])
 			{
 				if (!Feared || CurrentAction == null)
@@ -102,28 +153,39 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			else
 				Feared = false;
 
-			// select and start executing a power if no active action
+			// Only select a new power if nothing is currently in-flight.
 			if (CurrentAction == null)
 			{
-				// do a little delay so groups of monsters don't all execute at once
+				// Small random delay on first think so groups of minions
+				// don't all cast at the exact same tick (visual/feel win).
 				if (_powerDelay == null)
 					_powerDelay = new SecondsTickTimer(Body.World.Game, (float)RandomHelper.NextDouble());
 
 				if (_powerDelay.TimedOut)
 				{
+					// Target acquisition — sweep 40 tiles around the master
+					// and keep only the valid, visible, targetable monsters,
+					// sorted by distance from the minion itself.
 					List<Actor> targets = (Body as Minion).Master
 						.GetObjectsInRange<Monster>(40f)
 						.Where(m => !m.Dead && m.Visible && m.SNO.IsTargetable())
 						.OrderBy(m => PowerMath.Distance2D(m.Position, Body.Position))
 						.Cast<Actor>()
 						.ToList();
+
+					// PvP overrides: attack enemy players instead of monsters.
 					if (Body.World.Game.PvP)
 						targets = (Body as Minion).Master.GetObjectsInRange<Player>(30f).Where(p => p.GlobalID != (Body as Minion).Master.GlobalID && p.Attributes[GameAttributes.TeamID] != (Body as Minion).Master.Attributes[GameAttributes.TeamID]).Cast<Actor>().ToList();
 					if (Body.World.IsPvP)
 						targets = (Body as Minion).Master.GetObjectsInRange<Player>(30f).Where(p => p.GlobalID != (Body as Minion).Master.GlobalID).Cast<Actor>().ToList();
 
+					// 80-tile leash — if the minion has wandered too far
+					// from the master we skip attacking entirely and walk
+					// back (see the else branch below).
 					if (targets.Count != 0 && PowerMath.Distance2D(Body.Position, (Body as Minion).Master.Position) < 80f)
 					{
+						// Prefer elites so pet builds actually contribute to
+						// elite kills (which are the high-value pack drops).
 						var elite = targets.FirstOrDefault(target => target is Champion or Rare or RareMinion);
 						_target = elite ?? targets.First();
 
@@ -132,10 +194,16 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						{
 							PowerScript power = PowerLoader.CreateImplementationForPowerSNO(powerToUse);
 							power.User = Body;
+
+							// Same range computation as MonsterBrain:
+							// body cylinder + power.AttackRadius, with a
+							// 10-tile floor for melee and a 35-tile fallback.
 							float attackRange = Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : power.EvalTag(PowerKeys.AttackRadius)) : 35f);
 							float targetDistance = PowerMath.Distance2D(_target.Position, Body.Position);
 							if (targetDistance < attackRange + _target.ActorData.Cylinder.Ax2)
 							{
+								// In range → face the target (unless we're
+								// a fixed / pillar-type minion) and cast.
 								if (Body.WalkSpeed != 0)
 									Body.TranslateFacing(_target.Position, false); //columns and other non-walkable shit can't turn
 
@@ -144,21 +212,26 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 								//Logger.Trace("PowerAction to target");
 								CurrentAction = new PowerAction(Body, powerToUse, _target);
 
+								// Summon skills get a 7s cooldown (scaled
+								// by pet CDR) so pets can't indefinitely
+								// spawn more pets.
 								if (power is SummoningSkill)
 									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = null, CooldownTime = (7f * cdReduction) };
 
+								// Arm the cooldown for the just-cast power.
 								if (PresetPowers[powerToUse].CooldownTime > 0f)
 									PresetPowers[powerToUse] = new Cooldown { CooldownTimer = new SecondsTickTimer(Body.World.Game, PresetPowers[powerToUse].CooldownTime), CooldownTime = (PresetPowers[powerToUse].CooldownTime * cdReduction) };
 							}
 							else
 							{
+								// Out of range → pathfind in.
 								//Logger.Trace("$[underline white]$MoveToTargetWithPathfindAction$[/]$ to target");
 								CurrentAction = new MoveToTargetWithPathfindAction(
 									Body,
 									//(
 									_target,// + MovementHelpers.GetMovementPosition(
-											//new Vector3D(0, 0, 0), 
-											//this.Body.WalkSpeed, 
+											//new Vector3D(0, 0, 0),
+											//this.Body.WalkSpeed,
 											//MovementHelpers.GetFacingAngle(_target.Position, this.Body.Position),
 											//6
 											//)
@@ -170,6 +243,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					}
 					else
 					{
+						// No target in range (or too far from master) →
+						// drift into a loose ring 3–8 tiles from the master.
+						// This is the "wander with the player" idle behaviour.
 						var distToMaster = PowerMath.Distance2D(Body.Position, (Body as Minion).Master.Position);
 						if ((distToMaster > 8f) || (distToMaster < 3f))
 						{
@@ -185,6 +261,12 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			}
 		}
 
+		/// <summary>
+		/// Picks a random power whose cooldown has expired and which has a
+		/// C# implementation. Biased away from melee: if any non-melee power
+		/// is available it is preferred, and melee is only chosen as a
+		/// fallback. Returns <c>-1</c> when nothing is ready.
+		/// </summary>
 		protected virtual int PickPowerToUse()
 		{
 			if (!_warnedNoPowers && PresetPowers.Count == 0)
@@ -193,7 +275,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				_warnedNoPowers = true;
 			}
 
-			// randomly used an implemented power
+			// Randomly use an implemented power.
 			if (PresetPowers.Count > 0)
 			{
 				// int power = this.PresetPowers[RandomHelper.Next(this.PresetPowers.Count)].Key;
@@ -204,10 +286,16 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 					return 30592; // melee attack
 			}
 
-			// no usable power
+			// No usable power.
 			return -1;
 		}
 
+		/// <summary>
+		/// Adds a runtime power to this minion's repertoire. Duplicates are
+		/// silently skipped. New powers get a 5 s cooldown if the minion
+		/// already has melee (so they don't fire too often), or a random
+		/// 1–2 s placeholder otherwise.
+		/// </summary>
 		public void AddPresetPower(int powerSNO)
 		{
 			if (PresetPowers.ContainsKey(powerSNO))
@@ -222,6 +310,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				PresetPowers.Add(powerSNO, new Cooldown { CooldownTimer = null, CooldownTime = 1f + (float)FastRandom.Instance.NextDouble() });
 		}
 
+		/// <summary>Removes a power from this minion. No-op if it wasn't present.</summary>
 		public void RemovePresetPower(int powerSNO)
 		{
 			if (PresetPowers.ContainsKey(powerSNO))

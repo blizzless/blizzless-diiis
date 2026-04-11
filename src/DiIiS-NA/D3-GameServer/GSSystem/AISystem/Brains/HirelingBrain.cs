@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.Core.Extensions;
@@ -18,15 +18,52 @@ using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 {
+	/// <summary>
+	/// AI controller for the single-player follower NPCs: Templar,
+	/// Scoundrel, Enchantress, Leah (Diablo 3's hireling companions).
+	///
+	/// <para>Unlike <see cref="MinionBrain"/> this brain does not load
+	/// powers from MPQ data. Instead it owns exactly one hard-coded
+	/// attack power, chosen in the constructor based on the concrete
+	/// hireling subclass:</para>
+	///
+	/// <list type="bullet">
+	///   <item><description>Templar (Malthael variant) → <c>30592</c> (melee).</description></item>
+	///   <item><description>Scoundrel → <c>99902</c> (ranged projectile).</description></item>
+	///   <item><description>Enchantress → <c>30273</c> (magic missile).</description></item>
+	///   <item><description>Leah → <c>99902</c> (ranged projectile).</description></item>
+	/// </list>
+	///
+	/// <para>To add more variety to a hireling, extend the constructor's
+	/// preset list — <see cref="PickPowerToUse"/> picks a random entry from
+	/// the list each cast.</para>
+	/// </summary>
 	public class HirelingBrain : Brain
 	{
+		/// <summary>The player this hireling follows and fights for.</summary>
 		public Player Owner { get; private set; }
 
+		/// <summary>
+		/// Hard-coded list of power SNOs this hireling may use. Populated
+		/// in the constructor and only re-read, not re-populated.
+		/// </summary>
 		public List<int> PresetPowers { get; private set; }
+
+		/// <summary>Current combat target, refreshed each tick while attacking.</summary>
 		private Actor _target { get; set; }
+
+		/// <summary>Global 1-second cadence between attack attempts.</summary>
 		private TickTimer _powerDelay;
+
+		/// <summary>Sticky flag: true while fleeing from a fear effect.</summary>
 		private bool Feared = false;
 
+		/// <summary>
+		/// Creates a hireling brain and hard-codes the one-and-only power
+		/// SNO based on the hireling class.
+		/// </summary>
+		/// <param name="body">The hireling actor.</param>
+		/// <param name="master">The player this hireling is bound to.</param>
 		public HirelingBrain(Actor body, Player master)
 			: base(body)
 		{
@@ -34,6 +71,9 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 			PresetPowers = new List<int>();
 
+			// Class-specific power assignment. This is deliberately a short
+			// list — one attack per class gives hirelings a recognisable
+			// "feel" (Scoundrel always shoots, Enchantress always zaps).
 			if (body is Templar && body is MalthaelHireling)
 				PresetPowers.Add(30592); //melee instant
 			if (body is Scoundrel)
@@ -45,13 +85,18 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 
 		}
 
+		/// <summary>
+		/// Main AI tick. Mirrors <see cref="MinionBrain.Think(int)"/> but
+		/// scopes targeting to whatever monsters the owner has visible.
+		/// </summary>
 		public override void Think(int tickCounter)
 		{
+			// Orphaned hirelings (owner logged out, etc.) do nothing.
 			if (Owner == null) return;
 
 			if (Body.World.Game.Paused) return;
 
-			// check if in disabled state, if so cancel any action then do nothing
+			// CC gate: cancel any running action and bail out.
 			if (Body.Attributes[GameAttributes.Frozen] ||
 				Body.Attributes[GameAttributes.Stunned] ||
 				Body.Attributes[GameAttributes.Blind] ||
@@ -69,6 +114,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				return;
 			}
 
+			// Fear handling: same 3–8 tile flee as monsters/minions.
 			if (Body.Attributes[GameAttributes.Feared])
 			{
 				if (!Feared || CurrentAction == null)
@@ -90,24 +136,32 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			else
 				Feared = false;
 
-			// select and start executing a power if no active action
+			// Select and start executing a power if no action is in flight.
 			if (CurrentAction == null)
 			{
-				// do a little delay so groups of monsters don't all execute at once
+				// One-second cadence between attacks.
 				if (_powerDelay == null)
 					_powerDelay = new SecondsTickTimer(Body.World.Game, 1f);
 
+				// Look for targets within 40 tiles of the owner (not the
+				// hireling — so the hireling can pre-emptively lock on to
+				// monsters the player is about to aggro).
 				var targets = Owner.GetObjectsInRange<Monster>(40f).Where(p => !p.Dead && p.Visible).OrderBy(m => PowerMath.Distance2D(m.Position, Body.Position)).ToList();
 				if (targets.Count != 0 && PowerMath.Distance2D(Body.Position, Owner.Position) < 80f)
 				{
 					int powerToUse = PickPowerToUse();
 					if (powerToUse > 0)
 					{
+						// Prefer elites so Scoundrel/Enchantress damage
+						// contributes to the high-value pack kills.
 						var elite = targets.FirstOrDefault(t => t is Champion or Rare or RareMinion);
 						_target = elite ?? targets.First();
 
 						PowerScript power = PowerLoader.CreateImplementationForPowerSNO(powerToUse);
 						power.User = Body;
+
+						// Same range-computation convention as every other
+						// brain in the system.
 						float attackRange = Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : power.EvalTag(PowerKeys.AttackRadius)) : 35f);
 						float targetDistance = PowerMath.Distance2D(_target.Position, Body.Position);
 						if (targetDistance < attackRange + _target.ActorData.Cylinder.Ax2)
@@ -132,6 +186,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				}
 				else
 				{
+					// Idle follow — stay in a 3–8 tile ring around the
+					// owner. Identical behaviour to MinionBrain.
 					var distToMaster = PowerMath.Distance2D(Body.Position, Owner.Position);
 					if ((distToMaster > 8f) || (distToMaster < 3f))
 					{
@@ -146,15 +202,25 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			}
 		}
 
+		/// <summary>
+		/// Picks a random power SNO from <see cref="PresetPowers"/>,
+		/// filtered to powers that actually have a C# implementation.
+		/// Returns <c>-1</c> if nothing is available (e.g. unconfigured
+		/// hireling subclass).
+		/// </summary>
 		protected virtual int PickPowerToUse()
 		{
-			// randomly used an implemented power
+			// Randomly used an implemented power.
 			var implementedPowers = PresetPowers.Where(PowerLoader.HasImplementationForPowerSNO);
 			return implementedPowers.TryPickRandom(out var randomPower)
 				? randomPower
 				: -1;
 		}
 
+		/// <summary>
+		/// Adds a power SNO at runtime. There is no cooldown tracking for
+		/// hirelings — see <see cref="PresetPowers"/>.
+		/// </summary>
 		public void AddPresetPower(int powerSNO)
 		{
 			PresetPowers.Add(powerSNO);

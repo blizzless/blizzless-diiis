@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using DiIiS_NA.Core.Extensions;
 using DiIiS_NA.Core.MPQ;
@@ -14,13 +14,37 @@ using DiIiS_NA.GameServer.MessageSystem;
 
 namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 {
+	/// <summary>
+	/// "Stay-in-place" variant of <see cref="AggressiveNPCBrain"/>: the NPC
+	/// attacks enemies that wander into range but never moves out of its
+	/// spawn point to chase them. Used for stationary shooters — siege
+	/// towers, turret-style NPCs, archers on castle walls, etc.
+	///
+	/// <para>Key differences vs. <see cref="AggressiveNPCBrain"/>:</para>
+	/// <list type="bullet">
+	///   <item><description>Out-of-range targets do NOT cause a
+	///     <c>MoveToTargetWithPathfindAction</c> (the "pathfind in" branch
+	///     is an empty else).</description></item>
+	///   <item><description>When no targets are in range, it still walks
+	///     back to <see cref="Actor.CheckPointPosition"/> if it has drifted
+	///     off-post.</description></item>
+	/// </list>
+	/// </summary>
 	public class StayAggressiveNPCBrain : Brain
 	{
-		// list of power SNOs that are defined for the monster
+		/// <summary>Power SNOs loaded from MPQ monster data.</summary>
 		public List<int> PresetPowers { get; private set; }
+
+		/// <summary>Current combat target.</summary>
 		private Actor _target { get; set; }
+
+		/// <summary>Global 1-second cadence between attack attempts.</summary>
 		private TickTimer _powerDelay;
 
+		/// <summary>
+		/// Creates the brain and loads its skill list from the body's
+		/// underlying monster MPQ definition.
+		/// </summary>
 		public StayAggressiveNPCBrain(Actor body)
 			: base(body)
 		{
@@ -40,12 +64,16 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 			}
 		}
 
+		/// <summary>
+		/// Main AI tick. Attacks enemies in range; out-of-range targets are
+		/// ignored (no chase). CC gating matches every other brain.
+		/// </summary>
 		public override void Think(int tickCounter)
 		{
 			// this needed? /mdz
 			//if (this.Body is NPC) return;
 
-			// check if in disabled state, if so cancel any action then do nothing
+			// CC gate — cancel any running action and bail.
 			if (Body.Attributes[GameAttributes.Frozen] ||
 				Body.Attributes[GameAttributes.Stunned] ||
 				Body.Attributes[GameAttributes.Blind] ||
@@ -63,10 +91,10 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				return;
 			}
 
-			// select and start executing a power if no active action
+			// Select and start executing a power if no active action.
 			if (CurrentAction == null)
 			{
-				// do a little delay so groups of monsters don't all execute at once
+				// One-second cadence so packs don't cast in unison.
 				if (_powerDelay == null)
 					_powerDelay = new SecondsTickTimer(Body.World.Game, 1f);
 
@@ -83,6 +111,8 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 						{
 							PowerScript power = PowerLoader.CreateImplementationForPowerSNO(powerToUse);
 							power.User = Body;
+
+							// Same range convention as every other brain.
 							float attackRange = Body.ActorData.Cylinder.Ax2 + (power.EvalTag(PowerKeys.AttackRadius) > 0f ? (powerToUse == 30592 ? 10f : power.EvalTag(PowerKeys.AttackRadius)) : 35f);
 							float targetDistance = PowerMath.Distance2D(_target.Position, Body.Position);
 							if (targetDistance < attackRange + _target.ActorData.Cylinder.Ax2)
@@ -97,18 +127,22 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 							}
 							else
 							{
-
+								// Intentionally empty: stationary NPCs
+								// never chase targets out of range.
 							}
 						}
 					}
 					else
 					{
+						// No targets visible → walk back to spawn so a
+						// bumped/shoved NPC returns to its post.
 						CurrentAction = new MoveToPointAction(Body, Body.CheckPointPosition);
 					}
 				}
 			}
 		}
 
+		/// <summary>Picks a random implemented power from the preset list.</summary>
 		protected virtual int PickPowerToUse()
 		{
 			// randomly used an implemented power
@@ -118,6 +152,7 @@ namespace DiIiS_NA.GameServer.GSSystem.AISystem.Brains
 				: -1;
 		}
 
+		/// <summary>Adds a power to this NPC's usable set at runtime.</summary>
 		public void AddPresetPower(int powerSNO)
 		{
 			PresetPowers.Add(powerSNO);

@@ -70,6 +70,11 @@ namespace DiIiS_NA.GameServer
 #endif
 			set => Set(nameof(AfkDisconnect), value);
 		}
+		public float SweepMonstersTiles
+		{
+			get => GetFloat(nameof(SweepMonstersTiles), 40f);
+			set => Set(nameof(SweepMonstersTiles), value);
+        }
 
         public float MonsterThinkTick
 		{
@@ -151,7 +156,7 @@ namespace DiIiS_NA.GameServer
 		/// </summary>
 		public float RateMonsterDMG
 		{
-			get => GetFloat(nameof(RateMonsterDMG), 1);
+			get => GetFloat(nameof(RateMonsterDMG), 1.2f);
 			set => Set(nameof(RateMonsterDMG), value);
 		}
 
@@ -187,7 +192,7 @@ namespace DiIiS_NA.GameServer
 		/// </summary>
 		public float BossHealthMultiplier
 		{
-			get => GetFloat(nameof(BossHealthMultiplier), 6f);
+			get => GetFloat(nameof(BossHealthMultiplier), 3f);
 			set => Set(nameof(BossHealthMultiplier), value);
 		}
 		
