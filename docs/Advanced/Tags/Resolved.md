@@ -1,0 +1,3 @@
+## Issue resolved
+
+If the issue is marked with this file , it indicates that the problem or bug that was previously identified has been successfully addressed and corrected. The steps taken to resolve the issue should be documented in detail within this file or associated documentation. This can include the troubleshooting methods used, the solutions implemented, and any follow-up actions required to prevent the issue from recurring

@@ -10,13 +10,11 @@ Quests serve as the backbone of progression systems, ensuring players have clear
 
 This document keeps the game’s structure clean, tracks observable bugs, and confirms that every quest log listed is verified in‑game.
 
-### Act I
-| Quests                             | Summary                                                                                                                       | Known Issues          |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------- |
-| [[1. Fallen Star (ID 87700)]]      | Conversations, skinny zombies and wretched mothers.                                                                           | 1 bug                 |
-| [[2. Rescue Cain (ID 72095)]]      | Leah following, open gate, rescue Cain from the cathedral                                                                     | 1 bug                 |
-| [[3. Shattered Crown (72221)]]     | Talk with Haedrig, opening northeast gates then opening the cemetery gates                                                    | 2 bugs - **CRITICAL** |
-| [[4. Reign of Black King (72061)]] | Return to the Cathedral, aid the Templar, retrieve Leoric’s crown, defeat the Skeleton King, meet Tyrael, and report to Cain. | 5 bugs - **CRITICAL** |
+### Acts
+
+| Quests                             | Summary                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [[Act I]]                          | Complete quests starting from New Tristram, involving various tasks like protecting the town, rescuing and assisting key characters, defeating enemies such as the Skeleton King and Queen Araneae, retrieving parts of a powerful sword, freeing prisoners, and ultimately discovering the Stranger’s true identity as Tyrael, before advancing to the next act by speaking with the Caravan Leader. |
 
 ### Getting quest information
 

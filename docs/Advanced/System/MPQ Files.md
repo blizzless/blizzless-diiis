@@ -48,12 +48,3 @@ The MPQ file format (short for **Mo'PaQ**, or sometimes Multi-Purpose Quick), de
 | Patch Support        | Multiple file versions/resources, for updates/localization/platform differences                   |
 | Header Structure     | Versioned headers, extensible tables, optional metadata                                          |
 | Editing Tools        | MPQ Editor, StormLib, MPQ Extractor, manual extraction via 7-Zip                                 |
-
-## Relevance to Your Diablo III Server Rework
-
-Given that we're working on a Diablo III server re-implementation in C#, understanding MPQ files is crucial because:
-
-1. **Game Assets**: Diablo III stores all its game data (textures, models, sounds, maps, scripts) in MPQ archives
-2. **Data Extraction**: We'll likely need to extract and parse these archives to understand game structure and assets
-3. **File Access**: Your server may need to serve or validate client-side MPQ data
-4. **StormLib Integration**: For C# integration, you may want to use P/Invoke to call StormLib or port MPQ reading functionality to C#
